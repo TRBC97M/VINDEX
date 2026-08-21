@@ -96,6 +96,13 @@ jobs:
             printf 'TEXTUS TOTUS: status=%s exitus=[%s].\n' "$ET" "$OT" >> "$RELATIO"
             [ "$ET" -eq 0 ] && [ "$OT" = $'Sylvia OS\n9\nSalve, Sylvia.' ] || return 1
 
+            ./compilator_vindex src/officina_vindex.vindex /tmp/officina_nova >> "$RELATIO" 2>&1 || return 1
+            ./compilator_vindex src/salutatio_vindex.vindex /tmp/salutatio_nova >> "$RELATIO" 2>&1 || return 1
+            cp /tmp/officina_nova ./officina_vindex
+            cp /tmp/salutatio_nova ./salutatio_vindex
+            find . -type f -name '*.sh' -exec chmod 755 {} +
+            chmod 755 ./vindexc ./vindex_graphica ./officina_vindex ./salutatio_vindex ./compilator_vindex
+
             bash ./tests/run_tests.sh >> "$RELATIO" 2>&1
             SR=$?
             printf 'PROBATIONES REGRESSIONALES: status=%s.\n' "$SR" >> "$RELATIO"
@@ -128,9 +135,9 @@ jobs:
           git config user.name 'VINDEX Centurio'
           git config user.email 'actions@users.noreply.github.com'
           if [ "$SUCCESSUS" -eq 1 ]; then
-            git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$VIA_RELATIONIS"
+            git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$RADIX/officina_vindex" "$RADIX/salutatio_vindex" "$VIA_RELATIONIS"
           else
-            git checkout -- "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" 2>/dev/null || true
+            git checkout -- "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$RADIX/officina_vindex" "$RADIX/salutatio_vindex" 2>/dev/null || true
             git add "$VIA_RELATIONIS"
           fi
           if ! git diff --cached --quiet; then
