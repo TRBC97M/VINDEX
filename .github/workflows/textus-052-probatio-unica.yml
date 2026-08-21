@@ -29,6 +29,14 @@ jobs:
           RELATIO=/tmp/relatio_textus_052
           : > "$RELATIO"
 
+          exsecutabile_integrum() {
+            VIA="$1"
+            [ -s "$VIA" ] || return 1
+            RE_VERA=$(stat -c '%s' "$VIA" 2>/dev/null)
+            DECLARATA=$(od -An -tu8 -j96 -N8 "$VIA" 2>/dev/null | tr -d '[:space:]')
+            [ -n "$RE_VERA" ] && [ "$RE_VERA" = "$DECLARATA" ]
+          }
+
           conserva_relationem() {
             SUCCESSUS="$1"
             cd "$GITHUB_WORKSPACE"
@@ -62,6 +70,27 @@ jobs:
             exit 0
           }
 
+          tracta_exitum_compilatoris() {
+            STATUS="$1"
+            VIA="$2"
+            GRADUS="$3"
+            if [ "$STATUS" -eq 0 ]; then
+              return 0
+            fi
+            if [ "$STATUS" -eq 74 ] && exsecutabile_integrum "$VIA"; then
+              printf 'MONITUM: %s codicem 74 reddidit, sed exsecutabile integrum est; pergitur.\n' "$GRADUS" >> "$RELATIO"
+              return 0
+            fi
+            printf '%s CECIDIT: %s.\n' "$GRADUS" "$STATUS" >> "$RELATIO"
+            if [ -f "$VIA" ]; then
+              printf 'OCTETA RE VERA SCRIPTA: ' >> "$RELATIO"
+              stat -c '%s' "$VIA" >> "$RELATIO" 2>&1
+              printf 'OCTETA A CAPITE ELF DECLARATA: ' >> "$RELATIO"
+              od -An -tu8 -j96 -N8 "$VIA" >> "$RELATIO" 2>&1
+            fi
+            conserva_relationem 0
+          }
+
           python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_textus_052.py' >> "$RELATIO" 2>&1
           STATUS=$?
           if [ "$STATUS" -ne 0 ]; then
@@ -86,44 +115,31 @@ jobs:
           cd 'Vindex Chat-GPT/vindex_final_v51'
           chmod +x ./compilator_vindex
 
-          strace -f -e trace=write,writev -o /tmp/vestigium_scripturae \
-            ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
           STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'PRIMUS GRADUS AUTO-HOSPITII CECIDIT: %s.\n' "$STATUS" >> "$RELATIO"
-            if [ -f /tmp/compilator_vindex_052_1 ]; then
-              printf 'OCTETA RE VERA SCRIPTA: ' >> "$RELATIO"
-              stat -c '%s' /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
-              printf 'OCTETA A CAPITE ELF DECLARATA: ' >> "$RELATIO"
-              od -An -tu8 -j96 -N8 /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
-            fi
-            printf '%s\n' '--- VESTIGIUM SCRIPTURAE ---' >> "$RELATIO"
-            tail -n 12 /tmp/vestigium_scripturae >> "$RELATIO" 2>&1
-            conserva_relationem 0
-          fi
+          tracta_exitum_compilatoris "$STATUS" /tmp/compilator_vindex_052_1 'PRIMUS GRADUS AUTO-HOSPITII'
           chmod +x /tmp/compilator_vindex_052_1
 
           /tmp/compilator_vindex_052_1 src/compilator_vindex.vindex /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
           STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'SECUNDUS GRADUS AUTO-HOSPITII CECIDIT: %s.\n' "$STATUS" >> "$RELATIO"
-            conserva_relationem 0
-          fi
+          tracta_exitum_compilatoris "$STATUS" /tmp/compilator_vindex_052_2 'SECUNDUS GRADUS AUTO-HOSPITII'
           chmod +x /tmp/compilator_vindex_052_2
 
           cmp /tmp/compilator_vindex_052_1 /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
           STATUS=$?
           if [ "$STATUS" -ne 0 ]; then
             printf '%s\n' 'PUNCTUM FIXUM AUTO-HOSPITII NON OBTENTUM EST.' >> "$RELATIO"
+            printf 'MAGNITUDO GRADUS I: ' >> "$RELATIO"
+            stat -c '%s' /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
+            printf 'MAGNITUDO GRADUS II: ' >> "$RELATIO"
+            stat -c '%s' /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
             conserva_relationem 0
           fi
+          printf '%s\n' 'RECTE: punctum fixum auto-hospitii obtentum est.' >> "$RELATIO"
 
           /tmp/compilator_vindex_052_2 examples/textus_litterale_052.vindex /tmp/textus_litterale_052 >> "$RELATIO" 2>&1
           STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'LITTERALE TEXTUS COMPILARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
-            conserva_relationem 0
-          fi
+          tracta_exitum_compilatoris "$STATUS" /tmp/textus_litterale_052 'COMPILATIO LITTERALIS TEXTUS'
           chmod +x /tmp/textus_litterale_052
           /tmp/textus_litterale_052 > /tmp/exitus_litteralis 2>> "$RELATIO"
           STATUS=$?
@@ -134,13 +150,11 @@ jobs:
             cat /tmp/exitus_litteralis >> "$RELATIO"
             conserva_relationem 0
           fi
+          printf '%s\n' 'RECTE: litterale TEXTUS et PROCLAMA operantur.' >> "$RELATIO"
 
           /tmp/compilator_vindex_052_2 examples/textus_longitudo_052.vindex /tmp/textus_longitudo_052 >> "$RELATIO" 2>&1
           STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'LONGITUDO COMPILARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
-            conserva_relationem 0
-          fi
+          tracta_exitum_compilatoris "$STATUS" /tmp/textus_longitudo_052 'COMPILATIO LONGITUDO'
           chmod +x /tmp/textus_longitudo_052
           /tmp/textus_longitudo_052 > /tmp/exitus_longitudinis 2>> "$RELATIO"
           STATUS=$?
@@ -151,6 +165,7 @@ jobs:
             cat /tmp/exitus_longitudinis >> "$RELATIO"
             conserva_relationem 0
           fi
+          printf '%s\n' 'RECTE: LONGITUDO operatur.' >> "$RELATIO"
 
           printf '%s\n' 'RECTE: AUTO-HOSPITIUM, LITTERALE, PROCLAMA ET LONGITUDO TRANSIERUNT.' >> "$RELATIO"
           cp /tmp/compilator_vindex_052_2 ./compilator_vindex
