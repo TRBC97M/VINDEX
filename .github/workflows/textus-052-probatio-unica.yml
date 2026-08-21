@@ -101,7 +101,7 @@ jobs:
             cp /tmp/officina_nova ./officina_vindex
             cp /tmp/salutatio_nova ./salutatio_vindex
             find . -type f -name '*.sh' -exec chmod 755 {} +
-            chmod 755 ./vindexc ./vindex_graphica ./officina_vindex ./salutatio_vindex ./compilator_vindex
+            chmod 755 ./vindexc ./vindex_graphica ./officina_vindex ./salutatio_vindex ./compilator_vindex ./vindex-officina ./vindex-salutatio ./vindex-systema
 
             bash ./tests/run_tests.sh >> "$RELATIO" 2>&1
             SR=$?
