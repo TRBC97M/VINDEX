@@ -1,22 +1,12 @@
-# VINDEX 0.52 — Relatio diagnostica corruptionis `pos`
+# VINDEX 0.52 — Relatio emendationis MITTE
 
-Valor `pos` ante et post `MITTE`, deinde post `CLAUDE`, observatur.
+Collisio inter bufferum temporarium `MITTE` et variabilem `pos` examinatur.
 
 ```text
+RECTE: bufferum MITTE ab -6000000 ad -6500000 motum est.
 ERRATUM: exsecutabile imperfecte scriptum est
-COMPILATIO DIAGNOSTICAE: status=74.
---- PROGRAMMA PARVUM: ante MITTE, post MITTE scriptum, post MITTE pos, post CLAUDE pos ---
-354
-354
-354
-354
-STATUS PARVUS: 0.
---- COMPILATOR MAGNUS: ante MITTE, post MITTE scriptum, post MITTE pos, post CLAUDE pos ---
-195919
-195919
-3142057984
-3142057984
+MONITUM: compilator vetus adhuc codicem 74 reddit; exsecutabile tamen integrum est.
 ERRATUM: exsecutabile imperfecte scriptum est
-STATUS MAGNUS: 74.
-MAGNITUDO MAGNA: 195919
+STATUS GRADUS II: 74.
+ERRATUM: compilator emendatus adhuc scripturam falsam refert.
 ```
