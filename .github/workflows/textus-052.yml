@@ -1,0 +1,59 @@
+name: TEXTUS 0.52 — Applicatio et probatio
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  textus:
+    if: github.head_ref == 'chatgpt/vindex-052-textus'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v4
+        with:
+          ref: chatgpt/vindex-052-textus
+          fetch-depth: 0
+
+      - name: Mutationes TEXTUS applica
+        run: |
+          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
+          git diff --check
+
+      - name: Compilatorem auto-hospitem reconstrue
+        run: |
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          chmod +x ./compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1
+          chmod +x /tmp/compilator_vindex_052_1
+          /tmp/compilator_vindex_052_1 src/compilator_vindex.vindex /tmp/compilator_vindex_052_2
+          chmod +x /tmp/compilator_vindex_052_2
+          cmp /tmp/compilator_vindex_052_1 /tmp/compilator_vindex_052_2
+          cp /tmp/compilator_vindex_052_2 ./compilator_vindex
+
+      - name: TEXTUS litterale proba
+        run: |
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          ./compilator_vindex examples/textus_litterale_052.vindex /tmp/textus_litterale_052
+          chmod +x /tmp/textus_litterale_052
+          /tmp/textus_litterale_052 > /tmp/textus_exitus
+          printf 'Sylvia\n6\n' > /tmp/textus_exspectatus
+          cmp /tmp/textus_exspectatus /tmp/textus_exitus
+
+      - name: Mutationes comprobatas conserva
+        run: |
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          if git diff --cached --quiet; then
+            printf '%s\n' 'Nihil novum conservandum est.'
+          else
+            git commit -m 'VINDEX 0.52: TEXTUS litteralis et LONGITUDO in compilatore'
+            git push origin HEAD:chatgpt/vindex-052-textus
+          fi
