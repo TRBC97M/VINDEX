@@ -12,6 +12,7 @@ RADIX="$(cd "$(dirname "$0")" && pwd)"
 COMPILATOR="$RADIX/compilator_vindex"
 VERIFICATOR="$RADIX/instrumenta/vindex_verifica.py"
 PRAEPARATOR="$RADIX/instrumenta/vindex_praepara.py"
+TUTELA="$RADIX/instrumenta/vindex_tutela_052.py"
 
 usus() {
     printf '%s\n' \
@@ -41,6 +42,15 @@ praepara() {
     cp -- "$fons" "$exitus"
 }
 
+tutela() {
+    local fons="$1"
+    if command -v python3 >/dev/null 2>&1 && [ -f "$TUTELA" ]; then
+        python3 "$TUTELA" "$fons"
+        return $?
+    fi
+    return 0
+}
+
 if [ "$#" -eq 0 ] || [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
     usus
     if [ "$#" -eq 0 ]; then exit 64; else exit 0; fi
@@ -54,6 +64,7 @@ if [ "${1:-}" = "--verifica" ]; then
     TEMP_VERIFICA="$(mktemp "${TMPDIR:-/tmp}/vindex-verifica.XXXXXX")" || exit 73
     trap 'rm -f -- "$TEMP_VERIFICA"' EXIT HUP INT TERM
     praepara "$2" "$TEMP_VERIFICA" || exit $?
+    tutela "$TEMP_VERIFICA" || exit $?
     verifica "$TEMP_VERIFICA"
     STATUS=$?
     rm -f -- "$TEMP_VERIFICA"
@@ -111,6 +122,7 @@ purga() {
 trap purga EXIT HUP INT TERM
 
 praepara "$FONS" "$TEMP_FONS" || exit $?
+tutela "$TEMP_FONS" || exit $?
 verifica "$TEMP_FONS" || exit $?
 
 "$COMPILATOR" "$TEMP_FONS" "$TEMPORARIUM"
