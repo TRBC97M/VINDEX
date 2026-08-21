@@ -1,0 +1,52 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("exemplum_lectoris3.vindex").
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 2000).
+    CLAUDE(fd).
+
+    DECLARA verbum SICUT SERIES DE LITTERA CAPACITAS 64.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA numerus_verborum SICUT NUMERUS VALENS 0.
+    DECLARA numerus_clavium SICUT NUMERUS VALENS 0.
+
+    DUM i < n PERFICE
+        DECLARA c SICUT NUMERUS VALENS OCTETUS(i).
+
+        SI (c >= 65 && c <= 90) || (c >= 97 && c <= 122) TUNC
+            DECLARA mensura SICUT NUMERUS VALENS 0.
+
+            DUM i < n && ((OCTETUS(i) >= 65 && OCTETUS(i) <= 90) || (OCTETUS(i) >= 97 && OCTETUS(i) <= 122)) PERFICE
+                verbum[mensura] = OCTETUS(i).
+                mensura = mensura + 1.
+                i = i + 1.
+            FIN-DUM.
+
+            numerus_verborum = numerus_verborum + 1.
+
+            DECLARA typus SICUT NUMERUS VALENS 0.
+            SI mensura == 7 && verbum[0] == 70 && verbum[1] == 85 && verbum[2] == 78 && verbum[3] == 67 && verbum[4] == 84 && verbum[5] == 73 && verbum[6] == 79 TUNC
+                typus = 1.
+            FIN-SI.
+            SI mensura == 7 && verbum[0] == 68 && verbum[1] == 69 && verbum[2] == 67 && verbum[3] == 76 && verbum[4] == 65 && verbum[5] == 82 && verbum[6] == 65 TUNC
+                typus = 2.
+            FIN-SI.
+            SI mensura == 2 && verbum[0] == 83 && verbum[1] == 73 TUNC
+                typus = 3.
+            FIN-SI.
+            SI mensura == 5 && verbum[0] == 82 && verbum[1] == 69 && verbum[2] == 68 && verbum[3] == 68 && verbum[4] == 69 TUNC
+                typus = 4.
+            FIN-SI.
+
+            SI typus > 0 TUNC
+                numerus_clavium = numerus_clavium + 1.
+                SCRIBE verbum CAPACITAS mensura.
+            FIN-SI.
+        ALITER
+            i = i + 1.
+        FIN-SI.
+    FIN-DUM.
+
+    PROCLAMA numerus_verborum.
+    PROCLAMA numerus_clavium.
+
+    REDDE 0.
+FIN-FUNCTIO.

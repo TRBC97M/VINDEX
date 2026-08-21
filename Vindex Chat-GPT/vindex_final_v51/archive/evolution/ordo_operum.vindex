@@ -1,0 +1,149 @@
+// ORDO_OPERUM -- gestionnaire de taches en ligne de commande, ecrit en VINDEX.
+// Usage :
+//   ordo_operum adde "texte de la tache"
+//   ordo_operum enumera
+//   ordo_operum fac N
+
+FUNCTIO CHORDA_AEQUALIS_PTR REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    ACCIPIT lit SICUT ORDO DE LITTERA.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SI OCTETUS_AB(p + i) != lit[i] TUNC
+            REDDE 0.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI OCTETUS_AB(p + mensura) != 0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    SI argc < 2 TUNC
+        PROCLAMA "Usage : ordo_operum adde|enumera|fac ...".
+        REDDE 1.
+    FIN-SI.
+
+    DECLARA cmd SICUT NUMERUS VALENS argv[1].
+
+    DECLARA adde SICUT ORDO DE LITTERA CAPACITAS 5.
+    adde[0]='a'. adde[1]='d'. adde[2]='d'. adde[3]='e'.
+    DECLARA enumera SICUT ORDO DE LITTERA CAPACITAS 9.
+    enumera[0]='e'. enumera[1]='n'. enumera[2]='u'. enumera[3]='m'.
+    enumera[4]='e'. enumera[5]='r'. enumera[6]='a'.
+
+    SI CHORDA_AEQUALIS_PTR(cmd, adde, 4) == 1 TUNC
+        SI argc < 3 TUNC
+            PROCLAMA "Il faut un texte pour adde.".
+            REDDE 1.
+        FIN-SI.
+        DECLARA fd SICUT NUMERUS VALENS APERI_ADICERE("opera.txt").
+        DECLARA texte SICUT NUMERUS VALENS argv[2].
+        DECLARA k SICUT NUMERUS VALENS 0.
+        DECLARA tampon SICUT ORDO DE LITTERA CAPACITAS 200.
+        tampon[0] = '0'.
+        tampon[1] = ' '.
+        DUM OCTETUS_AB(texte + k) != 0 && k < 197 PERFICE
+            tampon[k + 2] = OCTETUS_AB(texte + k).
+            k = k + 1.
+        FIN-DUM.
+        tampon[k + 2] = 10.
+        DECLARA ig SICUT NUMERUS VALENS MITTE(fd, tampon, k + 3).
+        ig = CLAUDE(fd).
+        PROCLAMA "Tache ajoutee.".
+        REDDE 0.
+    FIN-SI.
+
+    SI CHORDA_AEQUALIS_PTR(cmd, enumera, 7) == 1 TUNC
+        DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("opera.txt").
+        SI fd < 0 TUNC
+            PROCLAMA "Aucune tache.".
+            REDDE 0.
+        FIN-SI.
+        DECLARA n SICUT NUMERUS VALENS LEGE(fd, 10000).
+        DECLARA ig SICUT NUMERUS VALENS CLAUDE(fd).
+
+        DECLARA num SICUT NUMERUS VALENS 1.
+        DECLARA pos SICUT NUMERUS VALENS 0.
+        DUM pos < n PERFICE
+            DECLARA statut SICUT NUMERUS VALENS OCTETUS(pos).
+            SI statut == 49 TUNC
+                PROCLAMA "[fait]".
+            ALITER
+                PROCLAMA "[....]".
+            FIN-SI.
+            PROCLAMA num.
+
+            DECLARA ligne SICUT ORDO DE LITTERA CAPACITAS 200.
+            DECLARA j SICUT NUMERUS VALENS 0.
+            DECLARA p2 SICUT NUMERUS VALENS pos + 2.
+            DUM p2 < n && OCTETUS(p2) != 10 PERFICE
+                ligne[j] = OCTETUS(p2).
+                j = j + 1.
+                p2 = p2 + 1.
+            FIN-DUM.
+            SCRIBE ligne CAPACITAS j.
+
+            pos = p2 + 1.
+            num = num + 1.
+        FIN-DUM.
+        REDDE 0.
+    FIN-SI.
+
+    DECLARA fac SICUT ORDO DE LITTERA CAPACITAS 3.
+    fac[0]='f'. fac[1]='a'. fac[2]='c'.
+    SI CHORDA_AEQUALIS_PTR(cmd, fac, 3) == 1 TUNC
+        SI argc < 3 TUNC
+            PROCLAMA "Il faut un numero de tache.".
+            REDDE 1.
+        FIN-SI.
+
+        DECLARA cible SICUT NUMERUS VALENS 0.
+        DECLARA k2 SICUT NUMERUS VALENS 0.
+        DECLARA numtxt SICUT NUMERUS VALENS argv[2].
+        DUM OCTETUS_AB(numtxt + k2) >= 48 && OCTETUS_AB(numtxt + k2) <= 57 PERFICE
+            cible = cible * 10 + (OCTETUS_AB(numtxt + k2) - 48).
+            k2 = k2 + 1.
+        FIN-DUM.
+
+        DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("opera.txt").
+        DECLARA n SICUT NUMERUS VALENS LEGE(fd, 10000).
+        DECLARA ig1 SICUT NUMERUS VALENS CLAUDE(fd).
+
+        DECLARA tampon SICUT ORDO DE LITTERA CAPACITAS 10000.
+        DECLARA q SICUT NUMERUS VALENS 0.
+        DUM q < n PERFICE
+            tampon[q] = OCTETUS(q).
+            q = q + 1.
+        FIN-DUM.
+
+        DECLARA num2 SICUT NUMERUS VALENS 1.
+        DECLARA pos2 SICUT NUMERUS VALENS 0.
+        DUM pos2 < n PERFICE
+            SI num2 == cible TUNC
+                tampon[pos2] = '1'.
+            FIN-SI.
+            DUM pos2 < n && tampon[pos2] != 10 PERFICE
+                pos2 = pos2 + 1.
+            FIN-DUM.
+            pos2 = pos2 + 1.
+            num2 = num2 + 1.
+        FIN-DUM.
+
+        DECLARA fd2 SICUT NUMERUS VALENS APERI_SCRIBERE("opera.txt").
+        DECLARA ig2 SICUT NUMERUS VALENS MITTE(fd2, tampon, n).
+        DECLARA ig3 SICUT NUMERUS VALENS CLAUDE(fd2).
+
+        PROCLAMA "Tache marquee comme terminee.".
+        REDDE 0.
+    FIN-SI.
+
+    PROCLAMA "Commande inconnue.".
+    REDDE 1.
+FIN-FUNCTIO.

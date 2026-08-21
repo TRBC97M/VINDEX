@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">VINDEX</title>
+  <defs>
+    <radialGradient id="coin" cx="38%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#18392b"/>
+      <stop offset="1" stop-color="#08110d"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="58" fill="url(#coin)" stroke="#8df0b6" stroke-width="4"/>
+  <circle cx="64" cy="64" r="48" fill="none" stroke="#4e7a65" stroke-width="2" stroke-dasharray="3 5"/>
+  <path d="M31 35h18v7h-5l20 48 20-48h-5v-7h18v7h-5L68 99h-9L36 42h-5z" fill="#dfba68"/>
+  <path d="M27 76c4 14 13 24 26 30M101 76c-4 14-13 24-26 30" fill="none" stroke="#8df0b6" stroke-width="3" stroke-linecap="round"/>
+  <path d="M29 79l-8-2m11 10-8 1m14 7-6 5m67-21 8-2M96 87l8 1m-14 7 6 5" stroke="#8df0b6" stroke-width="3" stroke-linecap="round"/>
+</svg>

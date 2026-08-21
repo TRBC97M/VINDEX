@@ -1,0 +1,218 @@
+FORMA ReceptaculumVerbi.
+    CAMPUS c0 SICUT NUMERUS.
+    CAMPUS c1 SICUT NUMERUS.
+    CAMPUS c2 SICUT NUMERUS.
+    CAMPUS c3 SICUT NUMERUS.
+    CAMPUS c4 SICUT NUMERUS.
+    CAMPUS c5 SICUT NUMERUS.
+    CAMPUS c6 SICUT NUMERUS.
+    CAMPUS c7 SICUT NUMERUS.
+    CAMPUS c8 SICUT NUMERUS.
+    CAMPUS c9 SICUT NUMERUS.
+    CAMPUS c10 SICUT NUMERUS.
+    CAMPUS c11 SICUT NUMERUS.
+    CAMPUS c12 SICUT NUMERUS.
+    CAMPUS c13 SICUT NUMERUS.
+    CAMPUS c14 SICUT NUMERUS.
+    CAMPUS c15 SICUT NUMERUS.
+FIN-FORMA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv_reel SICUT ACUS<NUMERUS>.
+    DECLARA envp SICUT ACUS<NUMERUS> VALENS argv_reel + argc + 1.
+
+    DECLARA persevera SICUT NUMERUS VALENS 1.
+    DECLARA promptum SICUT ORDO DE LITTERA CAPACITAS 10.
+    promptum[0]='v'.promptum[1]='i'.promptum[2]='n'.promptum[3]='d'.promptum[4]='e'.
+    promptum[5]='x'.promptum[6]='$'.promptum[7]=' '.
+
+    DUM persevera == 1 PERFICE
+        DECLARA ig0 SICUT NUMERUS VALENS MITTE(1, promptum, 8).
+        DECLARA n SICUT NUMERUS VALENS LEGE(0, 2000).
+
+        SI n <= 0 TUNC
+            persevera = 0.
+        ALITER
+            DECLARA receptaculum SICUT ORDO DE LITTERA CAPACITAS 2000.
+            DECLARA kk SICUT NUMERUS VALENS 0.
+            DUM kk < n PERFICE
+                receptaculum[kk] = OCTETUS(kk).
+                kk = kk + 1.
+            FIN-DUM.
+
+            DECLARA positio SICUT NUMERUS VALENS 0.
+            DECLARA prima_linea SICUT NUMERUS VALENS 1.
+            DUM positio < n && persevera == 1 PERFICE
+                SI prima_linea == 0 TUNC
+                    DECLARA ig0b SICUT NUMERUS VALENS MITTE(1, promptum, 8).
+                FIN-SI.
+                prima_linea = 0.
+
+                DECLARA initium_lineae SICUT NUMERUS VALENS positio.
+                DUM positio < n && receptaculum[positio] != 10 PERFICE
+                    positio = positio + 1.
+                FIN-DUM.
+                DECLARA longitudo SICUT NUMERUS VALENS positio - initium_lineae.
+                positio = positio + 1.
+
+                DECLARA linea SICUT ORDO DE LITTERA CAPACITAS 500.
+                DECLARA cp SICUT NUMERUS VALENS 0.
+                DUM cp < longitudo PERFICE
+                    linea[cp] = receptaculum[initium_lineae + cp].
+                    cp = cp + 1.
+                FIN-DUM.
+
+                SI longitudo == 0 TUNC
+                    DECLARA ig_noop SICUT NUMERUS VALENS 0.
+                ALITER
+                    SI longitudo == 4 && linea[0] == 101 && linea[1] == 120 && linea[2] == 105 && linea[3] == 116 TUNC
+                        persevera = 0.
+                    ALITER
+                        SI longitudo > 3 && linea[0] == 99 && linea[1] == 100 && linea[2] == 32 TUNC
+                            DECLARA basis_viae SICUT NUMERUS VALENS RESERVA(ReceptaculumVerbi).
+                            DECLARA j SICUT NUMERUS VALENS 0.
+                            DECLARA m SICUT NUMERUS VALENS 3.
+                            DUM m < longitudo PERFICE
+                                SCRIBE_OCTETUM_AB(basis_viae + j, linea[m]).
+                                j = j + 1.
+                                m = m + 1.
+                            FIN-DUM.
+                            SCRIBE_OCTETUM_AB(basis_viae + j, 0).
+                            DECLARA status_cd SICUT NUMERUS VALENS CAMBIA(basis_viae).
+                            SI status_cd != 0 TUNC
+                                PROCLAMA "cd: directorium non inventum".
+                            FIN-SI.
+                        ALITER
+                            DECLARA argumenta_mea SICUT ORDO DE NUMERUS CAPACITAS 16.
+                            DECLARA numerus_verborum SICUT NUMERUS VALENS 0.
+                            DECLARA positio_verbi SICUT NUMERUS VALENS 0.
+                            DUM positio_verbi < longitudo && numerus_verborum < 15 PERFICE
+                                DUM positio_verbi < longitudo && linea[positio_verbi] == 32 PERFICE
+                                    positio_verbi = positio_verbi + 1.
+                                FIN-DUM.
+                                SI positio_verbi < longitudo TUNC
+                                    DECLARA initium_verbi SICUT NUMERUS VALENS 0.
+                                    DECLARA longitudo_verbi SICUT NUMERUS VALENS 0.
+                                    SI linea[positio_verbi] == 34 TUNC
+                                        positio_verbi = positio_verbi + 1.
+                                        initium_verbi = positio_verbi.
+                                        DUM positio_verbi < longitudo && linea[positio_verbi] != 34 PERFICE
+                                            positio_verbi = positio_verbi + 1.
+                                        FIN-DUM.
+                                        longitudo_verbi = positio_verbi - initium_verbi.
+                                        SI positio_verbi < longitudo TUNC
+                                            positio_verbi = positio_verbi + 1.
+                                        FIN-SI.
+                                    ALITER
+                                        initium_verbi = positio_verbi.
+                                        DUM positio_verbi < longitudo && linea[positio_verbi] != 32 PERFICE
+                                            positio_verbi = positio_verbi + 1.
+                                        FIN-DUM.
+                                        longitudo_verbi = positio_verbi - initium_verbi.
+                                    FIN-SI.
+                                    DECLARA basis_verbi SICUT NUMERUS VALENS RESERVA(ReceptaculumVerbi).
+                                    DECLARA ti SICUT NUMERUS VALENS 0.
+                                    DUM ti < longitudo_verbi PERFICE
+                                        SCRIBE_OCTETUM_AB(basis_verbi + ti, linea[initium_verbi + ti]).
+                                        ti = ti + 1.
+                                    FIN-DUM.
+                                    SCRIBE_OCTETUM_AB(basis_verbi + ti, 0).
+                                    argumenta_mea[numerus_verborum] = basis_verbi.
+                                    numerus_verborum = numerus_verborum + 1.
+                                FIN-SI.
+                            FIN-DUM.
+                            argumenta_mea[numerus_verborum] = 0.
+
+                            DECLARA descriptor_exitus SICUT NUMERUS VALENS 0 - 1.
+                            DECLARA index_exitus SICUT NUMERUS VALENS 0.
+                            DECLARA exitus_inventus SICUT NUMERUS VALENS 0.
+                            DUM index_exitus < numerus_verborum && exitus_inventus == 0 PERFICE
+                                SI OCTETUS_AB(argumenta_mea[index_exitus]) == 62 && OCTETUS_AB(argumenta_mea[index_exitus] + 1) == 0 TUNC
+                                    exitus_inventus = 1.
+                                ALITER
+                                    index_exitus = index_exitus + 1.
+                                FIN-SI.
+                            FIN-DUM.
+                            SI exitus_inventus == 1 && index_exitus + 1 < numerus_verborum TUNC
+                                descriptor_exitus = APERI_SCRIBERE(argumenta_mea[index_exitus + 1]).
+                                argumenta_mea[index_exitus] = 0.
+                            FIN-SI.
+
+                            DECLARA virgula_continet SICUT NUMERUS VALENS 0.
+                            DECLARA longitudo_mandati SICUT NUMERUS VALENS 0.
+                            DUM OCTETUS_AB(argumenta_mea[0] + longitudo_mandati) != 0 PERFICE
+                                SI OCTETUS_AB(argumenta_mea[0] + longitudo_mandati) == 47 TUNC
+                                    virgula_continet = 1.
+                                FIN-SI.
+                                longitudo_mandati = longitudo_mandati + 1.
+                            FIN-DUM.
+
+                            DECLARA quaestio_defecit SICUT NUMERUS VALENS 0.
+                            SI virgula_continet == 0 TUNC
+                                DECLARA index_ambientis SICUT NUMERUS VALENS 0.
+                                DECLARA via_ambientis SICUT NUMERUS VALENS 0.
+                                DUM envp[index_ambientis] != 0 && via_ambientis == 0 PERFICE
+                                    DECLARA introitus SICUT NUMERUS VALENS envp[index_ambientis].
+                                    SI OCTETUS_AB(introitus) == 80 && OCTETUS_AB(introitus+1) == 65 && OCTETUS_AB(introitus+2) == 84 && OCTETUS_AB(introitus+3) == 72 && OCTETUS_AB(introitus+4) == 61 TUNC
+                                        via_ambientis = introitus + 5.
+                                    FIN-SI.
+                                    index_ambientis = index_ambientis + 1.
+                                FIN-DUM.
+
+                                DECLARA inventum SICUT NUMERUS VALENS 0.
+                                SI via_ambientis != 0 TUNC
+                                    DECLARA pp SICUT NUMERUS VALENS 0.
+                                    DUM OCTETUS_AB(via_ambientis + pp) != 0 && inventum == 0 PERFICE
+                                        DECLARA initium_directorii SICUT NUMERUS VALENS pp.
+                                        DUM OCTETUS_AB(via_ambientis + pp) != 0 && OCTETUS_AB(via_ambientis + pp) != 58 PERFICE
+                                            pp = pp + 1.
+                                        FIN-DUM.
+                                        DECLARA longitudo_directorii SICUT NUMERUS VALENS pp - initium_directorii.
+
+                                        DECLARA candidatus SICUT NUMERUS VALENS RESERVA(ReceptaculumVerbi).
+                                        DECLARA ci SICUT NUMERUS VALENS 0.
+                                        DUM ci < longitudo_directorii PERFICE
+                                            SCRIBE_OCTETUM_AB(candidatus + ci, OCTETUS_AB(via_ambientis + initium_directorii + ci)).
+                                            ci = ci + 1.
+                                        FIN-DUM.
+                                        SCRIBE_OCTETUM_AB(candidatus + ci, 47).
+                                        ci = ci + 1.
+                                        DECLARA cj SICUT NUMERUS VALENS 0.
+                                        DUM cj < longitudo_mandati PERFICE
+                                            SCRIBE_OCTETUM_AB(candidatus + ci, OCTETUS_AB(argumenta_mea[0] + cj)).
+                                            ci = ci + 1.
+                                            cj = cj + 1.
+                                        FIN-DUM.
+                                        SCRIBE_OCTETUM_AB(candidatus + ci, 0).
+
+                                        DECLARA descriptor_probationis SICUT NUMERUS VALENS APERI_LEGERE(candidatus).
+                                        SI descriptor_probationis >= 0 TUNC
+                                            CLAUDE(descriptor_probationis).
+                                            argumenta_mea[0] = candidatus.
+                                            inventum = 1.
+                                        FIN-SI.
+
+                                        SI OCTETUS_AB(via_ambientis + pp) == 58 TUNC
+                                            pp = pp + 1.
+                                        FIN-SI.
+                                    FIN-DUM.
+                                FIN-SI.
+                                SI inventum == 0 TUNC
+                                    quaestio_defecit = 1.
+                                FIN-SI.
+                            FIN-SI.
+
+                            SI quaestio_defecit == 1 TUNC
+                                PROCLAMA "mandatum non inventum".
+                            ALITER
+                                DECLARA status_executionis SICUT NUMERUS VALENS CURRE(argumenta_mea, envp, descriptor_exitus).
+                            FIN-SI.
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+            FIN-DUM.
+        FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.

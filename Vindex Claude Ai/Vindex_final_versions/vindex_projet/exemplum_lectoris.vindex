@@ -1,0 +1,35 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("exemplum_lectoris.vindex").
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 2000).
+    CLAUDE(fd).
+
+    DECLARA numerus_litterarum SICUT NUMERUS VALENS 0.
+    DECLARA numerus_digitorum SICUT NUMERUS VALENS 0.
+    DECLARA numerus_spatiorum SICUT NUMERUS VALENS 0.
+    DECLARA numerus_aliorum SICUT NUMERUS VALENS 0.
+
+    PER i AB 0 AD n - 1 PERFICE
+        DECLARA c SICUT NUMERUS VALENS OCTETUS(i).
+
+        SI (c >= 65 && c <= 90) || (c >= 97 && c <= 122) TUNC
+            numerus_litterarum = numerus_litterarum + 1.
+        ALITER
+            SI c >= 48 && c <= 57 TUNC
+                numerus_digitorum = numerus_digitorum + 1.
+            ALITER
+                SI c == 32 || c == 10 || c == 9 TUNC
+                    numerus_spatiorum = numerus_spatiorum + 1.
+                ALITER
+                    numerus_aliorum = numerus_aliorum + 1.
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-PER.
+
+    PROCLAMA numerus_litterarum.
+    PROCLAMA numerus_digitorum.
+    PROCLAMA numerus_spatiorum.
+    PROCLAMA numerus_aliorum.
+
+    REDDE 0.
+FIN-FUNCTIO.

@@ -1,0 +1,18 @@
+FUNCTIO QUADRATUM REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    REDDE valor * valor.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA totalis SICUT NUMERUS VALENS 0.
+    DECLARA numerator SICUT NUMERUS VALENS 0.
+    DUM numerator - 4 PERFICE
+        numerator = numerator + 1.
+        SI numerator - 2 TUNC
+            totalis = totalis + QUADRATUM(numerator).
+        ALITER
+            totalis = totalis + 1000.
+        FIN-SI.
+    FIN-DUM.
+    REDDE totalis.
+FIN-FUNCTIO.

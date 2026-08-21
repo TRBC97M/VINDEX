@@ -1,0 +1,56 @@
+TerminalVindex — notre terminal, écrit et compilé par nous en VINDEX
+=====================================================================
+
+C'EST QUOI ?
+------------
+Un vrai logiciel de terminal (comme bash, mais écrit de zéro par
+nous). Il gère cd, echo, ls, la redirection avec >, les guillemets,
+et lance les programmes directement sans passer par un autre shell.
+
+COMMENT LE LANCER ?
+--------------------
+Comme TOUT logiciel de terminal (bash, PowerShell, etc.), il doit
+être lancé DEPUIS un terminal déjà ouvert. On ne double-clique jamais
+sur un terminal — c'est sa nature même.
+
+ÉTAPE 1 : Ouvre un terminal sur ta machine
+  - Windows : touche Windows, tape "PowerShell", ouvre-le
+              (ou "Terminal Ubuntu" si WSL est installé)
+  - Mac     : Cmd+Espace, tape "Terminal", ouvre-le
+  - Linux   : Ctrl+Alt+T, ou cherche "Terminal" dans les applications
+
+ÉTAPE 2 : Va dans le dossier où se trouve ce fichier
+  Exemple si téléchargé dans "Téléchargements" :
+    cd ~/Downloads/TerminalVindex        (Mac/Linux)
+    cd $env:USERPROFILE\Downloads\TerminalVindex   (PowerShell)
+
+ÉTAPE 3 : Rends-le exécutable puis lance-le
+    chmod +x TerminalVindex
+    ./TerminalVindex
+
+Tu devrais voir apparaître :
+    vindex$
+
+C'est notre terminal. Tape des commandes normalement (ls, echo,
+cd, pwd...) et "exit" pour quitter.
+
+⚠️ IMPORTANT — SI TU ES SUR WINDOWS
+-------------------------------------
+Ce binaire est compilé pour Linux. Sur Windows natif (PowerShell ou
+Invite de commandes classique), il NE FONCTIONNERA PAS directement.
+Il te faut WSL (Windows Subsystem for Linux) :
+
+  1. Ouvre PowerShell EN ADMINISTRATEUR (clic droit > Exécuter en
+     tant qu'administrateur)
+  2. Tape :  wsl --install
+  3. Redémarre l'ordinateur si demandé
+  4. Cherche "Ubuntu" dans le menu Démarrer, ouvre-le — c'est un
+     vrai terminal Linux, qui tourne sur Windows
+  5. Dans CE terminal-là (Ubuntu), suis les étapes 2 et 3 ci-dessus
+
+SI ÇA NE MARCHE TOUJOURS PAS
+------------------------------
+Dis à Claude exactement :
+  - ton système (Windows/Mac/Linux)
+  - le message d'erreur exact affiché
+et on trouvera ensemble ce qui bloque.

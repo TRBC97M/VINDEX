@@ -1,0 +1,33 @@
+#!/bin/bash
+# vindexc — enveloppe pour le compilateur VINDEX auto-hébergé (compilator_vindex).
+#
+# Depuis cette session, VINDEX n'a plus besoin de Python pour son usage courant :
+# compilator_vindex est un binaire ELF autonome, produit par auto-compilation,
+# capable de compiler n'importe quel programme VINDEX — y compris son propre
+# code source (point fixe confirmé : gen-3 et gen-4 sont octet pour octet
+# identiques).
+#
+# compilateur.py (et le reste de la chaîne Python) ne sert plus qu'a
+# l'amorçage historique : reconstruire un tout premier compilateur depuis
+# rien, si jamais compilator_vindex venait a etre perdu. Pour l'usage
+# quotidien, ce script suffit.
+#
+# Usage : ./vindexc source.vindex sortie_executable
+
+set -e
+
+SOURCE="$1"
+SORTIE="$2"
+
+if [ -z "$SOURCE" ] || [ -z "$SORTIE" ]; then
+    echo "Usage: $0 <source.vindex> <sortie_executable>"
+    exit 1
+fi
+
+REPERTOIRE="$(cd "$(dirname "$0")" && pwd)"
+cp "$SOURCE" "$REPERTOIRE/probaC.vindex"
+rm -f "$REPERTOIRE/probaC_compilata"
+(cd "$REPERTOIRE" && ./compilator_vindex > /dev/null)
+cp "$REPERTOIRE/probaC_compilata" "$SORTIE"
+chmod +x "$SORTIE"
+echo "Compilé : $SORTIE"

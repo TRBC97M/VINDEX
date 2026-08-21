@@ -1,0 +1,52 @@
+FUNCTIO COMPONE_ONERA REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT registre SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI registre >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+
+    codex[indice + 1] = 184 + (registre & 7).
+
+    codex[indice + 2] = valor & 255.
+    codex[indice + 3] = (valor >> 8) & 255.
+    codex[indice + 4] = (valor >> 16) & 255.
+    codex[indice + 5] = (valor >> 24) & 255.
+    codex[indice + 6] = (valor >> 32) & 255.
+    codex[indice + 7] = (valor >> 40) & 255.
+    codex[indice + 8] = (valor >> 48) & 255.
+    codex[indice + 9] = (valor >> 56) & 255.
+
+    REDDE indice + 10.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_VOCA_NUCLEUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    codex[indice] = 15.
+    codex[indice + 1] = 5.
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA codex SICUT SERIES DE NUMERUS CAPACITAS 32.
+    DECLARA pos SICUT NUMERUS VALENS 0.
+
+    pos = COMPONE_ONERA(codex, pos, 0, 60).
+    pos = COMPONE_ONERA(codex, pos, 7, 55).
+    pos = COMPONE_VOCA_NUCLEUM(codex, pos).
+
+    PROCLAMA pos.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < pos PERFICE
+        PROCLAMA codex[i].
+        i = i + 1.
+    FIN-DUM.
+
+    REDDE 0.
+FIN-FUNCTIO.

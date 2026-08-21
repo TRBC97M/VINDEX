@@ -1,0 +1,18 @@
+FUNCTIO CARRE REDDENS NUMERUS.
+    ACCIPIT valeur SICUT NUMERUS.
+    REDDE valeur * valeur.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA total SICUT NUMERUS VALENS 0.
+    DECLARA compteur SICUT NUMERUS VALENS 0.
+    DUM compteur - 4 PERFICE
+        compteur = compteur + 1.
+        SI compteur - 2 TUNC
+            total = total + CARRE(compteur).
+        ALITER
+            total = total + 1000.
+        FIN-SI.
+    FIN-DUM.
+    REDDE total.
+FIN-FUNCTIO.

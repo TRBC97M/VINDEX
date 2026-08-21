@@ -1,0 +1,11 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA x SICUT NUMERUS VALENS 7.
+    SI x - 7 TUNC
+        REDDE 999.
+    ALITER
+        DECLARA y SICUT NUMERUS VALENS 10.
+        y = y * 3.
+        y = y + 2.
+        REDDE y.
+    FIN-SI.
+FIN-FUNCTIO.

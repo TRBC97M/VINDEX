@@ -1,0 +1,1520 @@
+// Bibliotheca componendi codicem machinalis x86-64, tota in VINDEX scripta.
+// Continet omnes functiones ex prioribus experimentis collectas.
+
+FUNCTIO SCRIBE_U16 REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_U32 REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    codex[indice + 2] = (valor >> 16) & 255.
+    codex[indice + 3] = (valor >> 24) & 255.
+    REDDE indice + 4.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_U64 REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    codex[indice + 2] = (valor >> 16) & 255.
+    codex[indice + 3] = (valor >> 24) & 255.
+    codex[indice + 4] = (valor >> 32) & 255.
+    codex[indice + 5] = (valor >> 40) & 255.
+    codex[indice + 6] = (valor >> 48) & 255.
+    codex[indice + 7] = (valor >> 56) & 255.
+    REDDE indice + 8.
+FIN-FUNCTIO.
+
+FUNCTIO CONSTRUE_CAPUT_ELF REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT mensura_codicis SICUT NUMERUS.
+    ACCIPIT punctum_ingressus SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS 4194304.
+    DECLARA ignoratum SICUT NUMERUS VALENS 0.
+
+    codex[0] = 127.
+    codex[1] = 69.
+    codex[2] = 76.
+    codex[3] = 70.
+    codex[4] = 2.
+    codex[5] = 1.
+    codex[6] = 1.
+    codex[7] = 0.
+
+    ignoratum = SCRIBE_U16(codex, 16, 2).
+    ignoratum = SCRIBE_U16(codex, 18, 62).
+    ignoratum = SCRIBE_U32(codex, 20, 1).
+    ignoratum = SCRIBE_U64(codex, 24, basis + punctum_ingressus).
+    ignoratum = SCRIBE_U64(codex, 32, 64).
+    ignoratum = SCRIBE_U64(codex, 40, 0).
+    ignoratum = SCRIBE_U32(codex, 48, 0).
+    ignoratum = SCRIBE_U16(codex, 52, 64).
+    ignoratum = SCRIBE_U16(codex, 54, 56).
+    ignoratum = SCRIBE_U16(codex, 56, 1).
+    ignoratum = SCRIBE_U16(codex, 58, 0).
+    ignoratum = SCRIBE_U16(codex, 60, 0).
+    ignoratum = SCRIBE_U16(codex, 62, 0).
+
+    ignoratum = SCRIBE_U32(codex, 64, 1).
+    ignoratum = SCRIBE_U32(codex, 68, 7).
+    ignoratum = SCRIBE_U64(codex, 72, 0).
+    ignoratum = SCRIBE_U64(codex, 80, basis).
+    ignoratum = SCRIBE_U64(codex, 88, basis).
+    DECLARA mensura_totalis SICUT NUMERUS VALENS 120 + mensura_codicis.
+    ignoratum = SCRIBE_U64(codex, 96, mensura_totalis).
+    ignoratum = SCRIBE_U64(codex, 104, mensura_totalis).
+    ignoratum = SCRIBE_U64(codex, 112, 4096).
+
+    REDDE 120.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_ONERA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI registrum >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 184 + (registrum & 7).
+    codex[indice + 2] = valor & 255.
+    codex[indice + 3] = (valor >> 8) & 255.
+    codex[indice + 4] = (valor >> 16) & 255.
+    codex[indice + 5] = (valor >> 24) & 255.
+    codex[indice + 6] = (valor >> 32) & 255.
+    codex[indice + 7] = (valor >> 40) & 255.
+    codex[indice + 8] = (valor >> 48) & 255.
+    codex[indice + 9] = (valor >> 56) & 255.
+    REDDE indice + 10.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_ARITHMETICA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT opcode SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI fons >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI destinatio >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = opcode.
+    codex[indice + 2] = 192 + ((fons & 7) * 8) + (destinatio & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_ADD REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    REDDE COMPONE_ARITHMETICA(codex, indice, 1, destinatio, fons).
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_SUB REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    REDDE COMPONE_ARITHMETICA(codex, indice, 41, destinatio, fons).
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_CMP REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    REDDE COMPONE_ARITHMETICA(codex, indice, 57, destinatio, fons).
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_MULTIPLICA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI destinatio >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI fons >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 15.
+    codex[indice + 2] = 175.
+    codex[indice + 3] = 192 + ((destinatio & 7) * 8) + (fons & 7).
+    REDDE indice + 4.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_TRANSCRIBE REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI fons >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI destinatio >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 137.
+    codex[indice + 2] = 192 + ((fons & 7) * 8) + (destinatio & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_SERVA_PILA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI registrum >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 137.
+    codex[indice + 2] = 128 + ((registrum & 7) * 8) + 5.
+    codex[indice + 3] = intervallum & 255.
+    codex[indice + 4] = (intervallum >> 8) & 255.
+    codex[indice + 5] = (intervallum >> 16) & 255.
+    codex[indice + 6] = (intervallum >> 24) & 255.
+    REDDE indice + 7.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_SUME_PILA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI registrum >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 139.
+    codex[indice + 2] = 128 + ((registrum & 7) * 8) + 5.
+    codex[indice + 3] = intervallum & 255.
+    codex[indice + 4] = (intervallum >> 8) & 255.
+    codex[indice + 5] = (intervallum >> 16) & 255.
+    codex[indice + 6] = (intervallum >> 24) & 255.
+    REDDE indice + 7.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_LEA_PILA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI registrum >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 141.
+    codex[indice + 2] = 128 + ((registrum & 7) * 8) + 5.
+    codex[indice + 3] = intervallum & 255.
+    codex[indice + 4] = (intervallum >> 8) & 255.
+    codex[indice + 5] = (intervallum >> 16) & 255.
+    codex[indice + 6] = (intervallum >> 24) & 255.
+    REDDE indice + 7.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_SUME_INDIRECTUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI destinatio >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI basis >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 139.
+    codex[indice + 2] = ((destinatio & 7) * 8) + (basis & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_SERVA_INDIRECTUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI fons >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI basis >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 137.
+    codex[indice + 2] = ((fons & 7) * 8) + (basis & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JNE_RETRO REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    codex[indice] = 15.
+    codex[indice + 1] = 133.
+    DECLARA relatio SICUT NUMERUS VALENS destinatio - (indice + 6).
+    codex[indice + 2] = relatio & 255.
+    codex[indice + 3] = (relatio >> 8) & 255.
+    codex[indice + 4] = (relatio >> 16) & 255.
+    codex[indice + 5] = (relatio >> 24) & 255.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JNE_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 15.
+    codex[indice + 1] = 133.
+    CONTENTUM(loci) = indice + 2.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JMP_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 233.
+    CONTENTUM(loci) = indice + 1.
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JGE_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 15.
+    codex[indice + 1] = 141.
+    CONTENTUM(loci) = indice + 2.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JE_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 15.
+    codex[indice + 1] = 132.
+    CONTENTUM(loci) = indice + 2.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JG_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 15.
+    codex[indice + 1] = 143.
+    CONTENTUM(loci) = indice + 2.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JL_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 15.
+    codex[indice + 1] = 140.
+    CONTENTUM(loci) = indice + 2.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JLE_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 15.
+    codex[indice + 1] = 142.
+    CONTENTUM(loci) = indice + 2.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_JMP_RETRO REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    codex[indice] = 233.
+    DECLARA relatio SICUT NUMERUS VALENS destinatio - (indice + 5).
+    codex[indice + 1] = relatio & 255.
+    codex[indice + 2] = (relatio >> 8) & 255.
+    codex[indice + 3] = (relatio >> 16) & 255.
+    codex[indice + 4] = (relatio >> 24) & 255.
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
+FUNCTIO CORRIGE_SALTUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT loci SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    DECLARA relatio SICUT NUMERUS VALENS destinatio - (loci + 4).
+    codex[loci] = relatio & 255.
+    codex[loci + 1] = (relatio >> 8) & 255.
+    codex[loci + 2] = (relatio >> 16) & 255.
+    codex[loci + 3] = (relatio >> 24) & 255.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_IMPONE REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    DECLARA fin SICUT NUMERUS VALENS indice.
+    SI registrum >= 8 TUNC
+        codex[fin] = 65.
+        fin = fin + 1.
+    FIN-SI.
+    codex[fin] = 80 + (registrum & 7).
+    REDDE fin + 1.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_AUFER REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    DECLARA fin SICUT NUMERUS VALENS indice.
+    SI registrum >= 8 TUNC
+        codex[fin] = 65.
+        fin = fin + 1.
+    FIN-SI.
+    codex[fin] = 88 + (registrum & 7).
+    REDDE fin + 1.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_VOCA_RETRO REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    codex[indice] = 232.
+    DECLARA relatio SICUT NUMERUS VALENS destinatio - (indice + 5).
+    codex[indice + 1] = relatio & 255.
+    codex[indice + 2] = (relatio >> 8) & 255.
+    codex[indice + 3] = (relatio >> 16) & 255.
+    codex[indice + 4] = (relatio >> 24) & 255.
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_VOCA_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    codex[indice] = 232.
+    CONTENTUM(loci) = indice + 1.
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_REVERTE REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    codex[indice] = 195.
+    REDDE indice + 1.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_VOCA_NUCLEUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    codex[indice] = 15.
+    codex[indice + 1] = 5.
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+
+FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
+    ACCIPIT verbum SICUT ORDO DE LITTERA.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA signum SICUT NUMERUS VALENS 0.
+    PER idx AB 0 AD mensura - 1 PERFICE
+        signum = signum * 31 + verbum[idx].
+    FIN-PER.
+    REDDE signum.
+FIN-FUNCTIO.
+
+FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    DECLARA verbum SICUT ORDO DE LITTERA CAPACITAS 32.
+    DECLARA mensura SICUT NUMERUS VALENS 0.
+    DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122)) PERFICE
+        verbum[mensura] = fons[CONTENTUM(pos)].
+        mensura = mensura + 1.
+        CONTENTUM(pos) = CONTENTUM(pos) + 1.
+    FIN-DUM.
+    REDDE SIGNUM_VERBI(verbum, mensura).
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_AND REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI fons >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI destinatio >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 33.
+    codex[indice + 2] = 192 + ((fons & 7) * 8) + (destinatio & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_OR REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI fons >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI destinatio >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 9.
+    codex[indice + 2] = 192 + ((fons & 7) * 8) + (destinatio & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_XOR REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI fons >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI destinatio >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 49.
+    codex[indice + 2] = 192 + ((fons & 7) * 8) + (destinatio & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_DIV REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT divisor SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI divisor >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 247.
+    codex[indice + 2] = 192 + (6 * 8) + (divisor & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_DIV REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT divisor SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI divisor >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 247.
+    codex[indice + 2] = 192 + (6 * 8) + (divisor & 7).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_MOVZX REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI destinatio >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI basis >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 15.
+    codex[indice + 2] = 182.
+    codex[indice + 3] = ((destinatio & 7) * 8) + (basis & 7).
+    REDDE indice + 4.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_SERVA_OCTETUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    codex[indice] = 136.
+    codex[indice + 1] = ((fons & 7) * 8) + (basis & 7).
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    DUM CONTENTUM(pos) < n && (fons[CONTENTUM(pos)] == 32 || fons[CONTENTUM(pos)] == 10 || fons[CONTENTUM(pos)] == 9) PERFICE
+        CONTENTUM(pos) = CONTENTUM(pos) + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO CERCA_VARIABILEM REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT nomen SICUT NUMERUS.
+    DECLARA idx SICUT NUMERUS VALENS 0.
+    DUM idx < 26 && tabula[idx] != 0 PERFICE
+        SI tabula[idx] == nomen TUNC
+            REDDE tabula[idx + 26].
+        FIN-SI.
+        idx = idx + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+
+    DECLARA ignoratum SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+
+    SI fons[CONTENTUM(pos_fontis)] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        DECLARA r SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        REDDE 0.
+    FIN-SI.
+
+    SI (fons[CONTENTUM(pos_fontis)] >= 97 && fons[CONTENTUM(pos_fontis)] <= 122) TUNC
+        DECLARA nomen SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+        DECLARA intervallum SICUT NUMERUS VALENS CERCA_VARIABILEM(tabula, nomen).
+        SI CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] == 91 TUNC
+            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+            DECLARA r_idx SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+            DECLARA ign2 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+            CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, intervallum).
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 8).
+            CONTENTUM(pos_codicis) = COMPONE_MULTIPLICA(codex, CONTENTUM(pos_codicis), 0, 2).
+            CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 3, 0).
+            CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 3).
+        ALITER
+            CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 0, intervallum).
+        FIN-SI.
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 83 && CONTENTUM(pos_fontis) + 4 < n && fons[CONTENTUM(pos_fontis)+1] == 69 && fons[CONTENTUM(pos_fontis)+2] == 68 && fons[CONTENTUM(pos_fontis)+3] == 69 && fons[CONTENTUM(pos_fontis)+4] == 83 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 5.
+        DECLARA ign_sedes SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        DECLARA nomen_sedes SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+        DECLARA intervallum_sedes SICUT NUMERUS VALENS CERCA_VARIABILEM(tabula, nomen_sedes).
+        ign_sedes = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 0, intervallum_sedes).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 67 && CONTENTUM(pos_fontis) + 8 < n && fons[CONTENTUM(pos_fontis)+1] == 79 && fons[CONTENTUM(pos_fontis)+2] == 78 && fons[CONTENTUM(pos_fontis)+3] == 84 && fons[CONTENTUM(pos_fontis)+4] == 69 && fons[CONTENTUM(pos_fontis)+5] == 78 && fons[CONTENTUM(pos_fontis)+6] == 84 && fons[CONTENTUM(pos_fontis)+7] == 85 && fons[CONTENTUM(pos_fontis)+8] == 77 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 9.
+        DECLARA ign_cont SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ign_cont = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        ign_cont = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 0).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 65 && CONTENTUM(pos_fontis) + 11 < n && fons[CONTENTUM(pos_fontis)+1] == 80 && fons[CONTENTUM(pos_fontis)+2] == 69 && fons[CONTENTUM(pos_fontis)+3] == 82 && fons[CONTENTUM(pos_fontis)+4] == 73 && fons[CONTENTUM(pos_fontis)+5] == 95 && fons[CONTENTUM(pos_fontis)+6] == 76 && fons[CONTENTUM(pos_fontis)+7] == 69 && fons[CONTENTUM(pos_fontis)+8] == 71 && fons[CONTENTUM(pos_fontis)+9] == 69 && fons[CONTENTUM(pos_fontis)+10] == 82 && fons[CONTENTUM(pos_fontis)+11] == 69 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 12.
+        DECLARA ig_al SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 2.
+
+        DECLARA loci_saltus_viae SICUT NUMERUS VALENS 0.
+        CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_viae)).
+        DECLARA sedes_viae SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+            codex[CONTENTUM(pos_codicis)] = fons[CONTENTUM(pos_fontis)].
+            CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        FIN-DUM.
+        codex[CONTENTUM(pos_codicis)] = 0.
+        CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        DECLARA pos_post_viam SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+        ig_al = CORRIGE_SALTUM(codex, loci_saltus_viae, pos_post_viam).
+
+        ig_al = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 4194304 + sedes_viae).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 0).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 0).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 2).
+        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 76 && CONTENTUM(pos_fontis) + 3 < n && fons[CONTENTUM(pos_fontis)+1] == 69 && fons[CONTENTUM(pos_fontis)+2] == 71 && fons[CONTENTUM(pos_fontis)+3] == 69 && (CONTENTUM(pos_fontis)+4 >= n || fons[CONTENTUM(pos_fontis)+4] == 40) TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 4.
+        DECLARA ig_lg SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ig_lg = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        ig_lg = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ig_lg = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        ig_lg = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 65536).
+        CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 2, 0).
+        CONTENTUM(pos_codicis) = COMPONE_JGE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(ig_lg)).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 65536).
+        DECLARA pos_lege_recte SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+        ig_lg = CORRIGE_SALTUM(codex, ig_lg, pos_lege_recte).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 0).
+        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 2, 0).
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, 0 - 9000).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 0).
+        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 79 && CONTENTUM(pos_fontis) + 6 < n && fons[CONTENTUM(pos_fontis)+1] == 67 && fons[CONTENTUM(pos_fontis)+2] == 84 && fons[CONTENTUM(pos_fontis)+3] == 69 && fons[CONTENTUM(pos_fontis)+4] == 84 && fons[CONTENTUM(pos_fontis)+5] == 85 && fons[CONTENTUM(pos_fontis)+6] == 83 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
+        DECLARA ig_oc SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ig_oc = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        ig_oc = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, 0 - 9000).
+        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 3, 0).
+        CONTENTUM(pos_codicis) = COMPONE_MOVZX(codex, CONTENTUM(pos_codicis), 0, 3).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 65 && CONTENTUM(pos_fontis) + 13 < n && fons[CONTENTUM(pos_fontis)+1] == 80 && fons[CONTENTUM(pos_fontis)+2] == 69 && fons[CONTENTUM(pos_fontis)+3] == 82 && fons[CONTENTUM(pos_fontis)+4] == 73 && fons[CONTENTUM(pos_fontis)+5] == 95 && fons[CONTENTUM(pos_fontis)+6] == 83 && fons[CONTENTUM(pos_fontis)+7] == 67 && fons[CONTENTUM(pos_fontis)+8] == 82 && fons[CONTENTUM(pos_fontis)+9] == 73 && fons[CONTENTUM(pos_fontis)+10] == 66 && fons[CONTENTUM(pos_fontis)+11] == 69 && fons[CONTENTUM(pos_fontis)+12] == 82 && fons[CONTENTUM(pos_fontis)+13] == 69 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 14.
+        DECLARA ig_as SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 2.
+
+        DECLARA loci_saltus_viae2 SICUT NUMERUS VALENS 0.
+        CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_viae2)).
+        DECLARA sedes_viae2 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+            codex[CONTENTUM(pos_codicis)] = fons[CONTENTUM(pos_fontis)].
+            CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        FIN-DUM.
+        codex[CONTENTUM(pos_codicis)] = 0.
+        CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        DECLARA pos_post_viam2 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+        ig_as = CORRIGE_SALTUM(codex, loci_saltus_viae2, pos_post_viam2).
+
+        ig_as = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 4194304 + sedes_viae2).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 577).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 420).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 2).
+        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 67 && CONTENTUM(pos_fontis) + 5 < n && fons[CONTENTUM(pos_fontis)+1] == 76 && fons[CONTENTUM(pos_fontis)+2] == 65 && fons[CONTENTUM(pos_fontis)+3] == 85 && fons[CONTENTUM(pos_fontis)+4] == 68 && fons[CONTENTUM(pos_fontis)+5] == 69 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 6.
+        DECLARA ig_cl SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ig_cl = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        ig_cl = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 7, 0).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 3).
+        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 4 < n && fons[CONTENTUM(pos_fontis)+1] == 73 && fons[CONTENTUM(pos_fontis)+2] == 84 && fons[CONTENTUM(pos_fontis)+3] == 84 && fons[CONTENTUM(pos_fontis)+4] == 69 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 5.
+        DECLARA ig_mi SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
+        ig_mi = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 7, 0).
+        ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
+        DECLARA nomen_tab_mitte SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+        DECLARA intervallum_tab_mitte SICUT NUMERUS VALENS CERCA_VARIABILEM(tabula, nomen_tab_mitte).
+        ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
+        ig_mi = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 6, 0).
+        ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 1, 0).
+        DECLARA pos_ansae_mitte SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 0, 1).
+        CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 6).
+        DECLARA loci_je_mitte SICUT NUMERUS VALENS 0.
+        CONTENTUM(pos_codicis) = COMPONE_JE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_je_mitte)).
+
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 0, 1).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 8).
+        CONTENTUM(pos_codicis) = COMPONE_MULTIPLICA(codex, CONTENTUM(pos_codicis), 0, 3).
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, intervallum_tab_mitte).
+        CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 3, 0).
+        CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 3).
+
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, 0 - 20000).
+        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 3, 1).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+        CONTENTUM(pos_codicis) = COMPONE_SERVA_OCTETUM(codex, CONTENTUM(pos_codicis), 3, 0).
+
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
+        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 1, 0).
+        CONTENTUM(pos_codicis) = COMPONE_JMP_RETRO(codex, CONTENTUM(pos_codicis), pos_ansae_mitte).
+
+        DECLARA pos_post_mitte SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+        ig_mi = CORRIGE_SALTUM(codex, loci_je_mitte, pos_post_mitte).
+
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 2, 6).
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, 0 - 20000).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
+        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI (fons[CONTENTUM(pos_fontis)] >= 65 && fons[CONTENTUM(pos_fontis)] <= 90) TUNC
+        DECLARA nomen_fn SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+        DECLARA numerus_argumentorum SICUT NUMERUS VALENS 0.
+        DECLARA continua_arg SICUT NUMERUS VALENS 1.
+        DUM continua_arg == 1 PERFICE
+            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+            SI fons[CONTENTUM(pos_fontis)] == 41 TUNC
+                continua_arg = 0.
+            ALITER
+                DECLARA r_arg SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+                numerus_argumentorum = numerus_argumentorum + 1.
+                ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                SI CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] == 44 TUNC
+                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                    ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                FIN-SI.
+            FIN-SI.
+        FIN-DUM.
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+        SI numerus_argumentorum == 3 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 2).
+        FIN-SI.
+        SI numerus_argumentorum >= 2 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 6).
+        FIN-SI.
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
+
+        DECLARA loci_fn SICUT NUMERUS VALENS CERCA_VARIABILEM(tabula, nomen_fn).
+        CONTENTUM(pos_codicis) = COMPONE_VOCA_RETRO(codex, CONTENTUM(pos_codicis), loci_fn).
+        REDDE 0.
+    FIN-SI.
+
+    DECLARA valor SICUT NUMERUS VALENS 0.
+    DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] >= 48 && fons[CONTENTUM(pos_fontis)] <= 57 PERFICE
+        valor = valor * 10 + (fons[CONTENTUM(pos_fontis)] - 48).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+    FIN-DUM.
+    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, valor).
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ANALYSA_TERMINUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+
+    DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_FACTOR(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+    ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+    DUM CONTENTUM(pos_fontis) < n && (fons[CONTENTUM(pos_fontis)] == 42 || fons[CONTENTUM(pos_fontis)] == 37) PERFICE
+        DECLARA operatio_term SICUT NUMERUS VALENS fons[CONTENTUM(pos_fontis)].
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        ignoratum = ANALYSA_FACTOR(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 0).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+        SI operatio_term == 42 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_MULTIPLICA(codex, CONTENTUM(pos_codicis), 0, 3).
+        ALITER
+            CONTENTUM(pos_codicis) = COMPONE_XOR(codex, CONTENTUM(pos_codicis), 2, 2).
+            CONTENTUM(pos_codicis) = COMPONE_DIV(codex, CONTENTUM(pos_codicis), 3).
+            CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 0, 2).
+        FIN-SI.
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ANALYSA_EXPRESSIO REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+
+    DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_TERMINUM(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+    ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+    DUM CONTENTUM(pos_fontis) < n && (fons[CONTENTUM(pos_fontis)] == 43 || fons[CONTENTUM(pos_fontis)] == 45 || fons[CONTENTUM(pos_fontis)] == 38 || fons[CONTENTUM(pos_fontis)] == 124) PERFICE
+        DECLARA operatio SICUT NUMERUS VALENS fons[CONTENTUM(pos_fontis)].
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        ignoratum = ANALYSA_TERMINUM(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 0).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+        SI operatio == 43 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 0, 3).
+        FIN-SI.
+        SI operatio == 45 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 3).
+        FIN-SI.
+        SI operatio == 38 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_AND(codex, CONTENTUM(pos_codicis), 0, 3).
+        FIN-SI.
+        SI operatio == 124 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_OR(codex, CONTENTUM(pos_codicis), 0, 3).
+        FIN-SI.
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ANALYSA_COMPARATIO REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+
+    DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+    ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+
+    DECLARA op_cmp SICUT NUMERUS VALENS 0.
+    SI CONTENTUM(pos_fontis) + 1 < n && fons[CONTENTUM(pos_fontis)] == 61 && fons[CONTENTUM(pos_fontis)+1] == 61 TUNC
+        op_cmp = 1.
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 2.
+    ALITER
+        SI CONTENTUM(pos_fontis) + 1 < n && fons[CONTENTUM(pos_fontis)] == 33 && fons[CONTENTUM(pos_fontis)+1] == 61 TUNC
+            op_cmp = 2.
+            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 2.
+        ALITER
+            SI CONTENTUM(pos_fontis) + 1 < n && fons[CONTENTUM(pos_fontis)] == 62 && fons[CONTENTUM(pos_fontis)+1] == 61 TUNC
+                op_cmp = 3.
+                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 2.
+            ALITER
+                SI CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] == 62 TUNC
+                    op_cmp = 4.
+                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                ALITER
+                    SI CONTENTUM(pos_fontis) + 1 < n && fons[CONTENTUM(pos_fontis)] == 60 && fons[CONTENTUM(pos_fontis)+1] == 61 TUNC
+                        op_cmp = 5.
+                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 2.
+                    ALITER
+                        SI CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] == 60 TUNC
+                            op_cmp = 6.
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-SI.
+
+    SI op_cmp == 0 TUNC
+        REDDE 0.
+    FIN-SI.
+
+    ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+    CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+    ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+    CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 0).
+    CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 3).
+
+    DECLARA loci_cmp SICUT NUMERUS VALENS 0.
+    SI op_cmp == 1 TUNC
+        CONTENTUM(pos_codicis) = COMPONE_JNE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_cmp)).
+    FIN-SI.
+    SI op_cmp == 2 TUNC
+        CONTENTUM(pos_codicis) = COMPONE_JE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_cmp)).
+    FIN-SI.
+    SI op_cmp == 3 TUNC
+        CONTENTUM(pos_codicis) = COMPONE_JL_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_cmp)).
+    FIN-SI.
+    SI op_cmp == 4 TUNC
+        CONTENTUM(pos_codicis) = COMPONE_JLE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_cmp)).
+    FIN-SI.
+    SI op_cmp == 5 TUNC
+        CONTENTUM(pos_codicis) = COMPONE_JG_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_cmp)).
+    FIN-SI.
+    SI op_cmp == 6 TUNC
+        CONTENTUM(pos_codicis) = COMPONE_JGE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_cmp)).
+    FIN-SI.
+
+    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
+    DECLARA loci_jmp_cmp SICUT NUMERUS VALENS 0.
+    CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_jmp_cmp)).
+    DECLARA pos_falsus_cmp SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+    ignoratum = CORRIGE_SALTUM(codex, loci_cmp, pos_falsus_cmp).
+    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 0).
+    DECLARA pos_fin_cmp SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+    ignoratum = CORRIGE_SALTUM(codex, loci_jmp_cmp, pos_fin_cmp).
+
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PROXIMUS_LOCUS_LIBER REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    DECLARA idx SICUT NUMERUS VALENS 0.
+    DUM idx < 26 && tabula[idx] != 0 PERFICE
+        idx = idx + 1.
+    FIN-DUM.
+    REDDE idx.
+FIN-FUNCTIO.
+
+FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+
+    DECLARA continua SICUT NUMERUS VALENS 1.
+    DUM continua == 1 PERFICE
+        DECLARA ignoratum SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        DECLARA i SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
+
+        SI i >= n TUNC
+            continua = 0.
+        ALITER
+            SI fons[i] == 65 && i + 5 < n && fons[i+1] == 76 && fons[i+2] == 73 && fons[i+3] == 84 && fons[i+4] == 69 && fons[i+5] == 82 TUNC
+                continua = 0.
+            ALITER
+                SI fons[i] == 70 && i + 3 < n && fons[i+1] == 73 && fons[i+2] == 78 && fons[i+3] == 45 TUNC
+                    continua = 0.
+                ALITER
+                    SI fons[i] == 68 && i + 6 < n && fons[i+1] == 69 && fons[i+2] == 67 && fons[i+3] == 76 && fons[i+4] == 65 && fons[i+5] == 82 && fons[i+6] == 65 TUNC
+                        CONTENTUM(pos_fontis) = i + 7.
+                        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                        DECLARA nomen SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+                        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 6.
+                        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+
+                        SI fons[CONTENTUM(pos_fontis)] == 83 TUNC
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
+                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
+                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
+                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 10.
+                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+
+                            DECLARA mensura_tabulae SICUT NUMERUS VALENS 0.
+                            DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] >= 48 && fons[CONTENTUM(pos_fontis)] <= 57 PERFICE
+                                mensura_tabulae = mensura_tabulae * 10 + (fons[CONTENTUM(pos_fontis)] - 48).
+                                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                            FIN-DUM.
+
+                            DECLARA intervallum_base SICUT NUMERUS VALENS tabula[51].
+                            DECLARA idx_nova SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
+                            tabula[idx_nova] = nomen.
+                            tabula[idx_nova + 26] = intervallum_base.
+                            tabula[51] = tabula[51] - (8 * mensura_tabulae).
+                        ALITER
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
+                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
+                            ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+                            DECLARA intervallum_nova SICUT NUMERUS VALENS tabula[51].
+                            DECLARA idx_nova2 SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
+                            tabula[idx_nova2] = nomen.
+                            tabula[idx_nova2 + 26] = intervallum_nova.
+                            tabula[51] = tabula[51] - 8.
+                            CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_nova, 0).
+                        FIN-SI.
+
+                        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                        FIN-DUM.
+                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+                    ALITER
+                        SI fons[i] == 82 && i + 5 < n && fons[i+1] == 69 && fons[i+2] == 68 && fons[i+3] == 68 && fons[i+4] == 69 && fons[i+5] == 32 TUNC
+                            CONTENTUM(pos_fontis) = i + 6.
+                            ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                            CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 4, 5).
+                            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 5).
+                            CONTENTUM(pos_codicis) = COMPONE_REVERTE(codex, CONTENTUM(pos_codicis)).
+                            DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
+                                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                            FIN-DUM.
+                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+                        ALITER
+                            SI fons[i] == 83 && i + 1 < n && fons[i+1] == 73 && fons[i+2] == 32 TUNC
+                                CONTENTUM(pos_fontis) = i + 3.
+                                ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 0).
+                                CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 3).
+                                DECLARA loci_je SICUT NUMERUS VALENS 0.
+                                CONTENTUM(pos_codicis) = COMPONE_JE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_je)).
+
+                                ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 4.
+                                ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+                                ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                                DECLARA j SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
+                                SI fons[j] == 65 TUNC
+                                    DECLARA loci_jmp SICUT NUMERUS VALENS 0.
+                                    CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_jmp)).
+                                    DECLARA pos_aliter SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    ignoratum = CORRIGE_SALTUM(codex, loci_je, pos_aliter).
+                                    CONTENTUM(pos_fontis) = j + 6.
+                                    ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                    DECLARA pos_post SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    ignoratum = CORRIGE_SALTUM(codex, loci_jmp, pos_post).
+                                ALITER
+                                    DECLARA pos_post2 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    ignoratum = CORRIGE_SALTUM(codex, loci_je, pos_post2).
+                                FIN-SI.
+
+                                ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 6.
+
+                            ALITER
+                                SI fons[i] == 80 && i + 7 < n && fons[i+1] == 82 && fons[i+2] == 79 && fons[i+3] == 67 && fons[i+4] == 76 && fons[i+5] == 65 && fons[i+6] == 77 && fons[i+7] == 65 TUNC
+                                    CONTENTUM(pos_fontis) = i + 9.
+                                    DECLARA ign_pcs SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+
+                                    SI fons[CONTENTUM(pos_fontis)] == 34 TUNC
+                                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                        DECLARA loci_saltus_chorda SICUT NUMERUS VALENS 0.
+                                        CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_chorda)).
+                                        DECLARA sedes_chorda SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                        DECLARA mensura_chorda SICUT NUMERUS VALENS 0.
+                                        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+                                            codex[CONTENTUM(pos_codicis)] = fons[CONTENTUM(pos_fontis)].
+                                            CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            mensura_chorda = mensura_chorda + 1.
+                                        FIN-DUM.
+                                        codex[CONTENTUM(pos_codicis)] = 10.
+                                        CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+                                        mensura_chorda = mensura_chorda + 1.
+                                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                        DECLARA pos_post_chorda SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                        ign_pcs = CORRIGE_SALTUM(codex, loci_saltus_chorda, pos_post_chorda).
+
+                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 4194304 + sedes_chorda).
+                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, mensura_chorda).
+                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
+                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
+                                        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+
+                                        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                        FIN-DUM.
+                                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+                                    ALITER
+                                    ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+                                    DECLARA intervallum_scratch SICUT NUMERUS VALENS tabula[51].
+
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 3).
+                                    DECLARA loci_jge_signum SICUT NUMERUS VALENS 0.
+                                    CONTENTUM(pos_codicis) = COMPONE_JGE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_jge_signum)).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 3, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 0, 3).
+                                    CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 45).
+                                    CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_scratch, 3).
+                                    CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, intervallum_scratch).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+                                    CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+                                    DECLARA pos_post_signum SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    ignoratum = CORRIGE_SALTUM(codex, loci_jge_signum, pos_post_signum).
+
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 1, 0).
+
+                                    DECLARA pos_ansae_numerandi SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    CONTENTUM(pos_codicis) = COMPONE_XOR(codex, CONTENTUM(pos_codicis), 2, 2).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 10).
+                                    CONTENTUM(pos_codicis) = COMPONE_DIV(codex, CONTENTUM(pos_codicis), 3).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 48).
+                                    CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 2, 6).
+                                    CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 2).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 1, 6).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 6).
+                                    CONTENTUM(pos_codicis) = COMPONE_JNE_RETRO(codex, CONTENTUM(pos_codicis), pos_ansae_numerandi).
+                                    CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 1).
+
+                                    DECLARA loci_je_proclama SICUT NUMERUS VALENS 0.
+                                    DECLARA pos_ansae_scribendi SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 3, 6).
+                                    CONTENTUM(pos_codicis) = COMPONE_JE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_je_proclama)).
+                                    CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_scratch, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, intervallum_scratch).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 3, 6).
+                                    CONTENTUM(pos_codicis) = COMPONE_JMP_RETRO(codex, CONTENTUM(pos_codicis), pos_ansae_scribendi).
+
+                                    DECLARA pos_post_proclama SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    ignoratum = CORRIGE_SALTUM(codex, loci_je_proclama, pos_post_proclama).
+
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 10).
+                                    CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_scratch, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, intervallum_scratch).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+
+                                    DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
+                                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                    FIN-DUM.
+                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                    FIN-SI.
+
+                                ALITER
+                                SI fons[i] == 80 && i + 3 < n && fons[i+1] == 69 && fons[i+2] == 82 && fons[i+3] == 32 TUNC
+                                    CONTENTUM(pos_fontis) = i + 4.
+                                    DECLARA ig_per SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+                                    DECLARA nomen_per SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+                                    ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
+                                    ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    ig_per = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+                                    DECLARA intervallum_i_per SICUT NUMERUS VALENS tabula[51].
+                                    DECLARA idx_per SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
+                                    tabula[idx_per] = nomen_per.
+                                    tabula[idx_per + 26] = intervallum_i_per.
+                                    tabula[51] = tabula[51] - 8.
+                                    CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_i_per, 0).
+
+                                    ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
+                                    ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    ig_per = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+                                    DECLARA intervallum_limes_per SICUT NUMERUS VALENS tabula[51].
+                                    tabula[51] = tabula[51] - 8.
+                                    CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_limes_per, 0).
+
+                                    ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
+
+                                    DECLARA pos_initium_per SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 0, intervallum_i_per).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 3, intervallum_limes_per).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 3).
+                                    DECLARA loci_jg_per SICUT NUMERUS VALENS 0.
+                                    CONTENTUM(pos_codicis) = COMPONE_JG_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_jg_per)).
+
+                                    ig_per = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+                                    CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 0, intervallum_i_per).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 1).
+                                    CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 0, 3).
+                                    CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_i_per, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_JMP_RETRO(codex, CONTENTUM(pos_codicis), pos_initium_per).
+
+                                    DECLARA pos_fin_per SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    ig_per = CORRIGE_SALTUM(codex, loci_jg_per, pos_fin_per).
+
+                                    ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
+
+                                ALITER
+                                SI fons[i] == 68 && i + 3 < n && fons[i+1] == 85 && fons[i+2] == 77 && fons[i+3] == 32 TUNC
+                                    DECLARA pos_initium_dum SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    CONTENTUM(pos_fontis) = i + 4.
+                                    ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 0).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 0, 3).
+                                    DECLARA loci_je_dum SICUT NUMERUS VALENS 0.
+                                    CONTENTUM(pos_codicis) = COMPONE_JE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_je_dum)).
+
+                                    ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
+                                    ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+
+                                    CONTENTUM(pos_codicis) = COMPONE_JMP_RETRO(codex, CONTENTUM(pos_codicis), pos_initium_dum).
+                                    DECLARA pos_fin_dum SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
+                                    ignoratum = CORRIGE_SALTUM(codex, loci_je_dum, pos_fin_dum).
+
+                                    ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
+
+                                ALITER
+                                    SI (fons[i] >= 97 && fons[i] <= 122) TUNC
+                                        CONTENTUM(pos_fontis) = i.
+                                        DECLARA nomen_aff SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+                                        DECLARA intervallum_aff SICUT NUMERUS VALENS CERCA_VARIABILEM(tabula, nomen_aff).
+                                        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+
+                                        SI fons[CONTENTUM(pos_fontis)] == 91 TUNC
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            DECLARA r_idx2 SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                            DECLARA ign3 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            ign3 = IGNORA_SPATIA(fons, pos_fontis, n).
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+                                            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+                                            ign3 = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                            CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 0).
+                                            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+
+                                            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 3).
+                                            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 8).
+                                            CONTENTUM(pos_codicis) = COMPONE_MULTIPLICA(codex, CONTENTUM(pos_codicis), 0, 2).
+                                            CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 1, intervallum_aff).
+                                            CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 1, 0).
+                                            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+                                            CONTENTUM(pos_codicis) = COMPONE_SERVA_INDIRECTUM(codex, CONTENTUM(pos_codicis), 1, 0).
+                                        ALITER
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                            CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_aff, 0).
+                                        FIN-SI.
+
+                                        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                        FIN-DUM.
+                                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                    ALITER
+                                        SI fons[i] == 67 && i + 8 < n && fons[i+1] == 79 && fons[i+2] == 78 && fons[i+3] == 84 && fons[i+4] == 69 && fons[i+5] == 78 && fons[i+6] == 84 && fons[i+7] == 85 && fons[i+8] == 77 TUNC
+                                            CONTENTUM(pos_fontis) = i + 9.
+                                            DECLARA ign_cw SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            ign_cw = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                            ign_cw = IGNORA_SPATIA(fons, pos_fontis, n).
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+                                            ign_cw = IGNORA_SPATIA(fons, pos_fontis, n).
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            ign_cw = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                            CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 0).
+                                            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
+                                            CONTENTUM(pos_codicis) = COMPONE_SERVA_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 3).
+                                            DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
+                                                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            FIN-DUM.
+                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                        ALITER
+                                            CONTENTUM(pos_fontis) = i + 1.
+                                        FIN-SI.
+                                    FIN-SI.
+                                FIN-SI.
+                            FIN-SI.
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+        FIN-SI.
+        FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("probaH.vindex").
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 2000).
+    CLAUDE(fd).
+
+    DECLARA fons SICUT ORDO DE LITTERA CAPACITAS 2000.
+    DECLARA k SICUT NUMERUS VALENS 0.
+    DUM k < n PERFICE
+        fons[k] = OCTETUS(k).
+        k = k + 1.
+    FIN-DUM.
+
+    DECLARA codex SICUT ORDO DE NUMERUS CAPACITAS 2000.
+    DECLARA pos SICUT NUMERUS VALENS 120.
+    DECLARA punctum_ingressus SICUT NUMERUS VALENS 120.
+
+    DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 52.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < n PERFICE
+        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC
+            i = i + 8.
+            SI fons[i] == 80 && i + 10 < n && fons[i+1] == 82 && fons[i+2] == 73 && fons[i+3] == 78 && fons[i+4] == 67 && fons[i+5] == 73 && fons[i+6] == 80 && fons[i+7] == 65 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 83 TUNC
+                i = i + 11.
+                DUM i < n && fons[i] != 46 PERFICE
+                    i = i + 1.
+                FIN-DUM.
+                i = i + 1.
+                DECLARA punctum_principalis SICUT NUMERUS VALENS pos.
+                pos = COMPONE_IMPONE(codex, pos, 5).
+                pos = COMPONE_TRANSCRIBE(codex, pos, 5, 4).
+                pos = COMPONE_ONERA(codex, pos, 0, 25000).
+                pos = COMPONE_SUB(codex, pos, 4, 0).
+                tabula[51] = 0 - 8.
+                DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).
+
+                punctum_ingressus = pos.
+                pos = COMPONE_VOCA_RETRO(codex, pos, punctum_principalis).
+                pos = COMPONE_TRANSCRIBE(codex, pos, 7, 0).
+                pos = COMPONE_ONERA(codex, pos, 0, 60).
+                pos = COMPONE_VOCA_NUCLEUM(codex, pos).
+
+                i = n.
+            ALITER
+                DECLARA nomen_adiutoris SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).
+                DUM i < n && fons[i] != 46 PERFICE
+                    i = i + 1.
+                FIN-DUM.
+                i = i + 1.
+
+                DECLARA idx_fn SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
+                tabula[idx_fn] = nomen_adiutoris.
+                tabula[idx_fn + 26] = pos.
+
+                pos = COMPONE_IMPONE(codex, pos, 5).
+                pos = COMPONE_TRANSCRIBE(codex, pos, 5, 4).
+                pos = COMPONE_ONERA(codex, pos, 0, 25000).
+                pos = COMPONE_SUB(codex, pos, 4, 0).
+                tabula[51] = 0 - 8.
+
+                DECLARA numerus_parametrorum SICUT NUMERUS VALENS 0.
+                DECLARA continua_param SICUT NUMERUS VALENS 1.
+                DUM continua_param == 1 PERFICE
+                    DECLARA ignoratum3 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, SEDES(i), n).
+                    SI fons[i] == 65 && i + 6 < n && fons[i+1] == 67 && fons[i+2] == 67 && fons[i+3] == 73 && fons[i+4] == 80 && fons[i+5] == 73 && fons[i+6] == 84 TUNC
+                        i = i + 8.
+                        DECLARA nomen_param SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).
+                        DUM i < n && fons[i] != 46 PERFICE
+                            i = i + 1.
+                        FIN-DUM.
+                        i = i + 1.
+
+                        DECLARA registrum_param SICUT NUMERUS VALENS 7.
+                        SI numerus_parametrorum == 1 TUNC
+                            registrum_param = 6.
+                        FIN-SI.
+                        SI numerus_parametrorum == 2 TUNC
+                            registrum_param = 2.
+                        FIN-SI.
+
+                        DECLARA idx_param SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
+                        tabula[idx_param] = nomen_param.
+                        DECLARA intervallum_param SICUT NUMERUS VALENS tabula[51].
+                        tabula[idx_param + 26] = intervallum_param.
+                        tabula[51] = tabula[51] - 8.
+                        pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).
+
+                        numerus_parametrorum = numerus_parametrorum + 1.
+                    ALITER
+                        continua_param = 0.
+                    FIN-SI.
+                FIN-DUM.
+
+                DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).
+
+                DUM i < n && fons[i] != 46 PERFICE
+                    i = i + 1.
+                FIN-DUM.
+                i = i + 1.
+            FIN-SI.
+        ALITER
+            i = i + 1.
+        FIN-SI.
+    FIN-DUM.
+    PROCLAMA pos.
+    DECLARA ignoratum2 SICUT NUMERUS VALENS CONSTRUE_CAPUT_ELF(codex, pos - 120, punctum_ingressus).
+
+    DECLARA fd_scriptio SICUT NUMERUS VALENS APERI_SCRIBERE("probaH_compilata").
+    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).
+    CLAUDE(fd_scriptio).
+
+    PROCLAMA pos.
+
+    REDDE 0.
+FIN-FUNCTIO.

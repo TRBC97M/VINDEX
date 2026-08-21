@@ -1,0 +1,6 @@
+IMPORTA "tests/casus/bibliotheca.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    PROCLAMA QUADRATUM(7).
+    REDDE 0.
+FIN-FUNCTIO.

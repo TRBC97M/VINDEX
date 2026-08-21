@@ -1,0 +1,5 @@
+IMPORTA "tests/casus/non_exstat.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    REDDE 0.
+FIN-FUNCTIO.

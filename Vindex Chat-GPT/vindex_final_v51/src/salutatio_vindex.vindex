@@ -1,0 +1,123 @@
+// Salutatio 0.36 — altera applicatio graphica, logica ipsa VINDEX.
+
+IMPORTA "bibliotheca/graphica.vindex".
+
+FORMA ReceptaculumBreve.
+    CAMPUS c00 SICUT NUMERUS. CAMPUS c01 SICUT NUMERUS.
+    CAMPUS c02 SICUT NUMERUS. CAMPUS c03 SICUT NUMERUS.
+    CAMPUS c04 SICUT NUMERUS. CAMPUS c05 SICUT NUMERUS.
+    CAMPUS c06 SICUT NUMERUS. CAMPUS c07 SICUT NUMERUS.
+    CAMPUS c08 SICUT NUMERUS. CAMPUS c09 SICUT NUMERUS.
+    CAMPUS c10 SICUT NUMERUS. CAMPUS c11 SICUT NUMERUS.
+    CAMPUS c12 SICUT NUMERUS. CAMPUS c13 SICUT NUMERUS.
+    CAMPUS c14 SICUT NUMERUS. CAMPUS c15 SICUT NUMERUS.
+FIN-FORMA.
+
+FUNCTIO CREA_VIAM_BREVEM REDDENS NUMERUS.
+    ACCIPIT via SICUT ORDO DE LITTERA.
+    ACCIPIT longitudo SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS RESERVA(ReceptaculumBreve).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        SCRIBE_OCTETUM_AB(p + i, via[i]).
+        i = i + 1.
+    FIN-DUM.
+    SCRIBE_OCTETUM_AB(p + longitudo, 0).
+    REDDE p.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+    DECLARA envp SICUT ACUS<NUMERUS> VALENS argv + argc + 1.
+    DECLARA eventum_salutationis SICUT NUMERUS VALENS GRAPHICA_EVENTUM_SALUTATIONIS().
+    DECLARA eventum_clausurae SICUT NUMERUS VALENS GRAPHICA_EVENTUM_CLAUSURAE().
+    DECLARA responsum_rectum SICUT NUMERUS VALENS GRAPHICA_RESPONSUM_RECTUM().
+    DECLARA responsum_erratum SICUT NUMERUS VALENS GRAPHICA_RESPONSUM_ERRATUM().
+
+    SI argc < 3 TUNC
+        PROCLAMA "USUS: salutatio_vindex <pons_graphicus> <forma>".
+        REDDE 64.
+    FIN-SI.
+
+    DECLARA textus_servitoris SICUT ORDO DE LITTERA CAPACITAS 16.
+    textus_servitoris[0]='-'. textus_servitoris[1]='-'.
+    textus_servitoris[2]='s'. textus_servitoris[3]='e'. textus_servitoris[4]='r'.
+    textus_servitoris[5]='v'. textus_servitoris[6]='i'. textus_servitoris[7]='t'.
+    textus_servitoris[8]='o'. textus_servitoris[9]='r'.
+    DECLARA via_servitoris SICUT NUMERUS VALENS CREA_VIAM_BREVEM(textus_servitoris, 10).
+
+    DECLARA argumenta_pontis SICUT ORDO DE NUMERUS CAPACITAS 5.
+    argumenta_pontis[0] = CONTENTUM(argv + 1).
+    argumenta_pontis[1] = via_servitoris.
+    argumenta_pontis[2] = CONTENTUM(argv + 2).
+    argumenta_pontis[3] = 0.
+    DECLARA status_pontis SICUT NUMERUS VALENS CURRE(argumenta_pontis, envp, 0 - 1).
+    SI status_pontis != 0 TUNC
+        PROCLAMA "ERRATUM: pons graphicae declarativae incipere non potest".
+        REDDE status_pontis.
+    FIN-SI.
+
+    DECLARA canalis_eventorum SICUT NUMERUS VALENS APERI_LEGERE(".vindex-graphica-ad-vindex").
+    DECLARA canalis_responsorum SICUT NUMERUS VALENS APERI_SCRIBERE(".vindex-graphica-ab-vindex").
+    SI canalis_eventorum < 0 || canalis_responsorum < 0 TUNC
+        REDDE 73.
+    FIN-SI.
+
+    DECLARA responsum SICUT ORDO DE LITTERA CAPACITAS 4.
+    DECLARA nomen SICUT ORDO DE LITTERA CAPACITAS 256.
+    DECLARA praefixum SICUT ORDO DE LITTERA CAPACITAS 8.
+    praefixum[0]='S'. praefixum[1]='a'. praefixum[2]='l'. praefixum[3]='v'.
+    praefixum[4]='e'. praefixum[5]=','. praefixum[6]=' '.
+    DECLARA suffixum SICUT ORDO DE LITTERA CAPACITAS 4.
+    suffixum[0]='!'. suffixum[1]=10.
+    DECLARA hospes SICUT ORDO DE LITTERA CAPACITAS 16.
+    hospes[0]='h'. hospes[1]='o'. hospes[2]='s'. hospes[3]='p'.
+    hospes[4]='e'. hospes[5]='s'.
+    DECLARA persevera SICUT NUMERUS VALENS 1.
+
+    DUM persevera == 1 PERFICE
+        DECLARA n_eventorum SICUT NUMERUS VALENS LEGE(canalis_eventorum, 1).
+        SI n_eventorum <= 0 TUNC
+            persevera = 0.
+        ALITER
+            DECLARA eventum SICUT NUMERUS VALENS OCTETUS(0).
+            SI eventum == eventum_clausurae TUNC
+                persevera = 0.
+            ALITER
+                SI eventum == eventum_salutationis TUNC
+                    DECLARA fd_nominis SICUT NUMERUS VALENS APERI_LEGERE(".vindex-graphica-valor-nomen").
+                    DECLARA n_nominis SICUT NUMERUS VALENS 0.
+                    SI fd_nominis >= 0 TUNC
+                        n_nominis = LEGE(fd_nominis, 240).
+                        DECLARA i SICUT NUMERUS VALENS 0.
+                        DUM i < n_nominis PERFICE
+                            nomen[i] = OCTETUS(i).
+                            i = i + 1.
+                        FIN-DUM.
+                        DECLARA nomen_clausum SICUT NUMERUS VALENS CLAUDE(fd_nominis).
+                    FIN-SI.
+
+                    DECLARA fd_relationis SICUT NUMERUS VALENS APERI_SCRIBERE(".vindex-graphica-relatio").
+                    SI fd_relationis >= 0 TUNC
+                        DECLARA a SICUT NUMERUS VALENS MITTE(fd_relationis, praefixum, 7).
+                        SI n_nominis > 0 TUNC
+                            DECLARA b SICUT NUMERUS VALENS MITTE(fd_relationis, nomen, n_nominis).
+                        ALITER
+                            DECLARA b_hospitis SICUT NUMERUS VALENS MITTE(fd_relationis, hospes, 6).
+                        FIN-SI.
+                        DECLARA c SICUT NUMERUS VALENS MITTE(fd_relationis, suffixum, 2).
+                        DECLARA relatio_clausa SICUT NUMERUS VALENS CLAUDE(fd_relationis).
+                        responsum[0] = responsum_rectum.
+                    ALITER
+                        responsum[0] = responsum_erratum.
+                    FIN-SI.
+                    DECLARA missum SICUT NUMERUS VALENS MITTE(canalis_responsorum, responsum, 1).
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-DUM.
+    DECLARA eventa_clausa SICUT NUMERUS VALENS CLAUDE(canalis_eventorum).
+    DECLARA responsa_clausa SICUT NUMERUS VALENS CLAUDE(canalis_responsorum).
+    REDDE 0.
+FIN-FUNCTIO.

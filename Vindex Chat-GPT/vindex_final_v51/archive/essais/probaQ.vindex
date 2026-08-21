@@ -1,0 +1,9 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA tab SICUT SERIES DE NUMERUS CAPACITAS 5.
+    tab[0] = 10.
+    tab[1] = 20.
+    tab[2] = 30.
+    DECLARA summa SICUT NUMERUS VALENS 0.
+    summa = tab[0] + tab[1] + tab[2].
+    REDDE summa.
+FIN-FUNCTIO.

@@ -1,0 +1,167 @@
+FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
+    ACCIPIT verbum SICUT SERIES DE LITTERA.
+    ACCIPIT mensura SICUT NUMERUS.
+
+    DECLARA signum SICUT NUMERUS VALENS 0.
+    PER idx AB 0 AD mensura - 1 PERFICE
+        signum = signum * 31 + verbum[idx].
+    FIN-PER.
+    REDDE signum.
+FIN-FUNCTIO.
+
+FUNCTIO IMPONE REDDENS NUMERUS.
+    ACCIPIT acervus SICUT SERIES DE NUMERUS.
+    ACCIPIT summitas SICUT ACUS<NUMERUS>.
+    ACCIPIT valor SICUT NUMERUS.
+
+    acervus[CONTENTUM(summitas)] = valor.
+    CONTENTUM(summitas) = CONTENTUM(summitas) + 1.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO AUFER REDDENS NUMERUS.
+    ACCIPIT acervus SICUT SERIES DE NUMERUS.
+    ACCIPIT summitas SICUT ACUS<NUMERUS>.
+
+    CONTENTUM(summitas) = CONTENTUM(summitas) - 1.
+    REDDE acervus[CONTENTUM(summitas)].
+FIN-FUNCTIO.
+
+FUNCTIO DISCERNE_VERBUM REDDENS NUMERUS.
+    ACCIPIT verbum SICUT SERIES DE LITTERA.
+    ACCIPIT mensura SICUT NUMERUS.
+
+    SI mensura == 7 && verbum[0] == 70 && verbum[1] == 85 && verbum[2] == 78 && verbum[3] == 67 && verbum[4] == 84 && verbum[5] == 73 && verbum[6] == 79 TUNC
+        REDDE 1.
+    FIN-SI.
+    SI mensura == 11 && verbum[0] == 70 && verbum[1] == 73 && verbum[2] == 78 && verbum[3] == 45 && verbum[4] == 70 && verbum[5] == 85 && verbum[6] == 78 && verbum[7] == 67 && verbum[8] == 84 && verbum[9] == 73 && verbum[10] == 79 TUNC
+        REDDE 5.
+    FIN-SI.
+    SI mensura == 2 && verbum[0] == 83 && verbum[1] == 73 TUNC
+        REDDE 3.
+    FIN-SI.
+    SI mensura == 6 && verbum[0] == 70 && verbum[1] == 73 && verbum[2] == 78 && verbum[3] == 45 && verbum[4] == 83 && verbum[5] == 73 TUNC
+        REDDE 6.
+    FIN-SI.
+    SI mensura == 3 && verbum[0] == 68 && verbum[1] == 85 && verbum[2] == 77 TUNC
+        REDDE 7.
+    FIN-SI.
+    SI mensura == 7 && verbum[0] == 70 && verbum[1] == 73 && verbum[2] == 78 && verbum[3] == 45 && verbum[4] == 68 && verbum[5] == 85 && verbum[6] == 77 TUNC
+        REDDE 8.
+    FIN-SI.
+    SI mensura == 7 && verbum[0] == 68 && verbum[1] == 69 && verbum[2] == 67 && verbum[3] == 76 && verbum[4] == 65 && verbum[5] == 82 && verbum[6] == 65 TUNC
+        REDDE 2.
+    FIN-SI.
+    SI mensura == 5 && verbum[0] == 82 && verbum[1] == 69 && verbum[2] == 68 && verbum[3] == 68 && verbum[4] == 69 TUNC
+        REDDE 4.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("arbor_vindex4.vindex").
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 6000).
+    CLAUDE(fd).
+
+    DECLARA verbum SICUT SERIES DE LITTERA CAPACITAS 64.
+    DECLARA acervus SICUT SERIES DE NUMERUS CAPACITAS 128.
+    DECLARA summitas SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+
+    DECLARA nodi_typus SICUT SERIES DE NUMERUS CAPACITAS 200.
+    DECLARA nodi_parens SICUT SERIES DE NUMERUS CAPACITAS 200.
+    DECLARA nodi_signum SICUT SERIES DE NUMERUS CAPACITAS 200.
+    DECLARA numerus_nodorum SICUT NUMERUS VALENS 0.
+    DECLARA attende_nomen SICUT NUMERUS VALENS 0.
+    DECLARA nodus_attente SICUT NUMERUS VALENS 0.
+
+    DUM i < n PERFICE
+        DECLARA c SICUT NUMERUS VALENS OCTETUS(i).
+        SI (c >= 65 && c <= 90) || (c >= 97 && c <= 122) TUNC
+            DECLARA mensura SICUT NUMERUS VALENS 0.
+            DUM i < n && ((OCTETUS(i) >= 65 && OCTETUS(i) <= 90) || (OCTETUS(i) >= 97 && OCTETUS(i) <= 122) || (OCTETUS(i) == 45 && i + 1 < n && ((OCTETUS(i + 1) >= 65 && OCTETUS(i + 1) <= 90) || (OCTETUS(i + 1) >= 97 && OCTETUS(i + 1) <= 122)))) PERFICE
+                verbum[mensura] = OCTETUS(i).
+                mensura = mensura + 1.
+                i = i + 1.
+            FIN-DUM.
+
+            DECLARA typus SICUT NUMERUS VALENS 0.
+
+            SI attende_nomen == 1 TUNC
+                nodi_signum[nodus_attente] = SIGNUM_VERBI(verbum, mensura).
+                attende_nomen = 0.
+            ALITER
+                typus = DISCERNE_VERBUM(verbum, mensura).
+
+                SI typus == 1 || typus == 3 || typus == 7 TUNC
+                    DECLARA parens SICUT NUMERUS VALENS 0.
+                    parens = 0 - 1.
+                    SI summitas > 0 TUNC
+                        parens = acervus[summitas - 1].
+                    FIN-SI.
+
+                    nodi_typus[numerus_nodorum] = typus.
+                    nodi_parens[numerus_nodorum] = parens.
+                    IMPONE(acervus, SEDES(summitas), numerus_nodorum).
+                    numerus_nodorum = numerus_nodorum + 1.
+
+                    SI typus == 1 TUNC
+                        attende_nomen = 1.
+                        nodus_attente = numerus_nodorum - 1.
+                    FIN-SI.
+                FIN-SI.
+
+                SI typus == 5 || typus == 6 || typus == 8 TUNC
+                    SI summitas > 0 TUNC
+                        DECLARA ignoratum SICUT NUMERUS VALENS AUFER(acervus, SEDES(summitas)).
+                    FIN-SI.
+                FIN-SI.
+
+                SI typus == 2 || typus == 4 TUNC
+                    DECLARA parens_feuille SICUT NUMERUS VALENS 0.
+                    parens_feuille = 0 - 1.
+                    SI summitas > 0 TUNC
+                        parens_feuille = acervus[summitas - 1].
+                    FIN-SI.
+
+                    nodi_typus[numerus_nodorum] = typus.
+                    nodi_parens[numerus_nodorum] = parens_feuille.
+                    numerus_nodorum = numerus_nodorum + 1.
+
+                    SI typus == 2 TUNC
+                        attende_nomen = 1.
+                        nodus_attente = numerus_nodorum - 1.
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+        ALITER
+            i = i + 1.
+        FIN-SI.
+    FIN-DUM.
+
+    PROCLAMA numerus_nodorum.
+
+    DECLARA duplicatum SICUT NUMERUS VALENS 0.
+    DECLARA a SICUT NUMERUS VALENS 0.
+    DUM a < numerus_nodorum PERFICE
+        SI nodi_typus[a] == 1 TUNC
+            DECLARA b SICUT NUMERUS VALENS a + 1.
+            DUM b < numerus_nodorum PERFICE
+                SI nodi_typus[b] == 1 && nodi_signum[b] == nodi_signum[a] TUNC
+                    duplicatum = duplicatum + 1.
+                FIN-SI.
+                b = b + 1.
+            FIN-DUM.
+        FIN-SI.
+        a = a + 1.
+    FIN-DUM.
+
+    SI duplicatum > 0 TUNC
+        PROCLAMA "ERROR: nomina functionum duplicata inventa".
+    ALITER
+        PROCLAMA "OK: omnia nomina functionum unica sunt".
+    FIN-SI.
+    PROCLAMA duplicatum.
+
+    REDDE 0.
+FIN-FUNCTIO.

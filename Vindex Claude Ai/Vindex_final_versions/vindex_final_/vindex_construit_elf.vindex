@@ -1,0 +1,123 @@
+FUNCTIO SCRIBE_U16 REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_U32 REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    codex[indice + 2] = (valor >> 16) & 255.
+    codex[indice + 3] = (valor >> 24) & 255.
+    REDDE indice + 4.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_U64 REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    codex[indice + 2] = (valor >> 16) & 255.
+    codex[indice + 3] = (valor >> 24) & 255.
+    codex[indice + 4] = (valor >> 32) & 255.
+    codex[indice + 5] = (valor >> 40) & 255.
+    codex[indice + 6] = (valor >> 48) & 255.
+    codex[indice + 7] = (valor >> 56) & 255.
+    REDDE indice + 8.
+FIN-FUNCTIO.
+
+FUNCTIO CONSTRUE_CAPUT_ELF REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT mensura_codicis SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS 4194304.
+    DECLARA jeter SICUT NUMERUS VALENS 0.
+
+    codex[0] = 127.
+    codex[1] = 69.
+    codex[2] = 76.
+    codex[3] = 70.
+    codex[4] = 2.
+    codex[5] = 1.
+    codex[6] = 1.
+    codex[7] = 0.
+
+    jeter = SCRIBE_U16(codex, 16, 2).
+    jeter = SCRIBE_U16(codex, 18, 62).
+    jeter = SCRIBE_U32(codex, 20, 1).
+    jeter = SCRIBE_U64(codex, 24, basis + 120).
+    jeter = SCRIBE_U64(codex, 32, 64).
+    jeter = SCRIBE_U64(codex, 40, 0).
+    jeter = SCRIBE_U32(codex, 48, 0).
+    jeter = SCRIBE_U16(codex, 52, 64).
+    jeter = SCRIBE_U16(codex, 54, 56).
+    jeter = SCRIBE_U16(codex, 56, 1).
+    jeter = SCRIBE_U16(codex, 58, 0).
+    jeter = SCRIBE_U16(codex, 60, 0).
+    jeter = SCRIBE_U16(codex, 62, 0).
+
+    jeter = SCRIBE_U32(codex, 64, 1).
+    jeter = SCRIBE_U32(codex, 68, 7).
+    jeter = SCRIBE_U64(codex, 72, 0).
+    jeter = SCRIBE_U64(codex, 80, basis).
+    jeter = SCRIBE_U64(codex, 88, basis).
+    DECLARA mensura_totalis SICUT NUMERUS VALENS 120 + mensura_codicis.
+    jeter = SCRIBE_U64(codex, 96, mensura_totalis).
+    jeter = SCRIBE_U64(codex, 104, mensura_totalis).
+    jeter = SCRIBE_U64(codex, 112, 4096).
+
+    REDDE 120.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_ONERA REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT registre SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI registre >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    codex[indice] = rex.
+    codex[indice + 1] = 184 + (registre & 7).
+    codex[indice + 2] = valor & 255.
+    codex[indice + 3] = (valor >> 8) & 255.
+    codex[indice + 4] = (valor >> 16) & 255.
+    codex[indice + 5] = (valor >> 24) & 255.
+    codex[indice + 6] = (valor >> 32) & 255.
+    codex[indice + 7] = (valor >> 40) & 255.
+    codex[indice + 8] = (valor >> 48) & 255.
+    codex[indice + 9] = (valor >> 56) & 255.
+    REDDE indice + 10.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_VOCA_NUCLEUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT SERIES DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    codex[indice] = 15.
+    codex[indice + 1] = 5.
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA codex SICUT SERIES DE NUMERUS CAPACITAS 200.
+
+    DECLARA pos SICUT NUMERUS VALENS CONSTRUE_CAPUT_ELF(codex, 22).
+    pos = COMPONE_ONERA(codex, pos, 0, 60).
+    pos = COMPONE_ONERA(codex, pos, 7, 88).
+    pos = COMPONE_VOCA_NUCLEUM(codex, pos).
+
+    DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("factum_omnino_a_vindex").
+    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd, codex, pos).
+    CLAUDE(fd).
+
+    PROCLAMA pos.
+
+    REDDE 0.
+FIN-FUNCTIO.

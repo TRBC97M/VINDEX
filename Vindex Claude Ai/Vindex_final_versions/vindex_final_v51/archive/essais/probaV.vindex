@@ -1,0 +1,13 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA x SICUT NUMERUS VALENS 0.
+    DECLARA s SICUT NUMERUS VALENS 0.
+    DUM x - 10 PERFICE
+        x = x + 1.
+        SI x - 5 TUNC
+            s = s + x.
+        ALITER
+            s = s + 100.
+        FIN-SI.
+    FIN-DUM.
+    REDDE s.
+FIN-FUNCTIO.

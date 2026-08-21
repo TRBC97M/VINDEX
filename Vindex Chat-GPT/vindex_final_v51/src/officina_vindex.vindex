@@ -1,0 +1,189 @@
+// VINDEX Officina 0.36 — applicatio Formis declarativis aedificata.
+
+IMPORTA "bibliotheca/graphica.vindex".
+
+FORMA ReceptaculumViae.
+    CAMPUS c00 SICUT NUMERUS. CAMPUS c01 SICUT NUMERUS.
+    CAMPUS c02 SICUT NUMERUS. CAMPUS c03 SICUT NUMERUS.
+    CAMPUS c04 SICUT NUMERUS. CAMPUS c05 SICUT NUMERUS.
+    CAMPUS c06 SICUT NUMERUS. CAMPUS c07 SICUT NUMERUS.
+    CAMPUS c08 SICUT NUMERUS. CAMPUS c09 SICUT NUMERUS.
+    CAMPUS c10 SICUT NUMERUS. CAMPUS c11 SICUT NUMERUS.
+    CAMPUS c12 SICUT NUMERUS. CAMPUS c13 SICUT NUMERUS.
+    CAMPUS c14 SICUT NUMERUS. CAMPUS c15 SICUT NUMERUS.
+    CAMPUS c16 SICUT NUMERUS. CAMPUS c17 SICUT NUMERUS.
+    CAMPUS c18 SICUT NUMERUS. CAMPUS c19 SICUT NUMERUS.
+    CAMPUS c20 SICUT NUMERUS. CAMPUS c21 SICUT NUMERUS.
+    CAMPUS c22 SICUT NUMERUS. CAMPUS c23 SICUT NUMERUS.
+    CAMPUS c24 SICUT NUMERUS. CAMPUS c25 SICUT NUMERUS.
+    CAMPUS c26 SICUT NUMERUS. CAMPUS c27 SICUT NUMERUS.
+    CAMPUS c28 SICUT NUMERUS. CAMPUS c29 SICUT NUMERUS.
+    CAMPUS c30 SICUT NUMERUS. CAMPUS c31 SICUT NUMERUS.
+    CAMPUS c32 SICUT NUMERUS. CAMPUS c33 SICUT NUMERUS.
+    CAMPUS c34 SICUT NUMERUS. CAMPUS c35 SICUT NUMERUS.
+    CAMPUS c36 SICUT NUMERUS. CAMPUS c37 SICUT NUMERUS.
+    CAMPUS c38 SICUT NUMERUS. CAMPUS c39 SICUT NUMERUS.
+    CAMPUS c40 SICUT NUMERUS. CAMPUS c41 SICUT NUMERUS.
+    CAMPUS c42 SICUT NUMERUS. CAMPUS c43 SICUT NUMERUS.
+    CAMPUS c44 SICUT NUMERUS. CAMPUS c45 SICUT NUMERUS.
+    CAMPUS c46 SICUT NUMERUS. CAMPUS c47 SICUT NUMERUS.
+    CAMPUS c48 SICUT NUMERUS. CAMPUS c49 SICUT NUMERUS.
+    CAMPUS c50 SICUT NUMERUS. CAMPUS c51 SICUT NUMERUS.
+    CAMPUS c52 SICUT NUMERUS. CAMPUS c53 SICUT NUMERUS.
+    CAMPUS c54 SICUT NUMERUS. CAMPUS c55 SICUT NUMERUS.
+    CAMPUS c56 SICUT NUMERUS. CAMPUS c57 SICUT NUMERUS.
+    CAMPUS c58 SICUT NUMERUS. CAMPUS c59 SICUT NUMERUS.
+    CAMPUS c60 SICUT NUMERUS. CAMPUS c61 SICUT NUMERUS.
+    CAMPUS c62 SICUT NUMERUS. CAMPUS c63 SICUT NUMERUS.
+FIN-FORMA.
+
+FUNCTIO CREA_VIAM_C REDDENS NUMERUS.
+    ACCIPIT via SICUT ORDO DE LITTERA.
+    ACCIPIT longitudo SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS RESERVA(ReceptaculumViae).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        SCRIBE_OCTETUM_AB(p + i, via[i]).
+        i = i + 1.
+    FIN-DUM.
+    SCRIBE_OCTETUM_AB(p + longitudo, 0).
+    REDDE p.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+    DECLARA envp SICUT ACUS<NUMERUS> VALENS argv + argc + 1.
+    DECLARA eventum_compilationis SICUT NUMERUS VALENS GRAPHICA_EVENTUM_COMPILATIONIS().
+    DECLARA eventum_executionis SICUT NUMERUS VALENS GRAPHICA_EVENTUM_EXECUTIONIS().
+    DECLARA eventum_clausurae SICUT NUMERUS VALENS GRAPHICA_EVENTUM_CLAUSURAE().
+    DECLARA responsum_rectum SICUT NUMERUS VALENS GRAPHICA_RESPONSUM_RECTUM().
+    DECLARA responsum_erratum SICUT NUMERUS VALENS GRAPHICA_RESPONSUM_ERRATUM().
+
+    SI argc < 4 TUNC
+        PROCLAMA "USUS: officina_vindex <pons_graphicus> <compilator> <forma> [fons.vindex]".
+        REDDE 64.
+    FIN-SI.
+
+    DECLARA textus_servitoris SICUT ORDO DE LITTERA CAPACITAS 16.
+    textus_servitoris[0]='-'. textus_servitoris[1]='-'.
+    textus_servitoris[2]='s'. textus_servitoris[3]='e'. textus_servitoris[4]='r'.
+    textus_servitoris[5]='v'. textus_servitoris[6]='i'. textus_servitoris[7]='t'.
+    textus_servitoris[8]='o'. textus_servitoris[9]='r'.
+    DECLARA via_servitoris SICUT NUMERUS VALENS CREA_VIAM_C(textus_servitoris, 10).
+
+    DECLARA textus_exsecutabilis SICUT ORDO DE LITTERA CAPACITAS 32.
+    textus_exsecutabilis[0]='.'. textus_exsecutabilis[1]='/'.
+    textus_exsecutabilis[2]='p'. textus_exsecutabilis[3]='r'.
+    textus_exsecutabilis[4]='o'. textus_exsecutabilis[5]='g'.
+    textus_exsecutabilis[6]='r'. textus_exsecutabilis[7]='a'.
+    textus_exsecutabilis[8]='m'. textus_exsecutabilis[9]='m'.
+    textus_exsecutabilis[10]='a'. textus_exsecutabilis[11]='.'.
+    textus_exsecutabilis[12]='e'. textus_exsecutabilis[13]='l'.
+    textus_exsecutabilis[14]='f'.
+    DECLARA via_exsecutabilis SICUT NUMERUS VALENS CREA_VIAM_C(textus_exsecutabilis, 15).
+
+    DECLARA textus_fontis SICUT ORDO DE LITTERA CAPACITAS 40.
+    textus_fontis[0]='.'. textus_fontis[1]='v'. textus_fontis[2]='i'.
+    textus_fontis[3]='n'. textus_fontis[4]='d'. textus_fontis[5]='e'. textus_fontis[6]='x'.
+    textus_fontis[7]='-'. textus_fontis[8]='g'. textus_fontis[9]='r'.
+    textus_fontis[10]='a'. textus_fontis[11]='p'. textus_fontis[12]='h'.
+    textus_fontis[13]='i'. textus_fontis[14]='c'. textus_fontis[15]='a'.
+    textus_fontis[16]='-'. textus_fontis[17]='v'. textus_fontis[18]='a'.
+    textus_fontis[19]='l'. textus_fontis[20]='o'. textus_fontis[21]='r'.
+    textus_fontis[22]='-'. textus_fontis[23]='f'. textus_fontis[24]='o'.
+    textus_fontis[25]='n'. textus_fontis[26]='s'.
+    DECLARA via_fontis SICUT NUMERUS VALENS CREA_VIAM_C(textus_fontis, 27).
+
+    DECLARA argumenta_pontis SICUT ORDO DE NUMERUS CAPACITAS 6.
+    argumenta_pontis[0] = CONTENTUM(argv + 1).
+    argumenta_pontis[1] = via_servitoris.
+    argumenta_pontis[2] = CONTENTUM(argv + 3).
+    SI argc >= 5 TUNC
+        argumenta_pontis[3] = CONTENTUM(argv + 4).
+        argumenta_pontis[4] = 0.
+    ALITER
+        argumenta_pontis[3] = 0.
+    FIN-SI.
+
+    DECLARA status_pontis SICUT NUMERUS VALENS CURRE(argumenta_pontis, envp, 0 - 1).
+    SI status_pontis != 0 TUNC
+        PROCLAMA "ERRATUM: pons graphicae declarativae incipere non potest".
+        REDDE status_pontis.
+    FIN-SI.
+
+    DECLARA canalis_eventorum SICUT NUMERUS VALENS APERI_LEGERE(".vindex-graphica-ad-vindex").
+    DECLARA canalis_responsorum SICUT NUMERUS VALENS APERI_SCRIBERE(".vindex-graphica-ab-vindex").
+    SI canalis_eventorum < 0 || canalis_responsorum < 0 TUNC
+        PROCLAMA "ERRATUM: canales graphici aperiri non possunt".
+        REDDE 73.
+    FIN-SI.
+
+    DECLARA responsum SICUT ORDO DE LITTERA CAPACITAS 8.
+    DECLARA argumenta_compilatoris SICUT ORDO DE NUMERUS CAPACITAS 5.
+    DECLARA argumenta_programmatis SICUT ORDO DE NUMERUS CAPACITAS 3.
+    DECLARA persevera SICUT NUMERUS VALENS 1.
+
+    DUM persevera == 1 PERFICE
+        DECLARA n_eventorum SICUT NUMERUS VALENS LEGE(canalis_eventorum, 1).
+        SI n_eventorum <= 0 TUNC
+            persevera = 0.
+        ALITER
+            DECLARA eventum SICUT NUMERUS VALENS OCTETUS(0).
+            SI eventum == eventum_clausurae TUNC
+                persevera = 0.
+            ALITER
+                SI eventum == 78 || eventum == 79 || eventum == 83 TUNC
+                    responsum[0] = eventum.
+                    DECLARA missum_fasciculi SICUT NUMERUS VALENS MITTE(canalis_responsorum, responsum, 1).
+                ALITER
+                    SI eventum == eventum_compilationis || eventum == eventum_executionis TUNC
+                        SI eventum == eventum_compilationis TUNC
+                            responsum[0] = 99.
+                        ALITER
+                            responsum[0] = 120.
+                        FIN-SI.
+                        DECLARA missum_initii SICUT NUMERUS VALENS MITTE(canalis_responsorum, responsum, 1).
+
+                        DECLARA fd_relationis SICUT NUMERUS VALENS APERI_SCRIBERE(".vindex-graphica-relatio").
+                        argumenta_compilatoris[0] = CONTENTUM(argv + 2).
+                        argumenta_compilatoris[1] = via_fontis.
+                        argumenta_compilatoris[2] = via_exsecutabilis.
+                        argumenta_compilatoris[3] = 0.
+                        DECLARA status_compilationis SICUT NUMERUS VALENS CURRE(argumenta_compilatoris, envp, fd_relationis).
+                        DECLARA relatio_clausa SICUT NUMERUS VALENS CLAUDE(fd_relationis).
+
+                        SI status_compilationis == 0 TUNC
+                            DECLARA permissum SICUT NUMERUS VALENS EXSEQUERE("chmod 755 ./programma.elf").
+                            SI eventum == eventum_executionis && permissum == 0 TUNC
+                                DECLARA fd_executionis SICUT NUMERUS VALENS APERI_SCRIBERE(".vindex-graphica-relatio").
+                                argumenta_programmatis[0] = via_exsecutabilis.
+                                argumenta_programmatis[1] = 0.
+                                DECLARA status_executionis SICUT NUMERUS VALENS CURRE(argumenta_programmatis, envp, fd_executionis).
+                                DECLARA executio_clausa SICUT NUMERUS VALENS CLAUDE(fd_executionis).
+                                SI status_executionis == 0 TUNC
+                                    responsum[0] = responsum_rectum.
+                                ALITER
+                                    responsum[0] = responsum_erratum.
+                                FIN-SI.
+                            ALITER
+                                SI permissum == 0 TUNC
+                                    responsum[0] = responsum_rectum.
+                                ALITER
+                                    responsum[0] = responsum_erratum.
+                                FIN-SI.
+                            FIN-SI.
+                        ALITER
+                            responsum[0] = responsum_erratum.
+                        FIN-SI.
+                        DECLARA missum SICUT NUMERUS VALENS MITTE(canalis_responsorum, responsum, 1).
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-DUM.
+
+    DECLARA clausum_eventorum SICUT NUMERUS VALENS CLAUDE(canalis_eventorum).
+    DECLARA clausum_responsorum SICUT NUMERUS VALENS CLAUDE(canalis_responsorum).
+    REDDE 0.
+FIN-FUNCTIO.

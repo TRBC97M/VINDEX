@@ -1,0 +1,14 @@
+window { background-color: #07110d; color: #d9eadf; }
+#caput { background-color: #0b1b12; border: 1px solid #285a3b; padding: 12px; }
+#marca { color: #8effaa; font-family: monospace; font-size: 18pt; font-weight: bold; }
+#via { color: #82a98f; font-family: monospace; }
+button { background-image: none; background-color: #10271a; color: #d7f5df;
+  border: 1px solid #39734c; border-radius: 3px; padding: 8px 14px; font-weight: bold; }
+button:hover { background-color: #1a3b28; border-color: #68b57d; }
+button:active { background-color: #245235; }
+#fons, #fons text { background-color: #030806; color: #ccf3d7;
+  caret-color: #7cff9d; font-family: monospace; font-size: 12pt; }
+#exitus, #exitus text { background-color: #07100b; color: #8fcca0;
+  font-family: monospace; font-size: 10pt; }
+#status { background-color: #0b1b12; color: #9fc9aa; padding: 7px;
+  border-top: 1px solid #285a3b; }

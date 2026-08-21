@@ -1,0 +1,27 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("exemplum_verbi.vindex").
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 2000).
+    CLAUDE(fd).
+
+    DECLARA verbum SICUT ORDO DE LITTERA CAPACITAS 64.
+    DECLARA mensura SICUT NUMERUS VALENS 0.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < n PERFICE
+        DECLARA c SICUT NUMERUS VALENS OCTETUS(i).
+        SI (c >= 65 && c <= 90) || (c >= 97 && c <= 122) TUNC
+            verbum[mensura] = c.
+            mensura = mensura + 1.
+        ALITER
+            SI mensura > 0 TUNC
+                DESINE.
+            FIN-SI.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+
+    SCRIBE verbum CAPACITAS mensura.
+    PROCLAMA mensura.
+
+    REDDE 0.
+FIN-FUNCTIO.

@@ -1,0 +1,6 @@
+IMPORTA "tests/casus/bibliotheca.vindex".
+
+FUNCTIO CUBUS REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    REDDE x * QUADRATUM(x).
+FIN-FUNCTIO.

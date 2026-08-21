@@ -1,0 +1,17 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("exemplum_lectoris2.vindex").
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 2000).
+    CLAUDE(fd).
+
+    DECLARA computus SICUT NUMERUS VALENS 0.
+
+    PER i AB 0 AD n - 7 PERFICE
+        SI OCTETUS(i) == 70 && OCTETUS(i + 1) == 85 && OCTETUS(i + 2) == 78 && OCTETUS(i + 3) == 67 && OCTETUS(i + 4) == 84 && OCTETUS(i + 5) == 73 && OCTETUS(i + 6) == 79 TUNC
+            computus = computus + 1.
+        FIN-SI.
+    FIN-PER.
+
+    PROCLAMA computus.
+
+    REDDE 0.
+FIN-FUNCTIO.

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Initiator portabilis applicationis VINDEX Salutatio.
+
+set -eu
+
+INITIATOR="$(readlink -f "$0" 2>/dev/null || printf '%s' "$0")"
+RADIX="$(cd "$(dirname "$INITIATOR")" && pwd)"
+DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+PROJECTUM="${VINDEX_SALUTATIO_DIR:-$DATA_HOME/vindex-salutatio}"
+
+if [ ! -x "$RADIX/salutatio_vindex" ] || [ ! -x "$RADIX/vindex_graphica" ]; then
+    printf '%s\n' "ERRATUM: fasciculus Salutationis imperfectus est." >&2
+    exit 66
+fi
+
+mkdir -p "$PROJECTUM"
+cd "$PROJECTUM"
+exec "$RADIX/salutatio_vindex" "$RADIX/vindex_graphica" "$RADIX/formae/salutatio.forma"
