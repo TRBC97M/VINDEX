@@ -4,7 +4,8 @@ Receptaculum codicis machinalis crescibile, punctum fixum et regressiones hic co
 
 ```text
 RECTE: codex descriptorio crescibili utitur; parametri=82, scripturae=260, lectiones=0.
-MENSURA FONTIS POST CODEX: 220481 octeta.
+RECTE: descriptorium codicis XXIV octeta dynamice reservat.
+MENSURA FONTIS POST CODEX: 220615 octeta.
 STATUS G1: 0.
 STATUS G2: 0.
 STATUS G3: 0.
@@ -35,12 +36,11 @@ RECTE  nativum-principalis
 RECTE  nativum-functio
 RECTE  nativum-importa
 RECTE  auto-hospitium
-ERRATUM  amorsa-python
-          I. Amorsa Python... Compilatum: /tmp/tmp.zDVO1gHeiy/compilator_amorsa_python II. Generatio nativa prima... ./bootstrap/reconstruit.sh: line 20:  2446 Segmentation fault      (core dumped) "$AMORSA" "$FONS" "$GENERATIO_1" 
+RECTE  amorsa-python
 RECTE  officina
 RECTE  systema
 
-20 probationes rectae; 1 errata.
-PROBATIONES REGRESSIONALES: status=1.
-ERRATUM: migratio codicis dynamici nondum canonica est; status=1.
+21 probationes rectae; 0 errata.
+PROBATIONES REGRESSIONALES: status=0.
+RECTE: limes codicis 300000 remotus est.
 ```
