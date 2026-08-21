@@ -52,7 +52,9 @@ Litteralia possunt in regione immutabili binarii vivere. Resultata concatenation
 
 ## Gradus operis
 
-Primus gradus exsecutionis ad litteralia, argumenta functionum, `PROCLAMA` et `LONGITUDO` spectat. `examples/textus_litterale_052.vindex` hunc gradum probat. Probationes experimentales non amplius ad omnem mutationem excitantur; una probatio deliberata post mutationem cohaerentem auto-hospitium et exitum programmatis comprobare debet.
+Primus gradus exsecutionis in duas probationes minimas divisus est. `examples/textus_litterale_052.vindex` litterale TEXTUS et `PROCLAMA` probat; `examples/textus_longitudo_052.vindex` parametrum TEXTUS et `LONGITUDO` per bibliothecam probat. Ita vitium unius partis alteram non obscurat.
+
+In investigatione auto-hospitii apparuit spatium temporarium internum `MITTE` nimis prope variabiles locales compilatoris positum esse cum binarium crescebat. Correctio 0.52 regionem temporariam longius in pila collocat, ut magnitudo compilatoris a falsa conditione `exsecutabile imperfecte scriptum est` non coerceatur.
 
 Concatenatio et comparatio secundum contentum postquam hic gradus stabilis est addendae sunt.
 
