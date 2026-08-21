@@ -34,6 +34,18 @@ jobs:
           printf 'Magnitudo binarii distributi: '
           stat -c '%s' ./compilator_vindex
 
+      - name: LONGITUDO sola proba
+        run: |
+          VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          git checkout -- "$VIA"
+          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_longitudinem_052.py'
+          printf 'Magnitudo cum LONGITUDO sola: '
+          wc -c < "$VIA"
+          "$COMP" "$VIA" /tmp/compilator_longitudo
+          printf '%s\n' 'RECTE: LONGITUDO sola compilata est.'
+          git checkout -- "$VIA"
+
       - name: Gradus I sub vestigio proba
         run: |
           VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
