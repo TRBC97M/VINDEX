@@ -1,16 +1,19 @@
-# VINDEX 0.52 — Relatio emendationis canonicae MITTE
+# VINDEX 0.52 — Relatio gradus IV TEXTUS
 
-Bufferum internum `MITTE` ad -6500000 remotum est, deinde auto-hospitium, punctum fixum et probationes minimae TEXTUS comprobata sunt.
+Concatenatio, comparatio secundum contentum, auto-hospitium, punctum fixum et regressiones hic comprobantur.
 
 ```text
-RECTE: bufferum MITTE ab -6000000 ad -6500000 motum est.
-ERRATUM: exsecutabile imperfecte scriptum est
-STATUS GRADUS I: 74.
-ERRATUM: exsecutabile imperfecte scriptum est
-STATUS GRADUS II: 74.
-STATUS GRADUS III: 0.
-RECTE: gradus III status 0 reddit et punctum fixum obtentum est.
-TEXTUS LITTERALE: compilatio=0 exsecutio=0 exitus=[Sylvia].
-TEXTUS LONGITUDO: compilatio=0 exsecutio=0 exitus=[6].
-RECTE: litterale, PROCLAMA et LONGITUDO transeunt.
+RECTE: spatium MITTE iam remotum est.
+RECTE: gradus IV TEXTUS applicatus est.
+RECTE: gradus IV TEXTUS statice congruit; maxima functio ANALYSA_FACTOR 99 loca habet.
+RECTE: functiones auxiliares 103/150; fons 209259/212999 octeta.
+STATUS G1: 0.
+STATUS G2: 0.
+STATUS G3: 0.
+RECTE: auto-hospitium et punctum fixum gradus IV transeunt.
+LITTERALE: status=0 exitus=[Sylvia].
+LONGITUDO: status=0 exitus=[6].
+CONCATENATIO: status=0 exitus=[Salve, Sylvia.
+14].
+ERRATUM: gradus IV TEXTUS nondum canonicus est; status=1.
 ```
