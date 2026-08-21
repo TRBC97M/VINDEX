@@ -86,10 +86,19 @@ jobs:
           cd 'Vindex Chat-GPT/vindex_final_v51'
           chmod +x ./compilator_vindex
 
-          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
+          strace -f -e trace=write,writev -o /tmp/vestigium_scripturae \
+            ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
           STATUS=$?
           if [ "$STATUS" -ne 0 ]; then
             printf 'PRIMUS GRADUS AUTO-HOSPITII CECIDIT: %s.\n' "$STATUS" >> "$RELATIO"
+            if [ -f /tmp/compilator_vindex_052_1 ]; then
+              printf 'OCTETA RE VERA SCRIPTA: ' >> "$RELATIO"
+              stat -c '%s' /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
+              printf 'OCTETA A CAPITE ELF DECLARATA: ' >> "$RELATIO"
+              od -An -tu8 -j96 -N8 /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
+            fi
+            printf '%s\n' '--- VESTIGIUM SCRIPTURAE ---' >> "$RELATIO"
+            tail -n 12 /tmp/vestigium_scripturae >> "$RELATIO" 2>&1
             conserva_relationem 0
           fi
           chmod +x /tmp/compilator_vindex_052_1
