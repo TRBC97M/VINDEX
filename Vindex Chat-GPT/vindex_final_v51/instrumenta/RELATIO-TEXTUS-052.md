@@ -1,12 +1,17 @@
-# VINDEX 0.52 — Relatio emendationis MITTE
+# VINDEX 0.52 — Relatio diagnostica MITTE emendati
 
-Collisio inter bufferum temporarium `MITTE` et variabilem `pos` examinatur.
+Bufferum `MITTE` ad -6500000 motum est; valor `pos` circa scripturam observatur.
 
 ```text
 RECTE: bufferum MITTE ab -6000000 ad -6500000 motum est.
 ERRATUM: exsecutabile imperfecte scriptum est
-MONITUM: compilator vetus adhuc codicem 74 reddit; exsecutabile tamen integrum est.
+COMPILATIO DIAGNOSTICAE A COMPILATORE VETERE: 74.
+--- VALORES: ante MITTE, scriptum, pos post MITTE, pos post CLAUDE ---
+194659
+194659
+3142057984
+3142057984
 ERRATUM: exsecutabile imperfecte scriptum est
-STATUS GRADUS II: 74.
-ERRATUM: compilator emendatus adhuc scripturam falsam refert.
+STATUS COMPILATORIS EMENDATI: 74.
+MAGNITUDO EXSECUTABILIS: 194659
 ```
