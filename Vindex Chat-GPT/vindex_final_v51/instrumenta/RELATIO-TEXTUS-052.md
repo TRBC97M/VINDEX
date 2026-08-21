@@ -1,17 +1,14 @@
-# VINDEX 0.52 — Relatio diagnostica MITTE emendati
+# VINDEX 0.52 — Relatio immediatorum MITTE
 
-Bufferum `MITTE` ad -6500000 motum est; valor `pos` circa scripturam observatur.
+Immediata intervallorum in fonte et binario generato numerantur.
 
 ```text
 RECTE: bufferum MITTE ab -6000000 ad -6500000 motum est.
+FONS -6000000: 3
+FONS -6500000: 2
 ERRATUM: exsecutabile imperfecte scriptum est
-COMPILATIO DIAGNOSTICAE A COMPILATORE VETERE: 74.
---- VALORES: ante MITTE, scriptum, pos post MITTE, pos post CLAUDE ---
-194659
-194659
-3142057984
-3142057984
-ERRATUM: exsecutabile imperfecte scriptum est
-STATUS COMPILATORIS EMENDATI: 74.
-MAGNITUDO EXSECUTABILIS: 194659
+STATUS COMPILATIONIS: 74.
+BINARIUM immediata -6000000: 2
+BINARIUM immediata -6500000: 0
+MAGNITUDO BINARII: 194659
 ```
