@@ -5,10 +5,6 @@ on:
   push:
     branches:
       - chatgpt/vindex-053-compilator-dynamicus
-    paths:
-      - '.github/workflows/vindex-053-functiones-dynamicae-unica.yml'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_formas_dynamicas_053.py'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/genera_probationem_formarum_053.py'
 
 permissions:
   contents: write
