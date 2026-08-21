@@ -15,7 +15,7 @@ textus = FONS.read_text(encoding="utf-8")
 # `CAPACITAS` verbum linguae reservatum est; amorsa Python idem nomen
 # minusculum quoque signo CAPACITAS interpretatur. Nomen locale mutatur.
 textus, numerus = re.subn(r"\bcapacitas\b", "limen_locorum", textus)
-if numerus != 5:
+if numerus != 7:
     raise SystemExit(f"ERRATUM: nomen reservatum capacitas {numerus} vicibus mutatum est")
 
 if re.search(r"DECLARA\s+capacitas\s+SICUT", textus):
