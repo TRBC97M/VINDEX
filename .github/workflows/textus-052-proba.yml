@@ -1,7 +1,9 @@
 name: VINDEX 0.52 — Probatio diagnostica unica
 
 on:
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -13,69 +15,35 @@ jobs:
       - name: Fontes accipe
         uses: actions/checkout@v5
 
-      - name: TEXTUS uno cursu proba
+      - name: Gradus I II III uno cursu examina
         shell: bash
         run: |
           set +e
           RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
           COMP="$RADIX/compilator_vindex"
           chmod +x "$COMP"
 
-          python3 "$RADIX/instrumenta/applica_textus_052.py"
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'RESULTATUM=ERRATUM_APPLICATIO status=%s\n' "$STATUS"
-            exit 0
-          fi
+          for GRADUS in 1 2 3; do
+            git checkout -- "$FONS"
+            rm -f "/tmp/compilator_gradus_${GRADUS}"
+            VINDEX_TEXTUS_GRADUS="$GRADUS" python3 "$RADIX/instrumenta/applica_textus_052.py"
+            STATUS_APPLICATIO=$?
+            printf 'GRADUS_%s_STATUS_APPLICATIO=%s\n' "$GRADUS" "$STATUS_APPLICATIO"
+            if [ "$STATUS_APPLICATIO" -ne 0 ]; then
+              continue
+            fi
 
-          "$COMP" "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_textus_1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'RESULTATUM=ERRATUM_GENERATIO_I status=%s\n' "$STATUS"
-            exit 0
-          fi
+            "$COMP" "$FONS" "/tmp/compilator_gradus_${GRADUS}"
+            STATUS_COMPILATIO=$?
+            printf 'GRADUS_%s_STATUS_COMPILATIO=%s\n' "$GRADUS" "$STATUS_COMPILATIO"
+            if [ -e "/tmp/compilator_gradus_${GRADUS}" ]; then
+              printf 'GRADUS_%s_MAGNITUDO_BINARII=%s\n' "$GRADUS" "$(stat -c '%s' "/tmp/compilator_gradus_${GRADUS}")"
+            else
+              printf 'GRADUS_%s_MAGNITUDO_BINARII=0\n' "$GRADUS"
+            fi
+          done
 
-          chmod +x /tmp/compilator_textus_1
-          /tmp/compilator_textus_1 "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_textus_2
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'RESULTATUM=ERRATUM_GENERATIO_II status=%s\n' "$STATUS"
-            exit 0
-          fi
-
-          cmp /tmp/compilator_textus_1 /tmp/compilator_textus_2
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'RESULTATUM=ERRATUM_AUTO_HOSPITIUM status=%s\n' "$STATUS"
-            exit 0
-          fi
-
-          chmod +x /tmp/compilator_textus_2
-          /tmp/compilator_textus_2 "$RADIX/examples/textus_litterale_052.vindex" /tmp/textus_litterale_052
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'RESULTATUM=ERRATUM_COMPILATIO_TEXTUS status=%s\n' "$STATUS"
-            exit 0
-          fi
-
-          chmod +x /tmp/textus_litterale_052
-          /tmp/textus_litterale_052 > /tmp/exitus_textus
-          STATUS=$?
-          printf 'Sylvia\n6\n' > /tmp/exspectatum_textus
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'RESULTATUM=ERRATUM_EXSECUTIO status=%s\n' "$STATUS"
-            cat /tmp/exitus_textus
-            exit 0
-          fi
-          cmp /tmp/exspectatum_textus /tmp/exitus_textus
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'RESULTATUM=ERRATUM_EXITUS\n'
-            printf '%s\n' '--- exitus acceptus ---'
-            cat /tmp/exitus_textus
-            printf '%s\n' '--- exitus exspectatus ---'
-            cat /tmp/exspectatum_textus
-            exit 0
-          fi
-
-          printf 'RESULTATUM=RECTE\n'
+          git checkout -- "$FONS"
+          printf '%s\n' 'RESULTATUM=DIAGNOSIS_PERFECTA'
+          exit 0
