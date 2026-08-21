@@ -8,6 +8,9 @@ on:
       - '.github/workflows/textus-052.yml'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
       - 'Vindex Chat-GPT/vindex_final_v51/examples/textus_litterale_052.vindex'
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
