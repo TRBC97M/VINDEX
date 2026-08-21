@@ -1,0 +1,362 @@
+// terminal_ide.vindex
+// Terminal natif VINDEX : execute des commandes, ET permet d'ecrire,
+// afficher et compiler du code VINDEX sans quitter le terminal.
+// Toute la logique appelant LEGE reste a l'interieur de PRINCIPALIS,
+// car LEGE exige un grand espace de pile reserve, disponible seulement
+// dans la fonction principale.
+
+FORMA TamponMot.
+    CAMPUS c0 SICUT NUMERUS.
+    CAMPUS c1 SICUT NUMERUS.
+    CAMPUS c2 SICUT NUMERUS.
+    CAMPUS c3 SICUT NUMERUS.
+    CAMPUS c4 SICUT NUMERUS.
+    CAMPUS c5 SICUT NUMERUS.
+    CAMPUS c6 SICUT NUMERUS.
+    CAMPUS c7 SICUT NUMERUS.
+    CAMPUS c8 SICUT NUMERUS.
+    CAMPUS c9 SICUT NUMERUS.
+    CAMPUS c10 SICUT NUMERUS.
+    CAMPUS c11 SICUT NUMERUS.
+    CAMPUS c12 SICUT NUMERUS.
+    CAMPUS c13 SICUT NUMERUS.
+    CAMPUS c14 SICUT NUMERUS.
+    CAMPUS c15 SICUT NUMERUS.
+FIN-FORMA.
+
+FUNCTIO COPIA_NOMEN_C REDDENS NUMERUS.
+    ACCIPIT linea SICUT ORDO DE LITTERA.
+    ACCIPIT debut SICUT NUMERUS.
+    ACCIPIT longueur SICUT NUMERUS.
+    DECLARA base SICUT NUMERUS VALENS RESERVA(TamponMot).
+    DECLARA j SICUT NUMERUS VALENS 0.
+    DECLARA m SICUT NUMERUS VALENS debut.
+    DUM m < longueur && linea[m] != 32 PERFICE
+        SCRIBE_OCTETUM_AB(base + j, linea[m]).
+        j = j + 1.
+        m = m + 1.
+    FIN-DUM.
+    SCRIBE_OCTETUM_AB(base + j, 0).
+    REDDE base.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv_reel SICUT ACUS<NUMERUS>.
+    DECLARA envp SICUT ACUS<NUMERUS> VALENS argv_reel + argc + 1.
+
+    DECLARA chemin_compilator SICUT NUMERUS VALENS RESERVA(TamponMot).
+    DECLARA nom_comp SICUT ORDO DE LITTERA CAPACITAS 24.
+    DECLARA nc SICUT NUMERUS VALENS 0.
+    nom_comp[0]=46.nom_comp[1]=47.nom_comp[2]=99.nom_comp[3]=111.nom_comp[4]=109.
+    nom_comp[5]=112.nom_comp[6]=105.nom_comp[7]=108.nom_comp[8]=97.nom_comp[9]=116.
+    nom_comp[10]=111.nom_comp[11]=114.nom_comp[12]=95.nom_comp[13]=118.nom_comp[14]=105.
+    nom_comp[15]=110.nom_comp[16]=100.nom_comp[17]=101.nom_comp[18]=120.
+    DUM nc < 19 PERFICE
+        SCRIBE_OCTETUM_AB(chemin_compilator + nc, nom_comp[nc]).
+        nc = nc + 1.
+    FIN-DUM.
+    SCRIBE_OCTETUM_AB(chemin_compilator + nc, 0).
+
+    DECLARA continua SICUT NUMERUS VALENS 1.
+    DECLARA invite SICUT ORDO DE LITTERA CAPACITAS 10.
+    invite[0]='v'.invite[1]='i'.invite[2]='d'.invite[3]='e'.invite[4]='@'.
+    invite[5]='v'.invite[6]='x'.invite[7]='$'.invite[8]=' '.
+
+    DUM continua == 1 PERFICE
+        DECLARA ig0 SICUT NUMERUS VALENS MITTE(1, invite, 9).
+        DECLARA n SICUT NUMERUS VALENS LEGE(0, 2000).
+
+        SI n <= 0 TUNC
+            continua = 0.
+        ALITER
+            DECLARA tampon SICUT ORDO DE LITTERA CAPACITAS 2000.
+            DECLARA kk SICUT NUMERUS VALENS 0.
+            DUM kk < n PERFICE
+                tampon[kk] = OCTETUS(kk).
+                kk = kk + 1.
+            FIN-DUM.
+
+            DECLARA offset SICUT NUMERUS VALENS 0.
+            DECLARA premiere_ligne SICUT NUMERUS VALENS 1.
+            DUM offset < n && continua == 1 PERFICE
+                SI premiere_ligne == 0 TUNC
+                    DECLARA ig0b SICUT NUMERUS VALENS MITTE(1, invite, 9).
+                FIN-SI.
+                premiere_ligne = 0.
+
+                DECLARA debut_ligne SICUT NUMERUS VALENS offset.
+                DUM offset < n && tampon[offset] != 10 PERFICE
+                    offset = offset + 1.
+                FIN-DUM.
+                DECLARA longueur SICUT NUMERUS VALENS offset - debut_ligne.
+                offset = offset + 1.
+
+                DECLARA linea SICUT ORDO DE LITTERA CAPACITAS 500.
+                DECLARA cp SICUT NUMERUS VALENS 0.
+                DUM cp < longueur PERFICE
+                    linea[cp] = tampon[debut_ligne + cp].
+                    cp = cp + 1.
+                FIN-DUM.
+
+                SI longueur == 0 TUNC
+                    DECLARA ig_noop SICUT NUMERUS VALENS 0.
+                ALITER
+                SI longueur == 4 && linea[0] == 101 && linea[1] == 120 && linea[2] == 105 && linea[3] == 116 TUNC
+                    continua = 0.
+                ALITER
+                SI longueur > 5 && linea[0]==110 && linea[1]==111 && linea[2]==118 && linea[3]==97 && linea[4]==32 TUNC
+                    DECLARA nom_f SICUT NUMERUS VALENS COPIA_NOMEN_C(linea, 5, longueur).
+                    DECLARA fd_n SICUT NUMERUS VALENS APERI_SCRIBERE(nom_f).
+                    SI fd_n < 0 TUNC
+                        PROCLAMA "nova: impossibile scribere fasciculum".
+                    ALITER
+                        DECLARA saltus_n SICUT ORDO DE LITTERA CAPACITAS 1.
+                        saltus_n[0] = 10.
+                        DECLARA finitum_n SICUT NUMERUS VALENS 0.
+                        DUM finitum_n == 0 PERFICE
+                            DECLARA ig0n SICUT NUMERUS VALENS MITTE(1, invite, 9).
+                            DECLARA nn SICUT NUMERUS VALENS LEGE(0, 2000).
+                            SI nn <= 0 TUNC
+                                finitum_n = 1.
+                            ALITER
+                                DECLARA lg_n SICUT NUMERUS VALENS 0.
+                                DUM lg_n < nn && OCTETUS(lg_n) != 10 PERFICE
+                                    lg_n = lg_n + 1.
+                                FIN-DUM.
+                                SI lg_n == 1 && OCTETUS(0) == 46 TUNC
+                                    finitum_n = 1.
+                                ALITER
+                                    DECLARA linea_n SICUT ORDO DE LITTERA CAPACITAS 2000.
+                                    DECLARA ln SICUT NUMERUS VALENS 0.
+                                    DUM ln < lg_n PERFICE
+                                        linea_n[ln] = OCTETUS(ln).
+                                        ln = ln + 1.
+                                    FIN-DUM.
+                                    DECLARA ig1n SICUT NUMERUS VALENS MITTE(fd_n, linea_n, lg_n).
+                                    DECLARA ig2n SICUT NUMERUS VALENS MITTE(fd_n, saltus_n, 1).
+                                FIN-SI.
+                            FIN-SI.
+                        FIN-DUM.
+                        CLAUDE(fd_n).
+                        PROCLAMA "fasciculus scriptus est".
+                    FIN-SI.
+                ALITER
+                SI longueur > 6 && linea[0]==118 && linea[1]==105 && linea[2]==115 && linea[3]==117 && linea[4]==109 && linea[5]==32 TUNC
+                    DECLARA nom_f3 SICUT NUMERUS VALENS COPIA_NOMEN_C(linea, 6, longueur).
+                    DECLARA fd_v SICUT NUMERUS VALENS APERI_LEGERE(nom_f3).
+                    SI fd_v < 0 TUNC
+                        PROCLAMA "visum: fasciculus non inventus est".
+                    ALITER
+                        DECLARA continua_v SICUT NUMERUS VALENS 1.
+                        DUM continua_v == 1 PERFICE
+                            DECLARA nv SICUT NUMERUS VALENS LEGE(fd_v, 4000).
+                            SI nv <= 0 TUNC
+                                continua_v = 0.
+                            ALITER
+                                DECLARA tampon_v SICUT ORDO DE LITTERA CAPACITAS 4000.
+                                DECLARA kv SICUT NUMERUS VALENS 0.
+                                DUM kv < nv PERFICE
+                                    tampon_v[kv] = OCTETUS(kv).
+                                    kv = kv + 1.
+                                FIN-DUM.
+                                DECLARA igv SICUT NUMERUS VALENS MITTE(1, tampon_v, nv).
+                            FIN-SI.
+                        FIN-DUM.
+                        CLAUDE(fd_v).
+                    FIN-SI.
+                ALITER
+                SI longueur > 8 && linea[0]==99 && linea[1]==111 && linea[2]==109 && linea[3]==112 && linea[4]==105 && linea[5]==108 && linea[6]==97 && linea[7]==32 TUNC
+                    DECLARA nom_f4 SICUT NUMERUS VALENS COPIA_NOMEN_C(linea, 8, longueur).
+                    DECLARA fd_src SICUT NUMERUS VALENS APERI_LEGERE(nom_f4).
+                    SI fd_src < 0 TUNC
+                        PROCLAMA "compila: fasciculum fontis non inventum est".
+                    ALITER
+                        DECLARA fd_dst SICUT NUMERUS VALENS APERI_SCRIBERE("probaC.vindex").
+                        SI fd_dst < 0 TUNC
+                            PROCLAMA "compila: non possum scribere probaC.vindex".
+                            CLAUDE(fd_src).
+                        ALITER
+                            DECLARA continua_c SICUT NUMERUS VALENS 1.
+                            DUM continua_c == 1 PERFICE
+                                DECLARA ncc SICUT NUMERUS VALENS LEGE(fd_src, 4000).
+                                SI ncc <= 0 TUNC
+                                    continua_c = 0.
+                                ALITER
+                                    DECLARA tampon_c SICUT ORDO DE LITTERA CAPACITAS 4000.
+                                    DECLARA kc SICUT NUMERUS VALENS 0.
+                                    DUM kc < ncc PERFICE
+                                        tampon_c[kc] = OCTETUS(kc).
+                                        kc = kc + 1.
+                                    FIN-DUM.
+                                    DECLARA igc SICUT NUMERUS VALENS MITTE(fd_dst, tampon_c, ncc).
+                                FIN-SI.
+                            FIN-DUM.
+                            CLAUDE(fd_src).
+                            CLAUDE(fd_dst).
+
+                            PROCLAMA "compilatio incipit...".
+                            DECLARA myargv_c SICUT ORDO DE NUMERUS CAPACITAS 2.
+                            myargv_c[0] = chemin_compilator.
+                            myargv_c[1] = 0.
+                            DECLARA argv_vacuum SICUT ORDO DE NUMERUS CAPACITAS 1.
+                            argv_vacuum[0] = 0.
+                            DECLARA code_ex_c SICUT NUMERUS VALENS CURRE(myargv_c, argv_vacuum, 0 - 1).
+                            SI code_ex_c == 0 TUNC
+                                PROCLAMA "RECTE: probaC_compilata paratum est".
+                            ALITER
+                                PROCLAMA "ERRATUM: compilatio defecit".
+                            FIN-SI.
+                        FIN-SI.
+                    FIN-SI.
+                ALITER
+                    SI longueur > 3 && linea[0] == 99 && linea[1] == 100 && linea[2] == 32 TUNC
+                        DECLARA base_chemin SICUT NUMERUS VALENS RESERVA(TamponMot).
+                        DECLARA j SICUT NUMERUS VALENS 0.
+                        DECLARA m SICUT NUMERUS VALENS 3.
+                        DUM m < longueur PERFICE
+                            SCRIBE_OCTETUM_AB(base_chemin + j, linea[m]).
+                            j = j + 1.
+                            m = m + 1.
+                        FIN-DUM.
+                        SCRIBE_OCTETUM_AB(base_chemin + j, 0).
+                        DECLARA code_cd SICUT NUMERUS VALENS CAMBIA(base_chemin).
+                        SI code_cd != 0 TUNC
+                            PROCLAMA "cd: repertoire introuvable".
+                        FIN-SI.
+                    ALITER
+                        DECLARA myargv SICUT ORDO DE NUMERUS CAPACITAS 16.
+                        DECLARA num_tokens SICUT NUMERUS VALENS 0.
+                        DECLARA pos_tok SICUT NUMERUS VALENS 0.
+                        DUM pos_tok < longueur && num_tokens < 15 PERFICE
+                            DUM pos_tok < longueur && linea[pos_tok] == 32 PERFICE
+                                pos_tok = pos_tok + 1.
+                            FIN-DUM.
+                            SI pos_tok < longueur TUNC
+                                DECLARA debut_tok SICUT NUMERUS VALENS 0.
+                                DECLARA long_tok SICUT NUMERUS VALENS 0.
+                                SI linea[pos_tok] == 34 TUNC
+                                    pos_tok = pos_tok + 1.
+                                    debut_tok = pos_tok.
+                                    DUM pos_tok < longueur && linea[pos_tok] != 34 PERFICE
+                                        pos_tok = pos_tok + 1.
+                                    FIN-DUM.
+                                    long_tok = pos_tok - debut_tok.
+                                    SI pos_tok < longueur TUNC
+                                        pos_tok = pos_tok + 1.
+                                    FIN-SI.
+                                ALITER
+                                    debut_tok = pos_tok.
+                                    DUM pos_tok < longueur && linea[pos_tok] != 32 PERFICE
+                                        pos_tok = pos_tok + 1.
+                                    FIN-DUM.
+                                    long_tok = pos_tok - debut_tok.
+                                FIN-SI.
+                                DECLARA tok_base SICUT NUMERUS VALENS RESERVA(TamponMot).
+                                DECLARA ti SICUT NUMERUS VALENS 0.
+                                DUM ti < long_tok PERFICE
+                                    SCRIBE_OCTETUM_AB(tok_base + ti, linea[debut_tok + ti]).
+                                    ti = ti + 1.
+                                FIN-DUM.
+                                SCRIBE_OCTETUM_AB(tok_base + ti, 0).
+                                myargv[num_tokens] = tok_base.
+                                num_tokens = num_tokens + 1.
+                            FIN-SI.
+                        FIN-DUM.
+                        myargv[num_tokens] = 0.
+
+                        DECLARA fd_redir SICUT NUMERUS VALENS 0 - 1.
+                        DECLARA idx_redir SICUT NUMERUS VALENS 0.
+                        DECLARA trouve_redir SICUT NUMERUS VALENS 0.
+                        DUM idx_redir < num_tokens && trouve_redir == 0 PERFICE
+                            SI OCTETUS_AB(myargv[idx_redir]) == 62 && OCTETUS_AB(myargv[idx_redir] + 1) == 0 TUNC
+                                trouve_redir = 1.
+                            ALITER
+                                idx_redir = idx_redir + 1.
+                            FIN-SI.
+                        FIN-DUM.
+                        SI trouve_redir == 1 && idx_redir + 1 < num_tokens TUNC
+                            fd_redir = APERI_SCRIBERE(myargv[idx_redir + 1]).
+                            myargv[idx_redir] = 0.
+                        FIN-SI.
+
+                        DECLARA contient_barra SICUT NUMERUS VALENS 0.
+                        DECLARA long_cmd0 SICUT NUMERUS VALENS 0.
+                        DUM OCTETUS_AB(myargv[0] + long_cmd0) != 0 PERFICE
+                            SI OCTETUS_AB(myargv[0] + long_cmd0) == 47 TUNC
+                                contient_barra = 1.
+                            FIN-SI.
+                            long_cmd0 = long_cmd0 + 1.
+                        FIN-DUM.
+
+                        DECLARA echec_recherche SICUT NUMERUS VALENS 0.
+                        SI contient_barra == 0 TUNC
+                            DECLARA idx_env SICUT NUMERUS VALENS 0.
+                            DECLARA path_val SICUT NUMERUS VALENS 0.
+                            DUM envp[idx_env] != 0 && path_val == 0 PERFICE
+                                DECLARA entree SICUT NUMERUS VALENS envp[idx_env].
+                                SI OCTETUS_AB(entree) == 80 && OCTETUS_AB(entree+1) == 65 && OCTETUS_AB(entree+2) == 84 && OCTETUS_AB(entree+3) == 72 && OCTETUS_AB(entree+4) == 61 TUNC
+                                    path_val = entree + 5.
+                                FIN-SI.
+                                idx_env = idx_env + 1.
+                            FIN-DUM.
+
+                            DECLARA trouve SICUT NUMERUS VALENS 0.
+                            SI path_val != 0 TUNC
+                                DECLARA pp SICUT NUMERUS VALENS 0.
+                                DUM OCTETUS_AB(path_val + pp) != 0 && trouve == 0 PERFICE
+                                    DECLARA debut_dir SICUT NUMERUS VALENS pp.
+                                    DUM OCTETUS_AB(path_val + pp) != 0 && OCTETUS_AB(path_val + pp) != 58 PERFICE
+                                        pp = pp + 1.
+                                    FIN-DUM.
+                                    DECLARA long_dir SICUT NUMERUS VALENS pp - debut_dir.
+
+                                    DECLARA candidat SICUT NUMERUS VALENS RESERVA(TamponMot).
+                                    DECLARA ci SICUT NUMERUS VALENS 0.
+                                    DUM ci < long_dir PERFICE
+                                        SCRIBE_OCTETUM_AB(candidat + ci, OCTETUS_AB(path_val + debut_dir + ci)).
+                                        ci = ci + 1.
+                                    FIN-DUM.
+                                    SCRIBE_OCTETUM_AB(candidat + ci, 47).
+                                    ci = ci + 1.
+                                    DECLARA cj SICUT NUMERUS VALENS 0.
+                                    DUM cj < long_cmd0 PERFICE
+                                        SCRIBE_OCTETUM_AB(candidat + ci, OCTETUS_AB(myargv[0] + cj)).
+                                        ci = ci + 1.
+                                        cj = cj + 1.
+                                    FIN-DUM.
+                                    SCRIBE_OCTETUM_AB(candidat + ci, 0).
+
+                                    DECLARA fd_test SICUT NUMERUS VALENS APERI_LEGERE(candidat).
+                                    SI fd_test >= 0 TUNC
+                                        CLAUDE(fd_test).
+                                        myargv[0] = candidat.
+                                        trouve = 1.
+                                    FIN-SI.
+
+                                    SI OCTETUS_AB(path_val + pp) == 58 TUNC
+                                        pp = pp + 1.
+                                    FIN-SI.
+                                FIN-DUM.
+                            FIN-SI.
+                            SI trouve == 0 TUNC
+                                echec_recherche = 1.
+                            FIN-SI.
+                        FIN-SI.
+
+                        SI echec_recherche == 1 TUNC
+                            PROCLAMA "commande introuvable".
+                        ALITER
+                            DECLARA code_ex SICUT NUMERUS VALENS CURRE(myargv, envp, fd_redir).
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+                FIN-SI.
+                FIN-SI.
+                FIN-SI.
+                FIN-SI.
+            FIN-DUM.
+        FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
