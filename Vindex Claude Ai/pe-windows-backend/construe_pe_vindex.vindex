@@ -1,0 +1,236 @@
+// construe_pe_vindex.vindex
+// Programma VINDEX quod exsecutabile PE Windows minimum construit
+// (vocat ExitProcess(45) per kernel32.dll) et in discum scribit.
+// Probat mechanismum constructionis PE recte in VINDEX ipso transferri
+// posse, antequam compilator ipse formam PE emittat.
+
+FUNCTIO SCRIBE_U16 REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_U32 REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    codex[indice + 2] = (valor >> 16) & 255.
+    codex[indice + 3] = (valor >> 24) & 255.
+    REDDE indice + 4.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_U64 REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    codex[indice + 1] = (valor >> 8) & 255.
+    codex[indice + 2] = (valor >> 16) & 255.
+    codex[indice + 3] = (valor >> 24) & 255.
+    codex[indice + 4] = (valor >> 32) & 255.
+    codex[indice + 5] = (valor >> 40) & 255.
+    codex[indice + 6] = (valor >> 48) & 255.
+    codex[indice + 7] = (valor >> 56) & 255.
+    REDDE indice + 8.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_OCTETUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    codex[indice] = valor & 255.
+    REDDE indice + 1.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_TEXTUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT texte SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        codex[indice + i] = fons_litterae_ab(texte, i).
+        i = i + 1.
+    FIN-DUM.
+    REDDE indice + longitudo.
+FIN-FUNCTIO.
+
+FUNCTIO fons_litterae_ab REDDENS NUMERUS.
+    ACCIPIT texte SICUT NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    REDDE OCTETUS_AB(texte + i).
+FIN-FUNCTIO.
+
+FUNCTIO ALIGNER REDDENS NUMERUS.
+    ACCIPIT valeur SICUT NUMERUS.
+    ACCIPIT alignement SICUT NUMERUS.
+    DECLARA reste SICUT NUMERUS VALENS valeur - (valeur / alignement) * alignement.
+    SI reste == 0 TUNC
+        REDDE valeur.
+    FIN-SI.
+    REDDE valeur + (alignement - reste).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA codex SICUT ORDO DE NUMERUS CAPACITAS 2000.
+    DECLARA fundamentum_imaginis SICUT NUMERUS VALENS 5368709120.
+    DECLARA alignatio_fasciculi SICUT NUMERUS VALENS 512.
+    DECLARA alignatio_sectionis SICUT NUMERUS VALENS 4096.
+
+    DECLARA entetes_brutes SICUT NUMERUS VALENS 64 + 24 + 240 + 40 + 40.
+    DECLARA entetes_fichier SICUT NUMERUS VALENS ALIGNER(entetes_brutes, alignatio_fasciculi).
+    DECLARA rva_text SICUT NUMERUS VALENS ALIGNER(entetes_fichier, alignatio_sectionis).
+
+    DECLARA taille_code SICUT NUMERUS VALENS 17.
+    DECLARA taille_code_fichier SICUT NUMERUS VALENS ALIGNER(taille_code, alignatio_fasciculi).
+    DECLARA taille_code_mem SICUT NUMERUS VALENS ALIGNER(taille_code, alignatio_sectionis).
+
+    DECLARA ptr_fichier_text SICUT NUMERUS VALENS entetes_fichier.
+    DECLARA ptr_fichier_idata SICUT NUMERUS VALENS ptr_fichier_text + taille_code_fichier.
+    DECLARA rva_idata SICUT NUMERUS VALENS rva_text + taille_code_mem.
+
+    DECLARA off_desc SICUT NUMERUS VALENS 0.
+    DECLARA off_desc_nul SICUT NUMERUS VALENS 20.
+    DECLARA off_ilt SICUT NUMERUS VALENS 40.
+    DECLARA off_iat SICUT NUMERUS VALENS 56.
+    DECLARA off_hint SICUT NUMERUS VALENS 72.
+    DECLARA off_nom_dll SICUT NUMERUS VALENS off_hint + 14.
+    DECLARA taille_idata SICUT NUMERUS VALENS ALIGNER(off_nom_dll + 13, 16).
+    DECLARA taille_idata_fichier SICUT NUMERUS VALENS ALIGNER(taille_idata, alignatio_fasciculi).
+    DECLARA taille_idata_mem SICUT NUMERUS VALENS ALIGNER(taille_idata, alignatio_sectionis).
+
+    DECLARA entry_rva SICUT NUMERUS VALENS rva_text.
+    DECLARA import_dir_rva SICUT NUMERUS VALENS rva_idata + off_desc.
+    DECLARA iat_rva SICUT NUMERUS VALENS rva_idata + off_iat.
+    DECLARA taille_image SICUT NUMERUS VALENS ALIGNER(rva_idata + taille_idata_mem, alignatio_sectionis).
+
+    DECLARA p SICUT NUMERUS VALENS 0.
+    p = SCRIBE_U16(codex, 0, 23117).
+    p = SCRIBE_U32(codex, 60, 64).
+
+    p = SCRIBE_U32(codex, 64, 17744).
+    p = SCRIBE_U16(codex, 68, 34404).
+    p = SCRIBE_U16(codex, 70, 2).
+    p = SCRIBE_U32(codex, 72, 0).
+    p = SCRIBE_U32(codex, 76, 0).
+    p = SCRIBE_U32(codex, 80, 0).
+    p = SCRIBE_U16(codex, 84, 240).
+    p = SCRIBE_U16(codex, 86, 34).
+
+    p = SCRIBE_U16(codex, 88, 523).
+    p = SCRIBE_OCTETUM(codex, 90, 0).
+    p = SCRIBE_OCTETUM(codex, 91, 0).
+    p = SCRIBE_U32(codex, 92, taille_code_mem).
+    p = SCRIBE_U32(codex, 96, taille_idata_mem).
+    p = SCRIBE_U32(codex, 100, 0).
+    p = SCRIBE_U32(codex, 104, entry_rva).
+    p = SCRIBE_U32(codex, 108, rva_text).
+    p = SCRIBE_U64(codex, 112, fundamentum_imaginis).
+    p = SCRIBE_U32(codex, 120, alignatio_sectionis).
+    p = SCRIBE_U32(codex, 124, alignatio_fasciculi).
+    p = SCRIBE_U16(codex, 128, 6).
+    p = SCRIBE_U16(codex, 130, 0).
+    p = SCRIBE_U16(codex, 132, 0).
+    p = SCRIBE_U16(codex, 134, 0).
+    p = SCRIBE_U16(codex, 136, 6).
+    p = SCRIBE_U16(codex, 138, 0).
+    p = SCRIBE_U32(codex, 140, 0).
+    p = SCRIBE_U32(codex, 144, taille_image).
+    p = SCRIBE_U32(codex, 148, entetes_fichier).
+    p = SCRIBE_U32(codex, 152, 0).
+    p = SCRIBE_U16(codex, 156, 3).
+    p = SCRIBE_U16(codex, 158, 0).
+    p = SCRIBE_U64(codex, 160, 1048576).
+    p = SCRIBE_U64(codex, 168, 4096).
+    p = SCRIBE_U64(codex, 176, 1048576).
+    p = SCRIBE_U64(codex, 184, 4096).
+    p = SCRIBE_U32(codex, 192, 0).
+    p = SCRIBE_U32(codex, 196, 16).
+
+    DECLARA di SICUT NUMERUS VALENS 0.
+    DUM di < 16 PERFICE
+        p = SCRIBE_U64(codex, 200 + di * 8, 0).
+        di = di + 1.
+    FIN-DUM.
+    p = SCRIBE_U32(codex, 200 + 8, import_dir_rva).
+    p = SCRIBE_U32(codex, 200 + 12, 40).
+    p = SCRIBE_U32(codex, 200 + 96, iat_rva).
+    p = SCRIBE_U32(codex, 200 + 100, 16).
+
+    DECLARA sec1 SICUT NUMERUS VALENS 328.
+    codex[sec1] = 46. codex[sec1+1] = 116. codex[sec1+2] = 101. codex[sec1+3] = 120.
+    codex[sec1+4] = 116. codex[sec1+5] = 0. codex[sec1+6] = 0. codex[sec1+7] = 0.
+    p = SCRIBE_U32(codex, sec1+8, taille_code_mem).
+    p = SCRIBE_U32(codex, sec1+12, rva_text).
+    p = SCRIBE_U32(codex, sec1+16, taille_code_fichier).
+    p = SCRIBE_U32(codex, sec1+20, ptr_fichier_text).
+    p = SCRIBE_U32(codex, sec1+24, 0).
+    p = SCRIBE_U32(codex, sec1+28, 0).
+    p = SCRIBE_U16(codex, sec1+32, 0).
+    p = SCRIBE_U16(codex, sec1+34, 0).
+    p = SCRIBE_U32(codex, sec1+36, 1610612768).
+
+    DECLARA sec2 SICUT NUMERUS VALENS sec1 + 40.
+    codex[sec2] = 46. codex[sec2+1] = 105. codex[sec2+2] = 100. codex[sec2+3] = 97.
+    codex[sec2+4] = 116. codex[sec2+5] = 97. codex[sec2+6] = 0. codex[sec2+7] = 0.
+    p = SCRIBE_U32(codex, sec2+8, taille_idata_mem).
+    p = SCRIBE_U32(codex, sec2+12, rva_idata).
+    p = SCRIBE_U32(codex, sec2+16, taille_idata_fichier).
+    p = SCRIBE_U32(codex, sec2+20, ptr_fichier_idata).
+    p = SCRIBE_U32(codex, sec2+24, 0).
+    p = SCRIBE_U32(codex, sec2+28, 0).
+    p = SCRIBE_U16(codex, sec2+32, 0).
+    p = SCRIBE_U16(codex, sec2+34, 0).
+    p = SCRIBE_U32(codex, sec2+36, 3221225536).
+
+
+    DECLARA base_code SICUT NUMERUS VALENS ptr_fichier_text.
+    codex[base_code + 0] = 72. codex[base_code + 1] = 131. codex[base_code + 2] = 236. codex[base_code + 3] = 40.
+    codex[base_code + 4] = 185. codex[base_code + 5] = 45. codex[base_code + 6] = 0. codex[base_code + 7] = 0. codex[base_code + 8] = 0.
+    codex[base_code + 9] = 255. codex[base_code + 10] = 21.
+    codex[base_code + 15] = 244.
+
+    DECLARA adresse_apres_call SICUT NUMERUS VALENS fundamentum_imaginis + rva_text + 15.
+    DECLARA adresse_iat SICUT NUMERUS VALENS fundamentum_imaginis + iat_rva.
+    DECLARA disp32 SICUT NUMERUS VALENS adresse_iat - adresse_apres_call.
+    p = SCRIBE_U32(codex, base_code + 11, disp32).
+
+    DECLARA base_idata SICUT NUMERUS VALENS ptr_fichier_idata.
+    p = SCRIBE_U32(codex, base_idata + off_desc, rva_idata + off_ilt).
+    p = SCRIBE_U32(codex, base_idata + off_desc + 4, 0).
+    p = SCRIBE_U32(codex, base_idata + off_desc + 8, 0).
+    p = SCRIBE_U32(codex, base_idata + off_desc + 12, rva_idata + off_nom_dll).
+    p = SCRIBE_U32(codex, base_idata + off_desc + 16, rva_idata + off_iat).
+
+    p = SCRIBE_U64(codex, base_idata + off_ilt, rva_idata + off_hint).
+    p = SCRIBE_U64(codex, base_idata + off_ilt + 8, 0).
+    p = SCRIBE_U64(codex, base_idata + off_iat, rva_idata + off_hint).
+    p = SCRIBE_U64(codex, base_idata + off_iat + 8, 0).
+
+    p = SCRIBE_U16(codex, base_idata + off_hint, 0).
+    codex[base_idata+off_hint+2]=69. codex[base_idata+off_hint+3]=120. codex[base_idata+off_hint+4]=105.
+    codex[base_idata+off_hint+5]=116. codex[base_idata+off_hint+6]=80. codex[base_idata+off_hint+7]=114.
+    codex[base_idata+off_hint+8]=111. codex[base_idata+off_hint+9]=99. codex[base_idata+off_hint+10]=101.
+    codex[base_idata+off_hint+11]=115. codex[base_idata+off_hint+12]=115. codex[base_idata+off_hint+13]=0.
+
+    codex[base_idata+off_nom_dll+0]=107. codex[base_idata+off_nom_dll+1]=101. codex[base_idata+off_nom_dll+2]=114.
+    codex[base_idata+off_nom_dll+3]=110. codex[base_idata+off_nom_dll+4]=101. codex[base_idata+off_nom_dll+5]=108.
+    codex[base_idata+off_nom_dll+6]=51. codex[base_idata+off_nom_dll+7]=50. codex[base_idata+off_nom_dll+8]=46.
+    codex[base_idata+off_nom_dll+9]=100. codex[base_idata+off_nom_dll+10]=108. codex[base_idata+off_nom_dll+11]=108.
+    codex[base_idata+off_nom_dll+12]=0.
+
+    DECLARA taille_totale SICUT NUMERUS VALENS ptr_fichier_idata + taille_idata_fichier.
+
+    DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("vindex_pe_test.exe").
+    DECLARA ecrit SICUT NUMERUS VALENS MITTE(fd, codex, taille_totale).
+    DECLARA fc SICUT NUMERUS VALENS CLAUDE(fd).
+
+    PROCLAMA "PE scriptum, octeta =".
+    PROCLAMA taille_totale.
+    REDDE 0.
+FIN-FUNCTIO.
