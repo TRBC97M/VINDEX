@@ -7,6 +7,8 @@
 Prima implementatio completa has proprietates praebere debet:
 
 ```vindex
+IMPORTA "bibliotheca/textus.vindex".
+
 DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
 DECLARA systema SICUT TEXTUS VALENS nomen + " OS".
 PROCLAMA systema.
@@ -36,6 +38,10 @@ Longitudo terminatorem nullum non numerat. Octeta post contentum terminatore nul
 
 Prima versio UTF-8 octeta conservat; `LONGITUDO` igitur octeta numerat. Numeratio scalarum Unicode potest postea separata operatione addi sine ABI frangendo.
 
+## Bibliotheca
+
+`LONGITUDO` in `bibliotheca/textus.vindex` definitur, non intra analysatorem expressionum. Hoc consilium nucleum compilatoris simpliciorem servat et eandem syntaxin usoris retinet. Descriptore TEXTUS recepto, functio primum verbum descriptoris legit.
+
 ## Memoria
 
 Litteralia possunt in regione immutabili binarii vivere. Resultata concatenationis memoriam dynamicam accipiunt. In 0.52 non introducitur garbage collector: vita valorum dynamicorum sequitur mechanismos memoriae VINDEX existentes. Designatio futura dominii vel relationum numeratarum separatim tractabitur; implementatio initialis non debet auto-hospitium compilatoris frangere.
@@ -46,7 +52,7 @@ Litteralia possunt in regione immutabili binarii vivere. Resultata concatenation
 
 ## Gradus operis
 
-Primus gradus exsecutionis ad litteralia, argumenta functionum, `PROCLAMA` et `LONGITUDO` spectat. `examples/textus_litterale_052.vindex` hunc gradum probat. Probatio automataria compilatorem mutatum bis sibi ipsi compilare iubet, binaria comparat, deinde programma exsequitur atque exitum exspectatum comprobat.
+Primus gradus exsecutionis ad litteralia, argumenta functionum, `PROCLAMA` et `LONGITUDO` spectat. `examples/textus_litterale_052.vindex` hunc gradum probat. Probationes experimentales non amplius ad omnem mutationem excitantur; una probatio deliberata post mutationem cohaerentem auto-hospitium et exitum programmatis comprobare debet.
 
 Concatenatio et comparatio secundum contentum postquam hic gradus stabilis est addendae sunt.
 
