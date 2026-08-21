@@ -9,8 +9,10 @@ Haec praecepta toti repositorio valent.
 - VINDEX et Sylvia OS sunt duo opera principalia et distincta: VINDEX est lingua programmandi generalis; Sylvia OS est systema operationale verum et diuturnum quod VINDEX late exercet.
 - Mutationes ad VINDEX non tantum propter Sylvia fiant, nisi emendatio generaliter utilis sit; pontes infimi gradus extra VINDEX tantum ubi necessarii sunt admittantur.
 
-## Lingua et documentatio
+## Lingua colloquii et documentatio
 
+- Cum usuario colloqueris, eadem lingua utere qua usor te alloquitur, nisi ipse aliam linguam petit.
+- Lingua Latina ad documenta canonica et textus qui in repositorium intrant reservatur; noli responsiones ordinarias usuario Latine reddere nisi id petitum est.
 - Omnis documentatio canonica in repositorio tantum Lingua Latina scribatur.
 - Commentarii technici, nomina canonica, specificationes, relationes probationum, documenta README et textus projectus Latine scribantur.
 - Ne introducas documenta canonica Francogallice, Anglice vel alia lingua.
@@ -35,7 +37,7 @@ Haec praecepta toti repositorio valent.
 
 ## Modus operandi
 
-- Ante mutationem ampla, statum praesentem codicis inspice.
+- Ante mutationem amplam, statum praesentem codicis inspice.
 - Praefer mutationes parvas, singulares et facile retractabiles.
 - Si opus incertum est, primum analysim fac; noli statim structuram totam reficere.
 - Si alius ramus `chatgpt/...` aut `claude/...` mutationes pertinentes continet, inspice eas ante opus parallelum duplicandum.
