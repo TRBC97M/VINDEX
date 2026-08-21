@@ -82,7 +82,7 @@ jobs:
             chmod +x /tmp/t_concat
             OC=$(/tmp/t_concat 2>>"$RELATIO"); EC=$?
             printf 'CONCATENATIO: status=%s exitus=[%s].\n' "$EC" "$OC" >> "$RELATIO"
-            [ "$EC" -eq 0 ] && [ "$OC" = $'Salve, Sylvia.\n13' ] || return 1
+            [ "$EC" -eq 0 ] && [ "$OC" = $'Salve, Sylvia.\n14' ] || return 1
 
             ./compilator_vindex examples/textus_comparatio_052.vindex /tmp/t_cmp >> "$RELATIO" 2>&1 || return 1
             chmod +x /tmp/t_cmp
