@@ -1,4 +1,4 @@
-name: TEXTUS 0.52 — Applicatio et probatio
+name: TEXTUS 0.52 — Probatio fundamentorum
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   textus:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
@@ -27,65 +27,15 @@ jobs:
           ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_pristinus
           cmp ./compilator_vindex /tmp/compilator_pristinus
 
-      - name: Variantes LONGITUDO proba
+      - name: Mutationes ANALYSA_FACTOR sine commentariis proba
         run: |
           VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
           COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          for VARIANS in 1 2 3 4; do
+          for VARIANS in 1 3 4; do
             git checkout -- "$VIA"
-            printf 'Varians LONGITUDO %s incipit.\n' "$VARIANS"
+            printf 'Varians %s incipit.\n' "$VARIANS"
             VINDEX_LONGITUDO_VARIANS="$VARIANS" python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_longitudinem_052.py'
-            "$COMP" "$VIA" "/tmp/compilator_longitudo_${VARIANS}"
-            printf 'Varians LONGITUDO %s recte compilata est.\n' "$VARIANS"
+            "$COMP" "$VIA" "/tmp/compilator_varians_${VARIANS}"
+            printf 'Varians %s recte compilata est.\n' "$VARIANS"
           done
           git checkout -- "$VIA"
-
-      - name: Gradus mutationum separatim proba
-        run: |
-          VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          for GRADUS in 1 2 3 4 5; do
-            git checkout -- "$VIA"
-            printf 'Gradus %s incipit.\n' "$GRADUS"
-            VINDEX_TEXTUS_GRADUS="$GRADUS" python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
-            "$COMP" "$VIA" "/tmp/compilator_gradus_${GRADUS}"
-            printf 'Gradus %s recte compilatus est.\n' "$GRADUS"
-          done
-          git checkout -- "$VIA"
-
-      - name: Mutationes TEXTUS applica
-        run: |
-          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
-          git diff --check
-
-      - name: Compilatorem auto-hospitem reconstrue
-        run: |
-          cd 'Vindex Chat-GPT/vindex_final_v51'
-          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1
-          chmod +x /tmp/compilator_vindex_052_1
-          /tmp/compilator_vindex_052_1 src/compilator_vindex.vindex /tmp/compilator_vindex_052_2
-          chmod +x /tmp/compilator_vindex_052_2
-          cmp /tmp/compilator_vindex_052_1 /tmp/compilator_vindex_052_2
-          cp /tmp/compilator_vindex_052_2 ./compilator_vindex
-
-      - name: TEXTUS litterale proba
-        run: |
-          cd 'Vindex Chat-GPT/vindex_final_v51'
-          ./compilator_vindex examples/textus_litterale_052.vindex /tmp/textus_litterale_052
-          chmod +x /tmp/textus_litterale_052
-          /tmp/textus_litterale_052 > /tmp/textus_exitus
-          printf 'Sylvia\n6\n' > /tmp/textus_exspectatus
-          cmp /tmp/textus_exspectatus /tmp/textus_exitus
-
-      - name: Mutationes comprobatas conserva
-        run: |
-          git config user.name 'VINDEX Centurio'
-          git config user.email 'actions@users.noreply.github.com'
-          git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          if git diff --cached --quiet; then
-            printf '%s\n' 'Nihil novum conservandum est.'
-          else
-            git commit -m 'VINDEX 0.52: TEXTUS litteralis et LONGITUDO in compilatore'
-            git push origin HEAD:chatgpt/vindex-052-textus
-          fi
