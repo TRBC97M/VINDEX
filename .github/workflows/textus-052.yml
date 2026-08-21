@@ -1,13 +1,6 @@
 name: TEXTUS 0.52 — Applicatio et probatio
 
 on:
-  push:
-    branches:
-      - chatgpt/vindex-052-textus
-    paths:
-      - '.github/workflows/textus-052.yml'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
-      - 'Vindex Chat-GPT/vindex_final_v51/examples/textus_litterale_052.vindex'
   pull_request:
     branches:
       - main
@@ -18,6 +11,7 @@ permissions:
 
 jobs:
   textus:
+    if: github.head_ref == 'chatgpt/vindex-052-textus'
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
