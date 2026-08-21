@@ -21,7 +21,7 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: Valores scriptum et pos inspice
+      - name: Momentum corruptionis pos inspice
         shell: bash
         run: |
           set +e
@@ -41,10 +41,10 @@ jobs:
           from pathlib import Path
           via = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
           textus = via.read_text(encoding='utf-8')
-          vetus = '''    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
-          novum = '''    CLAUDE(fd_scriptio).\n    PROCLAMA scriptum.\n    PROCLAMA pos.\n    SI scriptum != pos TUNC\n'''
+          vetus = '''    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
+          novum = '''    PROCLAMA pos.\n    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    PROCLAMA scriptum.\n    PROCLAMA pos.\n    CLAUDE(fd_scriptio).\n    PROCLAMA pos.\n    SI scriptum != pos TUNC\n'''
           if textus.count(vetus) != 1:
-              raise SystemExit('ERRATUM: locus comparationis scripturae non unicus est')
+              raise SystemExit('ERRATUM: locus scripturae non unicus est')
           Path('/tmp/compilator_diag.vindex').write_text(textus.replace(vetus, novum, 1), encoding='utf-8')
           PY
           STATUS=$?
@@ -58,16 +58,12 @@ jobs:
             if [ "$STATUS" -eq 0 ] || { [ "$STATUS" -eq 74 ] && exsecutabile_integrum /tmp/compilator_diag; }; then
               chmod +x /tmp/compilator_diag
 
-              printf '%s\n' '--- COMPILATIO PROGRAMMATIS PARVI ---' >> "$RELATIO"
+              printf '%s\n' '--- PROGRAMMA PARVUM: ante MITTE, post MITTE scriptum, post MITTE pos, post CLAUDE pos ---' >> "$RELATIO"
               /tmp/compilator_diag "$RADIX/examples/textus_litterale_052.vindex" /tmp/textus_diag >> "$RELATIO" 2>&1
               STATUS_PARVUS=$?
               printf 'STATUS PARVUS: %s.\n' "$STATUS_PARVUS" >> "$RELATIO"
-              if [ -f /tmp/textus_diag ]; then
-                printf 'MAGNITUDO PARVA: ' >> "$RELATIO"
-                stat -c '%s' /tmp/textus_diag >> "$RELATIO" 2>&1
-              fi
 
-              printf '%s\n' '--- COMPILATIO IPSIUS COMPILATORIS ---' >> "$RELATIO"
+              printf '%s\n' '--- COMPILATOR MAGNUS: ante MITTE, post MITTE scriptum, post MITTE pos, post CLAUDE pos ---' >> "$RELATIO"
               /tmp/compilator_diag /tmp/compilator_diag.vindex /tmp/compilator_diag_2 >> "$RELATIO" 2>&1
               STATUS_MAGNUS=$?
               printf 'STATUS MAGNUS: %s.\n' "$STATUS_MAGNUS" >> "$RELATIO"
@@ -83,8 +79,8 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           VIA_RELATIONIS='Vindex Chat-GPT/vindex_final_v51/instrumenta/RELATIO-TEXTUS-052.md'
           {
-            printf '%s\n\n' '# VINDEX 0.52 — Relatio diagnostica scripturae'
-            printf '%s\n\n' 'Valores `scriptum` et `pos` ante comparationem finalem observantur.'
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio diagnostica corruptionis `pos`'
+            printf '%s\n\n' 'Valor `pos` ante et post `MITTE`, deinde post `CLAUDE`, observatur.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
@@ -94,7 +90,7 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git add "$VIA_RELATIONIS"
           if ! git diff --cached --quiet; then
-            git commit -m 'VINDEX 0.52: relationem falsae comparationis conserva'
+            git commit -m 'VINDEX 0.52: momentum corruptionis pos conserva'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
           exit 0
