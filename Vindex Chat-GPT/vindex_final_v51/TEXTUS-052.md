@@ -58,7 +58,13 @@ Hoc consilium novam regionem centum locorum non requirit. Praesertim regio `2900
 
 ## Memoria
 
-Litteralia in regione immutabili binarii vivere possunt. Resultata concatenationis memoriam dynamicam accipient. In 0.52 non introducitur garbage collector: vita valorum dynamicorum mechanismos memoriae VINDEX existentes sequetur. Designatio futura dominii vel relationum numeratarum separatim tractabitur; implementatio initialis auto-hospitium compilatoris frangere non debet.
+Litteralia in regione immutabili binarii vivunt. Resultata concatenationis in TAS dynamice collocantur, eadem dispositione descriptoris utentes. Concatenatio summam longitudinum et capacitatem novam scribit, contenta ordine transfert et terminatorem nullum addit.
+
+In 0.52 non introducitur garbage collector: vita valorum dynamicorum mechanismos memoriae VINDEX existentes sequitur. Designatio futura dominii vel relationum numeratarum separatim tractabitur.
+
+## Comparatio
+
+Comparatio `TEXTUS` secundum octeta contenti fit, non secundum sedes descriptorum. `==` et `!=` igitur etiam textus in regionibus memoriae diversis recte comparant. Adiutor internus comparationem lexicographicam parat, ut vexilla comparationis x86 cum operatoribus VINDEX congruant.
 
 ## Compatibilitas
 
@@ -66,18 +72,20 @@ Litteralia in regione immutabili binarii vivere possunt. Resultata concatenation
 
 ## Limes localium compilatoris
 
-Tabula compilatoris 0.51 centum loca variabilibus localibus cuiusque functionis reservat. Hic limes magni momenti est in auto-hospitio: `ANALYSA_FACTOR` sex argumenta accipit et iam multas declarationes locales continet. Additio localium in analysatores maximos metadata sequentia corrumpere potest.
+Tabula compilatoris 0.51 centum loca variabilibus localibus cuiusque functionis reservat. Hic limes magni momenti est in auto-hospitio. `ANALYSA_FACTOR` nunc nonaginta novem loca utitur; nullum novum locum localem gradus IV ei addit.
 
-Errores experimentales priores, inter quos segmentatio et nuntius `exsecutabile imperfecte scriptum est`, cum mutationibus directis analysatorum magnorum congruebant. Propterea prima implementatio `ANALYSA_FACTOR` omnino intactam servat.
+Mutationes primae probationis `ANALYSA_FACTOR` intactam servaverunt. Gradus IV tantum ramum minimum ad litterale `TEXTUS` agnoscendum addit, sine nova declaratione locali. Operatio gravis in adiutoribus separatis `COMPONE_CONCATENA_TEXTUS` et `COMPONE_COMPARA_TEXTUS` manet.
 
-Duae functiones adiutrices parvae separantur: `COMPONE_LITTERALE_TEXTUS` descriptorem litteralis construit, et `COMPONE_IMPRIME_TEXTUS` contentum descriptoris scribit. `ANALYSA_BLOCUS` et analysis parametrorum variabilibus iam exsistentibus atque valoribus specialibus utuntur, ne nova loca localia consumantur.
+Adiutores `COMPONE_LITTERALE_TEXTUS` et `COMPONE_IMPRIME_TEXTUS` descriptorem litteralis et exhibitionem contenti curant. Ita analysatores maximi quam minimum crescunt et metadata localium conservantur.
 
 ## Gradus operis
 
-Primus gradus exsecutionis in duas probationes minimas divisus est. `examples/textus_litterale_052.vindex` litterale TEXTUS et `PROCLAMA` probat; `examples/textus_longitudo_052.vindex` parametrum TEXTUS et `LONGITUDO` per bibliothecam probat. Ita vitium unius partis alteram non obscurat.
+Primus gradus `examples/textus_litterale_052.vindex` et `examples/textus_longitudo_052.vindex` stabilivit. Gradus IV `examples/textus_concatena_052.vindex` et `examples/textus_comparatio_052.vindex` addidit.
 
-Concatenatio et comparatio secundum contentum postquam hic gradus stabilis est addendae sunt.
+Concatenatio a litterali vel variabili incipiens, comparatio secundum contentum, auto-hospitium et punctum fixum nunc comprobata sunt. Fons compilatoris post gradum IV 209259 octeta ex limite 212999 occupat; 103 functiones auxiliares ex limite 150 adhibentur.
 
 ## Probatio canonica
 
-`examples/textus_052.vindex` est programma acceptationis totius primae implementationis. TEXTUS non habetur completum donec illud a compilatore auto-hospite compilatur, exsecutio exitum rectum reddit, et probationes 0.51 regressiones non ostendunt.
+`examples/textus_052.vindex` est programma acceptationis totius primae implementationis. In gradu IV illud recte compilatur atque exsequitur, et series regressionum VINDEX 0.51 viginti unam probationem rectam sine errore refert.
+
+Contractus tamen ante conclusionem VINDEX 0.52 etiam assignationem inter variabilia `TEXTUS` et casus extremos memoriae explicite probare debet.
