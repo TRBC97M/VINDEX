@@ -1,9 +1,7 @@
 name: VINDEX 0.52 — Probatio diagnostica unica
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
