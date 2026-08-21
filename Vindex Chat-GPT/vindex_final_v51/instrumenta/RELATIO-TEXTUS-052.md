@@ -15,5 +15,11 @@ LITTERALE: status=0 exitus=[Sylvia].
 LONGITUDO: status=0 exitus=[6].
 CONCATENATIO: status=0 exitus=[Salve, Sylvia.
 14].
+COMPARATIO: status=0 exitus=[RECTE].
+TEXTUS TOTUS: status=0 exitus=[Sylvia OS
+9
+Salve, Sylvia.].
+/home/runner/work/_temp/97ed8188-ce3f-4376-920c-ad50ff480e4f.sh: line 74: ./tests/run_tests.sh: Permission denied
+PROBATIONES REGRESSIONALES: status=126.
 ERRATUM: gradus IV TEXTUS nondum canonicus est; status=1.
 ```
