@@ -1,8 +1,0 @@
-// Probatio regressionis: commentarium // intra functionem analysim frangere non debet.
-FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    DECLARA primum SICUT NUMERUS VALENS 20.
-    // Hoc commentarium intra functionem tuto ignorari debet.
-    DECLARA secundum SICUT NUMERUS VALENS 22.
-    PROCLAMA primum + secundum.
-    REDDE 0.
-FIN-FUNCTIO.
