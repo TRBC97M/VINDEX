@@ -50,11 +50,17 @@ Litteralia possunt in regione immutabili binarii vivere. Resultata concatenation
 
 `ORDO DE LITTERA` manet validum. `TEXTUS` non eum substituit in codicibus humilibus, bufferibus magnitudine fixa, rectoribus aut locis ubi collocatio exacta memoriae necessaria est.
 
+## Limes localium compilatoris
+
+Tabula compilatoris 0.51 centum loca variabilibus localibus cuiusque functionis reservat. Hic limes magni momenti est in auto-hospitio: `ANALYSA_FACTOR` sex argumenta accipit et iam circiter nonaginta tres declarationes locales continet. Additio etiam unius localis novae igitur tabulam ad limitem ducere potest et metadata sequentia corrumpere.
+
+Errores priores, inter quos segmentatio et nuntius `exsecutabile imperfecte scriptum est`, cum mutationibus quae nova localia in analysatores maximos addebant congruebant. Suspicio prior de regione temporaria `MITTE` ideo reiecta est; instrumentum quod eam movebat remotum est.
+
+Implementatio nova functiones adiutrices parvas (`EST_TEXTUS_VARIABILIS`, `COMPONE_LITTERALE_TEXTUS`, `COMPONE_IMPRIME_TEXTUS`) separat. In `ANALYSA_BLOCUS` et in analysa parametrorum variabiles iam exsistentes atque valores speciales adhibentur, ne nova loca localia consumantur. Hoc principium etiam mutationibus futuris compilatoris servandum est, donec tabula localium ipsa amplietur.
+
 ## Gradus operis
 
 Primus gradus exsecutionis in duas probationes minimas divisus est. `examples/textus_litterale_052.vindex` litterale TEXTUS et `PROCLAMA` probat; `examples/textus_longitudo_052.vindex` parametrum TEXTUS et `LONGITUDO` per bibliothecam probat. Ita vitium unius partis alteram non obscurat.
-
-In investigatione auto-hospitii apparuit spatium temporarium internum `MITTE` nimis prope variabiles locales compilatoris positum esse cum binarium crescebat. Correctio 0.52 regionem temporariam longius in pila collocat, ut magnitudo compilatoris a falsa conditione `exsecutabile imperfecte scriptum est` non coerceatur. Duo tantum loca quae ad `MITTE` pertinent moventur; loca operationis `SCRIBE` intacta manent.
 
 Concatenatio et comparatio secundum contentum postquam hic gradus stabilis est addendae sunt.
 
