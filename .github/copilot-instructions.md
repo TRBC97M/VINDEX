@@ -23,6 +23,11 @@ Haec praecepta toti repositorio valent.
 - Numquam directe in `main` operare.
 - Utere ramo proprio ad mutationes, deinde Pull Request crea ante coniunctionem.
 - Rami a Copilot creati praefixum `copilot/` habeant.
+- Postquam usor mutationem vere applicari iussit et fasciculi mutati sunt, mutationes in ramo `copilot/...` committe et ramum ad GitHub mitte, ut aliis collaboratoribus statim visibiles sint.
+- Si usor tantum analysim, consilium, recensionem, propositionem aut diff non applicatum petit, nihil committe nec mitte.
+- Ante `push`, statum Git inspice et cave ne mutationes alienas, locales aut extra opus praesens forte includas.
+- Si probationes ad mutationem pertinentes exsequi possunt, eas ante `push` exsequere; si non possunt aut deficiunt, hoc clare indica et noli exitum falsum affirmare.
+- Post `push`, usuario ramum et SHA commit ultimi indica.
 - Noli coniungere mutationes in `main` sine recognitione humana aut probationibus congruentibus.
 - Noli delere fundamenta historica VINDEX 0.51 sine causa architecturali probata.
 
