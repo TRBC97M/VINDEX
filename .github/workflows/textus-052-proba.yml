@@ -1,9 +1,9 @@
 name: VINDEX 0.52 — Probatio diagnostica unica
 
 on:
-  push:
+  pull_request:
     branches:
-      - chatgpt/vindex-052-textus
+      - main
 
 permissions:
   contents: read
