@@ -1,4 +1,4 @@
-name: VINDEX 0.52 — Gradus tertius MITTE
+name: VINDEX 0.52 — Canonica emendatio MITTE
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  diagnostica:
+  canonica:
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
@@ -20,7 +20,7 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: Gradum tertium post mutationem MITTE inspice
+      - name: Emendationem MITTE canonice applica et comproba
         shell: bash
         run: |
           set +e
@@ -36,60 +36,73 @@ jobs:
             [ -n "$A" ] && [ "$A" = "$B" ]
           }
 
-          python3 "$RADIX/instrumenta/corrige_spatium_mitte_052.py" >> "$RELATIO" 2>&1
-
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
-          s = p.read_text(encoding='utf-8')
-          vetus = '''    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
-          novum = '''    PROCLAMA SEDES(argc).\n    PROCLAMA SEDES(pos).\n    PROCLAMA pos.\n    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    PROCLAMA scriptum.\n    PROCLAMA SEDES(pos).\n    PROCLAMA pos.\n    PROCLAMA SEDES(scriptum).\n    PROCLAMA CONTENTUM(SEDES(pos)).\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
-          if s.count(vetus) != 1:
-              raise SystemExit('ERRATUM: locus finalis non unicus est')
-          Path('/tmp/compilator_diag.vindex').write_text(s.replace(vetus, novum, 1), encoding='utf-8')
-          PY
-
+          python3 "$RADIX/instrumenta/corrige_spatium_mitte_052.py" >> "$RELATIO" 2>&1 || exit 1
           chmod +x "$RADIX/compilator_vindex"
-          "$RADIX/compilator_vindex" /tmp/compilator_diag.vindex /tmp/gradus1 >> "$RELATIO" 2>&1
+
+          "$RADIX/compilator_vindex" "$RADIX/src/compilator_vindex.vindex" /tmp/gradus1 >> "$RELATIO" 2>&1
           S1=$?
           printf 'STATUS GRADUS I: %s.\n' "$S1" >> "$RELATIO"
-
-          if [ "$S1" -eq 0 ] || { [ "$S1" -eq 74 ] && integrum /tmp/gradus1; }; then
-            chmod +x /tmp/gradus1
-            printf '%s\n' '--- GRADUS II: compilator adhuc MITTE vetere utitur dum novum compilat ---' >> "$RELATIO"
-            /tmp/gradus1 /tmp/compilator_diag.vindex /tmp/gradus2 >> "$RELATIO" 2>&1
-            S2=$?
-            printf 'STATUS GRADUS II: %s.\n' "$S2" >> "$RELATIO"
-          else
-            S2=255
-            printf '%s\n' 'GRADUS I INTEGRUM NON EST.' >> "$RELATIO"
+          if ! { [ "$S1" -eq 0 ] || { [ "$S1" -eq 74 ] && integrum /tmp/gradus1; }; }; then
+            printf '%s\n' 'ERRATUM: gradus I invalidus est.' >> "$RELATIO"
+            exit 1
           fi
 
-          if [ "$S2" -eq 0 ] || { [ "$S2" -eq 74 ] && integrum /tmp/gradus2; }; then
-            chmod +x /tmp/gradus2
-            printf '%s\n' '--- GRADUS III: compilator cum MITTE ad -6500000 iam ipse exsequitur ---' >> "$RELATIO"
-            /tmp/gradus2 /tmp/compilator_diag.vindex /tmp/gradus3 >> "$RELATIO" 2>&1
-            S3=$?
-            printf 'STATUS GRADUS III: %s.\n' "$S3" >> "$RELATIO"
-            if integrum /tmp/gradus3; then
-              printf '%s\n' 'GRADUS III INTEGRUM EST.' >> "$RELATIO"
-            else
-              printf '%s\n' 'GRADUS III INTEGRUM NON EST.' >> "$RELATIO"
-            fi
-            if cmp -s /tmp/gradus2 /tmp/gradus3; then
-              printf '%s\n' 'PUNCTUM FIXUM GRADUUM II ET III: RECTE.' >> "$RELATIO"
-            else
-              printf '%s\n' 'PUNCTUM FIXUM GRADUUM II ET III: NONDUM.' >> "$RELATIO"
-            fi
-          else
-            printf '%s\n' 'GRADUS II INTEGRUM NON EST.' >> "$RELATIO"
+          chmod +x /tmp/gradus1
+          /tmp/gradus1 "$RADIX/src/compilator_vindex.vindex" /tmp/gradus2 >> "$RELATIO" 2>&1
+          S2=$?
+          printf 'STATUS GRADUS II: %s.\n' "$S2" >> "$RELATIO"
+          if ! { [ "$S2" -eq 0 ] || { [ "$S2" -eq 74 ] && integrum /tmp/gradus2; }; }; then
+            printf '%s\n' 'ERRATUM: gradus II invalidus est.' >> "$RELATIO"
+            exit 1
           fi
+
+          chmod +x /tmp/gradus2
+          /tmp/gradus2 "$RADIX/src/compilator_vindex.vindex" /tmp/gradus3 >> "$RELATIO" 2>&1
+          S3=$?
+          printf 'STATUS GRADUS III: %s.\n' "$S3" >> "$RELATIO"
+          if [ "$S3" -ne 0 ] || ! integrum /tmp/gradus3; then
+            printf '%s\n' 'ERRATUM: gradus III emendationem nondum confirmat.' >> "$RELATIO"
+            exit 1
+          fi
+          if ! cmp -s /tmp/gradus2 /tmp/gradus3; then
+            printf '%s\n' 'ERRATUM: punctum fixum nondum obtentum est.' >> "$RELATIO"
+            exit 1
+          fi
+          printf '%s\n' 'RECTE: gradus III status 0 reddit et punctum fixum obtentum est.' >> "$RELATIO"
+
+          cp /tmp/gradus3 "$RADIX/compilator_vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+
+          cd "$RADIX"
+          ./compilator_vindex examples/textus_litterale_052.vindex /tmp/textus_litterale >> "$RELATIO" 2>&1
+          SL=$?
+          chmod +x /tmp/textus_litterale 2>/dev/null
+          OL=$(/tmp/textus_litterale 2>>"$RELATIO")
+          EL=$?
+          printf 'TEXTUS LITTERALE: compilatio=%s exsecutio=%s exitus=[%s].\n' "$SL" "$EL" "$OL" >> "$RELATIO"
+
+          ./compilator_vindex examples/textus_longitudo_052.vindex /tmp/textus_longitudo >> "$RELATIO" 2>&1
+          SG=$?
+          chmod +x /tmp/textus_longitudo 2>/dev/null
+          OG=$(/tmp/textus_longitudo 2>>"$RELATIO")
+          EG=$?
+          printf 'TEXTUS LONGITUDO: compilatio=%s exsecutio=%s exitus=[%s].\n' "$SG" "$EG" "$OG" >> "$RELATIO"
+
+          if [ "$SL" -ne 0 ] || [ "$EL" -ne 0 ] || [ "$OL" != 'Sylvia' ]; then
+            printf '%s\n' 'ERRATUM: probatio litteralis TEXTUS deficit.' >> "$RELATIO"
+            exit 1
+          fi
+          if [ "$SG" -ne 0 ] || [ "$EG" -ne 0 ] || [ "$OG" != '6' ]; then
+            printf '%s\n' 'ERRATUM: probatio LONGITUDO deficit.' >> "$RELATIO"
+            exit 1
+          fi
+          printf '%s\n' 'RECTE: litterale, PROCLAMA et LONGITUDO transeunt.' >> "$RELATIO"
 
           cd "$GITHUB_WORKSPACE"
           VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-TEXTUS-052.md"
           {
-            printf '%s\n\n' '# VINDEX 0.52 — Relatio gradus tertii MITTE'
-            printf '%s\n\n' 'Gradus tertius probat utrum compilator qui iam bufferum `MITTE` ad -6500000 habet corruptionem `pos` vitet atque punctum fixum attingat.'
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio emendationis canonicae MITTE'
+            printf '%s\n\n' 'Bufferum internum `MITTE` ad -6500000 remotum est, deinde auto-hospitium, punctum fixum et probationes minimae TEXTUS comprobata sunt.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
@@ -97,9 +110,8 @@ jobs:
 
           git config user.name 'VINDEX Centurio'
           git config user.email 'actions@users.noreply.github.com'
-          git add "$VIA_RELATIONIS"
+          git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$VIA_RELATIONIS"
           if ! git diff --cached --quiet; then
-            git commit -m 'VINDEX 0.52: gradum tertium MITTE relata conserva'
+            git commit -m 'VINDEX 0.52: collisionem bufferi MITTE canonice corrige'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
-          exit 0
