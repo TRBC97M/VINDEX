@@ -1,0 +1,139 @@
+name: VINDEX 0.52 — Probatio unica TEXTUS
+
+# Haec probatio semel excitatur cum ipsum hoc fasciculum creatur.
+# Mutationes posteriores compilatoris eam iterum non excitant.
+on:
+  push:
+    branches:
+      - chatgpt/vindex-052-textus
+    paths:
+      - '.github/workflows/textus-052-probatio-unica.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  textus:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-052-textus
+          fetch-depth: 0
+
+      - name: TEXTUS uno cursu examina
+        shell: bash
+        run: |
+          set +e
+          RELATIO=/tmp/relatio_textus_052
+          : > "$RELATIO"
+
+          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_textus_052.py' >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf '%s\n' 'STATICA PROBATIO NON TRANSIIT.' >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+
+          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py' >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf '%s\n' 'MUTATIO TEXTUS NON APPLICATA EST.' >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+
+          git diff --check >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf '%s\n' 'DIFFERENTIAE FORMAM RECTAM NON HABENT.' >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          chmod +x ./compilator_vindex
+
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf 'PRIMUS GRADUS AUTO-HOSPITII CECIDIT: %s.\n' "$STATUS" >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+          chmod +x /tmp/compilator_vindex_052_1
+
+          /tmp/compilator_vindex_052_1 src/compilator_vindex.vindex /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf 'SECUNDUS GRADUS AUTO-HOSPITII CECIDIT: %s.\n' "$STATUS" >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+          chmod +x /tmp/compilator_vindex_052_2
+
+          cmp /tmp/compilator_vindex_052_1 /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf '%s\n' 'PUNCTUM FIXUM AUTO-HOSPITII NON OBTENTUM EST.' >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+
+          /tmp/compilator_vindex_052_2 examples/textus_litterale_052.vindex /tmp/textus_litterale_052 >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf 'LITTERALE TEXTUS COMPILARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+          chmod +x /tmp/textus_litterale_052
+          /tmp/textus_litterale_052 > /tmp/exitus_litteralis 2>> "$RELATIO"
+          STATUS=$?
+          printf 'Sylvia\n' > /tmp/exspectatum_litteralis
+          if [ "$STATUS" -ne 0 ] || ! cmp /tmp/exspectatum_litteralis /tmp/exitus_litteralis >> "$RELATIO" 2>&1; then
+            printf '%s\n' 'LITTERALE TEXTUS EXITUM INEXPECTATUM DEDIT.' >> "$RELATIO"
+            printf '%s\n' '--- exitus ---' >> "$RELATIO"
+            cat /tmp/exitus_litteralis >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+
+          /tmp/compilator_vindex_052_2 examples/textus_longitudo_052.vindex /tmp/textus_longitudo_052 >> "$RELATIO" 2>&1
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf 'LONGITUDO COMPILARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+          chmod +x /tmp/textus_longitudo_052
+          /tmp/textus_longitudo_052 > /tmp/exitus_longitudinis 2>> "$RELATIO"
+          STATUS=$?
+          printf '6\n' > /tmp/exspectatum_longitudinis
+          if [ "$STATUS" -ne 0 ] || ! cmp /tmp/exspectatum_longitudinis /tmp/exitus_longitudinis >> "$RELATIO" 2>&1; then
+            printf '%s\n' 'LONGITUDO EXITUM INEXPECTATUM DEDIT.' >> "$RELATIO"
+            printf '%s\n' '--- exitus ---' >> "$RELATIO"
+            cat /tmp/exitus_longitudinis >> "$RELATIO"
+            cat "$RELATIO"
+            exit 0
+          fi
+
+          printf '%s\n' 'RECTE: AUTO-HOSPITIUM, LITTERALE, PROCLAMA ET LONGITUDO TRANSIERUNT.' >> "$RELATIO"
+          cat "$RELATIO"
+
+          cp /tmp/compilator_vindex_052_2 ./compilator_vindex
+          cd ../..
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          git add 'vindex_final_v51/src/compilator_vindex.vindex' 'vindex_final_v51/compilator_vindex'
+
+          if git diff --cached --quiet; then
+            printf '%s\n' 'Nihil conservandum est.'
+            exit 0
+          fi
+
+          git commit -m 'VINDEX 0.52: TEXTUS litterale PROCLAMAque in compilatore integra'
+          git push origin HEAD:chatgpt/vindex-052-textus
