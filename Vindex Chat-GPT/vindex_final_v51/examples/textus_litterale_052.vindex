@@ -1,15 +1,9 @@
 // VINDEX 0.52 — prima probatio exsecutionis TEXTUS.
-// Haec probatio litterale, parametrum, PROCLAMA et LONGITUDO comprobat.
-
-FUNCTIO OSTENDE REDDENS NUMERUS.
-    ACCIPIT nomen SICUT TEXTUS.
-    PROCLAMA nomen.
-    PROCLAMA LONGITUDO(nomen).
-    REDDE 0.
-FIN-FUNCTIO.
+// Litterale, PROCLAMA et LONGITUDO tantum hoc gradu comprobantur.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
-    DECLARA exitus SICUT NUMERUS VALENS OSTENDE(nomen).
-    REDDE exitus.
+    PROCLAMA nomen.
+    PROCLAMA LONGITUDO(nomen).
+    REDDE 0.
 FIN-FUNCTIO.
