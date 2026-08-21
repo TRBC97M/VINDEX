@@ -10,6 +10,7 @@ RELATIO="$RADIX/instrumenta/RELATIO-FORMAE-DYNAMICAE-053.md"
 TEMPUS=/tmp/relatio_formae_053_localis
 : > "$TEMPUS"
 SUCCESSUS=0
+RADIX_ABS=$(pwd)
 
 integrum() {
   VIA="$1"
@@ -90,27 +91,26 @@ proba() {
   printf '%s\n' 'RECTE: limites XV formarum et XXVI camporum remoti sunt.' >> "$TEMPUS"
 
   cd "$RADIX" || return 1
-  ./compilator_vindex src/officina_vindex.vindex /tmp/officina_nova >> "$OLDPWD/$TEMPUS" 2>&1 || return 1
-  ./compilator_vindex src/salutatio_vindex.vindex /tmp/salutatio_nova >> "$OLDPWD/$TEMPUS" 2>&1 || return 1
+  ./compilator_vindex src/officina_vindex.vindex /tmp/officina_nova >> "$TEMPUS" 2>&1 || return 1
+  ./compilator_vindex src/salutatio_vindex.vindex /tmp/salutatio_nova >> "$TEMPUS" 2>&1 || return 1
   cp /tmp/officina_nova ./officina_vindex
   cp /tmp/salutatio_nova ./salutatio_vindex
 
   find . -type f -name '*.sh' -exec chmod 755 {} +
   chmod 755 ./vindexc ./vindex_graphica ./officina_vindex ./salutatio_vindex ./compilator_vindex ./vindex-officina ./vindex-salutatio ./vindex-systema
-  bash ./systema/construe_systema.sh >> "$OLDPWD/$TEMPUS" 2>&1 || return 1
-  bash ./systema/uefi/construe_uefi.sh >> "$OLDPWD/$TEMPUS" 2>&1 || return 1
-  printf '%s\n' 'RECTE: Systema BIOS et UEFI post migrationem formarum regenerata sunt.' >> "$OLDPWD/$TEMPUS"
+  bash ./systema/construe_systema.sh >> "$TEMPUS" 2>&1 || return 1
+  bash ./systema/uefi/construe_uefi.sh >> "$TEMPUS" 2>&1 || return 1
+  printf '%s\n' 'RECTE: Systema BIOS et UEFI post migrationem formarum regenerata sunt.' >> "$TEMPUS"
 
-  bash ./tests/run_tests.sh >> "$OLDPWD/$TEMPUS" 2>&1
+  bash ./tests/run_tests.sh >> "$TEMPUS" 2>&1
   SR=$?
-  printf 'PROBATIONES REGRESSIONALES: status=%s.\n' "$SR" >> "$OLDPWD/$TEMPUS"
+  printf 'PROBATIONES REGRESSIONALES: status=%s.\n' "$SR" >> "$TEMPUS"
   [ "$SR" -eq 0 ] || return 1
 
-  cd "$OLDPWD" || return 1
+  cd "$RADIX_ABS" || return 1
   return 0
 }
 
-RADIX_ABS=$(pwd)
 if proba; then
   SUCCESSUS=1
 else
