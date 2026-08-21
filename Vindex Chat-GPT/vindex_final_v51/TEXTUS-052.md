@@ -88,4 +88,4 @@ Concatenatio a litterali vel variabili incipiens, comparatio secundum contentum,
 
 `examples/textus_052.vindex` est programma acceptationis totius primae implementationis. In gradu IV illud recte compilatur atque exsequitur, et series regressionum VINDEX 0.51 viginti unam probationem rectam sine errore refert.
 
-Contractus tamen ante conclusionem VINDEX 0.52 etiam assignationem inter variabilia `TEXTUS` et casus extremos memoriae explicite probare debet.
+Ante conclusionem VINDEX 0.52 assignatio inter variabilia `TEXTUS` et casus extremos memoriae adhuc explicite probandi sunt.
