@@ -14,11 +14,13 @@ Hoc opus ante `TEXTUS` ponitur. Propositum non est novas proprietates celeriter 
 
 `instrumenta/vindex_praepara.py` fontem ante verificationem et compilationem praeparat. Longitudo fontis ante et post praeparationem eadem manet. Hoc consilium electum est quia compilator 0.51 effectus positioni fontis sensibiles ostendit; lineas vel octetos removere igitur periculosum esset.
 
-Interfacies `vindexc` praeparatorem adhibet, deinde verificatorem, deinde compilatorem. Si Python 3 abest, interfacies more 0.51 fontem directe transmittit.
+Interfacies `vindexc` praeparatorem adhibet, deinde tutelam defectuum notorum, deinde verificatorem, postremo compilatorem. Si Python 3 abest, praeparatio et tutela omittuntur more compatibili cum 0.51.
 
 ## Identificatores maiusculi
 
-Usus variabilium omnino maiuscularum in expressionibus arithmeticis est defectus confirmatus 0.51. Correctio definitiva in analysi factorum facienda est, sed non simul cum correctione commentariorum. Casus hic separatim tractabitur, ne duae mutationes parseris eodem tempore misceantur.
+Usus variabilium omnino maiuscularum est defectus confirmatus 0.51. Analysis factorum eas cum vocationibus functionum confundere potest, quia via identificatorum maiusculorum vocationem cum parenthesi exspectat.
+
+`instrumenta/vindex_tutela_052.py` hunc casum nunc ante invocationem compilatoris interceptat. Sic defectus nativus non iam debet in ruinam obscuram mutari: usor diagnosticum Latinum cum archivo, linea, columna et nomine identificatoris accipit. Haec tutela correctio linguae definitiva non est; removebitur cum analysis nativa variabiles maiusculas recte distinguet a vocationibus functionum.
 
 ## TEXTUS
 
