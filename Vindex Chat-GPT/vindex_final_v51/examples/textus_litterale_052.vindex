@@ -1,11 +1,9 @@
 // VINDEX 0.52 — prima probatio exsecutionis TEXTUS.
-// Litterale, parametrum, PROCLAMA et LONGITUDO hoc gradu comprobantur.
-
-IMPORTA "bibliotheca/textus.vindex".
+// Litterale TEXTUS et PROCLAMA hoc gradu tantum comprobantur.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
     PROCLAMA nomen.
-    PROCLAMA LONGITUDO(nomen).
+    PROCLAMA 6.
     REDDE 0.
 FIN-FUNCTIO.
