@@ -1,0 +1,51 @@
+# Praecepta GitHub Copilot pro VINDEX et Sylvia OS
+
+Haec praecepta toti repositorio valent.
+
+## Principia canonica
+
+- `ARCHITECTURA.md` ante omnem mutationem lege et eius principia tamquam canonica considera.
+- GitHub est fons veritatis huius operis. Ne utere archivis ZIP aut exemplaribus veteribus tamquam fundamento canonico.
+- VINDEX et Sylvia OS sunt duo opera principalia et distincta: VINDEX est lingua programmandi generalis; Sylvia OS est systema operationale verum et diuturnum quod VINDEX late exercet.
+- Mutationes ad VINDEX non tantum propter Sylvia fiant, nisi emendatio generaliter utilis sit; pontes infimi gradus extra VINDEX tantum ubi necessarii sunt admittantur.
+
+## Lingua et documentatio
+
+- Omnis documentatio canonica in repositorio tantum Lingua Latina scribatur.
+- Commentarii technici, nomina canonica, specificationes, relationes probationum, documenta README et textus projectus Latine scribantur.
+- Ne introducas documenta canonica Francogallice, Anglice vel alia lingua.
+- Serva identitatem linguisticam VINDEX; ne linguam in syntaxim alterius linguae cum vocabulis Latinis superficialibus redigas.
+
+## Disciplina Git
+
+- Numquam directe in `main` operare.
+- Utere ramo proprio ad mutationes, deinde Pull Request crea ante coniunctionem.
+- Rami a Copilot creati praefixum `copilot/` habeant.
+- Noli coniungere mutationes in `main` sine recognitione humana aut probationibus congruentibus.
+- Noli delere fundamenta historica VINDEX 0.51 sine causa architecturali probata.
+
+## Compilator et auto-hospitium
+
+- `Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex` compilator auto-hospes criticus est; mutationes ibi minimae, explicabiles et probationibus munitissimae esse debent.
+- Auto-hospitium et punctum fixum compilatoris servanda sunt.
+- Numquam afirma probationem transisse nisi vere exsecuta est et exitus verificatus est.
+- Si probatio deficit, causam distingue antequam plures mutationes coniecturales facias.
+- Mutationes diagnosticae temporariae a codice canonico separandae sunt.
+- Ne augeas complexitatem compilatoris sine necessitate manifesta.
+
+## Modus operandi
+
+- Ante mutationem ampla, statum praesentem codicis inspice.
+- Praefer mutationes parvas, singulares et facile retractabiles.
+- Si opus incertum est, primum analysim fac; noli statim structuram totam reficere.
+- Si alius ramus `chatgpt/...` aut `claude/...` mutationes pertinentes continet, inspice eas ante opus parallelum duplicandum.
+- In conflictu inter hoc fasciculum et `ARCHITECTURA.md`, `ARCHITECTURA.md` praevalet.
+
+## Norma qualitatis
+
+- Codex novus formam et syntaxim VINDEX iam exstantem sequatur.
+- Nomina significativa et Latina praeferantur ubi pars canonica VINDEX vel Sylvia sunt.
+- Mutationes regressiones vitent et compatibilitatem cum codice existente servent, nisi ruptura explicite deliberata est.
+- Omnis nova facultas linguistica, si fieri potest, exemplo parvo et probatione acceptationis muniatur.
+
+VINDEX Latine cogitat. Sylvia Latine loquitur.
