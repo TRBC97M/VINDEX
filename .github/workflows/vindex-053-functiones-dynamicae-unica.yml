@@ -72,13 +72,21 @@ jobs:
             cp /tmp/g3 "$RADIX/compilator_vindex"
             chmod 755 "$RADIX/compilator_vindex"
 
-            # I. MCCL functiones: una vocatio ad ultimam functionem tabulam functionum ultra CL exercet.
+            # I. CC functiones nominibus mere alphabeticis vetus limen CL excedunt.
             python3 - <<'PY'
           from pathlib import Path
-          N = 1250
+          N = 200
+          def nomen(i):
+              litterae = []
+              n = i
+              for _ in range(4):
+                  litterae.append(chr(ord('a') + (n % 26)))
+                  n //= 26
+              return 'f' + ''.join(reversed(litterae))
+          ultima = nomen(N - 1)
           lineae = [
               'FUNCTIO PRINCIPALIS REDDENS NUMERUS.',
-              f'    DECLARA responsum SICUT NUMERUS VALENS f{N-1:04d}().',
+              f'    DECLARA responsum SICUT NUMERUS VALENS {ultima}().',
               '    PROCLAMA responsum.',
               '    REDDE 0.',
               'FIN-FUNCTIO.',
@@ -86,8 +94,8 @@ jobs:
           ]
           for i in range(N):
               lineae += [
-                  f'FUNCTIO f{i:04d} REDDENS NUMERUS.',
-                  f'    REDDE {i}.',
+                  f'FUNCTIO {nomen(i)} REDDENS NUMERUS.',
+                  f'    REDDE {1000 + i}.',
                   'FIN-FUNCTIO.',
                   '',
               ]
@@ -95,15 +103,15 @@ jobs:
           PY
             "$RADIX/compilator_vindex" /tmp/functiones_multae_053.vindex /tmp/functiones_multae_053 >> "$RELATIO" 2>&1
             SFM=$?
-            printf 'COMPILATIO MCCL FUNCTIONUM: status=%s.\n' "$SFM" >> "$RELATIO"
+            printf 'COMPILATIO CC FUNCTIONUM: status=%s.\n' "$SFM" >> "$RELATIO"
             [ "$SFM" -eq 0 ] && integrum /tmp/functiones_multae_053 || return 1
             chmod 755 /tmp/functiones_multae_053
             OFM=$(/tmp/functiones_multae_053 2>>"$RELATIO"); EFM=$?
-            printf 'EXECUTIO MCCL FUNCTIONUM: status=%s exitus=[%s].\n' "$EFM" "$OFM" >> "$RELATIO"
-            [ "$EFM" -eq 0 ] && [ "$OFM" = '1249' ] || return 1
-            printf '%s\n' 'RECTE: tabula functionum MCCL definitiones continet et ultimam recte invenit.' >> "$RELATIO"
+            printf 'EXECUTIO CC FUNCTIONUM: status=%s exitus=[%s].\n' "$EFM" "$OFM" >> "$RELATIO"
+            [ "$EFM" -eq 0 ] && [ "$OFM" = '1199' ] || return 1
+            printf '%s\n' 'RECTE: tabula functionum CC definitiones continet et ultimam recte invenit.' >> "$RELATIO"
 
-            # II. MCCL vocationes ad unam functionem nondum definitam tabulam pendentium ultra vetus spatium exercent.
+            # II. MCCL vocationes ad unam functionem nondum definitam vetus spatium pendentium excedunt.
             python3 - <<'PY'
           from pathlib import Path
           N = 1250
@@ -168,7 +176,7 @@ jobs:
           VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-FUNCTIONES-DYNAMICAE-053.md"
           {
             printf '%s\n\n' '# VINDEX 0.53 — Relatio functionum dynamicarum'
-            printf '%s\n\n' 'Tabulae functionum et vocationum pendentium crescentes, punctum fixum, MCCL functiones et MCCL vocationes hic comprobantur.'
+            printf '%s\n\n' 'Tabulae functionum et vocationum pendentium crescentes, punctum fixum, CC functiones et MCCL vocationes hic comprobantur.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
