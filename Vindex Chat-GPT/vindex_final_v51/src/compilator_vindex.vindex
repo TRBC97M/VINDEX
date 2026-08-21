@@ -377,7 +377,7 @@ FUNCTIO COMPONE_LITTERALEM_FLUITANIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO ANALYSA_LITTERALEM_FLUITANIS REDDENS NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     DECLARA int_part SICUT NUMERUS VALENS 0.
@@ -800,7 +800,7 @@ FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     DECLARA verbum SICUT ORDO DE LITTERA CAPACITAS 32.
@@ -947,7 +947,7 @@ FUNCTIO COMPONE_SERVA_OCTETUM REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     DUM CONTENTUM(pos) < n && (fons[CONTENTUM(pos)] == 32 || fons[CONTENTUM(pos)] == 10 || fons[CONTENTUM(pos)] == 9) PERFICE
@@ -997,7 +997,7 @@ FIN-FUNCTIO.
 FUNCTIO COMPONE_CURRE REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos SICUT NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -1084,7 +1084,7 @@ FIN-FUNCTIO.
 FUNCTIO COMPONE_TUBUS REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos SICUT NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -1127,7 +1127,7 @@ FIN-FUNCTIO.
 FUNCTIO COMPONE_CAMBIA_DIRECTORIUM REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos SICUT NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -1164,10 +1164,25 @@ FUNCTIO COMPONE_CAMBIA_DIRECTORIUM REDDENS NUMERUS.
     REDDE p.
 FIN-FUNCTIO.
 
+FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos SICUT NUMERUS.
+    DECLARA p_mem SICUT NUMERUS VALENS pos.
+    p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 6, 0).
+    p_mem = COMPONE_ONERA(codex, p_mem, 7, 0).
+    p_mem = COMPONE_ONERA(codex, p_mem, 2, 3).
+    p_mem = COMPONE_ONERA(codex, p_mem, 10, 34).
+    p_mem = COMPONE_ONERA(codex, p_mem, 8, 0).
+    p_mem = COMPONE_ONERA(codex, p_mem, 9, 0).
+    p_mem = COMPONE_ONERA(codex, p_mem, 0, 9).
+    p_mem = COMPONE_VOCA_NUCLEUM(codex, p_mem).
+    REDDE p_mem.
+FIN-FUNCTIO.
+
 FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -1176,6 +1191,15 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
 
     SI fons[CONTENTUM(pos_fontis)] == 34 TUNC
         REDDE COMPONE_LITTERALE_TEXTUS(codex, pos_codicis, fons, pos_fontis, n).
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 82 && CONTENTUM(pos_fontis) + 14 < n && fons[CONTENTUM(pos_fontis)+1] == 69 && fons[CONTENTUM(pos_fontis)+2] == 83 && fons[CONTENTUM(pos_fontis)+3] == 69 && fons[CONTENTUM(pos_fontis)+4] == 82 && fons[CONTENTUM(pos_fontis)+5] == 86 && fons[CONTENTUM(pos_fontis)+6] == 65 && fons[CONTENTUM(pos_fontis)+7] == 95 && fons[CONTENTUM(pos_fontis)+8] == 79 && fons[CONTENTUM(pos_fontis)+9] == 67 && fons[CONTENTUM(pos_fontis)+10] == 84 && fons[CONTENTUM(pos_fontis)+11] == 69 && fons[CONTENTUM(pos_fontis)+12] == 84 && fons[CONTENTUM(pos_fontis)+13] == 65 && fons[CONTENTUM(pos_fontis)+14] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 15.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_RESERVA_OCTETA(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
     FIN-SI.
 
     SI fons[CONTENTUM(pos_fontis)] == 40 TUNC
@@ -1695,15 +1719,13 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_lg = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
         ig_lg = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 1000000).
-        CONTENTUM(pos_codicis) = COMPONE_SUB(codex, CONTENTUM(pos_codicis), 2, 0).
-        CONTENTUM(pos_codicis) = COMPONE_JGE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(ig_lg)).
-        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1000000).
-        DECLARA pos_lege_recte SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-        ig_lg = CORRIGE_SALTUM(codex, ig_lg, pos_lege_recte).
-        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 0).
-        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 2, 0).
-        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, 0 - 5000000).
+        tabula[2999] = tabula[51].
+        tabula[51] = tabula[51] - 8.
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        CONTENTUM(pos_codicis) = COMPONE_RESERVA_OCTETA(codex, CONTENTUM(pos_codicis)).
+        CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), tabula[2999], 0).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 2).
+        CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 6, tabula[2999]).
         CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
         CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 0).
         CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
@@ -1717,7 +1739,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_oc = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
         ig_oc = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, 0 - 5000000).
+        CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 3, tabula[2999]).
         CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 3, 0).
         CONTENTUM(pos_codicis) = COMPONE_MOVZX(codex, CONTENTUM(pos_codicis), 0, 3).
         REDDE 0.
@@ -1837,6 +1859,14 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 7).
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 6).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 0, 6).
+        CONTENTUM(pos_codicis) = COMPONE_RESERVA_OCTETA(codex, CONTENTUM(pos_codicis)).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 11, 0).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 6).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
+
         CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 1, 0).
         DECLARA pos_ansae_mitte SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
         CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 0, 1).
@@ -1852,7 +1882,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 3).
 
         CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
-        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, 0 - 6500000).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 11).
         CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 3, 1).
         CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
         CONTENTUM(pos_codicis) = COMPONE_SERVA_OCTETUM(codex, CONTENTUM(pos_codicis), 3, 0).
@@ -1865,7 +1895,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_mi = CORRIGE_SALTUM(codex, loci_je_mitte, pos_post_mitte).
 
         CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 2, 6).
-        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, 0 - 6500000).
+        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 6, 11).
         CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
         CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
         REDDE 0.
@@ -2186,7 +2216,7 @@ FUNCTIO COMPONE_COMPARA_FLUITANIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO PROSPICE_LITTERALEM_FLUITANIS REDDENS NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT n SICUT NUMERUS.
     DECLARA scrut SICUT NUMERUS VALENS pos.
@@ -2201,7 +2231,7 @@ FUNCTIO PROSPICE_LITTERALEM_FLUITANIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO PROSPICE_EST_FLUITANS REDDENS NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -2245,7 +2275,7 @@ FIN-FUNCTIO.
 FUNCTIO ANALYSA_TERMINUM REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -2373,7 +2403,7 @@ FUNCTIO CAMPUS_STRUCTURAE_OFFSET REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO SIGNUM_AB_POSITIONE REDDENS NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT n SICUT NUMERUS.
     DECLARA signum SICUT NUMERUS VALENS 0.
@@ -2387,7 +2417,7 @@ FIN-FUNCTIO.
 
 FUNCTIO OFFSET_PTR_CAMPUS_STRUCTA REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT idx_campus_gen SICUT NUMERUS.
@@ -2405,7 +2435,7 @@ FIN-FUNCTIO.
 
 FUNCTIO INDEX_STRUCTURAE_INTERIOR_ACUS REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_post_acus SICUT NUMERUS.
     ACCIPIT n SICUT NUMERUS.
     DECLARA nomen_int SICUT NUMERUS VALENS SIGNUM_AB_POSITIONE(fons, pos_post_acus, n).
@@ -2475,7 +2505,7 @@ FIN-FUNCTIO.
 FUNCTIO ANALYSA_EXPRESSIO REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -2536,7 +2566,7 @@ FIN-FUNCTIO.
 FUNCTIO ANALYSA_COMPARATIO REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -2825,7 +2855,7 @@ FIN-FUNCTIO.
 FUNCTIO COMPONE_LITTERALE_TEXTUS REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     DECLARA loci_saltus_textus SICUT NUMERUS VALENS 0.
@@ -2883,7 +2913,7 @@ FIN-FUNCTIO.
 FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
-    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
@@ -3181,7 +3211,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
                                     CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 2, 0).
-                                    CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, 0 - 5000000).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 6, tabula[2999]).
                                     CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
                                     CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
                                     CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
@@ -3573,6 +3603,81 @@ FORMA IntervallumNominis.
     CAMPUS c31 SICUT NUMERUS.
 FIN-FORMA.
 
+FUNCTIO LEGE_TOTUM_DYNAMICUM REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT longitudo SICUT ACUS<NUMERUS>.
+    DECLARA limen SICUT NUMERUS VALENS 65536.
+    DECLARA basis SICUT NUMERUS VALENS RESERVA_OCTETA(limen).
+    SI basis < 0 TUNC
+        CONTENTUM(longitudo) = 0 - 1.
+        REDDE basis.
+    FIN-SI.
+    DECLARA quantitas SICUT NUMERUS VALENS 0.
+    DECLARA continua SICUT NUMERUS VALENS 1.
+    DUM continua == 1 PERFICE
+        DECLARA pars SICUT NUMERUS VALENS LEGE(descriptor, 65536).
+        SI pars < 0 TUNC
+            CONTENTUM(longitudo) = 0 - 1.
+            REDDE pars.
+        FIN-SI.
+        SI pars == 0 TUNC
+            continua = 0.
+        ALITER
+            SI quantitas + pars > limen TUNC
+                DECLARA nova_capacitas SICUT NUMERUS VALENS limen * 2.
+                DUM nova_capacitas < quantitas + pars PERFICE
+                    nova_capacitas = nova_capacitas * 2.
+                FIN-DUM.
+                DECLARA nova_basis SICUT NUMERUS VALENS RESERVA_OCTETA(nova_capacitas).
+                SI nova_basis < 0 TUNC
+                    CONTENTUM(longitudo) = 0 - 1.
+                    REDDE nova_basis.
+                FIN-SI.
+                DECLARA i SICUT NUMERUS VALENS 0.
+                DUM i < quantitas PERFICE
+                    SCRIBE_OCTETUM_AB(nova_basis + i, OCTETUS_AB(basis + i)).
+                    i = i + 1.
+                FIN-DUM.
+                basis = nova_basis.
+                limen = nova_capacitas.
+            FIN-SI.
+            DECLARA j SICUT NUMERUS VALENS 0.
+            DUM j < pars PERFICE
+                SCRIBE_OCTETUM_AB(basis + quantitas + j, OCTETUS(j)).
+                j = j + 1.
+            FIN-DUM.
+            quantitas = quantitas + pars.
+        FIN-SI.
+    FIN-DUM.
+    CONTENTUM(longitudo) = quantitas.
+    REDDE basis.
+FIN-FUNCTIO.
+
+FUNCTIO ASSECURA_BUFFERUM REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS.
+    ACCIPIT necessaria SICUT NUMERUS.
+    ACCIPIT limen SICUT ACUS<NUMERUS>.
+    SI necessaria <= CONTENTUM(limen) TUNC
+        REDDE basis.
+    FIN-SI.
+    DECLARA nova_capacitas SICUT NUMERUS VALENS CONTENTUM(limen) * 2.
+    DUM nova_capacitas < necessaria PERFICE
+        nova_capacitas = nova_capacitas * 2.
+    FIN-DUM.
+    DECLARA nova_basis SICUT NUMERUS VALENS RESERVA_OCTETA(nova_capacitas).
+    SI nova_basis < 0 TUNC
+        REDDE nova_basis.
+    FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        SCRIBE_OCTETUM_AB(nova_basis + i, OCTETUS_AB(basis + i)).
+        i = i + 1.
+    FIN-DUM.
+    CONTENTUM(limen) = nova_capacitas.
+    REDDE nova_basis.
+FIN-FUNCTIO.
+
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argc SICUT NUMERUS.
     ACCIPIT argv SICUT ACUS<NUMERUS>.
@@ -3587,25 +3692,20 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         PROCLAMA "ERRATUM: fons aperiri non potest".
         REDDE 66.
     FIN-SI.
-    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 213001).
+    DECLARA n SICUT NUMERUS VALENS 0.
+    DECLARA basis_fons_brut SICUT NUMERUS VALENS LEGE_TOTUM_DYNAMICUM(fd, SEDES(n)).
     CLAUDE(fd).
-    SI n < 0 TUNC
+    SI n < 0 || basis_fons_brut < 0 TUNC
         PROCLAMA "ERRATUM: fons legi non potest".
         REDDE 74.
     FIN-SI.
-    SI n >= 213000 TUNC
-        PROCLAMA "ERRATUM: fons maior quam 212999 octeti est".
-        REDDE 65.
+    DECLARA fons_brut SICUT ACUS<LITTERA> VALENS basis_fons_brut.
+    DECLARA capacitas_fons SICUT NUMERUS VALENS 65536.
+    DECLARA basis_fons SICUT NUMERUS VALENS RESERVA_OCTETA(capacitas_fons).
+    SI basis_fons < 0 TUNC
+        PROCLAMA "ERRATUM: memoria fontium reservata non est".
+        REDDE 71.
     FIN-SI.
-
-    DECLARA fons_brut SICUT ORDO DE LITTERA CAPACITAS 213000.
-    DECLARA k SICUT NUMERUS VALENS 0.
-    DUM k < n PERFICE
-        fons_brut[k] = OCTETUS(k).
-        k = k + 1.
-    FIN-DUM.
-
-    DECLARA fons SICUT ORDO DE LITTERA CAPACITAS 213000.
     DECLARA pos_out_imp SICUT NUMERUS VALENS 0.
     DECLARA i_imp SICUT NUMERUS VALENS 0.
 
@@ -3640,27 +3740,26 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
             DECLARA fd_imp2 SICUT NUMERUS VALENS APERI_LEGERE(nomen_base_imp).
             SI fd_imp2 >= 0 TUNC
-                DECLARA n_imp2 SICUT NUMERUS VALENS LEGE(fd_imp2, 213001).
+                DECLARA n_imp2 SICUT NUMERUS VALENS 0.
+                DECLARA basis_imp SICUT NUMERUS VALENS LEGE_TOTUM_DYNAMICUM(fd_imp2, SEDES(n_imp2)).
                 CLAUDE(fd_imp2).
-                SI n_imp2 >= 213000 TUNC
-                    PROCLAMA "ERRATUM: fons importatus nimis magnus est".
-                    REDDE 65.
+                SI n_imp2 < 0 || basis_imp < 0 TUNC
+                    PROCLAMA "ERRATUM: fons importatus legi non potest".
+                    REDDE 74.
                 FIN-SI.
+                DECLARA basis_crescens SICUT NUMERUS VALENS ASSECURA_BUFFERUM(basis_fons, pos_out_imp, pos_out_imp + n_imp2 + 1, SEDES(capacitas_fons)).
+                SI basis_crescens < 0 TUNC
+                    PROCLAMA "ERRATUM: memoria fontium augeri non potest".
+                    REDDE 71.
+                FIN-SI.
+                basis_fons = basis_crescens.
                 DECLARA m_imp SICUT NUMERUS VALENS 0.
                 DUM m_imp < n_imp2 PERFICE
-                    SI pos_out_imp >= 213000 TUNC
-                        PROCLAMA "ERRATUM: fontes importati nimis magni sunt".
-                        REDDE 65.
-                    FIN-SI.
-                    fons[pos_out_imp] = OCTETUS(m_imp).
+                    SCRIBE_OCTETUM_AB(basis_fons + pos_out_imp, OCTETUS_AB(basis_imp + m_imp)).
                     pos_out_imp = pos_out_imp + 1.
                     m_imp = m_imp + 1.
                 FIN-DUM.
-                SI pos_out_imp >= 213000 TUNC
-                    PROCLAMA "ERRATUM: fontes importati nimis magni sunt".
-                    REDDE 65.
-                FIN-SI.
-                fons[pos_out_imp] = 10.
+                SCRIBE_OCTETUM_AB(basis_fons + pos_out_imp, 10).
                 pos_out_imp = pos_out_imp + 1.
             ALITER
                 PROCLAMA "ERRATUM: fons importatus aperiri non potest".
@@ -3671,17 +3770,20 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         FIN-SI.
     FIN-DUM.
 
+    DECLARA basis_finalis SICUT NUMERUS VALENS ASSECURA_BUFFERUM(basis_fons, pos_out_imp, pos_out_imp + n, SEDES(capacitas_fons)).
+    SI basis_finalis < 0 TUNC
+        PROCLAMA "ERRATUM: memoria fontis finalis augeri non potest".
+        REDDE 71.
+    FIN-SI.
+    basis_fons = basis_finalis.
     DECLARA m2_imp SICUT NUMERUS VALENS 0.
     DUM m2_imp < n PERFICE
-        SI pos_out_imp >= 213000 TUNC
-            PROCLAMA "ERRATUM: fons post importationes nimis magnus est".
-            REDDE 65.
-        FIN-SI.
-        fons[pos_out_imp] = fons_brut[m2_imp].
+        SCRIBE_OCTETUM_AB(basis_fons + pos_out_imp, OCTETUS_AB(basis_fons_brut + m2_imp)).
         pos_out_imp = pos_out_imp + 1.
         m2_imp = m2_imp + 1.
     FIN-DUM.
     n = pos_out_imp.
+    DECLARA fons SICUT ACUS<LITTERA> VALENS basis_fons.
 
     DECLARA codex SICUT ORDO DE NUMERUS CAPACITAS 300000.
     DECLARA pos SICUT NUMERUS VALENS 120.
@@ -3869,9 +3971,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
                 DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).
                 DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.
-                SI spatium_necessarium1 < 7000000 TUNC
-                    spatium_necessarium1 = 7000000.
-                FIN-SI.
                 DECLARA ig_corr1 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis1, spatium_necessarium1).
 
                 punctum_ingressus = pos.

@@ -14,7 +14,7 @@ GENERATIO_1="$TEMPORARIUM/compilator_generatio_1"
 GENERATIO_2="$TEMPORARIUM/compilator_generatio_2"
 
 printf '%s\n' "I. Amorsa Python..."
-python3 "$RADIX/bootstrap/python/compilateur.py" "$FONS" "$AMORSA" || exit 1
+python3 "$RADIX/bootstrap/python/compilateur_053.py" "$FONS" "$AMORSA" || exit 1
 
 printf '%s\n' "II. Generatio nativa prima..."
 "$AMORSA" "$FONS" "$GENERATIO_1" || exit 1

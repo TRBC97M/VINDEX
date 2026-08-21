@@ -1,0 +1,113 @@
+name: VINDEX 0.53 — Diagnostica functionis unica
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-053-compilator-dynamicus
+    paths:
+      - '.github/workflows/vindex-053-diagnostica-functionis-unica.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnostica:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-compilator-dynamicus
+          fetch-depth: 0
+
+      - name: Numerum functionum et segmentationem examina
+        shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          RELATIO=/tmp/relatio_functionum_053
+          : > "$RELATIO"
+          chmod 755 "$RADIX/compilator_vindex"
+
+          python3 - <<'PY' >> "$RELATIO"
+          import re
+          from pathlib import Path
+
+          via = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          textus = via.read_text(encoding='utf-8')
+          nomina = re.findall(r'^FUNCTIO\s+([A-Z0-9_]+)\s+REDDENS', textus, re.MULTILINE)
+
+          def signum(nomen: str) -> int:
+              h = 0
+              for ch in nomen:
+                  h = ((h * 31) + ord(ch)) & ((1 << 64) - 1)
+              return h
+
+          candidati = ['COMPONE_RESERVA_OCTETA', 'ZETA_MEMORIA_053', 'FUNCTIO_EXPERIMENTALIS_053']
+          print(f'FUNCTIONES EXISTENTES: {len(nomina)}.')
+          visa = {}
+          for nomen in nomina:
+              h = signum(nomen)
+              if h in visa:
+                  print(f'COLLISIO EXISTENS: {visa[h]} / {nomen} = {h}.')
+              else:
+                  visa[h] = nomen
+          for nomen in candidati:
+              h = signum(nomen)
+              adversarius = visa.get(h, 'nullus')
+              print(f'SIGNUM {nomen}: {h}; collisio={adversarius}.')
+          PY
+
+          "$RADIX/compilator_vindex" "$RADIX/src/compilator_vindex.vindex" /tmp/basis >> "$RELATIO" 2>&1
+          printf 'BASIS IMMUTATA: status=%s.\n' "$?" >> "$RELATIO"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          via = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          textus = via.read_text(encoding='utf-8')
+          ancora = 'FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.\n'
+          nova = '''FUNCTIO ZETA_MEMORIA_053 REDDENS NUMERUS.
+              ACCIPIT valor SICUT NUMERUS.
+              REDDE valor.
+          FIN-FUNCTIO.
+
+          '''
+          Path('/tmp/minima.vindex').write_text(textus.replace(ancora, nova + ancora, 1), encoding='utf-8')
+          PY
+          "$RADIX/compilator_vindex" /tmp/minima.vindex /tmp/minima >> "$RELATIO" 2>&1
+          printf 'FUNCTIO MINIMA ADDITA: status=%s.\n' "$?" >> "$RELATIO"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          via = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          textus = via.read_text(encoding='utf-8')
+          ancora = 'FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.\n'
+          nova = '''FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS.
+              ACCIPIT codex SICUT ORDO DE NUMERUS.
+              ACCIPIT pos SICUT NUMERUS.
+              REDDE pos.
+          FIN-FUNCTIO.
+
+          '''
+          Path('/tmp/minima-nomine.vindex').write_text(textus.replace(ancora, nova + ancora, 1), encoding='utf-8')
+          PY
+          "$RADIX/compilator_vindex" /tmp/minima-nomine.vindex /tmp/minima-nomine >> "$RELATIO" 2>&1
+          printf 'FUNCTIO MINIMA NOMINE MEMORIAE: status=%s.\n' "$?" >> "$RELATIO"
+
+          VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-LIMEN-FUNCTIONUM-053.md"
+          {
+            printf '%s\n\n' '# VINDEX 0.53 — Relatio diagnostica functionum'
+            printf '%s\n\n' 'Haec probatio determinat utrum sola additio functionis novae segmentationem efficiat.'
+            printf '%s\n' '```text'
+            cat "$RELATIO"
+            printf '%s\n' '```'
+          } > "$VIA_RELATIONIS"
+
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$VIA_RELATIONIS"
+          if ! git diff --cached --quiet; then
+            git commit -m 'VINDEX 0.53: limitem functionum diagnostica'
+            git push origin HEAD:chatgpt/vindex-053-compilator-dynamicus
+          fi
+          exit 0

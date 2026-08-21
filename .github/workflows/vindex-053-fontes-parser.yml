@@ -1,0 +1,51 @@
+# Diagnostica unica transitus a fontibus dynamicis ad analysatorem.
+name: VINDEX 0.53 — Diagnostica analysatoris
+
+on:
+  push:
+    branches: [chatgpt/vindex-053-compilator-dynamicus]
+    paths:
+      - '.github/workflows/vindex-053-fontes-parser.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnostica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-compilator-dynamicus
+          fetch-depth: 0
+      - shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'; R=/tmp/r; : >"$R"
+          chmod 755 "$RADIX/compilator_vindex"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'); t=p.read_text(encoding='utf-8')
+          Path('/tmp/pontis.vindex').write_text(t.replace('213001','524289').replace('213000','524288').replace('212999','524287'),encoding='utf-8')
+          PY
+          "$RADIX/compilator_vindex" /tmp/pontis.vindex /tmp/pontis >>"$R" 2>&1; chmod 755 /tmp/pontis
+          python3 "$RADIX/instrumenta/applica_fontes_dynamicos_053.py" >>"$R" 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'); t=p.read_text(encoding='utf-8')
+          marca='''    DECLARA fons SICUT ACUS<LITTERA> VALENS basis_fons.\n\n    DECLARA codex SICUT ORDO DE NUMERUS CAPACITAS 300000.\n'''
+          novum='''    DECLARA fons SICUT ACUS<LITTERA> VALENS basis_fons.\n    PROCLAMA 9400.\n    PROCLAMA basis_fons_brut.\n    PROCLAMA basis_fons.\n    PROCLAMA fons.\n    PROCLAMA n.\n    PROCLAMA OCTETUS_AB(fons).\n    PROCLAMA OCTETUS_AB(fons + 65536).\n    PROCLAMA OCTETUS_AB(fons + 131072).\n    PROCLAMA OCTETUS_AB(fons + 196608).\n\n    DECLARA codex SICUT ORDO DE NUMERUS CAPACITAS 300000.\n'''
+          if marca not in t: raise SystemExit('marca fons deest')
+          t=t.replace(marca,novum,1)
+          init=t.index('    DECLARA fons SICUT ACUS<LITTERA> VALENS basis_fons.')
+          locus=t.index('    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n',init)
+          vetus='    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n'
+          nov='''    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI i == 0 || i == 65535 || i == 65536 || i == 131071 || i == 131072 || i == 196607 || i == 196608 TUNC\n            PROCLAMA 9401.\n            PROCLAMA i.\n            PROCLAMA fons.\n            PROCLAMA OCTETUS_AB(fons + i).\n        FIN-SI.\n'''
+          t=t[:locus]+t[locus:].replace(vetus,nov,1)
+          p.write_text(t,encoding='utf-8')
+          PY
+          /tmp/pontis "$RADIX/src/compilator_vindex.vindex" /tmp/g1 >>"$R" 2>&1; C=$?; printf 'G1 C=%s.\n' "$C" >>"$R"; chmod 755 /tmp/g1 2>/dev/null
+          /tmp/g1 "$RADIX/src/compilator_vindex.vindex" /tmp/g2 >>"$R" 2>&1; E=$?; printf 'G1 E=%s.\n' "$E" >>"$R"
+          cd "$GITHUB_WORKSPACE"; F="$RADIX/instrumenta/RELATIO-PARSER-FONTIUM-053.md"; { printf '%s\n\n' '# VINDEX 0.53 — Diagnostica analysatoris'; printf '%s\n' '```text'; cat "$R"; printf '%s\n' '```'; } >"$F"
+          git config user.name 'VINDEX Centurio'; git config user.email 'actions@users.noreply.github.com'; git add "$F"; if ! git diff --cached --quiet; then git commit -m 'VINDEX 0.53: transitum analysatoris diagnostica'; git push origin HEAD:chatgpt/vindex-053-compilator-dynamicus; fi
+          exit 0

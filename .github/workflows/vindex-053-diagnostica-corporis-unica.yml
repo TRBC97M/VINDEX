@@ -1,0 +1,51 @@
+name: VINDEX 0.53 — Diagnostica corporis unica
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-053-compilator-dynamicus
+    paths:
+      - '.github/workflows/vindex-053-diagnostica-corporis-unica.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnostica:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-compilator-dynamicus
+          fetch-depth: 0
+
+      - name: Corpus adiutoris gradatim compila
+        shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          RELATIO=/tmp/relatio_corporis_053
+          chmod 755 "$RADIX/compilator_vindex"
+          sed -i 's/cwd=RADIX.parent.parent.parent,/cwd=None,/' "$RADIX/instrumenta/diagnostica_memoria_053.py"
+          python3 "$RADIX/instrumenta/diagnostica_memoria_053.py" > "$RELATIO" 2>&1
+          printf 'STATUS DIAGNOSTICAE: %s.\n' "$?" >> "$RELATIO"
+
+          VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-CORPUS-MEMORIAE-053.md"
+          {
+            printf '%s\n\n' '# VINDEX 0.53 — Relatio corporis memoriae'
+            printf '%s\n\n' 'Corpus adiutoris memoriae gradatim compilatur ut primum fragmentum vitiosum inveniatur.'
+            printf '%s\n' '```text'
+            cat "$RELATIO"
+            printf '%s\n' '```'
+          } > "$VIA_RELATIONIS"
+
+          git checkout -- "$RADIX/instrumenta/diagnostica_memoria_053.py" 2>/dev/null || true
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$VIA_RELATIONIS"
+          if ! git diff --cached --quiet; then
+            git commit -m 'VINDEX 0.53: corpus memoriae gradatim diagnostica'
+            git push origin HEAD:chatgpt/vindex-053-compilator-dynamicus
+          fi
+          exit 0

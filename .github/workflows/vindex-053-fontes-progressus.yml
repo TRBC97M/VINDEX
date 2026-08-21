@@ -1,0 +1,114 @@
+# Diagnostica unica rami primae functionis post fontes dynamicos.
+name: VINDEX 0.53 — Ramus functionis
+
+on:
+  push:
+    branches: [chatgpt/vindex-053-compilator-dynamicus]
+    paths:
+      - '.github/workflows/vindex-053-fontes-progressus.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnostica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-compilator-dynamicus
+          fetch-depth: 0
+      - shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          R=/tmp/r
+          : >"$R"
+          chmod 755 "$RADIX/compilator_vindex"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          t=p.read_text(encoding='utf-8')
+          Path('/tmp/pontis.vindex').write_text(t.replace('213001','524289').replace('213000','524288').replace('212999','524287'),encoding='utf-8')
+          PY
+          "$RADIX/compilator_vindex" /tmp/pontis.vindex /tmp/pontis >>"$R" 2>&1
+          chmod 755 /tmp/pontis
+
+          python3 "$RADIX/instrumenta/applica_fontes_dynamicos_053.py" >>"$R" 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          t=p.read_text(encoding='utf-8')
+
+          a='''            ALITER\n                DECLARA nomen_adiutoris SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).\n'''
+          b='''            ALITER\n                PROCLAMA 9600.\n                PROCLAMA i.\n                DECLARA nomen_adiutoris SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).\n                PROCLAMA 9601.\n                PROCLAMA i.\n                PROCLAMA nomen_adiutoris.\n'''
+          if t.count(a) != 1: raise SystemExit('ancora 9600 non unica')
+          t=t.replace(a,b,1)
+
+          a='''                DUM i < n && fons[i] != 46 PERFICE\n                    i = i + 1.\n                FIN-DUM.\n                i = i + 1.\n\n                DECLARA idx_fn SICUT NUMERUS VALENS 0.\n'''
+          b='''                DUM i < n && fons[i] != 46 PERFICE\n                    i = i + 1.\n                FIN-DUM.\n                i = i + 1.\n                PROCLAMA 9602.\n                PROCLAMA i.\n\n                DECLARA idx_fn SICUT NUMERUS VALENS 0.\n'''
+          # Hoc exemplar bis adesse potest; post nomen_adiutoris solum mutatur.
+          init=t.index('                PROCLAMA 9601.')
+          pars=t[init:]
+          if a not in pars: raise SystemExit('ancora 9602 deest')
+          pars=pars.replace(a,b,1)
+          t=t[:init]+pars
+
+          a='''                tabula[328 + idx_fn] = nomen_adiutoris.\n                tabula[478 + idx_fn] = pos.\n\n                pos = COMPONE_IMPONE(codex, pos, 5).\n'''
+          b='''                tabula[328 + idx_fn] = nomen_adiutoris.\n                tabula[478 + idx_fn] = pos.\n                PROCLAMA 9603.\n                PROCLAMA idx_fn.\n                PROCLAMA pos.\n\n                pos = COMPONE_IMPONE(codex, pos, 5).\n'''
+          if t.count(a) != 1: raise SystemExit('ancora 9603 non unica')
+          t=t.replace(a,b,1)
+
+          a='''                DECLARA continua_param SICUT NUMERUS VALENS 1.\n                DUM continua_param == 1 PERFICE\n                    DECLARA ignoratum3 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, SEDES(i), n).\n'''
+          b='''                DECLARA continua_param SICUT NUMERUS VALENS 1.\n                PROCLAMA 9604.\n                PROCLAMA i.\n                DUM continua_param == 1 PERFICE\n                    PROCLAMA 9605.\n                    PROCLAMA i.\n                    PROCLAMA fons[i].\n                    DECLARA ignoratum3 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, SEDES(i), n).\n                    PROCLAMA 9606.\n                    PROCLAMA i.\n                    PROCLAMA fons[i].\n'''
+          if t.count(a) != 1: raise SystemExit('ancora 9604 non unica')
+          t=t.replace(a,b,1)
+
+          a='''                    SI fons[i] == 65 && i + 6 < n && fons[i+1] == 67 && fons[i+2] == 67 && fons[i+3] == 73 && fons[i+4] == 80 && fons[i+5] == 73 && fons[i+6] == 84 TUNC\n                        i = i + 8.\n                        DECLARA nomen_param SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).\n'''
+          b='''                    SI fons[i] == 65 && i + 6 < n && fons[i+1] == 67 && fons[i+2] == 67 && fons[i+3] == 73 && fons[i+4] == 80 && fons[i+5] == 73 && fons[i+6] == 84 TUNC\n                        PROCLAMA 9607.\n                        i = i + 8.\n                        DECLARA nomen_param SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).\n                        PROCLAMA 9608.\n                        PROCLAMA i.\n                        PROCLAMA nomen_param.\n'''
+          if t.count(a) != 1: raise SystemExit('ancora 9607 non unica')
+          t=t.replace(a,b,1)
+
+          a='''                        DUM i < n && fons[i] != 46 PERFICE\n                            i = i + 1.\n                        FIN-DUM.\n                        i = i + 1.\n\n                        DECLARA registrum_param SICUT NUMERUS VALENS 7.\n'''
+          b='''                        DUM i < n && fons[i] != 46 PERFICE\n                            i = i + 1.\n                        FIN-DUM.\n                        i = i + 1.\n                        PROCLAMA 9609.\n                        PROCLAMA i.\n\n                        DECLARA registrum_param SICUT NUMERUS VALENS 7.\n'''
+          if t.count(a) != 1: raise SystemExit('ancora 9609 non unica')
+          t=t.replace(a,b,1)
+
+          a='''                        pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).\n\n                        numerus_parametrorum = numerus_parametrorum + 1.\n'''
+          b='''                        pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).\n                        PROCLAMA 9610.\n                        PROCLAMA i.\n                        PROCLAMA pos.\n\n                        numerus_parametrorum = numerus_parametrorum + 1.\n'''
+          if t.count(a) != 1: raise SystemExit('ancora 9610 non unica')
+          t=t.replace(a,b,1)
+
+          a='''                DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).\n                DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.\n'''
+          b='''                PROCLAMA 9611.\n                PROCLAMA i.\n                DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).\n                PROCLAMA 9612.\n                PROCLAMA i.\n                DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.\n'''
+          if t.count(a) != 1: raise SystemExit('ancora 9611 non unica')
+          t=t.replace(a,b,1)
+
+          p.write_text(t,encoding='utf-8')
+          PY
+
+          /tmp/pontis "$RADIX/src/compilator_vindex.vindex" /tmp/g1 >>"$R" 2>&1
+          C=$?
+          printf 'COMPILATIO G1=%s.\n' "$C" >>"$R"
+          chmod 755 /tmp/g1 2>/dev/null
+          /tmp/g1 "$RADIX/src/compilator_vindex.vindex" /tmp/g2 >>"$R" 2>&1
+          E=$?
+          printf 'EXECUTIO G1=%s.\n' "$E" >>"$R"
+
+          cd "$GITHUB_WORKSPACE"
+          F="$RADIX/instrumenta/RELATIO-PROGRESSUS-FONTIUM-053.md"
+          {
+            printf '%s\n\n' '# VINDEX 0.53 — Diagnostica rami functionis'
+            printf '%s\n' '```text'
+            cat "$R"
+            printf '%s\n' '```'
+          } >"$F"
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$F"
+          if ! git diff --cached --quiet; then
+            git commit -m 'VINDEX 0.53: ramum functionis diagnostica'
+            git push origin HEAD:chatgpt/vindex-053-compilator-dynamicus
+          fi
+          exit 0
