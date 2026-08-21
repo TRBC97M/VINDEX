@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""TEXTUS 0.52 gradatim addit, auto-hospitium in omni gradu servans."""
+"""TEXTUS 0.52 prudenter addit, ANALYSA_FACTOR intacta servata."""
 
 from pathlib import Path
 import os
@@ -7,7 +7,7 @@ import sys
 
 VIA = Path("Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex")
 GRADUS = int(os.environ.get("VINDEX_TEXTUS_GRADUS", "3"))
-MARCA = "//   2900-2999: signa TEXTUS variabilium (100 loca)"
+MARCA = "DECLARA est_textus_novum SICUT NUMERUS VALENS 0."
 
 
 def require_once(textus: str, vetus: str, nomen: str) -> None:
@@ -22,14 +22,7 @@ def muta_once(textus: str, vetus: str, novum: str, nomen: str) -> str:
 
 
 def gradus_unus(textus: str) -> str:
-    """DECLARA ... SICUT TEXTUS VALENS \"...\" sine sensu litteralium communium mutando."""
-    textus = muta_once(
-        textus,
-        "// Capacitas tabulae tota: 850.\n",
-        MARCA + "\n// Capacitas tabulae tota: 3000.\n",
-        "descriptio-tabulae",
-    )
-
+    """Declarationes TEXTUS et litteralia descriptoris introducit."""
     textus = muta_once(
         textus,
         "                            SI fons[CONTENTUM(pos_fontis)] == 78 || fons[CONTENTUM(pos_fontis)] == 65 || fons[CONTENTUM(pos_fontis)] == 86 TUNC\n",
@@ -134,28 +127,57 @@ def gradus_unus(textus: str) -> str:
 
 
 def gradus_duo(textus: str) -> str:
-    """LONGITUDO(textus) legit primum verbum descriptoris."""
-    ancora = "    DECLARA ignoratum SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).\n\n"
-    initium = textus.find("FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.")
-    locus = textus.find(ancora, initium)
-    if initium < 0 or locus < 0:
-        raise SystemExit("ERRATUM: ANALYSA_FACTOR mutari non potest")
-    locus += len(ancora)
-    additio = (
-        "    SI fons[CONTENTUM(pos_fontis)] == 76 && CONTENTUM(pos_fontis) + 9 < n && fons[CONTENTUM(pos_fontis)+1] == 79 && fons[CONTENTUM(pos_fontis)+2] == 78 && fons[CONTENTUM(pos_fontis)+3] == 71 && fons[CONTENTUM(pos_fontis)+4] == 73 && fons[CONTENTUM(pos_fontis)+5] == 84 && fons[CONTENTUM(pos_fontis)+6] == 85 && fons[CONTENTUM(pos_fontis)+7] == 68 && fons[CONTENTUM(pos_fontis)+8] == 79 && fons[CONTENTUM(pos_fontis)+9] == 40 TUNC\n"
-        "        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 10.\n"
-        "        DECLARA ig_longitudo SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).\n"
-        "        ig_longitudo = IGNORA_SPATIA(fons, pos_fontis, n).\n"
-        "        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.\n"
-        "        CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 0).\n"
-        "        REDDE 0.\n"
-        "    FIN-SI.\n\n"
+    """Parametra TEXTUS in PRINCIPALIS et functionibus auxiliaribus signat."""
+    ancora = "                        DECLARA magnitudo_pp SICUT NUMERUS VALENS 0.\n"
+    textus = muta_once(
+        textus,
+        ancora,
+        ancora
+        + "                        DECLARA est_textus_pp SICUT NUMERUS VALENS 0.\n"
+        + "                        SI fons[i] == 84 TUNC\n"
+        + "                            est_textus_pp = 1.\n"
+        + "                        FIN-SI.\n",
+        "parametrum-principalis-signum",
     )
-    return textus[:locus] + additio + textus[locus:]
+
+    ancora = "                        tabula[850 + idx_param_pp] = magnitudo_pp.\n"
+    textus = muta_once(
+        textus,
+        ancora,
+        ancora
+        + "                        SI est_textus_pp == 1 TUNC\n"
+        + "                            tabula[2900 + idx_param_pp] = 1.\n"
+        + "                        FIN-SI.\n",
+        "parametrum-principalis-metadata",
+    )
+
+    ancora = "                        DECLARA es_flot_param SICUT NUMERUS VALENS 0.\n"
+    textus = muta_once(
+        textus,
+        ancora,
+        ancora
+        + "                        DECLARA est_textus_param SICUT NUMERUS VALENS 0.\n"
+        + "                        SI fons[i] == 84 TUNC\n"
+        + "                            est_textus_param = 1.\n"
+        + "                        FIN-SI.\n",
+        "parametrum-adiutor-signum",
+    )
+
+    ancora = "                        tabula[850 + idx_param] = magnitudo_param.\n"
+    textus = muta_once(
+        textus,
+        ancora,
+        ancora
+        + "                        SI est_textus_param == 1 TUNC\n"
+        + "                            tabula[2900 + idx_param] = 1.\n"
+        + "                        FIN-SI.\n",
+        "parametrum-adiutor-metadata",
+    )
+    return textus
 
 
 def gradus_tres(textus: str) -> str:
-    """PROCLAMA variabilem TEXTUS per write(1, data, longitudo) scribit."""
+    """PROCLAMA valorem TEXTUS directe per nucleum scribit."""
     ancora = "                                    DECLARA es_flot_pcs SICUT NUMERUS VALENS PROSPICE_EST_FLUITANS(fons, CONTENTUM(pos_fontis), n, tabula).\n"
     additio = (
         "                                    DECLARA es_textus_pcs SICUT NUMERUS VALENS 0.\n"
@@ -205,15 +227,18 @@ def gradus_tres(textus: str) -> str:
 def principale() -> int:
     if GRADUS < 1 or GRADUS > 3:
         raise SystemExit("ERRATUM: gradus inter I et III esse debet")
+
     textus = VIA.read_text(encoding="utf-8")
     if MARCA in textus:
         print("TEXTUS 0.52 iam applicatus est.")
         return 0
+
     mutationes = [gradus_unus, gradus_duo, gradus_tres]
     for index in range(GRADUS):
         textus = mutationes[index](textus)
+
     VIA.write_text(textus, encoding="utf-8")
-    print(f"RECTE: gradus I-{GRADUS} TEXTUS 0.52 compilatori additi sunt.")
+    print(f"RECTE: gradus I-{GRADUS} TEXTUS 0.52 applicati sunt.")
     return 0
 
 
