@@ -1,6 +1,9 @@
 name: VINDEX 0.52 — Fundamenta compilatoris
 
 on:
+  push:
+    branches:
+      - chatgpt/vindex-052-textus
   pull_request:
     branches:
       - main
@@ -11,7 +14,6 @@ permissions:
 
 jobs:
   textus:
-    if: github.head_ref == 'chatgpt/vindex-052-textus'
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
