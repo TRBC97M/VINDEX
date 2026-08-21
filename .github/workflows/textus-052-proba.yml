@@ -1,0 +1,61 @@
+name: VINDEX 0.52 — Probatio diagnostica unica
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  textus:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: Gradum primum cum mensuris examina
+        shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          COMP="$RADIX/compilator_vindex"
+          chmod +x "$COMP"
+
+          VINDEX_TEXTUS_GRADUS=1 python3 "$RADIX/instrumenta/applica_textus_052.py"
+          STATUS_APPLICATIO=$?
+          printf 'STATUS_APPLICATIO=%s\n' "$STATUS_APPLICATIO"
+          if [ "$STATUS_APPLICATIO" -ne 0 ]; then
+            printf '%s\n' 'RESULTATUM=ERRATUM_APPLICATIO'
+            exit 0
+          fi
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          s = p.read_text(encoding='utf-8')
+          vetus = '''    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).
+    CLAUDE(fd_scriptio).
+    SI scriptum != pos TUNC
+'''
+          novum = '''    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).
+    PROCLAMA scriptum.
+    PROCLAMA pos.
+    CLAUDE(fd_scriptio).
+    SI scriptum != pos TUNC
+'''
+          if s.count(vetus) != 1:
+              raise SystemExit('ERRATUM: locus mensurae non inventus est')
+          p.write_text(s.replace(vetus, novum, 1), encoding='utf-8')
+          PY
+
+          "$COMP" "$FONS" /tmp/compilator_gradus_1
+          STATUS=$?
+          printf 'STATUS_COMPILATIO=%s\n' "$STATUS"
+          if [ -e /tmp/compilator_gradus_1 ]; then
+            printf 'MAGNITUDO_BINARII=%s\n' "$(stat -c '%s' /tmp/compilator_gradus_1)"
+          fi
+          printf '%s\n' 'RESULTATUM=DIAGNOSIS_PERFECTA'
+          exit 0
