@@ -1,0 +1,162 @@
+# Probatio unica tabulae symbolorum localium dynamicae.
+name: VINDEX 0.53 — Loca dynamica
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-053-compilator-dynamicus
+    paths:
+      - '.github/workflows/vindex-053-loca-dynamica-unica.yml'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_locos_dynamicos_053.py'
+
+permissions:
+  contents: write
+
+jobs:
+  loca-dynamica:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-compilator-dynamicus
+          fetch-depth: 0
+
+      - name: Symbola localia dynamica comproba
+        shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          RELATIO=/tmp/relatio_loca_053
+          : > "$RELATIO"
+          SUCCESSUS=0
+
+          integrum() {
+            VIA="$1"
+            [ -s "$VIA" ] || return 1
+            A=$(stat -c '%s' "$VIA" 2>/dev/null)
+            B=$(od -An -tu8 -j96 -N8 "$VIA" 2>/dev/null | tr -d '[:space:]')
+            [ -n "$A" ] && [ "$A" = "$B" ]
+          }
+
+          proba() {
+            chmod 755 "$RADIX/compilator_vindex"
+            python3 "$RADIX/instrumenta/applica_locos_dynamicos_053.py" >> "$RELATIO" 2>&1 || return 1
+
+            if grep -q 'DUM idx < 100 && tabula\[idx\] != 0' "$RADIX/src/compilator_vindex.vindex"; then
+              printf '%s\n' 'ERRATUM: limes centum symbolorum localium adhuc in auxiliatoribus manet.' >> "$RELATIO"
+              return 1
+            fi
+            grep -q 'FUNCTIO INITIA_LOCA_DYNAMICA REDDENS NUMERUS' "$RADIX/src/compilator_vindex.vindex" || return 1
+            printf '%s\n' 'RECTE: descriptor symbolorum localium dynamicus in fonte adest.' >> "$RELATIO"
+
+            "$RADIX/compilator_vindex" "$RADIX/src/compilator_vindex.vindex" /tmp/g1 >> "$RELATIO" 2>&1
+            S1=$?
+            printf 'STATUS G1: %s.\n' "$S1" >> "$RELATIO"
+            [ "$S1" -eq 0 ] && integrum /tmp/g1 || return 1
+
+            chmod 755 /tmp/g1
+            /tmp/g1 "$RADIX/src/compilator_vindex.vindex" /tmp/g2 >> "$RELATIO" 2>&1
+            S2=$?
+            printf 'STATUS G2: %s.\n' "$S2" >> "$RELATIO"
+            [ "$S2" -eq 0 ] && integrum /tmp/g2 || return 1
+
+            chmod 755 /tmp/g2
+            /tmp/g2 "$RADIX/src/compilator_vindex.vindex" /tmp/g3 >> "$RELATIO" 2>&1
+            S3=$?
+            printf 'STATUS G3: %s.\n' "$S3" >> "$RELATIO"
+            [ "$S3" -eq 0 ] && integrum /tmp/g3 || return 1
+            cmp -s /tmp/g2 /tmp/g3 || return 1
+            printf '%s\n' 'RECTE: loca dynamica punctum fixum compilatoris servant.' >> "$RELATIO"
+
+            cp /tmp/g3 "$RADIX/compilator_vindex"
+            chmod 755 "$RADIX/compilator_vindex"
+
+            python3 - <<'PY'
+          from pathlib import Path
+          lineae = [
+              'FORMA Par.',
+              '    CAMPUS valor SICUT NUMERUS.',
+              'FIN-FORMA.',
+              '',
+              'FUNCTIO PRINCIPALIS REDDENS NUMERUS.',
+          ]
+          for i in range(180):
+              lineae.append(f'    DECLARA x{i:03d} SICUT NUMERUS VALENS {i}.')
+          lineae += [
+              '    DECLARA series_post SICUT ORDO DE NUMERUS CAPACITAS 3.',
+              '    series_post[2] = 333.',
+              '    DECLARA par_post SICUT Par.',
+              '    valor DE par_post = 444.',
+              '    PROCLAMA x179.',
+              '    PROCLAMA series_post[2].',
+              '    PROCLAMA valor DE par_post.',
+              '    REDDE 0.',
+              'FIN-FUNCTIO.',
+              '',
+          ]
+          Path('/tmp/loca_053.vindex').write_text('\n'.join(lineae), encoding='utf-8')
+          PY
+            "$RADIX/compilator_vindex" /tmp/loca_053.vindex /tmp/loca_053 >> "$RELATIO" 2>&1
+            SL=$?
+            printf 'COMPILATIO >100 LOCALIUM: status=%s.\n' "$SL" >> "$RELATIO"
+            [ "$SL" -eq 0 ] && integrum /tmp/loca_053 || return 1
+            chmod 755 /tmp/loca_053
+            OL=$(/tmp/loca_053 2>>"$RELATIO"); EL=$?
+            printf 'EXECUTIO >100 LOCALIUM: status=%s exitus=[%s].\n' "$EL" "$OL" >> "$RELATIO"
+            [ "$EL" -eq 0 ] && [ "$OL" = $'179\n333\n444' ] || return 1
+            printf '%s\n' 'RECTE: CLXXX variabilia localia cum ordine et forma post limen historicum operantur.' >> "$RELATIO"
+
+            cd "$RADIX" || return 1
+            ./compilator_vindex src/officina_vindex.vindex /tmp/officina_nova >> "$RELATIO" 2>&1 || return 1
+            ./compilator_vindex src/salutatio_vindex.vindex /tmp/salutatio_nova >> "$RELATIO" 2>&1 || return 1
+            cp /tmp/officina_nova ./officina_vindex
+            cp /tmp/salutatio_nova ./salutatio_vindex
+
+            find . -type f -name '*.sh' -exec chmod 755 {} +
+            chmod 755 ./vindexc ./vindex_graphica ./officina_vindex ./salutatio_vindex ./compilator_vindex ./vindex-officina ./vindex-salutatio ./vindex-systema
+
+            bash ./systema/construe_systema.sh >> "$RELATIO" 2>&1 || return 1
+            bash ./systema/uefi/construe_uefi.sh >> "$RELATIO" 2>&1 || return 1
+            printf '%s\n' 'RECTE: Systema BIOS et UEFI post migrationem localium regenerata sunt.' >> "$RELATIO"
+
+            bash ./tests/run_tests.sh >> "$RELATIO" 2>&1
+            SR=$?
+            printf 'PROBATIONES REGRESSIONALES: status=%s.\n' "$SR" >> "$RELATIO"
+            [ "$SR" -eq 0 ] || return 1
+
+            printf '%s\n' 'RECTE: limes historicus centum symbolorum localium remotus est.' >> "$RELATIO"
+            return 0
+          }
+
+          proba
+          STATUS=$?
+          if [ "$STATUS" -eq 0 ]; then
+            SUCCESSUS=1
+          else
+            printf 'ERRATUM: migratio symbolorum localium dynamicorum nondum canonica est; status=%s.\n' "$STATUS" >> "$RELATIO"
+          fi
+
+          cd "$GITHUB_WORKSPACE" || exit 0
+          VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-LOCA-DYNAMICA-053.md"
+          {
+            printf '%s\n\n' '# VINDEX 0.53 — Relatio locorum dynamicorum'
+            printf '%s\n\n' 'Tabula symbolorum localium crescibilis, punctum fixum, CLXXX variabilia et regressiones hic comprobantur.'
+            printf '%s\n' '```text'
+            cat "$RELATIO"
+            printf '%s\n' '```'
+          } > "$VIA_RELATIONIS"
+
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          if [ "$SUCCESSUS" -eq 1 ]; then
+            git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$RADIX/officina_vindex" "$RADIX/salutatio_vindex" "$RADIX/nucleus_systema.elf" "$RADIX/systema_vindex.img" "$RADIX/BOOTX64.EFI" "$RADIX/systema_vindex_uefi.img" "$VIA_RELATIONIS"
+          else
+            git checkout -- "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$RADIX/officina_vindex" "$RADIX/salutatio_vindex" "$RADIX/nucleus_systema.elf" "$RADIX/systema_vindex.img" "$RADIX/BOOTX64.EFI" "$RADIX/systema_vindex_uefi.img" 2>/dev/null || true
+            git add "$VIA_RELATIONIS"
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'VINDEX 0.53: loca dynamica comproba'
+            git push origin HEAD:chatgpt/vindex-053-compilator-dynamicus
+          fi
+          exit 0
