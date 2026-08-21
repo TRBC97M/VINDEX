@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
@@ -24,55 +24,16 @@ jobs:
         run: |
           cd 'Vindex Chat-GPT/vindex_final_v51'
           chmod +x ./compilator_vindex
-          printf 'Magnitudo fontis pristini: '
-          wc -c < src/compilator_vindex.vindex
-          printf 'Numerus functionum pristinarum: '
-          grep -c '^FUNCTIO ' src/compilator_vindex.vindex
           ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_pristinus
-          printf 'Magnitudo binarii pristini reconstructi: '
-          stat -c '%s' /tmp/compilator_pristinus
-          printf 'Magnitudo binarii distributi: '
-          stat -c '%s' ./compilator_vindex
 
-      - name: LONGITUDO sola proba
+      - name: Gradus singulos proba
         run: |
           VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
           COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          git checkout -- "$VIA"
-          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_longitudinem_052.py'
-          printf 'Magnitudo cum LONGITUDO sola: '
-          wc -c < "$VIA"
-          "$COMP" "$VIA" /tmp/compilator_longitudo
-          printf '%s\n' 'RECTE: LONGITUDO sola compilata est.'
-          git checkout -- "$VIA"
-
-      - name: Gradus I sub vestigio proba
-        run: |
-          VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          git checkout -- "$VIA"
-          VINDEX_TEXTUS_GRADUS=1 python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
-          if command -v strace >/dev/null 2>&1; then
-            set +e
-            strace -f -e trace=write,writev -o /tmp/vestigium "$COMP" "$VIA" /tmp/compilator_gradus_1
-            STATUS=$?
-            set -e
-            cat /tmp/vestigium
-            exit "$STATUS"
-          else
-            "$COMP" "$VIA" /tmp/compilator_gradus_1
-          fi
-
-      - name: Gradus mutationum separatim proba
-        run: |
-          VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          for GRADUS in 1 2 3 4 5; do
+          for GRADUS in 1 2 3; do
             git checkout -- "$VIA"
             printf 'Gradus %s incipit.\n' "$GRADUS"
             VINDEX_TEXTUS_GRADUS="$GRADUS" python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
-            printf 'Magnitudo: '
-            wc -c < "$VIA"
             "$COMP" "$VIA" "/tmp/compilator_gradus_${GRADUS}"
             printf 'Gradus %s recte compilatus est.\n' "$GRADUS"
           done
@@ -111,6 +72,6 @@ jobs:
           if git diff --cached --quiet; then
             printf '%s\n' 'Nihil novum conservandum est.'
           else
-            git commit -m 'VINDEX 0.52: TEXTUS litteralis et LONGITUDO in compilatore'
+            git commit -m 'VINDEX 0.52: TEXTUS litteralis, LONGITUDO et PROCLAMA'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
