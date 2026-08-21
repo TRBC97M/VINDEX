@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
@@ -25,12 +25,26 @@ jobs:
           cd 'Vindex Chat-GPT/vindex_final_v51'
           chmod +x ./compilator_vindex
           ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_pristinus
+          cmp ./compilator_vindex /tmp/compilator_pristinus
 
-      - name: Gradus singulos proba
+      - name: Variantes LONGITUDO proba
         run: |
           VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
           COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          for GRADUS in 1 2 3; do
+          for VARIANS in 1 2 3 4; do
+            git checkout -- "$VIA"
+            printf 'Varians LONGITUDO %s incipit.\n' "$VARIANS"
+            VINDEX_LONGITUDO_VARIANS="$VARIANS" python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_longitudinem_052.py'
+            "$COMP" "$VIA" "/tmp/compilator_longitudo_${VARIANS}"
+            printf 'Varians LONGITUDO %s recte compilata est.\n' "$VARIANS"
+          done
+          git checkout -- "$VIA"
+
+      - name: Gradus mutationum separatim proba
+        run: |
+          VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          for GRADUS in 1 2 3 4 5; do
             git checkout -- "$VIA"
             printf 'Gradus %s incipit.\n' "$GRADUS"
             VINDEX_TEXTUS_GRADUS="$GRADUS" python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
@@ -72,6 +86,6 @@ jobs:
           if git diff --cached --quiet; then
             printf '%s\n' 'Nihil novum conservandum est.'
           else
-            git commit -m 'VINDEX 0.52: TEXTUS litteralis, LONGITUDO et PROCLAMA'
+            git commit -m 'VINDEX 0.52: TEXTUS litteralis et LONGITUDO in compilatore'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
