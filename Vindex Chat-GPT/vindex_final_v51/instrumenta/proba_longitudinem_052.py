@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ANALYSA_FACTOR gradatim mutat ut causa ruinae exacte reperiatur."""
+"""ANALYSA_FACTOR gradatim mutat ut LONGITUDO sine commentariis probetur."""
 
 from pathlib import Path
 import os
@@ -16,15 +16,16 @@ if initium < 0 or locus < 0:
 locus += len(ancora)
 
 si_minimum = '''    SI 0 == 1 TUNC\n        REDDE 0.\n    FIN-SI.\n\n'''
-si_breve = '''    SI fons[CONTENTUM(pos_fontis)] == 76 TUNC\n        REDDE 0.\n    FIN-SI.\n\n'''
+si_l = '''    SI fons[CONTENTUM(pos_fontis)] == 76 TUNC\n        REDDE 0.\n    FIN-SI.\n\n'''
+si_lo = '''    SI fons[CONTENTUM(pos_fontis)] == 76 && CONTENTUM(pos_fontis) + 1 < n && fons[CONTENTUM(pos_fontis)+1] == 79 TUNC\n        REDDE 0.\n    FIN-SI.\n\n'''
 si_plenum = '''    SI fons[CONTENTUM(pos_fontis)] == 76 && CONTENTUM(pos_fontis) + 8 < n && fons[CONTENTUM(pos_fontis)+1] == 79 && fons[CONTENTUM(pos_fontis)+2] == 78 && fons[CONTENTUM(pos_fontis)+3] == 71 && fons[CONTENTUM(pos_fontis)+4] == 73 && fons[CONTENTUM(pos_fontis)+5] == 84 && fons[CONTENTUM(pos_fontis)+6] == 85 && fons[CONTENTUM(pos_fontis)+7] == 68 && fons[CONTENTUM(pos_fontis)+8] == 79 TUNC\n        REDDE 0.\n    FIN-SI.\n\n'''
 
 if VARIANS == 1:
     additio = si_minimum
 elif VARIANS == 2:
-    additio = "    // COMMENTARIUM INTER FUNCTIONEM\n" + si_minimum
+    additio = si_l
 elif VARIANS == 3:
-    additio = si_breve
+    additio = si_lo
 elif VARIANS == 4:
     additio = si_plenum
 else:
