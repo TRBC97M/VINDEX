@@ -1,12 +1,27 @@
-# Bibliotheca graphica VINDEX
+# Bibliotheca VINDEX
 
-`graphica.vindex` definit conventiones inter applicationes VINDEX et motorem
-Formarum GTK. Applicatio manet dominus eventuum: VINDEX eventum elementorum
-accipit, logicam suam perficit et responsum ad formam reddit.
+Bibliotheca VINDEX codicem communem continet quem programmata per `IMPORTA` adhibere possunt.
 
-Officina et Salutatio eodem ponte utuntur. Pons formam legit, elementa libere
-creat, dialogos systematis aperit, valores exportat atque eventa transmittit;
-neque Officinam novit neque programma VINDEX exsequitur.
+## TEXTUS
+
+`textus.vindex` operationes communes generis `TEXTUS` definit. In VINDEX 0.52 prima operatio est:
+
+- `LONGITUDO(textus)` — numerum octetorum utilium descriptoris reddit.
+
+Exemplum:
+
+```vindex
+IMPORTA "bibliotheca/textus.vindex".
+
+DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
+PROCLAMA LONGITUDO(nomen).
+```
+
+## Graphica
+
+`graphica.vindex` definit conventiones inter applicationes VINDEX et motorem Formarum GTK. Applicatio manet dominus eventuum: VINDEX eventum elementorum accipit, logicam suam perficit et responsum ad formam reddit.
+
+Officina et Salutatio eodem ponte utuntur. Pons formam legit, elementa libere creat, dialogos systematis aperit, valores exportat atque eventa transmittit; neque Officinam novit neque programma VINDEX exsequitur.
 
 Conventiones eventuum praesentium:
 
@@ -22,5 +37,4 @@ Conventiones eventuum praesentium:
 - `GRAPHICA_RESPONSUM_RECTUM()`;
 - `GRAPHICA_RESPONSUM_ERRATUM()`.
 
-Numeri bullarum in archivo `.forma` etiam libere eligi possunt. Grammatica
-Formarum in `formae/LEGE-ME.md` describitur.
+Numeri bullarum in archivo `.forma` etiam libere eligi possunt. Grammatica Formarum in `formae/LEGE-ME.md` describitur.
