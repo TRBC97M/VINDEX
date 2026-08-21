@@ -1,0 +1,12 @@
+// VINDEX 0.52 — probatio concatenationis TEXTUS.
+// Concatenatio a litterali incipiens et plures partes coniungens probatur.
+
+IMPORTA "bibliotheca/textus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
+    DECLARA nuntius SICUT TEXTUS VALENS "Salve, " + nomen + ".".
+    PROCLAMA nuntius.
+    PROCLAMA LONGITUDO(nuntius).
+    REDDE 0.
+FIN-FUNCTIO.
