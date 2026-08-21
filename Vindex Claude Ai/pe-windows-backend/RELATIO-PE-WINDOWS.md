@@ -9,18 +9,26 @@ solum ad probationem adhibito (non ad exsecutionem finalem).
 ## Status honestus
 
 Haec contributio praebet **mechanismum probatum et functionalem**, non
-**integrationem completam in compilatorem**. Duae res distinguendae sunt:
+**integrationem completam in compilatorem**. Res distinguendae sunt:
 
 1. **Quod functionat, verificatum sub Wine 9.0**: constructio manualis capitis
    PE64 (DOS, PE, Optional Header, tabulae sectionum), tabula importationis
-   (`kernel32.dll`), vocatio indirecta per IAT (`FF 15` + `call [rip+X]`),
-   terminatio per `ExitProcess`.
-2. **Quod exploratum sed non inclusum est**: scriptio in consolam per
-   `GetStdHandle` + `WriteFile` — textus ipse scribitur correcte, sed
-   combinatio cum terminatione processus postea causavit defectum non
-   plene explicatum sub Wine huius systematis probationis (vide sectio
-   "Difficultates", n. 3). Ideo fasciculi hic inclusi solum `ExitProcess`
-   adhibent, non `WriteFile`.
+   multi-functionis (`kernel32.dll`), vocatio indirecta per IAT (`FF 15` +
+   `call [rip+X]`), terminatio per `ExitProcess`. Praeterea, functiones I/O
+   basicae — `VirtualAlloc`, `CreateFileA`, `WriteFile`, `ReadFile`,
+   `CloseHandle` — omnes simul in una catena probatae (vide
+   `construe_pe_io_referens.py`): memoria reservata, scripta directe, in
+   fasciculum effusa, relecta, in secundum fasciculum rescripta — utrumque
+   fasciculum idem contentum byte-pro-byte habet.
+2. **Quod exploratum sed pendet a terminatione processus**: scriptio in
+   consolam per `GetStdHandle` + `WriteFile`, et similiter tota catena I/O
+   supra descripta — omnes operationes ipsae **recte** functionant (fasciculi
+   scripti et relecti correcte), sed sequentia terminationis (`ExitProcess`)
+   post quamvis vocationem quae HANDLE reddit causat defectum non plene
+   explicatum sub Wine huius systematis probationis specifice (vide sectio
+   "Difficultates", n. 3). Probatio horum fasciculorum igitur non ex
+   terminatione ipsa pendet: rectitudo per contentum fasciculorum scriptorum
+   post exsecutionem verificatur, non per codicem exitus.
 3. **Quod nondum factum est**: integratio huius mechanismi in
    `compilator_vindex` ipsum, ita ut `CONSTRUE_CAPUT_ELF` et
    `CONSTRUE_CAPUT_PE` simul adsint et lingua VINDEX utrumque scopum eligere
@@ -51,6 +59,16 @@ Haec contributio praebet **mechanismum probatum et functionalem**, non
   $ echo $?
   45
   ```
+- `construe_pe_io_referens.py` — extensio: catena completa I/O — `VirtualAlloc`
+  (reservatio 4 KiB), scriptio directa in memoriam, `CreateFileA` + `WriteFile`
+  (memoria in fasciculum effusa), `CreateFileA` + `ReadFile` (fasciculus
+  relectus), `CreateFileA` + `WriteFile` iterum (secundus fasciculus
+  verificationis). Generat `exemplum_io.exe` cum exsecutus est.
+- `exemplum_io.exe` — exemplar generatum, 1536 octeta. Verificatum sub Wine
+  9.0: ambo fasciculi scripti (`proba_pe_io.txt`,
+  `proba_pe_io_verificatio.txt`) idem contentum "ValAlloc PE!" (12 octeta)
+  habent post exsecutionem, confirmante catenam integram recte functionare
+  independenter a defectu terminationis notato supra.
 
 ## Difficultates inventae et notatae (non solutae hic)
 
