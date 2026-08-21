@@ -20,7 +20,7 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: Concatenationem et comparationem TEXTUS comproba
+      - name: Contractum TEXTUS totum comproba
         shell: bash
         run: |
           set +e
@@ -90,6 +90,18 @@ jobs:
             printf 'COMPARATIO: status=%s exitus=[%s].\n' "$EP" "$OP" >> "$RELATIO"
             [ "$EP" -eq 0 ] && [ "$OP" = 'RECTE' ] || return 1
 
+            ./compilator_vindex examples/textus_assignatio_052.vindex /tmp/t_ass >> "$RELATIO" 2>&1 || return 1
+            chmod +x /tmp/t_ass
+            OA=$(/tmp/t_ass 2>>"$RELATIO"); EA=$?
+            printf 'ASSIGNATIO: status=%s exitus=[%s].\n' "$EA" "$OA" >> "$RELATIO"
+            [ "$EA" -eq 0 ] && [ "$OA" = 'Sylvia' ] || return 1
+
+            ./compilator_vindex examples/textus_limites_052.vindex /tmp/t_lim >> "$RELATIO" 2>&1 || return 1
+            chmod +x /tmp/t_lim
+            OM=$(/tmp/t_lim 2>>"$RELATIO"); EM=$?
+            printf 'LIMITES: status=%s exitus=[%s].\n' "$EM" "$OM" >> "$RELATIO"
+            [ "$EM" -eq 0 ] && [ "$OM" = $'VINDEX\n6' ] || return 1
+
             ./compilator_vindex examples/textus_052.vindex /tmp/t_totum >> "$RELATIO" 2>&1 || return 1
             chmod +x /tmp/t_totum
             OT=$(/tmp/t_totum 2>>"$RELATIO"); ET=$?
@@ -110,7 +122,7 @@ jobs:
             chmod 755 ./compilator_vindex
             [ "$SR" -eq 0 ] || return 1
 
-            printf '%s\n' 'RECTE: concatenatio, comparatio contenti et regressiones plenae transeunt.' >> "$RELATIO"
+            printf '%s\n' 'RECTE: contractus TEXTUS, casus extremi et regressiones plenae transeunt.' >> "$RELATIO"
             return 0
           }
 
@@ -119,14 +131,14 @@ jobs:
           if [ "$STATUS" -eq 0 ]; then
             SUCCESSUS=1
           else
-            printf 'ERRATUM: gradus IV TEXTUS nondum canonicus est; status=%s.\n' "$STATUS" >> "$RELATIO"
+            printf 'ERRATUM: probatio finalis TEXTUS nondum canonica est; status=%s.\n' "$STATUS" >> "$RELATIO"
           fi
 
           cd "$GITHUB_WORKSPACE" || exit 0
           VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-TEXTUS-052.md"
           {
-            printf '%s\n\n' '# VINDEX 0.52 — Relatio gradus IV TEXTUS'
-            printf '%s\n\n' 'Concatenatio, comparatio secundum contentum, auto-hospitium, punctum fixum et regressiones hic comprobantur.'
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio probationis finalis TEXTUS'
+            printf '%s\n\n' 'Contractus TEXTUS, assignatio, casus extremi, auto-hospitium, punctum fixum et regressiones hic comprobantur.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
@@ -141,7 +153,7 @@ jobs:
             git add "$VIA_RELATIONIS"
           fi
           if ! git diff --cached --quiet; then
-            git commit -m 'VINDEX 0.52: relationem gradus IV TEXTUS conserva'
+            git commit -m 'VINDEX 0.52: relationem probationis finalis TEXTUS conserva'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
           exit 0
