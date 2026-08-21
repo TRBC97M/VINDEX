@@ -1848,7 +1848,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 3).
 
         CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
-        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, 0 - 6000000).
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, 0 - 6500000).
         CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 3, 1).
         CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 0).
         CONTENTUM(pos_codicis) = COMPONE_SERVA_OCTETUM(codex, CONTENTUM(pos_codicis), 3, 0).
@@ -1861,7 +1861,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_mi = CORRIGE_SALTUM(codex, loci_je_mitte, pos_post_mitte).
 
         CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 2, 6).
-        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, 0 - 6000000).
+        CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, 0 - 6500000).
         CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
         CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
         REDDE 0.
