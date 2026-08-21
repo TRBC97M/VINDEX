@@ -1,4 +1,4 @@
-name: VINDEX 0.52 — Diagnostica MITTE emendati
+name: VINDEX 0.52 — Diagnostica immediatorum MITTE
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: Pos cum bufferi ad -6500000 observa
+      - name: Immediata MITTE inspice
         shell: bash
         run: |
           set +e
@@ -28,53 +28,38 @@ jobs:
           RELATIO=/tmp/relatio_textus_052
           : > "$RELATIO"
 
-          integrum() {
-            VIA="$1"
-            [ -s "$VIA" ] || return 1
-            A=$(stat -c '%s' "$VIA" 2>/dev/null)
-            B=$(od -An -tu8 -j96 -N8 "$VIA" 2>/dev/null | tr -d '[:space:]')
-            [ -n "$A" ] && [ "$A" = "$B" ]
-          }
-
           python3 "$RADIX/instrumenta/corrige_spatium_mitte_052.py" >> "$RELATIO" 2>&1
-          if [ "$?" -ne 0 ]; then
-            printf '%s\n' 'EMENDATIO MITTE PARARI NON POTUIT.' >> "$RELATIO"
-          else
-            python3 - <<'PY'
+          python3 - <<'PY' >> "$RELATIO" 2>&1
           from pathlib import Path
-          via = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
-          textus = via.read_text(encoding='utf-8')
-          vetus = '''    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
-          novum = '''    PROCLAMA pos.\n    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    PROCLAMA scriptum.\n    PROCLAMA pos.\n    CLAUDE(fd_scriptio).\n    PROCLAMA pos.\n    SI scriptum != pos TUNC\n'''
-          if textus.count(vetus) != 1:
-              raise SystemExit('ERRATUM: locus finalis non unicus est')
-          Path('/tmp/compilator_mitte_diag.vindex').write_text(textus.replace(vetus, novum, 1), encoding='utf-8')
+          p = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          s = p.read_text(encoding='utf-8')
+          print('FONS -6000000:', s.count('0 - 6000000'))
+          print('FONS -6500000:', s.count('0 - 6500000'))
           PY
 
-            chmod +x "$RADIX/compilator_vindex"
-            "$RADIX/compilator_vindex" /tmp/compilator_mitte_diag.vindex /tmp/compilator_mitte_diag >> "$RELATIO" 2>&1
-            STATUS=$?
-            printf 'COMPILATIO DIAGNOSTICAE A COMPILATORE VETERE: %s.\n' "$STATUS" >> "$RELATIO"
+          chmod +x "$RADIX/compilator_vindex"
+          "$RADIX/compilator_vindex" "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_motus >> "$RELATIO" 2>&1
+          printf 'STATUS COMPILATIONIS: %s.\n' "$?" >> "$RELATIO"
 
-            if [ "$STATUS" -eq 0 ] || { [ "$STATUS" -eq 74 ] && integrum /tmp/compilator_mitte_diag; }; then
-              chmod +x /tmp/compilator_mitte_diag
-              printf '%s\n' '--- VALORES: ante MITTE, scriptum, pos post MITTE, pos post CLAUDE ---' >> "$RELATIO"
-              /tmp/compilator_mitte_diag "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_exitus >> "$RELATIO" 2>&1
-              printf 'STATUS COMPILATORIS EMENDATI: %s.\n' "$?" >> "$RELATIO"
-              if [ -f /tmp/compilator_exitus ]; then
-                printf 'MAGNITUDO EXSECUTABILIS: ' >> "$RELATIO"
-                stat -c '%s' /tmp/compilator_exitus >> "$RELATIO" 2>&1
-              fi
-            else
-              printf '%s\n' 'DIAGNOSTICUM EXSECUTABILE INTEGRUM NON EST.' >> "$RELATIO"
-            fi
-          fi
+          python3 - <<'PY' >> "$RELATIO" 2>&1
+          from pathlib import Path
+          p = Path('/tmp/compilator_motus')
+          if not p.exists():
+              print('ERRATUM: binarium deest.')
+          else:
+              b = p.read_bytes()
+              vetus = bytes.fromhex('8072a4ff')   # -6000000, little-endian i32
+              novum = bytes.fromhex('60d19cff')   # -6500000, little-endian i32
+              print('BINARIUM immediata -6000000:', b.count(vetus))
+              print('BINARIUM immediata -6500000:', b.count(novum))
+              print('MAGNITUDO BINARII:', len(b))
+          PY
 
           cd "$GITHUB_WORKSPACE"
           VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-TEXTUS-052.md"
           {
-            printf '%s\n\n' '# VINDEX 0.52 — Relatio diagnostica MITTE emendati'
-            printf '%s\n\n' 'Bufferum `MITTE` ad -6500000 motum est; valor `pos` circa scripturam observatur.'
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio immediatorum MITTE'
+            printf '%s\n\n' 'Immediata intervallorum in fonte et binario generato numerantur.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
@@ -84,7 +69,7 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git add "$VIA_RELATIONIS"
           if ! git diff --cached --quiet; then
-            git commit -m 'VINDEX 0.52: relationem MITTE emendati conserva'
+            git commit -m 'VINDEX 0.52: immediata MITTE relata conserva'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
           exit 0
