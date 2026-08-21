@@ -132,24 +132,52 @@ subiacenti)**: signum verum non est `SIGSEGV` communis (`SEGV_MAPERR` vel
 `si_addr=NULL`. Documentatio nuclei Linux confirmat: haec combinatio
 praecise indicat **General Protection Fault** (#GP), non defectum paginae
 (#PF) — categoria omnino differens, typice ex instructione **privilegiata**
-exsecuta in modo utente (ring 3), non ex simplici indice/pointer malo.
-Hypothesis prima — codicem post `HLT` proprium (positum tantum ut rete
-securitatis, numquam normaliter attingendum) forte attingi et ipsum HLT,
-instructio privilegiata, causam esse — **directe probata et reiecta**:
-`HLT` in fasciculo compilato per `EB FE` (`jmp $`, non privilegiata)
-substitutum est, et defectus **idem** mansit, eodem loco, eadem
-significatione. Defectus igitur non pendet a codice post `ExitProcess`
-in .text nostro — ipsa vocatio `ExitProcess`, vel logica Wine interna
-quam statim post movet, causat #GP intra spatium codicis Wine ipsius,
-antequam ullum control ad nostrum codicem redeat. Causa radicalis ultima
-(quaenam instructio privilegiata specifice) adhuc non inventa est; suspicio
-manet peculiaritatem huius ambitus Wine/continentis specificam esse
-(nullum consolam veram habentis, "explorer.exe" incipere non valentis),
-non errorem in ipsa constructione PE. **Non probatum sub Windows vero.**
-Propterea fasciculi hic inclusi terminationem sine tali functione
-praecedente demonstrant tantum, vel — pro catena I/O — rectitudinem per
-contentum fasciculorum post exsecutionem verificant, non per exitum
-limpidum processus.
+vel **violatione alignationis stricti** exsecuta in modo utente (ring 3).
+
+**Instructio praecisa identificata (per GDB directe in processu Wine)**:
+`movdqa %xmm6, 0x60(%rcx)` — instructio SSE quae **alignationem 16 octetorum
+strictam** requirit pro destinatione memoriae. Valor realis `RCX` erat
+`0x11fd18`; `(RCX + 0x60) mod 16 = 8`, non `0` — destinatio male alignata
+octo octetis, causa directa et mathematicae confirmata #GP. Codex circa
+hanc instructionem (`movdqa %xmm6..%xmm15` in serie, offsets `0x60`
+usque `0xf0`) est classicum exemplar routinae quae registra XMM in
+structuram CONTEXT servat — verisimiliter pars routinae internae quae
+statum CPU servat circa transitiones PE-ad-Unix.
+
+**Fons routinae identificatus**: adresse quae hanc instructionem vocat
+(secundus gradus stack-tracei) cadit tantum `0x1696` octeta post
+`__wine_unix_call` — mechanismum centralem quo Wine omnes vocationes API
+(PE-side) ad implementationem realem Unix-side transfert. Hoc perfecte
+congruit cum natura defectus: quaevis vocatio realis Win32 (`CreateFileA`,
+`GetStdHandle`, `WriteFile`...) hoc pontem transit, qui statum CPU servare
+debet pro transitione. Hypothesis finalis: vocationes **sequentiales**
+`__wine_unix_call` (una pro `CreateFileA`/`GetStdHandle`, altera pro
+`ExitProcess`) relinquunt buffer/stack internum male alignatum octo
+octetis pro secunda vocatione — defectus verisimiliter proprius huic
+aedificationi Wine 9.0 sub hoc ambitu Linux/continentis specifico
+(nullum consolam veram habente).
+
+**Hypothesis prima reiecta (documentata ad memoriam methodi)**: codicem
+post `HLT` proprium (rete securitatis) forte attingi, et ipsum HLT
+(instructio etiam privilegiata) causam esse — **directe probata et
+reiecta**: `HLT` in fasciculo compilato per `EB FE` (`jmp $`, non
+privilegiata) substitutum est, defectus idem mansit. Confirmat: defectus
+totus intra Wine ipsum accidit, antequam ullum control ad nostrum codicem
+redeat.
+
+**Status finalis investigationis**: causa radicalis identificata usque ad
+instructionem exactam et mechanismum generalem (context-save intra
+`__wine_unix_call` bridge, buffer male alignatum). Causa ultima cur
+alignatio specifice hoc modo corrumpitur (quod evenit intra codicem
+internum Wine non exportatum, sine symbolis correspondentibus in hac
+aedificatione) non plene reconstructa est sine fonte Wine exacte
+correspondente. **Non probatum sub Windows vero** — defectus verisimiliter
+Wine/continenti-specificus est, non error in ipsa constructione PE nostra
+(quae, per omnes probationes hic relatas, correcte functionat). Propterea
+fasciculi hic inclusi terminationem sine tali functione praecedente
+demonstrant tantum, vel — pro catena I/O — rectitudinem per contentum
+fasciculorum post exsecutionem verificant, non per exitum limpidum
+processus.
 
 ## Probationes exsecutae
 
