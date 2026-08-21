@@ -1,8 +1,10 @@
-// VINDEX 0.52 — programma probationis TEXTUS
+// VINDEX 0.52 — programma probationis TEXTUS.
 // Hoc fasciculum contractum primae implementationis definit.
 // Debet compilari atque exsequi antequam TEXTUS perfectum habetur.
 
-FUNCTIO SALUTA REDDENS VACUUM.
+IMPORTA "bibliotheca/textus.vindex".
+
+FUNCTIO SALUTA REDDENS NUMERUS.
     ACCIPIT nomen SICUT TEXTUS.
     DECLARA nuntius SICUT TEXTUS VALENS "Salve, " + nomen + ".".
     PROCLAMA nuntius.
@@ -17,7 +19,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     PROCLAMA LONGITUDO(systema).
 
     SI nomen == "Sylvia" TUNC
-        SALUTA(nomen).
+        DECLARA salutatio SICUT NUMERUS VALENS SALUTA(nomen).
     FIN-SI.
 
     REDDE 0.
