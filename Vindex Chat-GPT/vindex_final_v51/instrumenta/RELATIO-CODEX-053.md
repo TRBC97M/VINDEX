@@ -36,7 +36,7 @@ RECTE  nativum-functio
 RECTE  nativum-importa
 RECTE  auto-hospitium
 ERRATUM  amorsa-python
-          I. Amorsa Python... Compilatum: /tmp/tmp.Cw19HTfibt/compilator_amorsa_python II. Generatio nativa prima... ./bootstrap/reconstruit.sh: line 20:  2456 Segmentation fault      (core dumped) "$AMORSA" "$FONS" "$GENERATIO_1" 
+          I. Amorsa Python... Compilatum: /tmp/tmp.zDVO1gHeiy/compilator_amorsa_python II. Generatio nativa prima... ./bootstrap/reconstruit.sh: line 20:  2446 Segmentation fault      (core dumped) "$AMORSA" "$FONS" "$GENERATIO_1" 
 RECTE  officina
 RECTE  systema
 
