@@ -111,6 +111,11 @@ proba() {
   return 0
 }
 
+committe() {
+  NUNTIUS="$1"
+  git -c user.name='VINDEX Centurio' -c user.email='actions@users.noreply.github.com' commit -m "$NUNTIUS"
+}
+
 if proba; then
   SUCCESSUS=1
 else
@@ -139,15 +144,21 @@ if [ "$SUCCESSUS" -eq 1 ]; then
     "$RADIX/BOOTX64.EFI" \
     "$RADIX/systema_vindex_uefi.img" \
     "$RELATIO"
-  git commit -m 'VINDEX 0.53: formas dynamicas comproba'
-  git push origin "$RAMUS"
-  printf '%s\n' 'RECTE: migratio formarum dynamicarum comprobata et missa est.'
-  exit 0
+  committe 'VINDEX 0.53: formas dynamicas comproba' || exit 1
+  if git push origin "$RAMUS"; then
+    printf '%s\n' 'RECTE: migratio formarum dynamicarum comprobata et missa est.'
+    exit 0
+  fi
+  printf '%s\n' 'RECTE: migratio comprobata et commissa est; transmissio remota ex PowerShell facienda est.'
+  exit 2
 fi
 
 refice
 git add "$RELATIO"
-git commit -m 'VINDEX 0.53: formas dynamicas diagnostica'
-git push origin "$RAMUS"
-printf '%s\n' 'ERRATUM: relatio diagnostica missa est.'
-exit 1
+committe 'VINDEX 0.53: formas dynamicas diagnostica' || exit 1
+if git push origin "$RAMUS"; then
+  printf '%s\n' 'ERRATUM: relatio diagnostica missa est.'
+  exit 1
+fi
+printf '%s\n' 'ERRATUM: relatio diagnostica commissa est; transmissio remota ex PowerShell facienda est.'
+exit 2
