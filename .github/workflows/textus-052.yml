@@ -1,9 +1,6 @@
-name: VINDEX 0.52 — Fundamenta compilatoris
+name: VINDEX 0.52 — Probatio auto-hospitii TEXTUS
 
 on:
-  push:
-    branches:
-      - chatgpt/vindex-052-textus
   pull_request:
     branches:
       - main
@@ -22,38 +19,69 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: Compilatorem pristinum proba
+      - name: TEXTUS applica et binarium etiam post statum 74 examina
+        shell: bash
         run: |
-          cd 'Vindex Chat-GPT/vindex_final_v51'
-          chmod +x ./compilator_vindex
-          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_pristinus
-          cmp ./compilator_vindex /tmp/compilator_pristinus
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          COMP="$RADIX/compilator_vindex"
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          PROBA="$RADIX/examples/textus_litterale_052.vindex"
+          chmod +x "$COMP"
 
-      - name: Commentaria linearia corrige
-        run: |
-          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_commentaria_052.py'
-          cd 'Vindex Chat-GPT/vindex_final_v51'
-          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_commentaria_1
-          chmod +x /tmp/compilator_commentaria_1
-          /tmp/compilator_commentaria_1 src/compilator_vindex.vindex /tmp/compilator_commentaria_2
-          chmod +x /tmp/compilator_commentaria_2
-          cmp /tmp/compilator_commentaria_1 /tmp/compilator_commentaria_2
-          /tmp/compilator_commentaria_2 tests/casus/commentarium_intra_functionem.vindex /tmp/proba_commentarii
-          chmod +x /tmp/proba_commentarii
-          /tmp/proba_commentarii > /tmp/exitus_commentarii
-          printf '42\n' > /tmp/exspectatum_commentarii
-          cmp /tmp/exspectatum_commentarii /tmp/exitus_commentarii
+          python3 "$RADIX/instrumenta/applica_textus_052.py"
+          STATUS_APPLICATIO=$?
+          printf 'STATUS_APPLICATIO=%s\n' "$STATUS_APPLICATIO"
+          if [ "$STATUS_APPLICATIO" -ne 0 ]; then
+            exit 1
+          fi
 
-      - name: Mutationes ANALYSA_FACTOR sine commentariis proba
-        run: |
-          VIA='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          COMP='./Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          git checkout -- "$VIA"
-          for VARIANS in 1 3 4; do
-            git checkout -- "$VIA"
-            printf 'Varians %s incipit.\n' "$VARIANS"
-            VINDEX_LONGITUDO_VARIANS="$VARIANS" python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_longitudinem_052.py'
-            "$COMP" "$VIA" "/tmp/compilator_varians_${VARIANS}"
-            printf 'Varians %s recte compilata est.\n' "$VARIANS"
-          done
-          git checkout -- "$VIA"
+          "$COMP" "$FONS" /tmp/compilator_textus_1
+          STATUS_I=$?
+          printf 'STATUS_GENERATIO_I=%s\n' "$STATUS_I"
+          if [ ! -s /tmp/compilator_textus_1 ]; then
+            printf '%s\n' 'RESULTATUM=BINARIUM_I_DEEST'
+            exit 1
+          fi
+          printf 'MAGNITUDO_BINARII_I=%s\n' "$(stat -c '%s' /tmp/compilator_textus_1)"
+          chmod +x /tmp/compilator_textus_1
+
+          /tmp/compilator_textus_1 "$FONS" /tmp/compilator_textus_2
+          STATUS_II=$?
+          printf 'STATUS_GENERATIO_II=%s\n' "$STATUS_II"
+          if [ ! -s /tmp/compilator_textus_2 ]; then
+            printf '%s\n' 'RESULTATUM=BINARIUM_II_DEEST'
+            exit 1
+          fi
+          printf 'MAGNITUDO_BINARII_II=%s\n' "$(stat -c '%s' /tmp/compilator_textus_2)"
+          chmod +x /tmp/compilator_textus_2
+
+          cmp /tmp/compilator_textus_1 /tmp/compilator_textus_2
+          STATUS_COMPARATIO=$?
+          printf 'STATUS_AUTO_HOSPITIUM=%s\n' "$STATUS_COMPARATIO"
+
+          /tmp/compilator_textus_2 "$PROBA" /tmp/textus_litterale_052
+          STATUS_TEXTUS=$?
+          printf 'STATUS_COMPILATIO_TEXTUS=%s\n' "$STATUS_TEXTUS"
+          if [ ! -s /tmp/textus_litterale_052 ]; then
+            printf '%s\n' 'RESULTATUM=PROGRAMMA_TEXTUS_DEEST'
+            exit 1
+          fi
+          chmod +x /tmp/textus_litterale_052
+          /tmp/textus_litterale_052 > /tmp/exitus_textus
+          STATUS_EXSECUTIO=$?
+          printf 'STATUS_EXSECUTIO_TEXTUS=%s\n' "$STATUS_EXSECUTIO"
+          printf '%s\n' '--- EXITUS TEXTUS ---'
+          cat /tmp/exitus_textus
+
+          printf 'Sylvia\n6\n' > /tmp/exspectatum_textus
+          cmp /tmp/exspectatum_textus /tmp/exitus_textus
+          STATUS_EXITUS=$?
+          printf 'STATUS_EXITUS_TEXTUS=%s\n' "$STATUS_EXITUS"
+
+          if [ "$STATUS_COMPARATIO" -eq 0 ] && [ "$STATUS_EXSECUTIO" -eq 0 ] && [ "$STATUS_EXITUS" -eq 0 ]; then
+            printf '%s\n' 'RESULTATUM=RECTE'
+            exit 0
+          fi
+          printf '%s\n' 'RESULTATUM=ADHUC_ERRATUM'
+          exit 1
