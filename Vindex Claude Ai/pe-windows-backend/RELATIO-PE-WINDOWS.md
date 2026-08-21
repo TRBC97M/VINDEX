@@ -107,18 +107,32 @@ definitus (777) recte redditus. Difficultas huius sectionis igitur **non
 amplius manet in ramo 053**; relinquitur hic tantum ut exemplum genericum
 categoriae defectuum quam mechanismus dynamicus removere debuit.
 
-### 3. `GetStdHandle` sequitur terminatio processus (non explicatum)
+### 3. `GetStdHandle` sequitur terminatio processus (characterizatum, non solutum)
 
-In experimentis privatis, sequentia "`GetStdHandle` deinde `ExitProcess`
-(vel `RtlExitUserProcess`)" causavit defectum deterministicum sub Wine 9.0
-huius systematis probationis specifice — semper eodem loco memoriae,
+In experimentis privatis, sequentia "`GetStdHandle` (vel `CreateFileA`, vel
+quaevis functio quae HANDLE reddit) deinde `ExitProcess` (vel
+`RtlExitUserProcess`)" causavit defectum deterministicum sub Wine 9.0 huius
+systematis probationis specifice — semper eodem loco memoriae,
 independenter a fasciculo DLL vel functione terminandi electa. Sequentia
 "`GetStdHandle` deinde alia functio non-terminans (`GetLastError`)" numquam
-defecit. Causa radicalis non inventa est; suspicio est peculiaritatem huius
-ambitus Wine specificam esse (nullum consolam veram habentis), non errorem
-in ipsa constructione PE. **Non probatum sub Windows vero.** Propterea
-fasciculi hic inclusi terminationem sine `GetStdHandle` praecedente
-demonstrant tantum.
+defecit.
+
+**Diagnosticum praecisius (per `WINEDEBUG=+relay`)**: filum quod
+`ExitProcess` vocat correcte perficit **omnes tres** vocationes
+`DllMain(PROCESS_DETACH)` exspectatas — pro `kernel32.dll`, `kernelbase.dll`,
+et `ntdll.dll`, singulis recte redditis (`retval=1`) — deinde **nihil amplius
+a filo illo in relatione relais apparet**: nulla ulterior vocatio API
+tracta, tantum defectus memoriae. Hoc indicat defectum non esse in codice
+DllMain ipso (qui recte perficitur), sed in codice Wine interno et **non
+tracto** post has tres vocationes — probabiliter intra logicam propriam
+terminationis processus Wine (extra spatium DLL PE, ergo invisibilem
+`+relay` tracing). Causa radicalis ultima adhuc non inventa est; suspicio
+manet peculiaritatem huius ambitus Wine specificam esse (nullum consolam
+veram habentis, "explorer.exe" incipere non valentis), non errorem in ipsa
+constructione PE. **Non probatum sub Windows vero.** Propterea fasciculi hic
+inclusi terminationem sine tali functione praecedente demonstrant tantum,
+vel — pro catena I/O — rectitudinem per contentum fasciculorum post
+exsecutionem verificant, non per exitum limpidum processus.
 
 ## Probationes exsecutae
 
