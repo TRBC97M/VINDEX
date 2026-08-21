@@ -96,7 +96,7 @@ jobs:
             printf 'TEXTUS TOTUS: status=%s exitus=[%s].\n' "$ET" "$OT" >> "$RELATIO"
             [ "$ET" -eq 0 ] && [ "$OT" = $'Sylvia OS\n9\nSalve, Sylvia.' ] || return 1
 
-            ./tests/run_tests.sh >> "$RELATIO" 2>&1
+            bash ./tests/run_tests.sh >> "$RELATIO" 2>&1
             SR=$?
             printf 'PROBATIONES REGRESSIONALES: status=%s.\n' "$SR" >> "$RELATIO"
             cp /tmp/g3 ./compilator_vindex
