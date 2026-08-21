@@ -2,6 +2,8 @@
 
 `TEXTUS` est genus nativum VINDEX ad textum dynamicum tractandum. Propositum est usum manualem `ORDO DE LITTERA` et constructionem octetorum singillatim minuere, praesertim in Sylvia OS, Officina et instrumentis lineae mandatorum.
 
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
+
 ## Contractus primae implementationis
 
 Prima implementatio completa has proprietates praebere debet:
@@ -26,7 +28,7 @@ PROCLAMA systema.
 
 ## Repraesentatio 0.52
 
-`TEXTUS` valor in ABI est acus ad structuram memoriae administratam:
+`TEXTUS` valor in ABI est acus ad descriptorem:
 
 ```text
 +0   longitudo : u64
@@ -38,13 +40,25 @@ Longitudo terminatorem nullum non numerat. Octeta post contentum terminatore nul
 
 Prima versio UTF-8 octeta conservat; `LONGITUDO` igitur octeta numerat. Numeratio scalarum Unicode potest postea separata operatione addi sine ABI frangendo.
 
+## Signum typi internum
+
+VINDEX 0.51 iam regionem `tabula[2400..2499]` ad proprietatem scalaris variabilis servabat. In 0.52 haec regio in signum typi simplex evolvitur:
+
+```text
+0 = genus ordinarium
+1 = FLUITANS
+2 = TEXTUS
+```
+
+Hoc consilium novam regionem centum locorum non requirit. Praesertim regio `2900..2918`, quae metadata formarum extremarum continere potest, intacta manet. Itaque TEXTUS metadata existentia non laedit et capacitas `tabula` augeri non debet.
+
 ## Bibliotheca
 
-`LONGITUDO` in `bibliotheca/textus.vindex` definitur, non intra analysatorem expressionum. Hoc consilium nucleum compilatoris simpliciorem servat et eandem syntaxin usoris retinet. Descriptore TEXTUS recepto, functio primum verbum descriptoris legit.
+`LONGITUDO` in `bibliotheca/textus.vindex` definitur, non intra `ANALYSA_FACTOR`. Hoc consilium nucleum analysatoris simpliciorem servat et eandem syntaxin usoris retinet. Descriptore TEXTUS recepto, functio primum verbum descriptoris per `CONTENTUM` legit.
 
 ## Memoria
 
-Litteralia possunt in regione immutabili binarii vivere. Resultata concatenationis memoriam dynamicam accipiunt. In 0.52 non introducitur garbage collector: vita valorum dynamicorum sequitur mechanismos memoriae VINDEX existentes. Designatio futura dominii vel relationum numeratarum separatim tractabitur; implementatio initialis non debet auto-hospitium compilatoris frangere.
+Litteralia in regione immutabili binarii vivere possunt. Resultata concatenationis memoriam dynamicam accipient. In 0.52 non introducitur garbage collector: vita valorum dynamicorum mechanismos memoriae VINDEX existentes sequetur. Designatio futura dominii vel relationum numeratarum separatim tractabitur; implementatio initialis auto-hospitium compilatoris frangere non debet.
 
 ## Compatibilitas
 
@@ -52,11 +66,11 @@ Litteralia possunt in regione immutabili binarii vivere. Resultata concatenation
 
 ## Limes localium compilatoris
 
-Tabula compilatoris 0.51 centum loca variabilibus localibus cuiusque functionis reservat. Hic limes magni momenti est in auto-hospitio: `ANALYSA_FACTOR` sex argumenta accipit et iam circiter nonaginta tres declarationes locales continet. Additio etiam unius localis novae igitur tabulam ad limitem ducere potest et metadata sequentia corrumpere.
+Tabula compilatoris 0.51 centum loca variabilibus localibus cuiusque functionis reservat. Hic limes magni momenti est in auto-hospitio: `ANALYSA_FACTOR` sex argumenta accipit et iam multas declarationes locales continet. Additio localium in analysatores maximos metadata sequentia corrumpere potest.
 
-Errores priores, inter quos segmentatio et nuntius `exsecutabile imperfecte scriptum est`, cum mutationibus quae nova localia in analysatores maximos addebant congruebant. Suspicio prior de regione temporaria `MITTE` ideo reiecta est; instrumentum quod eam movebat remotum est.
+Errores experimentales priores, inter quos segmentatio et nuntius `exsecutabile imperfecte scriptum est`, cum mutationibus directis analysatorum magnorum congruebant. Propterea prima implementatio `ANALYSA_FACTOR` omnino intactam servat.
 
-Implementatio nova functiones adiutrices parvas (`EST_TEXTUS_VARIABILIS`, `COMPONE_LITTERALE_TEXTUS`, `COMPONE_IMPRIME_TEXTUS`) separat. In `ANALYSA_BLOCUS` et in analysa parametrorum variabiles iam exsistentes atque valores speciales adhibentur, ne nova loca localia consumantur. Hoc principium etiam mutationibus futuris compilatoris servandum est, donec tabula localium ipsa amplietur.
+Duae functiones adiutrices parvae separantur: `COMPONE_LITTERALE_TEXTUS` descriptorem litteralis construit, et `COMPONE_IMPRIME_TEXTUS` contentum descriptoris scribit. `ANALYSA_BLOCUS` et analysis parametrorum variabilibus iam exsistentibus atque valoribus specialibus utuntur, ne nova loca localia consumantur.
 
 ## Gradus operis
 
