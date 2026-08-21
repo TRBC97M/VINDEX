@@ -54,12 +54,9 @@ if corpus_cmp.count("es_flot_cmp != 1 TUNC") != 4:
 
 # COMPONE_SERVA_OCTETUM sine REX tantum registris inferioribus hic utitur.
 corpus_concat = corpus(textus, "COMPONE_CONCATENA_TEXTUS")
-for usus in (
-    "COMPONE_SERVA_OCTETUM(codex, p_ct, 3, 0)",
-):
-    if usus not in corpus_concat:
-        raise SystemExit("ERRATUM: scriptio octeti concatenationis registris tutis non utitur")
-if "COMPONE_SERVA_OCTETUM(codex, p_ct, 8" in corpus_concat or "COMPONE_SERVA_OCTETUM(codex, p_ct, 9" in corpus_concat:
+if "COMPONE_SERVA_OCTETUM(codex, p, 3, 0)" not in corpus_concat:
+    raise SystemExit("ERRATUM: scriptio octeti concatenationis registris tutis non utitur")
+if "COMPONE_SERVA_OCTETUM(codex, p, 8" in corpus_concat or "COMPONE_SERVA_OCTETUM(codex, p, 9" in corpus_concat:
     raise SystemExit("ERRATUM: registrum altum in scriptore octeti adhibetur")
 
 max_nomen = ""
