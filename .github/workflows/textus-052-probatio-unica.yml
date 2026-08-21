@@ -1,6 +1,5 @@
-name: VINDEX 0.52 — Emendatio spatii MITTE
+name: VINDEX 0.52 — Diagnostica MITTE emendati
 
-# Unus cursus tantum cum hoc ipsum fasciculum mutatur.
 on:
   push:
     branches:
@@ -12,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  probatio:
+  diagnostica:
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
@@ -21,7 +20,7 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: MITTE corrige et TEXTUS comproba
+      - name: Pos cum bufferi ad -6500000 observa
         shell: bash
         run: |
           set +e
@@ -29,114 +28,63 @@ jobs:
           RELATIO=/tmp/relatio_textus_052
           : > "$RELATIO"
 
-          exsecutabile_integrum() {
+          integrum() {
             VIA="$1"
             [ -s "$VIA" ] || return 1
-            RE_VERA=$(stat -c '%s' "$VIA" 2>/dev/null)
-            DECLARATA=$(od -An -tu8 -j96 -N8 "$VIA" 2>/dev/null | tr -d '[:space:]')
-            [ -n "$RE_VERA" ] && [ "$RE_VERA" = "$DECLARATA" ]
-          }
-
-          conserva() {
-            SUCCESSUS="$1"
-            cd "$GITHUB_WORKSPACE"
-            VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-TEXTUS-052.md"
-            {
-              printf '%s\n\n' '# VINDEX 0.52 — Relatio emendationis MITTE'
-              printf '%s\n\n' 'Collisio inter bufferum temporarium `MITTE` et variabilem `pos` examinatur.'
-              printf '%s\n' '```text'
-              cat "$RELATIO"
-              printf '%s\n' '```'
-            } > "$VIA_RELATIONIS"
-
-            git config user.name 'VINDEX Centurio'
-            git config user.email 'actions@users.noreply.github.com'
-            git add "$VIA_RELATIONIS"
-            if [ "$SUCCESSUS" = '1' ]; then
-              git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex"
-            fi
-
-            if ! git diff --cached --quiet; then
-              if [ "$SUCCESSUS" = '1' ]; then
-                git commit -m 'VINDEX 0.52: collisionem bufferi MITTE remove'
-              else
-                git commit -m 'VINDEX 0.52: relationem emendationis MITTE conserva'
-              fi
-              git push origin HEAD:chatgpt/vindex-052-textus
-            fi
-            exit 0
+            A=$(stat -c '%s' "$VIA" 2>/dev/null)
+            B=$(od -An -tu8 -j96 -N8 "$VIA" 2>/dev/null | tr -d '[:space:]')
+            [ -n "$A" ] && [ "$A" = "$B" ]
           }
 
           python3 "$RADIX/instrumenta/corrige_spatium_mitte_052.py" >> "$RELATIO" 2>&1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'EMENDATIO APPLICARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
-            conserva 0
-          fi
-          git diff --check >> "$RELATIO" 2>&1
           if [ "$?" -ne 0 ]; then
-            printf '%s\n' 'DIFFERENTIAE FORMAM RECTAM NON HABENT.' >> "$RELATIO"
-            conserva 0
+            printf '%s\n' 'EMENDATIO MITTE PARARI NON POTUIT.' >> "$RELATIO"
+          else
+            python3 - <<'PY'
+          from pathlib import Path
+          via = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          textus = via.read_text(encoding='utf-8')
+          vetus = '''    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
+          novum = '''    PROCLAMA pos.\n    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    PROCLAMA scriptum.\n    PROCLAMA pos.\n    CLAUDE(fd_scriptio).\n    PROCLAMA pos.\n    SI scriptum != pos TUNC\n'''
+          if textus.count(vetus) != 1:
+              raise SystemExit('ERRATUM: locus finalis non unicus est')
+          Path('/tmp/compilator_mitte_diag.vindex').write_text(textus.replace(vetus, novum, 1), encoding='utf-8')
+          PY
+
+            chmod +x "$RADIX/compilator_vindex"
+            "$RADIX/compilator_vindex" /tmp/compilator_mitte_diag.vindex /tmp/compilator_mitte_diag >> "$RELATIO" 2>&1
+            STATUS=$?
+            printf 'COMPILATIO DIAGNOSTICAE A COMPILATORE VETERE: %s.\n' "$STATUS" >> "$RELATIO"
+
+            if [ "$STATUS" -eq 0 ] || { [ "$STATUS" -eq 74 ] && integrum /tmp/compilator_mitte_diag; }; then
+              chmod +x /tmp/compilator_mitte_diag
+              printf '%s\n' '--- VALORES: ante MITTE, scriptum, pos post MITTE, pos post CLAUDE ---' >> "$RELATIO"
+              /tmp/compilator_mitte_diag "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_exitus >> "$RELATIO" 2>&1
+              printf 'STATUS COMPILATORIS EMENDATI: %s.\n' "$?" >> "$RELATIO"
+              if [ -f /tmp/compilator_exitus ]; then
+                printf 'MAGNITUDO EXSECUTABILIS: ' >> "$RELATIO"
+                stat -c '%s' /tmp/compilator_exitus >> "$RELATIO" 2>&1
+              fi
+            else
+              printf '%s\n' 'DIAGNOSTICUM EXSECUTABILE INTEGRUM NON EST.' >> "$RELATIO"
+            fi
           fi
 
-          chmod +x "$RADIX/compilator_vindex"
+          cd "$GITHUB_WORKSPACE"
+          VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-TEXTUS-052.md"
+          {
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio diagnostica MITTE emendati'
+            printf '%s\n\n' 'Bufferum `MITTE` ad -6500000 motum est; valor `pos` circa scripturam observatur.'
+            printf '%s\n' '```text'
+            cat "$RELATIO"
+            printf '%s\n' '```'
+          } > "$VIA_RELATIONIS"
 
-          "$RADIX/compilator_vindex" "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_052_1 >> "$RELATIO" 2>&1
-          STATUS1=$?
-          if [ "$STATUS1" -eq 74 ] && exsecutabile_integrum /tmp/compilator_052_1; then
-            printf '%s\n' 'MONITUM: compilator vetus adhuc codicem 74 reddit; exsecutabile tamen integrum est.' >> "$RELATIO"
-          elif [ "$STATUS1" -ne 0 ]; then
-            printf 'GRADUS I CECIDIT: %s.\n' "$STATUS1" >> "$RELATIO"
-            conserva 0
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$VIA_RELATIONIS"
+          if ! git diff --cached --quiet; then
+            git commit -m 'VINDEX 0.52: relationem MITTE emendati conserva'
+            git push origin HEAD:chatgpt/vindex-052-textus
           fi
-          chmod +x /tmp/compilator_052_1
-
-          /tmp/compilator_052_1 "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_052_2 >> "$RELATIO" 2>&1
-          STATUS2=$?
-          printf 'STATUS GRADUS II: %s.\n' "$STATUS2" >> "$RELATIO"
-          if [ "$STATUS2" -ne 0 ]; then
-            printf '%s\n' 'ERRATUM: compilator emendatus adhuc scripturam falsam refert.' >> "$RELATIO"
-            conserva 0
-          fi
-          chmod +x /tmp/compilator_052_2
-
-          cmp /tmp/compilator_052_1 /tmp/compilator_052_2 >> "$RELATIO" 2>&1
-          if [ "$?" -ne 0 ]; then
-            printf '%s\n' 'ERRATUM: punctum fixum auto-hospitii non obtentum est.' >> "$RELATIO"
-            conserva 0
-          fi
-          printf '%s\n' 'RECTE: punctum fixum auto-hospitii obtentum est sine codice 74.' >> "$RELATIO"
-
-          /tmp/compilator_052_2 "$RADIX/examples/textus_litterale_052.vindex" /tmp/textus_litterale >> "$RELATIO" 2>&1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'LITTERALE TEXTUS COMPILARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
-            conserva 0
-          fi
-          chmod +x /tmp/textus_litterale
-          /tmp/textus_litterale > /tmp/exitus_litteralis 2>> "$RELATIO"
-          printf 'Sylvia\n' > /tmp/exspectatum_litteralis
-          if [ "$?" -ne 0 ] || ! cmp /tmp/exspectatum_litteralis /tmp/exitus_litteralis >> "$RELATIO" 2>&1; then
-            printf '%s\n' 'ERRATUM: litterale TEXTUS exitum falsum dedit.' >> "$RELATIO"
-            conserva 0
-          fi
-          printf '%s\n' 'RECTE: litterale TEXTUS et PROCLAMA operantur.' >> "$RELATIO"
-
-          /tmp/compilator_052_2 "$RADIX/examples/textus_longitudo_052.vindex" /tmp/textus_longitudo >> "$RELATIO" 2>&1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf 'LONGITUDO COMPILARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
-            conserva 0
-          fi
-          chmod +x /tmp/textus_longitudo
-          /tmp/textus_longitudo > /tmp/exitus_longitudinis 2>> "$RELATIO"
-          printf '6\n' > /tmp/exspectatum_longitudinis
-          if [ "$?" -ne 0 ] || ! cmp /tmp/exspectatum_longitudinis /tmp/exitus_longitudinis >> "$RELATIO" 2>&1; then
-            printf '%s\n' 'ERRATUM: LONGITUDO exitum falsum dedit.' >> "$RELATIO"
-            conserva 0
-          fi
-          printf '%s\n' 'RECTE: LONGITUDO operatur.' >> "$RELATIO"
-
-          cp /tmp/compilator_052_2 "$RADIX/compilator_vindex"
-          printf '%s\n' 'RECTE: VINDEX 0.52 hunc gradum sine collisione MITTE perficit.' >> "$RELATIO"
-          conserva 1
+          exit 0
