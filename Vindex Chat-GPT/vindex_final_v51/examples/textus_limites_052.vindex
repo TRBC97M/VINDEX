@@ -1,0 +1,32 @@
+// VINDEX 0.52 — casus extremi TEXTUS.
+// Textus vacuus, concatenatio catenata et comparatio contenti probantur.
+
+IMPORTA "bibliotheca/textus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA vacuum SICUT TEXTUS VALENS "".
+    DECLARA littera SICUT TEXTUS VALENS "A".
+    DECLARA initium_vacuum SICUT TEXTUS VALENS vacuum + littera.
+    DECLARA finis_vacuus SICUT TEXTUS VALENS littera + vacuum.
+    DECLARA catena SICUT TEXTUS VALENS "V" + "IN" + "DEX".
+
+    SI LONGITUDO(vacuum) != 0 TUNC
+        REDDE 1.
+    FIN-SI.
+    SI initium_vacuum != "A" TUNC
+        REDDE 2.
+    FIN-SI.
+    SI finis_vacuus != "A" TUNC
+        REDDE 3.
+    FIN-SI.
+    SI vacuum != "" TUNC
+        REDDE 4.
+    FIN-SI.
+    SI catena != "VINDEX" TUNC
+        REDDE 5.
+    FIN-SI.
+
+    PROCLAMA catena.
+    PROCLAMA LONGITUDO(catena).
+    REDDE 0.
+FIN-FUNCTIO.
