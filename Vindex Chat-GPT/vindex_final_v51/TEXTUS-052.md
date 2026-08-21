@@ -6,7 +6,7 @@
 
 ## Contractus primae implementationis
 
-Prima implementatio completa has proprietates praebere debet:
+Prima implementatio has proprietates praebet:
 
 ```vindex
 IMPORTA "bibliotheca/textus.vindex".
@@ -54,7 +54,7 @@ Hoc consilium novam regionem centum locorum non requirit. Praesertim regio `2900
 
 ## Bibliotheca
 
-`LONGITUDO` in `bibliotheca/textus.vindex` definitur, non intra `ANALYSA_FACTOR`. Hoc consilium nucleum analysatoris simpliciorem servat et eandem syntaxin usoris retinet. Descriptore TEXTUS recepto, functio primum verbum descriptoris per `CONTENTUM` legit.
+`LONGITUDO` in `bibliotheca/textus.vindex` definitur, non intra `ANALYSA_FACTOR`. Descriptore TEXTUS recepto, functio primum verbum descriptoris per `CONTENTUM` legit.
 
 ## Memoria
 
@@ -72,20 +72,22 @@ Comparatio `TEXTUS` secundum octeta contenti fit, non secundum sedes descriptoru
 
 ## Limes localium compilatoris
 
-Tabula compilatoris 0.51 centum loca variabilibus localibus cuiusque functionis reservat. Hic limes magni momenti est in auto-hospitio. `ANALYSA_FACTOR` nunc nonaginta novem loca utitur; nullum novum locum localem gradus IV ei addit.
+Tabula compilatoris 0.51 centum loca variabilibus localibus cuiusque functionis reservat. `ANALYSA_FACTOR` nunc nonaginta novem loca utitur; gradus IV nullum novum locum localem ei addit.
 
-Mutationes primae probationis `ANALYSA_FACTOR` intactam servaverunt. Gradus IV tantum ramum minimum ad litterale `TEXTUS` agnoscendum addit, sine nova declaratione locali. Operatio gravis in adiutoribus separatis `COMPONE_CONCATENA_TEXTUS` et `COMPONE_COMPARA_TEXTUS` manet.
+Operatio gravis in adiutoribus separatis `COMPONE_CONCATENA_TEXTUS` et `COMPONE_COMPARA_TEXTUS` manet. `COMPONE_LITTERALE_TEXTUS` et `COMPONE_IMPRIME_TEXTUS` descriptorem litteralis et exhibitionem contenti curant. Fons compilatoris 209259 octeta ex limite 212999 occupat; 103 functiones auxiliares ex limite 150 adhibentur.
 
-Adiutores `COMPONE_LITTERALE_TEXTUS` et `COMPONE_IMPRIME_TEXTUS` descriptorem litteralis et exhibitionem contenti curant. Ita analysatores maximi quam minimum crescunt et metadata localium conservantur.
+## Probationes
 
-## Gradus operis
+Probationes canonicae sunt:
 
-Primus gradus `examples/textus_litterale_052.vindex` et `examples/textus_longitudo_052.vindex` stabilivit. Gradus IV `examples/textus_concatena_052.vindex` et `examples/textus_comparatio_052.vindex` addidit.
+- `examples/textus_litterale_052.vindex` — litterale et `PROCLAMA`;
+- `examples/textus_longitudo_052.vindex` — parametrum et `LONGITUDO`;
+- `examples/textus_concatena_052.vindex` — concatenatio catenata;
+- `examples/textus_comparatio_052.vindex` — `==` et `!=` secundum contentum;
+- `examples/textus_assignatio_052.vindex` — assignatio inter variabilia `TEXTUS`;
+- `examples/textus_limites_052.vindex` — textus vacuus, concatenatio cum vacuo et catena plurium partium;
+- `examples/textus_052.vindex` — acceptatio totius contractus.
 
-Concatenatio a litterali vel variabili incipiens, comparatio secundum contentum, auto-hospitium et punctum fixum nunc comprobata sunt. Fons compilatoris post gradum IV 209259 octeta ex limite 212999 occupat; 103 functiones auxiliares ex limite 150 adhibentur.
+Omnes hae probationes statum 0 reddunt. Auto-hospitium per G1, G2 et G3 statum 0 reddit, G2 et G3 sunt identica, et series regressionum VINDEX 0.51 viginti unam probationem rectam sine errore refert.
 
-## Probatio canonica
-
-`examples/textus_052.vindex` est programma acceptationis totius primae implementationis. In gradu IV illud recte compilatur atque exsequitur, et series regressionum VINDEX 0.51 viginti unam probationem rectam sine errore refert.
-
-Ante conclusionem VINDEX 0.52 assignatio inter variabilia `TEXTUS` et casus extremos memoriae adhuc explicite probandi sunt.
+Ita contractus primae implementationis `TEXTUS` pro VINDEX 0.52 completus et probatus habetur.
