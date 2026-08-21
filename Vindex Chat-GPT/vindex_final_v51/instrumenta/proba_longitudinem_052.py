@@ -17,6 +17,7 @@ def numerus_localium(fons: str) -> int:
     return fons[initium:finis].count("DECLARA ")
 
 
+print(f"Probatur varians LONGITUDO {VARIANS}.")
 textus = textus.replace(
     "// Capacitas tabulae tota: 850.\n",
     "//   2900-2999: signa TEXTUS variabilium (100 loca)\n// Capacitas tabulae tota: 3000.\n",
