@@ -11,6 +11,7 @@ set -u
 RADIX="$(cd "$(dirname "$0")" && pwd)"
 COMPILATOR="$RADIX/compilator_vindex"
 VERIFICATOR="$RADIX/instrumenta/vindex_verifica.py"
+PRAEPARATOR="$RADIX/instrumenta/vindex_praepara.py"
 
 usus() {
     printf '%s\n' \
@@ -30,6 +31,16 @@ verifica() {
     return 0
 }
 
+praepara() {
+    local fons="$1"
+    local exitus="$2"
+    if command -v python3 >/dev/null 2>&1 && [ -f "$PRAEPARATOR" ]; then
+        python3 "$PRAEPARATOR" "$fons" "$exitus"
+        return $?
+    fi
+    cp -- "$fons" "$exitus"
+}
+
 if [ "$#" -eq 0 ] || [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
     usus
     if [ "$#" -eq 0 ]; then exit 64; else exit 0; fi
@@ -40,8 +51,14 @@ if [ "${1:-}" = "--verifica" ]; then
         usus >&2
         exit 64
     fi
-    verifica "$2"
-    exit $?
+    TEMP_VERIFICA="$(mktemp "${TMPDIR:-/tmp}/vindex-verifica.XXXXXX")" || exit 73
+    trap 'rm -f -- "$TEMP_VERIFICA"' EXIT HUP INT TERM
+    praepara "$2" "$TEMP_VERIFICA" || exit $?
+    verifica "$TEMP_VERIFICA"
+    STATUS=$?
+    rm -f -- "$TEMP_VERIFICA"
+    trap - EXIT HUP INT TERM
+    exit "$STATUS"
 fi
 
 if [ "$#" -eq 2 ]; then
@@ -78,17 +95,25 @@ if [ ! -d "$EXITUS_PARENT" ]; then
     exit 73
 fi
 
-verifica "$FONS" || exit $?
-
-TEMPORARIUM="$(mktemp "$EXITUS_PARENT/.vindex-exitus.XXXXXX")" || exit 73
+TEMP_FONS="$(mktemp "${TMPDIR:-/tmp}/vindex-fons.XXXXXX")" || exit 73
+TEMPORARIUM="$(mktemp "$EXITUS_PARENT/.vindex-exitus.XXXXXX")" || {
+    rm -f -- "$TEMP_FONS"
+    exit 73
+}
 purga() {
+    if [ -n "${TEMP_FONS:-}" ] && [ -e "$TEMP_FONS" ]; then
+        rm -f -- "$TEMP_FONS"
+    fi
     if [ -n "${TEMPORARIUM:-}" ] && [ -e "$TEMPORARIUM" ]; then
         rm -f -- "$TEMPORARIUM"
     fi
 }
 trap purga EXIT HUP INT TERM
 
-"$COMPILATOR" "$FONS" "$TEMPORARIUM"
+praepara "$FONS" "$TEMP_FONS" || exit $?
+verifica "$TEMP_FONS" || exit $?
+
+"$COMPILATOR" "$TEMP_FONS" "$TEMPORARIUM"
 STATUS=$?
 if [ "$STATUS" -ne 0 ]; then
     printf 'VINDEX: compilatio defecit (status %s).\n' "$STATUS" >&2
@@ -104,6 +129,8 @@ fi
 chmod 755 "$TEMPORARIUM" || exit 73
 mv -f -- "$TEMPORARIUM" "$EXITUS" || exit 73
 TEMPORARIUM=""
+rm -f -- "$TEMP_FONS"
+TEMP_FONS=""
 trap - EXIT HUP INT TERM
 
 printf 'Compilatum: %s\n' "$EXITUS"
