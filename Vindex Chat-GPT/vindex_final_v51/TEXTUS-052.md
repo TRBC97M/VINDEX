@@ -38,12 +38,18 @@ Prima versio UTF-8 octeta conservat; `LONGITUDO` igitur octeta numerat. Numerati
 
 ## Memoria
 
-Litteralia possunt in regione immutabili binarii vivere. Resultata concatenationis memoriam dynamicam accipiunt. In 0.52 non introducitur garbage collector: vita valorum dynamicorum sequitur mechanismos memoriae VINDEX existentes. Designatio futura ownership/refcounting separatim tractabitur; implementatio initialis non debet auto-hospitium compilatoris frangere.
+Litteralia possunt in regione immutabili binarii vivere. Resultata concatenationis memoriam dynamicam accipiunt. In 0.52 non introducitur garbage collector: vita valorum dynamicorum sequitur mechanismos memoriae VINDEX existentes. Designatio futura dominii vel relationum numeratarum separatim tractabitur; implementatio initialis non debet auto-hospitium compilatoris frangere.
 
 ## Compatibilitas
 
 `ORDO DE LITTERA` manet validum. `TEXTUS` non eum substituit in codicibus humilibus, bufferibus magnitudine fixa, rectoribus aut locis ubi collocatio exacta memoriae necessaria est.
 
+## Gradus operis
+
+Primus gradus exsecutionis ad litteralia, argumenta functionum, `PROCLAMA` et `LONGITUDO` spectat. `examples/textus_litterale_052.vindex` hunc gradum probat. Probatio automataria compilatorem mutatum bis sibi ipsi compilare iubet, binaria comparat, deinde programma exsequitur atque exitum exspectatum comprobat.
+
+Concatenatio et comparatio secundum contentum postquam hic gradus stabilis est addendae sunt.
+
 ## Probatio canonica
 
-`examples/textus_052.vindex` est programma acceptationis. TEXTUS non habetur completum donec illud a compilatore auto-hospite compilatur, exsecutio exitum rectum reddit, et probationes 0.51 regressiones non ostendunt.
+`examples/textus_052.vindex` est programma acceptationis totius primae implementationis. TEXTUS non habetur completum donec illud a compilatore auto-hospite compilatur, exsecutio exitum rectum reddit, et probationes 0.51 regressiones non ostendunt.
