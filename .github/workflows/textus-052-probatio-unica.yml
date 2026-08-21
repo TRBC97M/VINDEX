@@ -1,7 +1,6 @@
-name: VINDEX 0.52 — Probatio unica TEXTUS
+name: VINDEX 0.52 — Diagnostica scripturae
 
-# Haec probatio tantum cum hoc fasciculum mutatur excitatur.
-# Mutationes compilatoris vel relatio ipsa novum cursum non efficiunt.
+# Unus cursus tantum cum hoc ipsum fasciculum mutatur.
 on:
   push:
     branches:
@@ -13,7 +12,7 @@ permissions:
   contents: write
 
 jobs:
-  textus:
+  diagnostica:
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
@@ -22,10 +21,11 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: TEXTUS uno cursu examina
+      - name: Valores scriptum et pos inspice
         shell: bash
         run: |
           set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
           RELATIO=/tmp/relatio_textus_052
           : > "$RELATIO"
 
@@ -37,136 +37,64 @@ jobs:
             [ -n "$RE_VERA" ] && [ "$RE_VERA" = "$DECLARATA" ]
           }
 
-          conserva_relationem() {
-            SUCCESSUS="$1"
-            cd "$GITHUB_WORKSPACE"
-            VIA_RELATIONIS='Vindex Chat-GPT/vindex_final_v51/instrumenta/RELATIO-TEXTUS-052.md'
-            {
-              printf '%s\n\n' '# VINDEX 0.52 — Relatio probationis TEXTUS'
-              printf '%s\n\n' 'Haec relatio ab una probatione diagnostica generata est.'
-              printf '%s\n' '```text'
-              cat "$RELATIO"
-              printf '%s\n' '```'
-            } > "$VIA_RELATIONIS"
+          python3 - <<'PY'
+          from pathlib import Path
+          via = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          textus = via.read_text(encoding='utf-8')
+          vetus = '''    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
+          novum = '''    CLAUDE(fd_scriptio).\n    PROCLAMA scriptum.\n    PROCLAMA pos.\n    SI scriptum != pos TUNC\n'''
+          if textus.count(vetus) != 1:
+              raise SystemExit('ERRATUM: locus comparationis scripturae non unicus est')
+          Path('/tmp/compilator_diag.vindex').write_text(textus.replace(vetus, novum, 1), encoding='utf-8')
+          PY
+          STATUS=$?
+          if [ "$STATUS" -ne 0 ]; then
+            printf 'DIAGNOSTICA PARARI NON POTUIT: %s.\n' "$STATUS" >> "$RELATIO"
+          else
+            chmod +x "$RADIX/compilator_vindex"
+            "$RADIX/compilator_vindex" /tmp/compilator_diag.vindex /tmp/compilator_diag >> "$RELATIO" 2>&1
+            STATUS=$?
+            printf 'COMPILATIO DIAGNOSTICAE: status=%s.\n' "$STATUS" >> "$RELATIO"
+            if [ "$STATUS" -eq 0 ] || { [ "$STATUS" -eq 74 ] && exsecutabile_integrum /tmp/compilator_diag; }; then
+              chmod +x /tmp/compilator_diag
 
-            git config user.name 'VINDEX Centurio'
-            git config user.email 'actions@users.noreply.github.com'
-            git add "$VIA_RELATIONIS"
-            if [ "$SUCCESSUS" = '1' ]; then
-              git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
-                      'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-            fi
+              printf '%s\n' '--- COMPILATIO PROGRAMMATIS PARVI ---' >> "$RELATIO"
+              /tmp/compilator_diag "$RADIX/examples/textus_litterale_052.vindex" /tmp/textus_diag >> "$RELATIO" 2>&1
+              STATUS_PARVUS=$?
+              printf 'STATUS PARVUS: %s.\n' "$STATUS_PARVUS" >> "$RELATIO"
+              if [ -f /tmp/textus_diag ]; then
+                printf 'MAGNITUDO PARVA: ' >> "$RELATIO"
+                stat -c '%s' /tmp/textus_diag >> "$RELATIO" 2>&1
+              fi
 
-            if git diff --cached --quiet; then
-              exit 0
-            fi
-
-            if [ "$SUCCESSUS" = '1' ]; then
-              git commit -m 'VINDEX 0.52: TEXTUS litterale PROCLAMAque in compilatore integra'
+              printf '%s\n' '--- COMPILATIO IPSIUS COMPILATORIS ---' >> "$RELATIO"
+              /tmp/compilator_diag /tmp/compilator_diag.vindex /tmp/compilator_diag_2 >> "$RELATIO" 2>&1
+              STATUS_MAGNUS=$?
+              printf 'STATUS MAGNUS: %s.\n' "$STATUS_MAGNUS" >> "$RELATIO"
+              if [ -f /tmp/compilator_diag_2 ]; then
+                printf 'MAGNITUDO MAGNA: ' >> "$RELATIO"
+                stat -c '%s' /tmp/compilator_diag_2 >> "$RELATIO" 2>&1
+              fi
             else
-              git commit -m 'VINDEX 0.52: relationem probationis unicae conserva'
+              printf '%s\n' 'EXSECUTABILE DIAGNOSTICUM INTEGRUM NON EST.' >> "$RELATIO"
             fi
+          fi
+
+          cd "$GITHUB_WORKSPACE"
+          VIA_RELATIONIS='Vindex Chat-GPT/vindex_final_v51/instrumenta/RELATIO-TEXTUS-052.md'
+          {
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio diagnostica scripturae'
+            printf '%s\n\n' 'Valores `scriptum` et `pos` ante comparationem finalem observantur.'
+            printf '%s\n' '```text'
+            cat "$RELATIO"
+            printf '%s\n' '```'
+          } > "$VIA_RELATIONIS"
+
+          git config user.name 'VINDEX Centurio'
+          git config user.email 'actions@users.noreply.github.com'
+          git add "$VIA_RELATIONIS"
+          if ! git diff --cached --quiet; then
+            git commit -m 'VINDEX 0.52: relationem falsae comparationis conserva'
             git push origin HEAD:chatgpt/vindex-052-textus
-            exit 0
-          }
-
-          tracta_exitum_compilatoris() {
-            STATUS="$1"
-            VIA="$2"
-            GRADUS="$3"
-            if [ "$STATUS" -eq 0 ]; then
-              return 0
-            fi
-            if [ "$STATUS" -eq 74 ] && exsecutabile_integrum "$VIA"; then
-              printf 'MONITUM: %s codicem 74 reddidit, sed exsecutabile integrum est; pergitur.\n' "$GRADUS" >> "$RELATIO"
-              return 0
-            fi
-            printf '%s CECIDIT: %s.\n' "$GRADUS" "$STATUS" >> "$RELATIO"
-            if [ -f "$VIA" ]; then
-              printf 'OCTETA RE VERA SCRIPTA: ' >> "$RELATIO"
-              stat -c '%s' "$VIA" >> "$RELATIO" 2>&1
-              printf 'OCTETA A CAPITE ELF DECLARATA: ' >> "$RELATIO"
-              od -An -tu8 -j96 -N8 "$VIA" >> "$RELATIO" 2>&1
-            fi
-            conserva_relationem 0
-          }
-
-          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_textus_052.py' >> "$RELATIO" 2>&1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf '%s\n' 'STATICA PROBATIO NON TRANSIIT.' >> "$RELATIO"
-            conserva_relationem 0
           fi
-
-          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py' >> "$RELATIO" 2>&1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf '%s\n' 'MUTATIO TEXTUS NON APPLICATA EST.' >> "$RELATIO"
-            conserva_relationem 0
-          fi
-
-          git diff --check >> "$RELATIO" 2>&1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf '%s\n' 'DIFFERENTIAE FORMAM RECTAM NON HABENT.' >> "$RELATIO"
-            conserva_relationem 0
-          fi
-
-          cd 'Vindex Chat-GPT/vindex_final_v51'
-          chmod +x ./compilator_vindex
-
-          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
-          STATUS=$?
-          tracta_exitum_compilatoris "$STATUS" /tmp/compilator_vindex_052_1 'PRIMUS GRADUS AUTO-HOSPITII'
-          chmod +x /tmp/compilator_vindex_052_1
-
-          /tmp/compilator_vindex_052_1 src/compilator_vindex.vindex /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
-          STATUS=$?
-          tracta_exitum_compilatoris "$STATUS" /tmp/compilator_vindex_052_2 'SECUNDUS GRADUS AUTO-HOSPITII'
-          chmod +x /tmp/compilator_vindex_052_2
-
-          cmp /tmp/compilator_vindex_052_1 /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
-          STATUS=$?
-          if [ "$STATUS" -ne 0 ]; then
-            printf '%s\n' 'PUNCTUM FIXUM AUTO-HOSPITII NON OBTENTUM EST.' >> "$RELATIO"
-            printf 'MAGNITUDO GRADUS I: ' >> "$RELATIO"
-            stat -c '%s' /tmp/compilator_vindex_052_1 >> "$RELATIO" 2>&1
-            printf 'MAGNITUDO GRADUS II: ' >> "$RELATIO"
-            stat -c '%s' /tmp/compilator_vindex_052_2 >> "$RELATIO" 2>&1
-            conserva_relationem 0
-          fi
-          printf '%s\n' 'RECTE: punctum fixum auto-hospitii obtentum est.' >> "$RELATIO"
-
-          /tmp/compilator_vindex_052_2 examples/textus_litterale_052.vindex /tmp/textus_litterale_052 >> "$RELATIO" 2>&1
-          STATUS=$?
-          tracta_exitum_compilatoris "$STATUS" /tmp/textus_litterale_052 'COMPILATIO LITTERALIS TEXTUS'
-          chmod +x /tmp/textus_litterale_052
-          /tmp/textus_litterale_052 > /tmp/exitus_litteralis 2>> "$RELATIO"
-          STATUS=$?
-          printf 'Sylvia\n' > /tmp/exspectatum_litteralis
-          if [ "$STATUS" -ne 0 ] || ! cmp /tmp/exspectatum_litteralis /tmp/exitus_litteralis >> "$RELATIO" 2>&1; then
-            printf '%s\n' 'LITTERALE TEXTUS EXITUM INEXPECTATUM DEDIT.' >> "$RELATIO"
-            printf '%s\n' '--- exitus litteralis ---' >> "$RELATIO"
-            cat /tmp/exitus_litteralis >> "$RELATIO"
-            conserva_relationem 0
-          fi
-          printf '%s\n' 'RECTE: litterale TEXTUS et PROCLAMA operantur.' >> "$RELATIO"
-
-          /tmp/compilator_vindex_052_2 examples/textus_longitudo_052.vindex /tmp/textus_longitudo_052 >> "$RELATIO" 2>&1
-          STATUS=$?
-          tracta_exitum_compilatoris "$STATUS" /tmp/textus_longitudo_052 'COMPILATIO LONGITUDO'
-          chmod +x /tmp/textus_longitudo_052
-          /tmp/textus_longitudo_052 > /tmp/exitus_longitudinis 2>> "$RELATIO"
-          STATUS=$?
-          printf '6\n' > /tmp/exspectatum_longitudinis
-          if [ "$STATUS" -ne 0 ] || ! cmp /tmp/exspectatum_longitudinis /tmp/exitus_longitudinis >> "$RELATIO" 2>&1; then
-            printf '%s\n' 'LONGITUDO EXITUM INEXPECTATUM DEDIT.' >> "$RELATIO"
-            printf '%s\n' '--- exitus longitudinis ---' >> "$RELATIO"
-            cat /tmp/exitus_longitudinis >> "$RELATIO"
-            conserva_relationem 0
-          fi
-          printf '%s\n' 'RECTE: LONGITUDO operatur.' >> "$RELATIO"
-
-          printf '%s\n' 'RECTE: AUTO-HOSPITIUM, LITTERALE, PROCLAMA ET LONGITUDO TRANSIERUNT.' >> "$RELATIO"
-          cp /tmp/compilator_vindex_052_2 ./compilator_vindex
-          conserva_relationem 1
+          exit 0
