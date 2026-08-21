@@ -77,7 +77,7 @@ proba() {
   chmod 755 "$RADIX/compilator_vindex"
 
   python3 "$RADIX/instrumenta/genera_probationem_formarum_053.py" /tmp/formae_magnae_053.vindex >> "$TEMPUS" 2>&1 || return 1
-  "$RADIX/compilator_vindex" /tmp/formae_magnae_053.vindex /tmp/formae_magnae_053 >> "$TEMPUS" 2>&1
+  timeout 60s "$RADIX/compilator_vindex" /tmp/formae_magnae_053.vindex /tmp/formae_magnae_053 >> "$TEMPUS" 2>&1
   SF=$?
   printf 'COMPILATIO XL FORMARUM ET LXXX CAMPORUM: status=%s.\n' "$SF" >> "$TEMPUS"
   [ "$SF" -eq 0 ] && integrum /tmp/formae_magnae_053 || return 1
@@ -111,11 +111,6 @@ proba() {
   return 0
 }
 
-committe() {
-  NUNTIUS="$1"
-  git -c user.name='VINDEX Centurio' -c user.email='actions@users.noreply.github.com' commit -m "$NUNTIUS"
-}
-
 if proba; then
   SUCCESSUS=1
 else
@@ -144,7 +139,7 @@ if [ "$SUCCESSUS" -eq 1 ]; then
     "$RADIX/BOOTX64.EFI" \
     "$RADIX/systema_vindex_uefi.img" \
     "$RELATIO"
-  committe 'VINDEX 0.53: formas dynamicas comproba' || exit 1
+  git commit -m 'VINDEX 0.53: formas dynamicas comproba' || exit 1
   if git push origin "$RAMUS"; then
     printf '%s\n' 'RECTE: migratio formarum dynamicarum comprobata et missa est.'
     exit 0
@@ -155,7 +150,7 @@ fi
 
 refice
 git add "$RELATIO"
-committe 'VINDEX 0.53: formas dynamicas diagnostica' || exit 1
+git commit -m 'VINDEX 0.53: formas dynamicas diagnostica' || exit 1
 if git push origin "$RAMUS"; then
   printf '%s\n' 'ERRATUM: relatio diagnostica missa est.'
   exit 1
