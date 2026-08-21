@@ -5,12 +5,25 @@ from pathlib import Path
 import sys
 
 
+def suffixum_litterarum(index: int) -> str:
+    """Indicem non negativum ad suffixum alphabeticum sine cifris convertit."""
+    partes: list[str] = []
+    valor = index + 1
+    while valor > 0:
+        valor, reliquum = divmod(valor - 1, 26)
+        partes.append(chr(ord("A") + reliquum))
+    return "".join(reversed(partes))
+
+
 def genera(via: Path) -> None:
     lineae: list[str] = []
+    nomina_formarum: list[str] = []
     for i in range(40):
+        nomen_formae = f"Forma{suffixum_litterarum(i)}"
+        nomina_formarum.append(nomen_formae)
         lineae.extend(
             [
-                f"FORMA Forma{i}.",
+                f"FORMA {nomen_formae}.",
                 "    CAMPUS valor SICUT NUMERUS.",
                 "FIN-FORMA.",
                 "",
@@ -18,19 +31,25 @@ def genera(via: Path) -> None:
         )
 
     lineae.append("FORMA Magna.")
+    nomina_camporum: list[str] = []
     for i in range(80):
-        lineae.append(f"    CAMPUS c{i} SICUT NUMERUS.")
+        nomen_campi = f"campus{suffixum_litterarum(i)}"
+        nomina_camporum.append(nomen_campi)
+        lineae.append(f"    CAMPUS {nomen_campi} SICUT NUMERUS.")
+
+    ultima_forma = nomina_formarum[-1]
+    ultimus_campus = nomina_camporum[-1]
     lineae.extend(
         [
             "FIN-FORMA.",
             "",
             "FUNCTIO PRINCIPALIS REDDENS NUMERUS.",
-            "    DECLARA ultima SICUT Forma39.",
+            f"    DECLARA ultima SICUT {ultima_forma}.",
             "    valor DE ultima = 39.",
             "    PROCLAMA valor DE ultima.",
             "    DECLARA magna SICUT Magna.",
-            "    c79 DE magna = 777.",
-            "    PROCLAMA c79 DE magna.",
+            f"    {ultimus_campus} DE magna = 777.",
+            f"    PROCLAMA {ultimus_campus} DE magna.",
             "    REDDE 0.",
             "FIN-FUNCTIO.",
             "",
