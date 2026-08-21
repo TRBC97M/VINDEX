@@ -75,15 +75,19 @@ resolutione vocationum pendentium. Consilium: quaevis nova metadata communis
 inter agentes regionem explicite documentandam et vacuam eligat, non
 adivinandam.
 
-**Nota addita post collationem cum `chatgpt/vindex-053-compilator-dynamicus`**:
-error observatus in hac contributione (`"functio vocata non inventa est"`,
-circulus infinitus in resolutione) simillimus est errori hodierno relato in
-`RELATIO-PENDENTES-DIAGNOSTICA-053.md` (`ERRATUM: functio vocata non inventa
-est`, `COMPILATIO MCCL PENDENTIUM: status=65`). Utraque contributio, seorsum
-et independenter, in eandem categoriam defectus incidit: resolutio nominum/
-vocationum per tabulam veterem fragilis est. Hoc corroborat consilium migrationis
-ad descriptorium dynamicum iam in cursu. Non est necessarium hic causam radicalem
-ambarum invenire — sufficit notare eas eiusdem generis esse.
+**Nota correcta (post collationem cum capite `a00a388`, novissimo tunc
+`chatgpt/vindex-053-compilator-dynamicus`)**: error notatus supra
+(`"functio vocata non inventa est"`) proveniebat ex relatione diagnostica
+intermedia (`RELATIO-PENDENTES-DIAGNOSTICA-053.md`, commit `65cbd5d`), non
+ex statu finali. Caput `a00a388` ipsum — verificatum a nobis independenter,
+non solum lectum — jam MCCL (1250) vocationes pendentes recte solvit: nostrum
+proprium exemplum (1250 functiones definitione posteriore vocatae) recte
+compilatum et exsecutum est, sine defectu, sine circulo infinito, codice
+exitus recte reddito. Relatio officialis eiusdem capitis confirmat: 21/21
+probationes rectae, punctum fixum G1=G2=G3 servatum, exitus programmate
+definitus (777) recte redditus. Difficultas huius sectionis igitur **non
+amplius manet in ramo 053**; relinquitur hic tantum ut exemplum genericum
+categoriae defectuum quam mechanismus dynamicus removere debuit.
 
 ### 3. `GetStdHandle` sequitur terminatio processus (non explicatum)
 
@@ -111,16 +115,26 @@ Omnes hae probationes vere exsecutae sunt, non solum scriptae:
 ## Proximi gradus proposti
 
 **Nota (post collationem cum `chatgpt/vindex-053-compilator-dynamicus`, caput
-`a00a388`)**: consilium mutatum est. Limes centum symbolorum localium iam
-remotus est ibi — probatum a nobis independenter: programma CLXXX
-variabilium localium recte compilatum et exsecutum est per compilatorem ibi
-distributum, reservatione pilae parva et tuta (11456 octeta, non 7000000).
-Migratio functionum/vocationum pendentium adhuc in cursu est, cum erroribus
-visibilibus similibus illis supra notatis (§2). Consilium igitur:
+`a00a388`)**: limes centum symbolorum localium iam remotus est ibi — probatum
+a nobis independenter: programma CLXXX variabilium localium recte compilatum
+et exsecutum est per compilatorem ibi distributum, reservatione pilae parva
+et tuta (11456 octeta, non 7000000). Migratio functionum/vocationum
+pendentium **etiam finita est** in eodem capite — probatum a nobis
+independenter: 1250 vocationes pendentes recte compilatae et exsecutae, sine
+defectu. Relatio officialis confirmat praeterea 21/21 probationes rectas et
+punctum fixum servatum. Consilium igitur manet idem quantum ad tempus
+integrationis (adhuc melius exspectare aliquam stabilitatem post tot
+mutationes recentes simul), sed causa specifica mutata est:
 
-1. Non integrare hunc mechanismum PE in `compilator_vindex.vindex` statim,
-   dum migratio functionum/vocationum pendentium in ramo 053 non stabilita est.
-2. Postquam illa migratio finita erit, `CONSTRUE_CAPUT_PE` intra novam
+1. Non integrare hunc mechanismum PE in `compilator_vindex.vindex` statim.
+   Ratio praecisa mutata est: tabula locorum et tabula functionum/vocationum
+   pendentium jam dynamicae et stabiles sunt (probatum a nobis). Restat
+   tamen in cursu ordinis diei 053 — expresse notatum ibi — quaestio magnitudinis
+   fixae fasciculorum pilae (stack frame) per functionem; haec quaestio
+   distincta est ab illis duabus jam solutis, et directe pertinet ad
+   fovea custodiae pilae hic in §1 notata. Melius igitur exspectare illam
+   quoque, ut integratio PE super fundamentum vere completum aedificetur.
+2. Postquam illa quoque stabilita erit, `CONSTRUE_CAPUT_PE` intra novam
    architecturam dynamicam definire, non intra veterem `tabula` fixam.
 3. Eligere modum quo lingua VINDEX scopum (ELF vel PE) designat — verbi
    gratia per argumentum lineae mandatorum, non per grammaticam mutandam.
