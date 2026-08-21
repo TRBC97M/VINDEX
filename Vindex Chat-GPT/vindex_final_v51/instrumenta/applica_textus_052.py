@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""TEXTUS 0.52 prudenter addit, ANALYSA_FACTOR intacta servata."""
+"""TEXTUS 0.52 addit sine tabulam localium analysatorum implendo."""
 
 from pathlib import Path
 import os
@@ -7,7 +7,7 @@ import sys
 
 VIA = Path("Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex")
 GRADUS = int(os.environ.get("VINDEX_TEXTUS_GRADUS", "3"))
-MARCA = "DECLARA est_textus_novum SICUT NUMERUS VALENS 0."
+MARCA = "FUNCTIO EST_TEXTUS_VARIABILIS REDDENS NUMERUS."
 
 
 def require_once(textus: str, vetus: str, nomen: str) -> None:
@@ -21,8 +21,88 @@ def muta_once(textus: str, vetus: str, novum: str, nomen: str) -> str:
     return textus.replace(vetus, novum, 1)
 
 
+def adde_adiutores(textus: str) -> str:
+    """Functiones parvas addit ut analysatores magni nova localia non accipiant."""
+    ancora = "FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.\n"
+    require_once(textus, ancora, "initium-analysa-blocus")
+
+    adiutores = '''FUNCTIO EST_TEXTUS_VARIABILIS REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT nomen SICUT NUMERUS.
+    DECLARA idx_textus SICUT NUMERUS VALENS 0.
+    DECLARA inventum_textus SICUT NUMERUS VALENS 0.
+    DUM idx_textus < 100 && tabula[idx_textus] != 0 PERFICE
+        SI tabula[idx_textus] == nomen TUNC
+            inventum_textus = tabula[2900 + idx_textus].
+        FIN-SI.
+        idx_textus = idx_textus + 1.
+    FIN-DUM.
+    REDDE inventum_textus.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_LITTERALE_TEXTUS REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    DECLARA loci_saltus_textus SICUT NUMERUS VALENS 0.
+    DECLARA sedes_textus SICUT NUMERUS VALENS 0.
+    DECLARA mensura_textus SICUT NUMERUS VALENS 0.
+    DECLARA ign_textus SICUT NUMERUS VALENS 0.
+
+    SI CONTENTUM(pos_fontis) >= n || fons[CONTENTUM(pos_fontis)] != 34 TUNC
+        REDDE 1.
+    FIN-SI.
+
+    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+    CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_textus)).
+    sedes_textus = CONTENTUM(pos_codicis).
+    CONTENTUM(pos_codicis) = SCRIBE_U64(codex, CONTENTUM(pos_codicis), 0).
+    CONTENTUM(pos_codicis) = SCRIBE_U64(codex, CONTENTUM(pos_codicis), 0).
+
+    DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+        codex[CONTENTUM(pos_codicis)] = fons[CONTENTUM(pos_fontis)].
+        CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        mensura_textus = mensura_textus + 1.
+    FIN-DUM.
+    codex[CONTENTUM(pos_codicis)] = 0.
+    CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+    SI CONTENTUM(pos_fontis) < n TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+    FIN-SI.
+
+    ign_textus = CORRIGE_PILA(codex, sedes_textus, mensura_textus).
+    ign_textus = CORRIGE_PILA(codex, sedes_textus + 8, mensura_textus).
+    ign_textus = CORRIGE_SALTUM(codex, loci_saltus_textus, CONTENTUM(pos_codicis)).
+    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 4194304 + sedes_textus).
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_IMPRIME_TEXTUS REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos SICUT NUMERUS.
+    DECLARA p_textus SICUT NUMERUS VALENS pos.
+    p_textus = COMPONE_TRANSCRIBE(codex, p_textus, 3, 0).
+    p_textus = COMPONE_SUME_INDIRECTUM(codex, p_textus, 2, 3).
+    p_textus = COMPONE_TRANSCRIBE(codex, p_textus, 6, 3).
+    p_textus = COMPONE_ONERA(codex, p_textus, 1, 16).
+    p_textus = COMPONE_ADD(codex, p_textus, 6, 1).
+    p_textus = COMPONE_ONERA(codex, p_textus, 0, 1).
+    p_textus = COMPONE_ONERA(codex, p_textus, 7, 1).
+    p_textus = COMPONE_VOCA_NUCLEUM(codex, p_textus).
+    REDDE p_textus.
+FIN-FUNCTIO.
+
+'''
+    return textus.replace(ancora, adiutores + ancora, 1)
+
+
 def gradus_unus(textus: str) -> str:
-    """Declarationes TEXTUS et litteralia descriptoris introducit."""
+    """Declarationes et litteralia TEXTUS introducit sine novis localibus ANALYSA_BLOCUS."""
+    textus = adde_adiutores(textus)
+
     textus = muta_once(
         textus,
         "                            SI fons[CONTENTUM(pos_fontis)] == 78 || fons[CONTENTUM(pos_fontis)] == 65 || fons[CONTENTUM(pos_fontis)] == 86 TUNC\n",
@@ -35,9 +115,8 @@ def gradus_unus(textus: str) -> str:
         textus,
         ancora,
         ancora
-        + "                            DECLARA est_textus_novum SICUT NUMERUS VALENS 0.\n"
         + "                            SI fons[CONTENTUM(pos_fontis)] == 84 TUNC\n"
-        + "                                est_textus_novum = 1.\n"
+        + "                                idx_struct_ptr = 0 - 2.\n"
         + "                                intervallum_typi = 7.\n"
         + "                            FIN-SI.\n",
         "declaratio-signum-textus",
@@ -53,47 +132,8 @@ def gradus_unus(textus: str) -> str:
         "                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + intervallum_typi.\n"
         "                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).\n"
         "                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.\n"
-        "                            SI est_textus_novum == 1 && fons[CONTENTUM(pos_fontis)] == 34 TUNC\n"
-        "                                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.\n"
-        "                                DECLARA loci_saltus_textus_decl SICUT NUMERUS VALENS 0.\n"
-        "                                CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_textus_decl)).\n"
-        "                                DECLARA sedes_textus_decl SICUT NUMERUS VALENS CONTENTUM(pos_codicis).\n"
-        "                                DECLARA k_cap_textus_decl SICUT NUMERUS VALENS 0.\n"
-        "                                DUM k_cap_textus_decl < 16 PERFICE\n"
-        "                                    codex[CONTENTUM(pos_codicis)] = 0.\n"
-        "                                    CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.\n"
-        "                                    k_cap_textus_decl = k_cap_textus_decl + 1.\n"
-        "                                FIN-DUM.\n"
-        "                                DECLARA mensura_textus_decl SICUT NUMERUS VALENS 0.\n"
-        "                                DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE\n"
-        "                                    codex[CONTENTUM(pos_codicis)] = fons[CONTENTUM(pos_fontis)].\n"
-        "                                    CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.\n"
-        "                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.\n"
-        "                                    mensura_textus_decl = mensura_textus_decl + 1.\n"
-        "                                FIN-DUM.\n"
-        "                                codex[CONTENTUM(pos_codicis)] = 0.\n"
-        "                                CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.\n"
-        "                                SI CONTENTUM(pos_fontis) < n TUNC\n"
-        "                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.\n"
-        "                                FIN-SI.\n"
-        "                                codex[sedes_textus_decl] = mensura_textus_decl & 255.\n"
-        "                                codex[sedes_textus_decl + 1] = (mensura_textus_decl >> 8) & 255.\n"
-        "                                codex[sedes_textus_decl + 2] = (mensura_textus_decl >> 16) & 255.\n"
-        "                                codex[sedes_textus_decl + 3] = (mensura_textus_decl >> 24) & 255.\n"
-        "                                codex[sedes_textus_decl + 4] = 0.\n"
-        "                                codex[sedes_textus_decl + 5] = 0.\n"
-        "                                codex[sedes_textus_decl + 6] = 0.\n"
-        "                                codex[sedes_textus_decl + 7] = 0.\n"
-        "                                codex[sedes_textus_decl + 8] = mensura_textus_decl & 255.\n"
-        "                                codex[sedes_textus_decl + 9] = (mensura_textus_decl >> 8) & 255.\n"
-        "                                codex[sedes_textus_decl + 10] = (mensura_textus_decl >> 16) & 255.\n"
-        "                                codex[sedes_textus_decl + 11] = (mensura_textus_decl >> 24) & 255.\n"
-        "                                codex[sedes_textus_decl + 12] = 0.\n"
-        "                                codex[sedes_textus_decl + 13] = 0.\n"
-        "                                codex[sedes_textus_decl + 14] = 0.\n"
-        "                                codex[sedes_textus_decl + 15] = 0.\n"
-        "                                ignoratum = CORRIGE_SALTUM(codex, loci_saltus_textus_decl, CONTENTUM(pos_codicis)).\n"
-        "                                CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 4194304 + sedes_textus_decl).\n"
+        "                            SI idx_struct_ptr == 0 - 2 TUNC\n"
+        "                                ignoratum = COMPONE_LITTERALE_TEXTUS(codex, pos_codicis, fons, pos_fontis, n).\n"
         "                            ALITER\n"
         "                                ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).\n"
         "                            FIN-SI.\n\n"
@@ -105,7 +145,7 @@ def gradus_unus(textus: str) -> str:
         textus,
         ancora,
         ancora
-        + "                            SI est_textus_novum == 1 TUNC\n"
+        + "                            SI idx_struct_ptr == 0 - 2 TUNC\n"
         + "                                tabula[2900 + idx_nova2] = 1.\n"
         + "                            FIN-SI.\n",
         "declaratio-metadata-textus",
@@ -127,69 +167,61 @@ def gradus_unus(textus: str) -> str:
 
 
 def gradus_duo(textus: str) -> str:
-    """Parametra TEXTUS in PRINCIPALIS et functionibus auxiliaribus signat."""
+    """Parametra TEXTUS signo in magnitudine iam exsistente distinguit."""
     ancora = "                        DECLARA magnitudo_pp SICUT NUMERUS VALENS 0.\n"
     textus = muta_once(
         textus,
         ancora,
         ancora
-        + "                        DECLARA est_textus_pp SICUT NUMERUS VALENS 0.\n"
         + "                        SI fons[i] == 84 TUNC\n"
-        + "                            est_textus_pp = 1.\n"
+        + "                            magnitudo_pp = 0 - 1.\n"
         + "                        FIN-SI.\n",
         "parametrum-principalis-signum",
     )
 
-    ancora = "                        tabula[850 + idx_param_pp] = magnitudo_pp.\n"
-    textus = muta_once(
-        textus,
-        ancora,
-        ancora
-        + "                        SI est_textus_pp == 1 TUNC\n"
-        + "                            tabula[2900 + idx_param_pp] = 1.\n"
-        + "                        FIN-SI.\n",
-        "parametrum-principalis-metadata",
+    vetus = "                        tabula[850 + idx_param_pp] = magnitudo_pp.\n"
+    novum = (
+        "                        SI magnitudo_pp == 0 - 1 TUNC\n"
+        "                            tabula[850 + idx_param_pp] = 0.\n"
+        "                            tabula[2900 + idx_param_pp] = 1.\n"
+        "                        ALITER\n"
+        "                            tabula[850 + idx_param_pp] = magnitudo_pp.\n"
+        "                        FIN-SI.\n"
     )
+    textus = muta_once(textus, vetus, novum, "parametrum-principalis-metadata")
 
     ancora = "                        DECLARA es_flot_param SICUT NUMERUS VALENS 0.\n"
     textus = muta_once(
         textus,
         ancora,
         ancora
-        + "                        DECLARA est_textus_param SICUT NUMERUS VALENS 0.\n"
         + "                        SI fons[i] == 84 TUNC\n"
-        + "                            est_textus_param = 1.\n"
+        + "                            es_flot_param = 2.\n"
         + "                        FIN-SI.\n",
         "parametrum-adiutor-signum",
     )
 
-    ancora = "                        tabula[850 + idx_param] = magnitudo_param.\n"
-    textus = muta_once(
-        textus,
-        ancora,
-        ancora
-        + "                        SI est_textus_param == 1 TUNC\n"
-        + "                            tabula[2900 + idx_param] = 1.\n"
-        + "                        FIN-SI.\n",
-        "parametrum-adiutor-metadata",
+    vetus = "                        tabula[850 + idx_param] = magnitudo_param.\n"
+    novum = (
+        "                        SI es_flot_param == 2 TUNC\n"
+        "                            tabula[850 + idx_param] = 0.\n"
+        "                            tabula[2900 + idx_param] = 1.\n"
+        "                        ALITER\n"
+        "                            tabula[850 + idx_param] = magnitudo_param.\n"
+        "                        FIN-SI.\n"
     )
+    textus = muta_once(textus, vetus, novum, "parametrum-adiutor-metadata")
     return textus
 
 
 def gradus_tres(textus: str) -> str:
-    """PROCLAMA valorem TEXTUS directe per nucleum scribit."""
+    """PROCLAMA TEXTUS per valorem 2 in signo fluitantis iam exsistente dirigit."""
     ancora = "                                    DECLARA es_flot_pcs SICUT NUMERUS VALENS PROSPICE_EST_FLUITANS(fons, CONTENTUM(pos_fontis), n, tabula).\n"
     additio = (
-        "                                    DECLARA es_textus_pcs SICUT NUMERUS VALENS 0.\n"
-        "                                    SI CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] >= 97 && fons[CONTENTUM(pos_fontis)] <= 122 TUNC\n"
-        "                                        DECLARA nomen_textus_pcs SICUT NUMERUS VALENS SIGNUM_AB_POSITIONE(fons, CONTENTUM(pos_fontis), n).\n"
-        "                                        DECLARA idx_textus_pcs SICUT NUMERUS VALENS 0.\n"
-        "                                        DUM idx_textus_pcs < 100 && tabula[idx_textus_pcs] != 0 PERFICE\n"
-        "                                            SI tabula[idx_textus_pcs] == nomen_textus_pcs TUNC\n"
-        "                                                es_textus_pcs = tabula[2900 + idx_textus_pcs].\n"
-        "                                            FIN-SI.\n"
-        "                                            idx_textus_pcs = idx_textus_pcs + 1.\n"
-        "                                        FIN-DUM.\n"
+        "                                    SI es_flot_pcs == 0 && CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] >= 97 && fons[CONTENTUM(pos_fontis)] <= 122 TUNC\n"
+        "                                        SI EST_TEXTUS_VARIABILIS(tabula, SIGNUM_AB_POSITIONE(fons, CONTENTUM(pos_fontis), n)) == 1 TUNC\n"
+        "                                            es_flot_pcs = 2.\n"
+        "                                        FIN-SI.\n"
         "                                    FIN-SI.\n"
     )
     textus = muta_once(textus, ancora, ancora + additio, "proclama-prospice-textus")
@@ -204,15 +236,8 @@ def gradus_tres(textus: str) -> str:
     )
     novum = (
         "                                    DECLARA intervallum_scratch SICUT NUMERUS VALENS tabula[51].\n"
-        "                                    SI es_textus_pcs == 1 TUNC\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 0).\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 2, 3).\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 6, 3).\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 1, 16).\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 6, 1).\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).\n"
-        "                                        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).\n"
+        "                                    SI es_flot_pcs == 2 TUNC\n"
+        "                                        CONTENTUM(pos_codicis) = COMPONE_IMPRIME_TEXTUS(codex, CONTENTUM(pos_codicis)).\n"
         "                                    ALITER\n"
         "                                        SI es_flot_pcs == 1 TUNC\n"
         "                                            CONTENTUM(pos_codicis) = COMPONE_IMPRIME_FLUITANIS(codex, CONTENTUM(pos_codicis), intervallum_scratch).\n"
@@ -238,7 +263,7 @@ def principale() -> int:
         textus = mutationes[index](textus)
 
     VIA.write_text(textus, encoding="utf-8")
-    print(f"RECTE: gradus I-{GRADUS} TEXTUS 0.52 applicati sunt.")
+    print(f"RECTE: gradus I-{GRADUS} TEXTUS 0.52 applicati sunt sine novis localibus analysatorum.")
     return 0
 
 
