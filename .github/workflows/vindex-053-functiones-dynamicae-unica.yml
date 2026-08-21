@@ -73,6 +73,7 @@ jobs:
             chmod 755 "$RADIX/compilator_vindex"
 
             # I. CC functiones ante PRINCIPALIS definiuntur: nulla vocatio pendens hanc probationem implicat.
+            # Vocationes functionum in grammatica hodierna littera maiuscula incipiunt.
             python3 - <<'PY'
           from pathlib import Path
           N = 200
@@ -80,9 +81,9 @@ jobs:
               litterae = []
               n = i
               for _ in range(4):
-                  litterae.append(chr(ord('a') + (n % 26)))
+                  litterae.append(chr(ord('A') + (n % 26)))
                   n //= 26
-              return 'f' + ''.join(reversed(litterae))
+              return 'F' + ''.join(reversed(litterae))
           ultima = nomen(N - 1)
           lineae = []
           for i in range(N):
@@ -121,13 +122,13 @@ jobs:
               '    DECLARA responsum SICUT NUMERUS VALENS 0.',
           ]
           for _ in range(N):
-              lineae.append('    responsum = futura().')
+              lineae.append('    responsum = FUTURA().')
           lineae += [
               '    PROCLAMA responsum.',
               '    REDDE 0.',
               'FIN-FUNCTIO.',
               '',
-              'FUNCTIO futura REDDENS NUMERUS.',
+              'FUNCTIO FUTURA REDDENS NUMERUS.',
               '    REDDE 777.',
               'FIN-FUNCTIO.',
               '',
@@ -146,7 +147,6 @@ jobs:
 
             cd "$RADIX" || return 1
             ./compilator_vindex src/officina_vindex.vindex /tmp/officina_nova >> "$RELATIO" 2>&1 || return 1
-            ./compilator_vindex src/salutatio_vindex /tmp/salutatio_nova >> "$RELATIO" 2>&1 || true
             ./compilator_vindex src/salutatio_vindex.vindex /tmp/salutatio_nova >> "$RELATIO" 2>&1 || return 1
             cp /tmp/officina_nova ./officina_vindex
             cp /tmp/salutatio_nova ./salutatio_vindex
