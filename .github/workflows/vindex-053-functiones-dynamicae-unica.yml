@@ -113,23 +113,29 @@ jobs:
             [ "$EFM" -eq 0 ] && [ "$OFM" = '1199' ] || return 1
             printf '%s\n' 'RECTE: tabula functionum CC definitiones continet et ultimam retro recte vocat.' >> "$RELATIO"
 
-            # II. MCCL vocationes ad unam functionem nondum definitam vetus spatium pendentium excedunt.
+            # II. MCCL vocationes in functione INITIUM ad FUTURA, quae post INITIUM sed ante PRINCIPALIS definitur.
+            # Sic vera resolutio vocationum pendentium exercetur, servata ordinatione top-level hodierna.
             python3 - <<'PY'
           from pathlib import Path
           N = 1250
           lineae = [
-              'FUNCTIO PRINCIPALIS REDDENS NUMERUS.',
+              'FUNCTIO INITIUM REDDENS NUMERUS.',
               '    DECLARA responsum SICUT NUMERUS VALENS 0.',
           ]
           for _ in range(N):
               lineae.append('    responsum = FUTURA().')
           lineae += [
-              '    PROCLAMA responsum.',
-              '    REDDE 0.',
+              '    REDDE responsum.',
               'FIN-FUNCTIO.',
               '',
               'FUNCTIO FUTURA REDDENS NUMERUS.',
               '    REDDE 777.',
+              'FIN-FUNCTIO.',
+              '',
+              'FUNCTIO PRINCIPALIS REDDENS NUMERUS.',
+              '    DECLARA responsum SICUT NUMERUS VALENS INITIUM().',
+              '    PROCLAMA responsum.',
+              '    REDDE 0.',
               'FIN-FUNCTIO.',
               '',
           ]
