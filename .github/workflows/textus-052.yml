@@ -1,12 +1,8 @@
 name: VINDEX 0.52 — Fundamenta compilatoris
 
+# Probationes huius rami tantum manu excitantur, ne mutationes experimentales
+# epistulas de defectibus continenter generent.
 on:
-  push:
-    branches:
-      - chatgpt/vindex-052-textus
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
