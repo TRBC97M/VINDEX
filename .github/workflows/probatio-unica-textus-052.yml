@@ -1,0 +1,112 @@
+name: VINDEX 0.52 — Probatio diagnostica unica
+
+# Haec probatio semel adhibetur. Defectus experimenti in RESULTATUM scribitur;
+# opus ipsum semper recte terminatur, ne epistulae de defectibus mittantur.
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  probatio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: TEXTUS et auto-hospitium examina
+        shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          COMP="$RADIX/compilator_vindex"
+          chmod +x "$COMP"
+
+          python3 "$RADIX/instrumenta/corrige_mitte_052.py"
+          S_MITTE=$?
+          python3 "$RADIX/instrumenta/applica_textus_052.py"
+          S_APPLICA=$?
+          printf 'STATUS_MITTE=%s\nSTATUS_TEXTUS=%s\n' "$S_MITTE" "$S_APPLICA"
+          if [ "$S_MITTE" -ne 0 ] || [ "$S_APPLICA" -ne 0 ]; then
+            printf '%s\n' 'RESULTATUM=ERRATUM_APPLICATIO'
+            exit 0
+          fi
+
+          "$COMP" "$FONS" /tmp/compilator_052_I
+          S_I=$?
+          printf 'STATUS_GENERATIO_I=%s\n' "$S_I"
+          if [ "$S_I" -ne 0 ] || [ ! -s /tmp/compilator_052_I ]; then
+            printf '%s\n' 'RESULTATUM=ERRATUM_GENERATIO_I'
+            exit 0
+          fi
+          chmod +x /tmp/compilator_052_I
+
+          /tmp/compilator_052_I "$FONS" /tmp/compilator_052_II
+          S_II=$?
+          printf 'STATUS_GENERATIO_II=%s\n' "$S_II"
+          if [ "$S_II" -ne 0 ] || [ ! -s /tmp/compilator_052_II ]; then
+            printf '%s\n' 'RESULTATUM=ERRATUM_GENERATIO_II'
+            exit 0
+          fi
+          chmod +x /tmp/compilator_052_II
+
+          cmp /tmp/compilator_052_I /tmp/compilator_052_II
+          S_FIXUS=$?
+          printf 'STATUS_PUNCTUM_FIXUM=%s\n' "$S_FIXUS"
+          if [ "$S_FIXUS" -ne 0 ]; then
+            printf '%s\n' 'RESULTATUM=ERRATUM_PUNCTUM_FIXUM'
+            exit 0
+          fi
+
+          /tmp/compilator_052_II "$RADIX/examples/textus_litterale_052.vindex" /tmp/proba_litteralis
+          S_LIT_COMP=$?
+          printf 'STATUS_LITTERALE_COMPILATIO=%s\n' "$S_LIT_COMP"
+          if [ "$S_LIT_COMP" -ne 0 ] || [ ! -s /tmp/proba_litteralis ]; then
+            printf '%s\n' 'RESULTATUM=ERRATUM_LITTERALE_COMPILATIO'
+            exit 0
+          fi
+          chmod +x /tmp/proba_litteralis
+          /tmp/proba_litteralis > /tmp/exitus_litteralis
+          S_LIT_RUN=$?
+          printf 'STATUS_LITTERALE_EXSECUTIO=%s\n' "$S_LIT_RUN"
+          printf 'Sylvia\n' > /tmp/exspectatum_litterale
+          cmp /tmp/exspectatum_litterale /tmp/exitus_litteralis
+          S_LIT_OUT=$?
+          printf 'STATUS_LITTERALE_EXITUS=%s\n' "$S_LIT_OUT"
+          if [ "$S_LIT_RUN" -ne 0 ] || [ "$S_LIT_OUT" -ne 0 ]; then
+            printf '%s\n' 'RESULTATUM=ERRATUM_LITTERALE'
+            cat /tmp/exitus_litteralis
+            exit 0
+          fi
+
+          if [ -f "$RADIX/examples/textus_longitudo_052.vindex" ]; then
+            pushd "$RADIX" >/dev/null
+            /tmp/compilator_052_II examples/textus_longitudo_052.vindex /tmp/proba_longitudo
+            S_LONG_COMP=$?
+            popd >/dev/null
+            printf 'STATUS_LONGITUDO_COMPILATIO=%s\n' "$S_LONG_COMP"
+            if [ "$S_LONG_COMP" -ne 0 ] || [ ! -s /tmp/proba_longitudo ]; then
+              printf '%s\n' 'RESULTATUM=ERRATUM_LONGITUDO_COMPILATIO'
+              exit 0
+            fi
+            chmod +x /tmp/proba_longitudo
+            /tmp/proba_longitudo > /tmp/exitus_longitudo
+            S_LONG_RUN=$?
+            printf 'STATUS_LONGITUDO_EXSECUTIO=%s\n' "$S_LONG_RUN"
+            printf '6\n' > /tmp/exspectatum_longitudo
+            cmp /tmp/exspectatum_longitudo /tmp/exitus_longitudo
+            S_LONG_OUT=$?
+            printf 'STATUS_LONGITUDO_EXITUS=%s\n' "$S_LONG_OUT"
+            if [ "$S_LONG_RUN" -ne 0 ] || [ "$S_LONG_OUT" -ne 0 ]; then
+              printf '%s\n' 'RESULTATUM=ERRATUM_LONGITUDO'
+              cat /tmp/exitus_longitudo
+              exit 0
+            fi
+          fi
+
+          printf '%s\n' 'RESULTATUM=RECTE'
+          exit 0
