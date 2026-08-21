@@ -1,4 +1,4 @@
-name: VINDEX 0.52 — Sedes pos post MITTE
+name: VINDEX 0.52 — Gradus tertius MITTE
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: Sedes ante et post MITTE inspice
+      - name: Gradum tertium post mutationem MITTE inspice
         shell: bash
         run: |
           set +e
@@ -53,20 +53,43 @@ jobs:
           "$RADIX/compilator_vindex" /tmp/compilator_diag.vindex /tmp/gradus1 >> "$RELATIO" 2>&1
           S1=$?
           printf 'STATUS GRADUS I: %s.\n' "$S1" >> "$RELATIO"
+
           if [ "$S1" -eq 0 ] || { [ "$S1" -eq 74 ] && integrum /tmp/gradus1; }; then
             chmod +x /tmp/gradus1
-            printf '%s\n' '--- argc, sedes-pos-ante, pos-ante, scriptum, sedes-pos-post, pos-post, sedes-scriptum, contentum-pos ---' >> "$RELATIO"
+            printf '%s\n' '--- GRADUS II: compilator adhuc MITTE vetere utitur dum novum compilat ---' >> "$RELATIO"
             /tmp/gradus1 /tmp/compilator_diag.vindex /tmp/gradus2 >> "$RELATIO" 2>&1
-            printf 'STATUS GRADUS II: %s.\n' "$?" >> "$RELATIO"
+            S2=$?
+            printf 'STATUS GRADUS II: %s.\n' "$S2" >> "$RELATIO"
           else
+            S2=255
             printf '%s\n' 'GRADUS I INTEGRUM NON EST.' >> "$RELATIO"
+          fi
+
+          if [ "$S2" -eq 0 ] || { [ "$S2" -eq 74 ] && integrum /tmp/gradus2; }; then
+            chmod +x /tmp/gradus2
+            printf '%s\n' '--- GRADUS III: compilator cum MITTE ad -6500000 iam ipse exsequitur ---' >> "$RELATIO"
+            /tmp/gradus2 /tmp/compilator_diag.vindex /tmp/gradus3 >> "$RELATIO" 2>&1
+            S3=$?
+            printf 'STATUS GRADUS III: %s.\n' "$S3" >> "$RELATIO"
+            if integrum /tmp/gradus3; then
+              printf '%s\n' 'GRADUS III INTEGRUM EST.' >> "$RELATIO"
+            else
+              printf '%s\n' 'GRADUS III INTEGRUM NON EST.' >> "$RELATIO"
+            fi
+            if cmp -s /tmp/gradus2 /tmp/gradus3; then
+              printf '%s\n' 'PUNCTUM FIXUM GRADUUM II ET III: RECTE.' >> "$RELATIO"
+            else
+              printf '%s\n' 'PUNCTUM FIXUM GRADUUM II ET III: NONDUM.' >> "$RELATIO"
+            fi
+          else
+            printf '%s\n' 'GRADUS II INTEGRUM NON EST.' >> "$RELATIO"
           fi
 
           cd "$GITHUB_WORKSPACE"
           VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-TEXTUS-052.md"
           {
-            printf '%s\n\n' '# VINDEX 0.52 — Relatio sedis `pos` post MITTE'
-            printf '%s\n\n' 'Eadem variabilis ante et post `MITTE` per sedem et contentum inspicitur.'
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio gradus tertii MITTE'
+            printf '%s\n\n' 'Gradus tertius probat utrum compilator qui iam bufferum `MITTE` ad -6500000 habet corruptionem `pos` vitet atque punctum fixum attingat.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
@@ -76,7 +99,7 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git add "$VIA_RELATIONIS"
           if ! git diff --cached --quiet; then
-            git commit -m 'VINDEX 0.52: sedem pos post MITTE relata conserva'
+            git commit -m 'VINDEX 0.52: gradum tertium MITTE relata conserva'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
           exit 0
