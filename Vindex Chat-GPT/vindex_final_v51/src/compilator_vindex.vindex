@@ -2692,6 +2692,64 @@ FUNCTIO PROXIMUS_LOCUS_LIBER REDDENS NUMERUS.
     REDDE idx.
 FIN-FUNCTIO.
 
+FUNCTIO COMPONE_LITTERALE_TEXTUS REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
+    ACCIPIT fons SICUT ORDO DE LITTERA.
+    ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    DECLARA loci_saltus_textus SICUT NUMERUS VALENS 0.
+    DECLARA sedes_textus SICUT NUMERUS VALENS 0.
+    DECLARA mensura_textus SICUT NUMERUS VALENS 0.
+    DECLARA ign_textus SICUT NUMERUS VALENS 0.
+
+    SI CONTENTUM(pos_fontis) >= n || fons[CONTENTUM(pos_fontis)] != 34 TUNC
+        REDDE 1.
+    FIN-SI.
+
+    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+    CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_textus)).
+    sedes_textus = CONTENTUM(pos_codicis).
+    CONTENTUM(pos_codicis) = SCRIBE_U64(codex, CONTENTUM(pos_codicis), 0).
+    CONTENTUM(pos_codicis) = SCRIBE_U64(codex, CONTENTUM(pos_codicis), 0).
+
+    DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+        codex[CONTENTUM(pos_codicis)] = fons[CONTENTUM(pos_fontis)].
+        CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        mensura_textus = mensura_textus + 1.
+    FIN-DUM.
+
+    SI CONTENTUM(pos_fontis) >= n TUNC
+        REDDE 2.
+    FIN-SI.
+
+    codex[CONTENTUM(pos_codicis)] = 0.
+    CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
+    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+
+    ign_textus = CORRIGE_PILA(codex, sedes_textus, mensura_textus).
+    ign_textus = CORRIGE_PILA(codex, sedes_textus + 8, mensura_textus).
+    ign_textus = CORRIGE_SALTUM(codex, loci_saltus_textus, CONTENTUM(pos_codicis)).
+    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 4194304 + sedes_textus).
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_IMPRIME_TEXTUS REDDENS NUMERUS.
+    ACCIPIT codex SICUT ORDO DE NUMERUS.
+    ACCIPIT pos SICUT NUMERUS.
+    DECLARA p_textus SICUT NUMERUS VALENS pos.
+    p_textus = COMPONE_TRANSCRIBE(codex, p_textus, 3, 0).
+    p_textus = COMPONE_SUME_INDIRECTUM(codex, p_textus, 2, 3).
+    p_textus = COMPONE_TRANSCRIBE(codex, p_textus, 6, 3).
+    p_textus = COMPONE_ONERA(codex, p_textus, 1, 16).
+    p_textus = COMPONE_ADD(codex, p_textus, 6, 1).
+    p_textus = COMPONE_ONERA(codex, p_textus, 0, 1).
+    p_textus = COMPONE_ONERA(codex, p_textus, 7, 1).
+    p_textus = COMPONE_VOCA_NUCLEUM(codex, p_textus).
+    REDDE p_textus.
+FIN-FUNCTIO.
+
 FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
     ACCIPIT codex SICUT ORDO DE NUMERUS.
     ACCIPIT pos_codicis SICUT ACUS<NUMERUS>.
@@ -2779,10 +2837,14 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             DECLARA ig_flot3 SICUT NUMERUS VALENS ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
                             CONTENTUM(pos_codicis) = COMPONE_MOVSD_SALVA(codex, CONTENTUM(pos_codicis), intervallum_flot, 0).
                         ALITER
-                            SI fons[CONTENTUM(pos_fontis)] == 78 || fons[CONTENTUM(pos_fontis)] == 65 || fons[CONTENTUM(pos_fontis)] == 86 TUNC
+                            SI fons[CONTENTUM(pos_fontis)] == 78 || fons[CONTENTUM(pos_fontis)] == 65 || fons[CONTENTUM(pos_fontis)] == 86 || fons[CONTENTUM(pos_fontis)] == 84 TUNC
                             DECLARA intervallum_typi SICUT NUMERUS VALENS 8.
                             DECLARA magnitudo_elementi SICUT NUMERUS VALENS 8.
                             DECLARA idx_struct_ptr SICUT NUMERUS VALENS 0 - 1.
+                            SI fons[CONTENTUM(pos_fontis)] == 84 TUNC
+                                idx_struct_ptr = 0 - 2.
+                                intervallum_typi = 7.
+                            FIN-SI.
                             SI fons[CONTENTUM(pos_fontis)] == 65 TUNC
                                 SI fons[CONTENTUM(pos_fontis) + 5] == 76 TUNC
                                     magnitudo_elementi = 1.
@@ -2801,13 +2863,23 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + intervallum_typi.
                             ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
-                            ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                            SI idx_struct_ptr == 0 - 2 TUNC
+                                ignoratum = COMPONE_LITTERALE_TEXTUS(codex, pos_codicis, fons, pos_fontis, n).
+                                SI ignoratum != 0 TUNC
+                                    ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                FIN-SI.
+                            ALITER
+                                ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                            FIN-SI.
 
                             DECLARA intervallum_nova SICUT NUMERUS VALENS tabula[51].
                             DECLARA idx_nova2 SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                             tabula[idx_nova2] = nomen.
                             tabula[idx_nova2 + 100] = intervallum_nova.
                             tabula[850 + idx_nova2] = magnitudo_elementi.
+                            SI idx_struct_ptr == 0 - 2 TUNC
+                                tabula[2400 + idx_nova2] = 2.
+                            FIN-SI.
                             SI idx_struct_ptr >= 0 TUNC
                                 tabula[2300 + idx_nova2] = idx_struct_ptr + 1.
                             FIN-SI.
@@ -2933,10 +3005,14 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
 
                                     DECLARA intervallum_scratch SICUT NUMERUS VALENS tabula[51].
-                                    SI es_flot_pcs == 1 TUNC
-                                        CONTENTUM(pos_codicis) = COMPONE_IMPRIME_FLUITANIS(codex, CONTENTUM(pos_codicis), intervallum_scratch).
+                                    SI es_flot_pcs == 2 TUNC
+                                        CONTENTUM(pos_codicis) = COMPONE_IMPRIME_TEXTUS(codex, CONTENTUM(pos_codicis)).
                                     ALITER
-                                        CONTENTUM(pos_codicis) = COMPONE_IMPRIME_NUMERUS(codex, CONTENTUM(pos_codicis), intervallum_scratch).
+                                        SI es_flot_pcs == 1 TUNC
+                                            CONTENTUM(pos_codicis) = COMPONE_IMPRIME_FLUITANIS(codex, CONTENTUM(pos_codicis), intervallum_scratch).
+                                        ALITER
+                                            CONTENTUM(pos_codicis) = COMPONE_IMPRIME_NUMERUS(codex, CONTENTUM(pos_codicis), intervallum_scratch).
+                                        FIN-SI.
                                     FIN-SI.
 
                                     CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 10).
@@ -3625,6 +3701,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         ign_typ_pp = IGNORA_SPATIA(fons, SEDES(i), n).
                         DECLARA est_series_pp SICUT NUMERUS VALENS 0.
                         DECLARA magnitudo_pp SICUT NUMERUS VALENS 0.
+                        SI fons[i] == 84 TUNC
+                            magnitudo_pp = 0 - 1.
+                        FIN-SI.
                         SI fons[i] == 79 TUNC
                             est_series_pp = 2.
                         FIN-SI.
@@ -3650,7 +3729,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         DECLARA intervallum_param_pp SICUT NUMERUS VALENS tabula[51].
                         tabula[idx_param_pp + 100] = intervallum_param_pp.
                         tabula[228 + idx_param_pp] = est_series_pp.
-                        tabula[850 + idx_param_pp] = magnitudo_pp.
+                        SI magnitudo_pp == 0 - 1 TUNC
+                            tabula[850 + idx_param_pp] = 0.
+                            tabula[2400 + idx_param_pp] = 2.
+                        ALITER
+                            tabula[850 + idx_param_pp] = magnitudo_pp.
+                        FIN-SI.
                         tabula[51] = tabula[51] - 8.
                         pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param_pp, registrum_param_pp).
 
@@ -3723,6 +3807,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         DECLARA est_series_param SICUT NUMERUS VALENS 0.
                         DECLARA magnitudo_param SICUT NUMERUS VALENS 0.
                         DECLARA es_flot_param SICUT NUMERUS VALENS 0.
+                        SI fons[i] == 84 TUNC
+                            es_flot_param = 2.
+                        FIN-SI.
                         SI fons[i] == 79 TUNC
                             est_series_param = 2.
                         FIN-SI.
@@ -3769,8 +3856,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         SI idx_struct_param >= 0 TUNC
                             tabula[2300 + idx_param] = idx_struct_param + 1.
                         FIN-SI.
-                        SI es_flot_param == 1 TUNC
-                            tabula[2400 + idx_param] = 1.
+                        SI es_flot_param > 0 TUNC
+                            tabula[2400 + idx_param] = es_flot_param.
                         FIN-SI.
                         tabula[51] = tabula[51] - 8.
                         pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).
