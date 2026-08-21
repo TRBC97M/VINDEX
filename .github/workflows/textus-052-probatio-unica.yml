@@ -1,4 +1,4 @@
-name: VINDEX 0.52 — Diagnostica finalis MITTE
+name: VINDEX 0.52 — Sedes pos post MITTE
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
-      - name: Binarium secundum et sedes pos inspice
+      - name: Sedes ante et post MITTE inspice
         shell: bash
         run: |
           set +e
@@ -43,7 +43,7 @@ jobs:
           p = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
           s = p.read_text(encoding='utf-8')
           vetus = '''    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
-          novum = '''    PROCLAMA SEDES(argc).\n    PROCLAMA SEDES(pos).\n    PROCLAMA pos.\n    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    PROCLAMA scriptum.\n    PROCLAMA pos.\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
+          novum = '''    PROCLAMA SEDES(argc).\n    PROCLAMA SEDES(pos).\n    PROCLAMA pos.\n    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd_scriptio, codex, pos).\n    PROCLAMA scriptum.\n    PROCLAMA SEDES(pos).\n    PROCLAMA pos.\n    PROCLAMA SEDES(scriptum).\n    PROCLAMA CONTENTUM(SEDES(pos)).\n    CLAUDE(fd_scriptio).\n    SI scriptum != pos TUNC\n'''
           if s.count(vetus) != 1:
               raise SystemExit('ERRATUM: locus finalis non unicus est')
           Path('/tmp/compilator_diag.vindex').write_text(s.replace(vetus, novum, 1), encoding='utf-8')
@@ -53,34 +53,20 @@ jobs:
           "$RADIX/compilator_vindex" /tmp/compilator_diag.vindex /tmp/gradus1 >> "$RELATIO" 2>&1
           S1=$?
           printf 'STATUS GRADUS I: %s.\n' "$S1" >> "$RELATIO"
-          if [ "$S1" -ne 0 ] && ! { [ "$S1" -eq 74 ] && integrum /tmp/gradus1; }; then
-            printf '%s\n' 'GRADUS I INTEGRUM NON EST.' >> "$RELATIO"
-          else
+          if [ "$S1" -eq 0 ] || { [ "$S1" -eq 74 ] && integrum /tmp/gradus1; }; then
             chmod +x /tmp/gradus1
-            printf '%s\n' '--- EXECUTIO GRADUS I SUPER FONTE DIAGNOSTICO ---' >> "$RELATIO"
+            printf '%s\n' '--- argc, sedes-pos-ante, pos-ante, scriptum, sedes-pos-post, pos-post, sedes-scriptum, contentum-pos ---' >> "$RELATIO"
             /tmp/gradus1 /tmp/compilator_diag.vindex /tmp/gradus2 >> "$RELATIO" 2>&1
-            S2=$?
-            printf 'STATUS GRADUS II: %s.\n' "$S2" >> "$RELATIO"
-
-            python3 - <<'PY' >> "$RELATIO" 2>&1
-          from pathlib import Path
-          for nomen in ('/tmp/gradus1','/tmp/gradus2'):
-              p = Path(nomen)
-              if not p.exists():
-                  print(nomen, 'deest')
-                  continue
-              b = p.read_bytes()
-              m6 = bytes.fromhex('8072a4ff')
-              m65 = bytes.fromhex('60d19cff')
-              print(nomen, 'magnitudo', len(b), 'disp_-6000000', b.count(m6), 'disp_-6500000', b.count(m65))
-          PY
+            printf 'STATUS GRADUS II: %s.\n' "$?" >> "$RELATIO"
+          else
+            printf '%s\n' 'GRADUS I INTEGRUM NON EST.' >> "$RELATIO"
           fi
 
           cd "$GITHUB_WORKSPACE"
           VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-TEXTUS-052.md"
           {
-            printf '%s\n\n' '# VINDEX 0.52 — Relatio finalis diagnostica MITTE'
-            printf '%s\n\n' 'Sedes `argc` et `pos`, status secundi gradus, atque immediata binarii observantur.'
+            printf '%s\n\n' '# VINDEX 0.52 — Relatio sedis `pos` post MITTE'
+            printf '%s\n\n' 'Eadem variabilis ante et post `MITTE` per sedem et contentum inspicitur.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
@@ -90,7 +76,7 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git add "$VIA_RELATIONIS"
           if ! git diff --cached --quiet; then
-            git commit -m 'VINDEX 0.52: relationem finalem MITTE conserva'
+            git commit -m 'VINDEX 0.52: sedem pos post MITTE relata conserva'
             git push origin HEAD:chatgpt/vindex-052-textus
           fi
           exit 0
