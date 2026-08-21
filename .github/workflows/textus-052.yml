@@ -20,15 +20,28 @@ jobs:
           ref: chatgpt/vindex-052-textus
           fetch-depth: 0
 
+      - name: Compilatorem pristinum proba
+        run: |
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          chmod +x ./compilator_vindex
+          printf 'Magnitudo fontis pristini: '
+          wc -c < src/compilator_vindex.vindex
+          printf 'Numerus functionum pristinarum: '
+          grep -c '^FUNCTIO ' src/compilator_vindex.vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_pristinus
+
       - name: Mutationes TEXTUS applica
         run: |
           python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_textus_052.py'
           git diff --check
+          printf 'Magnitudo fontis mutati: '
+          wc -c < 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          printf 'Numerus functionum mutatarum: '
+          grep -c '^FUNCTIO ' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
 
       - name: Compilatorem auto-hospitem reconstrue
         run: |
           cd 'Vindex Chat-GPT/vindex_final_v51'
-          chmod +x ./compilator_vindex
           ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_052_1
           chmod +x /tmp/compilator_vindex_052_1
           /tmp/compilator_vindex_052_1 src/compilator_vindex.vindex /tmp/compilator_vindex_052_2
