@@ -1,0 +1,9 @@
+// VINDEX 0.52 — probatio LONGITUDO per bibliothecam TEXTUS.
+
+IMPORTA "bibliotheca/textus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
+    PROCLAMA LONGITUDO(nomen).
+    REDDE 0.
+FIN-FUNCTIO.
