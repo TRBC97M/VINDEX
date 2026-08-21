@@ -124,15 +124,32 @@ et `ntdll.dll`, singulis recte redditis (`retval=1`) — deinde **nihil amplius
 a filo illo in relatione relais apparet**: nulla ulterior vocatio API
 tracta, tantum defectus memoriae. Hoc indicat defectum non esse in codice
 DllMain ipso (qui recte perficitur), sed in codice Wine interno et **non
-tracto** post has tres vocationes — probabiliter intra logicam propriam
-terminationis processus Wine (extra spatium DLL PE, ergo invisibilem
-`+relay` tracing). Causa radicalis ultima adhuc non inventa est; suspicio
-manet peculiaritatem huius ambitus Wine specificam esse (nullum consolam
-veram habentis, "explorer.exe" incipere non valentis), non errorem in ipsa
-constructione PE. **Non probatum sub Windows vero.** Propterea fasciculi hic
-inclusi terminationem sine tali functione praecedente demonstrant tantum,
-vel — pro catena I/O — rectitudinem per contentum fasciculorum post
-exsecutionem verificant, non per exitum limpidum processus.
+tracto** post has tres vocationes.
+
+**Diagnosticum ulterius praecisum (per `strace -f` in ipso systemate Linux
+subiacenti)**: signum verum non est `SIGSEGV` communis (`SEGV_MAPERR` vel
+`SEGV_ACCERR` cum adresse fallente reali), sed `si_code=SI_KERNEL` cum
+`si_addr=NULL`. Documentatio nuclei Linux confirmat: haec combinatio
+praecise indicat **General Protection Fault** (#GP), non defectum paginae
+(#PF) — categoria omnino differens, typice ex instructione **privilegiata**
+exsecuta in modo utente (ring 3), non ex simplici indice/pointer malo.
+Hypothesis prima — codicem post `HLT` proprium (positum tantum ut rete
+securitatis, numquam normaliter attingendum) forte attingi et ipsum HLT,
+instructio privilegiata, causam esse — **directe probata et reiecta**:
+`HLT` in fasciculo compilato per `EB FE` (`jmp $`, non privilegiata)
+substitutum est, et defectus **idem** mansit, eodem loco, eadem
+significatione. Defectus igitur non pendet a codice post `ExitProcess`
+in .text nostro — ipsa vocatio `ExitProcess`, vel logica Wine interna
+quam statim post movet, causat #GP intra spatium codicis Wine ipsius,
+antequam ullum control ad nostrum codicem redeat. Causa radicalis ultima
+(quaenam instructio privilegiata specifice) adhuc non inventa est; suspicio
+manet peculiaritatem huius ambitus Wine/continentis specificam esse
+(nullum consolam veram habentis, "explorer.exe" incipere non valentis),
+non errorem in ipsa constructione PE. **Non probatum sub Windows vero.**
+Propterea fasciculi hic inclusi terminationem sine tali functione
+praecedente demonstrant tantum, vel — pro catena I/O — rectitudinem per
+contentum fasciculorum post exsecutionem verificant, non per exitum
+limpidum processus.
 
 ## Probationes exsecutae
 
