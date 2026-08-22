@@ -80,6 +80,17 @@ jobs:
           cmp "$RADIX/compilator_vindex" /tmp/compilator_reconstructus
           printf '%s\n' 'RECTE: compilator distributus reconstructioni canonicae congruit.'
 
+      - name: Septem argumenta ab amorsa proba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 "$RADIX/bootstrap/python/compilateur_053.py" \
+            "$RADIX/tests/casus/argumenta_septem.vindex" /tmp/amorsa_septem
+          EX=$(timeout 5s /tmp/amorsa_septem)
+          test "$EX" = '28'
+          printf '%s\n' 'RECTE: amorsa septem argumenta 28 reddit.'
+
       - name: CRLF sine tarditate comproba
         shell: bash
         run: |
@@ -107,15 +118,15 @@ jobs:
           python3 "$RADIX/instrumenta/verifica_pilam_binariam_053.py" \
             /tmp/pila_magna_053
 
-      - name: Encapsulationem 227 et 2999 custodi
+      - name: Contextum DESINE et encapsulationem 2999 custodi
         shell: bash
         run: |
           set -euo pipefail
           FONS='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
           grep -Fq 'FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS.' "$FONS"
+          grep -Fq 'ACCIPIT contextus_desine SICUT ACUS<NUMERUS>.' "$FONS"
+          ! grep -Fq 'tabula[227]' "$FONS"
           grep -Fq 'FUNCTIO STATUS_LECTIONIS_LEGE REDDENS NUMERUS.' "$FONS"
-          N227=$(grep -o 'tabula\[227\]' "$FONS" | wc -l)
           N2999=$(grep -o 'tabula\[2999\]' "$FONS" | wc -l)
-          test "$N227" -eq 2
           test "$N2999" -eq 2
-          printf 'RECTE: accessus directi encapsulati: 227=%s, 2999=%s.\n' "$N227" "$N2999"
+          printf 'RECTE: DESINE extra tabulam est; 2999 encapsulatum manet (%s accessus).\n' "$N2999"
