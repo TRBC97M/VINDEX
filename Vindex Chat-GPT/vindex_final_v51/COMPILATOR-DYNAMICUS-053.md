@@ -58,7 +58,7 @@ Vitium vocationum sine argumentis quoque correctum est: `RDI` non amplius e pila
 
 `IGNORA_SPATIA` CR (`13`) nunc agnoscit. Hoc vitium erat causa tarditatis catastrophicae auto-hospitii cum fons CRLF tractabatur.
 
-Compilator fontem proprium consulto in CRLF conversum, cum `4580` terminationibus CRLF et `241975` octetis, intra minus quam unam secundam compilavit cum statu `0`.
+Compilator fontem proprium consulto in CRLF conversum, cum `4580` terminationibus CRLF et `241975` octetis, intra terminum canonice compilat cum statu `0`.
 
 `.gitattributes` LF canonice imponit scripturis Unix, instrumentis Python, documentis Markdown et fontibus `*.vindex`. Modi exsecutionis scripturarum distributarum in canonizatione restituti sunt.
 
@@ -66,10 +66,10 @@ Compilator fontem proprium consulto in CRLF conversum, cum `4580` terminationibu
 
 Canonizatio CRLF et pilae feliciter absoluta est. Auto-hospitium, amorsa Python, Officina, Systema BIOS et Systema UEFI transeunt.
 
-Punctum fixum canonice comprobatum est. SHA-256 generationis canonicae:
+Relatio historica gradus CRLF/pilae in `instrumenta/RELATIO-CANONICA-CRLF-PILA-053.md` SHA-256 illius canonizationis (`f4941f7b...`) servat. Post encapsulationem tabulae compilator intentionaliter mutatus est; punctum fixum hodiernum est:
 
 ```text
-f4941f7bfed234619f328ed8aebf5d7a867eca82fd868b7fc55aceb259f18a84
+e2622c7ce267327f802704be57f3add419d47f6b3e09f11abd5bb7eca0dc4a82
 ```
 
 Regressiones canonicae, post additionem probationum vocationum nullarum et `DESINE` imbriquati:
@@ -77,8 +77,6 @@ Regressiones canonicae, post additionem probationum vocationum nullarum et `DESI
 ```text
 23 probationes rectae; 0 errata.
 ```
-
-Relatio gradus CRLF/pilae in `instrumenta/RELATIO-CANONICA-CRLF-PILA-053.md` servatur.
 
 ## Custodia automatica
 
@@ -88,7 +86,8 @@ Workflow `VINDEX 0.53 — Regressio canonica` in GitHub Actions mutationes rami 
 - XXIII regressiones canonicas;
 - reconstructionem ab amorsa et congruentiam compilatoris distributi;
 - compilationem fontis CRLF intra terminum temporis;
-- pilam maiorem uno MiB et ordinationem prologorum.
+- pilam maiorem uno MiB et ordinationem prologorum;
+- encapsulationem canonicam `227` et `2999`.
 
 Reproductio UEFI duas aedificationes cum eodem ambitu instrumentorum inter se comparat. Hoc consulto fit quia versiones diversae `ld` et `objcopy` ordinem sectionum PE/COFF mutare possunt sine mutatione semantica. Probationes separatae structuram PE32+ x86-64, subsystema EFI, GPT/FAT32 et inclusionem `BOOTX64.EFI` custodiunt.
 
@@ -100,12 +99,12 @@ Migrationes maiores iam factae sunt, sed aggregatum historicum adhuc exstat:
 DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
 ```
 
-Inventarium automaticum hodiernum numerat XII indices litterales distinctos et CVI accessus litterales. Basis admissa in `instrumenta/TABULA-LITTERALIA-053.txt` figitur, ut index magicus novus sine consilio probationem frangat.
+Inventarium automaticum hodiernum numerat XII indices litterales distinctos et XCIX accessus litterales. Basis admissa in `instrumenta/TABULA-LITTERALIA-053.txt` figitur, ut index magicus novus sine consilio probationem frangat.
 
 Reliquiae sunt:
 
 - `tabula[51]`: cursor pilae functionis — L accessus;
-- `tabula[227]`: saltus `DESINE` pendentis intra ansam — VI accessus;
+- `tabula[227]`: backing saltus `DESINE` — II accessus, ambo intra `STATUS_DESINE_*`;
 - `tabula[2970]`: basis localium — V accessus;
 - `tabula[2971]`: limes localium — III accessus;
 - `tabula[2972]`: quantitas localium — XIII accessus;
@@ -115,20 +114,21 @@ Reliquiae sunt:
 - `tabula[2991]`: limes formarum — III accessus;
 - `tabula[2992]`: quantitas formarum — VIII accessus;
 - `tabula[2993]`: index ultimae formae — IV accessus;
-- `tabula[2999]`: status temporarius ad receptaculum lectionis — V accessus.
+- `tabula[2999]`: backing status lectionis — II accessus, ambo intra `STATUS_LECTIONIS_*`.
 
-Haec non omnia sunt limites quantitativi iam activos, sed sunt nexus architecturae occultae. 0.53 eos paulatim in statum explicitum transferre debet, ne novae facultates iterum ad numeros magicos alligentur. Consilium operis dedicatum in `TABULA-MIGRATIO-053.md` servatur.
+Call-site `227` et `2999` iam numeros magicos non cognoscunt. Haec encapsulatio non fingitur migratio completa: backing ipse adhuc in `tabula` manet. Consilium operis dedicatum in `TABULA-MIGRATIO-053.md` servatur.
 
 ## Ordo migrationis reliquus
 
 1. Inventarium automaticum omnium accessuum literalium `tabula[n]` servare et novorum numerorum magicorum incrementum prohibere — **factum**.
-2. Statum temporarium `DESINE` et lectionis (`227`, `2999`) e `tabula` removere.
-3. Cursorem pilae (`51`) in contextum functionis explicitum transferre.
-4. Descriptores collectionum dynamicarum (`2970..2993`) in contextum compilationis separatum transferre.
-5. `tabula CAPACITAS 3000` minuere, deinde omnino removere ubi nullus usus legitimus manet.
-6. Post purgationem Linux x86-64, tergum PE/Windows iterum integrare et eadem disciplina auto-hospitii probare.
+2. Accessus `227` et `2999` sub accessoribus nominatis encapsulare — **factum**.
+3. Backing statuum `DESINE` et lectionis (`227`, `2999`) e `tabula` in contextum explicitum transferre.
+4. Cursorem pilae (`51`) in contextum functionis explicitum transferre.
+5. Descriptores collectionum dynamicarum (`2970..2993`) in contextum compilationis separatum transferre.
+6. `tabula CAPACITAS 3000` minuere, deinde omnino removere ubi nullus usus legitimus manet.
+7. Post purgationem Linux x86-64, tergum PE/Windows iterum integrare et eadem disciplina auto-hospitii probare.
 
-Ante migrationem `227`, probatio `desine_imbrique.vindex` ansas `DUM` imbriquatas et exitum `48` figit, ne mutatio contextus ansae semanticam `DESINE` laedat.
+Probatio `desine_imbrique.vindex` ansas `DUM` imbriquatas et exitum `48` figit, ne futura migratio contextus ansae semanticam `DESINE` laedat.
 
 ## Disciplina auto-hospitii
 
@@ -167,6 +167,6 @@ Syntaxin programmatum VINDEX mutare non oportet propter hanc migrationem. Haec e
 
 ## Status
 
-**CRLF rectum. Pila dynamica canonica. Fontes, codex, localia, functiones, vocationes pendentes, formae et campi crescibiles. Auto-hospitium stabile. Custodia GitHub Actions viridis. 23/23 probationes rectae.**
+**CRLF rectum. Pila dynamica canonica. Fontes, codex, localia, functiones, vocationes pendentes, formae et campi crescibiles. `227` et `2999` encapsulata. Auto-hospitium stabile. Custodia GitHub Actions viridis. 23/23 probationes rectae.**
 
 Proximus gradus non est alius limes augendus: est ipsa `tabula` historica dissolvenda.
