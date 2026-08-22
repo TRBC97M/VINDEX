@@ -1,5 +1,5 @@
 # Indices litterales tabulae historicae adhuc admissi in VINDEX 0.53.
-# Inventarium canonicum 2026-08-22: XII indices, CVI accessus.
+# Inventarium canonicum 2026-08-22: XII indices, XCIX accessus.
 # Index remotus ex hoc fasciculo deleri potest; novus index sine consilio addi non debet.
 51
 227
