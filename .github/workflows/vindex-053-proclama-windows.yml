@@ -57,6 +57,7 @@ jobs:
           if ($status -ne 33) { throw "ERRATUM: catena status $status; 33 exspectabatur." }
           if ($out -ne 'Salve ex PE!') { throw "ERRATUM: catena exitus [$out]." }
           Write-Host "RECTE: catena Windows, exitus 33."
+          exit 0
       - name: Multiplices exsequere
         shell: pwsh
         run: |
@@ -68,3 +69,4 @@ jobs:
           if ($status -ne 7) { throw "ERRATUM: multi status $status; 7 exspectabatur." }
           if ($out -ne $expect) { throw "ERRATUM: multi exitus [$out]." }
           Write-Host "RECTE: PROCLAMA multiplex sub Windows vero, exitus 7."
+          exit 0
