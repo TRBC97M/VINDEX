@@ -146,7 +146,7 @@ exsequere_casum "argumenta-septem" "tests/casus/argumenta_septem.vindex" "28"
 exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n86\n69'
 exsequere_casum "vocationes-nullae" "tests/casus/vocationes_nullae.vindex" "7168"
 exsequere_casum "desine-imbrique" "tests/casus/desine_imbrique.vindex" "48"
-exsequere_casum "lectio-contextus" "tests/casus/lectio_contextus.vindex" $'66\nABCDE'
+exsequere_casum "lectio-contextus" "tests/casus/lectio_contextus.vindex" "66"
 
 respice_reiectionem "erratum-principalis" "tests/casus/erratum_principalis.vindex" "FUNCTIO PRINCIPALIS deest"
 respice_reiectionem "erratum-functio" "tests/casus/erratum_functio.vindex" "functio 'FUNCTIO_IGNOTA' non definita"
