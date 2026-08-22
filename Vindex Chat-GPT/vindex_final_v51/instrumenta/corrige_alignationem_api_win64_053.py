@@ -22,7 +22,7 @@ def plura(textus: str, vetus: str, novum: str, numerus: int, nomen: str) -> str:
 
 
 def apta_indentum(textus: str, indentum: int) -> str:
-    si indentum == 8:
+    if indentum == 8:
         return textus
     praefixum = " " * indentum
     return "\n".join(praefixum + linea[8:] if linea.startswith("        ") else linea for linea in textus.splitlines())
