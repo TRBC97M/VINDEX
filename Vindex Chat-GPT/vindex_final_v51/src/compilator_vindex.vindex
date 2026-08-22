@@ -4940,9 +4940,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 DECLARA ig_corr1 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis1, spatium_necessarium1).
 
                 punctum_ingressus = pos.
-                pos = COMPONE_AUFER(codex, pos, 0).
-                pos = COMPONE_TRANSCRIBE(codex, pos, 6, 4).
-                pos = COMPONE_TRANSCRIBE(codex, pos, 7, 0).
                 SI modus_pe == 1 TUNC
                     CODEX_SCRIBE(codex, pos, 72).
                     CODEX_SCRIBE(codex, pos + 1, 131).
@@ -4958,6 +4955,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     pos = COMPONE_ONERA(codex, pos, 0, 33554448).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
                 ALITER
+                    pos = COMPONE_AUFER(codex, pos, 0).
+                    pos = COMPONE_TRANSCRIBE(codex, pos, 6, 4).
+                    pos = COMPONE_TRANSCRIBE(codex, pos, 7, 0).
                     pos = COMPONE_ONERA(codex, pos, 2, 33554432).
                     pos = COMPONE_ONERA(codex, pos, 0, 33554448).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
