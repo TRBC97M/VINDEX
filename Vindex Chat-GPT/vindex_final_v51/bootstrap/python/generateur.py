@@ -155,9 +155,15 @@ class Generateur:
         taille_reservee = ((taille_necessaire + 16 + 15) // 16) * 16  # marge + alignement 16 octets
         self.asm.sub_reg_imm32(RSP, taille_reservee)
 
-        # Copie des arguments (reçus dans les registres) vers leurs emplacements sur la pile
+        # Argumenta I-VI in registris System V veniunt; septimum in pila ad RBP+16.
+        if len(fonction.parametres) > 7:
+            raise ErreurGeneration("plus quam septem argumenta nondum sustentantur")
         for i, param in enumerate(fonction.parametres):
-            self.asm.mov_pile_reg(self.variables[param.nom], REGISTRES_ARGUMENTS[i])
+            if i < 6:
+                self.asm.mov_pile_reg(self.variables[param.nom], REGISTRES_ARGUMENTS[i])
+            else:
+                self.asm.mov_reg_pile(R10, 16)
+                self.asm.mov_pile_reg(self.variables[param.nom], R10)
 
         self.etiquette_retour = self._nouvelle_etiquette(f"fin_{fonction.nom}")
         self.pile_boucles = []
@@ -519,15 +525,27 @@ class Generateur:
                 self.asm.mov_mem_reg8(RBX, RDX)
                 self.asm.mov_reg_imm64(RAX, 0)
                 return
+            numerus_argumentorum = len(expr.arguments)
+            if numerus_argumentorum > 7:
+                raise ErreurGeneration("plus quam septem argumenta nondum sustentantur")
             for arg in expr.arguments:
                 if isinstance(arg, Identifiant) and self._est_tableau(arg.nom):
                     self._gen_adresse_base_tableau(arg.nom, RAX)
                 else:
                     self._gen_expr(arg)
                 self.asm.push_reg(RAX)
-            for i in reversed(range(len(expr.arguments))):
+            if numerus_argumentorum == 7:
+                self.asm.pop_reg(R10)
+            for i in reversed(range(min(numerus_argumentorum, 6))):
                 self.asm.pop_reg(REGISTRES_ARGUMENTS[i])
+            if numerus_argumentorum == 7:
+                self.asm.mov_reg_imm64(R11, 0)
+                self.asm.push_reg(R11)
+                self.asm.push_reg(R10)
             self.asm.call_etiquette(f"fn_{expr.nom}")
+            if numerus_argumentorum == 7:
+                self.asm.pop_reg(R10)
+                self.asm.pop_reg(R11)
 
         elif isinstance(expr, OperationBinaire):
             self._gen_expr(expr.gauche)
