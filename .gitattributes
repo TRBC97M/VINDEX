@@ -1,2 +1,5 @@
 # Scripturae testae Unix terminationibus LF semper servantur.
 *.sh text eol=lf
+
+# Fontes VINDEX terminationibus LF canonice servantur.
+*.vindex text eol=lf
