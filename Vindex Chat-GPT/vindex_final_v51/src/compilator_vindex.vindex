@@ -1150,6 +1150,57 @@ FUNCTIO COMPONE_VOCA_IAT_DYNAMICA REDDENS NUMERUS.
     REDDE indice + 6.
 FIN-FUNCTIO.
 
+FUNCTIO COMPONE_SCRIBE_STDOUT_DYNAMICA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT pos SICUT NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    ACCIPIT longitudo SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS pos.
+    p = COMPONE_ONERA(codex, p, 2, longitudo).
+    SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
+        p = COMPONE_TRANSCRIBE(codex, p, 12, 2).
+        p = COMPONE_TRANSCRIBE(codex, p, 13, 6).
+        CODEX_SCRIBE(codex, p, 72).
+        CODEX_SCRIBE(codex, p + 1, 131).
+        CODEX_SCRIBE(codex, p + 2, 236).
+        CODEX_SCRIBE(codex, p + 3, 40).
+        p = p + 4.
+        DECLARA valor_neg_std_output SICUT NUMERUS VALENS 0 - 11.
+        p = COMPONE_ONERA(codex, p, 1, valor_neg_std_output).
+        p = COMPONE_VOCA_IAT_DYNAMICA(codex, p, contextus_parseris, 2).
+        p = COMPONE_TRANSCRIBE(codex, p, 1, 0).
+        p = COMPONE_TRANSCRIBE(codex, p, 2, 13).
+        p = COMPONE_TRANSCRIBE(codex, p, 8, 12).
+        CODEX_SCRIBE(codex, p, 76).
+        CODEX_SCRIBE(codex, p + 1, 141).
+        CODEX_SCRIBE(codex, p + 2, 76).
+        CODEX_SCRIBE(codex, p + 3, 36).
+        CODEX_SCRIBE(codex, p + 4, 24).
+        p = p + 5.
+        CODEX_SCRIBE(codex, p, 72).
+        CODEX_SCRIBE(codex, p + 1, 199).
+        CODEX_SCRIBE(codex, p + 2, 68).
+        CODEX_SCRIBE(codex, p + 3, 36).
+        CODEX_SCRIBE(codex, p + 4, 32).
+        CODEX_SCRIBE(codex, p + 5, 0).
+        CODEX_SCRIBE(codex, p + 6, 0).
+        CODEX_SCRIBE(codex, p + 7, 0).
+        CODEX_SCRIBE(codex, p + 8, 0).
+        p = p + 9.
+        p = COMPONE_VOCA_IAT_DYNAMICA(codex, p, contextus_parseris, 3).
+        CODEX_SCRIBE(codex, p, 72).
+        CODEX_SCRIBE(codex, p + 1, 131).
+        CODEX_SCRIBE(codex, p + 2, 196).
+        CODEX_SCRIBE(codex, p + 3, 40).
+        p = p + 4.
+    ALITER
+        p = COMPONE_ONERA(codex, p, 0, 1).
+        p = COMPONE_ONERA(codex, p, 7, 1).
+        p = COMPONE_VOCA_NUCLEUM(codex, p).
+    FIN-SI.
+    REDDE p.
+FIN-FUNCTIO.
+
 
 FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
     ACCIPIT verbum SICUT ORDO DE LITTERA.
@@ -2540,10 +2591,7 @@ FUNCTIO COMPONE_IMPRIME_NUMERUS REDDENS NUMERUS.
     p = COMPONE_ONERA(codex, p, 3, 45).
     p = COMPONE_SERVA_PILA(codex, p, intervallum_scratch, 3).
     p = COMPONE_LEA_PILA(codex, p, 6, intervallum_scratch).
-    p = COMPONE_ONERA(codex, p, 0, 1).
-    p = COMPONE_ONERA(codex, p, 7, 1).
-    p = COMPONE_ONERA(codex, p, 2, 1).
-    p = COMPONE_VOCA_NUCLEUM(codex, p).
+    p = COMPONE_SCRIBE_STDOUT_DYNAMICA(codex, p, contextus_parseris, 1).
     p = COMPONE_AUFER(codex, p, 0).
     DECLARA pos_post_signum SICUT NUMERUS VALENS p.
     DECLARA ig1_pin SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_jge_signum, pos_post_signum).
@@ -2572,10 +2620,7 @@ FUNCTIO COMPONE_IMPRIME_NUMERUS REDDENS NUMERUS.
     p = COMPONE_AUFER(codex, p, 0).
     p = COMPONE_SERVA_PILA(codex, p, intervallum_scratch, 0).
     p = COMPONE_LEA_PILA(codex, p, 6, intervallum_scratch).
-    p = COMPONE_ONERA(codex, p, 0, 1).
-    p = COMPONE_ONERA(codex, p, 7, 1).
-    p = COMPONE_ONERA(codex, p, 2, 1).
-    p = COMPONE_VOCA_NUCLEUM(codex, p).
+    p = COMPONE_SCRIBE_STDOUT_DYNAMICA(codex, p, contextus_parseris, 1).
     p = COMPONE_ONERA(codex, p, 6, 1).
     p = COMPONE_SUB(codex, p, 3, 6).
     p = COMPONE_JMP_RETRO(codex, p, pos_ansae_scribendi).
@@ -2594,10 +2639,7 @@ FUNCTIO COMPONE_IMPRIME_CHAR REDDENS NUMERUS.
     p = COMPONE_ONERA(codex, p, 0, caracter).
     p = COMPONE_SERVA_PILA(codex, p, intervallum_scratch, 0).
     p = COMPONE_LEA_PILA(codex, p, 6, intervallum_scratch).
-    p = COMPONE_ONERA(codex, p, 0, 1).
-    p = COMPONE_ONERA(codex, p, 7, 1).
-    p = COMPONE_ONERA(codex, p, 2, 1).
-    p = COMPONE_VOCA_NUCLEUM(codex, p).
+    p = COMPONE_SCRIBE_STDOUT_DYNAMICA(codex, p, contextus_parseris, 1).
     REDDE p.
 FIN-FUNCTIO.
 
@@ -2629,10 +2671,7 @@ FUNCTIO COMPONE_IMPRIME_PADEADO REDDENS NUMERUS.
         p = COMPONE_ADD(codex, p, 0, 3).
         p = COMPONE_SERVA_PILA(codex, p, intervallum_scratch, 0).
         p = COMPONE_LEA_PILA(codex, p, 6, intervallum_scratch).
-        p = COMPONE_ONERA(codex, p, 0, 1).
-        p = COMPONE_ONERA(codex, p, 7, 1).
-        p = COMPONE_ONERA(codex, p, 2, 1).
-        p = COMPONE_VOCA_NUCLEUM(codex, p).
+        p = COMPONE_SCRIBE_STDOUT_DYNAMICA(codex, p, contextus_parseris, 1).
         divisor = divisor / 10.
     FIN-DUM.
     REDDE p.
@@ -3994,11 +4033,15 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                         DECLARA pos_post_chorda SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
                                         ign_pcs = CORRIGE_SALTUM(codex, loci_saltus_chorda, pos_post_chorda).
 
-                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 4194304 + sedes_chorda).
+                                        DECLARA locus_chorda_pe SICUT NUMERUS VALENS 5368709120 + 4096 - 512 + sedes_chorda.
+                                        DECLARA locus_chorda_elf SICUT NUMERUS VALENS 4194304 + sedes_chorda.
+                                        DECLARA locus_chorda_reale SICUT NUMERUS VALENS locus_chorda_elf.
+                                        SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
+                                            locus_chorda_reale = locus_chorda_pe.
+                                        FIN-SI.
+                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, locus_chorda_reale).
                                         CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, mensura_chorda).
-                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
-                                        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
-                                        CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+                                        CONTENTUM(pos_codicis) = COMPONE_SCRIBE_STDOUT_DYNAMICA(codex, CONTENTUM(pos_codicis), contextus_parseris, mensura_chorda).
 
                                         DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
                                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
@@ -4022,10 +4065,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 10).
                                     CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_scratch, 0).
                                     CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 6, intervallum_scratch).
-                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
-                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
-                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 1).
-                                    CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
+                                    CONTENTUM(pos_codicis) = COMPONE_SCRIBE_STDOUT_DYNAMICA(codex, CONTENTUM(pos_codicis), contextus_parseris, 1).
 
                                     DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
                                         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.

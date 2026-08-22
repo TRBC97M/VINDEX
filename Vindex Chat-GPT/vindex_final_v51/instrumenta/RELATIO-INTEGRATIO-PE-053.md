@@ -62,3 +62,79 @@ substituit, super statum currentem factus. Consulendum est PR #7
 claudere in favorem huius, vel eam actualizare cum his fasciculis.
 
 VINDEX Latine cogitat. Sylvia Latine loquitur.
+
+## Addendum — PROCLAMA/MITTE sub PE (secunda pars huius contributionis)
+
+Post rebasationem super statum sine `tabula`, contributio extensa est ad
+implementandam catenam I/O consolae PE completam:
+
+### Mutationes structurales
+
+1. **`contextus_parseris` extensus** (56 → 72 octeta): duo nova campa,
+   `modus_pe` (valor simplex) et `descriptor_iat_pe` (punctum ad
+   descriptorem parium dynamicum, per `INITIA_PARES_DYNAMICA` initiatum).
+2. **`COMPONE_VOCA_IAT_DYNAMICA`**: substituit variabiles individuales
+   `loci_iat_exitprocess`/`loci_iat_virtualalloc` prioris versionis.
+   Quaevis vocatio IAT registrat par `(id_functionis, locus_patch)` in
+   lista dynamica parium contextus, reutens infrastructuram `PARES_*`
+   iam existentem pro vocationibus pendentibus.
+3. **`CONSTRUE_CAPUT_PE` extensa ad IV functiones**: `ExitProcess`(0),
+   `VirtualAlloc`(1), `GetStdHandle`(2), `WriteFile`(3). Circulus super
+   omnia paria registrata patchat quamque vocationem ad IAT slot
+   correctum, secundum `id_functionis`.
+4. **`COMPONE_SCRIBE_STDOUT_DYNAMICA`**: functio auxiliaris nova, generat
+   sequentiam `GetStdHandle(STD_OUTPUT_HANDLE)` + `WriteFile` (modo PE)
+   vel `write` syscall (modo ELF), secundum `MODUS_PE_LEGE`. Substituit
+   sex loca in codice ubi antea syscall directus scribebatur:
+   `COMPONE_IMPRIME_NUMERUS` (signum et cifrae), `COMPONE_IMPRIME_CHAR`,
+   `COMPONE_IMPRIME_PADEADO`, et ambo rami `PROCLAMA` (catena litteralis
+   et numerus/fluitans).
+
+### Ambitus explicite non tactus
+
+`MITTE` **non** mutata est. Haec functio generalior est quam `PROCLAMA`
+(scribit ad quemvis descriptorem fasciculi, non solum stdout, per
+circulum elementum-post-elementum) et intrinsece dependet ab abstractione
+"handle fasciculi" quae adhuc functiones `APERI_LEGERE`/`APERI_SCRIBERE`/
+`CLAUDE` requirit — has, ut convenit, ChatGPT tractabit. Similiter,
+`SCRIBE_LECTUS` (functio quae ultimam litteram lectam rescribit, pars
+familiae `LEGE`) intacta relicta est, quamvis ad stdout scribat, quia
+conceptualiter parti I/O fasciculorum pertinet.
+
+### Duo defectus proprii inventi et correcti in hac secunda parte
+
+1. **Adresses catenarum litteralium**: codex qui adressem catenae in
+   registrum onerat utebatur constanti `4194304` (0x400000, fundamentum
+   ELF) incondicionaliter. Correctum: calculus conditionalis secundum
+   `MODUS_PE_LEGE`, adhibens fundamentum PE (`5368709120 + 4096 - 512 +
+   sedes_chorda`) in modo PE.
+2. **Defectus resolutionis variabilium ad magnam profunditatem
+   nidificationis**: variabiles simplices `modus_pe` et
+   `capita_reservata` (declaratae ad summum `PRINCIPALIS`) redderunt
+   valores corruptos (verisimiliter adresses pilae) cum lectae intra
+   codicem valde nidificatum rami `PROCLAMA` catenae litteralis (circiter
+   decem gradus nidificationis SI/DUM). **Non plene explicatum** — nota
+   ad investigationem futuram de systemate variabilium localium
+   dynamicarum. Consilium adhibitum: pro `modus_pe`, uti
+   `MODUS_PE_LEGE(contextus_parseris)` (per punctum, non variabilem
+   simplicem); pro `capita_reservata`, valorem constantem 512 directe
+   inserere, quia in hoc contextu (intra `SI modus_pe==1`) semper illud
+   valorem habet.
+
+### Probationes exsecutae (omnes vere currunt, non solum scriptae)
+
+Vide `instrumenta/proba_proclama_pe_localiter_053.sh` (probatio nova,
+exsecuta et confirmata RECTE quinquies):
+- ELF catena: `"Salve ex PE!"`, exitus 33 — RECTE.
+- PE catena: `"Salve ex PE!"` scriptum correcte sub Wine (verificatum
+  per octeta exitus directa, non per codicem terminationis, propter
+  defectum notum SEH Wine) — RECTE.
+- ELF multi (catena+numerus+catena sequentialia): `"Premier\n999\n
+  Dernier"`, exitus 7 — RECTE.
+- PE multi: omnes tres partes praesentes in exitu — RECTE.
+- Auto-hospitium punctum fixum post has mutationes: G2=G3 (SHA-256
+  identica) — RECTE.
+
+Exempla nova: `examples/proclama_catena_pe_053.vindex`,
+`examples/proclama_multi_pe_053.vindex`.
+
