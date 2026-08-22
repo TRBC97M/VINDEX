@@ -17,7 +17,7 @@ purga() {
 }
 trap purga EXIT HUP INT TERM
 
-for instrumentum in gcc ld objcopy python3 install file objdump; do
+for instrumentum in gcc ld objcopy python3 install; do
     if ! command -v "$instrumentum" >/dev/null 2>&1; then
         printf 'ERRATUM: instrumentum necessarium deest: %s\n' "$instrumentum" >&2
         exit 69
@@ -53,12 +53,29 @@ ld -mi386pep --subsystem 10 --entry efi_main --image-base 0x10000000 \
     "$TEMPORARIUM/textus.o" "$TEMPORARIUM/forma.o" \
     -o "$TEMPORARIUM/BOOTX64.EFI"
 
-if ! file "$TEMPORARIUM/BOOTX64.EFI" | grep -q 'PE32+.*EFI application'; then
-    printf '%s\n' 'ERRATUM: applicatio UEFI PE32+ valida non est.' >&2
-    exit 65
-fi
-if ! objdump -p "$TEMPORARIUM/BOOTX64.EFI" | grep -q 'Subsystem.*EFI application'; then
-    printf '%s\n' 'ERRATUM: subsystema UEFI deest.' >&2
+# Validatio textus instrumenti `file` inter versiones variat; caput PE ipsum legitur.
+if ! python3 - "$TEMPORARIUM/BOOTX64.EFI" <<'PY'
+import struct
+import sys
+
+via = sys.argv[1]
+data = open(via, "rb").read()
+try:
+    if len(data) < 0x40 or data[:2] != b"MZ":
+        raise ValueError
+    pe = struct.unpack_from("<I", data, 0x3C)[0]
+    if pe + 24 + 70 > len(data) or data[pe:pe + 4] != b"PE\0\0":
+        raise ValueError
+    opt = pe + 24
+    magic = struct.unpack_from("<H", data, opt)[0]
+    subsystema = struct.unpack_from("<H", data, opt + 68)[0]
+    if magic != 0x20B or subsystema != 10:
+        raise ValueError
+except (ValueError, struct.error):
+    sys.exit(1)
+PY
+then
+    printf '%s\n' 'ERRATUM: applicatio UEFI PE32+ valida non est aut subsystema EFI deest.' >&2
     exit 65
 fi
 
