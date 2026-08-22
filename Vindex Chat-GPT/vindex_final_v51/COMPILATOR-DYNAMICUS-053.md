@@ -72,20 +72,20 @@ Punctum fixum canonice comprobatum est. SHA-256 generationis canonicae:
 f4941f7bfed234619f328ed8aebf5d7a867eca82fd868b7fc55aceb259f18a84
 ```
 
-Regressiones canonicae, post additionem probationis vocationum nullarum:
+Regressiones canonicae, post additionem probationum vocationum nullarum et `DESINE` imbriquati:
 
 ```text
-22 probationes rectae; 0 errata.
+23 probationes rectae; 0 errata.
 ```
 
 Relatio gradus CRLF/pilae in `instrumenta/RELATIO-CANONICA-CRLF-PILA-053.md` servatur.
 
 ## Custodia automatica
 
-Workflow `VINDEX 0.53 — Regressio canonica` in GitHub Actions nunc mutationes rami et petitionis integrationis custodit. Unico cursu haec probat:
+Workflow `VINDEX 0.53 — Regressio canonica` in GitHub Actions mutationes rami et petitionis integrationis custodit. Unico cursu haec probat:
 
 - inventarium indicum magicorum `tabula[n]` neque index novus tacite introducatur;
-- XXII regressiones canonicas;
+- XXIII regressiones canonicas;
 - reconstructionem ab amorsa et congruentiam compilatoris distributi;
 - compilationem fontis CRLF intra terminum temporis;
 - pilam maiorem uno MiB et ordinationem prologorum.
@@ -117,7 +117,7 @@ Reliquiae sunt:
 - `tabula[2993]`: index ultimae formae — IV accessus;
 - `tabula[2999]`: status temporarius ad receptaculum lectionis — V accessus.
 
-Haec non omnia sunt limites quantitativi iam activos, sed sunt nexus architecturae occultae. 0.53 eos paulatim in statum explicitum transferre debet, ne novae facultates iterum ad numeros magicos alligentur.
+Haec non omnia sunt limites quantitativi iam activos, sed sunt nexus architecturae occultae. 0.53 eos paulatim in statum explicitum transferre debet, ne novae facultates iterum ad numeros magicos alligentur. Consilium operis dedicatum in `TABULA-MIGRATIO-053.md` servatur.
 
 ## Ordo migrationis reliquus
 
@@ -127,6 +127,8 @@ Haec non omnia sunt limites quantitativi iam activos, sed sunt nexus architectur
 4. Descriptores collectionum dynamicarum (`2970..2993`) in contextum compilationis separatum transferre.
 5. `tabula CAPACITAS 3000` minuere, deinde omnino removere ubi nullus usus legitimus manet.
 6. Post purgationem Linux x86-64, tergum PE/Windows iterum integrare et eadem disciplina auto-hospitii probare.
+
+Ante migrationem `227`, probatio `desine_imbrique.vindex` ansas `DUM` imbriquatas et exitum `48` figit, ne mutatio contextus ansae semanticam `DESINE` laedat.
 
 ## Disciplina auto-hospitii
 
@@ -154,8 +156,9 @@ Ante statum finalem 0.53 saltem haec vera manere debent:
 - pila plus quam unum MiB recte reservatur et probatur;
 - CRLF auto-hospitium non retardat;
 - vocationes sine argumentis pilam non corrumpunt;
+- `DESINE` in ansis imbriquatis semanticam servat;
 - auto-hospitium et amorsa idem punctum fixum servant;
-- regressiones canonicae `22/22` manent;
+- regressiones canonicae `23/23` manent;
 - nulla nova capacitas globalis fixa veterem limitem tantum substituit.
 
 ## Compatibilitas
@@ -164,6 +167,6 @@ Syntaxin programmatum VINDEX mutare non oportet propter hanc migrationem. Haec e
 
 ## Status
 
-**CRLF rectum. Pila dynamica canonica. Fontes, codex, localia, functiones, vocationes pendentes, formae et campi crescibiles. Auto-hospitium stabile. Custodia GitHub Actions viridis. 22/22 probationes rectae.**
+**CRLF rectum. Pila dynamica canonica. Fontes, codex, localia, functiones, vocationes pendentes, formae et campi crescibiles. Auto-hospitium stabile. Custodia GitHub Actions viridis. 23/23 probationes rectae.**
 
 Proximus gradus non est alius limes augendus: est ipsa `tabula` historica dissolvenda.
