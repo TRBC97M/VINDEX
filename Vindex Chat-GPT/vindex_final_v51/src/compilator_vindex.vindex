@@ -1054,6 +1054,30 @@ FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    REDDE tabula[227].
+FIN-FUNCTIO.
+
+FUNCTIO STATUS_DESINE_SCRIBE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    tabula[227] = valor.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO STATUS_LECTIONIS_LEGE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    REDDE tabula[2999].
+FIN-FUNCTIO.
+
+FUNCTIO STATUS_LECTIONIS_SCRIBE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    tabula[2999] = valor.
+    REDDE 0.
+FIN-FUNCTIO.
+
 FUNCTIO CERCA_VARIABILEM REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT nomen SICUT NUMERUS.
@@ -1814,13 +1838,13 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_lg = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
         ig_lg = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        tabula[2999] = tabula[51].
+        ig_lg = STATUS_LECTIONIS_SCRIBE(tabula, tabula[51]).
         tabula[51] = tabula[51] - 8.
         CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
         CONTENTUM(pos_codicis) = COMPONE_RESERVA_OCTETA(codex, CONTENTUM(pos_codicis)).
-        CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), tabula[2999], 0).
+        CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), STATUS_LECTIONIS_LEGE(tabula), 0).
         CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 2).
-        CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 6, tabula[2999]).
+        CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 6, STATUS_LECTIONIS_LEGE(tabula)).
         CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
         CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 0).
         CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
@@ -1834,7 +1858,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_oc = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
         ig_oc = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 3, tabula[2999]).
+        CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 3, STATUS_LECTIONIS_LEGE(tabula)).
         CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 3, 0).
         CONTENTUM(pos_codicis) = COMPONE_MOVZX(codex, CONTENTUM(pos_codicis), 0, 3).
         REDDE 0.
@@ -3561,7 +3585,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                 SI fons[i] == 68 && i + 5 < n && fons[i+1] == 69 && fons[i+2] == 83 && fons[i+3] == 73 && fons[i+4] == 78 && fons[i+5] == 69 TUNC
                                     DECLARA loci_desine SICUT NUMERUS VALENS 0.
                                     CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_desine)).
-                                    tabula[227] = loci_desine.
+                                    ignoratum = STATUS_DESINE_SCRIBE(tabula, loci_desine).
                                     CONTENTUM(pos_fontis) = i + 7.
 
                             ALITER
@@ -3657,7 +3681,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
                                     CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 2, 0).
-                                    CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 6, tabula[2999]).
+                                    CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 6, STATUS_LECTIONIS_LEGE(tabula)).
                                     CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
                                     CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
                                     CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
@@ -3800,17 +3824,17 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
 
                                     ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                                     CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
-                                    DECLARA tabula79_ante SICUT NUMERUS VALENS tabula[227].
-                                    tabula[227] = 0.
+                                    DECLARA tabula79_ante SICUT NUMERUS VALENS STATUS_DESINE_LEGE(tabula).
+                                    ignoratum = STATUS_DESINE_SCRIBE(tabula, 0).
                                     ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
 
                                     CONTENTUM(pos_codicis) = COMPONE_JMP_RETRO(codex, CONTENTUM(pos_codicis), pos_initium_dum).
                                     DECLARA pos_fin_dum SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
                                     ignoratum = CORRIGE_SALTUM(codex, loci_je_dum, pos_fin_dum).
-                                    SI tabula[227] != 0 TUNC
-                                        ignoratum = CORRIGE_SALTUM(codex, tabula[227], pos_fin_dum).
+                                    SI STATUS_DESINE_LEGE(tabula) != 0 TUNC
+                                        ignoratum = CORRIGE_SALTUM(codex, STATUS_DESINE_LEGE(tabula), pos_fin_dum).
                                     FIN-SI.
-                                    tabula[227] = tabula79_ante.
+                                    ignoratum = STATUS_DESINE_SCRIBE(tabula, tabula79_ante).
 
                                     ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                                     CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
