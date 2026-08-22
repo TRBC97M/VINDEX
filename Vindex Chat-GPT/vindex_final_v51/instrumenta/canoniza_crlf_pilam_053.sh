@@ -17,8 +17,8 @@ REL_RADIX="${RADIX#$REPO/}"
 
 cd "$REPO"
 
-printf '%s\n' '=== 0. SCRIPTURAS UNIX LF REDINTEGRA ==='
-mapfile -d '' SCRIPTURAE_LF < <(
+printf '%s\n' '=== 0. SCRIPTURAS UNIX LF ET EXSECUTIONEM REDINTEGRA ==='
+mapfile -d '' SCRIPTURAE_UNIX < <(
 python3 - "$REPO" "$REL_RADIX" <<'PY'
 from pathlib import Path
 import subprocess
@@ -42,15 +42,31 @@ for raw in res.split(b"\0"):
     prima = data.split(b"\n", 1)[0].rstrip(b"\r")
     if not prima.startswith(b"#!"):
         continue
-    if b"bash" not in prima and not prima.endswith(b"/sh"):
+    if b"bash" not in prima and not prima.endswith(b"/sh") and b"python" not in prima:
         continue
+
+    mutata = False
     nova = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
     if nova != data:
         via.write_bytes(nova)
+        mutata = True
+
+    modus = via.stat().st_mode
+    if (modus & 0o111) == 0:
+        via.chmod(modus | 0o111)
+        mutata = True
+
+    if mutata:
         sys.stdout.buffer.write(raw + b"\0")
 PY
 )
-printf 'RECTE: %s scripturae Unix ad LF redactae sunt.\n' "${#SCRIPTURAE_LF[@]}"
+printf 'RECTE: %s scripturae Unix LF/modo exsecutionis redactae sunt.\n' "${#SCRIPTURAE_UNIX[@]}"
+
+# Pons graphicus est binarium ELF, non scriptura cum shebang; eius modus quoque
+# exsecutabilis esse debet quia probationes eum directe vocant.
+if [ -f "$RADIX/vindex_graphica" ]; then
+    chmod 755 "$RADIX/vindex_graphica"
+fi
 
 printf '%s\n' '=== I. CRLF CORRIGE ==='
 python3 "$RADIX/instrumenta/corrige_spatia_crlf_053.py"
@@ -142,7 +158,7 @@ SYSTEMA BIOS: REGENERATUM
 SYSTEMA UEFI: REGENERATUM
 \`\`\`
 
-\`IGNORA_SPATIA\` nunc CR (\`13\`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur, ad XVI octeta ordinantur, et pagina quaeque IV KiB tangitur. Scripturae testae Unix ante probationes ad LF canonice rediguntur.
+\`IGNORA_SPATIA\` nunc CR (\`13\`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur, ad XVI octeta ordinantur, et pagina quaeque IV KiB tangitur. Scripturae testae Unix ante probationes ad LF canonice rediguntur et modus exsecutionis restituitur.
 
 VINDEX Latine cogitat. Sylvia Latine loquitur.
 EOF
@@ -153,6 +169,7 @@ VIAE=(
   "$RADIX/compilator_vindex"
   "$RADIX/officina_vindex"
   "$RADIX/salutatio_vindex"
+  "$RADIX/vindex_graphica"
   "$RADIX/nucleus_systema.elf"
   "$RADIX/systema_vindex.img"
   "$RADIX/BOOTX64.EFI"
@@ -164,8 +181,8 @@ for VIA in "${VIAE[@]}"; do
         git add -- "${VIA#$REPO/}"
     fi
 done
-if [ "${#SCRIPTURAE_LF[@]}" -gt 0 ]; then
-    git add -- "${SCRIPTURAE_LF[@]}"
+if [ "${#SCRIPTURAE_UNIX[@]}" -gt 0 ]; then
+    git add -- "${SCRIPTURAE_UNIX[@]}"
 fi
 
 if git diff --cached --quiet; then
