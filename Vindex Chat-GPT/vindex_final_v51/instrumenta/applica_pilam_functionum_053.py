@@ -100,35 +100,55 @@ def applica() -> None:
             f"(veteres={si_vetus_prologus}, novi={si_novus_prologus})"
         )
 
+    # PRINCIPALIS ab ELF directe intratur: RSP initio ad XVI ordinatur, deinde
+    # IMPONE RBP octo octeta aufert. Ergo fasciculus PRINCIPALIS congruus est
+    # VIII modulo XVI, ut ante omnem CALL RSP rursus ad XVI ordinetur.
+    # Functiones ordinariae per CALL intrant et fasciculum 0 modulo XVI volunt.
     mutationes_mensurae = 0
-    for index in (1, 2):
-        vetus = (
-            f"DECLARA spatium_necessarium{index} SICUT NUMERUS VALENS "
-            "(0 - tabula[51]) + 10000."
-        )
-        novum = (
-            f"DECLARA spatium_necessarium{index} SICUT NUMERUS VALENS "
-            "(((0 - tabula[51]) + 15) / 16) * 16."
-        )
+    mensurae = (
+        (
+            1,
+            "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.",
+            "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.",
+            "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS ((((0 - tabula[51]) + 7) / 16) * 16) + 8.",
+        ),
+        (
+            2,
+            "DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.",
+            None,
+            "DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.",
+        ),
+    )
+
+    for index, vetus, intermedia, novum in mensurae:
         si_vetus = textus.count(vetus)
+        si_intermedia = textus.count(intermedia) if intermedia else 0
         si_novum = textus.count(novum)
-        if si_vetus == 1 and si_novum == 0:
+
+        if si_novum == 1 and si_vetus == 0 and si_intermedia == 0:
+            continue
+        if si_vetus == 1 and si_intermedia == 0 and si_novum == 0:
             textus = textus.replace(vetus, novum, 1)
             mutationes_mensurae += 1
-        elif not (si_vetus == 0 and si_novum == 1):
-            raise SystemExit(
-                f"ERRATUM: status mensurae pilae {index} ambiguus est "
-                f"(vetus={si_vetus}, novum={si_novum})"
-            )
+            continue
+        if intermedia and si_vetus == 0 and si_intermedia == 1 and si_novum == 0:
+            textus = textus.replace(intermedia, novum, 1)
+            mutationes_mensurae += 1
+            continue
+
+        raise SystemExit(
+            f"ERRATUM: status mensurae pilae {index} ambiguus est "
+            f"(vetus={si_vetus}, intermedia={si_intermedia}, novum={si_novum})"
+        )
 
     VIA.write_text(textus, encoding="utf-8", newline="\n")
 
     if adiutor_mutatus:
         print("RECTE: emissor pilae U16 stabilis sine commentariis internis est.")
     elif mutationes_mensurae:
-        print("RECTE: pila functionum exacte dimensata et per paginas probata est.")
+        print("RECTE: pila functionum secundum ABI x86-64 ordinata est.")
     else:
-        print("RECTE: pila functionum iam structurata et emissore U16 stabili utitur.")
+        print("RECTE: pila functionum iam structurata et secundum ABI ordinata est.")
 
 
 if __name__ == "__main__":
