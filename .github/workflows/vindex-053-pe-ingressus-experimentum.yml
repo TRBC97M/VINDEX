@@ -1,0 +1,104 @@
+# Experimentum: ingressum PE a pila Linux separat et sub Windows vero probat.
+name: VINDEX 0.53 — Experimentum ingressus Win64
+
+on:
+  push:
+    branches:
+      - chatgpt/pe-verificatio-053
+  pull_request:
+    branches:
+      - claude/pe-integration-053-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: Compilatorem diagnosticum construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 "$RADIX/compilator_vindex"
+          python3 "$RADIX/instrumenta/proba_ingressum_win64_053.py" \
+              "$RADIX/src/compilator_vindex.vindex" \
+              "$RUNNER_TEMP/compilator_ingressus.vindex"
+          "$RADIX/compilator_vindex" \
+              "$RUNNER_TEMP/compilator_ingressus.vindex" \
+              "$RUNNER_TEMP/compilator_ingressus"
+          chmod 755 "$RUNNER_TEMP/compilator_ingressus"
+
+      - name: Modum ELF servatum proba
+        shell: bash
+        run: |
+          set -euo pipefail
+          FONS="$RUNNER_TEMP/minimum_elf.vindex"
+          EXE="$RUNNER_TEMP/minimum_elf"
+          cat >"$FONS" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              REDDE 42.
+          FIN-FUNCTIO.
+          VINDEX
+          "$RUNNER_TEMP/compilator_ingressus" "$FONS" "$EXE"
+          chmod 755 "$EXE"
+          set +e
+          "$EXE"
+          STATUS=$?
+          set -e
+          test "$STATUS" -eq 42
+          printf '%s\n' 'RECTE: experimentum ingressus modum ELF servat.'
+
+      - name: PE correctum para
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RUNNER_TEMP/minimum_windows_correctum.vindex"
+          EXE="$RUNNER_TEMP/minimum_windows_correctum.exe"
+          cat >"$FONS" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              REDDE 42.
+          FIN-FUNCTIO.
+          VINDEX
+          "$RUNNER_TEMP/compilator_ingressus" "$FONS" "$EXE" pe
+          python3 "$RADIX/tests/proba_pe_structuram_053.py" "$EXE" \
+              --requirit ExitProcess \
+              --requirit VirtualAlloc
+
+      - name: PE correctum conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-pe-ingressus-correctus
+          path: ${{ runner.temp }}/minimum_windows_correctum.exe
+          if-no-files-found: error
+
+  windows:
+    needs: construe
+    runs-on: windows-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: PE correctum accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-pe-ingressus-correctus
+          path: pe-correctum
+
+      - name: PE correctum sub Windows vero exsequere
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $via = Join-Path $PWD 'pe-correctum\minimum_windows_correctum.exe'
+          $processus = Start-Process -FilePath $via -Wait -PassThru -NoNewWindow
+          if ($processus.ExitCode -ne 42) {
+            throw "ERRATUM: ingressus correctus status $($processus.ExitCode) reddit; 42 exspectabatur."
+          }
+          Write-Host 'RECTE: ingressus PE correctus sub Windows vero exitum 42 reddit.'
