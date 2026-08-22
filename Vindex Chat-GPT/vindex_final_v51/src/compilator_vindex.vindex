@@ -152,6 +152,199 @@ FUNCTIO CONSTRUE_CAPUT_ELF REDDENS NUMERUS.
     REDDE 120.
 FIN-FUNCTIO.
 
+FUNCTIO CONSTRUE_CAPUT_PE REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT mensura_codicis SICUT NUMERUS.
+    ACCIPIT punctum_ingressus SICUT NUMERUS.
+    ACCIPIT loci_iat_exitprocess SICUT NUMERUS.
+    ACCIPIT loci_iat_virtualalloc SICUT NUMERUS.
+
+    DECLARA fundamentum_imaginis SICUT NUMERUS VALENS 5368709120.
+    DECLARA alignatio_fasciculi SICUT NUMERUS VALENS 512.
+    DECLARA alignatio_sectionis SICUT NUMERUS VALENS 4096.
+    DECLARA capita_mensura SICUT NUMERUS VALENS 512.
+
+    DECLARA rva_textus SICUT NUMERUS VALENS 4096.
+    DECLARA mensura_textus_fasciculi SICUT NUMERUS VALENS ((mensura_codicis + 511) / 512) * 512.
+    DECLARA mensura_textus_memoriae SICUT NUMERUS VALENS ((mensura_codicis + 4095) / 4096) * 4096.
+    DECLARA ptr_fasciculi_idata SICUT NUMERUS VALENS capita_mensura + mensura_textus_fasciculi.
+    DECLARA rva_idata SICUT NUMERUS VALENS rva_textus + mensura_textus_memoriae.
+
+    DECLARA pos_idata SICUT NUMERUS VALENS ptr_fasciculi_idata.
+    DECLARA off_ilt SICUT NUMERUS VALENS 40.
+    DECLARA off_iat SICUT NUMERUS VALENS off_ilt + 24.
+    DECLARA off_hint_ep SICUT NUMERUS VALENS off_iat + 24.
+    DECLARA off_hint_va SICUT NUMERUS VALENS off_hint_ep + 14.
+    DECLARA off_nomen_dll SICUT NUMERUS VALENS off_hint_va + 15.
+    DECLARA mensura_idata SICUT NUMERUS VALENS off_nomen_dll + 13.
+
+    DECLARA rva_ilt SICUT NUMERUS VALENS rva_idata + off_ilt.
+    DECLARA rva_iat SICUT NUMERUS VALENS rva_idata + off_iat.
+    DECLARA rva_hint_ep SICUT NUMERUS VALENS rva_idata + off_hint_ep.
+    DECLARA rva_hint_va SICUT NUMERUS VALENS rva_idata + off_hint_va.
+    DECLARA rva_nomen_dll SICUT NUMERUS VALENS rva_idata + off_nomen_dll.
+
+    DECLARA igp1 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata, rva_ilt).
+    DECLARA igp2 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 4, 0).
+    DECLARA igp3 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 8, 0).
+    DECLARA igp4 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 12, rva_nomen_dll).
+    DECLARA igp5 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 16, rva_iat).
+    DECLARA igp6 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 20, 0).
+    DECLARA igp7 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 24, 0).
+    DECLARA igp8 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 28, 0).
+    DECLARA igp9 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 32, 0).
+    DECLARA igp10 SICUT NUMERUS VALENS SCRIBE_U32(codex, pos_idata + 36, 0).
+
+    DECLARA igp11 SICUT NUMERUS VALENS SCRIBE_U64(codex, pos_idata + off_ilt, rva_hint_ep).
+    DECLARA igp11b SICUT NUMERUS VALENS SCRIBE_U64(codex, pos_idata + off_ilt + 8, rva_hint_va).
+    DECLARA igp12 SICUT NUMERUS VALENS SCRIBE_U64(codex, pos_idata + off_ilt + 16, 0).
+    DECLARA igp13 SICUT NUMERUS VALENS SCRIBE_U64(codex, pos_idata + off_iat, rva_hint_ep).
+    DECLARA igp13b SICUT NUMERUS VALENS SCRIBE_U64(codex, pos_idata + off_iat + 8, rva_hint_va).
+    DECLARA igp14 SICUT NUMERUS VALENS SCRIBE_U64(codex, pos_idata + off_iat + 16, 0).
+
+    DECLARA igp15 SICUT NUMERUS VALENS SCRIBE_U16(codex, pos_idata + off_hint_ep, 0).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 2, 69).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 3, 120).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 4, 105).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 5, 116).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 6, 80).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 7, 114).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 8, 111).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 9, 99).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 10, 101).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 11, 115).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 12, 115).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_ep + 13, 0).
+
+    DECLARA igp16 SICUT NUMERUS VALENS SCRIBE_U16(codex, pos_idata + off_hint_va, 0).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 2, 86).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 3, 105).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 4, 114).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 5, 116).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 6, 117).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 7, 97).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 8, 108).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 9, 65).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 10, 108).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 11, 108).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 12, 111).
+    CODEX_SCRIBE(codex, pos_idata + off_hint_va + 13, 99).
+
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll, 107).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 1, 101).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 2, 114).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 3, 110).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 4, 101).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 5, 108).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 6, 51).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 7, 50).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 8, 46).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 9, 100).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 10, 108).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 11, 108).
+    CODEX_SCRIBE(codex, pos_idata + off_nomen_dll + 12, 0).
+
+    DECLARA locus_basis_textus SICUT NUMERUS VALENS fundamentum_imaginis + rva_textus.
+    DECLARA locus_iat_ep SICUT NUMERUS VALENS fundamentum_imaginis + rva_iat.
+    DECLARA locus_post_ep SICUT NUMERUS VALENS locus_basis_textus + (loci_iat_exitprocess - capita_mensura) + 4.
+    DECLARA disp32_ep SICUT NUMERUS VALENS locus_iat_ep - locus_post_ep.
+    DECLARA igpp SICUT NUMERUS VALENS SCRIBE_U32(codex, loci_iat_exitprocess, disp32_ep).
+
+    DECLARA locus_iat_va SICUT NUMERUS VALENS fundamentum_imaginis + rva_iat + 8.
+    DECLARA locus_post_va SICUT NUMERUS VALENS locus_basis_textus + (loci_iat_virtualalloc - capita_mensura) + 4.
+    DECLARA disp32_va SICUT NUMERUS VALENS locus_iat_va - locus_post_va.
+    DECLARA igpq SICUT NUMERUS VALENS SCRIBE_U32(codex, loci_iat_virtualalloc, disp32_va).
+
+    DECLARA mensura_idata_fasciculi SICUT NUMERUS VALENS ((mensura_idata + 511) / 512) * 512.
+    DECLARA mensura_idata_memoriae SICUT NUMERUS VALENS ((mensura_idata + 4095) / 4096) * 4096.
+    DECLARA mensura_imaginis SICUT NUMERUS VALENS ((rva_idata + mensura_idata_memoriae + 4095) / 4096) * 4096.
+
+    DECLARA iga SICUT NUMERUS VALENS SCRIBE_U16(codex, 0, 23117).
+    DECLARA igb SICUT NUMERUS VALENS SCRIBE_U32(codex, 60, 64).
+
+    DECLARA igc SICUT NUMERUS VALENS SCRIBE_U32(codex, 64, 17744).
+    DECLARA igd SICUT NUMERUS VALENS SCRIBE_U16(codex, 68, 34404).
+    DECLARA ige SICUT NUMERUS VALENS SCRIBE_U16(codex, 70, 2).
+    DECLARA igf SICUT NUMERUS VALENS SCRIBE_U32(codex, 72, 0).
+    DECLARA igg SICUT NUMERUS VALENS SCRIBE_U32(codex, 76, 0).
+    DECLARA igh SICUT NUMERUS VALENS SCRIBE_U32(codex, 80, 0).
+    DECLARA igi SICUT NUMERUS VALENS SCRIBE_U16(codex, 84, 240).
+    DECLARA igj SICUT NUMERUS VALENS SCRIBE_U16(codex, 86, 34).
+
+    DECLARA igk SICUT NUMERUS VALENS SCRIBE_U16(codex, 88, 523).
+    CODEX_SCRIBE(codex, 90, 0).
+    CODEX_SCRIBE(codex, 91, 0).
+    DECLARA igl SICUT NUMERUS VALENS SCRIBE_U32(codex, 92, mensura_textus_memoriae).
+    DECLARA igm SICUT NUMERUS VALENS SCRIBE_U32(codex, 96, mensura_idata_memoriae).
+    DECLARA ign SICUT NUMERUS VALENS SCRIBE_U32(codex, 100, 0).
+    DECLARA igo SICUT NUMERUS VALENS SCRIBE_U32(codex, 104, (punctum_ingressus - capita_mensura) + rva_textus).
+    DECLARA igq2 SICUT NUMERUS VALENS SCRIBE_U32(codex, 108, rva_textus).
+    DECLARA igr2 SICUT NUMERUS VALENS SCRIBE_U64(codex, 112, fundamentum_imaginis).
+    DECLARA igs2 SICUT NUMERUS VALENS SCRIBE_U32(codex, 120, alignatio_sectionis).
+    DECLARA igt2 SICUT NUMERUS VALENS SCRIBE_U32(codex, 124, alignatio_fasciculi).
+    DECLARA igu2 SICUT NUMERUS VALENS SCRIBE_U16(codex, 128, 6).
+    DECLARA igv2 SICUT NUMERUS VALENS SCRIBE_U16(codex, 130, 0).
+    DECLARA igw2 SICUT NUMERUS VALENS SCRIBE_U16(codex, 132, 0).
+    DECLARA igx2 SICUT NUMERUS VALENS SCRIBE_U16(codex, 134, 0).
+    DECLARA igy2 SICUT NUMERUS VALENS SCRIBE_U16(codex, 136, 6).
+    DECLARA igz2 SICUT NUMERUS VALENS SCRIBE_U16(codex, 138, 0).
+    DECLARA igaa SICUT NUMERUS VALENS SCRIBE_U32(codex, 140, 0).
+    DECLARA igab SICUT NUMERUS VALENS SCRIBE_U32(codex, 144, mensura_imaginis).
+    DECLARA igac SICUT NUMERUS VALENS SCRIBE_U32(codex, 148, capita_mensura).
+    DECLARA igad SICUT NUMERUS VALENS SCRIBE_U32(codex, 152, 0).
+    DECLARA igae SICUT NUMERUS VALENS SCRIBE_U16(codex, 156, 3).
+    DECLARA igaf SICUT NUMERUS VALENS SCRIBE_U16(codex, 158, 0).
+    DECLARA igag SICUT NUMERUS VALENS SCRIBE_U64(codex, 160, 1048576).
+    DECLARA igah SICUT NUMERUS VALENS SCRIBE_U64(codex, 168, 4096).
+    DECLARA igai SICUT NUMERUS VALENS SCRIBE_U64(codex, 176, 1048576).
+    DECLARA igaj SICUT NUMERUS VALENS SCRIBE_U64(codex, 184, 4096).
+    DECLARA igak SICUT NUMERUS VALENS SCRIBE_U32(codex, 192, 0).
+    DECLARA igal SICUT NUMERUS VALENS SCRIBE_U32(codex, 196, 16).
+
+    DECLARA igam SICUT NUMERUS VALENS SCRIBE_U32(codex, 208, rva_idata).
+    DECLARA igan SICUT NUMERUS VALENS SCRIBE_U32(codex, 212, 40).
+    DECLARA igao SICUT NUMERUS VALENS SCRIBE_U32(codex, 296, rva_iat).
+    DECLARA igap2 SICUT NUMERUS VALENS SCRIBE_U32(codex, 300, 24).
+
+    CODEX_SCRIBE(codex, 328, 46).
+    CODEX_SCRIBE(codex, 329, 116).
+    CODEX_SCRIBE(codex, 330, 101).
+    CODEX_SCRIBE(codex, 331, 120).
+    CODEX_SCRIBE(codex, 332, 116).
+    CODEX_SCRIBE(codex, 333, 0).
+    CODEX_SCRIBE(codex, 334, 0).
+    CODEX_SCRIBE(codex, 335, 0).
+    DECLARA igaq SICUT NUMERUS VALENS SCRIBE_U32(codex, 336, mensura_textus_memoriae).
+    DECLARA igar SICUT NUMERUS VALENS SCRIBE_U32(codex, 340, rva_textus).
+    DECLARA igas SICUT NUMERUS VALENS SCRIBE_U32(codex, 344, mensura_textus_fasciculi).
+    DECLARA igat SICUT NUMERUS VALENS SCRIBE_U32(codex, 348, capita_mensura).
+    DECLARA igau SICUT NUMERUS VALENS SCRIBE_U32(codex, 352, 0).
+    DECLARA igav SICUT NUMERUS VALENS SCRIBE_U32(codex, 356, 0).
+    DECLARA igaw SICUT NUMERUS VALENS SCRIBE_U16(codex, 360, 0).
+    DECLARA igax SICUT NUMERUS VALENS SCRIBE_U16(codex, 362, 0).
+    DECLARA igay SICUT NUMERUS VALENS SCRIBE_U32(codex, 364, 1610612768).
+
+    CODEX_SCRIBE(codex, 368, 46).
+    CODEX_SCRIBE(codex, 369, 105).
+    CODEX_SCRIBE(codex, 370, 100).
+    CODEX_SCRIBE(codex, 371, 97).
+    CODEX_SCRIBE(codex, 372, 116).
+    CODEX_SCRIBE(codex, 373, 97).
+    CODEX_SCRIBE(codex, 374, 0).
+    CODEX_SCRIBE(codex, 375, 0).
+    DECLARA igaz SICUT NUMERUS VALENS SCRIBE_U32(codex, 376, mensura_idata_memoriae).
+    DECLARA igba SICUT NUMERUS VALENS SCRIBE_U32(codex, 380, rva_idata).
+    DECLARA igbb SICUT NUMERUS VALENS SCRIBE_U32(codex, 384, mensura_idata_fasciculi).
+    DECLARA igbc SICUT NUMERUS VALENS SCRIBE_U32(codex, 388, ptr_fasciculi_idata).
+    DECLARA igbd SICUT NUMERUS VALENS SCRIBE_U32(codex, 392, 0).
+    DECLARA igbe SICUT NUMERUS VALENS SCRIBE_U32(codex, 396, 0).
+    DECLARA igbf SICUT NUMERUS VALENS SCRIBE_U16(codex, 400, 0).
+    DECLARA igbg SICUT NUMERUS VALENS SCRIBE_U16(codex, 402, 0).
+    DECLARA igbh SICUT NUMERUS VALENS SCRIBE_U32(codex, 404, 3221225536).
+
+    REDDE ptr_fasciculi_idata + mensura_idata_fasciculi.
+FIN-FUNCTIO.
+
 FUNCTIO COMPONE_ONERA REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT indice SICUT NUMERUS.
@@ -884,6 +1077,23 @@ FUNCTIO COMPONE_VOCA_NUCLEUM REDDENS NUMERUS.
     CODEX_SCRIBE(codex, indice, 15).
     CODEX_SCRIBE(codex, indice + 1, 5).
     REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_VOCA_IAT_FUTURUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT loci SICUT ACUS<NUMERUS>.
+    CODEX_SCRIBE(codex, indice, 255).
+    CODEX_SCRIBE(codex, indice + 1, 21).
+    CONTENTUM(loci) = indice + 2.
+    REDDE indice + 6.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_HLT REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    CODEX_SCRIBE(codex, indice, 244).
+    REDDE indice + 1.
 FIN-FUNCTIO.
 
 
@@ -4177,8 +4387,16 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argv SICUT ACUS<NUMERUS>.
 
     SI argc < 3 TUNC
-        PROCLAMA "USUS: compilator_vindex <fons.vindex> <exsecutabile>".
+        PROCLAMA "USUS: compilator_vindex <fons.vindex> <exsecutabile> [pe]".
         REDDE 64.
+    FIN-SI.
+
+    DECLARA modus_pe SICUT NUMERUS VALENS 0.
+    SI argc >= 4 TUNC
+        DECLARA arg3 SICUT ACUS<LITTERA> VALENS argv[3].
+        SI arg3[0] == 112 && arg3[1] == 101 && arg3[2] == 0 TUNC
+            modus_pe = 1.
+        FIN-SI.
     FIN-SI.
 
     DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE(argv[1]).
@@ -4289,9 +4507,15 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         PROCLAMA "ERRATUM: memoria codicis reservata non est".
         REDDE 71.
     FIN-SI.
-    DECLARA pos SICUT NUMERUS VALENS 120.
-    DECLARA punctum_ingressus SICUT NUMERUS VALENS 120.
+    DECLARA capita_reservata SICUT NUMERUS VALENS 120.
+    SI modus_pe == 1 TUNC
+        capita_reservata = 512.
+    FIN-SI.
+    DECLARA pos SICUT NUMERUS VALENS capita_reservata.
+    DECLARA punctum_ingressus SICUT NUMERUS VALENS capita_reservata.
     DECLARA inventa_principalis SICUT NUMERUS VALENS 0.
+    DECLARA loci_iat_exitprocess SICUT NUMERUS VALENS 0.
+    DECLARA loci_iat_virtualalloc SICUT NUMERUS VALENS 0.
 
     DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
     DECLARA contextus_desine SICUT NUMERUS VALENS 0.
@@ -4483,13 +4707,37 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 pos = COMPONE_AUFER(codex, pos, 0).
                 pos = COMPONE_TRANSCRIBE(codex, pos, 6, 4).
                 pos = COMPONE_TRANSCRIBE(codex, pos, 7, 0).
-                pos = COMPONE_ONERA(codex, pos, 2, 33554432).
-                pos = COMPONE_ONERA(codex, pos, 0, 33554448).
-                pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
+                SI modus_pe == 1 TUNC
+                    CODEX_SCRIBE(codex, pos, 72).
+                    CODEX_SCRIBE(codex, pos + 1, 131).
+                    CODEX_SCRIBE(codex, pos + 2, 236).
+                    CODEX_SCRIBE(codex, pos + 3, 40).
+                    pos = pos + 4.
+                    pos = COMPONE_ONERA(codex, pos, 1, 33554432).
+                    pos = COMPONE_ONERA(codex, pos, 2, 67108864).
+                    pos = COMPONE_ONERA(codex, pos, 8, 12288).
+                    pos = COMPONE_ONERA(codex, pos, 9, 4).
+                    DECLARA loci_iat_va SICUT ACUS<NUMERUS> VALENS SEDES(loci_iat_virtualalloc).
+                    pos = COMPONE_VOCA_IAT_FUTURUM(codex, pos, loci_iat_va).
+                    pos = COMPONE_ONERA(codex, pos, 2, 33554432).
+                    pos = COMPONE_ONERA(codex, pos, 0, 33554448).
+                    pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
+                ALITER
+                    pos = COMPONE_ONERA(codex, pos, 2, 33554432).
+                    pos = COMPONE_ONERA(codex, pos, 0, 33554448).
+                    pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
+                FIN-SI.
                 pos = COMPONE_VOCA_RETRO(codex, pos, punctum_principalis).
-                pos = COMPONE_TRANSCRIBE(codex, pos, 7, 0).
-                pos = COMPONE_ONERA(codex, pos, 0, 60).
-                pos = COMPONE_VOCA_NUCLEUM(codex, pos).
+                SI modus_pe == 1 TUNC
+                    pos = COMPONE_TRANSCRIBE(codex, pos, 1, 0).
+                    DECLARA loci_iat_ep SICUT ACUS<NUMERUS> VALENS SEDES(loci_iat_exitprocess).
+                    pos = COMPONE_VOCA_IAT_FUTURUM(codex, pos, loci_iat_ep).
+                    pos = COMPONE_HLT(codex, pos).
+                ALITER
+                    pos = COMPONE_TRANSCRIBE(codex, pos, 7, 0).
+                    pos = COMPONE_ONERA(codex, pos, 0, 60).
+                    pos = COMPONE_VOCA_NUCLEUM(codex, pos).
+                FIN-SI.
 
                 i = n.
             ALITER
@@ -4624,7 +4872,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         k_pendens = k_pendens + 1.
     FIN-DUM.
 
-    DECLARA ignoratum2 SICUT NUMERUS VALENS CONSTRUE_CAPUT_ELF(codex, pos - 120, punctum_ingressus).
+    SI modus_pe == 1 TUNC
+        pos = CONSTRUE_CAPUT_PE(codex, pos - capita_reservata, punctum_ingressus, loci_iat_exitprocess, loci_iat_virtualalloc).
+    ALITER
+        DECLARA ignoratum2 SICUT NUMERUS VALENS CONSTRUE_CAPUT_ELF(codex, pos - capita_reservata, punctum_ingressus).
+    FIN-SI.
 
     DECLARA fd_scriptio SICUT NUMERUS VALENS APERI_SCRIBERE(argv[2]).
     SI fd_scriptio < 0 TUNC
