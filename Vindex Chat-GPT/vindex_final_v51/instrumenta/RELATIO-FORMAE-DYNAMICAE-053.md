@@ -3,8 +3,7 @@
 Formae et campi crescibiles, punctum fixum, XL formae, LXXX campi et regressiones hic comprobantur.
 
 ```text
-RECTE: formae et campi descriptoribus crescentibus utuntur.
-RECTE: typi plene agnoscuntur; praefixa F/N/A/V/T formas non corrumpunt.
+RECTE: formae dynamicae iam applicatae sunt.
 RECTE: formae et campi descriptoribus crescentibus utuntur.
 STATUS G1: 0.
 STATUS G2: 0.
@@ -16,10 +15,10 @@ EXECUTIO FORMARUM MAGNARUM: status=0 exitus=[39
 777].
 RECTE: limites XV formarum et XXVI camporum remoti sunt.
 RECTE: VINDEX Systema constructum est.
-IMAGO: /home/trbc97m/VINDEX-test/Vindex Chat-GPT/vindex_final_v51/systema_vindex.img
+IMAGO: /home/runner/work/VINDEX/VINDEX/Vindex Chat-GPT/vindex_final_v51/systema_vindex.img
 RECTE: VINDEX Systema UEFI constructum est.
-APPLICATIO: /home/trbc97m/VINDEX-test/Vindex Chat-GPT/vindex_final_v51/BOOTX64.EFI
-IMAGO: /home/trbc97m/VINDEX-test/Vindex Chat-GPT/vindex_final_v51/systema_vindex_uefi.img
+APPLICATIO: /home/runner/work/VINDEX/VINDEX/Vindex Chat-GPT/vindex_final_v51/BOOTX64.EFI
+IMAGO: /home/runner/work/VINDEX/VINDEX/Vindex Chat-GPT/vindex_final_v51/systema_vindex_uefi.img
 RECTE: Systema BIOS et UEFI post migrationem formarum regenerata sunt.
 RECTE  salve
 RECTE  calculus
