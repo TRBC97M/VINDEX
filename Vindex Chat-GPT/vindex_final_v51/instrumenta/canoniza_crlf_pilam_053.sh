@@ -13,8 +13,44 @@ COMPILATOR_NOVUS="$TEMPORARIUM/compilator_vindex"
 PROBATIO_FONS="$TEMPORARIUM/pila_magna_053.vindex"
 PROBATIO_BIN="$TEMPORARIUM/pila_magna_053"
 RELATIO="$RADIX/instrumenta/RELATIO-CANONICA-CRLF-PILA-053.md"
+REL_RADIX="${RADIX#$REPO/}"
 
 cd "$REPO"
+
+printf '%s\n' '=== 0. SCRIPTURAS UNIX LF REDINTEGRA ==='
+mapfile -d '' SCRIPTURAE_LF < <(
+python3 - "$REPO" "$REL_RADIX" <<'PY'
+from pathlib import Path
+import subprocess
+import sys
+
+repo = Path(sys.argv[1])
+radix = sys.argv[2]
+res = subprocess.run(
+    ["git", "-C", str(repo), "ls-files", "-z", "--", radix],
+    check=True,
+    stdout=subprocess.PIPE,
+).stdout
+for raw in res.split(b"\0"):
+    if not raw:
+        continue
+    rel = raw.decode("utf-8", "surrogateescape")
+    via = repo / rel
+    if not via.is_file():
+        continue
+    data = via.read_bytes()
+    prima = data.split(b"\n", 1)[0].rstrip(b"\r")
+    if not prima.startswith(b"#!"):
+        continue
+    if b"bash" not in prima and not prima.endswith(b"/sh"):
+        continue
+    nova = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    if nova != data:
+        via.write_bytes(nova)
+        sys.stdout.buffer.write(raw + b"\0")
+PY
+)
+printf 'RECTE: %s scripturae Unix ad LF redactae sunt.\n' "${#SCRIPTURAE_LF[@]}"
 
 printf '%s\n' '=== I. CRLF CORRIGE ==='
 python3 "$RADIX/instrumenta/corrige_spatia_crlf_053.py"
@@ -98,7 +134,7 @@ SYSTEMA BIOS: REGENERATUM
 SYSTEMA UEFI: REGENERATUM
 \`\`\`
 
-`IGNORA_SPATIA` nunc CR (`13`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur, ad XVI octeta ordinantur, et pagina quaeque IV KiB tangitur.
+`IGNORA_SPATIA` nunc CR (`13`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur, ad XVI octeta ordinantur, et pagina quaeque IV KiB tangitur. Scripturae testae Unix ante probationes ad LF canonice rediguntur.
 
 VINDEX Latine cogitat. Sylvia Latine loquitur.
 EOF
@@ -120,6 +156,9 @@ for VIA in "${VIAE[@]}"; do
         git add -- "$VIA"
     fi
 done
+if [ "${#SCRIPTURAE_LF[@]}" -gt 0 ]; then
+    git add -- "${SCRIPTURAE_LF[@]}"
+fi
 
 if git diff --cached --quiet; then
     printf '%s\n' 'MONITUM: nulla mutatio nova ad committendum inventa est.'
