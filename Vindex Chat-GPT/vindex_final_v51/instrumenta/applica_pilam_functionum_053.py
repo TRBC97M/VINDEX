@@ -5,6 +5,7 @@ from pathlib import Path
 
 VIA = Path("Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex")
 MARCA = "FUNCTIO COMPONE_RESERVA_PILA_PROBATA REDDENS NUMERUS."
+ANCORA = "FUNCTIO COMPONE_ARITHMETICA REDDENS NUMERUS.\n"
 
 
 def exige(textus: str, fragmentum: str, numerus: int, nomen: str) -> None:
@@ -15,110 +16,110 @@ def exige(textus: str, fragmentum: str, numerus: int, nomen: str) -> None:
         )
 
 
-def applica() -> None:
-    textus = VIA.read_text(encoding="utf-8")
-    if MARCA in textus:
-        print("RECTE: pila functionum iam structurata est.")
-        return
-
-    ancora = "FUNCTIO COMPONE_ARITHMETICA REDDENS NUMERUS.\n"
-    exige(textus, ancora, 1, "emissoris-pilae")
-
-    adiutor = '''FUNCTIO COMPONE_RESERVA_PILA_PROBATA REDDENS NUMERUS.
+def adiutor_compactus() -> str:
+    # Eadem series machinalis LV octetorum manet, sed constantes per SCRIBE_U32
+    # scribuntur. Hoc fontem auto-hospitio multo leviorem facit quam LV
+    # vocationes singulares CODEX_SCRIBE.
+    return '''FUNCTIO COMPONE_RESERVA_PILA_PROBATA REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT indice SICUT NUMERUS.
     ACCIPIT spatium SICUT NUMERUS.
     DECLARA p SICUT NUMERUS VALENS indice.
+    DECLARA ignoratum SICUT NUMERUS VALENS 0.
 
     // mov r11, imm64. Octeta immediata a CORRIGE_PILA post analysin corporis mutantur.
     CODEX_SCRIBE(codex, p, 73).
     CODEX_SCRIBE(codex, p + 1, 187).
-    CODEX_SCRIBE(codex, p + 2, spatium & 255).
-    CODEX_SCRIBE(codex, p + 3, (spatium >> 8) & 255).
-    CODEX_SCRIBE(codex, p + 4, (spatium >> 16) & 255).
-    CODEX_SCRIBE(codex, p + 5, (spatium >> 24) & 255).
-    CODEX_SCRIBE(codex, p + 6, (spatium >> 32) & 255).
-    CODEX_SCRIBE(codex, p + 7, (spatium >> 40) & 255).
-    CODEX_SCRIBE(codex, p + 8, (spatium >> 48) & 255).
-    CODEX_SCRIBE(codex, p + 9, (spatium >> 56) & 255).
+    ignoratum = SCRIBE_U64(codex, p + 2, spatium).
 
-    // cmp r11, 4096; jbe finis.
-    CODEX_SCRIBE(codex, p + 10, 73).
-    CODEX_SCRIBE(codex, p + 11, 129).
-    CODEX_SCRIBE(codex, p + 12, 251).
-    CODEX_SCRIBE(codex, p + 13, 0).
-    CODEX_SCRIBE(codex, p + 14, 16).
-    CODEX_SCRIBE(codex, p + 15, 0).
-    CODEX_SCRIBE(codex, p + 16, 0).
-    CODEX_SCRIBE(codex, p + 17, 118).
-    CODEX_SCRIBE(codex, p + 18, 28).
-
-    // Per singulas paginas: sub rsp,4096; or qword [rsp],0; sub r11,4096; cmp; ja retro.
-    CODEX_SCRIBE(codex, p + 19, 72).
-    CODEX_SCRIBE(codex, p + 20, 129).
-    CODEX_SCRIBE(codex, p + 21, 236).
-    CODEX_SCRIBE(codex, p + 22, 0).
-    CODEX_SCRIBE(codex, p + 23, 16).
-    CODEX_SCRIBE(codex, p + 24, 0).
-    CODEX_SCRIBE(codex, p + 25, 0).
-    CODEX_SCRIBE(codex, p + 26, 72).
-    CODEX_SCRIBE(codex, p + 27, 131).
-    CODEX_SCRIBE(codex, p + 28, 12).
-    CODEX_SCRIBE(codex, p + 29, 36).
-    CODEX_SCRIBE(codex, p + 30, 0).
-    CODEX_SCRIBE(codex, p + 31, 73).
-    CODEX_SCRIBE(codex, p + 32, 129).
-    CODEX_SCRIBE(codex, p + 33, 235).
-    CODEX_SCRIBE(codex, p + 34, 0).
-    CODEX_SCRIBE(codex, p + 35, 16).
-    CODEX_SCRIBE(codex, p + 36, 0).
-    CODEX_SCRIBE(codex, p + 37, 0).
-    CODEX_SCRIBE(codex, p + 38, 73).
-    CODEX_SCRIBE(codex, p + 39, 129).
-    CODEX_SCRIBE(codex, p + 40, 251).
-    CODEX_SCRIBE(codex, p + 41, 0).
-    CODEX_SCRIBE(codex, p + 42, 16).
-    CODEX_SCRIBE(codex, p + 43, 0).
-    CODEX_SCRIBE(codex, p + 44, 0).
-    CODEX_SCRIBE(codex, p + 45, 119).
-    CODEX_SCRIBE(codex, p + 46, 228).
-
-    // Reliquum spatium subtrahitur et ultima pagina tangitur.
-    CODEX_SCRIBE(codex, p + 47, 76).
-    CODEX_SCRIBE(codex, p + 48, 41).
-    CODEX_SCRIBE(codex, p + 49, 220).
-    CODEX_SCRIBE(codex, p + 50, 72).
-    CODEX_SCRIBE(codex, p + 51, 131).
-    CODEX_SCRIBE(codex, p + 52, 12).
-    CODEX_SCRIBE(codex, p + 53, 36).
+    // Reliqua XLV octeta prologi in verbis U32 parvi ordinis scribuntur.
+    ignoratum = SCRIBE_U32(codex, p + 10, 16482633).
+    ignoratum = SCRIBE_U32(codex, p + 14, 1979711504).
+    ignoratum = SCRIBE_U32(codex, p + 18, 3967895580).
+    ignoratum = SCRIBE_U32(codex, p + 22, 4096).
+    ignoratum = SCRIBE_U32(codex, p + 26, 604799816).
+    ignoratum = SCRIBE_U32(codex, p + 30, 3951118592).
+    ignoratum = SCRIBE_U32(codex, p + 34, 4096).
+    ignoratum = SCRIBE_U32(codex, p + 38, 16482633).
+    ignoratum = SCRIBE_U32(codex, p + 42, 1996488720).
+    ignoratum = SCRIBE_U32(codex, p + 46, 3693694180).
+    ignoratum = SCRIBE_U32(codex, p + 50, 604799816).
     CODEX_SCRIBE(codex, p + 54, 0).
 
     REDDE p + 55.
 FIN-FUNCTIO.
 
 '''
-    textus = textus.replace(ancora, adiutor + ancora, 1)
+
+
+def compone_adiutorem_si_necesse(textus: str) -> tuple[str, bool]:
+    novus = adiutor_compactus()
+
+    if MARCA not in textus:
+        exige(textus, ANCORA, 1, "emissoris-pilae")
+        return textus.replace(ANCORA, novus + ANCORA, 1), True
+
+    initium = textus.index(MARCA)
+    try:
+        finis = textus.index(ANCORA, initium)
+    except ValueError as exc:
+        raise SystemExit("ERRATUM: finis emissoris pilae non inventus est") from exc
+
+    vetus = textus[initium:finis]
+    if vetus == novus:
+        return textus, False
+
+    return textus[:initium] + novus + textus[finis:], True
+
+
+def applica() -> None:
+    textus = VIA.read_text(encoding="utf-8")
+    textus, adiutor_mutatus = compone_adiutorem_si_necesse(textus)
 
     vetus_prologus = (
         "                pos = COMPONE_ONERA(codex, pos, 0, 30000).\n"
         "                pos = COMPONE_SUB(codex, pos, 4, 0)."
     )
     novus_prologus = "                pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 0)."
-    exige(textus, vetus_prologus, 2, "prologus-functionum")
-    textus = textus.replace(vetus_prologus, novus_prologus)
+    si_vetus_prologus = textus.count(vetus_prologus)
+    si_novus_prologus = textus.count(novus_prologus)
+    if si_vetus_prologus == 2 and si_novus_prologus == 0:
+        textus = textus.replace(vetus_prologus, novus_prologus)
+    elif not (si_vetus_prologus == 0 and si_novus_prologus == 2):
+        raise SystemExit(
+            "ERRATUM: status prologorum functionum ambiguus est "
+            f"(veteres={si_vetus_prologus}, novi={si_novus_prologus})"
+        )
 
-    vetus1 = "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000."
-    novum1 = "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16."
-    exige(textus, vetus1, 1, "mensura-principalis")
-    textus = textus.replace(vetus1, novum1, 1)
+    mutationes_mensurae = 0
+    for index in (1, 2):
+        vetus = (
+            f"DECLARA spatium_necessarium{index} SICUT NUMERUS VALENS "
+            "(0 - tabula[51]) + 10000."
+        )
+        novum = (
+            f"DECLARA spatium_necessarium{index} SICUT NUMERUS VALENS "
+            "(((0 - tabula[51]) + 15) / 16) * 16."
+        )
+        si_vetus = textus.count(vetus)
+        si_novum = textus.count(novum)
+        if si_vetus == 1 and si_novum == 0:
+            textus = textus.replace(vetus, novum, 1)
+            mutationes_mensurae += 1
+        elif not (si_vetus == 0 and si_novum == 1):
+            raise SystemExit(
+                f"ERRATUM: status mensurae pilae {index} ambiguus est "
+                f"(vetus={si_vetus}, novum={si_novum})"
+            )
 
-    vetus2 = "DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000."
-    novum2 = "DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16."
-    exige(textus, vetus2, 1, "mensura-functionis")
-    textus = textus.replace(vetus2, novum2, 1)
+    VIA.write_text(textus, encoding="utf-8", newline="\n")
 
-    VIA.write_text(textus, encoding="utf-8")
-    print("RECTE: pila functionum exacte dimensata et per paginas probata est.")
+    if adiutor_mutatus:
+        print("RECTE: emissor pilae compactus est; eadem series machinalis LV octetorum servatur.")
+    elif mutationes_mensurae:
+        print("RECTE: pila functionum exacte dimensata et per paginas probata est.")
+    else:
+        print("RECTE: pila functionum iam structurata et compacte emissa est.")
 
 
 if __name__ == "__main__":
