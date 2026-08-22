@@ -23,9 +23,9 @@ Ordo identitatis hic servandus est:
 
 ### Regula primaria
 
-Nomen **JL-UX** numquam ad ornatum vacuum ponatur. Non debet apparere in imagine fundi ordinaria, in centro scrinii, iuxta nomen usoris, in imagine usoris, in schermate clauso principali, in buttonibus communibus neque in omni fenestra sine causa.
+Nomen **JL-UX** numquam ad ornatum vacuum ponatur. Non debet apparere in imagine fundi ordinaria, in centro scrinii, iuxta nomen usoris, in imagine usoris, in principali schermate clauso, in pulsabulis communibus neque in omni fenestra sine causa.
 
-Nomen JL-UX admittitur in documentis technicis, informationibus de systemate, metadata thematis, instrumentis evolutoris et specificationibus graphicis.
+Nomen JL-UX admittitur in documentis technicis, informationibus de systemate, notitiis adiunctis thematis, instrumentis evolutoris et specificationibus graphicis.
 
 ---
 
@@ -33,25 +33,25 @@ Nomen JL-UX admittitur in documentis technicis, informationibus de systemate, me
 
 ### 1. Claritas retrocomputatoria
 
-Structura interface hereditatem annorum MCMXC et initii annorum MM retinet:
+Structura interfaciei hereditatem annorum MCMXC et initii annorum MM retinet:
 
 - densitas utilis;
 - separationes clarae;
-- menus veri et compacti;
+- indices mandatorum veri et compacti;
 - barra instrumentorum moderata;
 - barra status;
-- buttones manifeste pressibiles;
+- pulsabula manifeste premenda;
 - iconographia statim intellegibilis;
 - fenestrae functionem suam clare demonstrantes.
 
-Interface non debet videri sicut applicatio mobilis in scrinium maius dilatata.
+Interfacies non debet videri sicut applicatio mobilis in scrinium maius dilatata.
 
 ### 2. Lux et profunditas
 
-JL-UX non est design planum. Adhiberi possunt:
+JL-UX non est forma plana. Adhiberi possunt:
 
 - gradientia subtilia;
-- vitrum caeruleum mineralis;
+- vitrum caeruleum minerale;
 - reflexiones moderatae;
 - lineae lucidae;
 - umbrae breves;
@@ -87,7 +87,7 @@ Vitanda sunt ornamenta pseudo-Romana nimia: columnae, laureae, aquilae, coronae 
 | Caeruleum Profundum | `#08233D` | superficies principales |
 | Vitrum Caeruleum | `#0E426F` | fenestra activa |
 | Caeruleum Medium | `#1A5D92` | selectio et instrumenta |
-| Aqua Clara | `#62D7F2` | focus, hover, lumen |
+| Aqua Clara | `#62D7F2` | intentio, superpositio cursoris, lumen |
 | Lux Glacialis | `#EAF8FF` | reflexiones et textus lucidus |
 | Ebur | `#F1EEE4` | superficies clarae |
 | Argentum | `#B9C4CF` | margines et metallica |
@@ -114,12 +114,12 @@ Mensurae sequentes definiuntur ad **XCVI DPI, scala C%**.
 | Elementum | Mensura canonica |
 |---|---:|
 | Barra tituli fenestrae | `28 px` |
-| Barra menuum | `22 px` |
+| Barra indicis mandatorum | `22 px` |
 | Barra instrumentorum | `34 px` |
 | Barra status | `20 px` |
 | Barra operum | `28 px` |
 | Margo exterior | `1 px` |
-| Highlight interior | `1 px` |
+| Lumen interius | `1 px` |
 | Radius angulorum fenestrae | `0 px` |
 
 ### Regula
@@ -154,29 +154,29 @@ Fenestra inactiva manet pars Sylvia OS; non fit omnino cinerea.
 
 ---
 
-## VI. Controles fenestrae
+## VI. Moderamina fenestrae
 
-Controles canonici:
+Moderamina canonica:
 
 - minuere;
 - amplificare vel restituere;
 - claudere.
 
 Mensura canonica: **`22 × 20 px`**.  
-Spatium inter controles: **`1 px`**.
+Spatium inter moderamina: **`1 px`**.
 
 ### Claudere
 
 - rubrum imperiale;
 - gradatio subtilissima;
 - signum `×`;
-- hover rubro clariore;
+- sub cursore rubrum clarius;
 - status pressus profundior et obscurior.
 
 ### Minuere et amplificare
 
 - caeruleum vel argentum;
-- hover aqua;
+- sub cursore aqua;
 - status pressus cum lumine interno diminuto.
 
 Nullae formae circulares neque pillulares.
@@ -195,7 +195,7 @@ Debet esse tenuis, densa, horizontalis et ad marginem scrinii fixa.
 
 Ordo commendatus:
 
-`MENU | ACCESSUS CELERES | FENESTRAE ACTIVAE | SPATIUM FLEXIBILE | AREA SYSTEMATIS | TEMPUS`
+`INDEX | ACCESSUS CELERES | FENESTRAE ACTIVAE | SPATIUM FLEXIBILE | AREA SYSTEMATIS | TEMPUS`
 
 Regulae:
 
@@ -204,17 +204,17 @@ Regulae:
 - nullae margines magnae;
 - nullae icones gigantes;
 - centrarea obligatoria vetatur;
-- buttones fenestrarum textum ostendere possunt;
+- pulsabula fenestrarum textum ostendere possunt;
 - icones barrae operum sunt `16–20 px`;
 - area systematis compacta est.
 
-Barra operum alta, pillularis aut ad modum interface mobilium facta est contra JL-UX.
+Barra operum alta, pillularis aut ad modum interfaciei mobilis facta est contra JL-UX.
 
 ---
 
-## VIII. Menu principale
+## VIII. Index principalis
 
-Menu principale logicam desktop classicam retinet.
+Index principalis logicam areae operis classicae retinet.
 
 Latitudo typica: **`260–320 px`**.
 
@@ -223,17 +223,17 @@ Structura commendata:
 - columna applicationum;
 - columna locorum et systematis;
 - quaesitio compacta;
-- actio claudendi vel restartandi in parte inferiore.
+- actio claudendi vel denuo incipiendi in parte inferiore.
 
 Nomen usoris clare distinguatur a nomine systematis.
 
 ---
 
-## IX. Componentes communes
+## IX. Composita communia
 
-| Component | Mensura typica |
+| Compositum | Mensura typica |
 |---|---:|
-| Button normalis | `24 px` altus |
+| Pulsabulum ordinarium | `24 px` altum |
 | Campus textus | `24 px` altus |
 | Elector descendens | `24 px` altus |
 | Tabula selectiva | `24 px` alta |
@@ -242,7 +242,7 @@ Nomen usoris clare distinguatur a nomine systematis.
 | Capsula electiva | `14 px` |
 | Elector circularis | `14 px` |
 
-Quisque button habet status: normalem, hover, pressum, focus et impeditum. Button semper debet videri pressibilis.
+Quodque pulsabulum habet status: normalem, sub cursore, pressum, intentum et impeditum. Pulsabulum semper debet videri premendum.
 
 ---
 
@@ -262,7 +262,7 @@ Magnitudines canonicae:
 
 `16`, `24`, `32`, `48`, `64`, `128`, `256 px`.
 
-Desktop ordinarius: `32` vel `48 px`.  
+Area operis ordinaria: `32` vel `48 px`.  
 Barra operum: `16–20 px`.
 
 Ornamentum imperiale maximum circiter decimam partem compositionis iconis occupet. Functio semper ante ornamentum intellegi debet.
@@ -274,7 +274,7 @@ Ornamentum imperiale maximum circiter decimam partem compositionis iconis occupe
 Cursor principalis:
 
 - corpus album aut eburneum;
-- outline obscurus `1 px`;
+- linea exterior obscura `1 px`;
 - lumen caeruleum subtilissimum;
 - forma classica et precisa.
 
@@ -286,21 +286,21 @@ Indicium occupationis utitur circulo aqua-caeruleo simplici.
 
 ## XII. Typographia
 
-Familia propria JL-UX creanda est; nulla font externa fit pars canonica finalis.
+Familia propria JL-UX creanda est; nulla forma litterarum externa fit pars canonica finalis.
 
 ### Textus
 
-Ad menus, buttones, labels, dialogos et exploratorem. Character humanisticus, apertus, clarus, non nimis geometricus. Magnitudo ordinaria: **`12–13 px`**.
+Ad indices, pulsabula, inscriptiones breves, dialogos et exploratorem. Character humanisticus, apertus, clarus, non nimis geometricus. Magnitudo ordinaria: **`12–13 px`**.
 
 ### Titulus
 
 Ad titulos, nomen Sylvia OS, capita sectionum et schermata systematis. Capitales nobiles cum influentia Latina subtili, sine imitatione directa inscriptionum lapidariarum.
 
-### Mono
+### Monospatium
 
 Ad terminale, codicem, acta et data technica. Magnitudo ordinaria: **`12–13 px`**.
 
-Nomina interna horum trium generum nondum sunt nomina finalia fontium.
+Nomina interna horum trium generum nondum sunt nomina finalia formarum litterarum.
 
 ---
 
@@ -310,10 +310,10 @@ JL-UX movetur celeriter sed non abrupte.
 
 | Actio | Duratio |
 |---|---:|
-| Hover | `100–120 ms` |
+| Superpositio cursoris | `100–120 ms` |
 | Pressio | `60–80 ms` |
-| Focus | `120–150 ms` |
-| Menu aperitur | `140–160 ms` |
+| Intentio | `120–150 ms` |
+| Index aperitur | `140–160 ms` |
 | Fenestra aperitur | `180–220 ms` |
 | Fenestra clauditur | `140–180 ms` |
 | Minimizatio | `200–240 ms` |
@@ -321,9 +321,9 @@ JL-UX movetur celeriter sed non abrupte.
 | Notificatio | circa `200 ms` |
 | Mutatio spatii operis | `240–300 ms` |
 
-Curva fundamentalis: **ease-out cubic**.
+Curva canonica accelerationis et retardationis in prototypis CSS est `cubic-bezier(0.22, 1, 0.36, 1)`.
 
-Motus est brevis, determinatus, naturalis et functionalis. Elasticitas inutilis et saltatio ad modum interface mobilium vitandae sunt.
+Motus est brevis, determinatus, naturalis et functionalis. Elasticitas inutilis et saltatio ad modum interfacierum mobilium vitandae sunt.
 
 ---
 
@@ -359,11 +359,11 @@ Imago fundi ordinaria est abstracta, uniformis, caerulea, cum spatio negativo am
 
 **Nomen JL-UX in imagine fundi non scribitur.**
 
-JL-UX est lingua interface, non titulus desktop. Imago fundi ordinaria sine textu praeferenda est.
+JL-UX est lingua interfaciei, non titulus areae operis. Imago fundi ordinaria sine textu praeferenda est.
 
 ---
 
-## XVI. Login et clausura scrinii
+## XVI. Ingressus et clausura scrinii
 
 Nomen **SYLVIA OS** debet esse clare visibile et a nomine usoris vel computatri distinctum.
 
@@ -375,19 +375,19 @@ JL-UX ibi non fit protagonista.
 
 ---
 
-## XVII. Notificationes et moduli desktop
+## XVII. Notificationes et moduli areae operis
 
 Notificationes sunt rectangulares, clarae, breves, cum icone `16–24 px`, textu compacto et vitro moderato.
 
-Moduli desktop sunt optionales, non fundamentum interface. Horologium, calendarium, status systematis, media et notae admittuntur, dummodo desktop non impleant.
+Moduli areae operis sunt optionales, non fundamentum interfaciei. Horologium, calendarium, status systematis, media et notae admittuntur, dummodo spatium non impleant.
 
 ---
 
 ## XVIII. Accessibilitas
 
 - contrastus minimus textus ordinarii: **`4.5 : 1`**;
-- focus claviaturae: outline aqua circa `2 px`;
-- scaling systematis sustinendus;
+- intentio claviaturae: linea aqua circa `2 px`;
+- scala interfaciei sustinenda;
 - modus contrastus alti sustinendus;
 - motus reductus sustinendus;
 - navigatio claviaturae plena sustinenda;
@@ -401,11 +401,11 @@ Moduli desktop sunt optionales, non fundamentum interface. Horologium, calendari
 - **JL-UX semper manet discretum.**
 - **Barra operum tenuis est.**
 - **Fenestrae quadratae sunt.**
-- **Interface non est plana.**
-- **Interface non est mobilis.**
+- **Interfacies non est plana.**
+- **Interfacies non est mobilis.**
 - **Iconographia non est monochromatica neque plana.**
 - **Influentia imperialis non fit caricatura.**
-- **Nulla pars directe imitatur Windows aut alium systema.**
+- **Nulla pars directe imitatur Windows aut aliud systema.**
 
 Inspiratio historica admittitur; imitatio directa vetatur.
 
