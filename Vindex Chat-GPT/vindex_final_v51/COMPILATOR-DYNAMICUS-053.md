@@ -52,7 +52,7 @@ Fasciculus pilae cuiusque functionis ex usu reali computatur, ad XVI octeta ordi
 
 Prologus x86-64 stabilis LV octetorum per emissorem U16 generatur. Forma U32 quae auto-hospitium pathologice tardabat remota est.
 
-Vitium vocationum sine argumentis quoque correctum est: `RDI` non amplius e pila aufertur nisi saltem unum argumentum re vera impositum est. Sic `RSP` inter vocationes nullas integer manet.
+Vitium vocationum sine argumentis quoque correctum est: `RDI` non amplius e pila aufertur nisi saltem unum argumentum re vera impositum est. Sic `RSP` inter vocationes nullas integer manet. Probatio dedicata `vocationes_nullae.vindex` vocationem nullam MXXIV vicibus exsequitur et exitum `7168` comprobat.
 
 ## CRLF et disciplina Unix
 
@@ -72,13 +72,25 @@ Punctum fixum canonice comprobatum est. SHA-256 generationis canonicae:
 f4941f7bfed234619f328ed8aebf5d7a867eca82fd868b7fc55aceb259f18a84
 ```
 
-Regressiones canonicae:
+Regressiones canonicae, post additionem probationis vocationum nullarum:
 
 ```text
-21 probationes rectae; 0 errata.
+22 probationes rectae; 0 errata.
 ```
 
-Relatio huius gradus in `instrumenta/RELATIO-CANONICA-CRLF-PILA-053.md` servatur.
+Relatio gradus CRLF/pilae in `instrumenta/RELATIO-CANONICA-CRLF-PILA-053.md` servatur.
+
+## Custodia automatica
+
+Workflow `VINDEX 0.53 — Regressio canonica` in GitHub Actions nunc mutationes rami et petitionis integrationis custodit. Unico cursu haec probat:
+
+- inventarium indicum magicorum `tabula[n]` neque index novus tacite introducatur;
+- XXII regressiones canonicas;
+- reconstructionem ab amorsa et congruentiam compilatoris distributi;
+- compilationem fontis CRLF intra terminum temporis;
+- pilam maiorem uno MiB et ordinationem prologorum.
+
+Reproductio UEFI duas aedificationes cum eodem ambitu instrumentorum inter se comparat. Hoc consulto fit quia versiones diversae `ld` et `objcopy` ordinem sectionum PE/COFF mutare possunt sine mutatione semantica. Probationes separatae structuram PE32+ x86-64, subsystema EFI, GPT/FAT32 et inclusionem `BOOTX64.EFI` custodiunt.
 
 ## Reliquiae architecturae historicae
 
@@ -88,20 +100,28 @@ Migrationes maiores iam factae sunt, sed aggregatum historicum adhuc exstat:
 DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
 ```
 
-Collectio ipsa non iam regiones magnas ad localia, functiones aut formas continet, sed indices occultos adhuc ad statum compilationis et descriptorum tenet. Reliquiae notissimae sunt:
+Inventarium automaticum hodiernum numerat XII indices litterales distinctos et CVI accessus litterales. Basis admissa in `instrumenta/TABULA-LITTERALIA-053.txt` figitur, ut index magicus novus sine consilio probationem frangat.
 
-- `tabula[51]`: cursor pilae functionis;
-- `tabula[227]`: saltus `DESINE` pendentis intra ansam;
-- `tabula[2970..2972]`: descriptor localium;
-- `tabula[2980..2985]`: descriptor functionum et vocationum pendentium;
-- `tabula[2990..2993]`: descriptor formarum;
-- `tabula[2999]`: status temporarius ad receptaculum lectionis.
+Reliquiae sunt:
+
+- `tabula[51]`: cursor pilae functionis — L accessus;
+- `tabula[227]`: saltus `DESINE` pendentis intra ansam — VI accessus;
+- `tabula[2970]`: basis localium — V accessus;
+- `tabula[2971]`: limes localium — III accessus;
+- `tabula[2972]`: quantitas localium — XIII accessus;
+- `tabula[2982]`: quantitas functionum — II accessus;
+- `tabula[2985]`: quantitas vocationum pendentium — II accessus;
+- `tabula[2990]`: basis formarum — V accessus;
+- `tabula[2991]`: limes formarum — III accessus;
+- `tabula[2992]`: quantitas formarum — VIII accessus;
+- `tabula[2993]`: index ultimae formae — IV accessus;
+- `tabula[2999]`: status temporarius ad receptaculum lectionis — V accessus.
 
 Haec non omnia sunt limites quantitativi iam activos, sed sunt nexus architecturae occultae. 0.53 eos paulatim in statum explicitum transferre debet, ne novae facultates iterum ad numeros magicos alligentur.
 
 ## Ordo migrationis reliquus
 
-1. Inventarium automaticum omnium accessuum literalium `tabula[n]` servare et novorum numerorum magicorum incrementum prohibere.
+1. Inventarium automaticum omnium accessuum literalium `tabula[n]` servare et novorum numerorum magicorum incrementum prohibere — **factum**.
 2. Statum temporarium `DESINE` et lectionis (`227`, `2999`) e `tabula` removere.
 3. Cursorem pilae (`51`) in contextum functionis explicitum transferre.
 4. Descriptores collectionum dynamicarum (`2970..2993`) in contextum compilationis separatum transferre.
@@ -135,7 +155,7 @@ Ante statum finalem 0.53 saltem haec vera manere debent:
 - CRLF auto-hospitium non retardat;
 - vocationes sine argumentis pilam non corrumpunt;
 - auto-hospitium et amorsa idem punctum fixum servant;
-- regressiones canonicae `21/21` manent;
+- regressiones canonicae `22/22` manent;
 - nulla nova capacitas globalis fixa veterem limitem tantum substituit.
 
 ## Compatibilitas
@@ -144,6 +164,6 @@ Syntaxin programmatum VINDEX mutare non oportet propter hanc migrationem. Haec e
 
 ## Status
 
-**CRLF rectum. Pila dynamica canonica. Fontes, codex, localia, functiones, vocationes pendentes, formae et campi crescibiles. Auto-hospitium stabile. 21/21 probationes rectae.**
+**CRLF rectum. Pila dynamica canonica. Fontes, codex, localia, functiones, vocationes pendentes, formae et campi crescibiles. Auto-hospitium stabile. Custodia GitHub Actions viridis. 22/22 probationes rectae.**
 
 Proximus gradus non est alius limes augendus: est ipsa `tabula` historica dissolvenda.
