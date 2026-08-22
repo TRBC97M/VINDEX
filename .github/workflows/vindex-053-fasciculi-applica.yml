@@ -1,0 +1,83 @@
+# Stratum fasciculorum Win64 probatum in fontem et binarium canonicum applicat.
+name: VINDEX 0.53 — Fasciculi Win64 applicatio
+
+on:
+  push:
+    branches:
+      - chatgpt/pe-fasciculi-053
+
+permissions:
+  contents: write
+
+jobs:
+  applica:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Stratum Win64 fonti applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" "$FONS"
+
+      - name: Compilatorem ad punctum fixum reconstrue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          "$RUNNER_TEMP/gen1" "$FONS" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/gen2" "$FONS" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          cp "$RUNNER_TEMP/gen2" "$RADIX/compilator_vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          sha256sum "$RADIX/compilator_vindex"
+
+      - name: Probationes canonicas exsequere
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 "$RADIX/tests/run_tests.sh" "$RADIX/vindexc" "$RADIX/compilator_vindex"
+          "$RADIX/tests/run_tests.sh"
+
+      - name: Binarium post probationes confirma
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/finalis"
+          chmod 755 "$RUNNER_TEMP/finalis"
+          cmp "$RUNNER_TEMP/finalis" "$RADIX/compilator_vindex"
+          printf '%s\n' 'RECTE: binarium traditum puncto fixo congruit.'
+
+      - name: Mutationes canonicas committe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git config user.name 'VINDEX Automaton'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex"
+          if git diff --cached --quiet; then
+            printf '%s\n' 'RECTE: nihil novum committendum est.'
+            exit 0
+          fi
+          git commit -m 'VINDEX 0.53: fasciculos Win64 in compilatorem integra'
+          git push origin HEAD:chatgpt/pe-fasciculi-053
