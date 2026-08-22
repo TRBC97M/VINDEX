@@ -17,9 +17,10 @@ def exige(textus: str, fragmentum: str, numerus: int, nomen: str) -> None:
 
 
 def adiutor_compactus() -> str:
-    # Eadem series machinalis LV octetorum manet, sed constantes per SCRIBE_U32
-    # scribuntur. Hoc fontem auto-hospitio multo leviorem facit quam LV
-    # vocationes singulares CODEX_SCRIBE.
+    # Eadem series machinalis LV octetorum manet. Prima X octeta U64 utuntur;
+    # reliqua XLV octeta per verba U16 parvi ordinis scribuntur. Haec forma
+    # auto-hospitio nativo comprobata est, cum forma conglobata U32 tarditatem
+    # pathologicam excitaret.
     return '''FUNCTIO COMPONE_RESERVA_PILA_PROBATA REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT indice SICUT NUMERUS.
@@ -32,18 +33,29 @@ def adiutor_compactus() -> str:
     CODEX_SCRIBE(codex, p + 1, 187).
     ignoratum = SCRIBE_U64(codex, p + 2, spatium).
 
-    // Reliqua XLV octeta prologi in verbis U32 parvi ordinis scribuntur.
-    ignoratum = SCRIBE_U32(codex, p + 10, 16482633).
-    ignoratum = SCRIBE_U32(codex, p + 14, 1979711504).
-    ignoratum = SCRIBE_U32(codex, p + 18, 3967895580).
-    ignoratum = SCRIBE_U32(codex, p + 22, 4096).
-    ignoratum = SCRIBE_U32(codex, p + 26, 604799816).
-    ignoratum = SCRIBE_U32(codex, p + 30, 3951118592).
-    ignoratum = SCRIBE_U32(codex, p + 34, 4096).
-    ignoratum = SCRIBE_U32(codex, p + 38, 16482633).
-    ignoratum = SCRIBE_U32(codex, p + 42, 1996488720).
-    ignoratum = SCRIBE_U32(codex, p + 46, 3693694180).
-    ignoratum = SCRIBE_U32(codex, p + 50, 604799816).
+    // Reliqua XLV octeta prologi in verbis U16 parvi ordinis scribuntur.
+    ignoratum = SCRIBE_U16(codex, p + 10, 33097).
+    ignoratum = SCRIBE_U16(codex, p + 12, 251).
+    ignoratum = SCRIBE_U16(codex, p + 14, 16).
+    ignoratum = SCRIBE_U16(codex, p + 16, 30208).
+    ignoratum = SCRIBE_U16(codex, p + 18, 18460).
+    ignoratum = SCRIBE_U16(codex, p + 20, 60545).
+    ignoratum = SCRIBE_U16(codex, p + 22, 4096).
+    ignoratum = SCRIBE_U16(codex, p + 24, 0).
+    ignoratum = SCRIBE_U16(codex, p + 26, 33608).
+    ignoratum = SCRIBE_U16(codex, p + 28, 9228).
+    ignoratum = SCRIBE_U16(codex, p + 30, 18688).
+    ignoratum = SCRIBE_U16(codex, p + 32, 60289).
+    ignoratum = SCRIBE_U16(codex, p + 34, 4096).
+    ignoratum = SCRIBE_U16(codex, p + 36, 0).
+    ignoratum = SCRIBE_U16(codex, p + 38, 33097).
+    ignoratum = SCRIBE_U16(codex, p + 40, 251).
+    ignoratum = SCRIBE_U16(codex, p + 42, 16).
+    ignoratum = SCRIBE_U16(codex, p + 44, 30464).
+    ignoratum = SCRIBE_U16(codex, p + 46, 19684).
+    ignoratum = SCRIBE_U16(codex, p + 48, 56361).
+    ignoratum = SCRIBE_U16(codex, p + 50, 33608).
+    ignoratum = SCRIBE_U16(codex, p + 52, 9228).
     CODEX_SCRIBE(codex, p + 54, 0).
 
     REDDE p + 55.
@@ -115,11 +127,11 @@ def applica() -> None:
     VIA.write_text(textus, encoding="utf-8", newline="\n")
 
     if adiutor_mutatus:
-        print("RECTE: emissor pilae compactus est; eadem series machinalis LV octetorum servatur.")
+        print("RECTE: emissor pilae U16 stabilis est; eadem series machinalis LV octetorum servatur.")
     elif mutationes_mensurae:
         print("RECTE: pila functionum exacte dimensata et per paginas probata est.")
     else:
-        print("RECTE: pila functionum iam structurata et compacte emissa est.")
+        print("RECTE: pila functionum iam structurata et emissore U16 stabili utitur.")
 
 
 if __name__ == "__main__":
