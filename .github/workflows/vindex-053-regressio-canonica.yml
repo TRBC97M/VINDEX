@@ -118,15 +118,16 @@ jobs:
           python3 "$RADIX/instrumenta/verifica_pilam_binariam_053.py" \
             /tmp/pila_magna_053
 
-      - name: Contextum DESINE et encapsulationem 2999 custodi
+      - name: Contextum parseris custodi
         shell: bash
         run: |
           set -euo pipefail
           FONS='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
           grep -Fq 'FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS.' "$FONS"
-          grep -Fq 'ACCIPIT contextus_desine SICUT ACUS<NUMERUS>.' "$FONS"
-          ! grep -Fq 'tabula[227]' "$FONS"
           grep -Fq 'FUNCTIO STATUS_LECTIONIS_LEGE REDDENS NUMERUS.' "$FONS"
-          N2999=$(grep -o 'tabula\[2999\]' "$FONS" | wc -l)
-          test "$N2999" -eq 2
-          printf 'RECTE: DESINE extra tabulam est; 2999 encapsulatum manet (%s accessus).\n' "$N2999"
+          grep -Fq 'ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.' "$FONS"
+          grep -Fq 'CONTENTUM(contextus_parseris + 8)' "$FONS"
+          ! grep -Fq 'contextus_desine' "$FONS"
+          ! grep -Fq 'tabula[227]' "$FONS"
+          ! grep -Fq 'tabula[2999]' "$FONS"
+          printf '%s\n' 'RECTE: DESINE et status lectionis extra tabulam in contextu parseris sunt.'
