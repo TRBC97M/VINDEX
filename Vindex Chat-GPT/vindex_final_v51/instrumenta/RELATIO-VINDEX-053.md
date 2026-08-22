@@ -4,8 +4,8 @@ Limes historicus fontis 212999 octetorum, auto-hospitium et regressiones hic com
 
 ```text
 STATUS PONTIS: 0.
-RECTE: fontes dynamici adiutoribus separatis crescunt; 17 parametri fontis acus utuntur.
-MENSURA FONTIS DYNAMICI: 214149 octeta.
+RECTE: fontes dynamici iam applicati sunt.
+MENSURA FONTIS DYNAMICI: 237365 octeta.
 STATUS G1: 0.
 STATUS G2: 0.
 STATUS G3: 0.
