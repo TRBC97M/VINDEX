@@ -98,10 +98,15 @@ for i in range(len(data) - 55):
         and data[i+17:i+19] == b"\x76\x1c"
     ):
         frames.append(int.from_bytes(data[i+2:i+10], "little"))
-if not frames:
-    raise SystemExit("ERRATUM: prologus probationis pilae non inventus")
-if any(x % 16 for x in frames):
-    raise SystemExit(f"ERRATUM: fasciculi non ordinati: {frames}")
+if len(frames) != 2:
+    raise SystemExit(f"ERRATUM: duo prologi pilae exspectabantur, inventi sunt {frames}")
+# Fons probationis MAGNA ante PRINCIPALIS declarat. MAGNA per CALL intrat et
+# fasciculum 0 modulo XVI requirit; PRINCIPALIS ab ELF directe intrat et, post
+# IMPONE RBP, fasciculum VIII modulo XVI requirit ut CALL recte ordinetur.
+if frames[0] % 16 != 0:
+    raise SystemExit(f"ERRATUM: fasciculus functionis non ad XVI ordinatus est: {frames}")
+if frames[1] % 16 != 8:
+    raise SystemExit(f"ERRATUM: fasciculus PRINCIPALIS ABI non congruit: {frames}")
 if max(frames) < 1024 * 1024:
     raise SystemExit(f"ERRATUM: fasciculus maior uno MiB non inventus: {frames}")
 print(",".join(map(str, frames)))
@@ -158,7 +163,7 @@ SYSTEMA BIOS: REGENERATUM
 SYSTEMA UEFI: REGENERATUM
 \`\`\`
 
-\`IGNORA_SPATIA\` nunc CR (\`13\`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur, ad XVI octeta ordinantur, et pagina quaeque IV KiB tangitur. Scripturae testae Unix ante probationes ad LF canonice rediguntur et modus exsecutionis restituitur.
+\`IGNORA_SPATIA\` nunc CR (\`13\`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur et secundum ABI x86-64 ordinantur: functiones per \`CALL\` intrantes 0 modulo XVI servant, \`PRINCIPALIS\` ab ELF directe ingressa VIII modulo XVI post basim pilae compensat. Pagina quaeque IV KiB tangitur. Scripturae testae Unix ante probationes ad LF canonice rediguntur et modus exsecutionis restituitur.
 
 VINDEX Latine cogitat. Sylvia Latine loquitur.
 EOF
