@@ -105,8 +105,14 @@ cp "$COMPILATOR_NOVUS" "$RADIX/compilator_vindex"
 chmod 755 "$RADIX/compilator_vindex"
 
 printf '%s\n' '=== VI. OFFICINAM ET SALUTATIONEM REGENERA ==='
-"$RADIX/compilator_vindex" "$RADIX/src/officina_vindex.vindex" "$TEMPORARIUM/officina_vindex"
-"$RADIX/compilator_vindex" "$RADIX/src/salutatio_vindex.vindex" "$TEMPORARIUM/salutatio_vindex"
+# IMPORTA vias relative ad directorium laboris resolvit. Fontes applicationum
+# bibliothecam "bibliotheca/..." ex radice VINDEX exspectant; ideo compilatio
+# intra RADIX fit, non ex radice totius repositorii.
+(
+    cd "$RADIX"
+    ./compilator_vindex src/officina_vindex.vindex "$TEMPORARIUM/officina_vindex"
+    ./compilator_vindex src/salutatio_vindex.vindex "$TEMPORARIUM/salutatio_vindex"
+)
 cp "$TEMPORARIUM/officina_vindex" "$RADIX/officina_vindex"
 cp "$TEMPORARIUM/salutatio_vindex" "$RADIX/salutatio_vindex"
 chmod 755 "$RADIX/officina_vindex" "$RADIX/salutatio_vindex"
@@ -155,7 +161,7 @@ VIAE=(
 )
 for VIA in "${VIAE[@]}"; do
     if [ -e "$VIA" ]; then
-        git add -- "$VIA"
+        git add -- "${VIA#$REPO/}"
     fi
 done
 if [ "${#SCRIPTURAE_LF[@]}" -gt 0 ]; then
