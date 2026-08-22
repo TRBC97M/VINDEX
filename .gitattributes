@@ -1,0 +1,2 @@
+# Scripturae testae Unix terminationibus LF semper servantur.
+*.sh text eol=lf
