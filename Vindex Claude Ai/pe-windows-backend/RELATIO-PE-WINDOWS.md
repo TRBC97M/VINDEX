@@ -102,6 +102,27 @@ in ipsa constructione PE. **Non probatum sub Windows vero.** Propterea
 fasciculi hic inclusi terminationem sine `GetStdHandle` praecedente
 demonstrant tantum.
 
+**CORRECTIO MAGNA (post collaborationem cum ChatGPT, probatam sub Windows
+Server 2025 vero)**: suspicio supra scripta erat FALSA. Causa radicalis
+non erat in Wine, sed in prologo ingressus nostro ipso: prologus PE
+adhuc faciebat `POP RAX` (ad `argc` morem Linux sumendum) et sequentes
+`mov rsi,rsp`/`mov rdi,rax` **incondicionaliter**, etiam in modo PE, ubi
+haec omnino sensu carent (Windows non imponit `argc` in pila initiali sicut
+Linux `_start`). Hoc POP indebitum alignationem pilae corrumpebat pro
+omnibus vocationibus sequentibus (`VirtualAlloc`, `GetStdHandle`,
+`WriteFile`), causans defectum qui, cum Wine investigaretur, videbatur
+esse intra machinam SEH internam Wine ipsius — sed radix vera erat hic,
+in codice nostro. ChatGPT hoc probavit sub Windows Server 2025 vero:
+`0xC0000005 / STATUS_ACCESS_VIOLATION` ante correctionem, `exitus 42
+correctus` post. Correctio (facta in `chatgpt/vindex-053-compilator-dynamicus`,
+integrata in `compilator_vindex.vindex`): `POP`/`mov rsi,rsp`/`mov
+rdi,rax` nunc solum in ramo `ALITER` (modo ELF) exsecutantur; modus PE
+statim incipit cum `sub rsp,40` et vocatione `VirtualAlloc`, sine ullo
+vestigio conventionis Linux. **Verificatum hic independenter sub Wine**
+post correctionem: omnes probationes (catena, numerus, vocationes
+multiplices, programma minimum sine PROCLAMA) nunc **terminant limpide**,
+sine ullo defectu — confirmans radicem veram inventam esse.
+
 ## Probationes exsecutae
 
 Omnes hae probationes vere exsecutae sunt, non solum scriptae:
