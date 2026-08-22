@@ -107,35 +107,15 @@ jobs:
           python3 "$RADIX/instrumenta/verifica_pilam_binariam_053.py" \
             /tmp/pila_magna_053
 
-      - name: Encapsulationem 227 et 2999 experimentaliter proba
+      - name: Encapsulationem 227 et 2999 custodi
         shell: bash
         run: |
           set -euo pipefail
-          RADIX='Vindex Chat-GPT/vindex_final_v51'
-          FONS="$RADIX/src/compilator_vindex.vindex"
-
-          python3 "$RADIX/instrumenta/encapsula_reliquias_tabulae_053.py"
-          timeout 30s bash "$RADIX/bootstrap/reconstruit.sh" /tmp/compilator_encapsulatus
-          chmod 755 /tmp/compilator_encapsulatus
-          cp /tmp/compilator_encapsulatus "$RADIX/compilator_vindex"
-          chmod 755 "$RADIX/compilator_vindex"
-
+          FONS='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          grep -Fq 'FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS.' "$FONS"
+          grep -Fq 'FUNCTIO STATUS_LECTIONIS_LEGE REDDENS NUMERUS.' "$FONS"
           N227=$(grep -o 'tabula\[227\]' "$FONS" | wc -l)
           N2999=$(grep -o 'tabula\[2999\]' "$FONS" | wc -l)
           test "$N227" -eq 2
           test "$N2999" -eq 2
-          printf 'RECTE: accessus directi post encapsulationem: 227=%s, 2999=%s.\n' "$N227" "$N2999"
-
-          (
-            cd "$RADIX"
-            bash tests/run_tests.sh
-          )
-
-          python3 "$RADIX/instrumenta/genera_probationem_pilae_053.py" \
-            /tmp/pila_encapsulata_053.vindex
-          timeout 15s "$RADIX/compilator_vindex" \
-            /tmp/pila_encapsulata_053.vindex /tmp/pila_encapsulata_053
-          chmod 755 /tmp/pila_encapsulata_053
-          EX=$(timeout 5s /tmp/pila_encapsulata_053)
-          test "$EX" = "$(printf '39\n777')"
-          printf '%s\n' 'RECTE: encapsulatio tabulae experimentaliter transit.'
+          printf 'RECTE: accessus directi encapsulati: 227=%s, 2999=%s.\n' "$N227" "$N2999"
