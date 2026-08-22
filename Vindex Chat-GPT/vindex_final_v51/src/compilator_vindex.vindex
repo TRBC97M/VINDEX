@@ -7,6 +7,9 @@
 // Unum symbolum locale XLVIII octeta habet: nomen, intervallum, series, magnitudo, structura, fluitans.
 // Descriptor functionum: 2980=basis, 2981=limen, 2982=quantitas; par est (nomen, locus).
 // Descriptor vocationum pendentium: 2983=basis, 2984=limen, 2985=quantitas; par est (locus, nomen).
+// Descriptor formarum: 2990=basis, 2991=limen, 2992=quantitas, 2993=index ultimae formae.
+// Unum recordum formae XL octeta habet: nomen, magnitudo in octetis VIII, numerus camporum, limen camporum, basis camporum.
+// Unum recordum campi XXXII octeta habet: nomen, magnitudo, intervallum, fluitans.
 // Locus 51 cursor pilae functionis manet; regiones ceterae paulatim in gradibus posterioribus migrabuntur.
 
 FUNCTIO INITIA_CODEX REDDENS NUMERUS.
@@ -1276,10 +1279,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
             ign_de = IGNORA_SPATIA(fons, pos_fontis, n).
 
-            DECLARA idx_campus SICUT NUMERUS VALENS 0.
-            DUM idx_campus < 26 && tabula[200 + idx_campus] != nomen PERFICE
-                idx_campus = idx_campus + 1.
-            FIN-DUM.
+            DECLARA idx_campus SICUT NUMERUS VALENS INDEX_CAMPUS_ULTIMAE_FORMAE(tabula, nomen).
 
             SI fons[CONTENTUM(pos_fontis)] == 67 && CONTENTUM(pos_fontis) + 9 < n && fons[CONTENTUM(pos_fontis)+1] == 79 && fons[CONTENTUM(pos_fontis)+2] == 78 && fons[CONTENTUM(pos_fontis)+3] == 84 && fons[CONTENTUM(pos_fontis)+4] == 69 && fons[CONTENTUM(pos_fontis)+5] == 78 && fons[CONTENTUM(pos_fontis)+6] == 84 && fons[CONTENTUM(pos_fontis)+7] == 85 && fons[CONTENTUM(pos_fontis)+8] == 77 && fons[CONTENTUM(pos_fontis)+9] == 40 TUNC
                 CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 10.
@@ -2359,13 +2359,200 @@ FUNCTIO ANALYSA_TERMINUM REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO INITIA_FORMAS_DYNAMICA REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    DECLARA limen_formarum SICUT NUMERUS VALENS 16.
+    DECLARA basis_formarum SICUT NUMERUS VALENS RESERVA_OCTETA(limen_formarum * 40).
+    SI basis_formarum < 0 TUNC
+        REDDE 71.
+    FIN-SI.
+    tabula[2990] = basis_formarum.
+    tabula[2991] = limen_formarum.
+    tabula[2992] = 0.
+    tabula[2993] = 0 - 1.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ASSECURA_FORMAS_DYNAMICA REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT necessaria SICUT NUMERUS.
+    DECLARA limen_formarum SICUT NUMERUS VALENS tabula[2991].
+    SI necessaria <= limen_formarum TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA novum_limen SICUT NUMERUS VALENS limen_formarum * 2.
+    DUM novum_limen < necessaria PERFICE
+        novum_limen = novum_limen * 2.
+    FIN-DUM.
+    DECLARA nova_basis SICUT NUMERUS VALENS RESERVA_OCTETA(novum_limen * 40).
+    SI nova_basis < 0 TUNC
+        REDDE 71.
+    FIN-SI.
+    DECLARA basis_formarum SICUT NUMERUS VALENS tabula[2990].
+    DECLARA octeta SICUT NUMERUS VALENS tabula[2992] * 40.
+    DECLARA i_formarum SICUT NUMERUS VALENS 0.
+    DUM i_formarum < octeta PERFICE
+        SCRIBE_OCTETUM_AB(nova_basis + i_formarum, OCTETUS_AB(basis_formarum + i_formarum)).
+        i_formarum = i_formarum + 1.
+    FIN-DUM.
+    tabula[2990] = nova_basis.
+    tabula[2991] = novum_limen.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FORMA_LEGE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT idx_formae SICUT NUMERUS.
+    ACCIPIT campus_formae SICUT NUMERUS.
+    SI idx_formae < 0 || idx_formae >= tabula[2992] TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA sedes_formae SICUT NUMERUS VALENS tabula[2990] + (idx_formae * 40) + (campus_formae * 8).
+    REDDE CONTENTUM(sedes_formae).
+FIN-FUNCTIO.
+
+FUNCTIO FORMA_SCRIBE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT idx_formae SICUT NUMERUS.
+    ACCIPIT campus_formae SICUT NUMERUS.
+    ACCIPIT valor_formae SICUT NUMERUS.
+    DECLARA status_formae SICUT NUMERUS VALENS ASSECURA_FORMAS_DYNAMICA(tabula, idx_formae + 1).
+    SI status_formae != 0 TUNC
+        REDDE status_formae.
+    FIN-SI.
+    DECLARA basis_formarum SICUT NUMERUS VALENS tabula[2990].
+    SI idx_formae >= tabula[2992] TUNC
+        DECLARA z_formae SICUT NUMERUS VALENS 0.
+        DUM z_formae < 40 PERFICE
+            SCRIBE_OCTETUM_AB(basis_formarum + (idx_formae * 40) + z_formae, 0).
+            z_formae = z_formae + 1.
+        FIN-DUM.
+    FIN-SI.
+    DECLARA sedes_formae SICUT NUMERUS VALENS basis_formarum + (idx_formae * 40) + (campus_formae * 8).
+    CONTENTUM(sedes_formae) = valor_formae.
+    SI idx_formae >= tabula[2992] TUNC
+        tabula[2992] = idx_formae + 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO INITIA_CAMPI_FORMA REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT idx_formae SICUT NUMERUS.
+    ACCIPIT limen_init SICUT NUMERUS.
+    DECLARA basis_camporum SICUT NUMERUS VALENS RESERVA_OCTETA(limen_init * 32).
+    SI basis_camporum < 0 TUNC
+        REDDE 71.
+    FIN-SI.
+    DECLARA status_campi SICUT NUMERUS VALENS FORMA_SCRIBE(tabula, idx_formae, 2, 0).
+    SI status_campi == 0 TUNC
+        status_campi = FORMA_SCRIBE(tabula, idx_formae, 3, limen_init).
+    FIN-SI.
+    SI status_campi == 0 TUNC
+        status_campi = FORMA_SCRIBE(tabula, idx_formae, 4, basis_camporum).
+    FIN-SI.
+    REDDE status_campi.
+FIN-FUNCTIO.
+
+FUNCTIO ASSECURA_CAMPI_FORMA REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT idx_formae SICUT NUMERUS.
+    ACCIPIT necessaria SICUT NUMERUS.
+    DECLARA limen_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 3).
+    SI necessaria <= limen_camporum TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA novum_limen SICUT NUMERUS VALENS limen_camporum * 2.
+    SI novum_limen < 1 TUNC
+        novum_limen = 8.
+    FIN-SI.
+    DUM novum_limen < necessaria PERFICE
+        novum_limen = novum_limen * 2.
+    FIN-DUM.
+    DECLARA nova_basis SICUT NUMERUS VALENS RESERVA_OCTETA(novum_limen * 32).
+    SI nova_basis < 0 TUNC
+        REDDE 71.
+    FIN-SI.
+    DECLARA basis_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 4).
+    DECLARA octeta SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 2) * 32.
+    DECLARA i_camporum SICUT NUMERUS VALENS 0.
+    DUM i_camporum < octeta PERFICE
+        SCRIBE_OCTETUM_AB(nova_basis + i_camporum, OCTETUS_AB(basis_camporum + i_camporum)).
+        i_camporum = i_camporum + 1.
+    FIN-DUM.
+    DECLARA status_campi SICUT NUMERUS VALENS FORMA_SCRIBE(tabula, idx_formae, 3, novum_limen).
+    SI status_campi == 0 TUNC
+        status_campi = FORMA_SCRIBE(tabula, idx_formae, 4, nova_basis).
+    FIN-SI.
+    REDDE status_campi.
+FIN-FUNCTIO.
+
+FUNCTIO CAMPUS_FORMA_LEGE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT idx_formae SICUT NUMERUS.
+    ACCIPIT idx_campi SICUT NUMERUS.
+    ACCIPIT campus_campi SICUT NUMERUS.
+    SI idx_campi < 0 || idx_campi >= FORMA_LEGE(tabula, idx_formae, 2) TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA basis_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 4).
+    DECLARA sedes_campi SICUT NUMERUS VALENS basis_camporum + (idx_campi * 32) + (campus_campi * 8).
+    REDDE CONTENTUM(sedes_campi).
+FIN-FUNCTIO.
+
+FUNCTIO CAMPUS_FORMA_SCRIBE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT idx_formae SICUT NUMERUS.
+    ACCIPIT idx_campi SICUT NUMERUS.
+    ACCIPIT campus_campi SICUT NUMERUS.
+    ACCIPIT valor_campi SICUT NUMERUS.
+    DECLARA status_campi SICUT NUMERUS VALENS ASSECURA_CAMPI_FORMA(tabula, idx_formae, idx_campi + 1).
+    SI status_campi != 0 TUNC
+        REDDE status_campi.
+    FIN-SI.
+    DECLARA basis_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 4).
+    DECLARA quantitas_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 2).
+    SI idx_campi >= quantitas_camporum TUNC
+        DECLARA z_campi SICUT NUMERUS VALENS 0.
+        DUM z_campi < 32 PERFICE
+            SCRIBE_OCTETUM_AB(basis_camporum + (idx_campi * 32) + z_campi, 0).
+            z_campi = z_campi + 1.
+        FIN-DUM.
+    FIN-SI.
+    DECLARA sedes_campi SICUT NUMERUS VALENS basis_camporum + (idx_campi * 32) + (campus_campi * 8).
+    CONTENTUM(sedes_campi) = valor_campi.
+    SI idx_campi >= quantitas_camporum TUNC
+        status_campi = FORMA_SCRIBE(tabula, idx_formae, 2, idx_campi + 1).
+    FIN-SI.
+    REDDE status_campi.
+FIN-FUNCTIO.
+
+FUNCTIO INDEX_CAMPUS_ULTIMAE_FORMAE REDDENS NUMERUS.
+    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT nomen_campus SICUT NUMERUS.
+    DECLARA idx_formae SICUT NUMERUS VALENS tabula[2993].
+    SI idx_formae < 0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA quantitas_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 2).
+    DECLARA idx_campi SICUT NUMERUS VALENS 0.
+    DECLARA resultatum SICUT NUMERUS VALENS quantitas_camporum.
+    DUM idx_campi < quantitas_camporum PERFICE
+        SI CAMPUS_FORMA_LEGE(tabula, idx_formae, idx_campi, 0) == nomen_campus TUNC
+            resultatum = idx_campi.
+        FIN-SI.
+        idx_campi = idx_campi + 1.
+    FIN-DUM.
+    REDDE resultatum.
+FIN-FUNCTIO.
+
 FUNCTIO INDEX_STRUCTURAE REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT nomen_forma SICUT NUMERUS.
     DECLARA idx SICUT NUMERUS VALENS 0.
     DECLARA resultatum SICUT NUMERUS VALENS 0 - 1.
-    DUM idx < 15 && tabula[950 + idx] != 0 PERFICE
-        SI tabula[950 + idx] == nomen_forma TUNC
+    DUM idx < tabula[2992] PERFICE
+        SI FORMA_LEGE(tabula, idx, 0) == nomen_forma TUNC
             resultatum = idx.
         FIN-SI.
         idx = idx + 1.
@@ -2405,12 +2592,12 @@ FUNCTIO CAMPUS_STRUCTURAE_EST_FLUITANS REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT idx_structurae SICUT NUMERUS.
     ACCIPIT nomen_campus SICUT NUMERUS.
-    DECLARA base SICUT NUMERUS VALENS 1100 + (idx_structurae * 78).
     DECLARA k SICUT NUMERUS VALENS 0.
     DECLARA resultatum SICUT NUMERUS VALENS 0.
-    DUM k < 26 && tabula[base + (k * 3)] != 0 PERFICE
-        SI tabula[base + (k * 3)] == nomen_campus TUNC
-            resultatum = tabula[2530 + (idx_structurae * 26) + k].
+    DECLARA numerus_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_structurae, 2).
+    DUM k < numerus_camporum PERFICE
+        SI CAMPUS_FORMA_LEGE(tabula, idx_structurae, k, 0) == nomen_campus TUNC
+            resultatum = CAMPUS_FORMA_LEGE(tabula, idx_structurae, k, 3).
         FIN-SI.
         k = k + 1.
     FIN-DUM.
@@ -2421,12 +2608,12 @@ FUNCTIO CAMPUS_STRUCTURAE_MAGNITUDO REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT idx_structurae SICUT NUMERUS.
     ACCIPIT nomen_campus SICUT NUMERUS.
-    DECLARA base SICUT NUMERUS VALENS 1100 + (idx_structurae * 78).
     DECLARA k SICUT NUMERUS VALENS 0.
     DECLARA resultatum SICUT NUMERUS VALENS 8.
-    DUM k < 26 && tabula[base + (k * 3)] != 0 PERFICE
-        SI tabula[base + (k * 3)] == nomen_campus TUNC
-            resultatum = tabula[base + (k * 3) + 1].
+    DECLARA numerus_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_structurae, 2).
+    DUM k < numerus_camporum PERFICE
+        SI CAMPUS_FORMA_LEGE(tabula, idx_structurae, k, 0) == nomen_campus TUNC
+            resultatum = CAMPUS_FORMA_LEGE(tabula, idx_structurae, k, 1).
         FIN-SI.
         k = k + 1.
     FIN-DUM.
@@ -2437,12 +2624,12 @@ FUNCTIO CAMPUS_STRUCTURAE_OFFSET REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT idx_structurae SICUT NUMERUS.
     ACCIPIT nomen_campus SICUT NUMERUS.
-    DECLARA base SICUT NUMERUS VALENS 1100 + (idx_structurae * 78).
     DECLARA k SICUT NUMERUS VALENS 0.
     DECLARA resultatum SICUT NUMERUS VALENS 0.
-    DUM k < 26 && tabula[base + (k * 3)] != 0 PERFICE
-        SI tabula[base + (k * 3)] == nomen_campus TUNC
-            resultatum = tabula[base + (k * 3) + 2].
+    DECLARA numerus_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_structurae, 2).
+    DUM k < numerus_camporum PERFICE
+        SI CAMPUS_FORMA_LEGE(tabula, idx_structurae, k, 0) == nomen_campus TUNC
+            resultatum = CAMPUS_FORMA_LEGE(tabula, idx_structurae, k, 2).
         FIN-SI.
         k = k + 1.
     FIN-DUM.
@@ -2507,13 +2694,15 @@ FIN-FUNCTIO.
 FUNCTIO OFFSET_CUMULATIVUS_CAMPI REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT idx_campus SICUT NUMERUS.
-    DECLARA summa SICUT NUMERUS VALENS 0.
-    DECLARA k SICUT NUMERUS VALENS 0.
-    DUM k < idx_campus PERFICE
-        summa = summa + tabula[1050 + k].
-        k = k + 1.
-    FIN-DUM.
-    REDDE summa.
+    DECLARA idx_formae SICUT NUMERUS VALENS tabula[2993].
+    SI idx_formae < 0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA numerus_camporum SICUT NUMERUS VALENS FORMA_LEGE(tabula, idx_formae, 2).
+    SI idx_campus < numerus_camporum TUNC
+        REDDE CAMPUS_FORMA_LEGE(tabula, idx_formae, idx_campus, 2).
+    FIN-SI.
+    REDDE FORMA_LEGE(tabula, idx_formae, 1) * 8.
 FIN-FUNCTIO.
 
 FUNCTIO MAGNITUDO_VARIABILIS REDDENS NUMERUS.
@@ -2538,15 +2727,11 @@ FIN-FUNCTIO.
 FUNCTIO NUMERUS_CAMPORUM_FORMAE REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT nomen SICUT NUMERUS.
-    DECLARA idx SICUT NUMERUS VALENS 0.
-    DECLARA numerus_inventus SICUT NUMERUS VALENS 0.
-    DUM idx < 15 && tabula[950 + idx] != 0 PERFICE
-        SI tabula[950 + idx] == nomen TUNC
-            numerus_inventus = tabula[1000 + idx].
-        FIN-SI.
-        idx = idx + 1.
-    FIN-DUM.
-    REDDE numerus_inventus.
+    DECLARA idx SICUT NUMERUS VALENS INDEX_STRUCTURAE(tabula, nomen).
+    SI idx >= 0 TUNC
+        REDDE FORMA_LEGE(tabula, idx, 1).
+    FIN-SI.
+    REDDE 0.
 FIN-FUNCTIO.
 
 FUNCTIO ANALYSA_EXPRESSIO REDDENS NUMERUS.
@@ -3167,7 +3352,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
                             ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                             DECLARA es_arr_fluitans SICUT NUMERUS VALENS 0.
-                            SI fons[CONTENTUM(pos_fontis)] == 70 TUNC
+                            SI fons[CONTENTUM(pos_fontis)] == 70 && CONTENTUM(pos_fontis) + 7 < n && fons[CONTENTUM(pos_fontis)+1] == 76 && fons[CONTENTUM(pos_fontis)+2] == 85 && fons[CONTENTUM(pos_fontis)+3] == 73 && fons[CONTENTUM(pos_fontis)+4] == 84 && fons[CONTENTUM(pos_fontis)+5] == 65 && fons[CONTENTUM(pos_fontis)+6] == 78 && fons[CONTENTUM(pos_fontis)+7] == 83 TUNC
                                 es_arr_fluitans = 1.
                             FIN-SI.
                             DECLARA nomen_typus_ordo SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
@@ -3204,7 +3389,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                 FIN-SI.
                             FIN-SI.
                         ALITER
-                        SI fons[CONTENTUM(pos_fontis)] == 70 TUNC
+                        SI fons[CONTENTUM(pos_fontis)] == 70 && CONTENTUM(pos_fontis) + 7 < n && fons[CONTENTUM(pos_fontis)+1] == 76 && fons[CONTENTUM(pos_fontis)+2] == 85 && fons[CONTENTUM(pos_fontis)+3] == 73 && fons[CONTENTUM(pos_fontis)+4] == 84 && fons[CONTENTUM(pos_fontis)+5] == 65 && fons[CONTENTUM(pos_fontis)+6] == 78 && fons[CONTENTUM(pos_fontis)+7] == 83 && (CONTENTUM(pos_fontis)+8 >= n || fons[CONTENTUM(pos_fontis)+8] == 32 || fons[CONTENTUM(pos_fontis)+8] == 46 || fons[CONTENTUM(pos_fontis)+8] == 10 || fons[CONTENTUM(pos_fontis)+8] == 9) TUNC
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 9.
                             DECLARA ig_flot1 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
@@ -3218,7 +3403,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             DECLARA ig_flot3 SICUT NUMERUS VALENS ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula).
                             CONTENTUM(pos_codicis) = COMPONE_MOVSD_SALVA(codex, CONTENTUM(pos_codicis), intervallum_flot, 0).
                         ALITER
-                            SI fons[CONTENTUM(pos_fontis)] == 78 || fons[CONTENTUM(pos_fontis)] == 65 || fons[CONTENTUM(pos_fontis)] == 86 || fons[CONTENTUM(pos_fontis)] == 84 TUNC
+                            SI (fons[CONTENTUM(pos_fontis)] == 78 && CONTENTUM(pos_fontis) + 6 < n && fons[CONTENTUM(pos_fontis)+1] == 85 && fons[CONTENTUM(pos_fontis)+2] == 77 && fons[CONTENTUM(pos_fontis)+3] == 69 && fons[CONTENTUM(pos_fontis)+4] == 82 && fons[CONTENTUM(pos_fontis)+5] == 85 && fons[CONTENTUM(pos_fontis)+6] == 83) || (fons[CONTENTUM(pos_fontis)] == 65 && CONTENTUM(pos_fontis) + 4 < n && fons[CONTENTUM(pos_fontis)+1] == 67 && fons[CONTENTUM(pos_fontis)+2] == 85 && fons[CONTENTUM(pos_fontis)+3] == 83 && fons[CONTENTUM(pos_fontis)+4] == 60) || (fons[CONTENTUM(pos_fontis)] == 86 && CONTENTUM(pos_fontis) + 6 < n && fons[CONTENTUM(pos_fontis)+1] == 69 && fons[CONTENTUM(pos_fontis)+2] == 82 && fons[CONTENTUM(pos_fontis)+3] == 73 && fons[CONTENTUM(pos_fontis)+4] == 84 && fons[CONTENTUM(pos_fontis)+5] == 65 && fons[CONTENTUM(pos_fontis)+6] == 83) || (fons[CONTENTUM(pos_fontis)] == 84 && CONTENTUM(pos_fontis) + 5 < n && fons[CONTENTUM(pos_fontis)+1] == 69 && fons[CONTENTUM(pos_fontis)+2] == 88 && fons[CONTENTUM(pos_fontis)+3] == 84 && fons[CONTENTUM(pos_fontis)+4] == 85 && fons[CONTENTUM(pos_fontis)+5] == 83) TUNC
                             DECLARA intervallum_typi SICUT NUMERUS VALENS 8.
                             DECLARA magnitudo_elementi SICUT NUMERUS VALENS 8.
                             DECLARA idx_struct_ptr SICUT NUMERUS VALENS 0 - 1.
@@ -3268,7 +3453,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                 DECLARA idx_struct_v SICUT NUMERUS VALENS INDEX_STRUCTURAE(tabula, nomen_typus_struct_v).
                                 DECLARA summa_magnitudinis_v SICUT NUMERUS VALENS 8.
                                 SI idx_struct_v >= 0 TUNC
-                                    summa_magnitudinis_v = tabula[1000 + idx_struct_v] * 8.
+                                    summa_magnitudinis_v = FORMA_LEGE(tabula, idx_struct_v, 1) * 8.
                                 FIN-SI.
 
                                 DECLARA intervallum_structurae SICUT NUMERUS VALENS tabula[51].
@@ -3600,10 +3785,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
                                             ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
 
-                                            DECLARA idx_campus_aff SICUT NUMERUS VALENS 0.
-                                            DUM idx_campus_aff < 26 && tabula[200 + idx_campus_aff] != nomen_aff PERFICE
-                                                idx_campus_aff = idx_campus_aff + 1.
-                                            FIN-DUM.
+                                            DECLARA idx_campus_aff SICUT NUMERUS VALENS INDEX_CAMPUS_ULTIMAE_FORMAE(tabula, nomen_aff).
 
                                             SI fons[CONTENTUM(pos_fontis)] == 67 && CONTENTUM(pos_fontis) + 9 < n && fons[CONTENTUM(pos_fontis)+1] == 79 && fons[CONTENTUM(pos_fontis)+2] == 78 && fons[CONTENTUM(pos_fontis)+3] == 84 && fons[CONTENTUM(pos_fontis)+4] == 69 && fons[CONTENTUM(pos_fontis)+5] == 78 && fons[CONTENTUM(pos_fontis)+6] == 84 && fons[CONTENTUM(pos_fontis)+7] == 85 && fons[CONTENTUM(pos_fontis)+8] == 77 && fons[CONTENTUM(pos_fontis)+9] == 40 TUNC
                                                 CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 10.
@@ -4046,6 +4228,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         PROCLAMA "ERRATUM: memoria functionum dynamicarum reservata non est".
         REDDE 71.
     FIN-SI.
+    DECLARA status_formarum_dynam SICUT NUMERUS VALENS INITIA_FORMAS_DYNAMICA(tabula).
+    SI status_formarum_dynam != 0 TUNC
+        PROCLAMA "ERRATUM: memoria formarum dynamicarum reservata non est".
+        REDDE 71.
+    FIN-SI.
 
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i < n PERFICE
@@ -4063,29 +4250,31 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 i = i + 1.
             FIN-DUM.
             i = i + 1.
+            DECLARA idx_registrum_forma SICUT NUMERUS VALENS tabula[2992].
+            DECLARA status_formae SICUT NUMERUS VALENS FORMA_SCRIBE(tabula, idx_registrum_forma, 0, nomen_forma).
+            SI status_formae == 0 TUNC
+                status_formae = INITIA_CAMPI_FORMA(tabula, idx_registrum_forma, 8).
+            FIN-SI.
+            SI status_formae != 0 TUNC
+                PROCLAMA "ERRATUM: memoria camporum formae reservata non est".
+                REDDE 71.
+            FIN-SI.
             DECLARA numerus_campi SICUT NUMERUS VALENS 0.
-            DECLARA k_clear_forma SICUT NUMERUS VALENS 0.
-            DUM k_clear_forma < 26 PERFICE
-                tabula[200 + k_clear_forma] = 0.
-                tabula[1050 + k_clear_forma] = 0.
-                tabula[2500 + k_clear_forma] = 0.
-                k_clear_forma = k_clear_forma + 1.
-            FIN-DUM.
+            DECLARA offset_cumul_forma SICUT NUMERUS VALENS 0.
             DECLARA continua_forma SICUT NUMERUS VALENS 1.
             DUM continua_forma == 1 PERFICE
                 DECLARA ig_fm SICUT NUMERUS VALENS IGNORA_SPATIA(fons, SEDES(i), n).
                 SI fons[i] == 67 && i + 6 < n && fons[i+1] == 65 && fons[i+2] == 77 && fons[i+3] == 80 && fons[i+4] == 85 && fons[i+5] == 83 && fons[i+6] == 32 TUNC
                     i = i + 7.
                     DECLARA nomen_campus SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).
-                    tabula[200 + numerus_campi] = nomen_campus.
-
                     DECLARA ig_fm2 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, SEDES(i), n).
                     DECLARA magnitudo_campus SICUT NUMERUS VALENS 8.
+                    DECLARA est_fluitans_campus SICUT NUMERUS VALENS 0.
                     SI fons[i] == 83 && i + 5 < n && fons[i+1] == 73 && fons[i+2] == 67 && fons[i+3] == 85 && fons[i+4] == 84 && fons[i+5] == 32 TUNC
                         i = i + 6.
                         ig_fm2 = IGNORA_SPATIA(fons, SEDES(i), n).
                         SI fons[i] == 70 && i + 7 < n && fons[i+1] == 76 && fons[i+2] == 85 && fons[i+3] == 73 && fons[i+4] == 84 && fons[i+5] == 65 && fons[i+6] == 78 && fons[i+7] == 83 TUNC
-                            tabula[2500 + numerus_campi] = 1.
+                            est_fluitans_campus = 1.
                         FIN-SI.
                         SI fons[i] == 79 && i + 3 < n && fons[i+1] == 82 && fons[i+2] == 68 && fons[i+3] == 79 TUNC
                             i = i + 5.
@@ -4106,9 +4295,22 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                             magnitudo_campus = capacitas_campus * 8.
                         FIN-SI.
                     FIN-SI.
-                    tabula[1050 + numerus_campi] = magnitudo_campus.
+                    DECLARA status_campi_formae SICUT NUMERUS VALENS CAMPUS_FORMA_SCRIBE(tabula, idx_registrum_forma, numerus_campi, 0, nomen_campus).
+                    SI status_campi_formae == 0 TUNC
+                        status_campi_formae = CAMPUS_FORMA_SCRIBE(tabula, idx_registrum_forma, numerus_campi, 1, magnitudo_campus).
+                    FIN-SI.
+                    SI status_campi_formae == 0 TUNC
+                        status_campi_formae = CAMPUS_FORMA_SCRIBE(tabula, idx_registrum_forma, numerus_campi, 2, offset_cumul_forma).
+                    FIN-SI.
+                    SI status_campi_formae == 0 TUNC
+                        status_campi_formae = CAMPUS_FORMA_SCRIBE(tabula, idx_registrum_forma, numerus_campi, 3, est_fluitans_campus).
+                    FIN-SI.
+                    SI status_campi_formae != 0 TUNC
+                        PROCLAMA "ERRATUM: memoria camporum formae augeri non potest".
+                        REDDE 71.
+                    FIN-SI.
+                    offset_cumul_forma = offset_cumul_forma + magnitudo_campus.
                     numerus_campi = numerus_campi + 1.
-
                     DUM i < n && fons[i] != 46 PERFICE
                         i = i + 1.
                     FIN-DUM.
@@ -4119,30 +4321,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     continua_forma = 0.
                 FIN-SI.
             FIN-DUM.
-            DECLARA idx_registrum_forma SICUT NUMERUS VALENS 0.
-            DUM idx_registrum_forma < 15 && tabula[950 + idx_registrum_forma] != 0 PERFICE
-                idx_registrum_forma = idx_registrum_forma + 1.
-            FIN-DUM.
-            tabula[950 + idx_registrum_forma] = nomen_forma.
-            DECLARA summa_magnitudinis_forma SICUT NUMERUS VALENS 0.
-            DECLARA k_summa_forma SICUT NUMERUS VALENS 0.
-            DUM k_summa_forma < numerus_campi PERFICE
-                summa_magnitudinis_forma = summa_magnitudinis_forma + tabula[1050 + k_summa_forma].
-                k_summa_forma = k_summa_forma + 1.
-            FIN-DUM.
-            tabula[1000 + idx_registrum_forma] = summa_magnitudinis_forma / 8.
-
-            DECLARA base_bloc_forma SICUT NUMERUS VALENS 1100 + (idx_registrum_forma * 78).
-            DECLARA k_bloc_forma SICUT NUMERUS VALENS 0.
-            DECLARA offset_cumul_forma SICUT NUMERUS VALENS 0.
-            DUM k_bloc_forma < numerus_campi PERFICE
-                tabula[base_bloc_forma + (k_bloc_forma * 3)] = tabula[200 + k_bloc_forma].
-                tabula[base_bloc_forma + (k_bloc_forma * 3) + 1] = tabula[1050 + k_bloc_forma].
-                tabula[base_bloc_forma + (k_bloc_forma * 3) + 2] = offset_cumul_forma.
-                tabula[2530 + (idx_registrum_forma * 26) + k_bloc_forma] = tabula[2500 + k_bloc_forma].
-                offset_cumul_forma = offset_cumul_forma + tabula[1050 + k_bloc_forma].
-                k_bloc_forma = k_bloc_forma + 1.
-            FIN-DUM.
+            status_formae = FORMA_SCRIBE(tabula, idx_registrum_forma, 1, offset_cumul_forma / 8).
+            status_formae = FORMA_SCRIBE(tabula, idx_registrum_forma, 2, numerus_campi).
+            tabula[2993] = idx_registrum_forma.
         ALITER
         SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC
             i = i + 8.
@@ -4271,7 +4452,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         SI fons[i] == 79 TUNC
                             est_series_param = 2.
                         FIN-SI.
-                        SI fons[i] == 70 TUNC
+                        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 76 && fons[i+2] == 85 && fons[i+3] == 73 && fons[i+4] == 84 && fons[i+5] == 65 && fons[i+6] == 78 && fons[i+7] == 83 TUNC
                             es_flot_param = 1.
                         FIN-SI.
                         DECLARA idx_struct_param SICUT NUMERUS VALENS 0 - 1.
