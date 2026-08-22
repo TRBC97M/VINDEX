@@ -44,7 +44,7 @@ jobs:
               export DEBIAN_FRONTEND=noninteractive
               apt-get update
               apt-get install -y --no-install-recommends \
-                gcc binutils python3 libgtk-3-0t64 ca-certificates
+                gcc binutils python3 libgtk-3-0t64 ca-certificates diffutils
 
               RADIX="Vindex Chat-GPT/vindex_final_v51"
 
@@ -76,13 +76,8 @@ jobs:
               printf "%s\n" "RECTE: compilator distributus reconstructioni canonicae congruit."
 
               printf "%s\n" "=== IV. CRLF SINE TARDITATE ==="
-              python3 - "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_crlf.vindex <<"PY"
-from pathlib import Path
-import sys
-
-fons = Path(sys.argv[1]).read_bytes().replace(b"\r\n", b"\n").replace(b"\r", b"\n")
-Path(sys.argv[2]).write_bytes(fons.replace(b"\n", b"\r\n"))
-PY
+              python3 -c "from pathlib import Path; import sys; f=Path(sys.argv[1]).read_bytes().replace(b\"\\r\\n\",b\"\\n\").replace(b\"\\r\",b\"\\n\"); Path(sys.argv[2]).write_bytes(f.replace(b\"\\n\",b\"\\r\\n\"))" \
+                "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_crlf.vindex
               timeout 10s "$RADIX/compilator_vindex" \
                 /tmp/compilator_crlf.vindex /tmp/compilator_crlf
               chmod 755 /tmp/compilator_crlf
@@ -96,25 +91,6 @@ PY
               chmod 755 /tmp/pila_magna_053
               EX=$(timeout 5s /tmp/pila_magna_053)
               test "$EX" = "$(printf "39\n777")"
-              python3 - /tmp/pila_magna_053 <<"PY"
-from pathlib import Path
-import sys
-
-data = Path(sys.argv[1]).read_bytes()
-frames = []
-for i in range(len(data) - 55):
-    if (
-        data[i:i+2] == b"\x49\xbb"
-        and data[i+10:i+17] == b"\x49\x81\xfb\x00\x10\x00\x00"
-        and data[i+17:i+19] == b"\x76\x1c"
-    ):
-        frames.append(int.from_bytes(data[i+2:i+10], "little"))
-if len(frames) != 2:
-    raise SystemExit(f"ERRATUM: duo prologi pilae exspectabantur: {frames}")
-if any(frame % 16 for frame in frames):
-    raise SystemExit(f"ERRATUM: fasciculus non ordinatus est: {frames}")
-if max(frames) < 1024 * 1024:
-    raise SystemExit(f"ERRATUM: fasciculus unum MiB non superat: {frames}")
-print("RECTE: pila magna et ordinatio probatae sunt: " + ",".join(map(str, frames)))
-PY
+              python3 "$RADIX/instrumenta/verifica_pilam_binariam_053.py" \
+                /tmp/pila_magna_053
             '
