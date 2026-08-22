@@ -1,0 +1,8 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA descriptor SICUT NUMERUS VALENS APERI_LEGERE("tests/casus/lectio_contextus.dat").
+    DECLARA lecta SICUT NUMERUS VALENS LEGE(descriptor, 5).
+    PROCLAMA OCTETUS(1).
+    SCRIBE_LECTUS(5).
+    CLAUDE(descriptor).
+    REDDE 0.
+FIN-FUNCTIO.
