@@ -103,7 +103,7 @@ FIN-FUNCTIO.
         "                pos = COMPONE_ONERA(codex, pos, 0, 30000).\n"
         "                pos = COMPONE_SUB(codex, pos, 4, 0)."
     )
-    novus_prologus = "                pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 30000)."
+    novus_prologus = "                pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 0)."
     exige(textus, vetus_prologus, 2, "prologus-functionum")
     textus = textus.replace(vetus_prologus, novus_prologus)
 
