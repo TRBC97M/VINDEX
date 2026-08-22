@@ -5,27 +5,27 @@ from pathlib import Path
 
 
 VIA = Path("Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex")
-MARCA = "FUNCTIO DESINE_LOCUS_LEGE REDDENS NUMERUS."
+MARCA = "FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS."
 ANCORA = "FUNCTIO CERCA_VARIABILEM REDDENS NUMERUS.\n"
 
-ADIUTORES = '''FUNCTIO DESINE_LOCUS_LEGE REDDENS NUMERUS.
+ADIUTORES = '''FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     REDDE tabula[227].
 FIN-FUNCTIO.
 
-FUNCTIO DESINE_LOCUS_SCRIBE REDDENS NUMERUS.
+FUNCTIO STATUS_DESINE_SCRIBE REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT valor SICUT NUMERUS.
     tabula[227] = valor.
     REDDE 0.
 FIN-FUNCTIO.
 
-FUNCTIO LECTIO_INTERVALLUM_LEGE REDDENS NUMERUS.
+FUNCTIO STATUS_LECTIONIS_LEGE REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     REDDE tabula[2999].
 FIN-FUNCTIO.
 
-FUNCTIO LECTIO_INTERVALLUM_SCRIBE REDDENS NUMERUS.
+FUNCTIO STATUS_LECTIONIS_SCRIBE REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT valor SICUT NUMERUS.
     tabula[2999] = valor.
@@ -40,20 +40,36 @@ def principale() -> None:
     mutatum = False
 
     mutationes_227 = (
-        ("tabula[227] = loci_desine.", "DESINE_LOCUS_SCRIBE(tabula, loci_desine).", "desine-scribe"),
+        (
+            "tabula[227] = loci_desine.",
+            "ignoratum = STATUS_DESINE_SCRIBE(tabula, loci_desine).",
+            "desine-scribe",
+        ),
         (
             "DECLARA tabula79_ante SICUT NUMERUS VALENS tabula[227].",
-            "DECLARA tabula79_ante SICUT NUMERUS VALENS DESINE_LOCUS_LEGE(tabula).",
+            "DECLARA tabula79_ante SICUT NUMERUS VALENS STATUS_DESINE_LEGE(tabula).",
             "desine-serva",
         ),
-        ("tabula[227] = 0.", "DESINE_LOCUS_SCRIBE(tabula, 0).", "desine-purga"),
-        ("SI tabula[227] != 0 TUNC", "SI DESINE_LOCUS_LEGE(tabula) != 0 TUNC", "desine-proba"),
+        (
+            "tabula[227] = 0.",
+            "ignoratum = STATUS_DESINE_SCRIBE(tabula, 0).",
+            "desine-purga",
+        ),
+        (
+            "SI tabula[227] != 0 TUNC",
+            "SI STATUS_DESINE_LEGE(tabula) != 0 TUNC",
+            "desine-proba",
+        ),
         (
             "CORRIGE_SALTUM(codex, tabula[227], pos_fin_dum)",
-            "CORRIGE_SALTUM(codex, DESINE_LOCUS_LEGE(tabula), pos_fin_dum)",
+            "CORRIGE_SALTUM(codex, STATUS_DESINE_LEGE(tabula), pos_fin_dum)",
             "desine-corrige",
         ),
-        ("tabula[227] = tabula79_ante.", "DESINE_LOCUS_SCRIBE(tabula, tabula79_ante).", "desine-restitue"),
+        (
+            "tabula[227] = tabula79_ante.",
+            "ignoratum = STATUS_DESINE_SCRIBE(tabula, tabula79_ante).",
+            "desine-restitue",
+        ),
     )
 
     adiutores_adsunt = MARCA in textus
@@ -73,7 +89,7 @@ def principale() -> None:
             )
 
     vetus_scriptio_2999 = "tabula[2999] = tabula[51]."
-    nova_scriptio_2999 = "LECTIO_INTERVALLUM_SCRIBE(tabula, tabula[51])."
+    nova_scriptio_2999 = "ig_lg = STATUS_LECTIONIS_SCRIBE(tabula, tabula[51])."
     if textus.count(vetus_scriptio_2999) == 1 and textus.count(nova_scriptio_2999) == 0:
         textus = textus.replace(vetus_scriptio_2999, nova_scriptio_2999, 1)
         mutatum = True
@@ -91,7 +107,7 @@ def principale() -> None:
             raise SystemExit(
                 f"ERRATUM: quattuor lectiones 2999 exspectabantur; inventae={si_directae_2999}"
             )
-        textus = textus.replace("tabula[2999]", "LECTIO_INTERVALLUM_LEGE(tabula)")
+        textus = textus.replace("tabula[2999]", "STATUS_LECTIONIS_LEGE(tabula)")
         mutatum = True
     elif si_directae_2999 != 2:
         raise SystemExit(
