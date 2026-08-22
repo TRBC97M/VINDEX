@@ -142,6 +142,7 @@ exsequere_casum "importa" "tests/casus/importa.vindex" "49"
 exsequere_casum "structura-acus" "tests/casus/structura_acus.vindex" $'150\n99'
 exsequere_casum "recursio" "tests/casus/recursio.vindex" "720"
 exsequere_casum "argumenta" "tests/casus/argumenta.vindex" $'2\n90' "Zeta"
+exsequere_casum "argumenta-septem" "tests/casus/argumenta_septem.vindex" "28"
 exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n86\n69'
 exsequere_casum "vocationes-nullae" "tests/casus/vocationes_nullae.vindex" "7168"
 exsequere_casum "desine-imbrique" "tests/casus/desine_imbrique.vindex" "48"
