@@ -2044,6 +2044,9 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         FIN-DUM.
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
+        SI numerus_argumentorum == 7 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 10).
+        FIN-SI.
         SI numerus_argumentorum >= 6 TUNC
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 9).
         FIN-SI.
@@ -2062,6 +2065,11 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         SI numerus_argumentorum >= 1 TUNC
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
         FIN-SI.
+        SI numerus_argumentorum == 7 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 11, 0).
+            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 11).
+            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 10).
+        FIN-SI.
 
         DECLARA loci_fn SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(tabula, nomen_fn).
         SI loci_fn != 0 TUNC
@@ -2072,6 +2080,10 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             DECLARA idx_pendens SICUT NUMERUS VALENS tabula[2985].
             DECLARA ig_pendens_dyn SICUT NUMERUS VALENS PARES_SCRIBE(tabula, 2983, idx_pendens, 0, loci_appel_pendens).
             ig_pendens_dyn = PARES_SCRIBE(tabula, 2983, idx_pendens, 1, nomen_fn).
+        FIN-SI.
+        SI numerus_argumentorum == 7 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 10).
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 11).
         FIN-SI.
         REDDE 0.
     FIN-SI.
@@ -4561,7 +4573,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                             LOCALE_SCRIBE(tabula, idx_param, 5, es_flot_param).
                         FIN-SI.
                         tabula[51] = tabula[51] - 8.
-                        pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).
+                        SI numerus_parametrorum == 6 TUNC
+                            pos = COMPONE_SUME_PILA(codex, pos, 10, 16).
+                            pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, 10).
+                        ALITER
+                            pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).
+                        FIN-SI.
 
                         numerus_parametrorum = numerus_parametrorum + 1.
                     ALITER
