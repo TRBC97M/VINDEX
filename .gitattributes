@@ -7,5 +7,11 @@
 **/vindex-salutatio text eol=lf
 **/vindex-systema text eol=lf
 
+# Instrumenta Python terminationibus LF canonice servantur.
+*.py text eol=lf
+
+# Documenta Markdown terminationibus LF canonice servantur.
+*.md text eol=lf
+
 # Fontes VINDEX terminationibus LF canonice servantur.
 *.vindex text eol=lf
