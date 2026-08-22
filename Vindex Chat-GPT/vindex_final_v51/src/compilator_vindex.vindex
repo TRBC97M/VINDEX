@@ -1055,14 +1055,14 @@ FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS.
-    ACCIPIT tabula SICUT ORDO DE NUMERUS.
-    REDDE tabula[227].
+    ACCIPIT contextus_desine SICUT ACUS<NUMERUS>.
+    REDDE CONTENTUM(contextus_desine).
 FIN-FUNCTIO.
 
 FUNCTIO STATUS_DESINE_SCRIBE REDDENS NUMERUS.
-    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT contextus_desine SICUT ACUS<NUMERUS>.
     ACCIPIT valor SICUT NUMERUS.
-    tabula[227] = valor.
+    CONTENTUM(contextus_desine) = valor.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -3399,6 +3399,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT contextus_desine SICUT ACUS<NUMERUS>.
 
     DECLARA continua SICUT NUMERUS VALENS 1.
     DUM continua == 1 PERFICE
@@ -3572,7 +3573,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
 
                                 ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                                 CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 4.
-                                ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_desine).
 
                                 ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                                 DECLARA j SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
@@ -3582,7 +3583,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     DECLARA pos_aliter SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
                                     ignoratum = CORRIGE_SALTUM(codex, loci_je, pos_aliter).
                                     CONTENTUM(pos_fontis) = j + 6.
-                                    ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                    ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_desine).
                                     DECLARA pos_post SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
                                     ignoratum = CORRIGE_SALTUM(codex, loci_jmp, pos_post).
                                 ALITER
@@ -3597,7 +3598,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                 SI fons[i] == 68 && i + 5 < n && fons[i+1] == 69 && fons[i+2] == 83 && fons[i+3] == 73 && fons[i+4] == 78 && fons[i+5] == 69 TUNC
                                     DECLARA loci_desine SICUT NUMERUS VALENS 0.
                                     CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_desine)).
-                                    ignoratum = STATUS_DESINE_SCRIBE(tabula, loci_desine).
+                                    ignoratum = STATUS_DESINE_SCRIBE(contextus_desine, loci_desine).
                                     CONTENTUM(pos_fontis) = i + 7.
 
                             ALITER
@@ -3810,7 +3811,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     DECLARA loci_jg_per SICUT NUMERUS VALENS 0.
                                     CONTENTUM(pos_codicis) = COMPONE_JG_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_jg_per)).
 
-                                    ig_per = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                    ig_per = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_desine).
 
                                     CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 0, intervallum_i_per).
                                     CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 1).
@@ -3836,17 +3837,17 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
 
                                     ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                                     CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
-                                    DECLARA tabula79_ante SICUT NUMERUS VALENS STATUS_DESINE_LEGE(tabula).
-                                    ignoratum = STATUS_DESINE_SCRIBE(tabula, 0).
-                                    ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula).
+                                    DECLARA tabula79_ante SICUT NUMERUS VALENS STATUS_DESINE_LEGE(contextus_desine).
+                                    ignoratum = STATUS_DESINE_SCRIBE(contextus_desine, 0).
+                                    ignoratum = ANALYSA_BLOCUS(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_desine).
 
                                     CONTENTUM(pos_codicis) = COMPONE_JMP_RETRO(codex, CONTENTUM(pos_codicis), pos_initium_dum).
                                     DECLARA pos_fin_dum SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
                                     ignoratum = CORRIGE_SALTUM(codex, loci_je_dum, pos_fin_dum).
-                                    SI STATUS_DESINE_LEGE(tabula) != 0 TUNC
-                                        ignoratum = CORRIGE_SALTUM(codex, STATUS_DESINE_LEGE(tabula), pos_fin_dum).
+                                    SI STATUS_DESINE_LEGE(contextus_desine) != 0 TUNC
+                                        ignoratum = CORRIGE_SALTUM(codex, STATUS_DESINE_LEGE(contextus_desine), pos_fin_dum).
                                     FIN-SI.
-                                    ignoratum = STATUS_DESINE_SCRIBE(tabula, tabula79_ante).
+                                    ignoratum = STATUS_DESINE_SCRIBE(contextus_desine, tabula79_ante).
 
                                     ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                                     CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
@@ -4293,6 +4294,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA inventa_principalis SICUT NUMERUS VALENS 0.
 
     DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
+    DECLARA contextus_desine SICUT NUMERUS VALENS 0.
     DECLARA status_locorum_dynam SICUT NUMERUS VALENS INITIA_LOCA_DYNAMICA(tabula).
     SI status_locorum_dynam != 0 TUNC
         PROCLAMA "ERRATUM: memoria symbolorum localium reservata non est".
@@ -4472,7 +4474,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     FIN-SI.
                 FIN-DUM.
 
-                DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).
+                contextus_desine = 0.
+                DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula, SEDES(contextus_desine)).
                 DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.
                 DECLARA ig_corr1 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis1, spatium_necessarium1).
 
@@ -4586,7 +4589,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     FIN-SI.
                 FIN-DUM.
 
-                DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).
+                contextus_desine = 0.
+                DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula, SEDES(contextus_desine)).
                 DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.
                 DECLARA ig_corr2 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis2, spatium_necessarium2).
 
