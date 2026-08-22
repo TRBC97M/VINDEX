@@ -1,0 +1,18 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA summa SICUT NUMERUS VALENS 0.
+    DUM i < 4 PERFICE
+        DECLARA j SICUT NUMERUS VALENS 0.
+        DUM j < 5 PERFICE
+            SI j == 2 TUNC
+                DESINE.
+            FIN-SI.
+            summa = summa + 1.
+            j = j + 1.
+        FIN-DUM.
+        summa = summa + 10.
+        i = i + 1.
+    FIN-DUM.
+    PROCLAMA summa.
+    REDDE 0.
+FIN-FUNCTIO.
