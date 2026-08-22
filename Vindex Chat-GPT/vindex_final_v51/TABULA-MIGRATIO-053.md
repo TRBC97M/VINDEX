@@ -8,30 +8,43 @@
 DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
 ```
 
-Finis huius migrationis est statum compilationis nominatum et explicitum obtinere, non numeros magicos alio loco abscondere.
+Finis migrationis est statum compilationis nominatum et explicitum obtinere, non numeros magicos alio loco abscondere.
 
 ## Inventarium
 
 `instrumenta/inventaria_tabula_053.py` omnes accessus litterales `tabula[n]` numerat. `instrumenta/TABULA-LITTERALIA-053.txt` basim admittendam figit et GitHub Actions index novus tacitus frangit.
 
-Initio huius purificationis:
+Initio purificationis:
 
 ```text
 INDICES LITTERALES DISTINCTI: 12
 ACCESSUS LITTERALES TOTALES: 106
 ```
 
-Post encapsulationem `227`/`2999` et migrationem completam `227`:
+Post migrationem `227`:
 
 ```text
 INDICES LITTERALES DISTINCTI: 11
 ACCESSUS LITTERALES TOTALES: 97
 ```
 
+Post migrationem `2999`:
+
+```text
+INDICES LITTERALES DISTINCTI: 10
+ACCESSUS LITTERALES TOTALES: 95
+```
+
+Post migrationem cursoris `51`:
+
+```text
+INDICES LITTERALES DISTINCTI: 9
+ACCESSUS LITTERALES TOTALES: 45
+```
+
 Indices adhuc praesentes:
 
 ```text
-51
 2970
 2971
 2972
@@ -41,58 +54,66 @@ Indices adhuc praesentes:
 2991
 2992
 2993
-2999
 ```
 
 ## Custodia semantica
 
-Suite canonica XXIV probationes continet. Inter probationes structuram migrationis directe custodientes sunt:
+Suite canonica XXV probationes continet. Inter probationes structuram migrationis directe custodientes sunt:
 
 - `vocationes_nullae.vindex`: MXXIV vocationes sine argumentis, exitus `7168`;
 - `desine_imbrique.vindex`: `DESINE` intra ansas `DUM` imbriquatas, exitus `48`;
-- `argumenta_septem.vindex`: conventio System V cum septem argumentis, exitus `28`.
+- `argumenta_septem.vindex`: conventio System V cum septem argumentis, exitus `28`;
+- `lectio_contextus.vindex`: status `LEGE/OCTETUS` per contextum explicitum transit.
 
-Septem argumenta tam compilatore nativo quam amorsa Python probantur. Hoc permittit unum contextum explicitum septimo argumento parseris propagare sine octavo argumento introducendo.
+Septem argumenta tam compilatore nativo quam amorsa Python probantur.
 
 ## I. Status `DESINE` — absolutus
 
 `tabula[227]` omnino remota est.
 
-`STATUS_DESINE_LEGE` et `STATUS_DESINE_SCRIBE` nunc `ACUS<NUMERUS>` explicitum accipiunt. `ANALYSA_BLOCUS` contextum septimo argumento recipit et per vocationes recursivas propagat. `PRINCIPALIS` contextum ante analysam cuiusque corporis functionis ad nihilum redigit.
+`STATUS_DESINE_LEGE` et `STATUS_DESINE_SCRIBE` nunc contextum explicitum accipiunt. `ANALYSA_BLOCUS` eundem contextum per vocationes recursivas propagat.
 
-Ita status ansae non iam in aggregato globali historico latet. GitHub Actions expresse verificat stringam `tabula[227]` in compilatore non exstare.
+## II. Status lectionis `2999` — absolutus
 
-## II. `tabula[2999]` — status lectionis
+`tabula[2999]` omnino remota est.
 
-Hic campus intervallum pilae temporarium servat quod `LEGE`, `OCTETUS` et scriptura datae inter partes parseris communicant.
-
-Call-site iam per `STATUS_LECTIONIS_LEGE` et `STATUS_LECTIONIS_SCRIBE` operantur; soli duo accessus litterales manent, ambo intra accessores.
-
-Proximus gradus est receptaculum ipsum e `tabula` removere. Quia `ANALYSA_BLOCUS` septimum argumentum iam ad contextum `DESINE` utitur, non oportet octavum argumentum addere. Contextus septimus in **contextum parseris** communem convertendus est, saltem duobus campis nominatis:
+Status temporarius quo `LEGE`, `OCTETUS` et scriptura datae inter partes parseris communicant in secundo campo contextus servatur:
 
 ```text
-campus 0: status DESINE
-campus 1: intervallum temporarium lectionis
++0  : status DESINE
++8  : intervallum temporarium lectionis
 ```
 
-Deinde idem contextus per catena expressionum propagandus est ubi necesse est (`ANALYSA_FACTOR`, termini, expressiones, comparationes et blocos). Hoc gradatim probandum est ne conventio ABI vel recursio parseris frangatur.
+Accessores `STATUS_LECTIONIS_LEGE` et `STATUS_LECTIONIS_SCRIBE` numerum magicum tabulae iam non attingunt.
 
-## III. `tabula[51]` — cursor pilae
+## III. Cursor pilae `51` — absolutus
 
-Hic est maximus nexus residuus: L accessus litterales. Cursor magnitudinem exactam fasciculi regit et ideo conceptus functionis est, non tabulae symbolorum.
+`tabula[51]` omnino remota est. Cursor pilae functionis nunc tertium campum eiusdem contextus explicitum occupat:
 
-Post migrationem `2999`, cursor in contextum functionis transferendus est. Omnes allocationes localium, scratch et receptaculorum per accessores nominatos fieri debent. Tum ratio pilae mutari poterit sine perquisitione omnium `tabula[51]`.
+```text
++16 : cursor pilae functionis
+```
 
-## IV. Descriptores collectionum
+Accessores `CURSOR_PILAE_LEGE` et `CURSOR_PILAE_SCRIBE` omnes allocationes localium, scratch, argumentorum et receptaculorum regunt. Contextus igitur XXIV octeta continet.
 
-Collectiones ipsae iam crescibiles sunt; indices residui tantum descriptores earum servant:
+Haec migratio maximum nexum residuum removit: L accessus litterales una mutatione deleti sunt. Probatio pilae magnae post migrationem manet recta:
 
-- `2970..2972`: localia;
-- `2982`: quantitas functionum;
-- `2985`: quantitas vocationum pendentium;
-- `2990..2993`: formae.
+```text
+1048592,16
+39
+777
+```
 
-Hi campi in contextum compilationis transferendi sunt postquam status temporarii et cursor pilae separati sunt.
+## IV. Descriptores collectionum — proximus gradus
+
+Collectiones ipsae iam crescibiles sunt; indices residui tantum metadata descriptorum servant:
+
+- `2970..2972`: localia — V accessus ad basim, III ad limen, XIII ad quantitatem;
+- `2982`: quantitas functionum — II accessus;
+- `2985`: quantitas vocationum pendentium — II accessus;
+- `2990..2993`: formae — V, III, VIII et IV accessus.
+
+Proximus gradus est hos descriptores e `tabula` in contextum compilationis explicitum transferre. Ordinatio commendata est functiones/vocationes pendentes primum removere, deinde localia, denique formas. Post ultimum descriptorum campum ipsa `CAPACITAS 3000` deleri poterit.
 
 ## Disciplina migrationis
 
@@ -106,15 +127,15 @@ Post quemque gradum:
 6. regressiones canonicae omnes transeant;
 7. CRLF et pila > I MiB separatim transeant.
 
-Cum ultimus index remotus erit, `CAPACITAS 3000` ipsa delenda est.
-
 ## Ordo operis
 
 ```text
 227 remove — FACTUM
-2999 remove
-51 remove
-descriptores 2970..2993 remove
+2999 remove — FACTUM
+51 remove — FACTUM
+2982/2985 remove
+descriptor localium 2970..2972 remove
+descriptor formarum 2990..2993 remove
 CAPACITAS 3000 remove
 PE/Windows integra
 ```
@@ -122,12 +143,13 @@ PE/Windows integra
 ## Status comprobatus
 
 ```text
-24 probationes rectae; 0 errata.
-PUNCTUM FIXUM SHA-256: ee8db083c2e2d9b0d08410b532ef8c2dea909512198aed3920125c7a1d6eddf1
-INDICES TABULAE: 11
-ACCESSUS TABULAE: 97
+25 probationes rectae; 0 errata.
+PUNCTUM FIXUM SHA-256: 4c4b41c6887924bd64497c1c18c7fc1de75b8aed5203cf1c32bd9af36996ed76
+INDICES TABULAE: 9
+ACCESSUS TABULAE: 45
 227: 0
-2999: 2
+2999: 0
+51: 0
 ARGUMENTA SEPTEM: 28
 PILA MAGNA: 1048592,16
 ```
