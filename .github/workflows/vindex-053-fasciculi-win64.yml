@@ -27,6 +27,7 @@ jobs:
           set -euo pipefail
           RADIX='Vindex Chat-GPT/vindex_final_v51'
           python3 -m py_compile "$RADIX/instrumenta/applica_fasciculos_win64_053.py"
+          python3 -m py_compile "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py"
 
       - name: Fontem Win64 transforma
         shell: bash
@@ -35,6 +36,8 @@ jobs:
           RADIX='Vindex Chat-GPT/vindex_final_v51'
           python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" \
               "$RADIX/src/compilator_vindex.vindex" \
+              "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" \
               "$RUNNER_TEMP/compilator_fasciculi.vindex"
           grep -Fq 'numerus_functionum_pe SICUT NUMERUS VALENS 7' "$RUNNER_TEMP/compilator_fasciculi.vindex"
           grep -Fq 'COMPONE_APERI_FASCICULUM_PE' "$RUNNER_TEMP/compilator_fasciculi.vindex"
