@@ -3,7 +3,7 @@
 Tabulae functionum et vocationum pendentium crescentes, punctum fixum, CC functiones et MCCL vocationes hic comprobantur.
 
 ```text
-RECTE: functiones et vocationes pendentes descriptoribus dynamicis utuntur.
+RECTE: functiones dynamicae iam applicatae sunt.
 RECTE: functiones et vocationes pendentes tabulis crescentibus utuntur.
 STATUS G1: 0.
 STATUS G2: 0.
