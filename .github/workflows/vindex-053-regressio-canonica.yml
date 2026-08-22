@@ -63,7 +63,7 @@ jobs:
           python3 "$RADIX/instrumenta/inventaria_tabula_053.py" \
             --verifica "$RADIX/instrumenta/TABULA-LITTERALIA-053.txt"
 
-      - name: XXIV probationes canonicas exsequere
+      - name: XXV probationes canonicas exsequere
         shell: bash
         run: |
           set -euo pipefail
