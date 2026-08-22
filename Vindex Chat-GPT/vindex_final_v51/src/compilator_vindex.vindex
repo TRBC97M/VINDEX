@@ -10,7 +10,7 @@
 // Descriptor formarum: 2990=basis, 2991=limen, 2992=quantitas, 2993=index ultimae formae.
 // Unum recordum formae XL octeta habet: nomen, magnitudo in octetis VIII, numerus camporum, limen camporum, basis camporum.
 // Unum recordum campi XXXII octeta habet: nomen, magnitudo, intervallum, fluitans.
-// Locus 51 cursor pilae functionis manet; regiones ceterae paulatim in gradibus posterioribus migrabuntur.
+// Cursor pilae functionis in contextu explicito servatur; descriptores collectionum adhuc in tabula manent.
 
 FUNCTIO INITIA_CODEX REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
@@ -1078,6 +1078,18 @@ FUNCTIO STATUS_LECTIONIS_SCRIBE REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO CURSOR_PILAE_LEGE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    REDDE CONTENTUM(contextus_parseris + 16).
+FIN-FUNCTIO.
+
+FUNCTIO CURSOR_PILAE_SCRIBE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    ACCIPIT valor SICUT NUMERUS.
+    CONTENTUM(contextus_parseris + 16) = valor.
+    REDDE 0.
+FIN-FUNCTIO.
+
 FUNCTIO CERCA_VARIABILEM REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT nomen SICUT NUMERUS.
@@ -1126,12 +1138,12 @@ FUNCTIO COMPONE_CURRE REDDENS NUMERUS.
     ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p SICUT NUMERUS VALENS pos.
 
-    tabula[51] = tabula[51] - 8.
-    DECLARA intervallum_argv SICUT NUMERUS VALENS tabula[51].
-    tabula[51] = tabula[51] - 8.
-    DECLARA intervallum_envp SICUT NUMERUS VALENS tabula[51].
-    tabula[51] = tabula[51] - 8.
-    DECLARA intervallum_fdredir SICUT NUMERUS VALENS tabula[51].
+    CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
+    DECLARA intervallum_argv SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
+    CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
+    DECLARA intervallum_envp SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
+    CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
+    DECLARA intervallum_fdredir SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
 
     DECLARA ig1 SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, SEDES(p), fons, pos_fontis, n, tabula, contextus_parseris).
     p = COMPONE_SERVA_PILA(codex, p, intervallum_argv, 0).
@@ -1214,10 +1226,10 @@ FUNCTIO COMPONE_TUBUS REDDENS NUMERUS.
     ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p SICUT NUMERUS VALENS pos.
 
-    tabula[51] = tabula[51] - 8.
-    DECLARA intervallum_fds SICUT NUMERUS VALENS tabula[51].
-    tabula[51] = tabula[51] - 8.
-    DECLARA intervallum_pack SICUT NUMERUS VALENS tabula[51].
+    CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
+    DECLARA intervallum_fds SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
+    CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
+    DECLARA intervallum_pack SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
 
     DECLARA ig1 SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, SEDES(p), fons, pos_fontis, n, tabula, contextus_parseris).
     p = COMPONE_SERVA_PILA(codex, p, intervallum_fds, 0).
@@ -1765,8 +1777,8 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_exc = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
-        DECLARA intervallum_pipe SICUT NUMERUS VALENS tabula[51].
-        tabula[51] = tabula[51] - 8.
+        DECLARA intervallum_pipe SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
+        CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
 
         CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 7, intervallum_pipe).
         CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 22).
@@ -1842,8 +1854,8 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_lg = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_parseris).
         ig_lg = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        ig_lg = STATUS_LECTIONIS_SCRIBE(contextus_parseris, tabula[51]).
-        tabula[51] = tabula[51] - 8.
+        ig_lg = STATUS_LECTIONIS_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris)).
+        CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
         CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
         CONTENTUM(pos_codicis) = COMPONE_RESERVA_OCTETA(codex, CONTENTUM(pos_codicis)).
         CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), STATUS_LECTIONIS_LEGE(contextus_parseris), 0).
@@ -3456,8 +3468,8 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                 CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
                             FIN-DUM.
 
-                            tabula[51] = tabula[51] - (magnitudo_elem_ordo * mensura_tabulae).
-                            DECLARA intervallum_base SICUT NUMERUS VALENS tabula[51] + 8.
+                            CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - (magnitudo_elem_ordo * mensura_tabulae)).
+                            DECLARA intervallum_base SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris) + 8.
                             DECLARA idx_nova SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                             LOCALE_SCRIBE(tabula, idx_nova, 0, nomen).
                             LOCALE_SCRIBE(tabula, idx_nova, 1, intervallum_base).
@@ -3478,12 +3490,12 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             DECLARA ig_flot1 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
                             DECLARA ig_flot2 SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
-                            DECLARA intervallum_flot SICUT NUMERUS VALENS tabula[51].
+                            DECLARA intervallum_flot SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
                             DECLARA idx_flot SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                             LOCALE_SCRIBE(tabula, idx_flot, 0, nomen).
                             LOCALE_SCRIBE(tabula, idx_flot, 1, intervallum_flot).
                             LOCALE_SCRIBE(tabula, idx_flot, 5, 1).
-                            tabula[51] = tabula[51] - 8.
+                            CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
                             DECLARA ig_flot3 SICUT NUMERUS VALENS ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_parseris).
                             CONTENTUM(pos_codicis) = COMPONE_MOVSD_SALVA(codex, CONTENTUM(pos_codicis), intervallum_flot, 0).
                         ALITER
@@ -3515,7 +3527,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 7.
                             ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_parseris).
 
-                            DECLARA intervallum_nova SICUT NUMERUS VALENS tabula[51].
+                            DECLARA intervallum_nova SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
                             DECLARA idx_nova2 SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                             LOCALE_SCRIBE(tabula, idx_nova2, 0, nomen).
                             LOCALE_SCRIBE(tabula, idx_nova2, 1, intervallum_nova).
@@ -3526,7 +3538,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             SI idx_struct_ptr >= 0 TUNC
                                 LOCALE_SCRIBE(tabula, idx_nova2, 4, idx_struct_ptr + 1).
                             FIN-SI.
-                            tabula[51] = tabula[51] - 8.
+                            CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
                             CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_nova, 0).
                             ALITER
                                 DECLARA nomen_typus_struct_v SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
@@ -3540,14 +3552,14 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     summa_magnitudinis_v = FORMA_LEGE(tabula, idx_struct_v, 1) * 8.
                                 FIN-SI.
 
-                                DECLARA intervallum_structurae SICUT NUMERUS VALENS tabula[51].
+                                DECLARA intervallum_structurae SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
                                 DECLARA idx_structurae SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                                 LOCALE_SCRIBE(tabula, idx_structurae, 0, nomen).
                                 LOCALE_SCRIBE(tabula, idx_structurae, 1, intervallum_structurae).
                                 SI idx_struct_v >= 0 TUNC
                                     LOCALE_SCRIBE(tabula, idx_structurae, 4, idx_struct_v + 1).
                                 FIN-SI.
-                                tabula[51] = tabula[51] - summa_magnitudinis_v.
+                                CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - summa_magnitudinis_v).
                             FIN-SI.
                         FIN-SI.
                         FIN-SI.
@@ -3647,7 +3659,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     ALITER
                                     ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_parseris).
 
-                                    DECLARA intervallum_scratch SICUT NUMERUS VALENS tabula[51].
+                                    DECLARA intervallum_scratch SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
                                     SI es_flot_pcs == 2 TUNC
                                         CONTENTUM(pos_codicis) = COMPONE_IMPRIME_TEXTUS(codex, CONTENTUM(pos_codicis)).
                                     ALITER
@@ -3792,11 +3804,11 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
                                     ig_per = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_parseris).
 
-                                    DECLARA intervallum_i_per SICUT NUMERUS VALENS tabula[51].
+                                    DECLARA intervallum_i_per SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
                                     DECLARA idx_per SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                                     LOCALE_SCRIBE(tabula, idx_per, 0, nomen_per).
                                     LOCALE_SCRIBE(tabula, idx_per, 1, intervallum_i_per).
-                                    tabula[51] = tabula[51] - 8.
+                                    CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
                                     CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_i_per, 0).
 
                                     ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
@@ -3804,8 +3816,8 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
                                     ig_per = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, tabula, contextus_parseris).
 
-                                    DECLARA intervallum_limes_per SICUT NUMERUS VALENS tabula[51].
-                                    tabula[51] = tabula[51] - 8.
+                                    DECLARA intervallum_limes_per SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
+                                    CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
                                     CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_limes_per, 0).
 
                                     ig_per = IGNORA_SPATIA(fons, pos_fontis, n).
@@ -4301,7 +4313,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA inventa_principalis SICUT NUMERUS VALENS 0.
 
     DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
-    DECLARA contextus_parseris SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(16).
+    DECLARA contextus_parseris SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(24).
     SI contextus_parseris < 0 TUNC
         PROCLAMA "ERRATUM: memoria contextus parseris reservata non est".
         REDDE 71.
@@ -4431,7 +4443,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 DECLARA positio_reservationis1 SICUT NUMERUS VALENS pos + 2.
                 pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 0).
                 DECLARA k_clear1 SICUT NUMERUS VALENS RESTITUE_LOCA_DYNAMICA(tabula).
-                tabula[51] = 0 - 8.
+                CURSOR_PILAE_SCRIBE(contextus_parseris, 0 - 8).
                 DECLARA numerus_parametrorum_princ SICUT NUMERUS VALENS 0.
                 DECLARA continua_param_princ SICUT NUMERUS VALENS 1.
                 DUM continua_param_princ == 1 PERFICE
@@ -4469,7 +4481,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
                         DECLARA idx_param_pp SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                         LOCALE_SCRIBE(tabula, idx_param_pp, 0, nomen_param_princ).
-                        DECLARA intervallum_param_pp SICUT NUMERUS VALENS tabula[51].
+                        DECLARA intervallum_param_pp SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
                         LOCALE_SCRIBE(tabula, idx_param_pp, 1, intervallum_param_pp).
                         LOCALE_SCRIBE(tabula, idx_param_pp, 2, est_series_pp).
                         SI magnitudo_pp == 0 - 1 TUNC
@@ -4478,7 +4490,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         ALITER
                             LOCALE_SCRIBE(tabula, idx_param_pp, 3, magnitudo_pp).
                         FIN-SI.
-                        tabula[51] = tabula[51] - 8.
+                        CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
                         pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param_pp, registrum_param_pp).
 
                         numerus_parametrorum_princ = numerus_parametrorum_princ + 1.
@@ -4490,7 +4502,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula, contextus_parseris).
-                DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.
+                DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - CURSOR_PILAE_LEGE(contextus_parseris)) + 15) / 16) * 16.
                 DECLARA ig_corr1 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis1, spatium_necessarium1).
 
                 punctum_ingressus = pos.
@@ -4522,7 +4534,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 DECLARA positio_reservationis2 SICUT NUMERUS VALENS pos + 2.
                 pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 0).
                 DECLARA k_clear2 SICUT NUMERUS VALENS RESTITUE_LOCA_DYNAMICA(tabula).
-                tabula[51] = 0 - 8.
+                CURSOR_PILAE_SCRIBE(contextus_parseris, 0 - 8).
 
                 DECLARA numerus_parametrorum SICUT NUMERUS VALENS 0.
                 DECLARA continua_param SICUT NUMERUS VALENS 1.
@@ -4579,7 +4591,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
                         DECLARA idx_param SICUT NUMERUS VALENS PROXIMUS_LOCUS_LIBER(tabula).
                         LOCALE_SCRIBE(tabula, idx_param, 0, nomen_param).
-                        DECLARA intervallum_param SICUT NUMERUS VALENS tabula[51].
+                        DECLARA intervallum_param SICUT NUMERUS VALENS CURSOR_PILAE_LEGE(contextus_parseris).
                         LOCALE_SCRIBE(tabula, idx_param, 1, intervallum_param).
                         LOCALE_SCRIBE(tabula, idx_param, 2, est_series_param).
                         LOCALE_SCRIBE(tabula, idx_param, 3, magnitudo_param).
@@ -4589,7 +4601,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         SI es_flot_param > 0 TUNC
                             LOCALE_SCRIBE(tabula, idx_param, 5, es_flot_param).
                         FIN-SI.
-                        tabula[51] = tabula[51] - 8.
+                        CURSOR_PILAE_SCRIBE(contextus_parseris, CURSOR_PILAE_LEGE(contextus_parseris) - 8).
                         SI numerus_parametrorum == 6 TUNC
                             pos = COMPONE_SUME_PILA(codex, pos, 10, 16).
                             pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, 10).
@@ -4606,7 +4618,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula, contextus_parseris).
-                DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.
+                DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (((0 - CURSOR_PILAE_LEGE(contextus_parseris)) + 15) / 16) * 16.
                 DECLARA ig_corr2 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis2, spatium_necessarium2).
 
                 DUM i < n && fons[i] != 46 PERFICE
