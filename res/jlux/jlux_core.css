@@ -1,7 +1,7 @@
 /*
  * JL-UX CORE I.0 — valores canonici ad prototypa Sylvia OS.
  * Hic fasciculus colores, mensuras et tempora fundamentalia continet.
- * Nomen JL-UX in ipsa interface usoris non ostendendum est sine causa.
+ * Nomen JL-UX in ipsa interfacie usoris non ostendendum est sine causa.
  */
 
 :root {
@@ -20,26 +20,26 @@
 
   /* Geometria ad 96 DPI, scala 100% */
   --jlux-altitudo-tituli: 28px;
-  --jlux-altitudo-menuum: 22px;
+  --jlux-altitudo-indicis: 22px;
   --jlux-altitudo-instrumentorum: 34px;
   --jlux-altitudo-status: 20px;
   --jlux-altitudo-barrae-operum: 28px;
   --jlux-margo: 1px;
   --jlux-radius-fenestrae: 0px;
-  --jlux-radius-controlis: 2px;
+  --jlux-radius-moderaminis: 2px;
   --jlux-latitudo-volubilis: 16px;
 
-  /* Componentes */
-  --jlux-altitudo-buttonis: 24px;
+  /* Composita */
+  --jlux-altitudo-pulsabuli: 24px;
   --jlux-altitudo-campi: 24px;
   --jlux-altitudo-lineae: 22px;
   --jlux-mensura-iconis-barrae: 18px;
 
   /* Motus */
-  --jlux-tempus-hover: 120ms;
+  --jlux-tempus-superpositionis: 120ms;
   --jlux-tempus-pressus: 80ms;
-  --jlux-tempus-focus: 150ms;
-  --jlux-tempus-menu: 160ms;
+  --jlux-tempus-intentionis: 150ms;
+  --jlux-tempus-indicis: 160ms;
   --jlux-tempus-fenestrae: 220ms;
   --jlux-tempus-minimizationis: 240ms;
   --jlux-curva: cubic-bezier(0.22, 1, 0.36, 1);
