@@ -128,7 +128,7 @@ respice_officinam() {
 
 respice_systema() {
     local relatio="$TEMPORAIRE/systema.log"
-    if python3 -m unittest discover -s tests -p 'test_systema.py' -v >"$relatio" 2>&1; then
+    if python3 tests/proba_systema_portabile.py >"$relatio" 2>&1; then
         recte "systema"
     else
         erratum "systema" "$(tr '\n' ' ' <"$relatio")"
