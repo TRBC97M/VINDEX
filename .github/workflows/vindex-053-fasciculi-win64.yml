@@ -1,0 +1,216 @@
+# Stratum fasciculorum Win64 in fonte temporario applicat, auto-hospitium et Windows verum probat.
+name: VINDEX 0.53 — Fasciculi Win64
+
+on:
+  push:
+    branches:
+      - chatgpt/pe-fasciculi-053
+  pull_request:
+    branches:
+      - claude/pe-integration-053-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumentum verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 -m py_compile "$RADIX/instrumenta/applica_fasciculos_win64_053.py"
+          python3 -m py_compile "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py"
+
+      - name: Fontem Win64 transforma
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" \
+              "$RADIX/src/compilator_vindex.vindex" \
+              "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" \
+              "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'numerus_functionum_pe SICUT NUMERUS VALENS 7' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'COMPONE_APERI_FASCICULUM_PE' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'COMPONE_TRANSFER_FASCICULUM_PE' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'COMPONE_CLAUDE_FASCICULUM_PE' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+
+      - name: Auto-hospitium ad punctum fixum
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 "$RADIX/compilator_vindex"
+          "$RADIX/compilator_vindex" "$RUNNER_TEMP/compilator_fasciculi.vindex" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          "$RUNNER_TEMP/gen1" "$RUNNER_TEMP/compilator_fasciculi.vindex" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/compilator_fasciculi.vindex" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          sha256sum "$RUNNER_TEMP/gen2"
+          printf '%s\n' 'RECTE: auto-hospitium fasciculorum ad punctum fixum pervenit.'
+
+      - name: Contractum fasciculorum ELF custodi
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          EXE="$RUNNER_TEMP/fasciculi_elf"
+          "$RUNNER_TEMP/gen2" "$RADIX/tests/casus/fasciculi_portabiles.vindex" "$EXE"
+          chmod 755 "$EXE"
+          mkdir -p "$RUNNER_TEMP/elf-run"
+          (
+            cd "$RUNNER_TEMP/elf-run"
+            "$EXE"
+            python3 - <<'PY'
+          from pathlib import Path
+          data = Path('vindex-pe-io.tmp').read_bytes()
+          assert data == b'VINX', data
+          print('RECTE: fasciculi ELF VINX servant et relegunt.')
+          PY
+          )
+
+      - name: PE gradus fasciculorum construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+
+          cat >"$RUNNER_TEMP/apertio.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("vindex-open.tmp").
+              SI fd < 0 TUNC
+                  REDDE 11.
+              FIN-SI.
+              REDDE 0.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/clausura.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("vindex-close.tmp").
+              SI fd < 0 TUNC
+                  REDDE 11.
+              FIN-SI.
+              DECLARA c SICUT NUMERUS VALENS CLAUDE(fd).
+              SI c != 0 TUNC
+                  REDDE 12.
+              FIN-SI.
+              REDDE 0.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/scriptura.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA data SICUT ORDO DE LITTERA CAPACITAS 1.
+              data[0] = 86.
+              DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("vindex-write.tmp").
+              SI fd < 0 TUNC
+                  REDDE 11.
+              FIN-SI.
+              DECLARA n SICUT NUMERUS VALENS MITTE(fd, data, 1).
+              CLAUDE(fd).
+              SI n != 1 TUNC
+                  REDDE 12.
+              FIN-SI.
+              REDDE 0.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/lectio.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("vindex-read.tmp").
+              SI fd < 0 TUNC
+                  REDDE 21.
+              FIN-SI.
+              DECLARA n SICUT NUMERUS VALENS LEGE(fd, 1).
+              CLAUDE(fd).
+              SI n != 1 TUNC
+                  REDDE 22.
+              FIN-SI.
+              SI OCTETUS(0) != 86 TUNC
+                  REDDE 23.
+              FIN-SI.
+              REDDE 0.
+          FIN-FUNCTIO.
+          VINDEX
+
+          "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/apertio.vindex" "$RUNNER_TEMP/apertio.exe" pe
+          "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/clausura.vindex" "$RUNNER_TEMP/clausura.exe" pe
+          "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/scriptura.vindex" "$RUNNER_TEMP/scriptura.exe" pe
+          "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/lectio.vindex" "$RUNNER_TEMP/lectio.exe" pe
+          "$RUNNER_TEMP/gen2" "$RADIX/tests/casus/fasciculi_portabiles.vindex" "$RUNNER_TEMP/fasciculi_windows.exe" pe
+
+          file "$RUNNER_TEMP/fasciculi_windows.exe"
+          strings "$RUNNER_TEMP/fasciculi_windows.exe" | grep -F 'CreateFileA'
+          strings "$RUNNER_TEMP/fasciculi_windows.exe" | grep -F 'ReadFile'
+          strings "$RUNNER_TEMP/fasciculi_windows.exe" | grep -F 'CloseHandle'
+
+      - name: PE fasciculorum conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-fasciculi-win64
+          path: |
+            ${{ runner.temp }}/apertio.exe
+            ${{ runner.temp }}/clausura.exe
+            ${{ runner.temp }}/scriptura.exe
+            ${{ runner.temp }}/lectio.exe
+            ${{ runner.temp }}/fasciculi_windows.exe
+          if-no-files-found: error
+
+  windows:
+    needs: construe
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: PE fasciculorum accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-fasciculi-win64
+          path: pe
+
+      - name: Gradus fasciculorum sub Windows vero proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dir = Join-Path $env:RUNNER_TEMP 'vindex-fasciculi-run'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Copy-Item (Join-Path $PWD 'pe\*.exe') $dir
+
+          function Proba-Exe([string]$nomen) {
+            $via = Join-Path $dir $nomen
+            $p = Start-Process -FilePath $via -WorkingDirectory $dir -Wait -PassThru -NoNewWindow
+            Write-Host "$nomen -> $($p.ExitCode)"
+            if ($p.ExitCode -ne 0) { throw "ERRATUM: $nomen status $($p.ExitCode) reddit." }
+          }
+
+          Proba-Exe 'apertio.exe'
+          if (-not (Test-Path (Join-Path $dir 'vindex-open.tmp'))) { throw 'ERRATUM: APERI_SCRIBERE fasciculum non creavit.' }
+          Proba-Exe 'clausura.exe'
+          Proba-Exe 'scriptura.exe'
+          $scriptum = [System.IO.File]::ReadAllBytes((Join-Path $dir 'vindex-write.tmp'))
+          if ($scriptum.Length -ne 1 -or $scriptum[0] -ne 86) { throw 'ERRATUM: MITTE octetum V non scripsit.' }
+
+          [System.IO.File]::WriteAllBytes((Join-Path $dir 'vindex-read.tmp'), [byte[]](86))
+          Proba-Exe 'lectio.exe'
+
+          Proba-Exe 'fasciculi_windows.exe'
+          $via = Join-Path $dir 'vindex-pe-io.tmp'
+          if (-not (Test-Path $via)) { throw 'ERRATUM: fasciculus vindex-pe-io.tmp non creatus est.' }
+          $octeta = [System.IO.File]::ReadAllBytes($via)
+          $expectata = [byte[]](86,73,78,88)
+          if ($octeta.Length -ne 4) { throw "ERRATUM: longitudo $($octeta.Length), 4 exspectabatur." }
+          for ($i = 0; $i -lt 4; $i++) {
+            if ($octeta[$i] -ne $expectata[$i]) { throw "ERRATUM: octetum $i = $($octeta[$i])." }
+          }
+          Write-Host 'RECTE: APERI/MITTE/CLAUDE/LEGE/OCTETUS sub Windows vero VINX servant et relegunt.'

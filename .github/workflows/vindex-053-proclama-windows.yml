@@ -1,0 +1,72 @@
+# PROCLAMA PE e strato communi Claudii sub Windows vero exsequitur.
+name: VINDEX 0.53 — PROCLAMA sub Windows
+
+on:
+  push:
+    branches:
+      - chatgpt/pe-fasciculi-053
+  pull_request:
+    branches:
+      - claude/pe-integration-053-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+      - name: PE exempla construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 "$RADIX/compilator_vindex"
+          "$RADIX/compilator_vindex" "$RADIX/examples/proclama_catena_pe_053.vindex" "$RUNNER_TEMP/catena.exe" pe
+          "$RADIX/compilator_vindex" "$RADIX/examples/proclama_multi_pe_053.vindex" "$RUNNER_TEMP/multi.exe" pe
+      - name: PE conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-proclama-pe
+          path: |
+            ${{ runner.temp }}/catena.exe
+            ${{ runner.temp }}/multi.exe
+          if-no-files-found: error
+
+  windows:
+    needs: construe
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: PE accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-proclama-pe
+          path: pe
+      - name: Catena exsequere
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = Join-Path $PWD 'pe\catena.exe'
+          $out = (& $exe | Out-String).TrimEnd("`r", "`n")
+          $status = $LASTEXITCODE
+          if ($status -ne 33) { throw "ERRATUM: catena status $status; 33 exspectabatur." }
+          if ($out -ne 'Salve ex PE!') { throw "ERRATUM: catena exitus [$out]." }
+          Write-Host "RECTE: catena Windows, exitus 33."
+          exit 0
+      - name: Multiplices exsequere
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = Join-Path $PWD 'pe\multi.exe'
+          $out = (& $exe | Out-String).TrimEnd("`r", "`n") -replace "`r`n", "`n"
+          $status = $LASTEXITCODE
+          $expect = "Premier`n999`nDernier"
+          if ($status -ne 7) { throw "ERRATUM: multi status $status; 7 exspectabatur." }
+          if ($out -ne $expect) { throw "ERRATUM: multi exitus [$out]." }
+          Write-Host "RECTE: PROCLAMA multiplex sub Windows vero, exitus 7."
+          exit 0
