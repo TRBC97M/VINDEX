@@ -17,10 +17,9 @@ def exige(textus: str, fragmentum: str, numerus: int, nomen: str) -> None:
 
 
 def adiutor_compactus() -> str:
-    # Eadem series machinalis LV octetorum manet. Prima X octeta U64 utuntur;
-    # reliqua XLV octeta per verba U16 parvi ordinis scribuntur. Haec forma
-    # auto-hospitio nativo comprobata est, cum forma conglobata U32 tarditatem
-    # pathologicam excitaret.
+    # Eadem series machinalis LV octetorum manet. Commentaria intra corpus
+    # VINDEX consulto omittuntur: diagnostica auto-hospitii formam sine
+    # commentariis probavit, dum forma canonica commentata iter nativum tardabat.
     return '''FUNCTIO COMPONE_RESERVA_PILA_PROBATA REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT indice SICUT NUMERUS.
@@ -28,12 +27,10 @@ def adiutor_compactus() -> str:
     DECLARA p SICUT NUMERUS VALENS indice.
     DECLARA ignoratum SICUT NUMERUS VALENS 0.
 
-    // mov r11, imm64. Octeta immediata a CORRIGE_PILA post analysin corporis mutantur.
     CODEX_SCRIBE(codex, p, 73).
     CODEX_SCRIBE(codex, p + 1, 187).
     ignoratum = SCRIBE_U64(codex, p + 2, spatium).
 
-    // Reliqua XLV octeta prologi in verbis U16 parvi ordinis scribuntur.
     ignoratum = SCRIBE_U16(codex, p + 10, 33097).
     ignoratum = SCRIBE_U16(codex, p + 12, 251).
     ignoratum = SCRIBE_U16(codex, p + 14, 16).
@@ -127,7 +124,7 @@ def applica() -> None:
     VIA.write_text(textus, encoding="utf-8", newline="\n")
 
     if adiutor_mutatus:
-        print("RECTE: emissor pilae U16 stabilis est; eadem series machinalis LV octetorum servatur.")
+        print("RECTE: emissor pilae U16 stabilis sine commentariis internis est.")
     elif mutationes_mensurae:
         print("RECTE: pila functionum exacte dimensata et per paginas probata est.")
     else:
