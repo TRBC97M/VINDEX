@@ -21,8 +21,15 @@ def plura(textus: str, vetus: str, novum: str, numerus: int, nomen: str) -> str:
     return textus.replace(vetus, novum)
 
 
-def prologus(var: str, spatium: int) -> str:
-    return f"""        CODEX_SCRIBE(codex, {var}, 73).
+def apta_indentum(textus: str, indentum: int) -> str:
+    si indentum == 8:
+        return textus
+    praefixum = " " * indentum
+    return "\n".join(praefixum + linea[8:] if linea.startswith("        ") else linea for linea in textus.splitlines())
+
+
+def prologus(var: str, spatium: int, indentum: int = 8) -> str:
+    textus = f"""        CODEX_SCRIBE(codex, {var}, 73).
         CODEX_SCRIBE(codex, {var} + 1, 137).
         CODEX_SCRIBE(codex, {var} + 2, 230).
         {var} = {var} + 3.
@@ -36,29 +43,33 @@ def prologus(var: str, spatium: int) -> str:
         CODEX_SCRIBE(codex, {var} + 2, 236).
         CODEX_SCRIBE(codex, {var} + 3, {spatium}).
         {var} = {var} + 4."""
+    return apta_indentum(textus, indentum)
 
 
-def epilogus(var: str) -> str:
-    return f"""        CODEX_SCRIBE(codex, {var}, 76).
+def epilogus(var: str, indentum: int = 8) -> str:
+    textus = f"""        CODEX_SCRIBE(codex, {var}, 76).
         CODEX_SCRIBE(codex, {var} + 1, 137).
         CODEX_SCRIBE(codex, {var} + 2, 244).
         {var} = {var} + 3."""
+    return apta_indentum(textus, indentum)
 
 
-def vetus_sub(var: str, spatium: int) -> str:
-    return f"""        CODEX_SCRIBE(codex, {var}, 72).
+def vetus_sub(var: str, spatium: int, indentum: int = 8) -> str:
+    textus = f"""        CODEX_SCRIBE(codex, {var}, 72).
         CODEX_SCRIBE(codex, {var} + 1, 131).
         CODEX_SCRIBE(codex, {var} + 2, 236).
         CODEX_SCRIBE(codex, {var} + 3, {spatium}).
         {var} = {var} + 4."""
+    return apta_indentum(textus, indentum)
 
 
-def vetus_add(var: str, spatium: int) -> str:
-    return f"""        CODEX_SCRIBE(codex, {var}, 72).
+def vetus_add(var: str, spatium: int, indentum: int = 8) -> str:
+    textus = f"""        CODEX_SCRIBE(codex, {var}, 72).
         CODEX_SCRIBE(codex, {var} + 1, 131).
         CODEX_SCRIBE(codex, {var} + 2, 196).
         CODEX_SCRIBE(codex, {var} + 3, {spatium}).
         {var} = {var} + 4."""
+    return apta_indentum(textus, indentum)
 
 
 def intra_functio(textus: str, nomen: str, sequens: str, mutator) -> str:
@@ -90,8 +101,8 @@ def transforma(textus: str) -> str:
     )
 
     def aperi(pars: str) -> str:
-        pars = unum(pars, vetus_sub("p_ap", 56), prologus("p_ap", 64), "prologi CreateFileA")
-        return unum(pars, vetus_add("p_ap", 56), epilogus("p_ap"), "epilogi CreateFileA")
+        pars = unum(pars, vetus_sub("p_ap", 56, 4), prologus("p_ap", 64, 4), "prologi CreateFileA")
+        return unum(pars, vetus_add("p_ap", 56, 4), epilogus("p_ap", 4), "epilogi CreateFileA")
 
     textus = intra_functio(
         textus,
@@ -101,8 +112,8 @@ def transforma(textus: str) -> str:
     )
 
     def transfer(pars: str) -> str:
-        pars = unum(pars, vetus_sub("p_tr", 56), prologus("p_tr", 64), "prologi transferendi")
-        return plura(pars, vetus_add("p_tr", 56), epilogus("p_tr"), 2, "epilogorum transferendi")
+        pars = unum(pars, vetus_sub("p_tr", 56, 4), prologus("p_tr", 64, 4), "prologi transferendi")
+        return plura(pars, vetus_add("p_tr", 56, 4), epilogus("p_tr", 4), 2, "epilogorum transferendi")
 
     textus = intra_functio(
         textus,
@@ -112,8 +123,8 @@ def transforma(textus: str) -> str:
     )
 
     def claude(pars: str) -> str:
-        pars = unum(pars, vetus_sub("p_cl", 40), prologus("p_cl", 32), "prologi CloseHandle")
-        return plura(pars, vetus_add("p_cl", 40), epilogus("p_cl"), 2, "epilogorum CloseHandle")
+        pars = unum(pars, vetus_sub("p_cl", 40, 4), prologus("p_cl", 32, 4), "prologi CloseHandle")
+        return plura(pars, vetus_add("p_cl", 40, 4), epilogus("p_cl", 4), 2, "epilogorum CloseHandle")
 
     textus = intra_functio(
         textus,
