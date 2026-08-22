@@ -36,9 +36,10 @@ jobs:
           python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" \
               "$RADIX/src/compilator_vindex.vindex" \
               "$RUNNER_TEMP/compilator_fasciculi.vindex"
-          grep -Fq 'CreateFileA' "$RUNNER_TEMP/compilator_fasciculi.vindex"
-          grep -Fq 'ReadFile' "$RUNNER_TEMP/compilator_fasciculi.vindex"
-          grep -Fq 'CloseHandle' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'numerus_functionum_pe SICUT NUMERUS VALENS 7' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'COMPONE_APERI_FASCICULUM_PE' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'COMPONE_TRANSFER_FASCICULUM_PE' "$RUNNER_TEMP/compilator_fasciculi.vindex"
+          grep -Fq 'COMPONE_CLAUDE_FASCICULUM_PE' "$RUNNER_TEMP/compilator_fasciculi.vindex"
 
       - name: Auto-hospitium ad punctum fixum
         shell: bash
