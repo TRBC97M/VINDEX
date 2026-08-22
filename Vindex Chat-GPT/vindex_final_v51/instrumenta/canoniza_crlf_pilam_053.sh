@@ -59,7 +59,9 @@ printf '%s\n' '=== II. PILAM APPLICA ==='
 python3 "$RADIX/instrumenta/applica_pilam_functionum_053.py"
 
 printf '%s\n' '=== III. PUNCTUM FIXUM AB AMORSA ==='
-timeout 60s bash "$RADIX/bootstrap/reconstruit.sh" "$COMPILATOR_NOVUS"
+# Diagnostica integra hunc gradum intra fractionem secundae absolvit; X secundae
+# satis sunt ut regressio pathologica cito sistatur neque usorem diu detineat.
+timeout 10s bash "$RADIX/bootstrap/reconstruit.sh" "$COMPILATOR_NOVUS"
 chmod 755 "$COMPILATOR_NOVUS"
 
 printf '%s\n' '=== IV. PILA MAIOR UNO MIB ==='
@@ -134,7 +136,7 @@ SYSTEMA BIOS: REGENERATUM
 SYSTEMA UEFI: REGENERATUM
 \`\`\`
 
-`IGNORA_SPATIA` nunc CR (`13`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur, ad XVI octeta ordinantur, et pagina quaeque IV KiB tangitur. Scripturae testae Unix ante probationes ad LF canonice rediguntur.
+\`IGNORA_SPATIA\` nunc CR (\`13\`) agnoscit; fontes CRLF igitur recte tractantur. Fasciculi pilae ex usu reali computantur, ad XVI octeta ordinantur, et pagina quaeque IV KiB tangitur. Scripturae testae Unix ante probationes ad LF canonice rediguntur.
 
 VINDEX Latine cogitat. Sylvia Latine loquitur.
 EOF
