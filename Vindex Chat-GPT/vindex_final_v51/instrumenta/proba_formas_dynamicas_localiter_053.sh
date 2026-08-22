@@ -46,6 +46,7 @@ proba() {
 
   chmod 755 "$RADIX/compilator_vindex"
   python3 "$RADIX/instrumenta/applica_formas_dynamicas_053.py" >> "$TEMPUS" 2>&1 || return 1
+  python3 "$RADIX/instrumenta/corrige_recognitionem_typorum_053.py" >> "$TEMPUS" 2>&1 || return 1
 
   if grep -q 'tabula\[950\|tabula\[1000\|tabula\[1050\|tabula\[1100\|tabula\[2500\|tabula\[2530\|tabula\[200 +' "$RADIX/src/compilator_vindex.vindex"; then
     printf '%s\n' 'ERRATUM: metadata formarum fixa adhuc manet.' >> "$TEMPUS"
