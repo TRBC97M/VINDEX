@@ -5,8 +5,7 @@
 // Symbola localia iam extra regiones 0-99, 100-199, 228-327, 850+, 2300+ et 2400+ servantur.
 // Descriptor localium in tabula: 2970=basis, 2971=limen, 2972=quantitas.
 // Unum symbolum locale XLVIII octeta habet: nomen, intervallum, series, magnitudo, structura, fluitans.
-// Descriptor functionum: 2980=basis, 2981=limen, 2982=quantitas; par est (nomen, locus).
-// Descriptor vocationum pendentium: 2983=basis, 2984=limen, 2985=quantitas; par est (locus, nomen).
+// Functiones et vocationes pendentes descriptoribus explicitis extra tabulam utuntur.
 // Descriptor formarum: 2990=basis, 2991=limen, 2992=quantitas, 2993=index ultimae formae.
 // Unum recordum formae XL octeta habet: nomen, magnitudo in octetis VIII, numerus camporum, limen camporum, basis camporum.
 // Unum recordum campi XXXII octeta habet: nomen, magnitudo, intervallum, fluitans.
@@ -1090,6 +1089,30 @@ FUNCTIO CURSOR_PILAE_SCRIBE REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO DESCRIPTOR_FUNCTIONUM_LEGE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    REDDE CONTENTUM(contextus_parseris + 24).
+FIN-FUNCTIO.
+
+FUNCTIO DESCRIPTOR_FUNCTIONUM_SCRIBE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    ACCIPIT valor SICUT NUMERUS.
+    CONTENTUM(contextus_parseris + 24) = valor.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO DESCRIPTOR_PENDENTIUM_LEGE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    REDDE CONTENTUM(contextus_parseris + 32).
+FIN-FUNCTIO.
+
+FUNCTIO DESCRIPTOR_PENDENTIUM_SCRIBE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    ACCIPIT valor SICUT NUMERUS.
+    CONTENTUM(contextus_parseris + 32) = valor.
+    REDDE 0.
+FIN-FUNCTIO.
+
 FUNCTIO CERCA_VARIABILEM REDDENS NUMERUS.
     ACCIPIT tabula SICUT ORDO DE NUMERUS.
     ACCIPIT nomen SICUT NUMERUS.
@@ -2087,15 +2110,15 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 10).
         FIN-SI.
 
-        DECLARA loci_fn SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(tabula, nomen_fn).
+        DECLARA loci_fn SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(contextus_parseris, nomen_fn).
         SI loci_fn != 0 TUNC
             CONTENTUM(pos_codicis) = COMPONE_VOCA_RETRO(codex, CONTENTUM(pos_codicis), loci_fn).
         ALITER
             DECLARA loci_appel_pendens SICUT NUMERUS VALENS CONTENTUM(pos_codicis) + 1.
             CONTENTUM(pos_codicis) = COMPONE_VOCA_RETRO(codex, CONTENTUM(pos_codicis), CONTENTUM(pos_codicis)).
-            DECLARA idx_pendens SICUT NUMERUS VALENS tabula[2985].
-            DECLARA ig_pendens_dyn SICUT NUMERUS VALENS PARES_SCRIBE(tabula, 2983, idx_pendens, 0, loci_appel_pendens).
-            ig_pendens_dyn = PARES_SCRIBE(tabula, 2983, idx_pendens, 1, nomen_fn).
+            DECLARA idx_pendens SICUT NUMERUS VALENS PARES_QUANTITAS(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris)).
+            DECLARA ig_pendens_dyn SICUT NUMERUS VALENS PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_pendens, 0, loci_appel_pendens).
+            ig_pendens_dyn = PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_pendens, 1, nomen_fn).
         FIN-SI.
         SI numerus_argumentorum == 7 TUNC
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 10).
@@ -3056,24 +3079,22 @@ FUNCTIO ANALYSA_COMPARATIO REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO INITIA_PARES_DYNAMICA REDDENS NUMERUS.
-    ACCIPIT tabula SICUT ORDO DE NUMERUS.
-    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT descriptor SICUT ACUS<NUMERUS>.
     ACCIPIT limen_init SICUT NUMERUS.
     DECLARA basis_parium SICUT NUMERUS VALENS RESERVA_OCTETA(limen_init * 16).
     SI basis_parium < 0 TUNC
         REDDE 71.
     FIN-SI.
-    tabula[descriptor] = basis_parium.
-    tabula[descriptor + 1] = limen_init.
-    tabula[descriptor + 2] = 0.
+    CONTENTUM(descriptor) = basis_parium.
+    CONTENTUM(descriptor + 8) = limen_init.
+    CONTENTUM(descriptor + 16) = 0.
     REDDE 0.
 FIN-FUNCTIO.
 
 FUNCTIO ASSECURA_PARES_DYNAMICA REDDENS NUMERUS.
-    ACCIPIT tabula SICUT ORDO DE NUMERUS.
-    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT descriptor SICUT ACUS<NUMERUS>.
     ACCIPIT necessaria SICUT NUMERUS.
-    DECLARA limen_parium SICUT NUMERUS VALENS tabula[descriptor + 1].
+    DECLARA limen_parium SICUT NUMERUS VALENS CONTENTUM(descriptor + 8).
     SI necessaria <= limen_parium TUNC
         REDDE 0.
     FIN-SI.
@@ -3085,43 +3106,46 @@ FUNCTIO ASSECURA_PARES_DYNAMICA REDDENS NUMERUS.
     SI nova_basis_parium < 0 TUNC
         REDDE 71.
     FIN-SI.
-    DECLARA basis_parium SICUT NUMERUS VALENS tabula[descriptor].
-    DECLARA quantitas_parium SICUT NUMERUS VALENS tabula[descriptor + 2].
+    DECLARA basis_parium SICUT NUMERUS VALENS CONTENTUM(descriptor).
+    DECLARA quantitas_parium SICUT NUMERUS VALENS CONTENTUM(descriptor + 16).
     DECLARA octeta_parium SICUT NUMERUS VALENS quantitas_parium * 16.
     DECLARA i_parium SICUT NUMERUS VALENS 0.
     DUM i_parium < octeta_parium PERFICE
         SCRIBE_OCTETUM_AB(nova_basis_parium + i_parium, OCTETUS_AB(basis_parium + i_parium)).
         i_parium = i_parium + 1.
     FIN-DUM.
-    tabula[descriptor] = nova_basis_parium.
-    tabula[descriptor + 1] = novum_limen_parium.
+    CONTENTUM(descriptor) = nova_basis_parium.
+    CONTENTUM(descriptor + 8) = novum_limen_parium.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO PARES_QUANTITAS REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT ACUS<NUMERUS>.
+    REDDE CONTENTUM(descriptor + 16).
+FIN-FUNCTIO.
+
 FUNCTIO PARES_LEGE REDDENS NUMERUS.
-    ACCIPIT tabula SICUT ORDO DE NUMERUS.
-    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT descriptor SICUT ACUS<NUMERUS>.
     ACCIPIT index_par SICUT NUMERUS.
     ACCIPIT pars_paris SICUT NUMERUS.
-    SI index_par < 0 || index_par >= tabula[descriptor + 2] TUNC
+    SI index_par < 0 || index_par >= CONTENTUM(descriptor + 16) TUNC
         REDDE 0.
     FIN-SI.
-    DECLARA sedes_paris SICUT NUMERUS VALENS tabula[descriptor] + (index_par * 16) + (pars_paris * 8).
+    DECLARA sedes_paris SICUT NUMERUS VALENS CONTENTUM(descriptor) + (index_par * 16) + (pars_paris * 8).
     REDDE CONTENTUM(sedes_paris).
 FIN-FUNCTIO.
 
 FUNCTIO PARES_SCRIBE REDDENS NUMERUS.
-    ACCIPIT tabula SICUT ORDO DE NUMERUS.
-    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT descriptor SICUT ACUS<NUMERUS>.
     ACCIPIT index_par SICUT NUMERUS.
     ACCIPIT pars_paris SICUT NUMERUS.
     ACCIPIT valor_paris SICUT NUMERUS.
-    DECLARA status_parium SICUT NUMERUS VALENS ASSECURA_PARES_DYNAMICA(tabula, descriptor, index_par + 1).
+    DECLARA status_parium SICUT NUMERUS VALENS ASSECURA_PARES_DYNAMICA(descriptor, index_par + 1).
     SI status_parium != 0 TUNC
         REDDE status_parium.
     FIN-SI.
-    DECLARA basis_parium SICUT NUMERUS VALENS tabula[descriptor].
-    SI pars_paris == 0 && index_par >= tabula[descriptor + 2] TUNC
+    DECLARA basis_parium SICUT NUMERUS VALENS CONTENTUM(descriptor).
+    SI pars_paris == 0 && index_par >= CONTENTUM(descriptor + 16) TUNC
         DECLARA z_paris SICUT NUMERUS VALENS 0.
         DUM z_paris < 16 PERFICE
             SCRIBE_OCTETUM_AB(basis_parium + (index_par * 16) + z_paris, 0).
@@ -3130,20 +3154,21 @@ FUNCTIO PARES_SCRIBE REDDENS NUMERUS.
     FIN-SI.
     DECLARA sedes_paris SICUT NUMERUS VALENS basis_parium + (index_par * 16) + (pars_paris * 8).
     CONTENTUM(sedes_paris) = valor_paris.
-    SI index_par >= tabula[descriptor + 2] TUNC
-        tabula[descriptor + 2] = index_par + 1.
+    SI index_par >= CONTENTUM(descriptor + 16) TUNC
+        CONTENTUM(descriptor + 16) = index_par + 1.
     FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
 FUNCTIO CERCA_FUNCTIONEM_DYNAMICAM REDDENS NUMERUS.
-    ACCIPIT tabula SICUT ORDO DE NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     ACCIPIT nomen_fn_dyn SICUT NUMERUS.
+    DECLARA descriptor SICUT NUMERUS VALENS DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris).
     DECLARA idx_fn_dyn SICUT NUMERUS VALENS 0.
     DECLARA locus_fn_dyn SICUT NUMERUS VALENS 0.
-    DUM idx_fn_dyn < tabula[2982] PERFICE
-        SI PARES_LEGE(tabula, 2980, idx_fn_dyn, 0) == nomen_fn_dyn TUNC
-            locus_fn_dyn = PARES_LEGE(tabula, 2980, idx_fn_dyn, 1).
+    DUM idx_fn_dyn < PARES_QUANTITAS(descriptor) PERFICE
+        SI PARES_LEGE(descriptor, idx_fn_dyn, 0) == nomen_fn_dyn TUNC
+            locus_fn_dyn = PARES_LEGE(descriptor, idx_fn_dyn, 1).
         FIN-SI.
         idx_fn_dyn = idx_fn_dyn + 1.
     FIN-DUM.
@@ -4313,20 +4338,28 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA inventa_principalis SICUT NUMERUS VALENS 0.
 
     DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
-    DECLARA contextus_parseris SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(24).
+    DECLARA contextus_parseris SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(40).
     SI contextus_parseris < 0 TUNC
         PROCLAMA "ERRATUM: memoria contextus parseris reservata non est".
         REDDE 71.
     FIN-SI.
     CONTENTUM(contextus_parseris) = 0.
+    DECLARA descriptor_functionum_contextus SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    DECLARA descriptor_pendentium_contextus SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI descriptor_functionum_contextus < 0 || descriptor_pendentium_contextus < 0 TUNC
+        PROCLAMA "ERRATUM: memoria descriptorum functionum reservata non est".
+        REDDE 71.
+    FIN-SI.
+    DESCRIPTOR_FUNCTIONUM_SCRIBE(contextus_parseris, descriptor_functionum_contextus).
+    DESCRIPTOR_PENDENTIUM_SCRIBE(contextus_parseris, descriptor_pendentium_contextus).
     CONTENTUM(contextus_parseris + 8) = 0.
     DECLARA status_locorum_dynam SICUT NUMERUS VALENS INITIA_LOCA_DYNAMICA(tabula).
     SI status_locorum_dynam != 0 TUNC
         PROCLAMA "ERRATUM: memoria symbolorum localium reservata non est".
         REDDE 71.
     FIN-SI.
-    DECLARA status_functionum_dynam SICUT NUMERUS VALENS INITIA_PARES_DYNAMICA(tabula, 2980, 64).
-    DECLARA status_pendentium_dynam SICUT NUMERUS VALENS INITIA_PARES_DYNAMICA(tabula, 2983, 64).
+    DECLARA status_functionum_dynam SICUT NUMERUS VALENS INITIA_PARES_DYNAMICA(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), 64).
+    DECLARA status_pendentium_dynam SICUT NUMERUS VALENS INITIA_PARES_DYNAMICA(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), 64).
     SI status_functionum_dynam != 0 || status_pendentium_dynam != 0 TUNC
         PROCLAMA "ERRATUM: memoria functionum dynamicarum reservata non est".
         REDDE 71.
@@ -4525,9 +4558,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 FIN-DUM.
                 i = i + 1.
 
-                DECLARA idx_fn SICUT NUMERUS VALENS tabula[2982].
-                DECLARA ig_fn_dyn SICUT NUMERUS VALENS PARES_SCRIBE(tabula, 2980, idx_fn, 0, nomen_adiutoris).
-                ig_fn_dyn = PARES_SCRIBE(tabula, 2980, idx_fn, 1, pos).
+                DECLARA idx_fn SICUT NUMERUS VALENS PARES_QUANTITAS(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris)).
+                DECLARA ig_fn_dyn SICUT NUMERUS VALENS PARES_SCRIBE(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), idx_fn, 0, nomen_adiutoris).
+                ig_fn_dyn = PARES_SCRIBE(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), idx_fn, 1, pos).
 
                 pos = COMPONE_IMPONE(codex, pos, 5).
                 pos = COMPONE_TRANSCRIBE(codex, pos, 5, 4).
@@ -4639,10 +4672,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
 
     DECLARA k_pendens SICUT NUMERUS VALENS 0.
-    DUM k_pendens < tabula[2985] PERFICE
-        DECLARA loci_p SICUT NUMERUS VALENS PARES_LEGE(tabula, 2983, k_pendens, 0).
-        DECLARA nomen_p SICUT NUMERUS VALENS PARES_LEGE(tabula, 2983, k_pendens, 1).
-        DECLARA loci_cible SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(tabula, nomen_p).
+    DUM k_pendens < PARES_QUANTITAS(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris)) PERFICE
+        DECLARA loci_p SICUT NUMERUS VALENS PARES_LEGE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), k_pendens, 0).
+        DECLARA nomen_p SICUT NUMERUS VALENS PARES_LEGE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), k_pendens, 1).
+        DECLARA loci_cible SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(contextus_parseris, nomen_p).
         SI loci_cible == 0 TUNC
             PROCLAMA "ERRATUM: functio vocata non inventa est".
             REDDE 65.
