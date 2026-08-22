@@ -1,4 +1,4 @@
-# Custodia structuram PE32+, importationes et vocationes IAT verificat.
+# Custodia structuram PE32+, importationes et contractum fasciculorum verificat.
 name: VINDEX 0.53 — Verificatio PE structuralis
 
 on:
@@ -29,6 +29,15 @@ jobs:
           RADIX='Vindex Chat-GPT/vindex_final_v51'
           python3 -m py_compile "$RADIX/tests/proba_pe_structuram_053.py"
           bash -n "$RADIX/instrumenta/proba_pe_minimum_053.sh"
+          bash -n "$RADIX/instrumenta/proba_fasciculos_portabiles_053.sh"
+
+      - name: Contractum fasciculorum ELF custodi
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 "$RADIX/compilator_vindex" "$RADIX/instrumenta/proba_fasciculos_portabiles_053.sh"
+          bash "$RADIX/instrumenta/proba_fasciculos_portabiles_053.sh"
 
       - name: PE minimum structuraliter proba
         shell: bash
