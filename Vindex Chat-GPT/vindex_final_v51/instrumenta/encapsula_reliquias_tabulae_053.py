@@ -35,19 +35,6 @@ FIN-FUNCTIO.
 '''
 
 
-def muta_unum(textus: str, vetus: str, novum: str, nomen: str) -> tuple[str, bool]:
-    n_vetus = textus.count(vetus)
-    n_novus = textus.count(novum)
-    if n_vetus == 1 and n_novus == 0:
-        return textus.replace(vetus, novum, 1), True
-    if n_vetus == 0 and n_novus == 1:
-        return textus, False
-    raise SystemExit(
-        f"ERRATUM: status mutationis {nomen} ambiguus est "
-        f"(vetus={n_vetus}, novus={n_novus})"
-    )
-
-
 def principale() -> None:
     textus = VIA.read_text(encoding="utf-8")
     mutatum = False
@@ -69,8 +56,6 @@ def principale() -> None:
         ("tabula[227] = tabula79_ante.", "DESINE_LOCUS_SCRIBE(tabula, tabula79_ante).", "desine-restitue"),
     )
 
-    # Si adiutores iam adsunt, accessus directi legitimi duo in ipsis adiutoribus
-    # manent; mutationes call-site iam factae esse debent.
     adiutores_adsunt = MARCA in textus
 
     for vetus, novum, nomen in mutationes_227:
@@ -80,8 +65,6 @@ def principale() -> None:
             textus = textus.replace(vetus, novum, 1)
             mutatum = True
         elif n_vetus == 0 and n_novus == 1:
-            pass
-        elif adiutores_adsunt and n_vetus == 0 and n_novus == 1:
             pass
         else:
             raise SystemExit(
@@ -101,7 +84,7 @@ def principale() -> None:
         raise SystemExit("ERRATUM: status scripturae 2999 ambiguus est")
 
     # Ante insertionem adiutorum quattuor lectiones directae restant. Post
-    # migrationem nulla lectio directa extra adiutorem manere debet.
+    # encapsulationem soli duo accessus in ipsis adiutoribus manent.
     si_directae_2999 = textus.count("tabula[2999]")
     if not adiutores_adsunt:
         if si_directae_2999 != 4:
@@ -110,11 +93,10 @@ def principale() -> None:
             )
         textus = textus.replace("tabula[2999]", "LECTIO_INTERVALLUM_LEGE(tabula)")
         mutatum = True
-    else:
-        if si_directae_2999 != 2:
-            raise SystemExit(
-                f"ERRATUM: soli duo accessus 2999 in adiutoribus exspectantur; inventi={si_directae_2999}"
-            )
+    elif si_directae_2999 != 2:
+        raise SystemExit(
+            f"ERRATUM: soli duo accessus 2999 in adiutoribus exspectantur; inventi={si_directae_2999}"
+        )
 
     if not adiutores_adsunt:
         if textus.count(ANCORA) != 1:
