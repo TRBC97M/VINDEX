@@ -5,10 +5,7 @@ on:
   push:
     branches:
       - chatgpt/vindex-053-compilator-dynamicus
-    paths:
-      - '.github/workflows/vindex-053-pila-functionum-unica.yml'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_pilam_functionum_053.py'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/genera_probationem_pilae_053.py'
+  workflow_dispatch:
 
 permissions:
   contents: write
