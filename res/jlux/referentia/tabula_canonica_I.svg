@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#07192B"/><stop offset="1" stop-color="#04101D"/></linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B79AD"/><stop offset="0.42" stop-color="#0E426F"/><stop offset="1" stop-color="#08233D"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F8F8F4"/><stop offset="1" stop-color="#E5E7E6"/></linearGradient>
+    <linearGradient id="button" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FDFEFE"/><stop offset="0.45" stop-color="#DDE8EF"/><stop offset="1" stop-color="#AFC5D3"/></linearGradient>
+    <linearGradient id="close" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D96A5E"/><stop offset="1" stop-color="#8E2626"/></linearGradient>
+    <linearGradient id="task" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#154F7B"/><stop offset="1" stop-color="#08233D"/></linearGradient>
+    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.35"/></filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect x="38" y="32" width="1844" height="1016" fill="none" stroke="#B98A52" stroke-opacity="0.58"/>
+  <text x="86" y="112" fill="#EAF8FF" font-family="Georgia, serif" font-size="58" letter-spacing="8">SYLVIA OS</text>
+  <text x="87" y="153" fill="#62D7F2" font-family="Arial, sans-serif" font-size="22" letter-spacing="6">JL-UX CORE I.0 · TABULA CANONICA</text>
+  <text x="1838" y="88" text-anchor="end" fill="#B98A52" font-family="Georgia, serif" font-size="20" letter-spacing="3">ORDO · CLARITAS · CONTINUITAS</text>
+  <line x1="86" y1="182" x2="1835" y2="182" stroke="#1A5D92" stroke-width="2"/>
+
+  <g filter="url(#shadow)">
+    <rect x="96" y="232" width="1040" height="560" fill="url(#panel)" stroke="#B9C4CF" stroke-width="2"/>
+    <rect x="96" y="232" width="1040" height="46" fill="url(#glass)" stroke="#62D7F2" stroke-opacity="0.5"/>
+    <line x1="99" y1="236" x2="1133" y2="236" stroke="#EAF8FF" stroke-opacity="0.72"/>
+    <text x="128" y="263" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="20">Explorator Sylvia — Documenta</text>
+
+    <g>
+      <rect x="1034" y="239" width="28" height="30" fill="url(#button)" stroke="#7393A8"/>
+      <rect x="1064" y="239" width="28" height="30" fill="url(#button)" stroke="#7393A8"/>
+      <rect x="1094" y="239" width="34" height="30" fill="url(#close)" stroke="#6F1B1B"/>
+      <path d="M1041 255h14" stroke="#173047" stroke-width="2"/>
+      <rect x="1072" y="247" width="12" height="12" fill="none" stroke="#173047" stroke-width="2"/>
+      <path d="M1104 248l14 14m0-14l-14 14" stroke="#FFF" stroke-width="2.4"/>
+    </g>
+
+    <rect x="96" y="278" width="1040" height="32" fill="#F1EEE4" stroke="#C5C7C4"/>
+    <text x="118" y="300" fill="#17202A" font-family="Arial, sans-serif" font-size="16">Fasciculus   Editio   Visus   Instrumenta   Auxilium</text>
+    <rect x="96" y="310" width="1040" height="48" fill="#E5E9EA" stroke="#C5C7C4"/>
+    <g font-family="Arial, sans-serif" font-size="14" fill="#17202A">
+      <rect x="120" y="320" width="84" height="28" fill="url(#button)" stroke="#A2B1BB"/><text x="140" y="339">Retro</text>
+      <rect x="212" y="320" width="84" height="28" fill="url(#button)" stroke="#A2B1BB"/><text x="226" y="339">Procede</text>
+      <rect x="304" y="320" width="90" height="28" fill="url(#button)" stroke="#A2B1BB"/><text x="321" y="339">Novum</text>
+      <rect x="402" y="320" width="110" height="28" fill="url(#button)" stroke="#A2B1BB"/><text x="421" y="339">Proprietas</text>
+    </g>
+
+    <rect x="96" y="358" width="254" height="404" fill="#E8EDF0" stroke="#C7D0D5"/>
+    <rect x="350" y="358" width="786" height="404" fill="#FDFDFB" stroke="#D5D9D9"/>
+    <rect x="112" y="382" width="220" height="28" fill="#1A5D92" opacity="0.94"/>
+    <g font-family="Arial, sans-serif" font-size="16">
+      <text x="126" y="402" fill="#FFF">Documenta</text>
+      <text x="126" y="440" fill="#17202A">Desktop</text>
+      <text x="126" y="474" fill="#17202A">Imagines</text>
+      <text x="126" y="508" fill="#17202A">Musica</text>
+      <text x="126" y="542" fill="#17202A">Rete</text>
+      <text x="126" y="576" fill="#17202A">Discus Systematis</text>
+    </g>
+
+    <rect x="350" y="358" width="786" height="36" fill="#EAF0F3"/>
+    <g font-family="Arial, sans-serif" font-size="15" fill="#17202A">
+      <text x="376" y="382">Nomen</text><text x="700" y="382">Genus</text><text x="900" y="382">Mensura</text>
+      <text x="390" y="432">Projecta</text><text x="700" y="432">Directorium</text><text x="900" y="432">—</text>
+      <text x="390" y="470">Notae.txt</text><text x="700" y="470">Textus</text><text x="900" y="470">12 KB</text>
+      <text x="390" y="508">Schema.svg</text><text x="700" y="508">Imago</text><text x="900" y="508">84 KB</text>
+      <text x="390" y="546">Archivum.vxa</text><text x="700" y="546">Archivum</text><text x="900" y="546">3.1 MB</text>
+    </g>
+    <line x1="350" y1="414" x2="1136" y2="414" stroke="#D9DEDF"/>
+    <line x1="350" y1="452" x2="1136" y2="452" stroke="#ECEEEE"/>
+    <line x1="350" y1="490" x2="1136" y2="490" stroke="#ECEEEE"/>
+    <line x1="350" y1="528" x2="1136" y2="528" stroke="#ECEEEE"/>
+    <rect x="96" y="762" width="1040" height="30" fill="#E5E7E6" stroke="#C5C7C4"/>
+    <text x="118" y="783" fill="#17202A" font-family="Arial, sans-serif" font-size="14">IV elementa · unum electum · spatium liberum: CCXXIV GB</text>
+  </g>
+
+  <g>
+    <text x="1200" y="252" fill="#EAF8FF" font-family="Georgia, serif" font-size="28">PALETTA</text>
+    <g transform="translate(1200 278)">
+      <rect x="0" y="0" width="86" height="66" fill="#08233D" stroke="#B9C4CF"/><text x="43" y="88" text-anchor="middle" fill="#EAF8FF" font-family="Arial" font-size="13">Profundum</text>
+      <rect x="102" y="0" width="86" height="66" fill="#0E426F" stroke="#B9C4CF"/><text x="145" y="88" text-anchor="middle" fill="#EAF8FF" font-family="Arial" font-size="13">Vitrum</text>
+      <rect x="204" y="0" width="86" height="66" fill="#62D7F2" stroke="#B9C4CF"/><text x="247" y="88" text-anchor="middle" fill="#EAF8FF" font-family="Arial" font-size="13">Aqua</text>
+      <rect x="306" y="0" width="86" height="66" fill="#F1EEE4" stroke="#B9C4CF"/><text x="349" y="88" text-anchor="middle" fill="#EAF8FF" font-family="Arial" font-size="13">Ebur</text>
+      <rect x="408" y="0" width="86" height="66" fill="#B98A52" stroke="#B9C4CF"/><text x="451" y="88" text-anchor="middle" fill="#EAF8FF" font-family="Arial" font-size="13">Bronzeum</text>
+    </g>
+    <text x="1200" y="430" fill="#EAF8FF" font-family="Georgia, serif" font-size="28">REGULAE</text>
+    <g font-family="Arial, sans-serif" font-size="18" fill="#D9ECF8">
+      <text x="1200" y="470">• Fenestrae quadratae: radius 0 px.</text>
+      <text x="1200" y="506">• Titulus fenestrae: 28 px.</text>
+      <text x="1200" y="542">• Barra operum: 28 px.</text>
+      <text x="1200" y="578">• Icones: volumen leve, non planae.</text>
+      <text x="1200" y="614">• Bronzeum rarum et deliberatum.</text>
+      <text x="1200" y="650">• JL-UX nomen usori vix ostenditur.</text>
+      <text x="1200" y="686">• SYLVIA OS est identitas primaria.</text>
+    </g>
+  </g>
+
+  <text x="96" y="874" fill="#EAF8FF" font-family="Georgia, serif" font-size="24">BARRA OPERUM — EXEMPLAR CANONICUM</text>
+  <rect x="96" y="900" width="1728" height="42" fill="#07192B" stroke="#B98A52" stroke-opacity="0.52"/>
+  <rect x="96" y="907" width="1728" height="28" fill="url(#task)" stroke="#2B6B97"/>
+  <rect x="104" y="909" width="86" height="24" fill="#0E426F" stroke="#62D7F2" stroke-opacity="0.45"/>
+  <text x="147" y="926" text-anchor="middle" fill="#F1EEE4" font-family="Arial" font-size="14">Menu</text>
+  <rect x="202" y="909" width="34" height="24" fill="#163B56" stroke="#55758A"/>
+  <rect x="242" y="909" width="34" height="24" fill="#163B56" stroke="#55758A"/>
+  <rect x="290" y="909" width="224" height="24" fill="#1A5D92" stroke="#62D7F2" stroke-opacity="0.35"/>
+  <text x="306" y="926" fill="#F1EEE4" font-family="Arial" font-size="14">Explorator Sylvia</text>
+  <rect x="522" y="909" width="166" height="24" fill="#123552" stroke="#456A84"/>
+  <text x="538" y="926" fill="#EAF8FF" font-family="Arial" font-size="14">Terminale</text>
+  <text x="1788" y="926" text-anchor="end" fill="#EAF8FF" font-family="Arial" font-size="14">14:32</text>
+
+  <text x="96" y="1006" fill="#B9C4CF" font-family="Arial, sans-serif" font-size="16" letter-spacing="2">STRUCTURA MCMXC · LUX ANNORUM MM · DISCIPLINA LATINA · IDENTITAS SYLVIA</text>
+  <text x="1824" y="1006" text-anchor="end" fill="#B98A52" font-family="Georgia, serif" font-size="16">VINDEX LATINE COGITAT · SYLVIA LATINE LOQUITUR</text>
+</svg>
