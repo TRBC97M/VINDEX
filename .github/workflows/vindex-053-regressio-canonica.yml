@@ -1,7 +1,4 @@
 # Custodia canonica VINDEX 0.53: regressiones, auto-hospitium, CRLF et pila magna.
-# Artefacta canonica UEFI in Ubuntu Resolute genita sunt; eadem familia
-# instrumentorum hic consulto figitur, ne versiones ld/objcopy sectiones PE
-# aliter disponant et falsam regressionem binariam efficiant.
 name: VINDEX 0.53 — Regressio canonica
 
 on:
@@ -23,7 +20,7 @@ concurrency:
 jobs:
   regressio-canonica:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
 
     steps:
       - name: Fontes accipe
@@ -31,66 +28,81 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Ambitum Ubuntu Resolute para et omnia comproba
+      - name: Dependencias graphicas para
         shell: bash
         run: |
           set -euo pipefail
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/repo" \
-            -w /repo \
-            ubuntu:25.10 \
-            bash -lc '
-              set -euo pipefail
-              export DEBIAN_FRONTEND=noninteractive
-              apt-get update
-              apt-get install -y --no-install-recommends \
-                gcc binutils python3 libgtk-3-0t64 ca-certificates diffutils
+          sudo apt-get update
+          if apt-cache show libgtk-3-0t64 >/dev/null 2>&1; then
+            sudo apt-get install -y libgtk-3-0t64
+          else
+            sudo apt-get install -y libgtk-3-0
+          fi
 
-              RADIX="Vindex Chat-GPT/vindex_final_v51"
+      - name: Modos exsecutionis restitue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          find "$RADIX" -type f -name '*.sh' -exec chmod 755 {} +
+          chmod 755 \
+            "$RADIX/vindexc" \
+            "$RADIX/vindex-officina" \
+            "$RADIX/vindex-salutatio" \
+            "$RADIX/vindex-systema" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/vindex_graphica" \
+            "$RADIX/officina_vindex" \
+            "$RADIX/salutatio_vindex"
 
-              find "$RADIX" -type f -name "*.sh" -exec chmod 755 {} +
-              chmod 755 \
-                "$RADIX/vindexc" \
-                "$RADIX/vindex-officina" \
-                "$RADIX/vindex-salutatio" \
-                "$RADIX/vindex-systema" \
-                "$RADIX/compilator_vindex" \
-                "$RADIX/vindex_graphica" \
-                "$RADIX/officina_vindex" \
-                "$RADIX/salutatio_vindex"
+      - name: Reliquias tabulae custodi
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 "$RADIX/instrumenta/inventaria_tabula_053.py" \
+            --verifica "$RADIX/instrumenta/TABULA-LITTERALIA-053.txt"
 
-              printf "%s\n" "=== I. RELIQUIAE TABULAE ==="
-              python3 "$RADIX/instrumenta/inventaria_tabula_053.py" \
-                --verifica "$RADIX/instrumenta/TABULA-LITTERALIA-053.txt"
+      - name: XXII probationes canonicas exsequere
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          bash tests/run_tests.sh
 
-              printf "%s\n" "=== II. XXII PROBATIONES CANONICAE ==="
-              (
-                cd "$RADIX"
-                bash tests/run_tests.sh
-              )
+      - name: Binarium distributum cum amorsa compara
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          bash "$RADIX/bootstrap/reconstruit.sh" /tmp/compilator_reconstructus
+          chmod 755 /tmp/compilator_reconstructus
+          cmp "$RADIX/compilator_vindex" /tmp/compilator_reconstructus
+          printf '%s\n' 'RECTE: compilator distributus reconstructioni canonicae congruit.'
 
-              printf "%s\n" "=== III. AMORSA ET BINARIUM DISTRIBUTUM ==="
-              bash "$RADIX/bootstrap/reconstruit.sh" /tmp/compilator_reconstructus
-              chmod 755 /tmp/compilator_reconstructus
-              cmp "$RADIX/compilator_vindex" /tmp/compilator_reconstructus
-              printf "%s\n" "RECTE: compilator distributus reconstructioni canonicae congruit."
+      - name: CRLF sine tarditate comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 -c 'from pathlib import Path; import sys; f=Path(sys.argv[1]).read_bytes().replace(b"\r\n",b"\n").replace(b"\r",b"\n"); Path(sys.argv[2]).write_bytes(f.replace(b"\n",b"\r\n"))' \
+            "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_crlf.vindex
+          timeout 10s "$RADIX/compilator_vindex" \
+            /tmp/compilator_crlf.vindex /tmp/compilator_crlf
+          chmod 755 /tmp/compilator_crlf
+          printf '%s\n' 'RECTE: fons CRLF intra terminum compilatus est.'
 
-              printf "%s\n" "=== IV. CRLF SINE TARDITATE ==="
-              python3 -c "from pathlib import Path; import sys; f=Path(sys.argv[1]).read_bytes().replace(b\"\\r\\n\",b\"\\n\").replace(b\"\\r\",b\"\\n\"); Path(sys.argv[2]).write_bytes(f.replace(b\"\\n\",b\"\\r\\n\"))" \
-                "$RADIX/src/compilator_vindex.vindex" /tmp/compilator_crlf.vindex
-              timeout 10s "$RADIX/compilator_vindex" \
-                /tmp/compilator_crlf.vindex /tmp/compilator_crlf
-              chmod 755 /tmp/compilator_crlf
-              printf "%s\n" "RECTE: fons CRLF intra terminum compilatus est."
-
-              printf "%s\n" "=== V. PILA MAIOR UNO MIB ==="
-              python3 "$RADIX/instrumenta/genera_probationem_pilae_053.py" \
-                /tmp/pila_magna_053.vindex
-              timeout 15s "$RADIX/compilator_vindex" \
-                /tmp/pila_magna_053.vindex /tmp/pila_magna_053
-              chmod 755 /tmp/pila_magna_053
-              EX=$(timeout 5s /tmp/pila_magna_053)
-              test "$EX" = "$(printf "39\n777")"
-              python3 "$RADIX/instrumenta/verifica_pilam_binariam_053.py" \
-                /tmp/pila_magna_053
-            '
+      - name: Pilam maiorem uno MiB comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 "$RADIX/instrumenta/genera_probationem_pilae_053.py" \
+            /tmp/pila_magna_053.vindex
+          timeout 15s "$RADIX/compilator_vindex" \
+            /tmp/pila_magna_053.vindex /tmp/pila_magna_053
+          chmod 755 /tmp/pila_magna_053
+          EX=$(timeout 5s /tmp/pila_magna_053)
+          test "$EX" = "$(printf '39\n777')"
+          python3 "$RADIX/instrumenta/verifica_pilam_binariam_053.py" \
+            /tmp/pila_magna_053
