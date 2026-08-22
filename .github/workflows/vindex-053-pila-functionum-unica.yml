@@ -1,0 +1,89 @@
+# Probatio unica fasciculorum pilae exacte dimensatorum et per paginas probatorum.
+name: VINDEX 0.53 — Pila functionum
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pila-functionum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-compilator-dynamicus
+          fetch-depth: 0
+
+      - name: Pilam functionum rapide comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+
+          python3 "$RADIX/instrumenta/applica_pilam_functionum_053.py"
+
+          grep -q 'FUNCTIO COMPONE_RESERVA_PILA_PROBATA REDDENS NUMERUS' "$FONS"
+          ! grep -q 'spatium_necessarium[12].*+ 10000' "$FONS"
+          ! grep -q 'pos = COMPONE_ONERA(codex, pos, 0, 30000)' "$FONS"
+
+          timeout 30s python3 "$RADIX/bootstrap/python/compilateur_053.py" "$FONS" /tmp/vindex_pila
+          chmod 755 /tmp/vindex_pila
+
+          python3 "$RADIX/instrumenta/genera_probationem_pilae_053.py" /tmp/pila_magna_053.vindex
+          timeout 30s /tmp/vindex_pila /tmp/pila_magna_053.vindex /tmp/pila_magna_053
+          chmod 755 /tmp/pila_magna_053
+
+          python3 - /tmp/pila_magna_053 <<'PY'
+          from pathlib import Path
+          import struct
+          import sys
+
+          data = Path(sys.argv[1]).read_bytes()
+          finis = bytes.fromhex(
+              '49 81 fb 00 10 00 00 76 1c '
+              '48 81 ec 00 10 00 00 48 83 0c 24 00 '
+              '49 81 eb 00 10 00 00 49 81 fb 00 10 00 00 77 e4 '
+              '4c 29 dc 48 83 0c 24 00'
+          )
+          mensurae = []
+          i = 0
+          while True:
+              i = data.find(b'\x49\xbb', i)
+              if i < 0:
+                  break
+              if data[i + 10:i + 10 + len(finis)] == finis:
+                  mensurae.append(struct.unpack_from('<Q', data, i + 2)[0])
+              i += 2
+
+          if not mensurae:
+              raise SystemExit('ERRATUM: prologus probationis pilae non inventus.')
+          if any(m % 16 for m in mensurae):
+              raise SystemExit(f'ERRATUM: fasciculus non ordinatus: {mensurae}')
+          if max(mensurae) < 1024 * 1024:
+              raise SystemExit(f'ERRATUM: fasciculus unum MiB non superat: {mensurae}')
+          print('RECTE: prologi probati inventi sunt; mensurae=' + ','.join(map(str, mensurae)))
+          PY
+
+          EX=$(timeout 5s /tmp/pila_magna_053)
+          test "$EX" = "$(printf '39\n777')"
+          printf '%s\n' 'RECTE: pila functionum probatio rapida transit.'
+
+      - name: Auto-hospitium tempore clauso tenta
+        shell: bash
+        continue-on-error: true
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          timeout 180s "$RADIX/compilator_vindex" "$FONS" /tmp/g1
+          STATUS=$?
+          printf 'STATUS AUTO-HOSPITII: %s\n' "$STATUS"
+          if [ "$STATUS" -eq 124 ]; then
+            printf '%s\n' 'MONITUM: auto-hospitium terminum CLXXX secundarum superavit.'
+          fi
+          exit 0

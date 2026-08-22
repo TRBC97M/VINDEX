@@ -4,17 +4,23 @@
 set -u
 
 RADIX="$(cd "$(dirname "$0")/.." && pwd)"
-FONS="$RADIX/src/compilator_vindex.vindex"
+FONS_REPOSITI="$RADIX/src/compilator_vindex.vindex"
 TEMPORARIUM="$(mktemp -d)" || exit 1
 trap 'rm -rf -- "$TEMPORARIUM"' EXIT HUP INT TERM
 
 EXITUS="${1:-}"
+FONS="$TEMPORARIUM/compilator_vindex.vindex"
 AMORSA="$TEMPORARIUM/compilator_amorsa_python"
 GENERATIO_1="$TEMPORARIUM/compilator_generatio_1"
 GENERATIO_2="$TEMPORARIUM/compilator_generatio_2"
 
+# In WSL, fontes in /mnt/* per DrvFS legi possunt multo tardius a compilatore
+# nativo, qui adhuc multas lectiones parvas facit. Eadem octeta in tmpfs/ext4
+# ponuntur ut punctum fixum celeritatem compilatoris, non pontis DrvFS, metiatur.
+cp "$FONS_REPOSITI" "$FONS" || exit 1
+
 printf '%s\n' "I. Amorsa Python..."
-python3 "$RADIX/bootstrap/python/compilateur.py" "$FONS" "$AMORSA" || exit 1
+python3 "$RADIX/bootstrap/python/compilateur_053.py" "$FONS" "$AMORSA" || exit 1
 
 printf '%s\n' "II. Generatio nativa prima..."
 "$AMORSA" "$FONS" "$GENERATIO_1" || exit 1

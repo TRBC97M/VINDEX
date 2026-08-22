@@ -90,12 +90,14 @@ respice_reiectionem_nativam() {
 }
 
 respice_auto_hospitium() {
+    local fons="$TEMPORAIRE/compilator_auto.vindex"
     local gen2="$TEMPORAIRE/compilator_gen2"
     local gen3="$TEMPORAIRE/compilator_gen3"
-    ./compilator_vindex src/compilator_vindex.vindex "$gen2" >"$TEMPORAIRE/gen2.log" 2>&1
+    cp src/compilator_vindex.vindex "$fons"
+    ./compilator_vindex "$fons" "$gen2" >"$TEMPORAIRE/gen2.log" 2>&1
     local status2=$?
     chmod 755 "$gen2" 2>/dev/null
-    "$gen2" src/compilator_vindex.vindex "$gen3" >"$TEMPORAIRE/gen3.log" 2>&1
+    "$gen2" "$fons" "$gen3" >"$TEMPORAIRE/gen3.log" 2>&1
     local status3=$?
     if [ "$status2" -ne 0 ] || [ "$status3" -ne 0 ]; then
         erratum "auto-hospitium" "generatio2=$status2 generatio3=$status3"
@@ -126,7 +128,7 @@ respice_officinam() {
 
 respice_systema() {
     local relatio="$TEMPORAIRE/systema.log"
-    if python3 -m unittest discover -s tests -p 'test_systema.py' -v >"$relatio" 2>&1; then
+    if python3 tests/proba_systema_portabile.py >"$relatio" 2>&1; then
         recte "systema"
     else
         erratum "systema" "$(tr '\n' ' ' <"$relatio")"
@@ -140,7 +142,11 @@ exsequere_casum "importa" "tests/casus/importa.vindex" "49"
 exsequere_casum "structura-acus" "tests/casus/structura_acus.vindex" $'150\n99'
 exsequere_casum "recursio" "tests/casus/recursio.vindex" "720"
 exsequere_casum "argumenta" "tests/casus/argumenta.vindex" $'2\n90' "Zeta"
+exsequere_casum "argumenta-septem" "tests/casus/argumenta_septem.vindex" "28"
 exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n86\n69'
+exsequere_casum "vocationes-nullae" "tests/casus/vocationes_nullae.vindex" "7168"
+exsequere_casum "desine-imbrique" "tests/casus/desine_imbrique.vindex" "48"
+exsequere_casum "lectio-contextus" "tests/casus/lectio_contextus.vindex" "66"
 
 respice_reiectionem "erratum-principalis" "tests/casus/erratum_principalis.vindex" "FUNCTIO PRINCIPALIS deest"
 respice_reiectionem "erratum-functio" "tests/casus/erratum_functio.vindex" "functio 'FUNCTIO_IGNOTA' non definita"

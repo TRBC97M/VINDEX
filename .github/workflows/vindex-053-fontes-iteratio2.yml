@@ -1,0 +1,133 @@
+# Probatio unica fontium dynamicorum post migrationem LEGE.
+name: VINDEX 0.53 — Fontes iteratio II
+
+on:
+  push:
+    branches: [chatgpt/vindex-053-compilator-dynamicus]
+    paths:
+      - '.github/workflows/vindex-053-fontes-iteratio2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  proba:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-compilator-dynamicus
+          fetch-depth: 0
+      - name: Fontes dynamicos comproba
+        shell: bash
+        run: |
+          set +e
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          R=/tmp/relatio
+          : >"$R"
+          OK=0
+          integrum(){ A=$(stat -c '%s' "$1" 2>/dev/null); B=$(od -An -tu8 -j96 -N8 "$1" 2>/dev/null|tr -d '[:space:]'); [ -n "$A" ] && [ "$A" = "$B" ]; }
+
+          chmod 755 "$RADIX/compilator_vindex"
+          python3 - <<'PY' >>"$R" 2>&1
+          from pathlib import Path
+          p=Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          t=p.read_text(encoding='utf-8')
+          if 'CAPACITAS 213000' not in t:
+              raise SystemExit('ERRATUM: limen pontis deest')
+          t=t.replace('213001','524289').replace('213000','524288').replace('212999','524287')
+          Path('/tmp/pontis.vindex').write_text(t,encoding='utf-8')
+          print(f'PONS TEMPORARIUS: {len(t.encode("utf-8"))} octeta.')
+          PY
+          S=$?
+          if [ "$S" -eq 0 ]; then
+            "$RADIX/compilator_vindex" /tmp/pontis.vindex /tmp/pontis >>"$R" 2>&1; P=$?
+            printf 'STATUS PONTIS=%s.\n' "$P" >>"$R"
+            [ "$P" -eq 0 ] && integrum /tmp/pontis
+            S=$?
+            chmod 755 /tmp/pontis 2>/dev/null
+          fi
+          if [ "$S" -eq 0 ]; then
+            python3 "$RADIX/instrumenta/applica_fontes_dynamicos_053.py" >>"$R" 2>&1
+            S=$?
+            M=$(stat -c '%s' "$RADIX/src/compilator_vindex.vindex")
+            printf 'MENSURA FONTIS DYNAMICI=%s.\n' "$M" >>"$R"
+            python3 - <<'PY' >>"$R" 2>&1
+          from pathlib import Path
+          t=Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex').read_text(encoding='utf-8')
+          a=t.index('FUNCTIO PRINCIPALIS REDDENS NUMERUS.'); b=t.index('FIN-FUNCTIO.',a)
+          print(f'DECLARATIONES PRINCIPALIS={t[a:b].count("DECLARA ")}.')
+          PY
+          fi
+          if [ "$S" -eq 0 ]; then
+            /tmp/pontis "$RADIX/src/compilator_vindex.vindex" /tmp/g1 >>"$R" 2>&1; S1=$?
+            printf 'G1=%s.\n' "$S1" >>"$R"
+            [ "$S1" -eq 0 ] && integrum /tmp/g1; S=$?
+          fi
+          if [ "$S" -eq 0 ]; then
+            chmod 755 /tmp/g1
+            /tmp/g1 "$RADIX/src/compilator_vindex.vindex" /tmp/g2 >>"$R" 2>&1; S2=$?
+            printf 'G2=%s.\n' "$S2" >>"$R"
+            [ "$S2" -eq 0 ] && integrum /tmp/g2; S=$?
+          fi
+          if [ "$S" -eq 0 ]; then
+            chmod 755 /tmp/g2
+            /tmp/g2 "$RADIX/src/compilator_vindex.vindex" /tmp/g3 >>"$R" 2>&1; S3=$?
+            printf 'G3=%s.\n' "$S3" >>"$R"
+            [ "$S3" -eq 0 ] && integrum /tmp/g3 && cmp -s /tmp/g2 /tmp/g3; S=$?
+          fi
+          if [ "$S" -eq 0 ]; then
+            cp /tmp/g3 "$RADIX/compilator_vindex"; chmod 755 "$RADIX/compilator_vindex"
+            printf '%s\n' 'RECTE: fontes dynamici punctum fixum servant.' >>"$R"
+
+            python3 - <<'PY'
+          from pathlib import Path
+          caput='FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    PROCLAMA 53.\n    REDDE 0.\nFIN-FUNCTIO.\n'
+          Path('/tmp/fons_magnus.vindex').write_text(caput+'// '+('a'*320000)+'\n',encoding='utf-8')
+          bib='FUNCTIO AUXILIUM_MAGNUM REDDENS NUMERUS.\n    REDDE 530.\nFIN-FUNCTIO.\n'+'// '+('b'*280000)+'\n'
+          Path('/tmp/importa_magna.vindex').write_text(bib,encoding='utf-8')
+          pri='IMPORTA "/tmp/importa_magna.vindex".\nFUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    PROCLAMA AUXILIUM_MAGNUM().\n    REDDE 0.\nFIN-FUNCTIO.\n'
+          Path('/tmp/principalis_importa_magna.vindex').write_text(pri,encoding='utf-8')
+          PY
+            "$RADIX/compilator_vindex" /tmp/fons_magnus.vindex /tmp/fons_magnus >>"$R" 2>&1; C1=$?
+            chmod 755 /tmp/fons_magnus 2>/dev/null; O1=$(/tmp/fons_magnus 2>>"$R"); E1=$?
+            M1=$(stat -c '%s' /tmp/fons_magnus.vindex)
+            printf 'FONS_MAGNUS mensura=%s compilatio=%s executio=%s exitus=[%s].\n' "$M1" "$C1" "$E1" "$O1" >>"$R"
+            [ "$C1" -eq 0 ] && [ "$E1" -eq 0 ] && [ "$O1" = '53' ] && [ "$M1" -gt 212999 ]; S=$?
+          fi
+          if [ "$S" -eq 0 ]; then
+            "$RADIX/compilator_vindex" /tmp/principalis_importa_magna.vindex /tmp/importa_magna >>"$R" 2>&1; C2=$?
+            chmod 755 /tmp/importa_magna 2>/dev/null; O2=$(/tmp/importa_magna 2>>"$R"); E2=$?
+            M2=$(stat -c '%s' /tmp/importa_magna.vindex)
+            printf 'IMPORTATIO_MAGNA mensura=%s compilatio=%s executio=%s exitus=[%s].\n' "$M2" "$C2" "$E2" "$O2" >>"$R"
+            [ "$C2" -eq 0 ] && [ "$E2" -eq 0 ] && [ "$O2" = '530' ] && [ "$M2" -gt 212999 ]; S=$?
+          fi
+          if [ "$S" -eq 0 ]; then
+            cd "$RADIX" || S=1
+            ./compilator_vindex examples/memoria_dynamica_053.vindex /tmp/memoria_053 >>"$R" 2>&1
+            chmod 755 /tmp/memoria_053 2>/dev/null; O3=$(/tmp/memoria_053 2>>"$R"); E3=$?
+            printf 'MEMORIA_XXXII_MiB status=%s exitus=[%s].\n' "$E3" "$O3" >>"$R"
+            [ "$E3" -eq 0 ] && [ "$O3" = $'86\n88' ] || S=1
+            find . -type f -name '*.sh' -exec chmod 755 {} +
+            chmod 755 ./vindexc ./vindex_graphica ./officina_vindex ./salutatio_vindex ./compilator_vindex ./vindex-officina ./vindex-salutatio ./vindex-systema
+            bash ./tests/run_tests.sh >>"$R" 2>&1; T=$?
+            printf 'REGRESSIONES=%s.\n' "$T" >>"$R"
+            [ "$T" -eq 0 ] || S=1
+          fi
+          [ "$S" -eq 0 ] && { printf '%s\n' 'RECTE: limes historicus 212999 octetorum remotus est.' >>"$R"; OK=1; } || printf 'ERRATUM: fontes iteratio II status=%s.\n' "$S" >>"$R"
+
+          cd "$GITHUB_WORKSPACE"
+          F="$RADIX/instrumenta/RELATIO-VINDEX-053.md"
+          { printf '%s\n\n' '# VINDEX 0.53 — Relatio fontium dynamicorum'; printf '%s\n' '```text'; cat "$R"; printf '%s\n' '```'; } >"$F"
+          git config user.name 'VINDEX Centurio'; git config user.email 'actions@users.noreply.github.com'
+          if [ "$OK" -eq 1 ]; then
+            git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$F"
+          else
+            git checkout -- "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" 2>/dev/null || true
+            git add "$F"
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'VINDEX 0.53: fontes dynamicos iterum comproba'
+            git push origin HEAD:chatgpt/vindex-053-compilator-dynamicus
+          fi
+          exit 0

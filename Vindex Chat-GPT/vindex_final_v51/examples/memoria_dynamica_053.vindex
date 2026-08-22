@@ -1,0 +1,19 @@
+// VINDEX 0.53 — probatio prima memoriae amplitudine variabili.
+// XXXII MiB reservantur, plus quam TAS historicus sedecim MiB.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA mensura SICUT NUMERUS VALENS 33554432.
+    DECLARA memoria SICUT NUMERUS VALENS RESERVA_OCTETA(mensura).
+
+    SI memoria < 0 TUNC
+        PROCLAMA "ERRATUM".
+        REDDE 1.
+    FIN-SI.
+
+    SCRIBE_OCTETUM_AB(memoria, 86).
+    SCRIBE_OCTETUM_AB(memoria + mensura - 1, 88).
+
+    PROCLAMA OCTETUS_AB(memoria).
+    PROCLAMA OCTETUS_AB(memoria + mensura - 1).
+    REDDE 0.
+FIN-FUNCTIO.
