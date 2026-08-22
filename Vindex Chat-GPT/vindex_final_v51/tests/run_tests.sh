@@ -90,12 +90,14 @@ respice_reiectionem_nativam() {
 }
 
 respice_auto_hospitium() {
+    local fons="$TEMPORAIRE/compilator_auto.vindex"
     local gen2="$TEMPORAIRE/compilator_gen2"
     local gen3="$TEMPORAIRE/compilator_gen3"
-    ./compilator_vindex src/compilator_vindex.vindex "$gen2" >"$TEMPORAIRE/gen2.log" 2>&1
+    cp src/compilator_vindex.vindex "$fons"
+    ./compilator_vindex "$fons" "$gen2" >"$TEMPORAIRE/gen2.log" 2>&1
     local status2=$?
     chmod 755 "$gen2" 2>/dev/null
-    "$gen2" src/compilator_vindex.vindex "$gen3" >"$TEMPORAIRE/gen3.log" 2>&1
+    "$gen2" "$fons" "$gen3" >"$TEMPORAIRE/gen3.log" 2>&1
     local status3=$?
     if [ "$status2" -ne 0 ] || [ "$status3" -ne 0 ]; then
         erratum "auto-hospitium" "generatio2=$status2 generatio3=$status3"
