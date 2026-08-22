@@ -100,17 +100,16 @@ def applica() -> None:
             f"(veteres={si_vetus_prologus}, novi={si_novus_prologus})"
         )
 
-    # PRINCIPALIS ab ELF directe intratur: RSP initio ad XVI ordinatur, deinde
-    # IMPONE RBP octo octeta aufert. Ergo fasciculus PRINCIPALIS congruus est
-    # VIII modulo XVI, ut ante omnem CALL RSP rursus ad XVI ordinetur.
-    # Functiones ordinariae per CALL intrant et fasciculum 0 modulo XVI volunt.
+    # PRINCIPALIS non est ipsum punctum ingressus ELF: involucrum a compilatore
+    # genitum eam per CALL vocat. Itaque PRINCIPALIS et functiones ordinariae
+    # eandem ordinationem fasciculi, 0 modulo XVI, requirunt.
     mutationes_mensurae = 0
     mensurae = (
         (
             1,
             "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.",
-            "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.",
             "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS ((((0 - tabula[51]) + 7) / 16) * 16) + 8.",
+            "DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.",
         ),
         (
             2,
@@ -141,14 +140,44 @@ def applica() -> None:
             f"(vetus={si_vetus}, intermedia={si_intermedia}, novum={si_novum})"
         )
 
+    # Vocationes generales argumenta in pilam temporaliter imponunt et deinde
+    # in registra SysV auferunt. Prior codex RDI semper auferebat etiam cum
+    # numerus_argumentorum == 0; sic unaquaeque vocatio nulla RSP octo octetis
+    # sursum movebat. Fasciculus vetus +10000 hoc vitium occultabat.
+    vetus_pop = (
+        "        SI numerus_argumentorum >= 2 TUNC\n"
+        "            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 6).\n"
+        "        FIN-SI.\n"
+        "        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).\n\n"
+        "        DECLARA loci_fn SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(tabula, nomen_fn)."
+    )
+    novus_pop = (
+        "        SI numerus_argumentorum >= 2 TUNC\n"
+        "            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 6).\n"
+        "        FIN-SI.\n"
+        "        SI numerus_argumentorum >= 1 TUNC\n"
+        "            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).\n"
+        "        FIN-SI.\n\n"
+        "        DECLARA loci_fn SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(tabula, nomen_fn)."
+    )
+    si_vetus_pop = textus.count(vetus_pop)
+    si_novus_pop = textus.count(novus_pop)
+    vocatio_mutata = False
+    if si_vetus_pop == 1 and si_novus_pop == 0:
+        textus = textus.replace(vetus_pop, novus_pop, 1)
+        vocatio_mutata = True
+    elif not (si_vetus_pop == 0 and si_novus_pop == 1):
+        raise SystemExit(
+            "ERRATUM: status vocationum sine argumentis ambiguus est "
+            f"(vetus={si_vetus_pop}, novus={si_novus_pop})"
+        )
+
     VIA.write_text(textus, encoding="utf-8", newline="\n")
 
-    if adiutor_mutatus:
-        print("RECTE: emissor pilae U16 stabilis sine commentariis internis est.")
-    elif mutationes_mensurae:
-        print("RECTE: pila functionum secundum ABI x86-64 ordinata est.")
+    if adiutor_mutatus or mutationes_mensurae or vocatio_mutata:
+        print("RECTE: pila exacta est et vocationes sine argumentis RSP servant.")
     else:
-        print("RECTE: pila functionum iam structurata et secundum ABI ordinata est.")
+        print("RECTE: pila exacta et vocationes sine argumentis iam canonicae sunt.")
 
 
 if __name__ == "__main__":
