@@ -1,16 +1,19 @@
-# Transitus temporarius per fluxum iam probatum ad formas dynamicas comprobandas.
-name: VINDEX 0.53 — Formae dynamicae transitus
+# Probatio unica tabularum functionum et vocationum pendentium dynamicarum.
+name: VINDEX 0.53 — Functiones dynamicae
 
 on:
   push:
     branches:
       - chatgpt/vindex-053-compilator-dynamicus
+    paths:
+      - '.github/workflows/vindex-053-functiones-dynamicae-unica.yml'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/applica_functiones_dynamicas_053.py'
 
 permissions:
   contents: write
 
 jobs:
-  formae-dynamicae:
+  functiones-dynamicae:
     runs-on: ubuntu-latest
     steps:
       - name: Fontes accipe
@@ -19,12 +22,12 @@ jobs:
           ref: chatgpt/vindex-053-compilator-dynamicus
           fetch-depth: 0
 
-      - name: Formas et campos dynamicos comproba
+      - name: Functiones et vocationes pendentes comproba
         shell: bash
         run: |
           set +e
           RADIX='Vindex Chat-GPT/vindex_final_v51'
-          RELATIO=/tmp/relatio_formae_053
+          RELATIO=/tmp/relatio_functiones_053
           : > "$RELATIO"
           SUCCESSUS=0
 
@@ -38,14 +41,14 @@ jobs:
 
           proba() {
             chmod 755 "$RADIX/compilator_vindex"
-            python3 "$RADIX/instrumenta/applica_formas_dynamicas_053.py" >> "$RELATIO" 2>&1 || return 1
+            python3 "$RADIX/instrumenta/applica_functiones_dynamicas_053.py" >> "$RELATIO" 2>&1 || return 1
 
-            if grep -q 'tabula\[950\|tabula\[1000\|tabula\[1050\|tabula\[1100\|tabula\[2500\|tabula\[2530\|tabula\[200 +' "$RADIX/src/compilator_vindex.vindex"; then
-              printf '%s\n' 'ERRATUM: metadata formarum fixa adhuc manet.' >> "$RELATIO"
+            if grep -q 'idx_fn_appel < 150\|idx_rp < 150\|tabula\[628\]' "$RADIX/src/compilator_vindex.vindex"; then
+              printf '%s\n' 'ERRATUM: limes fixus functionum aut pendentium adhuc manet.' >> "$RELATIO"
               return 1
             fi
-            grep -q 'FUNCTIO INITIA_FORMAS_DYNAMICA REDDENS NUMERUS' "$RADIX/src/compilator_vindex.vindex" || return 1
-            printf '%s\n' 'RECTE: formae et campi descriptoribus crescentibus utuntur.' >> "$RELATIO"
+            grep -q 'FUNCTIO INITIA_PARES_DYNAMICA REDDENS NUMERUS' "$RADIX/src/compilator_vindex.vindex" || return 1
+            printf '%s\n' 'RECTE: functiones et vocationes pendentes tabulis crescentibus utuntur.' >> "$RELATIO"
 
             "$RADIX/compilator_vindex" "$RADIX/src/compilator_vindex.vindex" /tmp/g1 >> "$RELATIO" 2>&1
             S1=$?
@@ -64,23 +67,85 @@ jobs:
             printf 'STATUS G3: %s.\n' "$S3" >> "$RELATIO"
             [ "$S3" -eq 0 ] && integrum /tmp/g3 || return 1
             cmp -s /tmp/g2 /tmp/g3 || return 1
-            printf '%s\n' 'RECTE: formae dynamicae punctum fixum compilatoris servant.' >> "$RELATIO"
+            printf '%s\n' 'RECTE: functiones dynamicae punctum fixum compilatoris servant.' >> "$RELATIO"
 
             cp /tmp/g3 "$RADIX/compilator_vindex"
             chmod 755 "$RADIX/compilator_vindex"
 
-            python3 "$RADIX/instrumenta/genera_probationem_formarum_053.py" /tmp/formae_magnae_053.vindex >> "$RELATIO" 2>&1 || return 1
-            "$RADIX/compilator_vindex" /tmp/formae_magnae_053.vindex /tmp/formae_magnae_053 >> "$RELATIO" 2>&1
-            SF=$?
-            printf 'COMPILATIO XL FORMARUM ET LXXX CAMPORUM: status=%s.\n' "$SF" >> "$RELATIO"
-            [ "$SF" -eq 0 ] && integrum /tmp/formae_magnae_053 || return 1
-            chmod 755 /tmp/formae_magnae_053
-            OF=$(/tmp/formae_magnae_053 2>>"$RELATIO"); EF=$?
-            printf 'EXECUTIO FORMARUM MAGNARUM: status=%s exitus=[%s].\n' "$EF" "$OF" >> "$RELATIO"
-            [ "$EF" -eq 0 ] || return 1
-            EXPECTATUM=$(printf '39\n777')
-            [ "$OF" = "$EXPECTATUM" ] || return 1
-            printf '%s\n' 'RECTE: limites XV formarum et XXVI camporum remoti sunt.' >> "$RELATIO"
+            python3 - <<'PY'
+          from pathlib import Path
+          N = 200
+          def nomen(i):
+              litterae = []
+              n = i
+              for _ in range(4):
+                  litterae.append(chr(ord('A') + (n % 26)))
+                  n //= 26
+              return 'F' + ''.join(reversed(litterae))
+          ultima = nomen(N - 1)
+          lineae = []
+          for i in range(N):
+              lineae += [
+                  f'FUNCTIO {nomen(i)} REDDENS NUMERUS.',
+                  f'    REDDE {1000 + i}.',
+                  'FIN-FUNCTIO.',
+                  '',
+              ]
+          lineae += [
+              'FUNCTIO PRINCIPALIS REDDENS NUMERUS.',
+              f'    DECLARA responsum SICUT NUMERUS VALENS {ultima}().',
+              '    PROCLAMA responsum.',
+              '    REDDE 0.',
+              'FIN-FUNCTIO.',
+              '',
+          ]
+          Path('/tmp/functiones_multae_053.vindex').write_text('\n'.join(lineae), encoding='utf-8')
+          PY
+            "$RADIX/compilator_vindex" /tmp/functiones_multae_053.vindex /tmp/functiones_multae_053 >> "$RELATIO" 2>&1
+            SFM=$?
+            printf 'COMPILATIO CC FUNCTIONUM RETRO: status=%s.\n' "$SFM" >> "$RELATIO"
+            [ "$SFM" -eq 0 ] && integrum /tmp/functiones_multae_053 || return 1
+            chmod 755 /tmp/functiones_multae_053
+            OFM=$(/tmp/functiones_multae_053 2>>"$RELATIO"); EFM=$?
+            printf 'EXECUTIO CC FUNCTIONUM RETRO: status=%s exitus=[%s].\n' "$EFM" "$OFM" >> "$RELATIO"
+            [ "$EFM" -eq 0 ] && [ "$OFM" = '1199' ] || return 1
+            printf '%s\n' 'RECTE: tabula functionum CC definitiones continet et ultimam retro recte vocat.' >> "$RELATIO"
+
+            python3 - <<'PY'
+          from pathlib import Path
+          N = 1250
+          lineae = [
+              'FUNCTIO INITIUM REDDENS NUMERUS.',
+              '    DECLARA responsum SICUT NUMERUS VALENS 0.',
+          ]
+          for _ in range(N):
+              lineae.append('    responsum = FUTURA().')
+          lineae += [
+              '    REDDE responsum.',
+              'FIN-FUNCTIO.',
+              '',
+              'FUNCTIO FUTURA REDDENS NUMERUS.',
+              '    REDDE 777.',
+              'FIN-FUNCTIO.',
+              '',
+              'FUNCTIO PRINCIPALIS REDDENS NUMERUS.',
+              '    DECLARA responsum SICUT NUMERUS VALENS INITIUM().',
+              '    PROCLAMA responsum.',
+              '    REDDE 0.',
+              'FIN-FUNCTIO.',
+              '',
+          ]
+          Path('/tmp/pendentes_multae_053.vindex').write_text('\n'.join(lineae), encoding='utf-8')
+          PY
+            "$RADIX/compilator_vindex" /tmp/pendentes_multae_053.vindex /tmp/pendentes_multae_053 >> "$RELATIO" 2>&1
+            SPM=$?
+            printf 'COMPILATIO MCCL VOCATIONUM PENDENTIUM: status=%s.\n' "$SPM" >> "$RELATIO"
+            [ "$SPM" -eq 0 ] && integrum /tmp/pendentes_multae_053 || return 1
+            chmod 755 /tmp/pendentes_multae_053
+            OPM=$(/tmp/pendentes_multae_053 2>>"$RELATIO"); EPM=$?
+            printf 'EXECUTIO MCCL VOCATIONUM PENDENTIUM: status=%s exitus=[%s].\n' "$EPM" "$OPM" >> "$RELATIO"
+            [ "$EPM" -eq 0 ] && [ "$OPM" = '777' ] || return 1
+            printf '%s\n' 'RECTE: tabula pendentium MCCL vocationes ante definitionem servat et corrigit.' >> "$RELATIO"
 
             cd "$RADIX" || return 1
             ./compilator_vindex src/officina_vindex.vindex /tmp/officina_nova >> "$RELATIO" 2>&1 || return 1
@@ -92,12 +157,14 @@ jobs:
             chmod 755 ./vindexc ./vindex_graphica ./officina_vindex ./salutatio_vindex ./compilator_vindex ./vindex-officina ./vindex-salutatio ./vindex-systema
             bash ./systema/construe_systema.sh >> "$RELATIO" 2>&1 || return 1
             bash ./systema/uefi/construe_uefi.sh >> "$RELATIO" 2>&1 || return 1
-            printf '%s\n' 'RECTE: Systema BIOS et UEFI post migrationem formarum regenerata sunt.' >> "$RELATIO"
+            printf '%s\n' 'RECTE: Systema BIOS et UEFI post migrationem functionum regenerata sunt.' >> "$RELATIO"
 
             bash ./tests/run_tests.sh >> "$RELATIO" 2>&1
             SR=$?
             printf 'PROBATIONES REGRESSIONALES: status=%s.\n' "$SR" >> "$RELATIO"
             [ "$SR" -eq 0 ] || return 1
+
+            printf '%s\n' 'RECTE: limites functionum et vocationum pendentium fixi remoti sunt.' >> "$RELATIO"
             return 0
           }
 
@@ -106,21 +173,21 @@ jobs:
           if [ "$STATUS" -eq 0 ]; then
             SUCCESSUS=1
           else
-            printf 'ERRATUM: migratio formarum dynamicarum nondum canonica est; status=%s.\n' "$STATUS" >> "$RELATIO"
+            printf 'ERRATUM: migratio functionum dynamicarum nondum canonica est; status=%s.\n' "$STATUS" >> "$RELATIO"
           fi
 
           cd "$GITHUB_WORKSPACE" || exit 0
-          VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-FORMAE-DYNAMICAE-053.md"
+          VIA_RELATIONIS="$RADIX/instrumenta/RELATIO-FUNCTIONES-DYNAMICAE-053.md"
           {
-            printf '%s\n\n' '# VINDEX 0.53 — Relatio formarum dynamicarum'
-            printf '%s\n\n' 'Formae et campi crescibiles, punctum fixum, XL formae, LXXX campi et regressiones hic comprobantur.'
+            printf '%s\n\n' '# VINDEX 0.53 — Relatio functionum dynamicarum'
+            printf '%s\n\n' 'Tabulae functionum et vocationum pendentium crescentes, punctum fixum, CC functiones et MCCL vocationes hic comprobantur.'
             printf '%s\n' '```text'
             cat "$RELATIO"
             printf '%s\n' '```'
           } > "$VIA_RELATIONIS"
 
-          git config user.name 'VINDEX Centurio'
-          git config user.email 'actions@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if [ "$SUCCESSUS" -eq 1 ]; then
             git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex" "$RADIX/officina_vindex" "$RADIX/salutatio_vindex" "$RADIX/nucleus_systema.elf" "$RADIX/systema_vindex.img" "$RADIX/BOOTX64.EFI" "$RADIX/systema_vindex_uefi.img" "$VIA_RELATIONIS"
           else
@@ -128,11 +195,7 @@ jobs:
             git add "$VIA_RELATIONIS"
           fi
           if ! git diff --cached --quiet; then
-            if [ "$SUCCESSUS" -eq 1 ]; then
-              git commit -m 'VINDEX 0.53: formas dynamicas comproba'
-            else
-              git commit -m 'VINDEX 0.53: formas dynamicas diagnostica'
-            fi
+            git commit -m 'VINDEX 0.53: functiones dynamicas comproba'
             git push origin HEAD:chatgpt/vindex-053-compilator-dynamicus
           fi
           exit 0
