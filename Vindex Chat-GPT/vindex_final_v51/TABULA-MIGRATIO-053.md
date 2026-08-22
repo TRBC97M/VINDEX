@@ -14,7 +14,7 @@ Finis huius migrationis est statum compilationis nominatum et explicitum obtiner
 
 `instrumenta/inventaria_tabula_053.py` omnes accessus litterales `tabula[n]` numerat. `instrumenta/TABULA-LITTERALIA-053.txt` basim indicum hodiernorum figit. GitHub Actions deficit si index magicus novus tacite introducitur.
 
-Inventarium initiale:
+Inventarium ante primam encapsulationem:
 
 ```text
 CAPACITAS TABULAE: 3000
@@ -22,7 +22,19 @@ INDICES LITTERALES DISTINCTI: 12
 ACCESSUS LITTERALES TOTALES: 106
 ```
 
-Indices:
+Post encapsulationem `227` et `2999`:
+
+```text
+CAPACITAS TABULAE: 3000
+INDICES LITTERALES DISTINCTI: 12
+ACCESSUS LITTERALES TOTALES: 99
+227: 2
+2999: 2
+```
+
+Duo accessus residui utriusque indicis in accessoribus nominatis tantum manent; call-site nullus amplius numeros `227` aut `2999` directe cognoscit.
+
+Indices adhuc praesentes:
 
 ```text
 51
@@ -52,12 +64,13 @@ Cum ceteris probationibus, suite canonica XXIII probationes continet.
 
 Hic campus locum saltus pendentis `DESINE` servat. Ansa `DUM` statum exterioris ansae servat, campum ad nihilum redigit, corpus recursive analysat, saltum corrigit atque statum exteriorem restituit.
 
-Haec ratio duas difficultates habet:
+### Gradus I factus: encapsulatio
 
-1. status ansae in indice numerico remoto latet;
-2. unus locus tantum servatur, ergo architectura ad plures exitus eiusdem ansae naturaliter non crescit.
+Call-site iam per `STATUS_DESINE_LEGE` et `STATUS_DESINE_SCRIBE` operantur. Accessus directi sex ad duos redacti sunt, ambo intra accessores. Auto-hospitium, `desine_imbrique`, CRLF, pila magna et tota suite canonica post hanc mutationem transeunt.
 
-Migratio optima debet conceptum **contextus ansae** introducere. Contextus debet saltus `DESINE` pendentes continere et ansas imbriquatas sine indice globali sustinere.
+### Gradus II reliquus: contextus ansae
+
+Accessorium nondum est finis migrationis: valor ipse adhuc in `tabula[227]` servatur. Migratio optima debet conceptum **contextus ansae** introducere. Contextus debet saltus `DESINE` pendentes continere et ansas imbriquatas sine indice globali sustinere.
 
 `ANALYSA_BLOCUS` iam sex argumenta accipit. Septimum argumentum non addendum est donec conventio argumentorum ultra sex formaliter probata sit. Itaque contextus compilationis potius uno ex argumentis iam existentibus encapsulandus est vel structura contextus generalis introducenda est.
 
@@ -65,13 +78,19 @@ Migratio optima debet conceptum **contextus ansae** introducere. Contextus debet
 
 Hic campus intervallum pilae temporarium servat quod operationes `LEGE`, `OCTETUS` et scripturae datae inter partes parseris communicant.
 
-Migratio debet hunc statum nominare et ad contextum functionis transferre. Non debet simpliciter ad alium numerum magicum moveri.
+### Gradus I factus: encapsulatio
+
+Call-site iam per `STATUS_LECTIONIS_LEGE` et `STATUS_LECTIONIS_SCRIBE` operantur. Accessus directi quinque ad duos redacti sunt, ambo intra accessores.
+
+### Gradus II reliquus: contextus functionis
+
+Valor ipse adhuc in `tabula[2999]` servatur. Is ad contextum functionis nominatum transferendus est; ad alium numerum magicum simpliciter moveri non debet.
 
 ## III. `tabula[51]` — cursor pilae
 
 Hic est maximus nexus residuus: L accessus litterales. Cursor iam magnitudinem exactam fasciculi regit et ideo conceptus functionis est, non tabulae symbolorum.
 
-Post migrationem statuum `227` et `2999`, cursor in **contextum functionis** transferendus est. Omnes allocationes localium, scratch et receptaculorum per accessorium nominatum fieri debent. Tum ratio pilae mutari poterit sine perquisitione omnium `tabula[51]`.
+Post migrationem backing statuum `227` et `2999`, cursor in **contextum functionis** transferendus est. Omnes allocationes localium, scratch et receptaculorum per accessorium nominatum fieri debent. Tum ratio pilae mutari poterit sine perquisitione omnium `tabula[51]`.
 
 ## IV. Descriptores collectionum
 
@@ -84,12 +103,12 @@ Collectiones ipsae iam crescibiles sunt; indices residui tantum descriptores ear
 
 Hi campi in contextum compilationis transferendi sunt postquam status temporarii et cursor pilae separati sunt. Descriptores possunt recorda explicita fieri, ita ut basis, limes et quantitas nomina habeant.
 
-## V. Finis migrationis
+## V. Disciplina migrationis
 
 Post quemque gradum:
 
-1. numerus accessuum literalium `tabula[n]` minui debet;
-2. basis `TABULA-LITTERALIA-053.txt` statim minuenda est;
+1. numerus accessuum literalium `tabula[n]` minui debet aut saltem ad accessores solos restringi;
+2. basis `TABULA-LITTERALIA-053.txt` statim renovanda est;
 3. nullus index novus introducatur;
 4. auto-hospitium punctum fixum servet;
 5. amorsa Python transeat;
@@ -101,9 +120,22 @@ Cum ultimus index remotus erit, `CAPACITAS 3000` ipsa delenda est.
 ## Ordo operis
 
 ```text
-227 -> 2999 -> 51 -> descriptores 2970..2993 -> CAPACITAS 3000 remove
+227 encapsulatum -> 2999 encapsulatum -> backing 227/2999 remove -> 51 -> descriptores 2970..2993 -> CAPACITAS 3000 remove
 ```
 
 Hic ordo a statu minimo et locali ad statum fundamentalem progreditur. PE/Windows post dissolutionem tabulae recipiendum est, ne duo terga super contextu adhuc instabili simul aedificentur.
+
+## Status comprobatus
+
+Post encapsulationem currentem:
+
+```text
+23 probationes rectae; 0 errata.
+PUNCTUM FIXUM SHA-256: e2622c7ce267327f802704be57f3add419d47f6b3e09f11abd5bb7eca0dc4a82
+ACCESSUS TABULAE: 99
+227: 2
+2999: 2
+PILA MAGNA: 1048592,16
+```
 
 **VINDEX Latine cogitat. Sylvia Latine loquitur.**
