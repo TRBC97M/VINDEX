@@ -189,6 +189,44 @@ FUNCTIO CORRIGE_PILA REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO COMPONE_RESERVA_PILA_PROBATA REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT spatium SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS indice.
+    DECLARA ignoratum SICUT NUMERUS VALENS 0.
+
+    CODEX_SCRIBE(codex, p, 73).
+    CODEX_SCRIBE(codex, p + 1, 187).
+    ignoratum = SCRIBE_U64(codex, p + 2, spatium).
+
+    ignoratum = SCRIBE_U16(codex, p + 10, 33097).
+    ignoratum = SCRIBE_U16(codex, p + 12, 251).
+    ignoratum = SCRIBE_U16(codex, p + 14, 16).
+    ignoratum = SCRIBE_U16(codex, p + 16, 30208).
+    ignoratum = SCRIBE_U16(codex, p + 18, 18460).
+    ignoratum = SCRIBE_U16(codex, p + 20, 60545).
+    ignoratum = SCRIBE_U16(codex, p + 22, 4096).
+    ignoratum = SCRIBE_U16(codex, p + 24, 0).
+    ignoratum = SCRIBE_U16(codex, p + 26, 33608).
+    ignoratum = SCRIBE_U16(codex, p + 28, 9228).
+    ignoratum = SCRIBE_U16(codex, p + 30, 18688).
+    ignoratum = SCRIBE_U16(codex, p + 32, 60289).
+    ignoratum = SCRIBE_U16(codex, p + 34, 4096).
+    ignoratum = SCRIBE_U16(codex, p + 36, 0).
+    ignoratum = SCRIBE_U16(codex, p + 38, 33097).
+    ignoratum = SCRIBE_U16(codex, p + 40, 251).
+    ignoratum = SCRIBE_U16(codex, p + 42, 16).
+    ignoratum = SCRIBE_U16(codex, p + 44, 30464).
+    ignoratum = SCRIBE_U16(codex, p + 46, 19684).
+    ignoratum = SCRIBE_U16(codex, p + 48, 56361).
+    ignoratum = SCRIBE_U16(codex, p + 50, 33608).
+    ignoratum = SCRIBE_U16(codex, p + 52, 9228).
+    CODEX_SCRIBE(codex, p + 54, 0).
+
+    REDDE p + 55.
+FIN-FUNCTIO.
+
 FUNCTIO COMPONE_ARITHMETICA REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT indice SICUT NUMERUS.
@@ -1010,7 +1048,7 @@ FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
     ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
-    DUM CONTENTUM(pos) < n && (fons[CONTENTUM(pos)] == 32 || fons[CONTENTUM(pos)] == 10 || fons[CONTENTUM(pos)] == 9) PERFICE
+    DUM CONTENTUM(pos) < n && (fons[CONTENTUM(pos)] == 32 || fons[CONTENTUM(pos)] == 10 || fons[CONTENTUM(pos)] == 13 || fons[CONTENTUM(pos)] == 9) PERFICE
         CONTENTUM(pos) = CONTENTUM(pos) + 1.
     FIN-DUM.
     REDDE 0.
@@ -1997,7 +2035,9 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         SI numerus_argumentorum >= 2 TUNC
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 6).
         FIN-SI.
-        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
+        SI numerus_argumentorum >= 1 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 7).
+        FIN-SI.
 
         DECLARA loci_fn SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(tabula, nomen_fn).
         SI loci_fn != 0 TUNC
@@ -4338,8 +4378,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 pos = COMPONE_IMPONE(codex, pos, 5).
                 pos = COMPONE_TRANSCRIBE(codex, pos, 5, 4).
                 DECLARA positio_reservationis1 SICUT NUMERUS VALENS pos + 2.
-                pos = COMPONE_ONERA(codex, pos, 0, 30000).
-                pos = COMPONE_SUB(codex, pos, 4, 0).
+                pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 0).
                 DECLARA k_clear1 SICUT NUMERUS VALENS RESTITUE_LOCA_DYNAMICA(tabula).
                 tabula[51] = 0 - 8.
                 DECLARA numerus_parametrorum_princ SICUT NUMERUS VALENS 0.
@@ -4398,7 +4437,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 FIN-DUM.
 
                 DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).
-                DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.
+                DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.
                 DECLARA ig_corr1 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis1, spatium_necessarium1).
 
                 punctum_ingressus = pos.
@@ -4428,8 +4467,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 pos = COMPONE_IMPONE(codex, pos, 5).
                 pos = COMPONE_TRANSCRIBE(codex, pos, 5, 4).
                 DECLARA positio_reservationis2 SICUT NUMERUS VALENS pos + 2.
-                pos = COMPONE_ONERA(codex, pos, 0, 30000).
-                pos = COMPONE_SUB(codex, pos, 4, 0).
+                pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 0).
                 DECLARA k_clear2 SICUT NUMERUS VALENS RESTITUE_LOCA_DYNAMICA(tabula).
                 tabula[51] = 0 - 8.
 
@@ -4508,7 +4546,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 FIN-DUM.
 
                 DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, tabula).
-                DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (0 - tabula[51]) + 10000.
+                DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (((0 - tabula[51]) + 15) / 16) * 16.
                 DECLARA ig_corr2 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis2, spatium_necessarium2).
 
                 DUM i < n && fons[i] != 46 PERFICE
