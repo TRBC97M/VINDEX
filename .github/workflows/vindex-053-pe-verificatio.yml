@@ -1,4 +1,4 @@
-# Custodia structuram PE32+, importationes et contractum fasciculorum verificat.
+# Custodia structuram PE32+, importationes, fasciculos et executionem Windows verificat.
 name: VINDEX 0.53 — Verificatio PE structuralis
 
 on:
@@ -46,3 +46,50 @@ jobs:
           RADIX='Vindex Chat-GPT/vindex_final_v51'
           chmod 755 "$RADIX/compilator_vindex" "$RADIX/instrumenta/proba_pe_minimum_053.sh"
           bash "$RADIX/instrumenta/proba_pe_minimum_053.sh"
+
+      - name: PE minimum ad Windows para
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RUNNER_TEMP/minimum_windows.vindex"
+          EXE="$RUNNER_TEMP/minimum_windows.exe"
+          cat >"$FONS" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              REDDE 42.
+          FIN-FUNCTIO.
+          VINDEX
+          "$RADIX/compilator_vindex" "$FONS" "$EXE" pe
+          python3 "$RADIX/tests/proba_pe_structuram_053.py" "$EXE" \
+              --requirit ExitProcess \
+              --requirit VirtualAlloc
+
+      - name: PE minimum conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-pe-minimum
+          path: ${{ runner.temp }}/minimum_windows.exe
+          if-no-files-found: error
+
+  pe-windows:
+    needs: pe-structura
+    runs-on: windows-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: PE minimum accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-pe-minimum
+          path: pe-minimum
+
+      - name: PE sub Windows vero exsequere
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $via = Join-Path $PWD 'pe-minimum\minimum_windows.exe'
+          $processus = Start-Process -FilePath $via -Wait -PassThru -NoNewWindow
+          if ($processus.ExitCode -ne 42) {
+            throw "ERRATUM: PE VINDEX status $($processus.ExitCode) reddit; 42 exspectabatur."
+          }
+          Write-Host 'RECTE: PE VINDEX sub Windows vero exitum 42 reddit.'
