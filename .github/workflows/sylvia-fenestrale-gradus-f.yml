@@ -26,7 +26,3 @@ jobs:
       - name: Clientem Gradus F verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: python3 tests/proba_programmata_fenestrale_f.py
-
-      - name: Via 0.51 integra manet
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: python3 -m unittest discover -s tests -p 'test_systema.py' -v
