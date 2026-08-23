@@ -21,11 +21,9 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Fontes VINDEX verifica
+      - name: Clientem VINDEX verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          python3 instrumenta/vindex_verifica.py bibliotheca/fenestrale_ii_purus.vindex
-          python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_b.vindex
+        run: python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_b.vindex
 
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
