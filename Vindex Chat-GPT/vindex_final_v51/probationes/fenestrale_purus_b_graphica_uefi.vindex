@@ -1,0 +1,8 @@
+// Diagnostica: bibliotheca graphica importata + UEFI_VOCA6 in eadem unitate.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA f SICUT NUMERUS VALENS 1.
+    DECLARA r SICUT NUMERUS VALENS UEFI_VOCA6(f, 1, 2, 3, 4, 5, 6).
+    REDDE r.
+FIN-FUNCTIO.
