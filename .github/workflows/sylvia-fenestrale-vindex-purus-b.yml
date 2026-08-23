@@ -10,6 +10,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_uefi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_graphica.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_parentheses.vindex'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
 
 jobs:
@@ -34,6 +35,12 @@ jobs:
         run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fenestrale_purus_b_graphica.elf
           file /tmp/fenestrale_purus_b_graphica.elf | grep -q 'ELF 64-bit'
+
+      - name: REDDE parenthesizatam compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_parentheses.vindex /tmp/fenestrale_purus_b_parentheses.elf
+          file /tmp/fenestrale_purus_b_parentheses.elf | grep -q 'ELF 64-bit'
 
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
