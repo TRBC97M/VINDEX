@@ -46,20 +46,31 @@ memoria removet.
 
 PROGRAMMATA contractum visualem Gradus H retinet.
 
-TABULA I primum clientem alterum praebet. Aspectus eius:
+TABULA I duas formas in hoc gradu servat.
 
-- fenestra quadrata;
-- titulus `28 px` vitreo-caeruleus;
+`src/tabula_fenestrale_ii_i.vindex` est **forma visualis plena** et definit:
+
+- fenestram quadratam;
+- titulum `28 px` vitreo-caeruleum;
 - menu `22 px`;
 - instrumenta `34 px`;
-- area formulae;
+- aream formulae;
 - capita columnarum et ordinum;
 - rete octo columnarum et duodecim ordinum;
-- cellula activa ebur/aqua cum accentu bronzeo;
-- status `20 px`.
+- cellulam activam ebur/aqua cum accentu bronzeo;
+- statum `20 px`.
 
-Hoc nondum est editor tabularum plenus. Est prima superficies nativa TABULA
-quae demonstrat duas applicationes simul sine fenestra unica hereditaria.
+Compilator VINDEX 0.51 hanc unitatem ampliorem syntactice verificat, sed in
+codice generando nondum robuste complet. Quia Gradus I opus compositorii est,
+compilator canonicus consulto non mutatur.
+
+Ita `src/tabula_fenestrale_ii_i_runtime.vindex` est **client runtime
+compatibilis**. Eandem machinam mailbox ac PROGRAMMATA H utitur, sed client id
+`2` petit. Aspectus plenus TABULA non deletur neque mutatur: manet contractus
+visualis gradui futuro, ubi compilator talem unitatem directe generare poterit.
+
+Gradus I ergo probat rem architectonicam principalem: duo clientes VINDEX
+distincti possunt duas superficies privatas simul possidere et componi.
 
 ---
 
@@ -81,13 +92,13 @@ principaliter possessionem separatarum superficierum et z-order probat.
 
 ## V. Exsecutio clientium
 
-Compilator VINDEX 0.51 utrumque clientem compactum separatim in ELF64
-convertit. Compositor spatium clientis ad `0x00400000` semel attribuit et
+Compilator VINDEX 0.51 PROGRAMMATA H et clientem runtime TABULA separatim in
+ELF64 convertit. Compositor spatium clientis ad `0x00400000` semel attribuit et
 clientes **sequentialiter** initio onerat:
 
 1. PROGRAMMATA initium facit et superficiem suam complet;
 2. codex clientis e memoria removetur, superficies autem manet;
-3. TABULA eodem spatio codicis oneratur et secundam superficiem creat.
+3. TABULA runtime eodem spatio codicis oneratur et secundam superficiem creat.
 
 Ita duae superficies simul manent, quamquam clientium initia eodem spatio ELF
 temporario utuntur. Hoc vitat necessitatem relocatoris ELF in hoc gradu.
@@ -122,8 +133,9 @@ python3 tests/proba_fenestrale_ii_i.py
 bash systema/uefi/construe_fenestrale_native_i.sh
 ```
 
-CI etiam regressiones D, G et H retinet, deinde ambos clientes compilat,
-PE32+ EFI verificat atque imaginem GPT/FAT32 bootabilem construit.
+CI etiam regressiones D, G et H retinet, deinde ambos clientes runtime
+compilat, PE32+ EFI verificat atque imaginem GPT/FAT32 bootabilem construit.
+Forma plena TABULA separatim ut contractus visualis staticus verificatur.
 
 ---
 
