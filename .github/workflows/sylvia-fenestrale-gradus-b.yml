@@ -1,0 +1,35 @@
+name: Sylvia OS — Fenestrale II Gradus B
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fenestrale_native_b.c'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_b.sh'
+      - 'documenta/sylvia/FENESTRALE_II_GRADUS_B.md'
+      - '.github/workflows/sylvia-fenestrale-gradus-b.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fenestrale_native_b.c'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_b.sh'
+      - '.github/workflows/sylvia-fenestrale-gradus-b.yml'
+
+jobs:
+  constructio:
+    name: Compositorium minimum construitur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+      - name: Fenestrale Gradus B construe
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          bash systema/uefi/construe_fenestrale_native_b.sh \
+            /tmp/FENESTRALEB.EFI \
+            /tmp/fenestrale_b_uefi.img
+      - name: Exitus verifica
+        run: |
+          file /tmp/FENESTRALEB.EFI
+          objdump -p /tmp/FENESTRALEB.EFI | grep 'Subsystem.*EFI application'
+          test -s /tmp/fenestrale_b_uefi.img
+          test "$(stat -c %s /tmp/fenestrale_b_uefi.img)" -ge 67108864
