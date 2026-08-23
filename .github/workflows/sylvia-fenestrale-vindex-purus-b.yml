@@ -9,6 +9,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_uefi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_graphica.vindex'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
 
 jobs:
@@ -27,6 +28,12 @@ jobs:
         run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fenestrale_purus_b_uefi.elf
           file /tmp/fenestrale_purus_b_uefi.elf | grep -q 'ELF 64-bit'
+
+      - name: Bibliothecam graphicam compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fenestrale_purus_b_graphica.elf
+          file /tmp/fenestrale_purus_b_graphica.elf | grep -q 'ELF 64-bit'
 
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
