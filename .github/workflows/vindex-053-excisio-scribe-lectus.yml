@@ -1,0 +1,282 @@
+# Custodia externa ad vestigium SCRIBE_LECTUS e nucleo exscindendum.
+name: VINDEX 0.53 — Excisio SCRIBE_LECTUS
+
+on:
+  pull_request:
+    branches:
+      - infrastructura/vindex-053-ci-purificatio
+
+permissions:
+  contents: write
+
+jobs:
+  praepara:
+    if: github.event.pull_request.head.ref == 'infrastructura/vindex-053-scribe-lectus-trigger'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Ramum nuclei accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-excisio-servitiorum
+
+      - name: SCRIBE_LECTUS e recognitore exscinde
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          via = Path('src/compilator_vindex.vindex')
+          lines = via.read_text(encoding='utf-8').splitlines(keepends=True)
+
+          def token(line: str):
+              pat = re.compile(r'fons\[i(?:\+(\d+))?\] == (\d+)')
+              vals = {}
+              for m in pat.finditer(line):
+                  off = int(m.group(1) or 0)
+                  vals[off] = int(m.group(2))
+              out = []
+              k = 0
+              while k in vals and 32 <= vals[k] <= 126:
+                  out.append(chr(vals[k]))
+                  k += 1
+              return ''.join(out)
+
+          matches = [i for i, line in enumerate(lines) if line.lstrip().startswith('SI fons[i]') and token(line) == 'SCRIBE_LECTUS']
+          if len(matches) != 1:
+              raise SystemExit(f'ERRATUM: recognitor SCRIBE_LECTUS inventus {len(matches)} vicibus')
+          start = matches[0]
+          indent = lines[start][:len(lines[start]) - len(lines[start].lstrip())]
+          end = None
+          for j in range(start + 1, len(lines)):
+              if lines[j] == indent + 'ALITER\n':
+                  end = j + 1
+                  break
+          if end is None:
+              raise SystemExit('ERRATUM: ALITER post SCRIBE_LECTUS deest')
+
+          del lines[start:end]
+          text = ''.join(lines)
+          if 'SCRIBE_LECTUS' in text or 'ig_sl SICUT' in text:
+              raise SystemExit('ERRATUM: vestigium SCRIBE_LECTUS remanet')
+          via.write_text(text, encoding='utf-8', newline='\n')
+          print('RECTE: SCRIBE_LECTUS e recognitore nuclei excisum est.')
+          PY
+
+      - name: Punctum fixum reconstruere
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod 755 ./compilator_vindex
+          F='src/compilator_vindex.vindex'
+          ./compilator_vindex "$F" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          "$RUNNER_TEMP/gen1" "$F" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/gen2" "$F" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          "$RUNNER_TEMP/gen2" tests/compara_fasciculos_053.vindex "$RUNNER_TEMP/compara_fasciculos"
+          chmod 755 "$RUNNER_TEMP/compara_fasciculos"
+          "$RUNNER_TEMP/compara_fasciculos" "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          cp "$RUNNER_TEMP/gen2" ./compilator_vindex
+          chmod 755 ./compilator_vindex
+          sha256sum ./compilator_vindex | sed 's#  ./#  #' > SIGILLA_SHA256.txt
+          ./compilator_vindex "$F" "$RUNNER_TEMP/gen_finalis"
+          chmod 755 "$RUNNER_TEMP/gen_finalis"
+          "$RUNNER_TEMP/compara_fasciculos" ./compilator_vindex "$RUNNER_TEMP/gen_finalis"
+          sha256sum ./compilator_vindex
+
+      - name: Contractum semanticum comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          C='./compilator_vindex'
+          proba() {
+            nomen="$1"; fons="$2"; exspectatum="$3"; shift 3
+            exe="$RUNNER_TEMP/$nomen"
+            "$C" "tests/casus/$fons" "$exe"
+            chmod 755 "$exe"
+            set +e
+            productum="$($exe "$@")"
+            status=$?
+            set -e
+            test "$status" -eq 0
+            test "$productum" = "$exspectatum"
+            printf 'RECTE  %s\n' "$nomen"
+          }
+          proba salve salve.vindex 'Salve, VINDEX!'
+          proba calculus calculus.vindex "$(printf '42\n1\n2\n3\n-42\n2')"
+          proba fluitans fluitans.vindex "$(printf '4.640000\n1')"
+          proba importa importa.vindex '49'
+          proba structura-acus structura_acus.vindex "$(printf '150\n99')"
+          proba recursio recursio.vindex '720'
+          proba argumenta argumenta.vindex "$(printf '2\n90')" Zeta
+          proba argumenta-septem argumenta_septem.vindex '28'
+          proba ordo-partem ordo_partem.vindex "$(printf '83\n65\n76\n86\n69')"
+          proba vocationes-nullae vocationes_nullae.vindex '7168'
+          proba desine-imbrique desine_imbrique.vindex '48'
+          proba lectio-contextus lectio_contextus.vindex '66'
+
+      - name: Diagnostica et CRLF comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          C='./compilator_vindex'
+          reice() {
+            nomen="$1"; fons="$2"; fragmentum="$3"
+            exe="$RUNNER_TEMP/$nomen"
+            log="$RUNNER_TEMP/$nomen.log"
+            set +e
+            "$C" "tests/casus/$fons" "$exe" >"$log" 2>&1
+            status=$?
+            set -e
+            test "$status" -ne 0
+            test ! -e "$exe"
+            grep -Fq "$fragmentum" "$log"
+          }
+          reice nativum-principalis erratum_principalis.vindex 'FUNCTIO PRINCIPALIS deest'
+          reice nativum-functio erratum_functio.vindex 'functio vocata non inventa est'
+          reice nativum-importa erratum_importa.vindex 'fons importatus aperiri non potest'
+          sed 's/$/\r/' src/compilator_vindex.vindex > "$RUNNER_TEMP/compilator_crlf.vindex"
+          "$C" "$RUNNER_TEMP/compilator_crlf.vindex" "$RUNNER_TEMP/compilator_crlf"
+          chmod 755 "$RUNNER_TEMP/compilator_crlf"
+
+      - name: Recognitores finales scrutare
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          text = Path('src/compilator_vindex.vindex').read_text(encoding='utf-8')
+          vetita = (
+              'COMPONE_CURRE', 'COMPONE_TUBUS', 'COMPONE_CAMBIA_DIRECTORIUM',
+              'SCRIBE_LECTUS', 'ig_ex SICUT', 'ig_exc SICUT', 'ig_aa SICUT',
+              'ig_sl SICUT', '50333704',
+          )
+          for x in vetita:
+              if x in text:
+                  raise SystemExit(f'ERRATUM: vestigium non canonicum remanet: {x}')
+          print('RECTE: vestigia servitiorum historicorum nominata absunt.')
+          PY
+
+      - name: PE construe et VINDEX verificet
+        shell: bash
+        run: |
+          set -euo pipefail
+          C='./compilator_vindex'
+          "$C" tests/proba_pe_structuram_053.vindex "$RUNNER_TEMP/proba_pe"
+          chmod 755 "$RUNNER_TEMP/proba_pe"
+          cat > "$RUNNER_TEMP/proclama_finalis.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA "Initium".
+              PROCLAMA 999.
+              PROCLAMA -2.71828.
+              DECLARA x SICUT FLUITANS VALENS 3.14.
+              PROCLAMA x.
+              PROCLAMA "Finis".
+              REDDE 7.
+          FIN-FUNCTIO.
+          VINDEX
+          "$C" "$RUNNER_TEMP/proclama_finalis.vindex" "$RUNNER_TEMP/proclama_finalis.exe" pe
+          "$C" tests/casus/fasciculi_portabiles.vindex "$RUNNER_TEMP/fasciculi_finalis.exe" pe
+          "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/proclama_finalis.exe"
+          "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/fasciculi_finalis.exe"
+
+      - name: Mutationem conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-scribe-lectus-mutatio
+          path: |
+            src/compilator_vindex.vindex
+            compilator_vindex
+            SIGILLA_SHA256.txt
+          if-no-files-found: error
+
+      - name: PE conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-scribe-lectus-pe
+          path: |
+            ${{ runner.temp }}/proclama_finalis.exe
+            ${{ runner.temp }}/fasciculi_finalis.exe
+          if-no-files-found: error
+
+  windows:
+    if: github.event.pull_request.head.ref == 'infrastructura/vindex-053-scribe-lectus-trigger'
+    needs: praepara
+    runs-on: windows-latest
+    timeout-minutes: 8
+    steps:
+      - name: PE accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-scribe-lectus-pe
+          path: pe
+
+      - name: Exsecutionem realem verifica
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          function Exsequere-Vindex([string]$via) {
+            $psi = [System.Diagnostics.ProcessStartInfo]::new()
+            $psi.FileName = $via
+            $psi.UseShellExecute = $false
+            $psi.RedirectStandardOutput = $true
+            $psi.RedirectStandardError = $true
+            $p = [System.Diagnostics.Process]::new()
+            $p.StartInfo = $psi
+            [void]$p.Start()
+            $stdout = $p.StandardOutput.ReadToEnd()
+            $stderr = $p.StandardError.ReadToEnd()
+            $p.WaitForExit()
+            return @($p.ExitCode, $stdout, $stderr)
+          }
+          $r = Exsequere-Vindex (Join-Path $PWD 'pe\proclama_finalis.exe')
+          $status = [int]$r[0]
+          $out = ([string]$r[1] -replace "`r`n", "`n").TrimEnd("`n")
+          if ($status -ne 7) { throw "ERRATUM: PROCLAMA status $status." }
+          if ($out -ne "Initium`n999`n-2.718280`n3.140000`nFinis") { throw "ERRATUM: PROCLAMA exitus differt: [$out]" }
+          $dir = Join-Path $PWD 'fasciculi-finales'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Copy-Item (Join-Path $PWD 'pe\fasciculi_finalis.exe') (Join-Path $dir 'fasciculi_finalis.exe')
+          $pf = Start-Process -FilePath (Join-Path $dir 'fasciculi_finalis.exe') -WorkingDirectory $dir -Wait -PassThru -NoNewWindow
+          if ($pf.ExitCode -ne 0) { throw "ERRATUM: fasciculi status $($pf.ExitCode)." }
+          $textus = [System.Text.Encoding]::ASCII.GetString([System.IO.File]::ReadAllBytes((Join-Path $dir 'vindex-pe-io.tmp')))
+          if ($textus -ne 'VINX') { throw "ERRATUM: fasciculus continet [$textus]." }
+          Write-Host 'RECTE: nucleus sine SCRIBE_LECTUS sub Windows vero confirmatus est.'
+
+  publica:
+    if: github.event.pull_request.head.ref == 'infrastructura/vindex-053-scribe-lectus-trigger'
+    needs: [praepara, windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Ramum destinationis accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-excisio-servitiorum
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Mutationem accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-scribe-lectus-mutatio
+          path: mutatio
+
+      - name: Mutationem publica
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp mutatio/src/compilator_vindex.vindex src/compilator_vindex.vindex
+          cp mutatio/compilator_vindex compilator_vindex
+          cp mutatio/SIGILLA_SHA256.txt SIGILLA_SHA256.txt
+          chmod 755 compilator_vindex
+          git config user.name 'TRBC97M'
+          git config user.email 'trbc97m@protonmail.com'
+          git add src/compilator_vindex.vindex compilator_vindex SIGILLA_SHA256.txt
+          git diff --cached --quiet && { echo 'ERRATUM: nulla mutatio'; exit 1; }
+          git commit -m 'VINDEX 0.53: SCRIBE_LECTUS e nucleo exscinde'
+          git push origin HEAD:chatgpt/vindex-053-excisio-servitiorum
+          echo 'RECTE: SCRIBE_LECTUS, binarium et sigillum simul publicata sunt.'
