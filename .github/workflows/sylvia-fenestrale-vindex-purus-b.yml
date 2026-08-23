@@ -8,9 +8,7 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_uefi.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_graphica.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_parentheses.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_*.vindex'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
 
 jobs:
@@ -24,23 +22,25 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: UEFI VINDEX minimum compila
+      - name: Fundamenta separatim compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fenestrale_purus_b_uefi.elf
-          file /tmp/fenestrale_purus_b_uefi.elf | grep -q 'ELF 64-bit'
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fb_uefi.elf
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fb_graphica.elf
+          timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_parentheses.vindex /tmp/fb_parentheses.elf
+          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_parentheses.elf | grep -q 'ELF 64-bit'
 
-      - name: Bibliothecam graphicam compila
+      - name: Input UEFI VINDEX compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fenestrale_purus_b_graphica.elf
-          file /tmp/fenestrale_purus_b_graphica.elf | grep -q 'ELF 64-bit'
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_input.vindex /tmp/fb_input.elf
+          file /tmp/fb_input.elf | grep -q 'ELF 64-bit'
 
-      - name: REDDE parenthesizatam compila
+      - name: Gestorem fenestrarum VINDEX compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_parentheses.vindex /tmp/fenestrale_purus_b_parentheses.elf
-          file /tmp/fenestrale_purus_b_parentheses.elf | grep -q 'ELF 64-bit'
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_gestor.vindex /tmp/fb_gestor.elf
+          file /tmp/fb_gestor.elf | grep -q 'ELF 64-bit'
 
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
