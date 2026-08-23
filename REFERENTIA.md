@@ -1,6 +1,8 @@
 # Referentia linguae VINDEX 0.53
 
-Haec referentia nucleum linguae VINDEX describit. VINDEX fontes directe in exsecutabilia nativa x86-64 convertit: ELF Linux est modus praedefinitus, PE32+ AMD64 Windows tertio argumento `pe` eligi potest. Compilator ipse VINDEX scriptus est et punctum fixum stabile possidet.
+Haec referentia contractum canonicum nuclei linguae VINDEX describit. VINDEX fontes directe in exsecutabilia nativa x86-64 convertit: ELF Linux est modus praedefinitus, PE32+ AMD64 Windows tertio argumento `pe` eligi potest. Compilator ipse VINDEX scriptus est et punctum fixum stabile possidet.
+
+Quod in hac referentia non definitur pars contractus canonici 0.53 non est, etiamsi compilator adhuc recognitores historicos experimentorum veterum contineat.
 
 ## Compilatio
 
@@ -153,22 +155,11 @@ In modo PE argumenta lineae mandatorum Windows nondum convertuntur; interim `PRI
 - `LEGE(descriptor, maximum)` ex descriptore legit.
 - `OCTETUS(index)` octetum novissime lectum reddit.
 - `MITTE(descriptor, ordo, longitudo)` octeta mittit.
-- `APERI_LEGERE(via)` archivum ad legendum aperit.
-- `APERI_SCRIBERE(via)` archivum ad scribendum aperit.
-- `APERI_ADICERE(via)` archivum adiciendum aperit.
+- `APERI_LEGERE(via)` fasciculum ad legendum aperit.
+- `APERI_SCRIBERE(via)` fasciculum ad scribendum aperit.
 - `CLAUDE(descriptor)` descriptorem claudit.
 
-Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE` per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probata sunt. `APERI_ADICERE` nondum in backend Win64 canonice probatum est.
-
-## Executio aliorum programmatum
-
-- `EXSEQUERE(via)` programma exsequitur.
-- `EXSEQUERE_CAPTURA(via, receptaculum, capacitas)` exitum capit.
-- `CURRE(argumenta, ambitus, descriptor)` programma cum argumentis exsequitur.
-- `CAMBIA(via)` directorium praesens mutat.
-- `TUBUS(receptaculum)` tubum systematis creat.
-
-Haec familia servitiorum systematis sub ELF probata est; nulla portabilitas Win64 praesumenda est nisi separatim probetur.
+Sub PE/Win64 hae operationes per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probatae sunt.
 
 ## Imperium fluxus
 
@@ -221,6 +212,12 @@ LIBERA(p).
 
 `RESERVA(typus)` memoriam petit; `LIBERA(acus)` eam reddit. Backend PE acervum per `VirtualAlloc` praeparat. Nulla collectio purgamentorum adest.
 
+## Terminus nuclei 0.53
+
+Servitia sequentia non sunt pars contractus canonici nuclei 0.53: `EXSEQUERE`, `EXSEQUERE_CAPTURA`, `CURRE`, `CAMBIA`, `TUBUS`, `POLLE` et `APERI_ADICERE`.
+
+Haec nomina ex experimentis Systematis, Officinae, firmware vel servitiorum Unix orta sunt. Recognitores eorum in fonte compilatoris adhuc adesse possunt dum separatio interna perficitur; praesentia talis vestigii compatibilitatem, stabilitatem aut API canonicam non promittit.
+
 ## Diagnostica
 
 Compilator fontes absentes, importationes vitiosas, `PRINCIPALIS` absentem et functiones vocatas non inventas reicit. Exsecutabile imperfectum non debet pro producto valido relinqui.
@@ -232,7 +229,7 @@ Compilator fontes absentes, importationes vitiosas, `PRINCIPALIS` absentem et fu
 - longitudo identificatoris: 32 litterae;
 - parametra functionis probata: 7;
 - argumenta lineae mandatorum PE nondum convertuntur;
-- `APERI_ADICERE` Win64 nondum canonice probatum est;
+- servitia processuum, tuborum, directorii, firmware et appendendi extra contractum nuclei sunt;
 - nulla collectio purgamentorum;
 - nulla dependentia libc ad compilationem ordinariam.
 
