@@ -112,7 +112,8 @@ jobs:
                       break
 
           print('SYSCALL IDS STATICAE PROXIMAE:', sorted(syscall_ids))
-          licitae = {0, 1, 2, 3, 9, 60}
+          # 11 = munmap, quo LIBERA in backend ELF utitur.
+          licitae = {0, 1, 2, 3, 9, 11, 60}
           suspectae = syscall_ids - licitae
           if suspectae:
               raise SystemExit(f'ERRATUM: syscall extra nucleum detectae: {sorted(suspectae)}')
