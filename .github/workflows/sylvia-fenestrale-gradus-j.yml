@@ -1,0 +1,61 @@
+name: Sylvia OS — Fenestrale II Gradus J
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fenestrale_native_j.c'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_j.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/programmata_fenestrale_ii_h.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/tabula_fenestrale_ii_i_runtime.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_fenestrale_ii_j.py'
+      - 'documenta/sylvia/FENESTRALE_II_GRADUS_J.md'
+      - '.github/workflows/sylvia-fenestrale-gradus-j.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fenestrale_native_j.c'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_j.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_fenestrale_ii_j.py'
+      - '.github/workflows/sylvia-fenestrale-gradus-j.yml'
+
+jobs:
+  constructio:
+    name: Murem et fenestras Gradus J construe
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: ABI D verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_abi_d.py
+
+      - name: Mailbox G verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_compositor_g.py
+
+      - name: Gradum H verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_h.py
+
+      - name: Gradum I verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_i.py
+
+      - name: Gradum J verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_j.py
+
+      - name: Compositorium J construe
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          bash systema/uefi/construe_fenestrale_native_j.sh \
+            /tmp/FENESTRALEJ.EFI \
+            /tmp/fenestrale_j_uefi.img
+
+      - name: Exitus verifica
+        run: |
+          file /tmp/FENESTRALEJ.EFI
+          objdump -p /tmp/FENESTRALEJ.EFI | grep 'Subsystem.*EFI application'
+          test -s /tmp/fenestrale_j_uefi.img
+          test "$(stat -c %s /tmp/fenestrale_j_uefi.img)" -ge 67108864
