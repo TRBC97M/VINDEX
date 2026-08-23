@@ -30,34 +30,14 @@ if [ ! -x "$RADIX/compilator_vindex" ]; then
     exit 66
 fi
 
-# Compilator 0.51 bibliothecas top-level amplas nondum robuste resolvit.
-# Unitas H eas deterministice expandit; fontes canonicos non mutat.
-python3 - \
-    "$RADIX/bibliotheca/fenestrale_ii.vindex" \
-    "$RADIX/bibliotheca/fenestrale_ii_compositor.vindex" \
-    "$RADIX/src/programmata_fenestrale_ii_g.vindex" \
-    "$TEMPORARIUM/programmata_g_plana.vindex" <<'PY'
-from pathlib import Path
-import sys
-
-fontes = [Path(p) for p in sys.argv[1:4]]
-exitus = Path(sys.argv[4])
-partes = []
-for via in fontes:
-    lineae = []
-    for linea in via.read_text(encoding="utf-8").splitlines():
-        if linea.lstrip().startswith("IMPORTA "):
-            continue
-        lineae.append(linea)
-    partes.append("\n".join(lineae).rstrip() + "\n")
-exitus.write_text("\n".join(partes), encoding="utf-8")
-PY
-
+# Gradus G contractum bibliothecarum definit. Gradus H clientem compactum
+# eodem mailbox utentem habet, quia compilator 0.51 unitatem G amplam nondum
+# robuste generat. Compilatorem canonicum hoc experimentum non mutat.
 python3 "$RADIX/instrumenta/vindex_verifica.py" \
-    "$TEMPORARIUM/programmata_g_plana.vindex"
+    "$RADIX/src/programmata_fenestrale_ii_h.vindex"
 
 "$RADIX/compilator_vindex" \
-    "$TEMPORARIUM/programmata_g_plana.vindex" \
+    "$RADIX/src/programmata_fenestrale_ii_h.vindex" \
     "$TEMPORARIUM/programmata_g.elf"
 
 if ! readelf -h "$TEMPORARIUM/programmata_g.elf" | grep -q 'Class:.*ELF64'; then
