@@ -1,13 +1,10 @@
-# Verificatio backend Win64: generator et verificator PE ambo VINDEX sunt.
+# Custodia externa backend Win64 nuclei VINDEX purificati.
 name: VINDEX 0.53 — Win64 purus
 
 on:
   push:
     branches:
-      - chatgpt/vindex-053-purificatio
-  pull_request:
-    branches:
-      - chatgpt/vindex-053-compilator-dynamicus
+      - infrastructura/vindex-053-ci-purificatio
   workflow_dispatch:
 
 permissions:
@@ -18,42 +15,41 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Fontes accipe
+      - name: Nucleum purum accipe
         uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-purificatio
 
       - name: Compilatorem para
         shell: bash
         run: |
           set -euo pipefail
-          chmod 755 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod 755 ./compilator_vindex
 
       - name: Punctum fixum comproba
         shell: bash
         run: |
           set -euo pipefail
-          R='Vindex Chat-GPT/vindex_final_v51'
-          F="$R/src/compilator_vindex.vindex"
-          "$R/compilator_vindex" "$F" "$RUNNER_TEMP/gen1"
+          F='src/compilator_vindex.vindex'
+          ./compilator_vindex "$F" "$RUNNER_TEMP/gen1"
           chmod 755 "$RUNNER_TEMP/gen1"
           "$RUNNER_TEMP/gen1" "$F" "$RUNNER_TEMP/gen2"
           chmod 755 "$RUNNER_TEMP/gen2"
           "$RUNNER_TEMP/gen2" "$F" "$RUNNER_TEMP/gen3"
           cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
-          cmp "$R/compilator_vindex" "$RUNNER_TEMP/gen2"
+          cmp ./compilator_vindex "$RUNNER_TEMP/gen2"
 
       - name: Verificatorem PE VINDEX construe
         shell: bash
         run: |
           set -euo pipefail
-          R='Vindex Chat-GPT/vindex_final_v51'
-          "$R/compilator_vindex" "$R/tests/proba_pe_structuram_053.vindex" "$RUNNER_TEMP/proba_pe"
+          ./compilator_vindex tests/proba_pe_structuram_053.vindex "$RUNNER_TEMP/proba_pe"
           chmod 755 "$RUNNER_TEMP/proba_pe"
 
       - name: PE finalia construe et VINDEX verificet
         shell: bash
         run: |
           set -euo pipefail
-          R='Vindex Chat-GPT/vindex_final_v51'
           cat > "$RUNNER_TEMP/proclama_finalis.vindex" <<'VINDEX'
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
               PROCLAMA "Initium".
@@ -65,8 +61,8 @@ jobs:
               REDDE 7.
           FIN-FUNCTIO.
           VINDEX
-          "$R/compilator_vindex" "$RUNNER_TEMP/proclama_finalis.vindex" "$RUNNER_TEMP/proclama_finalis.exe" pe
-          "$R/compilator_vindex" "$R/tests/casus/fasciculi_portabiles.vindex" "$RUNNER_TEMP/fasciculi_finalis.exe" pe
+          ./compilator_vindex "$RUNNER_TEMP/proclama_finalis.vindex" "$RUNNER_TEMP/proclama_finalis.exe" pe
+          ./compilator_vindex tests/casus/fasciculi_portabiles.vindex "$RUNNER_TEMP/fasciculi_finalis.exe" pe
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/proclama_finalis.exe"
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/fasciculi_finalis.exe"
 
@@ -125,4 +121,4 @@ jobs:
           if ($pf.ExitCode -ne 0) { throw "ERRATUM: fasciculi status $($pf.ExitCode)." }
           $textus = [System.Text.Encoding]::ASCII.GetString([System.IO.File]::ReadAllBytes((Join-Path $dir 'vindex-pe-io.tmp')))
           if ($textus -ne 'VINX') { throw "ERRATUM: fasciculus continet [$textus]." }
-          Write-Host 'RECTE: backend Win64 a compilatore et verificatore VINDEX confirmatus est.'
+          Write-Host 'RECTE: backend Win64 nuclei puri sub Windows vero confirmatus est.'
