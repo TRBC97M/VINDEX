@@ -1,0 +1,140 @@
+// TABULA — client compactus runtime Fenestralis II Gradus I.
+// Contractum visualem TABULA I servat, compilatorem VINDEX 0.51 non mutat.
+
+FUNCTIO TI_AD_EST REDDENS NUMERUS.
+    SI CONTENTUM(50333952) != 14159808274651475 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50333960) != 1 || CONTENTUM(50333968) < 128 TUNC REDDE 0. FIN-SI.
+    SI (CONTENTUM(50333976) & 32) == 0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50335232) != 14162041607313747 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TI_RECT REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50335312).
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(50335320).
+    SI basis == 0 || linea == 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA fy SICUT NUMERUS VALENS y + h.
+    DECLARA fx SICUT NUMERUS VALENS x + w.
+    SI x % 2 != 0 TUNC x = x + 1. FIN-SI.
+    DECLARA par SICUT NUMERUS VALENS color + color * 4294967296.
+    DECLARA py SICUT NUMERUS VALENS y.
+    DUM py < fy PERFICE
+        DECLARA px SICUT NUMERUS VALENS x.
+        DUM px + 1 < fx PERFICE
+            CONTENTUM(basis + (py * linea + px) * 4) = par.
+            px = px + 2.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TI_CREA REDDENS NUMERUS.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333992).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(50334000).
+    SI CONTENTUM(50334064) != 28 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS sw * 54 / 100.
+    DECLARA h SICUT NUMERUS VALENS (sh - 28) * 56 / 100.
+    SI w < 600 TUNC w = 600. FIN-SI.
+    SI w > sw - 48 TUNC w = sw - 48. FIN-SI.
+    SI w % 2 != 0 TUNC w = w - 1. FIN-SI.
+    SI h < 380 TUNC h = 380. FIN-SI.
+    SI h > sh - 76 TUNC h = sh - 76. FIN-SI.
+    CONTENTUM(50335264) = 1.
+    CONTENTUM(50335272) = 2.
+    CONTENTUM(50335280) = 0.
+    CONTENTUM(50335288) = 7.
+    CONTENTUM(50335296) = w.
+    CONTENTUM(50335304) = h.
+    CONTENTUM(50335384) = 0.
+    CONTENTUM(50335392) = CONTENTUM(50335392) + 1.
+    CONTENTUM(50335256) = 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TI_PINGE REDDENS NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50335296).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50335304).
+    SI w < 480 || h < 320 TUNC REDDE 0. FIN-SI.
+    DECLARA factum SICUT NUMERUS VALENS TI_RECT(0, 0, w, h, 4293193457).
+    // Margo, titulus XXVIII, menu XXII, instrumenta XXXIV.
+    factum = TI_RECT(0, 0, w, 1, 4283599545).
+    factum = TI_RECT(0, 0, 2, h, 4291806393).
+    factum = TI_RECT(w - 2, 0, 2, h, 4282196744).
+    factum = TI_RECT(0, h - 2, w, 2, 4282196744).
+    factum = TI_RECT(2, 1, w - 4, 27, 4285481486).
+    factum = TI_RECT(2, 1, w - 4, 1, 4294104930).
+    factum = TI_RECT(12, 10, 58, 8, 4294965482).
+    factum = TI_RECT(w - 70, 4, 18, 20, 4291806393).
+    factum = TI_RECT(w - 48, 4, 18, 20, 4291806393).
+    factum = TI_RECT(w - 26, 4, 20, 20, 4282006184).
+    factum = TI_RECT(2, 28, w - 4, 22, 4293193457).
+    factum = TI_RECT(2, 50, w - 4, 34, 4291806393).
+    factum = TI_RECT(10, 55, 62, 24, 4294965482).
+    factum = TI_RECT(78, 55, 62, 24, 4294965482).
+    factum = TI_RECT(146, 55, 72, 24, 4294965482).
+    factum = TI_RECT(224, 55, 62, 24, 4294965482).
+    // Formula bar.
+    factum = TI_RECT(8, 88, w - 16, 30, 4294965482).
+    factum = TI_RECT(8, 88, 2, 30, 4287782170).
+    factum = TI_RECT(18, 98, 58, 8, 4287782170).
+    // Area tabularis et capita.
+    DECLARA top SICUT NUMERUS VALENS 124.
+    DECLARA left SICUT NUMERUS VALENS 42.
+    DECLARA gw SICUT NUMERUS VALENS w - 52.
+    DECLARA gh SICUT NUMERUS VALENS h - 152.
+    factum = TI_RECT(8, top, 34, gh, 4291806393).
+    factum = TI_RECT(left, top, gw, 24, 4291806393).
+    factum = TI_RECT(left, top + 24, gw, gh - 24, 4294965482).
+    // Paucae lineae repraesentativae; contractus plenus manet in TABULA I.
+    factum = TI_RECT(left + gw / 4, top, 2, gh, 4292663503).
+    factum = TI_RECT(left + gw / 2, top, 2, gh, 4292663503).
+    factum = TI_RECT(left + gw * 3 / 4, top, 2, gh, 4292663503).
+    factum = TI_RECT(8, top + 24 + gh / 5, w - 18, 2, 4292663503).
+    factum = TI_RECT(8, top + 24 + gh * 2 / 5, w - 18, 2, 4292663503).
+    factum = TI_RECT(8, top + 24 + gh * 3 / 5, w - 18, 2, 4292663503).
+    factum = TI_RECT(8, top + 24 + gh * 4 / 5, w - 18, 2, 4292663503).
+    // Cellula activa.
+    factum = TI_RECT(left + 2, top + 26, gw / 4 - 4, gh / 5 - 6, 4294571489).
+    factum = TI_RECT(left + 2, top + 26, gw / 4 - 4, 2, 4283599545).
+    factum = TI_RECT(left + 2, top + 26, 2, gh / 5 - 6, 4283599545).
+    factum = TI_RECT(2, h - 20, w - 4, 18, 4291806393).
+    REDDE factum.
+FIN-FUNCTIO.
+
+FUNCTIO TI_PRAESENTA REDDENS NUMERUS.
+    DECLARA id SICUT NUMERUS VALENS CONTENTUM(50335280).
+    SI id == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(50335256) = 0.
+    CONTENTUM(50335264) = 3.
+    CONTENTUM(50335272) = 2.
+    CONTENTUM(50335280) = id.
+    CONTENTUM(50335352) = 0.
+    CONTENTUM(50335360) = 0.
+    CONTENTUM(50335368) = CONTENTUM(50335296).
+    CONTENTUM(50335376) = CONTENTUM(50335304).
+    CONTENTUM(50335384) = 0.
+    CONTENTUM(50335392) = CONTENTUM(50335392) + 1.
+    CONTENTUM(50335256) = 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI TI_AD_EST() == 0 TUNC REDDE 5. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS CONTENTUM(50335256).
+    SI status == 0 TUNC SI TI_CREA() == 0 TUNC REDDE 6. FIN-SI. REDDE 10. FIN-SI.
+    SI status == 1 TUNC REDDE 11. FIN-SI.
+    SI status == 3 || CONTENTUM(50335384) != 0 TUNC REDDE 12. FIN-SI.
+    SI CONTENTUM(50335264) == 1 TUNC
+        SI TI_PINGE() == 0 TUNC REDDE 14. FIN-SI.
+        SI TI_PRAESENTA() == 0 TUNC REDDE 15. FIN-SI.
+        REDDE 11.
+    FIN-SI.
+    SI CONTENTUM(50335264) == 3 TUNC CONTENTUM(50335256) = 0. REDDE 0. FIN-SI.
+    REDDE 16.
+FIN-FUNCTIO.
