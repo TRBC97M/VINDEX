@@ -20,8 +20,10 @@ def main():
         req(SH,s,'constructio I')
     for s in ('CONTENTUM(50335272) = 1.','H_PINGE','barra != 28'):
         req(P,s,'PROGRAMMATA H')
-    for s in ('CONTENTUM(50335272) = 2.','T_PINGE','T_RECT','barra != 28','DUM col <= 8','DUM row <= 12'):
+    for s in ('CONTENTUM(50335272) = 2.','T_PINGE','T_RECT','barra != 28','cellw SICUT NUMERUS','cellh SICUT NUMERUS','cellw * 8','cellh * 12'):
         req(T,s,'TABULA I')
+    if 'DUM col' in T or 'DUM row' in T:
+        raise SystemExit('ERRATUM: rete TABULA cyclis complexis iterum utitur')
     if 'FENESTRALE_II_FRAMEBUFFER' in T:
         raise SystemExit('ERRATUM: TABULA framebuffer globalem petit')
     if re.search(r'JL-UX',T,re.I):
