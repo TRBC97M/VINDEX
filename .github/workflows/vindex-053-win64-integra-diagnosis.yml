@@ -1,0 +1,95 @@
+# Strata PE, PROCLAMA numericum et fasciculos coniunctim probat ante canonizationem.
+name: VINDEX 0.53 — Win64 integratio diagnostica
+
+on:
+  push:
+    branches:
+      - chatgpt/pe-fasciculi-053
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: Tria strata applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RUNNER_TEMP/compilator_win64.vindex"
+          cp "$RADIX/src/compilator_vindex.vindex" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_proclama_numericum_win64_053.py" "$FONS" "$RUNNER_TEMP/proclama.vindex"
+          mv "$RUNNER_TEMP/proclama.vindex" "$FONS"
+          python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" "$FONS"
+          grep -Fq 'COMPONE_IMPRIME_NUMERUS(codex, CONTENTUM(pos_codicis), intervallum_scratch, contextus_parseris)' "$FONS"
+          grep -Fq 'COMPONE_APERI_FASCICULUM_PE' "$FONS"
+
+      - name: Compilatorem ad punctum fixum reconstrue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RUNNER_TEMP/compilator_win64.vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          "$RUNNER_TEMP/gen1" "$FONS" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/gen2" "$FONS" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          sha256sum "$RUNNER_TEMP/gen2"
+          cp "$RUNNER_TEMP/gen2" "$RADIX/compilator_vindex"
+          cp "$FONS" "$RADIX/src/compilator_vindex.vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+
+      - name: Permissiones probationum restitue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 \
+            "$RADIX/tests/run_tests.sh" \
+            "$RADIX/vindexc" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/bootstrap/reconstruit.sh" \
+            "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex_graphica" \
+            "$RADIX/officina_vindex" \
+            "$RADIX/salutatio_vindex" \
+            "$RADIX/systema/construe_systema.sh" \
+            "$RADIX/systema/uefi/construe_uefi.sh"
+
+      - name: Calculum prius solum proba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          EXE="$RUNNER_TEMP/calculus"
+          "$RADIX/compilator_vindex" "$RADIX/tests/casus/calculus.vindex" "$EXE"
+          chmod 755 "$EXE"
+          PRODUCTUM="$($EXE)"
+          EXPECTATUM=$'42\n1\n2\n3\n-42\n2'
+          test "$PRODUCTUM" = "$EXPECTATUM"
+          printf '%s\n' 'RECTE: calculus sine ruina compilatur et exsequitur.'
+
+      - name: XXV probationes canonicas exsequere
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          set +e
+          "$RADIX/tests/run_tests.sh" | tee "$RUNNER_TEMP/probationes.log"
+          STATUS=${PIPESTATUS[0]}
+          set -e
+          cat "$RUNNER_TEMP/probationes.log"
+          exit "$STATUS"
