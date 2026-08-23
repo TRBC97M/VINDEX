@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - infrastructura/vindex-053-ci-purificatio
+  pull_request:
+    branches:
+      - infrastructura/vindex-053-ci-purificatio
   workflow_dispatch:
 
 permissions:
