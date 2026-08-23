@@ -67,9 +67,9 @@ def main() -> None:
     for fragmentum in (
         'IMPORTA "bibliotheca/fenestrale_ii.vindex".',
         "REDDE 50335232.",
-        "FENESTRALE_II_SUPERFICIEM_PETE",
-        "FENESTRALE_II_SUPERFICIEM_PRAESENTA",
-        "FENESTRALE_II_SUPERFICIES_RECTANGULUM",
+        "FII_CMP_SUPERFICIEM_PETE",
+        "FII_CMP_PRAESENTA",
+        "FII_CMP_RECTANGULUM",
         "4278190080",
         "CONTENTUM(basis + (py * linea + px) * 4) = par.",
     ):
@@ -77,10 +77,10 @@ def main() -> None:
 
     for fragmentum in (
         'IMPORTA "bibliotheca/fenestrale_ii_compositor.vindex".',
-        "FENESTRALE_II_COMPOSITOR_AD_EST()",
-        "FENESTRALE_II_SUPERFICIEM_PETE(1, w, h, 7)",
-        "FENESTRALE_II_SUPERFICIEM_PRAESENTA(1, superficies, 0, 0, w, h)",
-        "FENESTRALE_II_SUPERFICIES_RECTANGULUM",
+        "FII_CMP_AD_EST()",
+        "FII_CMP_SUPERFICIEM_PETE(1, w, h, 7)",
+        "FII_CMP_PRAESENTA(1, superficies, 0, 0, w, h)",
+        "FII_CMP_RECTANGULUM",
         "FENESTRALE_II_TASKBAR_ALTITUDO() != 28",
         "h - 20",
         "corpus_y SICUT NUMERUS VALENS 84",
@@ -96,12 +96,12 @@ def main() -> None:
         raise SystemExit("ERRATUM: rotunditas non canonica in clientem intravit")
 
     compila_header()
-    for via in (BIBLIOTHECA, CLIENT):
-        subprocess.run(
-            [sys.executable, str(RADIX / "instrumenta" / "vindex_verifica.py"), str(via)],
-            cwd=RADIX,
-            check=True,
-        )
+    # Clientis verificatio bibliothecas importatas quoque syntactice inspicit.
+    subprocess.run(
+        [sys.executable, str(RADIX / "instrumenta" / "vindex_verifica.py"), str(CLIENT)],
+        cwd=RADIX,
+        check=True,
+    )
 
     print("RECTE: Gradus G superficiem privatam et mailbox compositorii servat.")
 
