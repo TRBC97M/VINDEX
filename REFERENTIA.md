@@ -156,7 +156,11 @@ In modo PE/Win64 linea mandatorum Windows in `argc` et `argv` convertitur. Spati
 - `APERI_SCRIBERE(via)` archivum ad scribendum aperit.
 - `CLAUDE(descriptor)` descriptorem claudit.
 
-Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE` per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probata sunt.
+Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE` per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probata sunt. `MITTE(1, ordo, longitudo)` descriptorium unum ad verum manubrium exitus ordinarii Windows convertit.
+
+## Diagnostica fontis
+
+Errores syntactici et semantici canonici structuram stabilem exhibent: `FONS`, `LINEA`, `COLUMNA` et `NUNTIUS`. Lineae et columnae ab uno numerantur; columna locum octeti in linea significat. Diagnostica vocationum ignotarum etiam ad fontem importatum verum referuntur, non ad unitatem post importationes conflatam.
 
 ## Imperium fluxus
 
