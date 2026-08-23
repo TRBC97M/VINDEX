@@ -102,29 +102,39 @@ FUNCTIO T_PINGE REDDENS NUMERUS.
     factum = T_RECT(8, 88, w - 16, 30, lux).
     factum = T_RECT(8, 88, 2, 30, medium).
     factum = T_RECT(18, 98, 58, 8, medium).
-    // Capita columnarum et ordinum.
+    // Rete cellularum. Lineae explicitae compilatori 0.51 simpliciores sunt.
     DECLARA top SICUT NUMERUS VALENS 124.
     DECLARA left SICUT NUMERUS VALENS 42.
     DECLARA gw SICUT NUMERUS VALENS w - left - 10.
     DECLARA gh SICUT NUMERUS VALENS h - top - 28.
+    DECLARA cellw SICUT NUMERUS VALENS gw / 8.
+    DECLARA cellh SICUT NUMERUS VALENS (gh - 24) / 12.
     factum = T_RECT(8, top, left - 8, gh, argentum).
     factum = T_RECT(left, top, gw, 24, argentum).
     factum = T_RECT(left, top + 24, gw, gh - 24, lux).
-    DECLARA col SICUT NUMERUS VALENS 0.
-    DUM col <= 8 PERFICE
-        DECLARA gx SICUT NUMERUS VALENS left + col * gw / 8.
-        factum = T_RECT(gx, top, 2, gh, grid).
-        col = col + 1.
-    FIN-DUM.
-    DECLARA row SICUT NUMERUS VALENS 0.
-    DUM row <= 12 PERFICE
-        DECLARA gy SICUT NUMERUS VALENS top + 24 + row * (gh - 24) / 12.
-        factum = T_RECT(8, gy, w - 18, 2, grid).
-        row = row + 1.
-    FIN-DUM.
-    // Cellula activa A1: aqua et bronzeum subtiliter.
-    DECLARA cellw SICUT NUMERUS VALENS gw / 8.
-    DECLARA cellh SICUT NUMERUS VALENS (gh - 24) / 12.
+    factum = T_RECT(left, top, 2, gh, grid).
+    factum = T_RECT(left + cellw, top, 2, gh, grid).
+    factum = T_RECT(left + cellw * 2, top, 2, gh, grid).
+    factum = T_RECT(left + cellw * 3, top, 2, gh, grid).
+    factum = T_RECT(left + cellw * 4, top, 2, gh, grid).
+    factum = T_RECT(left + cellw * 5, top, 2, gh, grid).
+    factum = T_RECT(left + cellw * 6, top, 2, gh, grid).
+    factum = T_RECT(left + cellw * 7, top, 2, gh, grid).
+    factum = T_RECT(left + cellw * 8, top, 2, gh, grid).
+    factum = T_RECT(8, top + 24, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 2, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 3, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 4, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 5, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 6, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 7, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 8, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 9, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 10, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 11, w - 18, 2, grid).
+    factum = T_RECT(8, top + 24 + cellh * 12, w - 18, 2, grid).
+    // Cellula activa A1.
     factum = T_RECT(left + 2, top + 26, cellw - 4, cellh - 4, cellula).
     factum = T_RECT(left + 2, top + 26, cellw - 4, 2, bronzeum).
     factum = T_RECT(left + 2, top + 26, 2, cellh - 4, bronzeum).
