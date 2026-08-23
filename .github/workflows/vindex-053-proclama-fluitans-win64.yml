@@ -34,49 +34,41 @@ jobs:
           timeout 30s "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
           chmod 755 "$RUNNER_TEMP/gen1"
 
-      - name: ELF fluitans custodi
+      - name: ELF fluitans canonicum custodi
         shell: bash
         run: |
           set -euo pipefail
-          cat >"$RUNNER_TEMP/fluitans_elf.vindex" <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              PROCLAMA 3.141589.
-              REDDE 0.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s "$RUNNER_TEMP/gen1" "$RUNNER_TEMP/fluitans_elf.vindex" "$RUNNER_TEMP/fluitans_elf"
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          timeout 20s "$RUNNER_TEMP/gen1" "$RADIX/tests/casus/fluitans.vindex" "$RUNNER_TEMP/fluitans_elf"
           chmod 755 "$RUNNER_TEMP/fluitans_elf"
           OUT="$(timeout 10s "$RUNNER_TEMP/fluitans_elf")"
-          test "$OUT" = '3.141589'
+          printf 'ELF=[%s]\n' "$OUT"
+          test "$OUT" = $'4.640000\n1'
           printf '%s\n' 'RECTE: PROCLAMA fluitans ELF intactum est.'
 
       - name: PE probationes construe
         shell: bash
         run: |
           set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
           COMP="$RUNNER_TEMP/gen1"
-          cat >"$RUNNER_TEMP/fluitans.vindex" <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              PROCLAMA 3.141589.
-              REDDE 6.
-          FIN-FUNCTIO.
-          VINDEX
+          timeout 20s "$COMP" "$RADIX/tests/casus/fluitans.vindex" "$RUNNER_TEMP/fluitans.exe" pe
           cat >"$RUNNER_TEMP/mixtum.vindex" <<'VINDEX'
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
               PROCLAMA "Initium".
               PROCLAMA 42.
-              PROCLAMA 3.141589.
+              PROCLAMA 3.14.
               PROCLAMA "Finis".
               REDDE 8.
           FIN-FUNCTIO.
           VINDEX
           cat >"$RUNNER_TEMP/negativum.vindex" <<'VINDEX'
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              PROCLAMA 0.0 - 12.500001.
+              DECLARA x SICUT FLUITANS VALENS 0.0 - 12.5.
+              PROCLAMA x.
               REDDE 12.
           FIN-FUNCTIO.
           VINDEX
-          timeout 20s "$COMP" "$RUNNER_TEMP/fluitans.vindex" "$RUNNER_TEMP/fluitans.exe" pe
           timeout 20s "$COMP" "$RUNNER_TEMP/mixtum.vindex" "$RUNNER_TEMP/mixtum.exe" pe
           timeout 20s "$COMP" "$RUNNER_TEMP/negativum.vindex" "$RUNNER_TEMP/negativum.exe" pe
           file "$RUNNER_TEMP/fluitans.exe" "$RUNNER_TEMP/mixtum.exe" "$RUNNER_TEMP/negativum.exe"
@@ -108,10 +100,7 @@ jobs:
           function Proba-Vindex([string]$nomen, [int]$status, [string]$exspectatum) {
             $via = Join-Path $PWD ("pe\" + $nomen + ".exe")
             $psi = [System.Diagnostics.ProcessStartInfo]::new()
-            $psi.FileName = $via
-            $psi.UseShellExecute = $false
-            $psi.RedirectStandardOutput = $true
-            $psi.RedirectStandardError = $true
+            $psi.FileName = $via; $psi.UseShellExecute = $false; $psi.RedirectStandardOutput = $true; $psi.RedirectStandardError = $true
             $p = [System.Diagnostics.Process]::new(); $p.StartInfo = $psi; [void]$p.Start()
             $stdout = $p.StandardOutput.ReadToEnd(); $stderr = $p.StandardError.ReadToEnd(); $p.WaitForExit()
             $out = ($stdout -replace "`r`n", "`n").TrimEnd("`n")
@@ -120,9 +109,9 @@ jobs:
             if ($p.ExitCode -ne $status) { throw "ERRATUM: $nomen status $($p.ExitCode); $status exspectabatur." }
             if ($out -ne $exspectatum) { throw "ERRATUM: $nomen exitus [$out], [$exspectatum] exspectabatur." }
           }
-          Proba-Vindex 'fluitans' 6 '3.141589'
-          Proba-Vindex 'mixtum' 8 "Initium`n42`n3.141589`nFinis"
-          Proba-Vindex 'negativum' 12 '-12.500001'
+          Proba-Vindex 'fluitans' 0 "4.640000`n1"
+          Proba-Vindex 'mixtum' 8 "Initium`n42`n3.140000`nFinis"
+          Proba-Vindex 'negativum' 12 '-12.500000'
           Write-Host 'RECTE: PROCLAMA fluitans sub Windows vero rectum est.'
 
   auto-hospitium:
