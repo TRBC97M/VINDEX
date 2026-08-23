@@ -6,7 +6,8 @@ set -eu
 
 RADIX="$(cd "$(dirname "$0")/../.." && pwd)"
 UEFI="$RADIX/systema/uefi"
-EXITUS="${1:-$RADIX/FENESTRALEA.EFI}"
+APPLICATIO="${1:-$RADIX/FENESTRALEA.EFI}"
+IMAGO="${2:-$RADIX/fenestrale_a_uefi.img}"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/sylvia-fenestrale-a.XXXXXX")"
 
 purga() {
@@ -17,7 +18,7 @@ purga() {
 }
 trap purga EXIT HUP INT TERM
 
-for instrumentum in gcc ld objcopy file objdump; do
+for instrumentum in gcc ld objcopy file objdump python3; do
     if ! command -v "$instrumentum" >/dev/null 2>&1; then
         printf 'ERRATUM: instrumentum necessarium deest: %s\n' "$instrumentum" >&2
         exit 69
@@ -46,8 +47,13 @@ if ! objdump -p "$TEMPORARIUM/FENESTRALEA.EFI" | grep -q 'Subsystem.*EFI applica
     exit 65
 fi
 
-mkdir -p "$(dirname "$EXITUS")"
-cp -f "$TEMPORARIUM/FENESTRALEA.EFI" "$EXITUS"
-chmod 0644 "$EXITUS"
+python3 "$UEFI/fac_imaginem_uefi.py" \
+    "$TEMPORARIUM/FENESTRALEA.EFI" "$TEMPORARIUM/fenestrale_a_uefi.img"
+
+mkdir -p "$(dirname "$APPLICATIO")" "$(dirname "$IMAGO")"
+cp -f "$TEMPORARIUM/FENESTRALEA.EFI" "$APPLICATIO"
+cp -f "$TEMPORARIUM/fenestrale_a_uefi.img" "$IMAGO"
+chmod 0644 "$APPLICATIO" "$IMAGO"
 printf '%s\n' 'RECTE: probatio Fenestralis II Gradus A constructa est.'
-printf 'APPLICATIO: %s\n' "$EXITUS"
+printf 'APPLICATIO: %s\n' "$APPLICATIO"
+printf 'IMAGO: %s\n' "$IMAGO"
