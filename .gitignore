@@ -1,3 +1,6 @@
 .tmp.*
 .tmp.driveupload/
 .tmp.drivedownload/
+officina/bin/
+officina/obj/
+officina/distributio/

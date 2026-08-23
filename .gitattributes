@@ -1,3 +1,7 @@
 # Fontes et documenta nuclei terminationibus LF canonice servantur.
 *.vindex text eol=lf
 *.md text eol=lf
+*.cs text eol=lf
+*.csproj text eol=lf
+*.forma text eol=lf
+*.stilus text eol=lf

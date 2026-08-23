@@ -1,6 +1,8 @@
 # VINDEX 0.53 — Nucleus linguae
 
-VINDEX est lingua programmationis Latina quae directe exsecutabilia nativa x86-64 generat. Hic ramus solum nucleum linguae servat: compilatorem auto-hospitem, fontem eius, referentiam et probationes canonicas VINDEX.
+VINDEX est lingua programmationis Latina quae directe exsecutabilia nativa x86-64 generat. Nucleus linguae compilatorem auto-hospitem, fontem eius, referentiam et probationes canonicas VINDEX servat.
+
+Haec linea Git etiam `officina/` continet: pontem fenestralem separatam pro VINDEX Officina — Gradus A. Pons non est pars nuclei linguae neque mutat compilatorem canonicum; contractu proiecti publico utitur.
 
 ## Compilatio
 
@@ -47,6 +49,7 @@ Infrastructura GitHub Actions non est pars nuclei; separatim servatur in ramo `i
 - `src/compilator_vindex.vindex` — compilator auto-hospes;
 - `compilator_vindex` — binarium seminale;
 - `tests/` — contractus et verificatores VINDEX;
+- `officina/` — ambitus programmationis separatus et formae eius;
 - `REFERENTIA.md` — grammatica, semantica et limites canonici;
 - `VERSION` — versio nuclei;
 - `SIGILLA_SHA256.txt` — sigillum compilatoris.
