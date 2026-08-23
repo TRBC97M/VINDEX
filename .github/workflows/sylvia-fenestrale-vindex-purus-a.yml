@@ -1,0 +1,33 @@
+name: Sylvia OS — Fenestrale II Purus A
+
+on:
+  push:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-a
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_a.vindex'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-a.yml'
+
+jobs:
+  vindex-purus:
+    name: Desktop nativus VINDEX compilatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontem VINDEX verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_a.vindex
+
+      - name: Desktop VINDEX compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          ./compilator_vindex systema/fenestrale_ii_purus_a.vindex /tmp/fenestrale_ii_purus_a.elf
+          file /tmp/fenestrale_ii_purus_a.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_a.elf)" -lt 196608
+          printf '%s\n' 'RECTE: Fenestrale II Purus A omnino VINDEX compilatur.'
