@@ -18,6 +18,24 @@ PE32+ AMD64 Windows:
 ./compilator_vindex programma.vindex programma.exe pe
 ```
 
+Proiectum:
+
+```bash
+./compilator_vindex PROIECTUM via/ad/proiectum.vindex
+```
+
+Forma canonica manifesti est:
+
+```vindex
+PROIECTUM VINDEX.
+FONS "principalis.vindex".
+PRODUCTUM "programma".
+DESTINATIO ELF.
+FIN-PROIECTUM.
+```
+
+`FONS` unitatem principalem, `PRODUCTUM` fasciculum generandum, `DESTINATIO` autem `ELF` aut `PE` eligit. Ordo sententiarum canonicus est. Viae relativae fontis, producti et importationum ex directorio manifesti resolvuntur, non ex directorio unde compilator vocatur. Modus directus prior integer manet.
+
 Compilatio ordinaria GCC, NASM, libc, Python aut alium compilatorem non requirit.
 
 ## Structura programmatis
@@ -126,7 +144,7 @@ PROCLAMA z.
 IMPORTA "bibliotheca.vindex".
 ```
 
-`IMPORTA` tantum in gradu supremo poni potest. Via importationis a directorio praesenti resolvitur. Receptacula fontium dynamice crescunt; limes historicus summae fontium remotus est. Cyclus et importatio inclusa reiciuntur.
+`IMPORTA` tantum in gradu supremo poni potest. In compilatione directa via importationis a directorio praesenti resolvitur; in compilatione proiecti a directorio manifesti. Receptacula fontium dynamice crescunt; limes historicus summae fontium remotus est. Cyclus et importatio inclusa reiciuntur.
 
 ## Argumenta lineae mandatorum
 
@@ -161,6 +179,8 @@ Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE` per `
 ## Diagnostica fontis
 
 Errores syntactici et semantici canonici structuram stabilem exhibent: `FONS`, `LINEA`, `COLUMNA` et `NUNTIUS`. Lineae et columnae ab uno numerantur; columna locum octeti in linea significat. Diagnostica vocationum ignotarum etiam ad fontem importatum verum referuntur, non ad unitatem post importationes conflatam.
+
+Manifestum proiecti invalidum eadem structura reicitur atque locum vitii in ipso manifesto indicat.
 
 ## Imperium fluxus
 
