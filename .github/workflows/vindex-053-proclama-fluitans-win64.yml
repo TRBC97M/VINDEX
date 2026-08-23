@@ -1,0 +1,154 @@
+# Defectum PROCLAMA fluitantis Win64 corrigit in fonte temporario et sub Windows vero probat.
+name: VINDEX 0.53 — PROCLAMA fluitans Win64
+
+on:
+  push:
+    branches:
+      - chatgpt/fluitans-win64-053
+  pull_request:
+    branches:
+      - claude/pe-integration-053-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: Correctionem applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 -m py_compile "$RADIX/instrumenta/corrige_proclama_fluitans_win64_053.py"
+          python3 "$RADIX/instrumenta/corrige_proclama_fluitans_win64_053.py" \
+              "$RADIX/src/compilator_vindex.vindex" \
+              "$RUNNER_TEMP/compilator_fluitans.vindex"
+          grep -Fq 'COMPONE_MOVQ_A_XMM(codex, p, 0, 15)' "$RUNNER_TEMP/compilator_fluitans.vindex"
+
+      - name: Auto-hospitium confirma
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RUNNER_TEMP/compilator_fluitans.vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          "$RUNNER_TEMP/gen1" "$FONS" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/gen2" "$FONS" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          sha256sum "$RUNNER_TEMP/gen2"
+
+      - name: ELF fluitans custodi
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXE="$RUNNER_TEMP/fluitans_elf"
+          cat >"$RUNNER_TEMP/fluitans_elf.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA 3.141589.
+              REDDE 0.
+          FIN-FUNCTIO.
+          VINDEX
+          "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/fluitans_elf.vindex" "$EXE"
+          chmod 755 "$EXE"
+          OUT="$($EXE)"
+          test "$OUT" = '3.141589'
+          printf '%s\n' 'RECTE: PROCLAMA fluitans ELF intactum est.'
+
+      - name: PE probationes construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP="$RUNNER_TEMP/gen2"
+
+          cat >"$RUNNER_TEMP/fluitans.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA 3.141589.
+              REDDE 6.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/mixtum.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA "Initium".
+              PROCLAMA 42.
+              PROCLAMA 3.141589.
+              PROCLAMA "Finis".
+              REDDE 8.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/negativum.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA 0.0 - 12.500001.
+              REDDE 12.
+          FIN-FUNCTIO.
+          VINDEX
+
+          "$COMP" "$RUNNER_TEMP/fluitans.vindex" "$RUNNER_TEMP/fluitans.exe" pe
+          "$COMP" "$RUNNER_TEMP/mixtum.vindex" "$RUNNER_TEMP/mixtum.exe" pe
+          "$COMP" "$RUNNER_TEMP/negativum.vindex" "$RUNNER_TEMP/negativum.exe" pe
+          file "$RUNNER_TEMP/fluitans.exe" "$RUNNER_TEMP/mixtum.exe" "$RUNNER_TEMP/negativum.exe"
+
+      - name: Executabilia conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-proclama-fluitans-win64
+          path: |
+            ${{ runner.temp }}/fluitans.exe
+            ${{ runner.temp }}/mixtum.exe
+            ${{ runner.temp }}/negativum.exe
+          if-no-files-found: error
+
+  windows:
+    needs: construe
+    runs-on: windows-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Executabilia accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-proclama-fluitans-win64
+          path: pe
+
+      - name: Fluitantes sub Windows vero verifica
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          function Proba-Vindex([string]$nomen, [int]$status, [string]$exspectatum) {
+            $via = Join-Path $PWD ("pe\" + $nomen + ".exe")
+            $psi = [System.Diagnostics.ProcessStartInfo]::new()
+            $psi.FileName = $via
+            $psi.UseShellExecute = $false
+            $psi.RedirectStandardOutput = $true
+            $psi.RedirectStandardError = $true
+            $p = [System.Diagnostics.Process]::new()
+            $p.StartInfo = $psi
+            [void]$p.Start()
+            $stdout = $p.StandardOutput.ReadToEnd()
+            $stderr = $p.StandardError.ReadToEnd()
+            $p.WaitForExit()
+            $out = ($stdout -replace "`r`n", "`n").TrimEnd("`n")
+            Write-Host "$nomen -> status $($p.ExitCode), stdout=[$($out -replace "`n", "\\n")]"
+            if ($stderr.Length -gt 0) { Write-Host "stderr=[$stderr]" }
+            if ($p.ExitCode -ne $status) { throw "ERRATUM: $nomen status $($p.ExitCode); $status exspectabatur." }
+            if ($out -ne $exspectatum) { throw "ERRATUM: $nomen exitus [$out], [$exspectatum] exspectabatur." }
+          }
+
+          Proba-Vindex 'fluitans' 6 '3.141589'
+          Proba-Vindex 'mixtum' 8 "Initium`n42`n3.141589`nFinis"
+          Proba-Vindex 'negativum' 12 '-12.500001'
+          Write-Host 'RECTE: PROCLAMA fluitans sub Windows vero rectum est.'
