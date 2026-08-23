@@ -26,7 +26,10 @@ for instrumentum in as ld objcopy dd truncate; do
     fi
 done
 
-"$RADIX/compilator_vindex" "$RADIX/systema/nucleus.vindex" "$TEMPORARIUM/nucleus.elf"
+(
+    cd "$RADIX"
+    ./compilator_vindex systema/nucleus.vindex "$TEMPORARIUM/nucleus.elf"
+)
 MAGNITUDO="$(stat -c '%s' "$TEMPORARIUM/nucleus.elf")"
 if [ "$MAGNITUDO" -gt 122880 ]; then
     printf 'ERRATUM: nucleus %s octeta habet; limes est 122880.\n' "$MAGNITUDO" >&2

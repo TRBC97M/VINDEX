@@ -1,0 +1,453 @@
+// Sylvia Moderna A — compositorium nativum VINDEX purum.
+// VINDEX Latine cogitat. Sylvia Latine loquitur.
+
+FUNCTIO SYLVIA_PIXEL REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA latitudo SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA altitudo SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI x < 0 || y < 0 || x >= latitudo || y >= altitudo TUNC REDDE 0. FIN-SI.
+    DECLARA locus SICUT NUMERUS VALENS CONTENTUM(50333712) + (y * CONTENTUM(50333720) + x) * 4.
+    DECLARA ruber SICUT NUMERUS VALENS (color >> 16) & 255.
+    DECLARA viridis SICUT NUMERUS VALENS (color >> 8) & 255.
+    DECLARA caeruleus SICUT NUMERUS VALENS color & 255.
+    SI CONTENTUM(50333744) == 0 TUNC
+        SCRIBE_OCTETUM_AB(locus, ruber).
+        SCRIBE_OCTETUM_AB(locus + 1, viridis).
+        SCRIBE_OCTETUM_AB(locus + 2, caeruleus).
+    ALITER
+        SCRIBE_OCTETUM_AB(locus, caeruleus).
+        SCRIBE_OCTETUM_AB(locus + 1, viridis).
+        SCRIBE_OCTETUM_AB(locus + 2, ruber).
+    FIN-SI.
+    SCRIBE_OCTETUM_AB(locus + 3, 0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_RECTANGULUM REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA limes_x SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA limes_y SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI x < 0 TUNC latitudo = latitudo + x. x = 0. FIN-SI.
+    SI y < 0 TUNC altitudo = altitudo + y. y = 0. FIN-SI.
+    SI x + latitudo > limes_x TUNC latitudo = limes_x - x. FIN-SI.
+    SI y + altitudo > limes_y TUNC altitudo = limes_y - y. FIN-SI.
+    SI latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA ruber SICUT NUMERUS VALENS (color >> 16) & 255.
+    DECLARA viridis SICUT NUMERUS VALENS (color >> 8) & 255.
+    DECLARA caeruleus SICUT NUMERUS VALENS color & 255.
+    DECLARA formatum SICUT NUMERUS VALENS CONTENTUM(50333744).
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50333712).
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(50333720).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py < altitudo PERFICE
+        DECLARA locus SICUT NUMERUS VALENS basis + ((y + py) * linea + x) * 4.
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px < latitudo PERFICE
+            SI formatum == 0 TUNC
+                SCRIBE_OCTETUM_AB(locus, ruber).
+                SCRIBE_OCTETUM_AB(locus + 1, viridis).
+                SCRIBE_OCTETUM_AB(locus + 2, caeruleus).
+            ALITER
+                SCRIBE_OCTETUM_AB(locus, caeruleus).
+                SCRIBE_OCTETUM_AB(locus + 1, viridis).
+                SCRIBE_OCTETUM_AB(locus + 2, ruber).
+            FIN-SI.
+            SCRIBE_OCTETUM_AB(locus + 3, 0).
+            locus = locus + 4.
+            px = px + 1.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_LITTERAM REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT littera SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    DECLARA forma SICUT NUMERUS VALENS CONTENTUM(50333784).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py < 8 PERFICE
+        DECLARA linea SICUT NUMERUS VALENS OCTETUS_AB(forma + littera * 8 + py).
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px < 8 PERFICE
+            SI (linea & (128 >> px)) != 0 TUNC
+                DECLARA sy SICUT NUMERUS VALENS 0.
+                DUM sy < scala PERFICE
+                    DECLARA sx SICUT NUMERUS VALENS 0.
+                    DUM sx < scala PERFICE
+                        DECLARA factum SICUT NUMERUS VALENS SYLVIA_PIXEL(x + px * scala + sx, y + py * scala + sy, color).
+                        sx = sx + 1.
+                    FIN-DUM.
+                    sy = sy + 1.
+                FIN-DUM.
+            FIN-SI.
+            px = px + 1.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_OCTETA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        DECLARA littera SICUT NUMERUS VALENS OCTETUS_AB(locus + i).
+        SI littera == 0 TUNC REDDE i. FIN-SI.
+        DECLARA factum SICUT NUMERUS VALENS SYLVIA_LITTERAM(x + i * 8 * scala, y, littera, color, scala).
+        i = i + 1.
+    FIN-DUM.
+    REDDE i.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_TEXTUM REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    REDDE SYLVIA_OCTETA(x, y, textus + 16, CONTENTUM(textus), color, scala).
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_FUNDUM REDDENS NUMERUS.
+    DECLARA latitudo SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA altitudo SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y < altitudo PERFICE
+        DECLARA ruber SICUT NUMERUS VALENS 10 + y * 18 / altitudo.
+        DECLARA viridis SICUT NUMERUS VALENS 22 + y * 42 / altitudo.
+        DECLARA caeruleus SICUT NUMERUS VALENS 48 + y * 74 / altitudo.
+        DECLARA color SICUT NUMERUS VALENS (ruber << 16) | (viridis << 8) | caeruleus.
+        DECLARA factum SICUT NUMERUS VALENS SYLVIA_RECTANGULUM(0, y, latitudo, 1, color).
+        y = y + 1.
+    FIN-DUM.
+    DECLARA columna SICUT NUMERUS VALENS latitudo / 9.
+    factum = SYLVIA_RECTANGULUM(columna, altitudo / 8, 2, altitudo * 5 / 8, 2314129).
+    factum = SYLVIA_RECTANGULUM(columna * 7, altitudo / 5, 1, altitudo / 2, 3434393).
+    factum = SYLVIA_RECTANGULUM(0, altitudo - 58, latitudo, 58, 657949).
+    factum = SYLVIA_RECTANGULUM(0, altitudo - 58, latitudo, 2, 4838574).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_FENESTRA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT titulus SICUT TEXTUS.
+    DECLARA factum SICUT NUMERUS VALENS SYLVIA_RECTANGULUM(x - 4, y - 4, latitudo + 8, altitudo + 8, 1053991).
+    factum = SYLVIA_RECTANGULUM(x - 2, y - 2, latitudo + 4, altitudo + 4, 4958341).
+    factum = SYLVIA_RECTANGULUM(x, y, latitudo, altitudo, 1382681).
+    factum = SYLVIA_RECTANGULUM(x + 2, y + 42, latitudo - 4, altitudo - 44, 1579550).
+    factum = SYLVIA_RECTANGULUM(x, y, latitudo, 42, 2188904).
+    factum = SYLVIA_RECTANGULUM(x, y + 40, latitudo, 2, 5411549).
+    factum = SYLVIA_TEXTUM(x + 18, y + 13, titulus, 15792630, 2).
+    factum = SYLVIA_RECTANGULUM(x + latitudo - 38, y + 8, 28, 26, 4202017).
+    factum = SYLVIA_TEXTUM(x + latitudo - 31, y + 13, "X", 16777215, 2).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_PROGRAMMATA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    DECLARA factum SICUT NUMERUS VALENS SYLVIA_FENESTRA(x, y, latitudo, altitudo, "PROGRAMMATA").
+    factum = SYLVIA_TEXTUM(x + 24, y + 64, "PROGRAMMATA VINDEX", 7656959, 1).
+    factum = SYLVIA_RECTANGULUM(x + 20, y + 94, latitudo - 40, 86, 1979202).
+    factum = SYLVIA_RECTANGULUM(x + 21, y + 95, latitudo - 42, 84, 2690851).
+    factum = SYLVIA_RECTANGULUM(x + 34, y + 110, 52, 52, 2383529).
+    factum = SYLVIA_RECTANGULUM(x + 42, y + 118, 36, 36, 5874657).
+    factum = SYLVIA_TEXTUM(x + 50, y + 128, "T", 16777215, 2).
+    factum = SYLVIA_TEXTUM(x + 104, y + 111, "TABULA", 16119285, 2).
+    factum = SYLVIA_TEXTUM(x + 104, y + 142, "TABELLA CALCULATRIX VINDEX", 7778004, 1).
+    factum = SYLVIA_TEXTUM(x + 24, y + altitudo - 31, "I PROGRAMMA PARATUM", 6206936, 1).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_TABULA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT electa SICUT NUMERUS.
+    DECLARA factum SICUT NUMERUS VALENS SYLVIA_FENESTRA(x, y, latitudo, altitudo, "TABULA").
+    factum = SYLVIA_RECTANGULUM(x + 18, y + 54, latitudo - 36, 34, 2435645).
+    factum = SYLVIA_TEXTUM(x + 28, y + 64, "CELLULA", 7986401, 1).
+    DECLARA columna_electa SICUT NUMERUS VALENS electa & 7.
+    DECLARA ordo_electus SICUT NUMERUS VALENS electa / 8.
+    factum = SYLVIA_LITTERAM(x + 104, y + 63, 65 + columna_electa, 16777215, 1).
+    SI ordo_electus < 9 TUNC factum = SYLVIA_LITTERAM(x + 114, y + 63, 49 + ordo_electus, 16777215, 1). FIN-SI.
+    SI ordo_electus == 9 TUNC factum = SYLVIA_TEXTUM(x + 114, y + 63, "10", 16777215, 1). FIN-SI.
+    factum = SYLVIA_OCTETA(x + 154, y + 63, 50334720 + electa * 8, 7, 16053492, 1).
+    DECLARA initium_x SICUT NUMERUS VALENS x + 54.
+    DECLARA initium_y SICUT NUMERUS VALENS y + 112.
+    DECLARA latitudo_cellulae SICUT NUMERUS VALENS (latitudo - 74) / 8.
+    DECLARA altitudo_cellulae SICUT NUMERUS VALENS (altitudo - 142) / 10.
+    SI altitudo_cellulae > 38 TUNC altitudo_cellulae = 38. FIN-SI.
+    factum = SYLVIA_RECTANGULUM(initium_x - 36, initium_y - 26, latitudo - 38, 26, 1909798).
+    DECLARA columna SICUT NUMERUS VALENS 0.
+    DUM columna < 8 PERFICE
+        factum = SYLVIA_LITTERAM(initium_x + columna * latitudo_cellulae + latitudo_cellulae / 2 - 4, initium_y - 18, 65 + columna, 9967359, 1).
+        columna = columna + 1.
+    FIN-DUM.
+    DECLARA ordo SICUT NUMERUS VALENS 0.
+    DUM ordo < 10 PERFICE
+        factum = SYLVIA_RECTANGULUM(initium_x - 36, initium_y + ordo * altitudo_cellulae, 36, altitudo_cellulae, 1909798).
+        SI ordo < 9 TUNC factum = SYLVIA_LITTERAM(initium_x - 22, initium_y + ordo * altitudo_cellulae + altitudo_cellulae / 2 - 4, 49 + ordo, 9967359, 1). FIN-SI.
+        SI ordo == 9 TUNC factum = SYLVIA_TEXTUM(initium_x - 27, initium_y + ordo * altitudo_cellulae + altitudo_cellulae / 2 - 4, "10", 9967359, 1). FIN-SI.
+        columna = 0.
+        DUM columna < 8 PERFICE
+            DECLARA indice SICUT NUMERUS VALENS ordo * 8 + columna.
+            DECLARA color SICUT NUMERUS VALENS 1579032.
+            SI indice == electa TUNC color = 3037082. FIN-SI.
+            factum = SYLVIA_RECTANGULUM(initium_x + columna * latitudo_cellulae, initium_y + ordo * altitudo_cellulae, latitudo_cellulae - 1, altitudo_cellulae - 1, color).
+            SI indice == electa TUNC
+                factum = SYLVIA_RECTANGULUM(initium_x + columna * latitudo_cellulae, initium_y + ordo * altitudo_cellulae, latitudo_cellulae - 1, 2, 5553151).
+                factum = SYLVIA_RECTANGULUM(initium_x + columna * latitudo_cellulae, initium_y + ordo * altitudo_cellulae, 2, altitudo_cellulae - 1, 5553151).
+            FIN-SI.
+            factum = SYLVIA_OCTETA(initium_x + columna * latitudo_cellulae + 6, initium_y + ordo * altitudo_cellulae + altitudo_cellulae / 2 - 4, 50334720 + indice * 8, 7, 15133928, 1).
+            columna = columna + 1.
+        FIN-DUM.
+        ordo = ordo + 1.
+    FIN-DUM.
+    factum = SYLVIA_TEXTUM(x + 22, y + altitudo - 24, "SAGITTAE MOVENT  LITTERAE SCRIBUNT", 6206936, 1).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_TENDA REDDENS NUMERUS.
+    ACCIPIT modus SICUT NUMERUS.
+    ACCIPIT electa SICUT NUMERUS.
+    DECLARA latitudo SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA altitudo SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA factum SICUT NUMERUS VALENS SYLVIA_FUNDUM().
+    factum = SYLVIA_TEXTUM(28, 26, "SYLVIA OS", 13295871, 2).
+    factum = SYLVIA_TEXTUM(30, 50, "VINDEX PURE REGIT", 6794398, 1).
+    DECLARA fenestra_x SICUT NUMERUS VALENS latitudo / 14.
+    DECLARA fenestra_y SICUT NUMERUS VALENS altitudo / 10.
+    DECLARA fenestra_l SICUT NUMERUS VALENS latitudo * 44 / 100.
+    DECLARA fenestra_a SICUT NUMERUS VALENS altitudo * 68 / 100.
+    SI modus == 0 TUNC factum = SYLVIA_PROGRAMMATA(fenestra_x, fenestra_y, fenestra_l, fenestra_a). FIN-SI.
+    SI modus == 1 TUNC
+        fenestra_x = latitudo / 18.
+        fenestra_y = altitudo / 16.
+        fenestra_l = latitudo * 88 / 100.
+        fenestra_a = altitudo * 79 / 100.
+        factum = SYLVIA_TABULA(fenestra_x, fenestra_y, fenestra_l, fenestra_a, electa).
+    FIN-SI.
+    factum = SYLVIA_RECTANGULUM(14, altitudo - 47, 190, 36, 1648968).
+    factum = SYLVIA_RECTANGULUM(15, altitudo - 46, 188, 2, 4761269).
+    factum = SYLVIA_TEXTUM(28, altitudo - 36, "PROGRAMMATA", 15067645, 2).
+    SI modus == 1 TUNC
+        factum = SYLVIA_RECTANGULUM(220, altitudo - 47, 126, 36, 2174288).
+        factum = SYLVIA_TEXTUM(238, altitudo - 36, "TABULA", 15067645, 2).
+    FIN-SI.
+    factum = SYLVIA_TEXTUM(latitudo - 58, altitudo - 25, "JL-UX", 4214893, 1).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_CURSOREM_SALVA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50333712).
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(50333720).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py < 10 PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px < 10 PERFICE
+            DECLARA fons SICUT NUMERUS VALENS basis + ((y + py) * linea + x + px) * 4.
+            DECLARA finis SICUT NUMERUS VALENS 50331904 + (py * 10 + px) * 4.
+            SCRIBE_OCTETUM_AB(finis, OCTETUS_AB(fons)).
+            SCRIBE_OCTETUM_AB(finis + 1, OCTETUS_AB(fons + 1)).
+            SCRIBE_OCTETUM_AB(finis + 2, OCTETUS_AB(fons + 2)).
+            SCRIBE_OCTETUM_AB(finis + 3, OCTETUS_AB(fons + 3)).
+            px = px + 1.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_CURSOREM_RESTITUE REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50333712).
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(50333720).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py < 10 PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px < 10 PERFICE
+            DECLARA finis SICUT NUMERUS VALENS basis + ((y + py) * linea + x + px) * 4.
+            DECLARA fons SICUT NUMERUS VALENS 50331904 + (py * 10 + px) * 4.
+            SCRIBE_OCTETUM_AB(finis, OCTETUS_AB(fons)).
+            SCRIBE_OCTETUM_AB(finis + 1, OCTETUS_AB(fons + 1)).
+            SCRIBE_OCTETUM_AB(finis + 2, OCTETUS_AB(fons + 2)).
+            SCRIBE_OCTETUM_AB(finis + 3, OCTETUS_AB(fons + 3)).
+            px = px + 1.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_CURSOREM REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py < 10 PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px <= py && px < 7 PERFICE
+            DECLARA color SICUT NUMERUS VALENS 15794175.
+            SI px == 0 || px == py || py == 9 TUNC color = 263172. FIN-SI.
+            DECLARA factum SICUT NUMERUS VALENS SYLVIA_PIXEL(x + px, y + py, color).
+            px = px + 1.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_CLAVIS_ASCII REDDENS NUMERUS.
+    ACCIPIT clavis SICUT NUMERUS.
+    SI clavis == 16 TUNC REDDE 97. FIN-SI. SI clavis == 17 TUNC REDDE 122. FIN-SI.
+    SI clavis == 18 TUNC REDDE 101. FIN-SI. SI clavis == 19 TUNC REDDE 114. FIN-SI.
+    SI clavis == 20 TUNC REDDE 116. FIN-SI. SI clavis == 21 TUNC REDDE 121. FIN-SI.
+    SI clavis == 22 TUNC REDDE 117. FIN-SI. SI clavis == 23 TUNC REDDE 105. FIN-SI.
+    SI clavis == 24 TUNC REDDE 111. FIN-SI. SI clavis == 25 TUNC REDDE 112. FIN-SI.
+    SI clavis == 30 TUNC REDDE 113. FIN-SI. SI clavis == 31 TUNC REDDE 115. FIN-SI.
+    SI clavis == 32 TUNC REDDE 100. FIN-SI. SI clavis == 33 TUNC REDDE 102. FIN-SI.
+    SI clavis == 34 TUNC REDDE 103. FIN-SI. SI clavis == 35 TUNC REDDE 104. FIN-SI.
+    SI clavis == 36 TUNC REDDE 106. FIN-SI. SI clavis == 37 TUNC REDDE 107. FIN-SI.
+    SI clavis == 38 TUNC REDDE 108. FIN-SI. SI clavis == 39 TUNC REDDE 109. FIN-SI.
+    SI clavis == 44 TUNC REDDE 119. FIN-SI. SI clavis == 45 TUNC REDDE 120. FIN-SI.
+    SI clavis == 46 TUNC REDDE 99. FIN-SI. SI clavis == 47 TUNC REDDE 118. FIN-SI.
+    SI clavis == 48 TUNC REDDE 98. FIN-SI. SI clavis == 49 TUNC REDDE 110. FIN-SI.
+    SI clavis >= 2 && clavis <= 10 TUNC REDDE 47 + clavis. FIN-SI.
+    SI clavis == 11 TUNC REDDE 48. FIN-SI.
+    SI clavis == 12 TUNC REDDE 45. FIN-SI. SI clavis == 13 TUNC REDDE 61. FIN-SI.
+    SI clavis == 50 TUNC REDDE 44. FIN-SI. SI clavis == 51 TUNC REDDE 59. FIN-SI.
+    SI clavis == 52 TUNC REDDE 46. FIN-SI. SI clavis == 57 TUNC REDDE 32. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_CELLULA_ADDE REDDENS NUMERUS.
+    ACCIPIT electa SICUT NUMERUS.
+    ACCIPIT littera SICUT NUMERUS.
+    DECLARA locus SICUT NUMERUS VALENS 50334720 + electa * 8.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 7 && OCTETUS_AB(locus + i) != 0 PERFICE i = i + 1. FIN-DUM.
+    SI littera == 8 TUNC
+        SI i > 0 TUNC SCRIBE_OCTETUM_AB(locus + i - 1, 0). REDDE 1. FIN-SI.
+        REDDE 0.
+    FIN-SI.
+    SI i < 7 && littera >= 32 && littera <= 126 TUNC
+        SCRIBE_OCTETUM_AB(locus + i, littera).
+        SCRIBE_OCTETUM_AB(locus + i + 1, 0).
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO SYLVIA_MODERNA REDDENS NUMERUS.
+    DECLARA factum SICUT NUMERUS VALENS UEFI_PARA().
+    DECLARA latitudo SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA altitudo SICUT NUMERUS VALENS CONTENTUM(50333736).
+    CONTENTUM(50331648) = latitudo / 2.
+    CONTENTUM(50331656) = altitudo / 2.
+    DECLARA mus_x SICUT NUMERUS VALENS CONTENTUM(50331648).
+    DECLARA mus_y SICUT NUMERUS VALENS CONTENTUM(50331656).
+    DECLARA numerus_muris SICUT NUMERUS VALENS CONTENTUM(50331672).
+    DECLARA bullae_veteres SICUT NUMERUS VALENS CONTENTUM(50331664).
+    DECLARA cauda SICUT NUMERUS VALENS CONTENTUM(50331712).
+    DECLARA modus SICUT NUMERUS VALENS 0.
+    DECLARA electa SICUT NUMERUS VALENS 0.
+    DECLARA maius SICUT NUMERUS VALENS 0.
+    DECLARA cursor_positus SICUT NUMERUS VALENS 0.
+    DECLARA pingendum SICUT NUMERUS VALENS 1.
+    DUM 1 == 1 PERFICE
+        factum = UEFI_POLLE().
+        DECLARA novus_numerus SICUT NUMERUS VALENS CONTENTUM(50331672).
+        SI novus_numerus != numerus_muris TUNC
+            SI cursor_positus == 1 TUNC factum = SYLVIA_CURSOREM_RESTITUE(mus_x, mus_y). cursor_positus = 0. FIN-SI.
+            mus_x = CONTENTUM(50331648).
+            mus_y = CONTENTUM(50331656).
+            DECLARA bullae SICUT NUMERUS VALENS CONTENTUM(50331664).
+            SI (bullae & 1) != 0 && (bullae_veteres & 1) == 0 TUNC
+                SI mus_y >= altitudo - 58 && mus_x >= 14 && mus_x <= 204 TUNC
+                    SI modus == 0 TUNC modus = 2. ALITER modus = 0. FIN-SI.
+                    pingendum = 1.
+                FIN-SI.
+                DECLARA fenestra_x SICUT NUMERUS VALENS latitudo / 14.
+                DECLARA fenestra_y SICUT NUMERUS VALENS altitudo / 10.
+                DECLARA fenestra_l SICUT NUMERUS VALENS latitudo * 44 / 100.
+                DECLARA fenestra_a SICUT NUMERUS VALENS altitudo * 68 / 100.
+                SI modus == 0 TUNC
+                    SI mus_x >= fenestra_x + fenestra_l - 42 && mus_x <= fenestra_x + fenestra_l && mus_y >= fenestra_y && mus_y <= fenestra_y + 42 TUNC modus = 2. pingendum = 1. FIN-SI.
+                    SI mus_x >= fenestra_x + 20 && mus_x <= fenestra_x + fenestra_l - 20 && mus_y >= fenestra_y + 94 && mus_y <= fenestra_y + 180 TUNC modus = 1. pingendum = 1. FIN-SI.
+                FIN-SI.
+                SI modus == 1 TUNC
+                    fenestra_x = latitudo / 18.
+                    fenestra_y = altitudo / 16.
+                    fenestra_l = latitudo * 88 / 100.
+                    fenestra_a = altitudo * 79 / 100.
+                    SI mus_x >= fenestra_x + fenestra_l - 42 && mus_x <= fenestra_x + fenestra_l && mus_y >= fenestra_y && mus_y <= fenestra_y + 42 TUNC modus = 0. pingendum = 1. FIN-SI.
+                    DECLARA initium_x SICUT NUMERUS VALENS fenestra_x + 54.
+                    DECLARA initium_y SICUT NUMERUS VALENS fenestra_y + 112.
+                    DECLARA latitudo_cellulae SICUT NUMERUS VALENS (fenestra_l - 74) / 8.
+                    DECLARA altitudo_cellulae SICUT NUMERUS VALENS (fenestra_a - 142) / 10.
+                    SI altitudo_cellulae > 38 TUNC altitudo_cellulae = 38. FIN-SI.
+                    SI mus_x >= initium_x && mus_x < initium_x + latitudo_cellulae * 8 && mus_y >= initium_y && mus_y < initium_y + altitudo_cellulae * 10 TUNC
+                        electa = ((mus_y - initium_y) / altitudo_cellulae) * 8 + (mus_x - initium_x) / latitudo_cellulae.
+                        pingendum = 1.
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+            bullae_veteres = bullae.
+            numerus_muris = novus_numerus.
+        FIN-SI.
+        DECLARA caput SICUT NUMERUS VALENS CONTENTUM(50331712).
+        DUM cauda < caput PERFICE
+            DECLARA clavis SICUT NUMERUS VALENS OCTETUS_AB(50332416 + (cauda & 63)).
+            cauda = cauda + 1.
+            SI clavis == 42 TUNC maius = 1. FIN-SI.
+            SI clavis == 170 TUNC maius = 0. FIN-SI.
+            SI modus == 1 TUNC
+                SI clavis == 1 TUNC modus = 0. pingendum = 1. FIN-SI.
+                SI clavis == 72 && electa >= 8 TUNC electa = electa - 8. pingendum = 1. FIN-SI.
+                SI clavis == 80 && electa < 72 TUNC electa = electa + 8. pingendum = 1. FIN-SI.
+                SI clavis == 75 && (electa & 7) > 0 TUNC electa = electa - 1. pingendum = 1. FIN-SI.
+                SI clavis == 77 && (electa & 7) < 7 TUNC electa = electa + 1. pingendum = 1. FIN-SI.
+                SI clavis == 28 && electa < 72 TUNC electa = electa + 8. pingendum = 1. FIN-SI.
+                SI clavis == 14 TUNC factum = SYLVIA_CELLULA_ADDE(electa, 8). pingendum = 1. FIN-SI.
+                DECLARA littera SICUT NUMERUS VALENS SYLVIA_CLAVIS_ASCII(clavis).
+                SI maius == 1 && littera >= 97 && littera <= 122 TUNC littera = littera - 32. FIN-SI.
+                SI littera != 0 TUNC factum = SYLVIA_CELLULA_ADDE(electa, littera). pingendum = 1. FIN-SI.
+            FIN-SI.
+        FIN-DUM.
+        SI pingendum == 1 TUNC
+            factum = SYLVIA_TENDA(modus, electa).
+            cursor_positus = 0.
+            pingendum = 0.
+        FIN-SI.
+        SI cursor_positus == 0 TUNC
+            factum = SYLVIA_CURSOREM_SALVA(mus_x, mus_y).
+            factum = SYLVIA_CURSOREM(mus_x, mus_y).
+            cursor_positus = 1.
+        FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.

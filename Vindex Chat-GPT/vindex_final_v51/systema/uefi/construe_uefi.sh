@@ -35,7 +35,10 @@ if [ ! -f "$RADIX/fenestrale_systema.bin" ]; then
 fi
 
 # Nucleus ipse VINDEX est; nulla constructio BIOS/assembly antecedens requiritur.
-"$RADIX/compilator_vindex" "$RADIX/systema/nucleus.vindex" "$TEMPORARIUM/nucleus.elf"
+(
+    cd "$RADIX"
+    ./compilator_vindex systema/nucleus.vindex "$TEMPORARIUM/nucleus.elf"
+)
 MAGNITUDO="$(stat -c '%s' "$TEMPORARIUM/nucleus.elf")"
 if [ "$MAGNITUDO" -gt "$NUCLEUS_LIMEN" ]; then
     printf 'ERRATUM: nucleus %s octeta habet; limes est %s.\n' "$MAGNITUDO" "$NUCLEUS_LIMEN" >&2
