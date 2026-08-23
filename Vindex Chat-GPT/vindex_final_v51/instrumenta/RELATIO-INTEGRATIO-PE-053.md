@@ -211,6 +211,31 @@ positionis pilae), sed sub Windows vero non.
 `syscall` Linux**. Auto-hospitium punctum fixum servatum (SHA256
 identica G2=G3).
 
+## Addendum quartum — raffinatio spatii umbrae, confirmata sub Windows vero (PR #13 ChatGPT)
+
+ChatGPT verificavit correctionem `contextus_parseris` (Addendum
+tertium) **sub Windows Server 2025 vero** (PR #13, workflow run
+`32612787672`): `PROCLAMA 999` solum, casus mixtus
+(`Premier/999/Dernier`), et probatio tensionis quinque numerorum
+diversae magnitudinis (`1, 22, 333, 4444, 55555`) — **omnes RECTE**,
+sine ullo vestigio `syscall` Linux, punctum fixum auto-hospitii
+servatum.
+
+Additione: ChatGPT notavit necessitatem `lpNumberOfBytesWritten`
+(quartum parametrum `WriteFile`, per registrum `R9`) **extra spatium
+umbrae** (32 octeta prima post `sub rsp`) ponere, ne collisio fiat cum
+usu interno spatii umbrae a `WriteFile` ipso. Prior versio hic posuit
+hanc rem ad `[rsp+24]` — intra spatium umbrae. **Correctum**: spatium
+reservatum crevit ex 40 ad 48 octeta; `lpOverlapped` (quintum
+parametrum) manet ad positionem fixam ABI `[rsp+32]`;
+`lpNumberOfBytesWritten` nunc ad `[rsp+40]`, extra ambo spatium umbrae
+et locum `lpOverlapped`.
+
+**Verificatum hic (Wine)**: casus tensionis exactus ChatGPT (`Initium/
+1/22/333/4444/55555/Finis`) reddit output identicum quam relatum sub
+Windows vero. Auto-hospitium punctum fixum servatum (SHA256 identica
+G2=G3). Modus ELF intactus.
+
 **Limitatio nova inventa, non adhuc soluta**: probatio extensa cum
 numero fluitante (`PROCLAMA 3.14159` post alias vocationes) revelavit
 defectum **distinctum et novum** in modo PE: `COMPONE_IMPRIME_FLUITANIS`

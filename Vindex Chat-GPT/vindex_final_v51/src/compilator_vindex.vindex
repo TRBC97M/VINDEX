@@ -1170,7 +1170,7 @@ FUNCTIO COMPONE_SCRIBE_STDOUT_DYNAMICA REDDENS NUMERUS.
         CODEX_SCRIBE(codex, p, 72).
         CODEX_SCRIBE(codex, p + 1, 131).
         CODEX_SCRIBE(codex, p + 2, 236).
-        CODEX_SCRIBE(codex, p + 3, 40).
+        CODEX_SCRIBE(codex, p + 3, 48).
         p = p + 4.
         p = COMPONE_ONERA(codex, p, 0, 16777216).
         p = COMPONE_SUME_INDIRECTUM(codex, p, 1, 0).
@@ -1178,7 +1178,7 @@ FUNCTIO COMPONE_SCRIBE_STDOUT_DYNAMICA REDDENS NUMERUS.
         CODEX_SCRIBE(codex, p + 1, 141).
         CODEX_SCRIBE(codex, p + 2, 76).
         CODEX_SCRIBE(codex, p + 3, 36).
-        CODEX_SCRIBE(codex, p + 4, 24).
+        CODEX_SCRIBE(codex, p + 4, 40).
         p = p + 5.
         CODEX_SCRIBE(codex, p, 72).
         CODEX_SCRIBE(codex, p + 1, 199).
@@ -1194,7 +1194,7 @@ FUNCTIO COMPONE_SCRIBE_STDOUT_DYNAMICA REDDENS NUMERUS.
         CODEX_SCRIBE(codex, p, 72).
         CODEX_SCRIBE(codex, p + 1, 131).
         CODEX_SCRIBE(codex, p + 2, 196).
-        CODEX_SCRIBE(codex, p + 3, 40).
+        CODEX_SCRIBE(codex, p + 3, 48).
         p = p + 4.
     ALITER
         p = COMPONE_ONERA(codex, p, 0, 1).
