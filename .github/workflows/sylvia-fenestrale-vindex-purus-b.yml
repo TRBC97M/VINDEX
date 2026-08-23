@@ -28,7 +28,8 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fb_uefi.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fb_graphica.elf
           timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_parentheses.vindex /tmp/fb_parentheses.elf
-          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_parentheses.elf | grep -q 'ELF 64-bit'
+          timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_nomen_redde.vindex /tmp/fb_nomen_redde.elf
+          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_parentheses.elf /tmp/fb_nomen_redde.elf | grep -q 'ELF 64-bit'
 
       - name: Input UEFI VINDEX compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
