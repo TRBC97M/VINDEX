@@ -15,12 +15,9 @@ def unum(textus: str, vetus: str, novum: str, nomen: str) -> str:
 
 
 def transforma(textus: str) -> str:
-    if "p = COMPONE_TRANSCRIBE(codex, p, 15, 0)." in textus and "CODEX_SCRIBE(codex, p + 2, 244)." in textus:
+    if "p = COMPONE_IMPONE(codex, p, 0).\n    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0)." in textus and "CODEX_SCRIBE(codex, p + 2, 244)." in textus:
         return textus
 
-    # Helper Claudii iam R12/R13 non tangit et [rsp+40] recte adhibet.
-    # Hic RSP dynamicum robustum facimus: R14 servatur, RSP ordinatur,
-    # deinde post WriteFile exacte restituitur.
     textus = unum(
         textus,
         """        p = COMPONE_TRANSCRIBE(codex, p, 8, 2).
@@ -71,9 +68,9 @@ def transforma(textus: str) -> str:
         "epilogi WriteFile robusti",
     )
 
-    # XMM0..XMM5 sunt volatilia in ABI Win64. PROCLAMA fluitans antea
-    # XMM0 per plures WriteFile vocationes servatum esse supponebat.
-    # Bits magnitudinis in R15, non-volatili Win64, servantur.
+    # WriteFile potest XMM0..XMM5 delere. Bits fluitantis in pila
+    # servantur. Helper RSP post API exacte restituit, ergo valor
+    # manet sub ELF et Win64 sine registro speciali.
     textus = unum(
         textus,
         """    DECLARA pos_post_flot_sign SICUT NUMERUS VALENS p.
@@ -83,9 +80,9 @@ def transforma(textus: str) -> str:
         """    DECLARA pos_post_flot_sign SICUT NUMERUS VALENS p.
     DECLARA ig_fps SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_flot_pos, pos_post_flot_sign).
 
-    p = COMPONE_TRANSCRIBE(codex, p, 15, 0).
+    p = COMPONE_IMPONE(codex, p, 0).
     p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0).""",
-        "servationis fluitantis in R15",
+        "servationis fluitantis in pila",
     )
 
     textus = unum(
@@ -97,9 +94,10 @@ def transforma(textus: str) -> str:
         """    p = COMPONE_AUFER(codex, p, 0).
 
     p = COMPONE_CVTSI2SD(codex, p, 1, 0).
-    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 15).
+    p = COMPONE_AUFER(codex, p, 0).
+    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0).
     p = COMPONE_SUBSD(codex, p, 0, 1).""",
-        "restitutionis XMM0",
+        "restitutionis XMM0 ex pila",
     )
     return textus
 
