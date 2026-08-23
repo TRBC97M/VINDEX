@@ -1,0 +1,174 @@
+// TABULA — client VINDEX Fenestralis II Gradus I.
+// Superficiem privatam per mailbox compositorii Gradus G petit.
+
+FUNCTIO T_AD_EST REDDENS NUMERUS.
+    SI CONTENTUM(50333952) != 14159808274651475 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50333960) != 1 || CONTENTUM(50333968) < 128 TUNC REDDE 0. FIN-SI.
+    SI (CONTENTUM(50333976) & 32) == 0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50335232) != 14162041607313747 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50335240) != 1 || CONTENTUM(50335248) < 256 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO T_COLOR REDDENS NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    REDDE r + g * 256 + b * 65536 + 4278190080.
+FIN-FUNCTIO.
+
+FUNCTIO T_RECT REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50335312).
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(50335320).
+    SI basis == 0 || linea == 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA fx SICUT NUMERUS VALENS x + w.
+    DECLARA fy SICUT NUMERUS VALENS y + h.
+    SI x % 2 != 0 TUNC x = x + 1. FIN-SI.
+    DECLARA par SICUT NUMERUS VALENS color + color * 4294967296.
+    DECLARA py SICUT NUMERUS VALENS y.
+    DUM py < fy PERFICE
+        DECLARA px SICUT NUMERUS VALENS x.
+        DUM px + 1 < fx PERFICE
+            CONTENTUM(basis + (py * linea + px) * 4) = par.
+            px = px + 2.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO T_CREA REDDENS NUMERUS.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333992).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(50334000).
+    DECLARA barra SICUT NUMERUS VALENS CONTENTUM(50334064).
+    SI barra != 28 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS sw * 56 / 100.
+    DECLARA h SICUT NUMERUS VALENS (sh - barra) * 58 / 100.
+    SI w < 620 TUNC w = 620. FIN-SI.
+    SI w > sw - 48 TUNC w = sw - 48. FIN-SI.
+    SI w % 2 != 0 TUNC w = w - 1. FIN-SI.
+    SI h < 400 TUNC h = 400. FIN-SI.
+    SI h > sh - barra - 48 TUNC h = sh - barra - 48. FIN-SI.
+    CONTENTUM(50335264) = 1.
+    CONTENTUM(50335272) = 2.
+    CONTENTUM(50335280) = 0.
+    CONTENTUM(50335288) = 7.
+    CONTENTUM(50335296) = w.
+    CONTENTUM(50335304) = h.
+    CONTENTUM(50335384) = 0.
+    CONTENTUM(50335392) = CONTENTUM(50335392) + 1.
+    CONTENTUM(50335256) = 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO T_PINGE REDDENS NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50335296).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50335304).
+    SI w < 480 || h < 320 TUNC REDDE 0. FIN-SI.
+    DECLARA ebur SICUT NUMERUS VALENS T_COLOR(241, 238, 228).
+    DECLARA argentum SICUT NUMERUS VALENS T_COLOR(185, 196, 207).
+    DECLARA profundum SICUT NUMERUS VALENS T_COLOR(8, 35, 61).
+    DECLARA vitrum SICUT NUMERUS VALENS T_COLOR(14, 66, 111).
+    DECLARA medium SICUT NUMERUS VALENS T_COLOR(26, 93, 146).
+    DECLARA aqua SICUT NUMERUS VALENS T_COLOR(98, 215, 242).
+    DECLARA lux SICUT NUMERUS VALENS T_COLOR(234, 248, 255).
+    DECLARA bronzeum SICUT NUMERUS VALENS T_COLOR(185, 138, 82).
+    DECLARA rubrum SICUT NUMERUS VALENS T_COLOR(168, 58, 58).
+    DECLARA grid SICUT NUMERUS VALENS T_COLOR(207, 216, 220).
+    DECLARA factum SICUT NUMERUS VALENS T_RECT(0, 0, w, h, ebur).
+    factum = T_RECT(0, 0, w, 1, bronzeum).
+    factum = T_RECT(0, 0, 2, h, argentum).
+    factum = T_RECT(w - 2, 0, 2, h, profundum).
+    factum = T_RECT(0, h - 2, w, 2, profundum).
+    factum = T_RECT(2, 1, w - 4, 27, vitrum).
+    factum = T_RECT(2, 1, w - 4, 1, aqua).
+    factum = T_RECT(12, 10, 58, 8, lux).
+    factum = T_RECT(w - 70, 4, 18, 20, argentum).
+    factum = T_RECT(w - 48, 4, 18, 20, argentum).
+    factum = T_RECT(w - 26, 4, 20, 20, rubrum).
+    factum = T_RECT(2, 28, w - 4, 22, ebur).
+    factum = T_RECT(2, 50, w - 4, 34, argentum).
+    factum = T_RECT(10, 55, 62, 24, lux).
+    factum = T_RECT(78, 55, 62, 24, lux).
+    factum = T_RECT(146, 55, 72, 24, lux).
+    factum = T_RECT(224, 55, 62, 24, lux).
+    // Area formulae.
+    factum = T_RECT(8, 88, w - 16, 30, lux).
+    factum = T_RECT(8, 88, 2, 30, medium).
+    factum = T_RECT(18, 98, 58, 8, medium).
+    // Capita columnarum et ordinum.
+    DECLARA top SICUT NUMERUS VALENS 124.
+    DECLARA left SICUT NUMERUS VALENS 42.
+    DECLARA gw SICUT NUMERUS VALENS w - left - 10.
+    DECLARA gh SICUT NUMERUS VALENS h - top - 28.
+    factum = T_RECT(8, top, left - 8, gh, argentum).
+    factum = T_RECT(left, top, gw, 24, argentum).
+    factum = T_RECT(left, top + 24, gw, gh - 24, lux).
+    DECLARA col SICUT NUMERUS VALENS 0.
+    DUM col <= 8 PERFICE
+        DECLARA gx SICUT NUMERUS VALENS left + col * gw / 8.
+        factum = T_RECT(gx, top, 2, gh, grid).
+        col = col + 1.
+    FIN-DUM.
+    DECLARA row SICUT NUMERUS VALENS 0.
+    DUM row <= 12 PERFICE
+        DECLARA gy SICUT NUMERUS VALENS top + 24 + row * (gh - 24) / 12.
+        factum = T_RECT(8, gy, w - 18, 2, grid).
+        row = row + 1.
+    FIN-DUM.
+    // Cellula activa A1: aqua et bronzeum subtiliter.
+    DECLARA cellw SICUT NUMERUS VALENS gw / 8.
+    DECLARA cellh SICUT NUMERUS VALENS (gh - 24) / 12.
+    factum = T_RECT(left + 2, top + 26, cellw - 4, cellh - 4, T_COLOR(225, 245, 249)).
+    factum = T_RECT(left + 2, top + 26, cellw - 4, 2, bronzeum).
+    factum = T_RECT(left + 2, top + 26, 2, cellh - 4, bronzeum).
+    factum = T_RECT(2, h - 20, w - 4, 18, argentum).
+    REDDE factum.
+FIN-FUNCTIO.
+
+FUNCTIO T_PRAESENTA REDDENS NUMERUS.
+    DECLARA superficies SICUT NUMERUS VALENS CONTENTUM(50335280).
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50335296).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50335304).
+    SI superficies == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(50335256) = 0.
+    CONTENTUM(50335264) = 3.
+    CONTENTUM(50335272) = 2.
+    CONTENTUM(50335280) = superficies.
+    CONTENTUM(50335352) = 0.
+    CONTENTUM(50335360) = 0.
+    CONTENTUM(50335368) = w.
+    CONTENTUM(50335376) = h.
+    CONTENTUM(50335384) = 0.
+    CONTENTUM(50335392) = CONTENTUM(50335392) + 1.
+    CONTENTUM(50335256) = 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI T_AD_EST() == 0 TUNC REDDE 5. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS CONTENTUM(50335256).
+    SI status == 0 TUNC
+        SI T_CREA() == 0 TUNC REDDE 6. FIN-SI.
+        REDDE 10.
+    FIN-SI.
+    SI status == 1 TUNC REDDE 11. FIN-SI.
+    SI status == 3 || CONTENTUM(50335384) != 0 TUNC REDDE 12. FIN-SI.
+    DECLARA operatio SICUT NUMERUS VALENS CONTENTUM(50335264).
+    SI operatio == 1 TUNC
+        SI CONTENTUM(50335312) == 0 || CONTENTUM(50335320) == 0 TUNC REDDE 13. FIN-SI.
+        SI T_PINGE() == 0 TUNC REDDE 14. FIN-SI.
+        SI T_PRAESENTA() == 0 TUNC REDDE 15. FIN-SI.
+        REDDE 11.
+    FIN-SI.
+    SI operatio == 3 TUNC
+        CONTENTUM(50335256) = 0.
+        REDDE 0.
+    FIN-SI.
+    REDDE 16.
+FIN-FUNCTIO.
