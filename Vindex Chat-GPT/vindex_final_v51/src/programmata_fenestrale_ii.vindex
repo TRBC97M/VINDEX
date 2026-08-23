@@ -1,0 +1,84 @@
+// PROGRAMMATA — primus client graphicus VINDEX nativus Fenestralis II.
+// Gradus F consulto nucleum 0.51 neque firmamentum canonicum mutat.
+
+IMPORTA "bibliotheca/fenestrale_ii.vindex".
+
+FUNCTIO PINGE_PROGRAMMATA REDDENS NUMERUS.
+    DECLARA scrinium_x SICUT NUMERUS VALENS FENESTRALE_II_LATITUDO().
+    DECLARA scrinium_y SICUT NUMERUS VALENS FENESTRALE_II_ALTITUDO().
+    DECLARA barra SICUT NUMERUS VALENS FENESTRALE_II_TASKBAR_ALTITUDO().
+    SI barra != 28 TUNC REDDE 0. FIN-SI.
+
+    DECLARA w SICUT NUMERUS VALENS scrinium_x * 62 / 100.
+    DECLARA h SICUT NUMERUS VALENS (scrinium_y - barra) * 68 / 100.
+    SI w < 640 TUNC w = 640. FIN-SI.
+    SI h < 420 TUNC h = 420. FIN-SI.
+    SI w > scrinium_x - 48 TUNC w = scrinium_x - 48. FIN-SI.
+    SI h > scrinium_y - barra - 48 TUNC h = scrinium_y - barra - 48. FIN-SI.
+    SI w % 2 != 0 TUNC w = w - 1. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS (scrinium_x - w) / 2.
+    DECLARA y SICUT NUMERUS VALENS (scrinium_y - barra - h) / 2.
+    SI x % 2 != 0 TUNC x = x - 1. FIN-SI.
+
+    DECLARA profundum SICUT NUMERUS VALENS FENESTRALE_II_COLOR(8, 35, 61).
+    DECLARA vitrum SICUT NUMERUS VALENS FENESTRALE_II_COLOR(14, 66, 111).
+    DECLARA medium SICUT NUMERUS VALENS FENESTRALE_II_COLOR(26, 93, 146).
+    DECLARA aqua SICUT NUMERUS VALENS FENESTRALE_II_COLOR(98, 215, 242).
+    DECLARA ebur SICUT NUMERUS VALENS FENESTRALE_II_COLOR(241, 238, 228).
+    DECLARA argentum SICUT NUMERUS VALENS FENESTRALE_II_COLOR(185, 196, 207).
+    DECLARA bronzeum SICUT NUMERUS VALENS FENESTRALE_II_COLOR(185, 138, 82).
+    DECLARA rubrum SICUT NUMERUS VALENS FENESTRALE_II_COLOR(168, 58, 58).
+    DECLARA pictum SICUT NUMERUS VALENS 0.
+
+    // Umbra brevis et corpus quadratum: radius semper nullus.
+    pictum = FENESTRALE_II_RECTANGULUM(x + 8, y + 8, w, h, profundum).
+    pictum = FENESTRALE_II_RECTANGULUM(x, y, w, h, ebur).
+    pictum = FENESTRALE_II_RECTANGULUM(x, y, w, 1, bronzeum).
+    pictum = FENESTRALE_II_RECTANGULUM(x, y, 2, h, argentum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + w - 2, y, 2, h, profundum).
+    pictum = FENESTRALE_II_RECTANGULUM(x, y + h - 2, w, 2, profundum).
+
+    // Titulus XXVIII, menu XXII, instrumenta XXXIV.
+    pictum = FENESTRALE_II_RECTANGULUM(x + 2, y + 1, w - 4, 27, vitrum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + 2, y + 1, w - 4, 1, aqua).
+    pictum = FENESTRALE_II_RECTANGULUM(x + w - 68, y + 4, 18, 20, argentum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + w - 46, y + 4, 18, 20, argentum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + w - 24, y + 4, 18, 20, rubrum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + 2, y + 28, w - 4, 22, ebur).
+    pictum = FENESTRALE_II_RECTANGULUM(x + 2, y + 50, w - 4, 34, argentum).
+
+    // Collectiones, index crescens et proprietates.
+    DECLARA corpus_y SICUT NUMERUS VALENS y + 84.
+    DECLARA corpus_h SICUT NUMERUS VALENS h - 104.
+    DECLARA sinister SICUT NUMERUS VALENS w * 20 / 100.
+    DECLARA dexter SICUT NUMERUS VALENS w * 25 / 100.
+    pictum = FENESTRALE_II_RECTANGULUM(x + 2, corpus_y, sinister, corpus_h, argentum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + 12, corpus_y + 18, sinister - 20, 24, medium).
+    pictum = FENESTRALE_II_RECTANGULUM(x + sinister + 14, corpus_y + 22, w - sinister - dexter - 30, 116, ebur).
+    pictum = FENESTRALE_II_RECTANGULUM(x + sinister + 14, corpus_y + 22, w - sinister - dexter - 30, 2, medium).
+    pictum = FENESTRALE_II_RECTANGULUM(x + w - dexter, corpus_y, dexter - 2, corpus_h, argentum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + w - dexter + 20, corpus_y + 24, 48, 48, medium).
+    pictum = FENESTRALE_II_RECTANGULUM(x + w - dexter + 28, corpus_y + 32, 32, 32, aqua).
+    // Accentus PROGRAMMATA et TABULA.VXNAT sine branding JL-UX manifesto.
+    pictum = FENESTRALE_II_RECTANGULUM(x + 12, y + 10, 92, 8, ebur).
+    pictum = FENESTRALE_II_RECTANGULUM(x + sinister + 34, corpus_y + 48, 48, 48, profundum).
+    pictum = FENESTRALE_II_RECTANGULUM(x + sinister + 42, corpus_y + 56, 32, 32, aqua).
+    pictum = FENESTRALE_II_RECTANGULUM(x + 2, y + h - 20, w - 4, 18, argentum).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FENESTRALE_II_AD_EST() == 0 TUNC REDDE 2. FIN-SI.
+    SI FENESTRALE_II_BITS_PER_PIXEL() != 32 TUNC REDDE 3. FIN-SI.
+    SI PINGE_PROGRAMMATA() == 0 TUNC REDDE 4. FIN-SI.
+    DECLARA actio SICUT NUMERUS VALENS 0.
+
+    // Eventa Gradus E re vera consumuntur; display mutatus repaint provocat.
+    DUM FENESTRALE_II_EVENTA_PARATA() > 0 PERFICE
+        SI FENESTRALE_II_EVENTUM_TYPUS(0) == 5 TUNC
+            actio = PINGE_PROGRAMMATA().
+        FIN-SI.
+        actio = FENESTRALE_II_EVENTUM_CONSUME().
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.

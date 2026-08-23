@@ -1,0 +1,32 @@
+name: Sylvia OS — Fenestrale II Gradus F
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/programmata_fenestrale_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_programmata_fenestrale_f.py'
+      - 'documenta/sylvia/FENESTRALE_II_GRADUS_F.md'
+      - '.github/workflows/sylvia-fenestrale-gradus-f.yml'
+  push:
+    branches: [main]
+
+jobs:
+  client:
+    name: PROGRAMMATA client VINDEX nativus construitur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: ABI Gradus D verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_abi_d.py
+
+      - name: Clientem Gradus F construe et verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_programmata_fenestrale_f.py
+
+      - name: Via 0.51 integra manet
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 -m unittest discover -s tests -p 'test_systema.py' -v
