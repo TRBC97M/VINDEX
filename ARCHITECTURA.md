@@ -1,83 +1,50 @@
-# VINDEX et Sylvia OS — Architectura communis
+# VINDEX 0.53 — Architectura nuclei
 
 ## Principium
 
-VINDEX et Sylvia OS sunt duo projecta primi ordinis.
+Hoc repositorium activum nunc **nucleum linguae VINDEX** tractat. Compilator, grammatica, ABI, generationes ELF/PE et probationes conformitatis sunt VINDEX.
 
-**VINDEX** est lingua programmationis generalis et ecosystema instrumentorum. Non dependet a Sylvia OS et debet posse ad programmata, instrumenta, ludos, applicationes graphicas atque systemata alia scribenda adhiberi.
+Sylvia OS, Systema, Officina, GTK et alia ecosystemata sunt projecta primi ordinis separata. Historia eorum non deleta est: status ante purificationem ramo `archive/vindex-053-avant-purificatio` servatur. Sed codex eorum non amplius in nucleo linguae miscetur.
 
-**Sylvia OS** est systema computatorium sui juris, destinatum ad usum verum et progressionem diuturnam. VINDEX est lingua principalis eius et Sylvia simul campus maximus in quo facultates VINDEX exercentur.
+## Nucleus VINDEX
 
-Sylvia non est programma demonstrativum abiciendum. VINDEX non est lingua privata Sylviae.
+Nucleus quinque partes habet:
 
-## Relatio
+1. `src/compilator_vindex.vindex` — compilator auto-hospes;
+2. `compilator_vindex` — binarium seminale ad initium catenae;
+3. `REFERENTIA.md` — contractus linguae;
+4. `tests/casus/` et `tests/proba_pe_structuram_053.vindex` — conformitas;
+5. documenta versionis, sigillum et disciplina purificationis.
 
-VINDEX facultates praebet quibus Sylvia construitur. Sylvia necessitates reales detegit quae progressionem VINDEX dirigere possunt. Si Sylvia facultate caret quia VINDEX eam nondum exprimit, primum quaerendum est utrum facultas generalis in VINDEX vel eius bibliotheca standardi creanda sit, non utrum exceptio privata in Sylvia fingenda sit.
+Codex fonte activus nuclei VINDEX tantum scribitur.
 
-Eodem tempore Sylvia libertatem architectonicam retinet: partes humiles quae ante executionem codicis VINDEX necessariae sunt — initium firmware, ingressus machinae et pontes minimi — aliis linguis vel codice machinae scribi possunt, dummodo terminus inter eas et VINDEX clarus maneat.
+## Targeta
 
-## Tres columnae
+### ELF x86-64 Linux
 
-### 1. VINDEX Lingua
+Modus praedefinitus. System V x86-64, septem argumenta, memoria dynamica, I/O et primitivas processus continet.
 
-- grammatica et semantica canonica;
-- compilator auto-hospes;
-- typi, memoria, functiones et moduli;
-- ABI et formae binariae;
-- diagnostica et probationes conformitatis;
-- documentum specificationis versionatum.
+### PE32+ AMD64 Windows
 
-### 2. Ecosystema VINDEX
+Tertium argumentum compilatoris `pe` eligit backend Win64. IAT KERNEL32, allocationes, stdout et fasciculi iam sub Windows vero probantur. Argumenta processus Windows nondum ad `argc/argv` convertuntur.
 
-- `vindexc` et instrumenta compilationis;
-- bibliotheca standardis;
-- Officina et instrumenta evolutionis;
-- bibliotheca graphica;
-- documentatio et exempla;
-- forma programmatum nativorum Sylviae (`.vxnat`) ubi convenit.
+## Auto-hospitium
 
-### 3. Sylvia OS
+Compilator distributus fontem suum compilat; generationes II et III byte pro byte congruunt. Punctum fixum canonice servatur. Python non est pars catenae activae.
 
-- nucleus et initium;
-- administratio memoriae et ferramentorum;
-- systema fasciculorum;
-- fenestrale et compositor;
-- applicationes systematis;
-- programmata VINDEX nativa;
-- installatio, renovatio et persistentia;
-- usabilitas cotidiana in monitoribus et computatris modernis.
+## Infrastructura externa
 
-## Regula evolutionis
+GitHub Actions YAML et mandata minima runneris sunt infrastructura probationis externa. Ea non implementant parserem, compilatorem, ELF, PE aut runtime VINDEX. Si futura facultas VINDEX potest hanc orchestrationem tuto assumere, ea quoque ad VINDEX transferatur.
 
-Mutationes futurae distinguantur inter:
+## Sylvia OS
 
-1. **mutationem linguae VINDEX** — mutat quid programma VINDEX exprimere potest;
-2. **mutationem ecosystematis** — instrumenta vel bibliothecas addit sine grammatica mutanda;
-3. **mutationem Sylvia OS** — systema ipsum evolvit;
-4. **mutationem communem** — nova facultas VINDEX nascitur ex necessitate Sylviae et deinde a Sylvia adhibetur.
+Sylvia VINDEX uti potest et necessitatibus suis progressionem linguae inspirare potest, sed eius boot, firmware, fenestrale et applicationes non sunt dependency nuclei. Mutationes Sylviae igitur in proprio ambitu serventur et ad VINDEX referantur tantum cum nova facultas linguae generalis requiritur.
 
-Versiones VINDEX et Sylvia separatim numerandae sunt. Nulla versio Sylviae implicat eandem versionem VINDEX.
+## Disciplina
 
-## Status hereditatus
+- nulla implementatio nova linguae in Python, C, Shell, PowerShell aut assembler;
+- si pons externus aliquando absolute necessarius fit, eius necessitas explicite documentetur et a nucleo logico separetur;
+- mutatio compilatoris auto-hospitium et probationes puras servet;
+- `main` non mutetur sine Pull Request recognita.
 
-VINDEX 0.51 iam compilat directe in ELF x86-64, compilatorem auto-hospitem habet, memoriam, formas, acus, fluitantia, importationes, I/O et pontem graphicum declarativum. Systema experimentale praesens BIOS/UEFI, nucleum VINDEX et ambitum fenestralem continet.
-
-Hoc opus non deletur. Est fundamentum historicum et technicum ex quo nova architectura evolvetur.
-
-## Directio Sylviae
-
-Sylvia debet excedere limites prototypi praesentis: non mensa 320×200 cum paucis locis fixis, sed ambitus desktop amplitudinis modernae, resolutionibus dynamicis, numero fasciculorum non artificialiter parvo, applicationibus multiplicibus et spatio evolutionis futuro.
-
-Intentio visualis est systema desktop distinctum, legibile et humanum: spiritus systematum classicorum maturorum servari potest, sed scala, ergonomia et facultates ad computatra moderna pertinent.
-
-## Disciplina Git
-
-`main` est linea stabilis communis. Opera majora fiant in ramis separatis, exempli gratia `chatgpt/...` et `claude/...`, deinde per pull request recognoscantur. Archivorum ZIP successio non amplius est ratio primaria versionum: historia Git ipsas versiones servat.
-
-## Proximi gradus
-
-1. Status VINDEX 0.51 exacte cartographandus et probationibus conservandus.
-2. Specificationis canonicae VINDEX fundamentum separandum a documentis unius distributionis.
-3. Limites actuales nuclei/Systematis qui Sylviae progressionem impediunt enumerandi.
-4. Sylviae architectura moderna definienda: framebuffer/resolutiones, memoria, fasciculi, processus/applicationes, input et API VINDEX.
-5. Prima facultas communis VINDEX + Sylvia eligenda et verticaliter perficienda, sine regressione compilatoris auto-hospitis.
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
