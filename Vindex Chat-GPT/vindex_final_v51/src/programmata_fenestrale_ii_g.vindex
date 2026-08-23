@@ -1,6 +1,7 @@
 // PROGRAMMATA — client Fenestralis II Gradus G.
 // Haec versio framebuffer physicum directe non scribit: superficiem privatam petit.
 
+IMPORTA "bibliotheca/fenestrale_ii.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_compositor.vindex".
 
 FUNCTIO PROGRAMMATA_G_LATITUDO REDDENS NUMERUS.
