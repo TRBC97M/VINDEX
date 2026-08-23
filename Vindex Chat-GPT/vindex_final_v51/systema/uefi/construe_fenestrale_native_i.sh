@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sylvia OS — Fenestrale II, Gradus I.
-# PROGRAMMATA H et TABULA I ut clientes VINDEX distinctos in compositorium includit.
+# PROGRAMMATA H et TABULA I runtime ut clientes VINDEX distinctos includit.
 
 set -eu
 RADIX="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -36,7 +36,9 @@ PY
 }
 
 compila_clientem "$RADIX/src/programmata_fenestrale_ii_h.vindex" programmata_h
-compila_clientem "$RADIX/src/tabula_fenestrale_ii_i.vindex" tabula_i
+# TABULA I plena manet referentia clientis. Runtime compactum eundem mailbox
+# et eandem structuram visualem probat sine compilatorem canonicum mutando.
+compila_clientem "$RADIX/src/tabula_fenestrale_ii_i_runtime.vindex" tabula_i
 
 gcc -c -std=c11 -O2 -Wall -Wextra -Werror -Wno-error=misleading-indentation \
     -ffreestanding -fno-builtin -fno-stack-protector -fno-pie -fno-ident \
