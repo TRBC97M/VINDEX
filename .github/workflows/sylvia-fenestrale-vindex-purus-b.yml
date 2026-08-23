@@ -41,7 +41,7 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
           file /tmp/fb_input.elf /tmp/fb_gestor.elf /tmp/fb_interactio.elf /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
 
-      - name: Praefixa corporis B compila
+      - name: Praefixa input B divide
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           fac_praefixum() {
@@ -53,14 +53,16 @@ jobs:
               intra == 1 && $0 == "FIN-FUNCTIO." { exit }
             ' systema/fenestrale_ii_purus_b.vindex > "/tmp/${nomen}.vindex"
             printf '%s\n' 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.' '    REDDE 0.' 'FIN-FUNCTIO.' >> "/tmp/${nomen}.vindex"
-            timeout 20s ./compilator_vindex "/tmp/${nomen}.vindex" "/tmp/${nomen}.elf"
+            timeout 12s ./compilator_vindex "/tmp/${nomen}.vindex" "/tmp/${nomen}.elf"
             file "/tmp/${nomen}.elf" | grep -q 'ELF 64-bit'
           }
-          fac_praefixum FB_STALL fb_prefix_input
-          fac_praefixum FB_HIT fb_prefix_hit
-          fac_praefixum FB_CLAUDE fb_prefix_status
-          fac_praefixum FB_TAB_ALTERNA fb_prefix_gestor
-          fac_praefixum FB_REDDE fb_prefix_totum
+          fac_praefixum FB_GUID_PONE fb_p2_guid
+          fac_praefixum FB_PROTOCOL_LOCATE fb_p3_locate
+          fac_praefixum FB_PROTOCOLA_PARA fb_p4_para
+          fac_praefixum FB_CLAVIS_LEGE fb_p5_clavis
+          fac_praefixum FB_MURUS_ABSOLUTUS fb_p6_abs
+          fac_praefixum FB_MURUS_RELATIVUS fb_p7_rel
+          fac_praefixum FB_STALL fb_p8_stall
 
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
