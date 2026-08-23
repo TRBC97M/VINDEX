@@ -149,7 +149,6 @@ In modo PE argumenta lineae mandatorum Windows nondum convertuntur; interim `PRI
 ## Lectio et scriptura
 
 - `PROCLAMA valor.` valorem cum transitu lineae exhibet.
-- `SCRIBE ordo CAPACITAS n.` litteras ordinis exhibet.
 - `LEGE(descriptor, maximum)` ex descriptore legit.
 - `OCTETUS(index)` octetum novissime lectum reddit.
 - `MITTE(descriptor, ordo, longitudo)` octeta mittit.
@@ -212,7 +211,7 @@ LIBERA(p).
 
 ## Diagnostica
 
-Compilator fontes absentes, importationes vitiosas, `PRINCIPALIS` absentem et functiones vocatas non inventas reicit. Exsecutabile imperfectum non debet pro producto valido relinqui.
+Compilator fontes absentes, importationes vitiosas, `PRINCIPALIS` absentem, instructiones ignotas et functiones vocatas non inventas reicit. Exsecutabile imperfectum non debet pro producto valido relinqui.
 
 ## Limites canonici 0.53
 
