@@ -27,6 +27,9 @@ internal static class Probationes
             Exige(ColoratorVindex.NumeraVerbaClavia(File.ReadAllText(fons)) >= 4, "Colorator verba VINDEX non invenit.");
             ConfiguratioOfficinae configuratio = ConfiguratioOfficinae.Lege(AppContext.BaseDirectory);
             Exige(configuratio.Titulus == "VINDEX // OFFICINA", "Forma Officinae non lecta est.");
+            using FenestraOfficinae fenestra = new(configuratio, null);
+            fenestra.CreateControl();
+            Exige(fenestra.Text == "VINDEX // OFFICINA" && fenestra.Controls.Count > 0, "Fenestra Officinae non constructa est.");
 
             File.WriteAllText(ViaRelationis, "RECTE: probationes Officinae perfectae sunt.\n");
             return 0;

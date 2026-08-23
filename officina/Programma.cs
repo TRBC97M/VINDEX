@@ -9,6 +9,7 @@ internal static class Programma
     {
         if (argumenta.Length >= 1 && argumenta[0] == "--probatio")
         {
+            ApplicationConfiguration.Initialize();
             return Probationes.Exsequere();
         }
 
