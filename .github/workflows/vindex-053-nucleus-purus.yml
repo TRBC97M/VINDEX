@@ -49,13 +49,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          R='Vindex Chat-GPT/vindex_final_v51'
-          C="$R/compilator_vindex"
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          C='./compilator_vindex'
 
           proba() {
             nomen="$1"; fons="$2"; exspectatum="$3"; shift 3
             exe="$RUNNER_TEMP/$nomen"
-            "$C" "$R/tests/casus/$fons" "$exe"
+            "$C" "tests/casus/$fons" "$exe"
             chmod 755 "$exe"
             productum="$($exe "$@")"
             status=$?
@@ -84,15 +84,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          R='Vindex Chat-GPT/vindex_final_v51'
-          C="$R/compilator_vindex"
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          C='./compilator_vindex'
 
           reice() {
             nomen="$1"; fons="$2"; fragmentum="$3"
             exe="$RUNNER_TEMP/$nomen"
             log="$RUNNER_TEMP/$nomen.log"
             set +e
-            "$C" "$R/tests/casus/$fons" "$exe" >"$log" 2>&1
+            "$C" "tests/casus/$fons" "$exe" >"$log" 2>&1
             status=$?
             set -e
             test "$status" -ne 0
