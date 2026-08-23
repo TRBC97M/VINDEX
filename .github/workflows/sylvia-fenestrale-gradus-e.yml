@@ -30,7 +30,7 @@ jobs:
 
       - name: Systema fundamentale construe
         working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: ./systema/construe_systema.sh
+        run: bash systema/construe_systema.sh
 
       - name: Sigilla ante integrationem serva
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -40,12 +40,12 @@ jobs:
 
       - name: Viam UEFI stabilem reconstrue
         working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: ./systema/uefi/construe_uefi.sh /tmp/systema_stabile.img /tmp/BOOTX64-STABILE.EFI
+        run: bash systema/uefi/construe_uefi.sh /tmp/systema_stabile.img /tmp/BOOTX64-STABILE.EFI
 
       - name: Gradum E construe
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          ./systema/uefi/construe_fenestrale_e.sh \
+          bash systema/uefi/construe_fenestrale_e.sh \
             /tmp/systema_fenestrale_e.img \
             /tmp/BOOTX64-FENESTRALE-E.EFI
 
