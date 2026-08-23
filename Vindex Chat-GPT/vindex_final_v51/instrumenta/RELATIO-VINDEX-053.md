@@ -5,7 +5,7 @@ Limes historicus fontis 212999 octetorum, auto-hospitium et regressiones hic com
 ```text
 STATUS PONTIS: 0.
 RECTE: fontes dynamici iam applicati sunt.
-MENSURA FONTIS DYNAMICI: 237365 octeta.
+MENSURA FONTIS DYNAMICI: 289948 octeta.
 STATUS G1: 0.
 STATUS G2: 0.
 STATUS G3: 0.
@@ -27,7 +27,11 @@ RECTE  importa
 RECTE  structura-acus
 RECTE  recursio
 RECTE  argumenta
+RECTE  argumenta-septem
 RECTE  vxnat-partem
+RECTE  vocationes-nullae
+RECTE  desine-imbrique
+RECTE  lectio-contextus
 RECTE  erratum-principalis
 RECTE  erratum-functio
 RECTE  erratum-blocus
@@ -42,7 +46,7 @@ RECTE  amorsa-python
 RECTE  officina
 RECTE  systema
 
-21 probationes rectae; 0 errata.
+25 probationes rectae; 0 errata.
 PROBATIONES REGRESSIONALES: status=0.
 RECTE: limes fontis 212999 octetorum remotus est.
 ```
