@@ -1,0 +1,37 @@
+name: Sylvia OS — Fenestrale II Purus B
+
+on:
+  push:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-b
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
+
+jobs:
+  vindex-purus:
+    name: Fenestrale interactive VINDEX compilatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontes VINDEX verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          python3 instrumenta/vindex_verifica.py bibliotheca/fenestrale_ii_purus.vindex
+          python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_b.vindex
+
+      - name: Fenestrale B compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
+          file /tmp/fenestrale_ii_purus_b.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_b.elf)" -lt 196608
+          ! grep -R 'POLLE()' bibliotheca/fenestrale_ii_purus.vindex systema/fenestrale_ii_purus_b.vindex
+          printf '%s\n' 'RECTE: Fenestrale II Purus B omnino VINDEX compilatur.'
