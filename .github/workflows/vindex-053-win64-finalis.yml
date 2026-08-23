@@ -1,13 +1,13 @@
-# Custodia externa backend Win64 nuclei VINDEX purificati.
-name: VINDEX 0.53 — Win64 purus
+# Custodia externa argumentorum Win64 nuclei VINDEX.
+name: VINDEX 0.53 — Argumenta Win64
 
 on:
   push:
     branches:
-      - infrastructura/vindex-053-ci-purificatio
+      - infrastructura/vindex-053-ci-argumenta-win64
   pull_request:
     branches:
-      - infrastructura/vindex-053-ci-purificatio
+      - infrastructura/vindex-053-ci-argumenta-win64
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
       - name: Nucleum purum accipe
         uses: actions/checkout@v5
         with:
-          ref: chatgpt/vindex-053-purificatio
+          ref: chatgpt/vindex-053-argumenta-win64
 
       - name: Compilatorem para
         shell: bash
@@ -57,10 +57,12 @@ jobs:
           ./compilator_vindex tests/proba_pe_structuram_053.vindex "$RUNNER_TEMP/proba_pe"
           chmod 755 "$RUNNER_TEMP/proba_pe"
 
-      - name: PE finalia construe et VINDEX verificet
+      - name: PE finalia et compilatorem construe
         shell: bash
         run: |
           set -euo pipefail
+          STAGE="$RUNNER_TEMP/vindex_win64_argumenta"
+          mkdir -p "$STAGE"
           cat > "$RUNNER_TEMP/proclama_finalis.vindex" <<'VINDEX'
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
               PROCLAMA "Initium".
@@ -74,8 +76,13 @@ jobs:
           VINDEX
           ./compilator_vindex "$RUNNER_TEMP/proclama_finalis.vindex" "$RUNNER_TEMP/proclama_finalis.exe" pe
           ./compilator_vindex tests/casus/fasciculi_portabiles.vindex "$RUNNER_TEMP/fasciculi_finalis.exe" pe
+          ./compilator_vindex src/compilator_vindex.vindex "$STAGE/compilator_vindex.exe" pe
+          ./compilator_vindex tests/casus/argumenta.vindex "$STAGE/argumenta.exe" pe
+          cp tests/casus/salve.vindex "$STAGE/salve fons.vindex"
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/proclama_finalis.exe"
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/fasciculi_finalis.exe"
+          "$RUNNER_TEMP/proba_pe" "$STAGE/compilator_vindex.exe"
+          "$RUNNER_TEMP/proba_pe" "$STAGE/argumenta.exe"
 
       - name: PE conserva
         uses: actions/upload-artifact@v4
@@ -84,6 +91,7 @@ jobs:
           path: |
             ${{ runner.temp }}/proclama_finalis.exe
             ${{ runner.temp }}/fasciculi_finalis.exe
+            ${{ runner.temp }}/vindex_win64_argumenta
           if-no-files-found: error
 
   windows:
@@ -102,9 +110,12 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
 
-          function Exsequere-Vindex([string]$via) {
+          function Exsequere-Vindex([string]$via, [string[]]$argumenta = @()) {
             $psi = [System.Diagnostics.ProcessStartInfo]::new()
             $psi.FileName = $via
+            foreach ($argumentum in $argumenta) {
+              [void]$psi.ArgumentList.Add($argumentum)
+            }
             $psi.UseShellExecute = $false
             $psi.RedirectStandardOutput = $true
             $psi.RedirectStandardError = $true
@@ -132,4 +143,37 @@ jobs:
           if ($pf.ExitCode -ne 0) { throw "ERRATUM: fasciculi status $($pf.ExitCode)." }
           $textus = [System.Text.Encoding]::ASCII.GetString([System.IO.File]::ReadAllBytes((Join-Path $dir 'vindex-pe-io.tmp')))
           if ($textus -ne 'VINX') { throw "ERRATUM: fasciculus continet [$textus]." }
-          Write-Host 'RECTE: backend Win64 nuclei puri sub Windows vero confirmatus est.'
+
+          $argumenta = Exsequere-Vindex (Join-Path $PWD 'pe\vindex_win64_argumenta\argumenta.exe') @('Zeta Nova')
+          $statusArgumentorum = [int]$argumenta[0]
+          $outArgumentorum = ([string]$argumenta[1] -replace "`r`n", "`n").TrimEnd("`n")
+          if ($statusArgumentorum -ne 0) { throw "ERRATUM: argumenta status $statusArgumentorum." }
+          if ($outArgumentorum -ne "2`n90") {
+            throw "ERRATUM: argumenta citata differunt: [$outArgumentorum]"
+          }
+
+          $radix = Join-Path $PWD 'probatio argumentorum'
+          New-Item -ItemType Directory -Force -Path $radix | Out-Null
+          $compilator = Join-Path $radix 'compilator vindex.exe'
+          $fons = Join-Path $radix 'salve fons.vindex'
+          $exitus = Join-Path $radix 'salve compilatum.exe'
+          Copy-Item (Join-Path $PWD 'pe\vindex_win64_argumenta\compilator_vindex.exe') $compilator
+          Copy-Item (Join-Path $PWD 'pe\vindex_win64_argumenta\salve fons.vindex') $fons
+
+          $compilatio = Exsequere-Vindex $compilator @($fons, $exitus, 'pe')
+          $statusCompilationis = [int]$compilatio[0]
+          if ($statusCompilationis -ne 0) {
+            throw "ERRATUM: compilator Win64 status $statusCompilationis; stderr [$([string]$compilatio[2])]."
+          }
+          if (-not (Test-Path $exitus -PathType Leaf)) {
+            throw 'ERRATUM: compilator Win64 nullum PE produxit.'
+          }
+
+          $salve = Exsequere-Vindex $exitus
+          $statusSalutationis = [int]$salve[0]
+          $outSalutationis = ([string]$salve[1] -replace "`r`n", "`n").TrimEnd("`n")
+          if ($statusSalutationis -ne 0) { throw "ERRATUM: PE compilatum status $statusSalutationis." }
+          if ($outSalutationis -ne 'Salve, VINDEX!') {
+            throw "ERRATUM: PE compilatum produxit [$outSalutationis]."
+          }
+          Write-Host 'RECTE: compilator VINDEX Win64 argumenta citata accipit et aliud programma VINDEX compilat.'
