@@ -130,6 +130,8 @@ jobs:
           grep -Fq 'FUNCTIO DESCRIPTOR_PENDENTIUM_LEGE REDDENS NUMERUS.' "$FONS"
           grep -Fq 'FUNCTIO DESCRIPTOR_LOCALIUM_LEGE REDDENS NUMERUS.' "$FONS"
           grep -Fq 'FUNCTIO DESCRIPTOR_FORMARUM_LEGE REDDENS NUMERUS.' "$FONS"
+          grep -Fq 'FUNCTIO MODUS_PE_LEGE REDDENS NUMERUS.' "$FONS"
+          grep -Fq 'FUNCTIO DESCRIPTOR_IAT_PE_LEGE REDDENS NUMERUS.' "$FONS"
           grep -Fq 'FUNCTIO PARES_QUANTITAS REDDENS NUMERUS.' "$FONS"
           grep -Fq 'FUNCTIO FORMARUM_QUANTITAS REDDENS NUMERUS.' "$FONS"
           grep -Fq 'FUNCTIO FORMA_ULTIMA_LEGE REDDENS NUMERUS.' "$FONS"
@@ -139,10 +141,12 @@ jobs:
           grep -Fq 'CONTENTUM(contextus_parseris + 32)' "$FONS"
           grep -Fq 'CONTENTUM(contextus_parseris + 40)' "$FONS"
           grep -Fq 'CONTENTUM(contextus_parseris + 48)' "$FONS"
-          grep -Fq 'RESERVA_OCTETA(56)' "$FONS"
+          grep -Fq 'CONTENTUM(contextus_parseris + 56)' "$FONS"
+          grep -Fq 'CONTENTUM(contextus_parseris + 64)' "$FONS"
+          grep -Fq 'RESERVA_OCTETA(72)' "$FONS"
           ! grep -Fq 'contextus_desine' "$FONS"
           ! grep -Eq 'tabula\[[0-9]+\]' "$FONS"
           ! grep -Fq 'DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.' "$FONS"
           ! grep -Fq 'ACCIPIT tabula SICUT ORDO DE NUMERUS.' "$FONS"
           ! grep -Ewq 'tabula' "$FONS"
-          printf '%s\n' 'RECTE: tabula historica omnino deleta est; contextus compilationis explicitus manet.'
+          printf '%s\n' 'RECTE: tabula historica omnino deleta est; contextus compilationis LXXII octeta cum targeto PE et IAT explicita habet.'
