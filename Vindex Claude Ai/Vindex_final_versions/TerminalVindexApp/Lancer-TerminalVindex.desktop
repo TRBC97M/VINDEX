@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=TerminalVindex
-Comment=Notre propre terminal, ecrit en VINDEX
-Exec=bash -c 'DIR="$(dirname "%f")"; "$DIR/lancer.sh"'
-Icon=utilities-terminal
-Terminal=true
-Categories=System;

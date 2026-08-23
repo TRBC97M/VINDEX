@@ -1,0 +1,214 @@
+// Verificator PE32+ AMD64 VINDEX, ipso VINDEX scriptus.
+// Python non requiritur.
+
+FUNCTIO LEGE_U16 REDDENS NUMERUS.
+    ACCIPIT memoria SICUT NUMERUS.
+    ACCIPIT pos SICUT NUMERUS.
+    REDDE OCTETUS_AB(memoria + pos) | (OCTETUS_AB(memoria + pos + 1) << 8).
+FIN-FUNCTIO.
+
+FUNCTIO LEGE_U32 REDDENS NUMERUS.
+    ACCIPIT memoria SICUT NUMERUS.
+    ACCIPIT pos SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS OCTETUS_AB(memoria + pos).
+    v = v | (OCTETUS_AB(memoria + pos + 1) << 8).
+    v = v | (OCTETUS_AB(memoria + pos + 2) << 16).
+    v = v | (OCTETUS_AB(memoria + pos + 3) << 24).
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO CONGRUIT_API REDDENS NUMERUS.
+    ACCIPIT memoria SICUT NUMERUS.
+    ACCIPIT pos SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+
+    SI id == 0 TUNC
+        SI pos + 11 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==69 && OCTETUS_AB(memoria+pos+1)==120 && OCTETUS_AB(memoria+pos+2)==105 && OCTETUS_AB(memoria+pos+3)==116 && OCTETUS_AB(memoria+pos+4)==80 && OCTETUS_AB(memoria+pos+5)==114 && OCTETUS_AB(memoria+pos+6)==111 && OCTETUS_AB(memoria+pos+7)==99 && OCTETUS_AB(memoria+pos+8)==101 && OCTETUS_AB(memoria+pos+9)==115 && OCTETUS_AB(memoria+pos+10)==115.
+    FIN-SI.
+    SI id == 1 TUNC
+        SI pos + 12 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==86 && OCTETUS_AB(memoria+pos+1)==105 && OCTETUS_AB(memoria+pos+2)==114 && OCTETUS_AB(memoria+pos+3)==116 && OCTETUS_AB(memoria+pos+4)==117 && OCTETUS_AB(memoria+pos+5)==97 && OCTETUS_AB(memoria+pos+6)==108 && OCTETUS_AB(memoria+pos+7)==65 && OCTETUS_AB(memoria+pos+8)==108 && OCTETUS_AB(memoria+pos+9)==108 && OCTETUS_AB(memoria+pos+10)==111 && OCTETUS_AB(memoria+pos+11)==99.
+    FIN-SI.
+    SI id == 2 TUNC
+        SI pos + 12 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==71 && OCTETUS_AB(memoria+pos+1)==101 && OCTETUS_AB(memoria+pos+2)==116 && OCTETUS_AB(memoria+pos+3)==83 && OCTETUS_AB(memoria+pos+4)==116 && OCTETUS_AB(memoria+pos+5)==100 && OCTETUS_AB(memoria+pos+6)==72 && OCTETUS_AB(memoria+pos+7)==97 && OCTETUS_AB(memoria+pos+8)==110 && OCTETUS_AB(memoria+pos+9)==100 && OCTETUS_AB(memoria+pos+10)==108 && OCTETUS_AB(memoria+pos+11)==101.
+    FIN-SI.
+    SI id == 3 TUNC
+        SI pos + 9 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==87 && OCTETUS_AB(memoria+pos+1)==114 && OCTETUS_AB(memoria+pos+2)==105 && OCTETUS_AB(memoria+pos+3)==116 && OCTETUS_AB(memoria+pos+4)==101 && OCTETUS_AB(memoria+pos+5)==70 && OCTETUS_AB(memoria+pos+6)==105 && OCTETUS_AB(memoria+pos+7)==108 && OCTETUS_AB(memoria+pos+8)==101.
+    FIN-SI.
+    SI id == 4 TUNC
+        SI pos + 11 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==67 && OCTETUS_AB(memoria+pos+1)==114 && OCTETUS_AB(memoria+pos+2)==101 && OCTETUS_AB(memoria+pos+3)==97 && OCTETUS_AB(memoria+pos+4)==116 && OCTETUS_AB(memoria+pos+5)==101 && OCTETUS_AB(memoria+pos+6)==70 && OCTETUS_AB(memoria+pos+7)==105 && OCTETUS_AB(memoria+pos+8)==108 && OCTETUS_AB(memoria+pos+9)==101 && OCTETUS_AB(memoria+pos+10)==65.
+    FIN-SI.
+    SI id == 5 TUNC
+        SI pos + 8 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==82 && OCTETUS_AB(memoria+pos+1)==101 && OCTETUS_AB(memoria+pos+2)==97 && OCTETUS_AB(memoria+pos+3)==100 && OCTETUS_AB(memoria+pos+4)==70 && OCTETUS_AB(memoria+pos+5)==105 && OCTETUS_AB(memoria+pos+6)==108 && OCTETUS_AB(memoria+pos+7)==101.
+    FIN-SI.
+    SI id == 6 TUNC
+        SI pos + 11 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==67 && OCTETUS_AB(memoria+pos+1)==108 && OCTETUS_AB(memoria+pos+2)==111 && OCTETUS_AB(memoria+pos+3)==115 && OCTETUS_AB(memoria+pos+4)==101 && OCTETUS_AB(memoria+pos+5)==72 && OCTETUS_AB(memoria+pos+6)==97 && OCTETUS_AB(memoria+pos+7)==110 && OCTETUS_AB(memoria+pos+8)==100 && OCTETUS_AB(memoria+pos+9)==108 && OCTETUS_AB(memoria+pos+10)==101.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO HABET_API REDDENS NUMERUS.
+    ACCIPIT memoria SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < n PERFICE
+        SI CONGRUIT_API(memoria, i, n, id) == 1 TUNC
+            REDDE 1.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    SI argc < 2 TUNC
+        PROCLAMA "USUS: proba_pe_structuram_053 <programma.exe>".
+        REDDE 64.
+    FIN-SI.
+
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE(CONTENTUM(argv + 1)).
+    SI fd < 0 TUNC
+        PROCLAMA "ERRATUM: fasciculus PE aperiri non potest".
+        REDDE 66.
+    FIN-SI.
+
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 4194304).
+    DECLARA clausum SICUT NUMERUS VALENS CLAUDE(fd).
+    SI n < 512 TUNC
+        PROCLAMA "ERRATUM: fasciculus PE brevior est".
+        REDDE 67.
+    FIN-SI.
+
+    DECLARA memoria SICUT NUMERUS VALENS RESERVA_OCTETA(n).
+    SI memoria < 0 TUNC
+        PROCLAMA "ERRATUM: memoria verificatoris deest".
+        REDDE 71.
+    FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < n PERFICE
+        SCRIBE_OCTETUM_AB(memoria + i, OCTETUS(i)).
+        i = i + 1.
+    FIN-DUM.
+
+    SI OCTETUS_AB(memoria) != 77 || OCTETUS_AB(memoria + 1) != 90 TUNC
+        PROCLAMA "ERRATUM: signatura MZ deest".
+        REDDE 10.
+    FIN-SI.
+
+    DECLARA pe SICUT NUMERUS VALENS LEGE_U32(memoria, 60).
+    SI pe < 64 || pe + 24 >= n TUNC
+        PROCLAMA "ERRATUM: positio PE invalida est".
+        REDDE 11.
+    FIN-SI.
+    SI OCTETUS_AB(memoria+pe) != 80 || OCTETUS_AB(memoria+pe+1) != 69 || OCTETUS_AB(memoria+pe+2) != 0 || OCTETUS_AB(memoria+pe+3) != 0 TUNC
+        PROCLAMA "ERRATUM: signatura PE deest".
+        REDDE 12.
+    FIN-SI.
+    SI LEGE_U16(memoria, pe + 4) != 34404 TUNC
+        PROCLAMA "ERRATUM: PE non est AMD64".
+        REDDE 13.
+    FIN-SI.
+
+    DECLARA numerus_sectionum SICUT NUMERUS VALENS LEGE_U16(memoria, pe + 6).
+    DECLARA mensura_optional SICUT NUMERUS VALENS LEGE_U16(memoria, pe + 20).
+    DECLARA opt SICUT NUMERUS VALENS pe + 24.
+    SI LEGE_U16(memoria, opt) != 523 TUNC
+        PROCLAMA "ERRATUM: PE32+ deest".
+        REDDE 14.
+    FIN-SI.
+
+    DECLARA rva_import SICUT NUMERUS VALENS LEGE_U32(memoria, opt + 120).
+    DECLARA mensura_import SICUT NUMERUS VALENS LEGE_U32(memoria, opt + 124).
+    DECLARA rva_iat SICUT NUMERUS VALENS LEGE_U32(memoria, opt + 208).
+    DECLARA mensura_iat SICUT NUMERUS VALENS LEGE_U32(memoria, opt + 212).
+    SI rva_import == 0 || mensura_import == 0 || rva_iat == 0 || mensura_iat == 0 TUNC
+        PROCLAMA "ERRATUM: IMPORT/IAT vacuum est".
+        REDDE 15.
+    FIN-SI.
+
+    DECLARA initium_sectionum SICUT NUMERUS VALENS opt + mensura_optional.
+    DECLARA textus_inventus SICUT NUMERUS VALENS 0.
+    DECLARA idata_inventa SICUT NUMERUS VALENS 0.
+    DECLARA textus_rva SICUT NUMERUS VALENS 0.
+    DECLARA textus_crudus SICUT NUMERUS VALENS 0.
+    DECLARA textus_mensura SICUT NUMERUS VALENS 0.
+    i = 0.
+    DUM i < numerus_sectionum PERFICE
+        DECLARA s SICUT NUMERUS VALENS initium_sectionum + i * 40.
+        SI s + 40 > n TUNC
+            PROCLAMA "ERRATUM: caput sectionis truncatum est".
+            REDDE 16.
+        FIN-SI.
+        SI OCTETUS_AB(memoria+s)==46 && OCTETUS_AB(memoria+s+1)==116 && OCTETUS_AB(memoria+s+2)==101 && OCTETUS_AB(memoria+s+3)==120 && OCTETUS_AB(memoria+s+4)==116 TUNC
+            textus_inventus = 1.
+            textus_rva = LEGE_U32(memoria, s + 12).
+            textus_mensura = LEGE_U32(memoria, s + 16).
+            textus_crudus = LEGE_U32(memoria, s + 20).
+        FIN-SI.
+        SI OCTETUS_AB(memoria+s)==46 && OCTETUS_AB(memoria+s+1)==105 && OCTETUS_AB(memoria+s+2)==100 && OCTETUS_AB(memoria+s+3)==97 && OCTETUS_AB(memoria+s+4)==116 && OCTETUS_AB(memoria+s+5)==97 TUNC
+            idata_inventa = 1.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI textus_inventus == 0 || idata_inventa == 0 TUNC
+        PROCLAMA "ERRATUM: sectiones .text/.idata desunt".
+        REDDE 17.
+    FIN-SI.
+
+    i = 0.
+    DUM i < 7 PERFICE
+        SI HABET_API(memoria, n, i) == 0 TUNC
+            PROCLAMA "ERRATUM: API KERNEL32 requisita deest".
+            PROCLAMA i.
+            REDDE 20 + i.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+
+    DECLARA finis_textus SICUT NUMERUS VALENS textus_crudus + textus_mensura.
+    SI finis_textus > n TUNC finis_textus = n. FIN-SI.
+    DECLARA vocationes SICUT NUMERUS VALENS 0.
+    i = textus_crudus.
+    DUM i + 6 <= finis_textus PERFICE
+        SI OCTETUS_AB(memoria+i) == 255 && OCTETUS_AB(memoria+i+1) == 21 TUNC
+            DECLARA disp SICUT NUMERUS VALENS LEGE_U32(memoria, i + 2).
+            SI disp >= 2147483648 TUNC
+                disp = disp - 4294967296.
+            FIN-SI.
+            DECLARA rva_instructionis SICUT NUMERUS VALENS textus_rva + (i - textus_crudus).
+            DECLARA scopus SICUT NUMERUS VALENS rva_instructionis + 6 + disp.
+            SI scopus < rva_iat || scopus >= rva_iat + mensura_iat TUNC
+                PROCLAMA "ERRATUM: vocatio FF15 extra IAT est".
+                REDDE 31.
+            FIN-SI.
+            SI (scopus - rva_iat) % 8 != 0 TUNC
+                PROCLAMA "ERRATUM: vocatio FF15 non ad limitem IAT ducit".
+                REDDE 32.
+            FIN-SI.
+            vocationes = vocationes + 1.
+            i = i + 6.
+        ALITER
+            i = i + 1.
+        FIN-SI.
+    FIN-DUM.
+    SI vocationes == 0 TUNC
+        PROCLAMA "ERRATUM: nulla vocatio FF15 ad IAT inventa est".
+        REDDE 33.
+    FIN-SI.
+
+    PROCLAMA "RECTE: PE32+ AMD64 et IAT VINDEX congruunt".
+    PROCLAMA vocationes.
+    REDDE 0.
+FIN-FUNCTIO.

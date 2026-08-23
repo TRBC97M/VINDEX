@@ -1,0 +1,28 @@
+FUNCTIO PARTEM_PROBA REDDENS NUMERUS.
+    ACCIPIT textus SICUT ORDO DE LITTERA.
+    ACCIPIT initium SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        PROCLAMA textus[initium + i].
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA textus SICUT ORDO DE LITTERA CAPACITAS 16.
+    textus[0] = 83.
+    textus[1] = 67.
+    textus[2] = 82.
+    textus[3] = 73.
+    textus[4] = 66.
+    textus[5] = 69.
+    textus[6] = 32.
+    textus[7] = 83.
+    textus[8] = 65.
+    textus[9] = 76.
+    textus[10] = 86.
+    textus[11] = 69.
+    REDDE PARTEM_PROBA(textus, 7, 5).
+FIN-FUNCTIO.
