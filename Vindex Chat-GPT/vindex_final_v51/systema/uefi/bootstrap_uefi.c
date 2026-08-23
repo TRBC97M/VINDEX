@@ -26,6 +26,9 @@ typedef U64                EFI_PHYSICAL_ADDRESS;
 #define COMMUNIS 0x03000000ULL
 #define META      (COMMUNIS + 0x800ULL)
 #define UMBRA     (COMMUNIS + 0x1000ULL)
+#define NUCLEUS_BASE 0x00400000ULL
+#define TEXTUS_BASE  0x00430000ULL
+#define NUCLEUS_LIMEN (TEXTUS_BASE - NUCLEUS_BASE)
 
 typedef struct {
     U64 Signature;
@@ -143,7 +146,7 @@ extern U8 _binary_forma_bin_start[];
 
 static EFI_GUID guid_graphica = {
     0x9042a9de, 0x23dc, 0x4a38,
-    {0x96,0xfb,0x7a,0xde,0xd0,0x80,0x51,0x6a}
+    {0x96,0xfb,0x7a,0xde,0x80,0x51,0x6a}
 };
 
 static void memoria_vacua(void *destinatio, UINTN mensura) {
@@ -178,8 +181,8 @@ __attribute__((noreturn)) static void ad_vindex_sali(U64 ingressus) {
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     EFI_GRAPHICS_OUTPUT_PROTOCOL *graphica = 0;
-    EFI_PHYSICAL_ADDRESS initium_memoriae = 0x00400000ULL;
-    UINTN paginae = (0x03019000ULL - 0x00400000ULL) / 4096;
+    EFI_PHYSICAL_ADDRESS initium_memoriae = NUCLEUS_BASE;
+    UINTN paginae = (0x03019000ULL - NUCLEUS_BASE) / 4096;
     U64 kernel_mensura = (U64)(_binary_nucleus_elf_end - _binary_nucleus_elf_start);
     U64 textus_mensura = (U64)(_binary_textus_bin_end - _binary_textus_bin_start);
     volatile U64 *meta = (volatile U64 *)META;
@@ -192,8 +195,8 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     systema->BootServices->SetWatchdogTimer(0, 0, 0, 0);
 
     status = systema->BootServices->AllocatePages(2, 2, paginae, &initium_memoriae);
-    if (status != EFI_SUCCESS || initium_memoriae != 0x00400000ULL) return status ? status : 1;
-    if (kernel_mensura > 122880 || textus_mensura > 4096) return 1;
+    if (status != EFI_SUCCESS || initium_memoriae != NUCLEUS_BASE) return status ? status : 1;
+    if (kernel_mensura > NUCLEUS_LIMEN || textus_mensura > 4096) return 1;
 
     status = systema->BootServices->LocateProtocol(&guid_graphica, 0, (void **)&graphica);
     if (status != EFI_SUCCESS || !graphica || !graphica->Mode || !graphica->Mode->Info) return status ? status : 1;
@@ -224,8 +227,8 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     if (latitudo < 320 || altitudo < 200 || graphica->Mode->FrameBufferBase == 0) return 1;
 
     memoria_vacua((void *)(UINTN)COMMUNIS, 0x19000);
-    memoria_copia((void *)(UINTN)0x00400000ULL, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
-    memoria_copia((void *)(UINTN)0x0041e000ULL, _binary_textus_bin_start, (UINTN)textus_mensura);
+    memoria_copia((void *)(UINTN)NUCLEUS_BASE, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
+    memoria_copia((void *)(UINTN)TEXTUS_BASE, _binary_textus_bin_start, (UINTN)textus_mensura);
 
     ((volatile U64 *)COMMUNIS)[0] = 160;
     ((volatile U64 *)COMMUNIS)[1] = 100;
@@ -247,6 +250,6 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[14] = 0;
     meta[15] = 0;
 
-    ingressus = *(U64 *)(UINTN)(0x00400000ULL + 24);
+    ingressus = *(U64 *)(UINTN)(NUCLEUS_BASE + 24);
     ad_vindex_sali(ingressus);
 }
