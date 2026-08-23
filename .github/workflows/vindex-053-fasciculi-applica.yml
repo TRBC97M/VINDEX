@@ -1,5 +1,4 @@
-# Stratum fasciculorum Win64 probatum in fontem et binarium canonicum applicat.
-# Applicatio canonica post probationes Windows iteratur.
+# Backend Win64 probatum in fontem, binarium et artefacta canonica applicat.
 name: VINDEX 0.53 — Fasciculi Win64 applicatio
 
 on:
@@ -14,7 +13,7 @@ jobs:
   applica:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Fontes accipe
@@ -22,14 +21,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Stratum Win64 fonti applica
+      - name: Strata Win64 fonti applica
         shell: bash
         run: |
           set -euo pipefail
           RADIX='Vindex Chat-GPT/vindex_final_v51'
           FONS="$RADIX/src/compilator_vindex.vindex"
+          python3 "$RADIX/instrumenta/corrige_proclama_numericum_win64_053.py" \
+              "$FONS" "$RUNNER_TEMP/proclama.vindex"
+          mv "$RUNNER_TEMP/proclama.vindex" "$FONS"
           python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" "$FONS"
           python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" "$FONS"
+          grep -Fq 'COMPONE_IMPRIME_NUMERUS(codex, CONTENTUM(pos_codicis), intervallum_scratch, contextus_parseris)' "$FONS"
+          grep -Fq 'COMPONE_APERI_FASCICULUM_PE' "$FONS"
+          grep -Fq 'numerus_functionum_pe SICUT NUMERUS VALENS 7' "$FONS"
 
       - name: Compilatorem ad punctum fixum reconstrue
         shell: bash
@@ -49,12 +54,44 @@ jobs:
           chmod 755 "$RADIX/compilator_vindex"
           sha256sum "$RADIX/compilator_vindex"
 
+      - name: Artefacta VINDEX derivata reconstrue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          (
+            cd "$RADIX"
+            ./compilator_vindex src/officina_vindex.vindex "$RUNNER_TEMP/officina_vindex"
+            ./compilator_vindex src/salutatio_vindex.vindex "$RUNNER_TEMP/salutatio_vindex"
+          )
+          mv "$RUNNER_TEMP/officina_vindex" "$RADIX/officina_vindex"
+          mv "$RUNNER_TEMP/salutatio_vindex" "$RADIX/salutatio_vindex"
+
+      - name: Permissiones canonicas restitue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 \
+            "$RADIX/tests/run_tests.sh" \
+            "$RADIX/vindexc" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/bootstrap/reconstruit.sh" \
+            "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex-officina" \
+            "$RADIX/vindex-salutatio" \
+            "$RADIX/vindex-systema" \
+            "$RADIX/vindex_graphica" \
+            "$RADIX/officina_vindex" \
+            "$RADIX/salutatio_vindex" \
+            "$RADIX/systema/construe_systema.sh" \
+            "$RADIX/systema/uefi/construe_uefi.sh"
+
       - name: Probationes canonicas exsequere
         shell: bash
         run: |
           set -euo pipefail
           RADIX='Vindex Chat-GPT/vindex_final_v51'
-          chmod 755 "$RADIX/tests/run_tests.sh" "$RADIX/vindexc" "$RADIX/compilator_vindex"
           "$RADIX/tests/run_tests.sh"
 
       - name: Binarium post probationes confirma
@@ -75,10 +112,24 @@ jobs:
           RADIX='Vindex Chat-GPT/vindex_final_v51'
           git config user.name 'VINDEX Automaton'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex"
+          git add -- \
+            "$RADIX/src/compilator_vindex.vindex" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/officina_vindex" \
+            "$RADIX/salutatio_vindex" \
+            "$RADIX/tests/run_tests.sh" \
+            "$RADIX/vindexc" \
+            "$RADIX/bootstrap/reconstruit.sh" \
+            "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex-officina" \
+            "$RADIX/vindex-salutatio" \
+            "$RADIX/vindex-systema" \
+            "$RADIX/vindex_graphica" \
+            "$RADIX/systema/construe_systema.sh" \
+            "$RADIX/systema/uefi/construe_uefi.sh"
           if git diff --cached --quiet; then
             printf '%s\n' 'RECTE: nihil novum committendum est.'
             exit 0
           fi
-          git commit -m 'VINDEX 0.53: fasciculos Win64 in compilatorem integra'
+          git commit -m 'VINDEX 0.53: backend Win64 canonicum integra'
           git push origin HEAD:chatgpt/pe-fasciculi-053
