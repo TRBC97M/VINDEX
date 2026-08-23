@@ -1,0 +1,142 @@
+// PROGRAMMATA — client Fenestralis II Gradus G.
+// Haec versio framebuffer physicum directe non scribit: superficiem privatam petit.
+
+IMPORTA "bibliotheca/fenestrale_ii_compositor.vindex".
+
+FUNCTIO PROGRAMMATA_G_LATITUDO REDDENS NUMERUS.
+    DECLARA scrinium SICUT NUMERUS VALENS FENESTRALE_II_LATITUDO().
+    DECLARA w SICUT NUMERUS VALENS scrinium * 62 / 100.
+    SI w < 640 TUNC w = 640. FIN-SI.
+    SI w > scrinium - 48 TUNC w = scrinium - 48. FIN-SI.
+    SI w % 2 != 0 TUNC w = w - 1. FIN-SI.
+    REDDE w.
+FIN-FUNCTIO.
+
+FUNCTIO PROGRAMMATA_G_ALTITUDO REDDENS NUMERUS.
+    DECLARA scrinium SICUT NUMERUS VALENS FENESTRALE_II_ALTITUDO().
+    DECLARA barra SICUT NUMERUS VALENS FENESTRALE_II_TASKBAR_ALTITUDO().
+    DECLARA h SICUT NUMERUS VALENS (scrinium - barra) * 68 / 100.
+    SI h < 420 TUNC h = 420. FIN-SI.
+    SI h > scrinium - barra - 48 TUNC h = scrinium - barra - 48. FIN-SI.
+    REDDE h.
+FIN-FUNCTIO.
+
+FUNCTIO PROGRAMMATA_G_PINGE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT linea SICUT NUMERUS.
+    ACCIPIT formatum SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+
+    SI w < 480 || h < 320 TUNC REDDE 0. FIN-SI.
+    DECLARA pictum SICUT NUMERUS VALENS 0.
+
+    // Corpus quadratum et margo subtilis.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 0, 0, w, h, 241, 238, 228).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 0, 0, w, 1, 185, 138, 82).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 0, 0, 2, h, 185, 196, 207).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - 2, 0, 2, h, 8, 35, 61).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 0, h - 2, w, 2, 8, 35, 61).
+
+    // Titulus XXVIII px: vitrum caeruleum cum lumine superiore.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 2, 1, w - 4, 27, 14, 66, 111).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 2, 1, w - 4, 1, 98, 215, 242).
+    // Vestigium tituli PROGRAMMATA; glyphi proprii postea substituentur.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 12, 10, 96, 8, 234, 248, 255).
+
+    // Controles fenestrae non circulares.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - 70, 4, 18, 20, 185, 196, 207).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - 48, 4, 18, 20, 185, 196, 207).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - 26, 4, 20, 20, 168, 58, 58).
+
+    // Menu XXII px et instrumenta XXXIV px.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 2, 28, w - 4, 22, 241, 238, 228).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 2, 50, w - 4, 34, 185, 196, 207).
+    // NOVUM / EDITE / NOMEN / DELE / AGE ut botones densi.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 10, 55, 66, 24, 234, 248, 255).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 82, 55, 66, 24, 234, 248, 255).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 154, 55, 66, 24, 234, 248, 255).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 226, 55, 58, 24, 234, 248, 255).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - 82, 55, 70, 24, 26, 93, 146).
+
+    DECLARA corpus_y SICUT NUMERUS VALENS 84.
+    DECLARA corpus_h SICUT NUMERUS VALENS h - 104.
+    DECLARA sinister SICUT NUMERUS VALENS w * 20 / 100.
+    DECLARA dexter SICUT NUMERUS VALENS w * 25 / 100.
+    DECLARA medius_x SICUT NUMERUS VALENS sinister + 14.
+    DECLARA medius_w SICUT NUMERUS VALENS w - sinister - dexter - 30.
+
+    // Collectiones sinistrae.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 2, corpus_y, sinister, corpus_h, 185, 196, 207).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 12, corpus_y + 18, sinister - 20, 24, 26, 93, 146).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 12, corpus_y + 50, sinister - 20, 20, 234, 248, 255).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 12, corpus_y + 78, sinister - 20, 20, 234, 248, 255).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 12, corpus_y + 106, sinister - 20, 20, 234, 248, 255).
+
+    // Index crescens: unum programma initiale tantum, TABULA.VXNAT.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, medius_x, corpus_y + 22, medius_w, 122, 234, 248, 255).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, medius_x, corpus_y + 22, medius_w, 2, 26, 93, 146).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, medius_x + 20, corpus_y + 42, 72, 72, 8, 35, 61).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, medius_x + 30, corpus_y + 52, 52, 52, 98, 215, 242).
+    // Selectio subtilis, non pillularis.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, medius_x + 14, corpus_y + 36, 84, 2, 185, 138, 82).
+
+    // Proprietates dextrae.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - dexter, corpus_y, dexter - 2, corpus_h, 185, 196, 207).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - dexter + 20, corpus_y + 24, 48, 48, 26, 93, 146).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - dexter + 28, corpus_y + 32, 32, 32, 98, 215, 242).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - dexter + 20, corpus_y + 88, dexter - 42, 2, 8, 35, 61).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - dexter + 20, corpus_y + 104, dexter - 58, 2, 26, 93, 146).
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, w - dexter + 20, corpus_y + 120, dexter - 72, 2, 26, 93, 146).
+
+    // Status bar XX px.
+    pictum = FENESTRALE_II_SUPERFICIES_RECTANGULUM(basis, linea, formatum, 2, h - 20, w - 4, 18, 185, 196, 207).
+    REDDE pictum.
+FIN-FUNCTIO.
+
+FUNCTIO PROGRAMMATA_G_PETITIONEM_INCIPE REDDENS NUMERUS.
+    SI FENESTRALE_II_TASKBAR_ALTITUDO() != 28 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS PROGRAMMATA_G_LATITUDO().
+    DECLARA h SICUT NUMERUS VALENS PROGRAMMATA_G_ALTITUDO().
+    // client 1; alpha + resizabilis + fenestra = 7.
+    REDDE FENESTRALE_II_SUPERFICIEM_PETE(1, w, h, 7).
+FIN-FUNCTIO.
+
+FUNCTIO PROGRAMMATA_G_RESPONSUM_EXSEQUERE REDDENS NUMERUS.
+    SI FENESTRALE_II_COMPOSITOR_RESPONSUM_PARATUM() == 0 TUNC REDDE 11. FIN-SI.
+    SI FENESTRALE_II_COMPOSITOR_STATUS() == 3 TUNC REDDE 12. FIN-SI.
+    SI FENESTRALE_II_COMPOSITOR_RESPONSUM() != 0 TUNC REDDE 13. FIN-SI.
+
+    DECLARA operatio SICUT NUMERUS VALENS FENESTRALE_II_COMPOSITOR_OPERATIO().
+    SI operatio == 3 TUNC
+        DECLARA vacuum SICUT NUMERUS VALENS FENESTRALE_II_COMPOSITOR_VACUA().
+        REDDE 0.
+    FIN-SI.
+    SI operatio != 1 TUNC REDDE 14. FIN-SI.
+
+    DECLARA basis SICUT NUMERUS VALENS FENESTRALE_II_COMPOSITOR_SUPERFICIES_BASIS().
+    DECLARA linea SICUT NUMERUS VALENS FENESTRALE_II_COMPOSITOR_SUPERFICIES_LINEA().
+    DECLARA formatum SICUT NUMERUS VALENS FENESTRALE_II_COMPOSITOR_SUPERFICIES_FORMATUM().
+    DECLARA superficies SICUT NUMERUS VALENS FENESTRALE_II_COMPOSITOR_SUPERFICIES_ID().
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50335296).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50335304).
+    SI basis == 0 || linea < w || superficies == 0 TUNC REDDE 15. FIN-SI.
+
+    DECLARA pictum SICUT NUMERUS VALENS PROGRAMMATA_G_PINGE(basis, linea, formatum, w, h).
+    SI pictum == 0 TUNC REDDE 16. FIN-SI.
+    pictum = FENESTRALE_II_COMPOSITOR_VACUA().
+    SI pictum == 0 TUNC REDDE 17. FIN-SI.
+    SI FENESTRALE_II_SUPERFICIEM_PRAESENTA(1, superficies, 0, 0, w, h) == 0 TUNC REDDE 18. FIN-SI.
+    REDDE 11.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FENESTRALE_II_COMPOSITOR_AD_EST() == 0 TUNC REDDE 5. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS FENESTRALE_II_COMPOSITOR_STATUS().
+    SI status == 0 TUNC
+        SI PROGRAMMATA_G_PETITIONEM_INCIPE() == 0 TUNC REDDE 6. FIN-SI.
+        REDDE 10.
+    FIN-SI.
+    SI status == 1 TUNC REDDE 11. FIN-SI.
+    REDDE PROGRAMMATA_G_RESPONSUM_EXSEQUERE().
+FIN-FUNCTIO.
