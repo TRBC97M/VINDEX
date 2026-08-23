@@ -1,5 +1,0 @@
-IMPORTA "tests/casus/importa_imbrique.vindex".
-
-FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    REDDE CUBUS(3).
-FIN-FUNCTIO.
