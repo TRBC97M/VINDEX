@@ -2,160 +2,211 @@
 
 ## Propositum
 
-VINDEX 0.53 limites arbitrarios compilatoris removere debet. Compilatio memoria machinae et spatio inscriptionum limitetur, non numeris internis historicis sicut centum variabilia localia, capacitas fixa fontis, numerus fixus functionum aut regiones occultae unius `tabula`.
+VINDEX 0.53 limites arbitrarios compilatoris removet. Compilatio memoria machinae et spatio inscriptionum limitetur, non numeris internis historicis sicut centum variabilia localia, capacitas fixa fontis, numerus fixus functionum aut regiones occultae unius `tabula`.
 
 **VINDEX Latine cogitat. Sylvia Latine loquitur.**
 
 ## Regula capitalis
 
-Numerus maior pro limite veteri non est solutio finalis. Augmentum temporarium admittitur tantum ut instrumentum migrationis. Omnis capacitas fixa quae structuram crescibilem simulare conatur removenda est antequam 0.53 completa habeatur.
+Numerus maior pro limite veteri non est solutio finalis. Structurae quae secundum usum crescere debent descriptoribus et memoria dynamica utuntur. Status parseris nominatus in contextu explicito servatur.
 
-## Fundamenta iam canonica
+## Fundamenta canonica
 
 ### I. Memoria amplitudine variabili
 
-`RESERVA_OCTETA(mensura)` memoriam anonymam amplitudine tempore executionis nota reservat. Probatio XXXII MiB transit. Haec primitiva fundamentum fontibus, codici machinali, symbolis et metadata crescentibus praebet.
+`RESERVA_OCTETA(mensura)` memoriam amplitudine tempore executionis nota reservat. Probatio XXXII MiB transit. Haec primitiva fundamentum fontibus, codici machinali, symbolis et metadata crescentibus praebet.
 
-### II. Fontes et buffers
+Sub PE/Win64 allocationes runtime necessariae per `VirtualAlloc` fiunt.
+
+### II. Fontes et receptacula
 
 `fons_brut` et `fons` memoriam crescentem adhibent. Limes historicus fontis `212999` octetorum remotus est; fons plus quam `300000` octeta compilatur et recte exsequitur.
 
-Buffera historica `MITTE`, `LEGE` et `SCRIBE` e regionibus pilae ingentibus migrata sunt. Intervalla artificiosa `-6500000`, `-5000000` et `-6000000` non amplius fundamentum horum bufferorum sunt.
+Receptacula historica `MITTE`, `LEGE` et `SCRIBE` e regionibus pilae ingentibus migrata sunt. Intervalla artificiosa fixa non amplius fundamentum horum bufferorum sunt.
 
 ### III. Codex machinalis crescibilis
 
 Receptaculum `codex` descriptorio crescenti utitur. `INITIA_CODEX`, `ASSECURA_CODEX`, `CODEX_SCRIBE` et `CODEX_LEGE` spatium machinale secundum necessitatem augent. Exsecutabile ultra limitem historicum `300000` octetorum generari potest.
 
-### IV. Symbola et metadata crescentia
+### IV. Symbola et metadata crescibilia
 
-Localia, functiones, vocationes pendentes, `FORMA` et campi collectionibus dynamicis utuntur. Probationes CLXXX localium, MCCL functionum cum MCCL vocationibus pendentibus, XL formarum et LXXX camporum transeunt.
+Localia, functiones, vocationes pendentes, `FORMA` et campi collectionibus dynamicis utuntur. Probationes numerum veteribus limitibus maiorem exercent.
 
-Descriptores collectionum adhuc in `tabula` resident:
+Descriptores collectionum structuram explicitam habent:
 
-- localia: `2970=basis`, `2971=limen`, `2972=quantitas`;
-- functiones: `2982=quantitas`;
-- vocationes pendentes: `2985=quantitas`;
-- formae: `2990=basis`, `2991=limen`, `2992=quantitas`, `2993=index ultimae formae`.
+```text
++0  basis collectionis
++8  capacitas
++16 quantitas
+```
+
+Nullus descriptor in `tabula` historica iam residet.
 
 ### V. Pila functionum
 
-Fasciculus pilae cuiusque functionis ex usu reali computatur, ad XVI octeta ordinatur et pagina quaeque IV KiB tangitur. Probatio canonica fasciculum `1048592` octetorum reservat et programma `39` atque `777` reddit cum statu `0`.
+Fasciculus pilae cuiusque functionis ex usu reali computatur, ad XVI octeta ordinatur et pagina quaeque IV KiB tangitur. Probatio canonica fasciculum `1048592` octetorum reservat et verificator binarius alignmentum `16` confirmat.
 
-Prologus x86-64 stabilis LV octetorum per emissorem U16 generatur. Vocationes sine argumentis `RSP` non corrumpunt; probatio dedicata MXXIV vocationes nullas exsequitur et `7168` reddit.
+Vocationes sine argumentis `RSP` non corrumpunt; probatio dedicata MXXIV vocationes nullas exsequitur et `7168` reddit.
 
 ### VI. Septem argumenta System V
 
-Conventio x86-64 System V nunc septem argumenta formaliter sustentat. Argumenta I–VI per `RDI`, `RSI`, `RDX`, `RCX`, `R8`, `R9` transeunt; argumentum VII in pila ad callee `RBP+16` traditur. Caller alignmentem pilae servat et spatium post vocationem restituit.
+Conventio x86-64 System V septem argumenta probata sustinet. Argumenta I–VI per `RDI`, `RSI`, `RDX`, `RCX`, `R8`, `R9` transeunt; argumentum VII in pila traditur. Caller alignmentum pilae servat et spatium post vocationem restituit.
 
 Haec facultas tam compilatore VINDEX nativo quam amorsa Python comprobatur. `argumenta_septem.vindex` summam `1+2+3+4+5+6+7` computat et `28` reddit. Plus quam septem argumenta nondum promittuntur.
 
-## CRLF et disciplina Unix
+## CRLF
 
-`IGNORA_SPATIA` CR (`13`) agnoscit. Fontes CRLF igitur intra terminum canonicum compilantur. `.gitattributes` LF canonice imponit scripturis Unix, instrumentis Python, documentis Markdown et fontibus `*.vindex`.
+`IGNORA_SPATIA` CR (`13`) agnoscit. Fontes CRLF intra terminum canonicum compilantur. `.gitattributes` LF canonice imponit scripturis Unix, instrumentis Python, documentis Markdown et fontibus `*.vindex`.
 
-## Canonizatio hodierna
+## Tabula historica — absoluta
 
-Auto-hospitium, amorsa Python, Officina, Systema BIOS et Systema UEFI transeunt. Punctum fixum hodiernum est:
-
-```text
-ee8db083c2e2d9b0d08410b532ef8c2dea909512198aed3920125c7a1d6eddf1
-```
-
-Regressiones canonicae:
-
-```text
-24 probationes rectae; 0 errata.
-```
-
-Relatio `instrumenta/RELATIO-CANONICA-CRLF-PILA-053.md` testimonium historicum canonizationis CRLF/pilae servat; SHA illius gradus consulto non est SHA compilatoris hodierni.
-
-## Contextus parseris: `DESINE`
-
-`tabula[227]` iam omnino remota est. `STATUS_DESINE_LEGE` et `STATUS_DESINE_SCRIBE` nunc `ACUS<NUMERUS>` explicitum accipiunt. `ANALYSA_BLOCUS` hunc contextum septimo argumento per omnes vocationes recursivas propagat; `PRINCIPALIS` contextum cuiusque corporis functionis initio ad nihilum redigit.
-
-Probatio `desine_imbrique.vindex` semanticam ansarum `DUM` imbriquatarum figit et exitum `48` reddit. GitHub Actions simul vetat reditum literalem `tabula[227]`.
-
-## Reliquiae architecturae historicae
-
-Aggregatum adhuc exstat:
+Aggregatum antiquum:
 
 ```text
 DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
 ```
 
-Inventarium automaticum hodiernum numerat XI indices litterales distinctos et XCVII accessus:
+omnino deletum est.
+
+Inventarium finale:
 
 ```text
-51
-2970
-2971
-2972
-2982
-2985
-2990
-2991
-2992
-2993
-2999
+INDICES LITTERALES DISTINCTI: 0
+ACCESSUS LITTERALES TOTALES: 0
 ```
 
-Distributiones accessuum sunt:
+Migrata sunt inter alia:
 
-- `51`: L;
-- `2970`: V;
-- `2971`: III;
-- `2972`: XIII;
-- `2982`: II;
-- `2985`: II;
-- `2990`: V;
-- `2991`: III;
-- `2992`: VIII;
-- `2993`: IV;
-- `2999`: II.
+- `227` — status `DESINE`;
+- `2999` — status lectionis;
+- `51` — cursor pilae;
+- `2982/2985` — functiones et vocationes pendentes;
+- `2970..2972` — localia;
+- `2990..2993` — formae.
 
-`2999` iam sub `STATUS_LECTIONIS_LEGE/SCRIBE` encapsulatum est, sed receptaculum adhuc in `tabula` manet. Hic est proximus status temporarius removendus.
+Historia completa in `TABULA-MIGRATIO-053.md` servatur.
 
-## Ordo migrationis reliquus
+## Contextus compilationis explicitus
 
-1. Inventarium automaticum et prohibitio novorum numerorum magicorum — **factum**.
-2. Encapsulatio `227` et `2999` — **factum**.
-3. `227` e `tabula` in contextum explicitum transferre — **factum**.
-4. `2999` in contextum parseris explicitum transferre.
-5. Cursorem pilae `51` in contextum functionis transferre.
-6. Descriptores `2970..2993` in contextum compilationis transferre.
-7. `tabula CAPACITAS 3000` minuere atque denique removere.
-8. Post purgationem Linux x86-64, tergum PE/Windows iterum integrare et eadem disciplina auto-hospitii probare.
-
-## Disciplina auto-hospitii
-
-Post quemque gradum qui compilatorem mutat:
+Contextus parseris post integrationem Win64 LXXII octeta continet:
 
 ```text
-compilator prior -> generatio I -> generatio II -> generatio III
++0   status DESINE
++8   status/intervallum lectionis
++16  cursor pilae functionis
++24  descriptor functionum
++32  descriptor vocationum pendentium
++40  descriptor localium
++48  descriptor formarum
++56  modus targeti ELF/PE
++64  descriptor correctionum IAT PE
 ```
 
-Generatio II et III idem punctum fixum obtinere debent, nisi mutatio intentionalis binarii explicite demonstratur. Omnes regressiones canonicae transire debent ante migrationem sequentem.
+Accessores nominati hos campos regunt. Workflow canonicus structuram hanc custodit et reditum ad numeros magicos vetat.
+
+## Backend ELF et PE/Win64
+
+Compilator idem fontem VINDEX ad duo targeta nativa generat:
+
+```text
+ELF x86-64 Linux     modus praedefinitus
+PE32+ AMD64 Windows  tertium argumentum `pe`
+```
+
+Backend PE32+ formatum, sectiones `.text`/`.idata` et IAT sine GCC, NASM aut libc construit.
+
+IAT canonica KERNEL32 septem API continet:
+
+```text
+ExitProcess
+VirtualAlloc
+GetStdHandle
+WriteFile
+CreateFileA
+ReadFile
+CloseHandle
+```
+
+Ingressus PE conventionem pilae initialis Linux non adhibet. Vocationes WinAPI alignmentum XVI octetorum et spatium umbrae Win64 servant.
+
+## I/O Win64 probatum
+
+Sub Windows vero probata sunt:
+
+- `PROCLAMA` catenae;
+- `PROCLAMA` integri;
+- `PROCLAMA` fluitantes positivi et negativi;
+- `APERI_SCRIBERE`;
+- `MITTE`;
+- `CLAUDE`;
+- `APERI_LEGERE`;
+- `LEGE`;
+- `OCTETUS` post lectionem;
+- allocationes necessariae per `VirtualAlloc`.
+
+Probatio fasciculorum scribit, claudit, aperit, legit et comprobat `VINX`.
+
+## Limites Win64 declarati
+
+VINDEX 0.53 non fingit omnem servitutem Linux iam portatam esse:
+
+- argumenta lineae mandatorum PE nondum convertuntur; `PRINCIPALIS` interim `argc=0`, `argv=0` accipit;
+- `APERI_ADICERE` nondum canonice sub Win64 probatum est;
+- `EXSEQUERE`, `EXSEQUERE_CAPTURA`, `CURRE`, `CAMBIA` et `TUBUS` historice Linux innituntur nisi postea singillatim portentur.
+
+## Auto-hospitium et canonizatio
+
+Punctum fixum hodiernum post integrationem backend Win64 est:
+
+```text
+166a0e666deb83f759f90d1b721474ede01bb3519ec5231b2fe0e9b23158c969
+```
+
+Compilator distributus reconstructioni canonicae ab amorsa congruit.
+
+Regressiones canonicae:
+
+```text
+25 probationes rectae; 0 errata.
+```
+
+Workflow `VINDEX 0.53 — Regressio canonica` custodit:
+
+- 25/25 regressiones;
+- auto-hospitium et binarium distributum;
+- amorsam Python cum septem argumentis;
+- CRLF;
+- pilam maiorem uno MiB;
+- absentiam `tabula`;
+- contextum explicitum LXXII octetorum.
+
+Workflow `VINDEX 0.53 — Win64 finalis` PE ex ipso ramo dynamico construit et sub Windows Server 2025 vero exsequitur.
 
 ## Probationes acceptationis 0.53
 
-Ante statum finalem 0.53 saltem haec vera manere debent:
+Status hodiernus:
 
-- functio plus quam centum variabilia localia continere potest;
-- fons ultra `212999` octeta compilatur;
-- codex machinalis ultra `300000` octeta crescere potest;
-- numerus functionum et vocationum pendentium limites veteres superat;
-- formae et campi limites veteres superant;
-- pila plus quam unum MiB recte reservatur et probatur;
-- CRLF auto-hospitium non retardat;
-- vocationes sine argumentis pilam non corrumpunt;
-- septem argumenta native et ab amorsa recte transeunt;
-- `DESINE` in ansis imbriquatis semanticam servat sine `tabula[227]`;
-- auto-hospitium et amorsa idem punctum fixum servant;
-- regressiones canonicae `24/24` manent;
-- nulla nova capacitas globalis fixa veterem limitem tantum substituit.
+```text
+fontes > 212999 octeta                  RECTE
+codex > 300000 octeta                   RECTE
+metadata dynamicum                      RECTE
+pila > 1 MiB                            RECTE
+CRLF                                    RECTE
+vocationes nullae                       RECTE
+VII argumenta native + amorsa           RECTE
+DESINE contextu explicito               RECTE
+LEGE/OCTETUS contextu explicito         RECTE
+tabula historica 0/0                    RECTE
+25/25 regressiones ELF                  RECTE
+auto-hospitium punctum fixum            RECTE
+PE32+ AMD64                              RECTE
+PROCLAMA Win64                          RECTE
+fasciculi Win64 principales             RECTE
+Windows Server 2025                     RECTE
+```
 
 ## Status
 
-**CRLF rectum. Pila dynamica canonica. Septem argumenta System V probata. `DESINE` extra tabulam. XI indices historici et XCVII accessus restant. Auto-hospitium stabile. Custodia GitHub Actions viridis. 24/24 probationes rectae.**
+**Architectura dynamica completa est; `tabula` historica deleta est; backend ELF manet canonicus; backend PE/Win64 probatus in ramo 0.53 integratus est; 25/25 probationes rectae sunt; punctum fixum servatur. PR #3 adhuc draft manet ante recensionem finalem ad `main`.**
 
-Proximus gradus est `2999` ex tabula removere sine octavo argumento parseri addendo.
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
