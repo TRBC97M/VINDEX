@@ -43,6 +43,18 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_gestor.vindex /tmp/fb_gestor.elf
           file /tmp/fb_gestor.elf | grep -q 'ELF 64-bit'
 
+      - name: Interactionem superiorem compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_interactio.vindex /tmp/fb_interactio.elf
+          file /tmp/fb_interactio.elf | grep -q 'ELF 64-bit'
+
+      - name: Ansam eventuum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
+          file /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
+
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
