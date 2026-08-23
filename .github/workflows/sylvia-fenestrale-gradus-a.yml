@@ -1,0 +1,30 @@
+name: Sylvia OS — Fenestrale II Gradus A
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fenestrale_native_a.c'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_a.sh'
+      - 'documenta/sylvia/FENESTRALE_II_GRADUS_A.md'
+      - '.github/workflows/sylvia-fenestrale-gradus-a.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fenestrale_native_a.c'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_a.sh'
+      - '.github/workflows/sylvia-fenestrale-gradus-a.yml'
+
+jobs:
+  constructio:
+    name: Applicatio UEFI nativa construitur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+      - name: Fenestrale Gradus A construe
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: bash systema/uefi/construe_fenestrale_native_a.sh /tmp/FENESTRALEA.EFI
+      - name: Formam PE32+ verifica
+        run: |
+          file /tmp/FENESTRALEA.EFI
+          objdump -p /tmp/FENESTRALEA.EFI | grep 'Subsystem.*EFI application'
