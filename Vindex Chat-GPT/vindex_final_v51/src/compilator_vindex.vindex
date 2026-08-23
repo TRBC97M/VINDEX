@@ -654,11 +654,38 @@ FUNCTIO COMPONE_MOVQ_A_XMM REDDENS NUMERUS.
     ACCIPIT indice SICUT NUMERUS.
     ACCIPIT xmm_dest SICUT NUMERUS.
     ACCIPIT gp_src SICUT NUMERUS.
+    DECLARA rex_mvq SICUT NUMERUS VALENS 72.
+    SI xmm_dest >= 8 TUNC
+        rex_mvq = rex_mvq | 4.
+    FIN-SI.
+    SI gp_src >= 8 TUNC
+        rex_mvq = rex_mvq | 1.
+    FIN-SI.
     CODEX_SCRIBE(codex, indice, 102).
-    CODEX_SCRIBE(codex, indice + 1, 72).
+    CODEX_SCRIBE(codex, indice + 1, rex_mvq).
     CODEX_SCRIBE(codex, indice + 2, 15).
     CODEX_SCRIBE(codex, indice + 3, 110).
-    CODEX_SCRIBE(codex, indice + 4, 192 + (xmm_dest * 8) + gp_src).
+    CODEX_SCRIBE(codex, indice + 4, 192 + ((xmm_dest & 7) * 8) + (gp_src & 7)).
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_MOVQ_DE_XMM REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT gp_dest SICUT NUMERUS.
+    ACCIPIT xmm_src SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI xmm_src >= 8 TUNC
+        rex = rex | 4.
+    FIN-SI.
+    SI gp_dest >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    CODEX_SCRIBE(codex, indice, 102).
+    CODEX_SCRIBE(codex, indice + 1, rex).
+    CODEX_SCRIBE(codex, indice + 2, 15).
+    CODEX_SCRIBE(codex, indice + 3, 126).
+    CODEX_SCRIBE(codex, indice + 4, 192 + ((xmm_src & 7) * 8) + (gp_dest & 7)).
     REDDE indice + 5.
 FIN-FUNCTIO.
 
@@ -2704,10 +2731,12 @@ FUNCTIO COMPONE_IMPRIME_FLUITANIS REDDENS NUMERUS.
 
     p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0).
     p = COMPONE_CVTTSD2SI(codex, p, 0, 0).
+    p = COMPONE_MOVQ_DE_XMM(codex, p, 15, 0).
     p = COMPONE_IMPONE(codex, p, 0).
     p = COMPONE_IMPRIME_NUMERUS(codex, p, intervallum_scratch, contextus_parseris).
     p = COMPONE_IMPRIME_CHAR(codex, p, intervallum_scratch, 46, contextus_parseris).
     p = COMPONE_AUFER(codex, p, 0).
+    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 15).
 
     p = COMPONE_CVTSI2SD(codex, p, 1, 0).
     p = COMPONE_SUBSD(codex, p, 0, 1).

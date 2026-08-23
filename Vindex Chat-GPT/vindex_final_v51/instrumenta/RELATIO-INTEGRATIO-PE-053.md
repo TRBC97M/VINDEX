@@ -269,3 +269,41 @@ posterior requiritur. **Notandum**: functio seorsum inventa
 adressae identicum, sed **numquam vocatur alicubi in fonte** (codex
 mortuus) — non tacta, quia non pertinens ad ullum defectum currentem.
 
+## Addendum quintum — causa radicalis definitiva inventa a ChatGPT, correcta et verificata: XMM0 volatile sub ABI Win64
+
+ChatGPT (PR #17) identificavit causam radicalem veram defectus
+residui: **API Win64 licite registra `XMM0..XMM5` delere potest**
+(volatilia sunt, sicut `RCX`/`RDX`/`R8`/`R9`). `COMPONE_IMPRIME_FLUITANIS`
+falso supponebat valorem originalem fluitantis in `XMM0` per
+vocationes `WriteFile` (intra `COMPONE_IMPRIME_NUMERUS`/`CHAR` pro
+parte integrali et puncto) servatum permanere. Sub ELF (syscall Linux
+directus, quae registra XMM non tangit) hoc semper functionabat; sub
+PE (per `WriteFile` reale, quae registra volatilia libere adhibere
+potest) `XMM0` corrumpebatur inter scriptionem partis integralis et
+calculum partis fractionalis (`SUBSD`), causans divisionem per zero
+notatam supra.
+
+**Correctio applicata hic** (secundum hypothesin ChatGPT, verificata
+independenter): duae novae functiones additae —
+`COMPONE_MOVQ_DE_XMM` (inversa `COMPONE_MOVQ_A_XMM`, servat bits
+`XMM` in registro generali) et correctio simul facta in
+`COMPONE_MOVQ_A_XMM` ipsa (REX byte fixus antea non recte registra
+`>= 8` tractabat — defectus latens, numquam antea exercitus quia
+nulla vocatio prior registrum altum adhibebat). In
+`COMPONE_IMPRIME_FLUITANIS`: bits `XMM0` (valor originalis, post
+`CVTTSD2SI` sed ante ullam vocationem `WriteFile`) servantur in `R15`
+(non-volatile sub Win64) ante vocationes `IMPRIME_NUMERUS`/`CHAR`, et
+restituuntur in `XMM0` statim post, ante `CVTSI2SD`/`SUBSD` sequentia.
+
+**Verificatum hic (Wine)**: `PROCLAMA 3.14159` (solum et intra
+sequentiam completa post catenas/numeros) nunc reddit `3.141589`
+**identice modo ELF**, sine ullo defectu vel divisione per zero.
+Probationes additionales (`0.5`, `100.0`) etiam identicae inter ELF
+et PE. Auto-hospitium punctum fixum servatum (SHA256 identica G2=G3).
+
+**Nota honesta**: `PROCLAMA -2.71828` (numerus negativus) reddit
+resultatum absurdum (`-4613303441197561856`) — sed **identice in
+utroque modo ELF et PE**, confirmans defectum antiquiorem in analysi
+litteralis negativi fluitantis, omnino seorsum ab hac correctione et
+extra eius ambitum.
+
