@@ -1,15 +1,21 @@
-# VINDEX 0.51.0 — Bibliotheca duplex
+# VINDEX — Bibliotheca duplex et Compilator 0.53
 
 VINDEX est lingua programmationis humilis, vocabulario Latino et forma
-COBOL simili ornata. Fontes directe in exsecutabilia ELF x86-64 Linux
-convertit, sine NASM, GCC vel libc.
+COBOL simili ornata. Compilator 0.53 fontes directe in exsecutabilia nativa
+x86-64 convertit: ELF Linux est modus praedefinitus, PE32+ AMD64 Windows
+tertium argumentum `pe` eligi potest. GCC, NASM et libc ad compilationem
+ordinariam non requiruntur.
 
 Compilator hodiernus ipse VINDEX scriptus est atque se ipsum byte pro byte
 reproducit. Sigillum puncti fixi SHA-256 est:
 
 ```text
-153b57c82e32da4fb81ccf5de1dc0d3319418de5b7c02a5087fc8ba80ddb5f4e
+166a0e666deb83f759f90d1b721474ede01bb3519ec5231b2fe0e9b23158c969
 ```
+
+Series Systematis et voluminis distributi in hoc directorio manet 0.51.0;
+`VERSION` ad illam sarcinam Systematis pertinet. Evolutio compilatoris 0.53
+seorsum in hoc ramo canonizatur.
 
 ## VINDEX Systema
 
@@ -131,26 +137,39 @@ alligatum.
 
 ## Linea mandatorum
 
-```bash
-./vindexc programma.vindex programma
-./programma
-```
-
-Forma `-o` quoque accipitur:
+Interfacies publica ELF:
 
 ```bash
 ./vindexc programma.vindex -o programma
+./programma
 ```
 
 `vindexc` fontem verificat, in archivum temporarium compilat, naturam ELF
 probat atque exitum atomice publicat. Compilatio defecta exsecutabile
 imperfectum non relinquit.
 
+Compilator nativus directe:
+
+```bash
+./compilator_vindex programma.vindex programma
+chmod +x programma
+```
+
+PE32+ AMD64 Windows:
+
+```bash
+./compilator_vindex programma.vindex programma.exe pe
+```
+
 Verificatio separata:
 
 ```bash
 ./vindexc --verifica programma.vindex
 ```
+
+Backend PE 0.53 iam `PROCLAMA`, allocationem et primitivas principales
+fasciculorum per WinAPI exercet. Argumenta lineae mandatorum Windows nondum
+convertuntur: `PRINCIPALIS` in modo PE interim `argc=0`, `argv=0` accipit.
 
 ## Exemplum minimum
 
@@ -169,14 +188,22 @@ FIN-FUNCTIO.
 make probatio
 ```
 
-Inspectiones automaticae numeros, iterationes, functiones,
-fluitantia, importationes, formas, acus, memoriam, recursionem, `argc`/`argv`,
-diagnostica, auto-hospitium, duas applicationes VINDEX, pontem GTK declarativum
-et installationem Fedora probant. Sector BIOS, PE32+ UEFI, GPT, FAT32, modus
-VGA, GOP, forma litterarum, ELF nuclei, rectores PS/2, eventa firmware,
-fenestrae, Scriptorem, Programmatum gestorem, exsecutionem `.VXNAT`, Serpentem
-et reconstructiones identicas etiam probant;
-probatio QEMU automatica perficitur si QEMU adest.
+Suite canonica continet **25 probationes rectas, 0 errata**. Inspectiones
+automaticae numeros, iterationes, functiones, septem argumenta, fluitantia,
+importationes, formas, acus, memoriam, recursionem, `argc`/`argv`, diagnostica,
+auto-hospitium, duas applicationes VINDEX, pontem GTK declarativum et
+installationem Fedora probant. Sector BIOS, PE32+ UEFI, GPT, FAT32, modus VGA,
+GOP, forma litterarum, ELF nuclei, rectores PS/2, eventa firmware, fenestrae,
+Scriptorem, Programmatum gestorem, exsecutionem `.VXNAT`, Serpentem et
+reconstructiones identicas etiam probantur; probatio QEMU automatica
+perficitur si QEMU adest.
+
+Duo workflow VINDEX 0.53 praeterea permanent:
+
+- `VINDEX 0.53 — Regressio canonica`: auto-hospitium, amorsa, CRLF, pila magna,
+  contextus explicitus et absentia `tabula`;
+- `VINDEX 0.53 — Win64 finalis`: PE structuram verificat et executabilia sub
+  Windows Server 2025 vero exsequitur, inclusa probatione fasciculi `VINX`.
 
 ## Reconstructio integra
 
@@ -217,27 +244,30 @@ utitur. Exitus reconstructus cum binario distributo comparatur. Explicatio in
 - `officina_vindex` — initiator VINDEX nativus;
 - `salutatio_vindex` — programma Salutationis nativum;
 - `vindex_graphica` — pons graphicus paratus;
-- `vindexc` — interfacies publica compilationis;
+- `vindexc` — interfacies publica compilationis ELF;
 - `vindex-officina` — initiator portabilis Officinae;
 - `vindex-salutatio` — initiator portabilis Salutationis;
 - `vindex-systema` — initiator QEMU Systematis;
 - `installa_officinam.sh` — installatio usoris Fedora/Linux;
 - `officina/` — imago et usus Officinae;
 - `instrumenta/vindex_verifica.py` — diagnostica provecta facultativa;
+- `instrumenta/RELATIO-WIN64-CANONICA-053.md` — status backend Win64;
 - `tests/` — probationes regressionis;
 - `examples/` — programmata maiora;
 - `bootstrap/` — reconstructio ab Python;
 - `testimonia/` — generationes nativae identicae;
 - `archive/` — historia pristina;
 - `REFERENTIA.md` — grammatica et facultates linguae;
-- `COMMENTARIUM.md` — mutationes versionum.
+- `COMPILATOR-DYNAMICUS-053.md` — architectura 0.53;
+- `TABULA-MIGRATIO-053.md` — historia migrationis absolutae;
+- `COMMENTARIUM.md` — mutationes versionum Systematis/distributionis.
 
 ## Integritas
 
-Compilator fontes absentes, nimis magnos aut invalidos reicit. Importationes,
-`FUNCTIO PRINCIPALIS`, functiones vocatas et scripturam exitus inspicit.
-Officina fontem usque ad 1048576 octeta continet et
-programmatum statum post executionem ostendit.
+Compilator fontes absentes aut invalidos reicit; receptacula fontium et codicis
+machinalis 0.53 dynamice crescunt. Importationes, `FUNCTIO PRINCIPALIS`,
+functiones vocatas et scripturam exitus inspicit. Officina fontem usque ad
+1048576 octeta continet et programmatum statum post executionem ostendit.
 
 ## Nomen
 
