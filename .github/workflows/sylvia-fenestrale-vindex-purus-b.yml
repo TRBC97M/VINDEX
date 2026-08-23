@@ -8,6 +8,7 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_uefi.vindex'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
 
 jobs:
@@ -21,10 +22,16 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
+      - name: UEFI VINDEX minimum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fenestrale_purus_b_uefi.elf
+          file /tmp/fenestrale_purus_b_uefi.elf | grep -q 'ELF 64-bit'
+
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
+          timeout 60s ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
           file /tmp/fenestrale_ii_purus_b.elf | grep -q 'ELF 64-bit'
           test "$(stat -c '%s' /tmp/fenestrale_ii_purus_b.elf)" -lt 196608
           ! grep -R 'POLLE()' bibliotheca/fenestrale_ii_purus.vindex systema/fenestrale_ii_purus_b.vindex
