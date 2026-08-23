@@ -1,0 +1,5 @@
+// Diagnostica compilatoris: expressio parenthesizata statim post REDDE.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA a SICUT NUMERUS VALENS 3.
+    REDDE (a & 3) + 1.
+FIN-FUNCTIO.
