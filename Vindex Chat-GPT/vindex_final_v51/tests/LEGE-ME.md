@@ -1,66 +1,29 @@
-# Probationes VINDEX
+# Probationes nuclei VINDEX 0.53
 
-Omnes probationes e radice incipe:
+Hoc directorium tantum fontes probationum VINDEX et data minima necessaria continet.
 
-```bash
-./tests/run_tests.sh
-# aut
-make probatio
+## Casus linguae
+
+`casus/` grammatica, numeros, fluitantia, functiones, recursionem, importationes, acus, septem argumenta, `DESINE`, `LEGE/OCTETUS`, diagnostica et fasciculos probat. Fontes `erratum_*.vindex` consulto invalidi sunt.
+
+Compilatio unius casus directe fit:
+
+```text
+./compilator_vindex tests/casus/salve.vindex /tmp/salve
+chmod +x /tmp/salve
+/tmp/salve
 ```
 
-Casus recti exitum et statum exsecutabilium probant. Casus vitiosi confirmant
-`vindexc` et compilatorem nativum fontem invalidum reicere neque ELF
-imperfectum relinquere. Denique compilator ab Python restituitur et punctum
-fixum nativum verificatur.
-Casus `vxnat-partem` quinque litteras a positione septima ordinis legit et
-valores `SALVE` confirmat; hic regressio acuminis vitiosi versionis 0.49 est.
+## Verificatio PE
 
-Octo probationes Graphicae confirmant:
+`proba_pe_structuram_053.vindex` est verificator PE32+ AMD64 **in VINDEX scriptus**. Signaturas MZ/PE, sectiones `.text`/`.idata`, directorium importationum, IAT, septem API KERNEL32 requisitas atque vocationes RIP-relativas `FF 15` inspicit.
 
-- fontem VINDEX idem ELF initiatoris distributi reproducere;
-- pontem GTK declarativum omnia symbola necessaria invenire;
-- duas formas applicationum rectas esse;
-- bibliothecam graphicam eventa Latina praebere;
-- logicam VINDEX eventum graphicum accipere, compilare et exsequi;
-- alteram applicationem nomen accipere et salutationem in VINDEX componere;
-- installationem Fedora fenestram sine terminali declarare;
-- interfaciem interretialem et terminalem omnino abesse.
-
-Sola Officina:
-
-```bash
-make probatio-officina
+```text
+./compilator_vindex tests/proba_pe_structuram_053.vindex /tmp/proba_pe
+chmod +x /tmp/proba_pe
+/tmp/proba_pe programma.exe
 ```
 
-Duodeviginti probationes Systematis confirmant:
+Python, C et Shell non sunt pars huius suite canonicae. Orchestratio GitHub Actions externa tantum est et codicem linguae non implementat.
 
-- fontem nuclei idem ELF distributum reproducere;
-- ELF unum segmentum ad basim `0x400000` habere;
-- nucleum memoriam VGA `0xA0000` et formam BIOS `0x8000` directe attingere;
-- sectorem BIOS 512 octeta et signum `55aa` habere;
-- modum VGA 320×200, paginationem et modum longum contineri;
-- rectores IRQ0, IRQ1, IRQ12, PIT, circulum claviaturae et PS/2 continere;
-- omnes inscriptiones Fenestrales Latinas esse;
-- `SERVA`, `APERI`, `NOVUM`, `NOMEN`, `DELE`, `FASCICULI` et formatum internum
-  sex documentorum atque sex programmatum VINDEX in nucleo adesse;
-- nullam functionem nuclei conventionem sex argumentorum excedere;
-- `APERI` in Fasciculis ingressum electum sine lectione disci supervacua
-  directe ad Scriptorem transferre;
-- Scriptorem II documenta 4095 octetorum, cursorem mobilem, volutationem verticalem,
-  nomen activum, migrationem voluminis et confirmationem deletionis continere;
-- `PROGRAMMATA` fasciculos `.VXNAT` in regione separata creare, nominare, in
-  Scriptore mutare atque exempla `SALVE.VXNAT` et `TABULA.VXNAT` instituere;
-- programmata
-  mandata `SCRIBE`, `COLOR`, `LOCUS`, `RECTANGULUM` et `MARGO` directe exsequi;
-- pontem UEFI volumen opacum 32 KiB legere, scribere atque expurgare;
-- imaginem UEFI fasciculum praeparatum `VINDEX.FS` in FAT32 continere;
-- secundam partitionem GPT signo `VINDEXV0` et volumine vacuo contineri;
-- rectorem binalem scribere, expurgare, relegere, initium novum simulare atque
-  corruptionem pro successu numquam accipere;
-- imaginem sectorem, nucleum, textus et rectores recto loco servare;
-- reconstructionem imaginem byte pro byte identicam creare.
-
-Si QEMU adest, probatio addita confirmat nucleum currere neque triplici errato
-statim terminari.
-
-Fontes `casus/erratum_*.vindex` consulto invalidi sunt.
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
