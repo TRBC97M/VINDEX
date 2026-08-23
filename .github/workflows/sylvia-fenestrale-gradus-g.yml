@@ -1,0 +1,39 @@
+name: Sylvia OS — Fenestrale II Gradus G
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_compositor_abi.h'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_compositor.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/programmata_fenestrale_ii_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_fenestrale_ii_compositor_g.py'
+      - 'documenta/sylvia/FENESTRALE_II_GRADUS_G.md'
+      - '.github/workflows/sylvia-fenestrale-gradus-g.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_compositor_abi.h'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_compositor.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/programmata_fenestrale_ii_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_fenestrale_ii_compositor_g.py'
+      - '.github/workflows/sylvia-fenestrale-gradus-g.yml'
+
+jobs:
+  contractus:
+    name: Mailbox et client PROGRAMMATA G verificantur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: ABI Gradus D verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_abi_d.py
+
+      - name: Clientem Gradus F regressione verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_programmata_fenestrale_f.py
+
+      - name: Compositorium Gradus G verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_compositor_g.py
