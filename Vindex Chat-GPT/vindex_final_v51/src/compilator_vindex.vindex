@@ -733,13 +733,20 @@ FUNCTIO COMPONE_NUMERUM_FLUITANIS REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT bits SICUT NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p SICUT NUMERUS VALENS pos.
     DECLARA loci_salt SICUT NUMERUS VALENS 0.
     p = COMPONE_JMP_FUTURUM(codex, p, SEDES(loci_salt)).
     DECLARA sedes_lit SICUT NUMERUS VALENS p.
     p = SCRIBE_U64(codex, p, bits).
     DECLARA ig_lfb SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_salt, p).
-    p = COMPONE_ONERA(codex, p, 1, 4194304 + sedes_lit).
+    DECLARA locus_lit_pe SICUT NUMERUS VALENS 5368709120 + 4096 - 512 + sedes_lit.
+    DECLARA locus_lit_elf SICUT NUMERUS VALENS 4194304 + sedes_lit.
+    DECLARA locus_lit_reale SICUT NUMERUS VALENS locus_lit_elf.
+    SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
+        locus_lit_reale = locus_lit_pe.
+    FIN-SI.
+    p = COMPONE_ONERA(codex, p, 1, locus_lit_reale).
     p = COMPONE_MOVSD_CARGA_IND(codex, p, 0, 1).
     REDDE p.
 FIN-FUNCTIO.
@@ -2492,7 +2499,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
     FIN-SI.
 
     SI fons[CONTENTUM(pos_fontis)] >= 48 && fons[CONTENTUM(pos_fontis)] <= 57 && PROSPICE_LITTERALEM_FLUITANIS(fons, CONTENTUM(pos_fontis), n) == 1 TUNC
-        CONTENTUM(pos_codicis) = COMPONE_NUMERUM_FLUITANIS(codex, CONTENTUM(pos_codicis), ANALYSA_LITTERALEM_FLUITANIS(fons, pos_fontis, n)).
+        CONTENTUM(pos_codicis) = COMPONE_NUMERUM_FLUITANIS(codex, CONTENTUM(pos_codicis), ANALYSA_LITTERALEM_FLUITANIS(fons, pos_fontis, n), contextus_parseris).
         CONTENTUM(pos_codicis) = COMPONE_MOVQ_A_GP(codex, CONTENTUM(pos_codicis), 0, 0).
         REDDE 0.
     FIN-SI.
@@ -2705,7 +2712,7 @@ FUNCTIO COMPONE_IMPRIME_FLUITANIS REDDENS NUMERUS.
     p = COMPONE_CVTSI2SD(codex, p, 1, 0).
     p = COMPONE_SUBSD(codex, p, 0, 1).
     p = COMPONE_MOVSD_SALVA(codex, p, intervallum_scratch, 0).
-    p = COMPONE_NUMERUM_FLUITANIS(codex, p, CALCULA_NUMERUM_FLUITANIS(1000000, 0, 1)).
+    p = COMPONE_NUMERUM_FLUITANIS(codex, p, CALCULA_NUMERUM_FLUITANIS(1000000, 0, 1), contextus_parseris).
     p = COMPONE_MOVSD_REG(codex, p, 1, 0).
     p = COMPONE_MOVSD_CARGA(codex, p, 0, intervallum_scratch).
     p = COMPONE_MULSD(codex, p, 0, 1).

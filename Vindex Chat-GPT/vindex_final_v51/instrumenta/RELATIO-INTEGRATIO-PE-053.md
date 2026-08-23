@@ -222,3 +222,25 @@ correctus semper). Hic defectus **non erat pars relationis ChatGPT**
 neque correctus** — relinquitur ut limitatio nota pro proximo opere,
 extra ambitum huius correctionis specificae.
 
+**Progressus partialis (secunda investigatio)**: pars huius defectus
+inventa et correcta est: `COMPONE_NUMERUM_FLUITANIS` (quae bits
+fluitantis IEEE-754 in codicem inserit et adressam eorum in registrum
+onerat pro `MOVSD`) utebatur eodem defectu quam catenae litterales —
+fundamento ELF (`4194304`) incondicionaliter. Correctum per idem
+schema (calculus conditionalis secundum `MODUS_PE_LEGE`), cum
+`contextus_parseris` additus ut parametrum formale novum. Post hanc
+correctionem, **pars integralis numeri fluitantis nunc recte
+apparet** sub modo PE (verificatum: `3` scriptum correcte pro
+`3.14159`).
+
+**Defectus residuus, non correctus**: computatio partis fractionalis
+(intra `COMPONE_IMPRIME_PADEADO`, post `MULSD`/`CVTTSD2SI`) adhuc
+causat divisionem per zero sub modo PE specifice — registrum `R12`
+continet valorem absurdum (`0xffffffffffd23940`) ad initium `PADEADO`,
+indicans corruptionem alicubi inter calculum valoris fractionalis et
+vocationem eius. Causa radicalis non identificata; investigatio
+posterior requiritur. **Notandum**: functio seorsum inventa
+`COMPONE_LITTERALEM_FLUITANIS` (linea ~689) continet defectum
+adressae identicum, sed **numquam vocatur alicubi in fonte** (codex
+mortuus) — non tacta, quia non pertinens ad ullum defectum currentem.
+
