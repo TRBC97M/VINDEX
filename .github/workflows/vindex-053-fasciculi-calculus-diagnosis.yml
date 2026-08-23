@@ -1,0 +1,126 @@
+# Ruinam calculi post stratum fasciculorum Win64 diagnostice investigat.
+name: VINDEX 0.53 — Fasciculi calculus diagnosis
+
+on:
+  push:
+    branches:
+      - chatgpt/pe-fasciculi-053
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnosis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: Fontem transforma et compilatorem reconstrue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RUNNER_TEMP/compilator_fasciculi.vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" \
+              "$RADIX/src/compilator_vindex.vindex" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" "$FONS"
+          "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          "$RUNNER_TEMP/gen1" "$FONS" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/gen2" "$FONS" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          sha256sum "$RUNNER_TEMP/gen2"
+
+      - name: Casus minimos arithmeticorum separa
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP="$RUNNER_TEMP/gen2"
+
+          cat >"$RUNNER_TEMP/add.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA x SICUT NUMERUS VALENS 7 + 35.
+              REDDE x.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/vocatio.vindex" <<'VINDEX'
+          FUNCTIO ADDITIO REDDENS NUMERUS.
+              ACCIPIT a SICUT NUMERUS.
+              ACCIPIT b SICUT NUMERUS.
+              REDDE a + b.
+          FIN-FUNCTIO.
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA x SICUT NUMERUS VALENS ADDITIO(7, 35).
+              REDDE x.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/per.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PER i AB 1 AD 3 PERFICE
+                  DECLARA x SICUT NUMERUS VALENS i.
+              FIN-PER.
+              REDDE 0.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/proclama.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA 42.
+              REDDE 0.
+          FIN-FUNCTIO.
+          VINDEX
+
+          for nomen in add vocatio per proclama; do
+            echo "=== $nomen ==="
+            set +e
+            "$COMP" "$RUNNER_TEMP/$nomen.vindex" "$RUNNER_TEMP/$nomen.out"
+            status=$?
+            set -e
+            echo "status=$status"
+          done
+
+      - name: Calculum sub GDB indaga
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          COMP="$RUNNER_TEMP/gen2"
+          FONS="$RADIX/tests/casus/calculus.vindex"
+          ulimit -c unlimited || true
+          set +e
+          gdb -q -batch \
+              -ex 'set pagination off' \
+              -ex 'run' \
+              -ex 'info registers' \
+              -ex 'x/16gx $rsp' \
+              -ex 'bt' \
+              --args "$COMP" "$FONS" "$RUNNER_TEMP/calculus.out"
+          status=$?
+          set -e
+          echo "gdb-status=$status"
+          test "$status" -ne 0 || true
+
+      - name: Permissiones canonicas nota
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          for f in \
+            "$RADIX/bootstrap/reconstruit.sh" \
+            "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex_graphica" \
+            "$RADIX/systema/construe_systema.sh" \
+            "$RADIX/systema/uefi/construe_uefi.sh"; do
+            if [ -e "$f" ]; then
+              stat -c '%A %a %n' "$f"
+            fi
+          done
