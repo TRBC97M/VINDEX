@@ -1,4 +1,4 @@
-# PROCLAMA PE e strato communi Claudii sub Windows vero exsequitur.
+# PROCLAMA PE sub Windows vero: catenae, integri et fluitantes.
 name: VINDEX 0.53 — PROCLAMA sub Windows
 
 on:
@@ -20,6 +20,7 @@ jobs:
     steps:
       - name: Fontes accipe
         uses: actions/checkout@v5
+
       - name: PE exempla construe
         shell: bash
         run: |
@@ -28,6 +29,27 @@ jobs:
           chmod 755 "$RADIX/compilator_vindex"
           "$RADIX/compilator_vindex" "$RADIX/examples/proclama_catena_pe_053.vindex" "$RUNNER_TEMP/catena.exe" pe
           "$RADIX/compilator_vindex" "$RADIX/examples/proclama_multi_pe_053.vindex" "$RUNNER_TEMP/multi.exe" pe
+
+          cat >"$RUNNER_TEMP/fluitans.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA 3.141589.
+              REDDE 6.
+          FIN-FUNCTIO.
+          VINDEX
+
+          cat >"$RUNNER_TEMP/fluitans_mixtum.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA "Initium".
+              PROCLAMA 42.
+              PROCLAMA 3.141589.
+              PROCLAMA "Finis".
+              REDDE 8.
+          FIN-FUNCTIO.
+          VINDEX
+
+          "$RADIX/compilator_vindex" "$RUNNER_TEMP/fluitans.vindex" "$RUNNER_TEMP/fluitans.exe" pe
+          "$RADIX/compilator_vindex" "$RUNNER_TEMP/fluitans_mixtum.vindex" "$RUNNER_TEMP/fluitans_mixtum.exe" pe
+
       - name: PE conserva
         uses: actions/upload-artifact@v4
         with:
@@ -35,6 +57,8 @@ jobs:
           path: |
             ${{ runner.temp }}/catena.exe
             ${{ runner.temp }}/multi.exe
+            ${{ runner.temp }}/fluitans.exe
+            ${{ runner.temp }}/fluitans_mixtum.exe
           if-no-files-found: error
 
   windows:
@@ -47,26 +71,34 @@ jobs:
         with:
           name: vindex-proclama-pe
           path: pe
-      - name: Catena exsequere
+
+      - name: PROCLAMA omnia exsequere
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $exe = Join-Path $PWD 'pe\catena.exe'
-          $out = (& $exe | Out-String).TrimEnd("`r", "`n")
-          $status = $LASTEXITCODE
-          if ($status -ne 33) { throw "ERRATUM: catena status $status; 33 exspectabatur." }
-          if ($out -ne 'Salve ex PE!') { throw "ERRATUM: catena exitus [$out]." }
-          Write-Host "RECTE: catena Windows, exitus 33."
-          exit 0
-      - name: Multiplices exsequere
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $exe = Join-Path $PWD 'pe\multi.exe'
-          $out = (& $exe | Out-String).TrimEnd("`r", "`n") -replace "`r`n", "`n"
-          $status = $LASTEXITCODE
-          $expect = "Premier`n999`nDernier"
-          if ($status -ne 7) { throw "ERRATUM: multi status $status; 7 exspectabatur." }
-          if ($out -ne $expect) { throw "ERRATUM: multi exitus [$out]." }
-          Write-Host "RECTE: PROCLAMA multiplex sub Windows vero, exitus 7."
-          exit 0
+
+          function Proba-Vindex([string]$nomen, [int]$status, [string]$exspectatum) {
+            $exe = Join-Path $PWD ("pe\" + $nomen + ".exe")
+            $psi = [System.Diagnostics.ProcessStartInfo]::new()
+            $psi.FileName = $exe
+            $psi.UseShellExecute = $false
+            $psi.RedirectStandardOutput = $true
+            $psi.RedirectStandardError = $true
+            $p = [System.Diagnostics.Process]::new()
+            $p.StartInfo = $psi
+            [void]$p.Start()
+            $stdout = $p.StandardOutput.ReadToEnd()
+            $stderr = $p.StandardError.ReadToEnd()
+            $p.WaitForExit()
+            $out = ($stdout -replace "`r`n", "`n").TrimEnd("`n")
+            Write-Host "$nomen -> status $($p.ExitCode), stdout=[$($out -replace "`n", "\\n")]"
+            if ($stderr.Length -gt 0) { Write-Host "stderr=[$stderr]" }
+            if ($p.ExitCode -ne $status) { throw "ERRATUM: $nomen status $($p.ExitCode); $status exspectabatur." }
+            if ($out -ne $exspectatum) { throw "ERRATUM: $nomen exitus [$out], [$exspectatum] exspectabatur." }
+          }
+
+          Proba-Vindex 'catena' 33 'Salve ex PE!'
+          Proba-Vindex 'multi' 7 "Premier`n999`nDernier"
+          Proba-Vindex 'fluitans' 6 '3.141589'
+          Proba-Vindex 'fluitans_mixtum' 8 "Initium`n42`n3.141589`nFinis"
+          Write-Host 'RECTE: PROCLAMA catenae, integri et fluitantes sub Windows vero recta sunt.'
