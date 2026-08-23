@@ -15,7 +15,7 @@ R8, R9, R10, R11, R12, R13, R14, R15 = range(8, 16)
 class Assembleur:
     def __init__(self):
         self.code = bytearray()
-        self.etiquettes = {}     # nom -> position dans self.code
+        self.etiquettes = {}     # nomen -> positio in self.code
         self.correctifs = []     # (position, nom_etiquette, taille, mode)
 
     # --- Instrumenta gradu infimo ---

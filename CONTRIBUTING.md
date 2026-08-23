@@ -41,9 +41,11 @@ canonica huius repositorii:
 
 **Exceptio explicita**: directoria archivalia continentia versiones
 historicas antequam haec regula statuta est (exempli gratia
-`Vindex Claude Ai/Vindex_final_versions/`) non retroactive corrigenda
-sunt. Haec non sunt fundamentum canonica evolutionis (vide regulam
-supra de archivis ZIP et exemplis veterum) et manent tantum ut memoria
+`Vindex Claude Ai/Vindex_final_versions/`, vel quaevis directoria
+nomine `archive/` intra alia proiecta, sicut
+`bootstrap/../archive/evolution/`) non retroactive corrigenda sunt.
+Haec non sunt fundamentum canonica evolutionis (vide regulam supra de
+archivis ZIP et exemplis veterum) et manent tantum ut memoria
 historica, non ut codex activus.
 
 Si agens (Claude, ChatGPT, aliusve) linguam non-Latinam in parte activa

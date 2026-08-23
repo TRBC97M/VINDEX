@@ -242,7 +242,7 @@ class Generateur:
         elif isinstance(instr, AffectationContentum):
             self._gen_expr(instr.valeur)
             self.asm.push_reg(RAX)
-            self._gen_expr(instr.expr_pointeur)   # RAX = adresse cible
+            self._gen_expr(instr.expr_pointeur)   # RAX = adressa petita
             self.asm.mov_reg_reg(RBX, RAX)
             self.asm.pop_reg(RAX)
             self.asm.mov_indirect_reg(RBX, RAX)
@@ -347,7 +347,7 @@ class Generateur:
 
     def _gen_proclama(self, expr):
         if isinstance(expr, Chaine):
-            etq = self._nouvelle_etiquette("chaine")
+            etq = self._nouvelle_etiquette("catena")
             self.chaines_statiques.append((etq, expr.valeur))
             self.asm.lea_reg_etiquette(RSI, etq)
             self.asm.mov_reg_imm64(RDX, len(expr.valeur.encode("utf-8")) + 1)
@@ -428,7 +428,7 @@ class Generateur:
             # Blocus liber existit: eum ex elencho removemus et reutimur.
             self.asm.mov_reg_reg(RCX, RAX)            # RCX = adressa capitis bloci
             self.asm.mov_reg_imm64(RDX, 8)
-            self.asm.add_reg_reg(RCX, RDX)            # RCX = adresse de la charge utile
+            self.asm.add_reg_reg(RCX, RDX)            # RCX = adressa cargae utilis
             self.asm.mov_reg_indirect(RDX, RCX)       # RDX = proximus blocus liber (in carga utili servatus)
             self.asm.mov_indirect_reg(RBX, RDX)       # tas_libre_tete = RDX
             self.asm.mov_reg_reg(RAX, RCX)             # resultatum = adressa cargae utilis
@@ -659,7 +659,7 @@ class Generateur:
         self.asm.push_reg(R11)
 
         self.asm.lea_reg_etiquette(RDI, "tampon_ecriture")
-        self.asm.mov_reg_reg(R11, RDI)   # R11 = adresse de base du tampon (pour calculer la longueur)
+        self.asm.mov_reg_reg(R11, RDI)   # R11 = adressa basis tampon (ad longitudinem calculandam)
         self.asm.mov_reg_imm64(R10, 0)   # R10 = indice courant
 
         self.asm.etiquette("scribe_boucle")
@@ -712,7 +712,7 @@ class Generateur:
 
         self.asm.mov_reg_reg(R11, R9)    # R11 = descriptor (a circulo protectus)
         self.asm.lea_reg_etiquette(RDI, "tampon_ecriture")
-        self.asm.mov_reg_reg(R8, RDI)     # R8 = adresse de base du tampon
+        self.asm.mov_reg_reg(R8, RDI)     # R8 = adressa basis tampon
         self.asm.mov_reg_imm64(R10, 0)
 
         self.asm.etiquette("mitte_boucle")

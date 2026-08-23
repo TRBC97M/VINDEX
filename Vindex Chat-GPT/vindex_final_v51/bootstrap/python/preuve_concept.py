@@ -34,7 +34,7 @@ entete_elf = struct.pack(
 program_header = struct.pack(
     "<IIQQQQQQ",
     1, 5,                         # typus=LOAD, indicia=R+X (lectio+exsecutio)
-    0, base_addr, base_addr,      # offset, adresse virtualis, adresse physica
+    0, base_addr, base_addr,      # offset, adressa virtualis, adressa physica
     code_offset + len(code_machine),  # mensura in fasciculo
     code_offset + len(code_machine),  # mensura in memoria
     0x1000                        # alignatio
