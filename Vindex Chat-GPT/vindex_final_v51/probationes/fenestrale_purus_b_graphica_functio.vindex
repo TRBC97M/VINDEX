@@ -1,0 +1,10 @@
+// Diagnostica: bibliotheca graphica + una functio trivialissima + PRINCIPALIS.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO X_UNA REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    REDDE X_UNA().
+FIN-FUNCTIO.
