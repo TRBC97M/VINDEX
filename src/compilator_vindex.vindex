@@ -2051,18 +2051,6 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         REDDE 0.
     FIN-SI.
 
-    SI fons[CONTENTUM(pos_fontis)] == 80 && CONTENTUM(pos_fontis) + 4 < n && fons[CONTENTUM(pos_fontis)+1] == 79 && fons[CONTENTUM(pos_fontis)+2] == 76 && fons[CONTENTUM(pos_fontis)+3] == 76 && fons[CONTENTUM(pos_fontis)+4] == 69 TUNC
-        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 5.
-        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 50333704).
-        CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 0).
-        CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), 255).
-        CODEX_SCRIBE(codex, CONTENTUM(pos_codicis) + 1, 208).
-        CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 2.
-        REDDE 0.
-    FIN-SI.
-
     SI fons[CONTENTUM(pos_fontis)] == 82 && CONTENTUM(pos_fontis) + 7 < n && fons[CONTENTUM(pos_fontis)+1] == 69 && fons[CONTENTUM(pos_fontis)+2] == 83 && fons[CONTENTUM(pos_fontis)+3] == 69 && fons[CONTENTUM(pos_fontis)+4] == 82 && fons[CONTENTUM(pos_fontis)+5] == 86 && fons[CONTENTUM(pos_fontis)+6] == 65 && fons[CONTENTUM(pos_fontis)+7] == 40 TUNC
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
         DECLARA nomen_typus_reserva SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
@@ -4077,26 +4065,6 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                     CONTENTUM(pos_codicis) = COMPONE_SERVA_INDIRECTUM(codex, CONTENTUM(pos_codicis), 1, 0).
 
                                 ALITER
-                                SI fons[i] == 83 && i + 12 < n && fons[i+1] == 67 && fons[i+2] == 82 && fons[i+3] == 73 && fons[i+4] == 66 && fons[i+5] == 69 && fons[i+6] == 95 && fons[i+7] == 76 && fons[i+8] == 69 && fons[i+9] == 67 && fons[i+10] == 84 && fons[i+11] == 85 && fons[i+12] == 83 TUNC
-                                    CONTENTUM(pos_fontis) = i + 13.
-                                    DECLARA ig_sl SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
-                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-                                    ig_sl = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
-                                    ig_sl = IGNORA_SPATIA(fons, pos_fontis, n).
-                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-
-                                    CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 2, 0).
-                                    CONTENTUM(pos_codicis) = COMPONE_SUME_PILA(codex, CONTENTUM(pos_codicis), 6, STATUS_LECTIONIS_LEGE(contextus_parseris)).
-                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 1).
-                                    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 1).
-                                    CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
-
-                                    DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
-                                        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-                                    FIN-DUM.
-                                    CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-
-                                ALITER
                                 SI fons[i] == 83 && i + 5 < n && fons[i+1] == 67 && fons[i+2] == 82 && fons[i+3] == 73 && fons[i+4] == 66 && fons[i+5] == 69 && (i+6>=n || fons[i+6] == 32) TUNC
                                     CONTENTUM(pos_fontis) = i + 6.
                                     DECLARA ig_sc SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
@@ -4440,7 +4408,6 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                 FIN-SI.
                             FIN-SI.
                         FIN-SI.
-                    FIN-SI.
                 FIN-SI.
             FIN-SI.
         FIN-SI.
