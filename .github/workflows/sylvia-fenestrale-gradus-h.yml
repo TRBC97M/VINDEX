@@ -7,7 +7,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_h.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_compositor_abi.h'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_compositor.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/src/programmata_fenestrale_ii_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/programmata_fenestrale_ii_h.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_fenestrale_ii_h.py'
       - 'documenta/sylvia/FENESTRALE_II_GRADUS_H.md'
       - '.github/workflows/sylvia-fenestrale-gradus-h.yml'
@@ -16,12 +16,13 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fenestrale_native_h.c'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_native_h.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/programmata_fenestrale_ii_h.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_fenestrale_ii_h.py'
       - '.github/workflows/sylvia-fenestrale-gradus-h.yml'
 
 jobs:
   constructio:
-    name: Compositor H et PROGRAMMATA G construuntur
+    name: Compositor H et PROGRAMMATA H construuntur
     runs-on: ubuntu-latest
     steps:
       - name: Repositorium accipe
