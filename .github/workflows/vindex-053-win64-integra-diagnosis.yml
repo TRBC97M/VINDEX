@@ -55,6 +55,21 @@ jobs:
           cp "$FONS" "$RADIX/src/compilator_vindex.vindex"
           chmod 755 "$RADIX/compilator_vindex"
 
+      - name: Artefacta VINDEX derivata reconstrue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          (
+            cd "$RADIX"
+            ./compilator_vindex src/officina_vindex.vindex "$RUNNER_TEMP/officina_vindex"
+            ./compilator_vindex src/salutatio_vindex.vindex "$RUNNER_TEMP/salutatio_vindex"
+          )
+          mv "$RUNNER_TEMP/officina_vindex" "$RADIX/officina_vindex"
+          mv "$RUNNER_TEMP/salutatio_vindex" "$RADIX/salutatio_vindex"
+          chmod 755 "$RADIX/officina_vindex" "$RADIX/salutatio_vindex"
+          printf '%s\n' 'RECTE: Officina et Salutatio cum compilatore novo reconstructae sunt.'
+
       - name: Permissiones probationum restitue
         shell: bash
         run: |
@@ -66,6 +81,9 @@ jobs:
             "$RADIX/compilator_vindex" \
             "$RADIX/bootstrap/reconstruit.sh" \
             "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex-officina" \
+            "$RADIX/vindex-salutatio" \
+            "$RADIX/vindex-systema" \
             "$RADIX/vindex_graphica" \
             "$RADIX/officina_vindex" \
             "$RADIX/salutatio_vindex" \
