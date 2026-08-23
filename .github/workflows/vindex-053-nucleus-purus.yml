@@ -4,10 +4,10 @@ name: VINDEX 0.53 — Nucleus purus
 on:
   push:
     branches:
-      - infrastructura/vindex-053-ci-diagnostica-loci
+      - infrastructura/vindex-053-ci-proiectum
   pull_request:
     branches:
-      - infrastructura/vindex-053-ci-diagnostica-loci
+      - infrastructura/vindex-053-ci-proiectum
   workflow_dispatch:
 
 permissions:
@@ -22,7 +22,7 @@ jobs:
       - name: Nucleum purum accipe
         uses: actions/checkout@v5
         with:
-          ref: chatgpt/vindex-053-diagnostica-loci
+          ref: chatgpt/vindex-053-proiectum
 
       - name: Compilatorem para
         shell: bash
@@ -114,6 +114,42 @@ jobs:
           reice nativum-principalis erratum_principalis.vindex 65 tests/casus/erratum_principalis.vindex 1 1 'ERRATUM: FUNCTIO PRINCIPALIS deest'
           reice nativum-importa erratum_importa.vindex 66 tests/casus/erratum_importa.vindex 1 1 'ERRATUM: fons importatus aperiri non potest'
           reice nativum-importatum erratum_importatum.vindex 65 tests/casus/erratum_bibliotheca.vindex 2 11 'ERRATUM: functio vocata non inventa est'
+
+      - name: Proiecta nativa comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          C="$GITHUB_WORKSPACE/compilator_vindex"
+          STAGE="$RUNNER_TEMP/proiectum cum spatiis"
+          cp -R tests/proiecta/salve "$STAGE"
+
+          (
+            cd "$RUNNER_TEMP"
+            "$C" PROIECTUM "$STAGE/proiectum.vindex"
+            "$C" PROIECTUM "$STAGE/proiectum_pe.vindex"
+          )
+          chmod 755 "$STAGE/salve"
+          test "$("$STAGE/salve")" = 'Salve, VINDEX!'
+
+          "$C" tests/proba_pe_structuram_053.vindex "$RUNNER_TEMP/proba_pe_proiecti"
+          chmod 755 "$RUNNER_TEMP/proba_pe_proiecti"
+          "$RUNNER_TEMP/proba_pe_proiecti" "$STAGE/salve.exe"
+
+          set +e
+          "$C" PROIECTUM tests/proiecta/erratum/proiectum.vindex >"$RUNNER_TEMP/proiectum_erratum.log" 2>&1
+          status=$?
+          set -e
+          test "$status" -eq 65
+          productum="$(cat "$RUNNER_TEMP/proiectum_erratum.log")"
+          exspectatum="$(printf 'DIAGNOSTICUM VINDEX\nFONS\ntests/proiecta/erratum/proiectum.vindex\nLINEA\n4\nCOLUMNA\n18\nNUNTIUS\nERRATUM: proiectum VINDEX invalidum est')"
+          test "$productum" = "$exspectatum"
+
+          sed 's/$/\r/' tests/proiecta/salve/proiectum.vindex > "$STAGE/proiectum_crlf.vindex"
+          (
+            cd "$RUNNER_TEMP"
+            "$C" PROIECTUM "$STAGE/proiectum_crlf.vindex"
+          )
+          printf '%s\n' 'RECTE: proiecta ELF, PE, viae relativae, CRLF et diagnosticum congruunt.'
 
       - name: CRLF native comproba
         shell: bash

@@ -1,13 +1,13 @@
-# Custodia externa diagnosticorum Win64 nuclei VINDEX.
-name: VINDEX 0.53 — Diagnostica Win64
+# Custodia externa proiecti Win64 nuclei VINDEX.
+name: VINDEX 0.53 — Proiectum Win64
 
 on:
   push:
     branches:
-      - infrastructura/vindex-053-ci-diagnostica-loci
+      - infrastructura/vindex-053-ci-proiectum
   pull_request:
     branches:
-      - infrastructura/vindex-053-ci-diagnostica-loci
+      - infrastructura/vindex-053-ci-proiectum
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
       - name: Nucleum purum accipe
         uses: actions/checkout@v5
         with:
-          ref: chatgpt/vindex-053-diagnostica-loci
+          ref: chatgpt/vindex-053-proiectum
 
       - name: Compilatorem para
         shell: bash
@@ -80,6 +80,8 @@ jobs:
           ./compilator_vindex tests/casus/argumenta.vindex "$STAGE/argumenta.exe" pe
           cp tests/casus/salve.vindex "$STAGE/salve fons.vindex"
           cp tests/casus/erratum_instructio.vindex "$STAGE/erratum fons.vindex"
+          cp -R tests/proiecta/salve "$STAGE/proiectum cum spatiis"
+          cp tests/proiecta/erratum/proiectum.vindex "$STAGE/proiectum erratum.vindex"
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/proclama_finalis.exe"
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/fasciculi_finalis.exe"
           "$RUNNER_TEMP/proba_pe" "$STAGE/compilator_vindex.exe"
@@ -178,6 +180,34 @@ jobs:
             throw "ERRATUM: PE compilatum produxit [$outSalutationis]."
           }
 
+          $manifestum = Join-Path $PWD 'pe\vindex_win64_diagnostica\proiectum cum spatiis\proiectum_pe.vindex'
+          $exitusProiecti = Join-Path $PWD 'pe\vindex_win64_diagnostica\proiectum cum spatiis\salve.exe'
+          $compilatioProiecti = Exsequere-Vindex $compilator @('PROIECTUM', $manifestum)
+          $statusProiecti = [int]$compilatioProiecti[0]
+          if ($statusProiecti -ne 0) {
+            throw "ERRATUM: proiectum Win64 status $statusProiecti; stdout [$([string]$compilatioProiecti[1])]; stderr [$([string]$compilatioProiecti[2])]."
+          }
+          if (-not (Test-Path $exitusProiecti -PathType Leaf)) {
+            throw 'ERRATUM: proiectum Win64 nullum PE produxit.'
+          }
+          $salveProiecti = Exsequere-Vindex $exitusProiecti
+          $statusSalveProiecti = [int]$salveProiecti[0]
+          $outSalveProiecti = ([string]$salveProiecti[1] -replace "`r`n", "`n").TrimEnd("`n")
+          if ($statusSalveProiecti -ne 0) { throw "ERRATUM: PE proiecti status $statusSalveProiecti." }
+          if ($outSalveProiecti -ne 'Salve, VINDEX!') {
+            throw "ERRATUM: PE proiecti produxit [$outSalveProiecti]."
+          }
+
+          $manifestumErratum = Join-Path $PWD 'pe\vindex_win64_diagnostica\proiectum erratum.vindex'
+          $diagnosticumProiecti = Exsequere-Vindex $compilator @('PROIECTUM', $manifestumErratum)
+          $statusDiagProiecti = [int]$diagnosticumProiecti[0]
+          $outDiagProiecti = ([string]$diagnosticumProiecti[1] -replace "`r`n", "`n").TrimEnd("`n")
+          $exspectatumDiagProiecti = "DIAGNOSTICUM VINDEX`nFONS`n$manifestumErratum`nLINEA`n4`nCOLUMNA`n18`nNUNTIUS`nERRATUM: proiectum VINDEX invalidum est"
+          if ($statusDiagProiecti -ne 65) { throw "ERRATUM: diagnosticum proiecti status $statusDiagProiecti." }
+          if ($outDiagProiecti -ne $exspectatumDiagProiecti) {
+            throw "ERRATUM: diagnosticum proiecti Win64 differt: [$outDiagProiecti]."
+          }
+
           $fonsErratus = Join-Path $radix 'erratum fons.vindex'
           $exitusErratus = Join-Path $radix 'erratum.exe'
           Copy-Item (Join-Path $PWD 'pe\vindex_win64_diagnostica\erratum fons.vindex') $fonsErratus
@@ -190,4 +220,4 @@ jobs:
           if ($outDiagnostici -ne $exspectatumDiagnostici) {
             throw "ERRATUM: diagnosticum Win64 differt: [$outDiagnostici]."
           }
-          Write-Host 'RECTE: compilator VINDEX Win64 argumenta citata, compilationem et diagnostica loci servat.'
+          Write-Host 'RECTE: compilator VINDEX Win64 argumenta, proiectum et diagnostica loci servat.'
