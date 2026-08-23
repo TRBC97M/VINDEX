@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verificat Sylviam post bootstrap solum codice VINDEX constare."""
 from pathlib import Path
+import re
 import sys
 
 RADIX = Path(__file__).resolve().parents[1]
@@ -8,6 +9,7 @@ SYSTEMA = RADIX / "Vindex Chat-GPT/vindex_final_v51/systema"
 BOOTSTRAP = SYSTEMA / "uefi/bootstrap_uefi.c"
 
 EXTENSIONES_VETITAE = {".c", ".h", ".cc", ".cpp", ".cxx", ".s", ".S", ".asm", ".rs"}
+POLLE_HEREDITATUM = re.compile(r"(?<![A-Z0-9_])POLLE\(\)")
 errata: list[str] = []
 
 for via in SYSTEMA.rglob("*"):
@@ -35,7 +37,7 @@ else:
 
 for via in SYSTEMA.rglob("*.vindex"):
     textus = via.read_text(encoding="utf-8")
-    if "POLLE()" in textus:
+    if POLLE_HEREDITATUM.search(textus):
         errata.append(f"callback C historicus POLLE adhuc adhibetur: {via.relative_to(RADIX)}")
 
 if errata:
