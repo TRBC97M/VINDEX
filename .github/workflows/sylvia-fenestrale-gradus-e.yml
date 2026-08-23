@@ -1,0 +1,69 @@
+name: Sylvia OS — Fenestrale II Gradus E
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/genera_firmamentum_fenestrale_e.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_e.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_abi.h'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_GRADUS_E.md'
+      - '.github/workflows/sylvia-fenestrale-gradus-e.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/genera_firmamentum_fenestrale_e.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_fenestrale_e.sh'
+      - '.github/workflows/sylvia-fenestrale-gradus-e.yml'
+
+jobs:
+  integratio:
+    name: ABI II iuxta Systema 0.51 construitur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: ABI Gradus D verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 tests/proba_fenestrale_ii_abi_d.py
+
+      - name: Systema fundamentale construe
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: ./systema/construe_systema.sh
+
+      - name: Sigilla ante integrationem serva
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          sha256sum systema/uefi/firmamentum_uefi.c > /tmp/firmamentum.ante.sha
+          sha256sum nucleus_systema.elf > /tmp/nucleus.ante.sha
+
+      - name: Viam UEFI stabilem reconstrue
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: ./systema/uefi/construe_uefi.sh /tmp/systema_stabile.img /tmp/BOOTX64-STABILE.EFI
+
+      - name: Gradum E construe
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          ./systema/uefi/construe_fenestrale_e.sh \
+            /tmp/systema_fenestrale_e.img \
+            /tmp/BOOTX64-FENESTRALE-E.EFI
+
+      - name: Formam et regressionem verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          file /tmp/BOOTX64-FENESTRALE-E.EFI
+          objdump -p /tmp/BOOTX64-FENESTRALE-E.EFI | grep 'Subsystem.*EFI application'
+          test -s /tmp/systema_fenestrale_e.img
+          test "$(stat -c %s /tmp/systema_fenestrale_e.img)" -ge 67108864
+          sha256sum -c /tmp/firmamentum.ante.sha
+          sha256sum -c /tmp/nucleus.ante.sha
+
+      - name: Transformationem deterministam inspice
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          python3 systema/uefi/genera_firmamentum_fenestrale_e.py \
+            systema/uefi/firmamentum_uefi.c /tmp/firmamentum_e.c
+          grep -q 'FENESTRALE2_MAGIC' /tmp/firmamentum_e.c
+          grep -q 'FII_EVENTUM_MURUS_MOVETUR' /tmp/firmamentum_e.c
+          grep -q 'fenestrale2_para(graphica)' /tmp/firmamentum_e.c
