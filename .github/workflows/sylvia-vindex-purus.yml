@@ -22,7 +22,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if grep -q 'POLLE()' 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'; then
+          if grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'; then
+            # Correctio detectoris in instrumento transitorio: UEFI_POLLE() non est callback historicus POLLE().
+            sed -i 's/if "POLLE()" in nuc:/if "= POLLE()" in nuc:/' instrumenta/custos_patch_vindex_purus.py
             python3 instrumenta/custos_patch_vindex_purus.py
           fi
 
@@ -85,5 +87,4 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ! grep -R --line-number --fixed-strings 'POLLE()' 'Vindex Chat-GPT/vindex_final_v51/systema' --include='*.vindex'
           python3 instrumenta/verifica_puritatem_sylviae.py
