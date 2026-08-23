@@ -23,10 +23,12 @@ def main():
         req(P,s,'PROGRAMMATA H')
     for s in ('CONTENTUM(50335272) = 2.','T_PINGE','T_RECT','barra != 28','cellw SICUT NUMERUS','cellh SICUT NUMERUS','cellw * 8','cellh * 12'):
         req(T,s,'TABULA I plena')
-    for s in ('CONTENTUM(50335272) = 2.','TI_PINGE','TI_RECT','CONTENTUM(50334064) != 28','Formula bar','Area tabularis'):
+    for s in ('CONTENTUM(50335272) = 2.','TI_PINGE','TI_RECT','TI_COLOR','barra != 28','Barra formulae','Rete tabularis compactum'):
         req(TR,s,'TABULA I runtime')
     if 'DUM col' in T or 'DUM row' in T:
         raise SystemExit('ERRATUM: rete TABULA cyclis complexis iterum utitur')
+    if 'DUM col' in TR or 'DUM row' in TR:
+        raise SystemExit('ERRATUM: runtime TABULA cyclis generatoriis iterum utitur')
     for nomen,textus in (('TABULA plena',T),('TABULA runtime',TR)):
         if 'FENESTRALE_II_FRAMEBUFFER' in textus:
             raise SystemExit(f'ERRATUM: {nomen} framebuffer globalem petit')
