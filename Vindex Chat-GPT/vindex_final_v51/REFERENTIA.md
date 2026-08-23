@@ -1,8 +1,9 @@
 # Referentia linguae VINDEX
 
 Haec referentia facultates re vera probatas describit. VINDEX fontes directe in
-exsecutabilia ELF x86-64 Linux convertit. Compilator ipse VINDEX scriptus est et
-punctum fixum stabile possidet.
+exsecutabilia nativa x86-64 convertit: ELF Linux est modus praedefinitus, PE32+
+AMD64 Windows tertio argumento `pe` eligi potest. Compilator ipse VINDEX
+scriptus est et punctum fixum stabile possidet.
 
 ## Structura programmatis
 
@@ -31,11 +32,10 @@ dialogos fasciculorum atque relationem compilationis et executionis praebet.
 Forma `formae/officina.forma` structuram declarat. Applicatio VINDEX eventa e
 `bibliotheca/graphica.vindex` tractat; pons GTK generalis formas pingit, valores
 exportat et eventa transmittit. Altera applicatio `vindex-salutatio` eodem
-motore utitur. HTML,
-navigatrum, minister localis, terminale et Python ad executionem non
-requiruntur.
+motore utitur. HTML, navigatrum, minister localis, terminale et Python ad
+executionem non requiruntur.
 
-Linea mandatorum commendata:
+Linea mandatorum commendata pro ELF Linux:
 
 ```bash
 ./vindexc programma.vindex -o programma
@@ -55,6 +55,15 @@ habent. Compilator nativus directe quoque vocari potest:
 ./compilator_vindex programma.vindex programma
 chmod +x programma
 ```
+
+PE32+ AMD64 Windows generatur:
+
+```bash
+./compilator_vindex programma.vindex programma.exe pe
+```
+
+Backend PE non utitur GCC, NASM aut libc. Importationes Win64 necessariae per
+IAT a compilatore ipso construuntur.
 
 ## Nucleus sine systemate hospite
 
@@ -84,7 +93,8 @@ FIN-FUNCTIO.
 - `ACCIPIT nomen SICUT typus.` parametrum declarat.
 - `REDDENS typus` typum reditus declarat.
 - `REDDE expressio.` valorem reddit atque functionem finit.
-- Usque ad sex parametra per functionem sustinentur.
+- Usque ad septem parametra per functionem probata sunt; in conventione System V
+  I–VI registris, VII pilae traditur.
 - Vocatio functionis posterius definitae et recursio sustinentur.
 - `VACUUM` reditum sine valore significativo indicat; ex consuetudine tamen
   `REDDE 0.` adhiberi potest.
@@ -110,8 +120,9 @@ DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 10.
 DECLARA textus SICUT ORDO DE LITTERA CAPACITAS 20.
 ```
 
-Elementa per `tabula[index]` leguntur et scribuntur. Capacitas in tempore
-compilationis nota esse debet.
+Elementa per `tabula[index]` leguntur et scribuntur. Hic `tabula` nomen
+variabilis usoris est; tabula historica interna compilatoris VINDEX 0.53 omnino
+deleta est. Capacitas ordinis in tempore compilationis nota esse debet.
 
 ### Formae
 
@@ -161,8 +172,9 @@ DECLARA z SICUT FLUITANS VALENS x + y.
 PROCLAMA z.
 ```
 
-`PROCLAMA` sex cifras post punctum exhibet. Fluitantia in functionibus, formis
-et ordinibus adhiberi possunt.
+`PROCLAMA` sex cifras post punctum exhibet. Fluitantia positiva et negativa sub
+ELF et PE/Win64 probata sunt. Fluitantia in functionibus, formis et ordinibus
+adhiberi possunt.
 
 ## Fontes multiplices
 
@@ -171,12 +183,13 @@ IMPORTA "bibliotheca.vindex".
 ```
 
 `IMPORTA` tantum in gradu supremo poni potest. Via importationis nunc a
-directorio praesenti resolvitur. Summa fontium coniunctorum 212999 octeta
-excedere non potest. Cyclus et importatio inclusa reiciuntur.
+directorio praesenti resolvitur. Limes historicus summae fontium `212999`
+octetorum remotus est; receptacula fontium dynamice crescunt. Cyclus et
+importatio inclusa reiciuntur.
 
 ## Argumenta lineae mandatorum
 
-`PRINCIPALIS` potest `argc` et `argv` accipere:
+Sub modo ELF, `PRINCIPALIS` potest `argc` et `argv` accipere:
 
 ```vindex
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
@@ -190,9 +203,15 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 ```
 
+Ingressus PE/Win64 iam conventionem pilae Linux non adhibet. Argumenta lineae
+mandatorum Windows nondum convertuntur: interim `PRINCIPALIS` in modo PE
+`argc=0` et `argv=0` accipit. Haec limitatio explicita est et separata a
+backend I/O Win64.
+
 ## Lectio et scriptura
 
-- `PROCLAMA valor.` valorem cum transitu lineae exhibet.
+- `PROCLAMA valor.` valorem cum transitu lineae exhibet; catenae, integri et
+  fluitantes sub ELF et PE probati sunt.
 - `SCRIBE ordo CAPACITAS n.` litteras ordinis exhibet.
 - `LEGE(descriptor, maximum)` ex descriptore legit.
 - `OCTETUS(index)` octetum novissime lectum reddit.
@@ -202,6 +221,11 @@ FIN-FUNCTIO.
 - `APERI_ADICERE(via)` archivum adiciendum aperit.
 - `CLAUDE(descriptor)` descriptorem claudit.
 
+Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE`
+per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probata sunt.
+`APERI_ADICERE` nondum in backend Win64 canonice probatum est et pro nunc ad
+ambitum ELF referendum est.
+
 ## Executio aliorum programmatum
 
 - `EXSEQUERE(via)` programma exsequitur.
@@ -209,6 +233,9 @@ FIN-FUNCTIO.
 - `CURRE(argumenta, ambitus, descriptor)` programma cum argumentis exsequitur.
 - `CAMBIA(via)` directorium praesens mutat.
 - `TUBUS(receptaculum)` tubum systematis creat.
+
+Haec familia servitiorum systematis historice Linux innititur nisi contrarium
+in backend Win64 expresse probatum est.
 
 ## Imperium fluxus
 
@@ -260,15 +287,18 @@ LIBERA(p).
 ```
 
 `RESERVA(typus)` memoriam petit; `LIBERA(acus)` eam reddit. Allocator internus
-simplex est. Acus invalida vel memoria extra fines mores indefinitos efficere
-potest; verificator staticus haec omnia demonstrare non potest.
+simplex est. Backend PE reservat memoriam Win64 per `VirtualAlloc`; primum
+acervum quoque in ingressu PE constituit. Acus invalida vel memoria extra fines
+mores indefinitos efficere potest; verificator staticus haec omnia demonstrare
+non potest.
 
 ## Limites generales
 
-- architectura: Linux x86-64;
-- summa fontium: 212999 octeta;
+- architecturae probatae: ELF x86-64 Linux; PE32+ AMD64 Windows;
+- limes historicus summae fontium `212999` octetorum: remotus;
+- codex machinalis et receptacula metadatae: dynamice crescunt;
 - longitudo identificatoris: 32 litterae;
-- parametra functionis: 6;
+- parametra functionis probata: 7;
 - fons in Officina: 1048576 octeta;
 - pons graphicus: GTK 3;
 - nucleus Systematis: BIOS x86-64, imago 1 MiB, nucleus maximus 16384 octeta;
