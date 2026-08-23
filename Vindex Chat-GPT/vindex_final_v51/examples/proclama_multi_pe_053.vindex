@@ -1,0 +1,15 @@
+// VINDEX 0.53 — probatio PE: PROCLAMA cum numeris et vocationibus
+// multiplicibus sequentialibus (catena, numerus, catena).
+// Compilanda cum tertio argumento "pe" ad exsecutabile PE64 verum.
+// Exspectatum sub Windows vero (vel Wine):
+//   Premier
+//   999
+//   Dernier
+// deinde codex exitus 7.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    PROCLAMA "Premier".
+    PROCLAMA 999.
+    PROCLAMA "Dernier".
+    REDDE 7.
+FIN-FUNCTIO.

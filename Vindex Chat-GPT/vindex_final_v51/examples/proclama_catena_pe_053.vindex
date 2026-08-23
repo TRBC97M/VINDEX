@@ -1,0 +1,9 @@
+// VINDEX 0.53 — probatio PE: PROCLAMA cum catena litterali.
+// Compilanda cum tertio argumento "pe" ad exsecutabile PE64 verum.
+// Exspectatum sub Windows vero (vel Wine): "Salve ex PE!" scriptum,
+// deinde codex exitus 33.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    PROCLAMA "Salve ex PE!".
+    REDDE 33.
+FIN-FUNCTIO.
