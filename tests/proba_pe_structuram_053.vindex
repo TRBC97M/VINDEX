@@ -51,6 +51,10 @@ FUNCTIO CONGRUIT_API REDDENS NUMERUS.
         SI pos + 11 > n TUNC REDDE 0. FIN-SI.
         REDDE OCTETUS_AB(memoria+pos)==67 && OCTETUS_AB(memoria+pos+1)==108 && OCTETUS_AB(memoria+pos+2)==111 && OCTETUS_AB(memoria+pos+3)==115 && OCTETUS_AB(memoria+pos+4)==101 && OCTETUS_AB(memoria+pos+5)==72 && OCTETUS_AB(memoria+pos+6)==97 && OCTETUS_AB(memoria+pos+7)==110 && OCTETUS_AB(memoria+pos+8)==100 && OCTETUS_AB(memoria+pos+9)==108 && OCTETUS_AB(memoria+pos+10)==101.
     FIN-SI.
+    SI id == 7 TUNC
+        SI pos + 15 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==71 && OCTETUS_AB(memoria+pos+1)==101 && OCTETUS_AB(memoria+pos+2)==116 && OCTETUS_AB(memoria+pos+3)==67 && OCTETUS_AB(memoria+pos+4)==111 && OCTETUS_AB(memoria+pos+5)==109 && OCTETUS_AB(memoria+pos+6)==109 && OCTETUS_AB(memoria+pos+7)==97 && OCTETUS_AB(memoria+pos+8)==110 && OCTETUS_AB(memoria+pos+9)==100 && OCTETUS_AB(memoria+pos+10)==76 && OCTETUS_AB(memoria+pos+11)==105 && OCTETUS_AB(memoria+pos+12)==110 && OCTETUS_AB(memoria+pos+13)==101 && OCTETUS_AB(memoria+pos+14)==65.
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -168,7 +172,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
 
     i = 0.
-    DUM i < 7 PERFICE
+    DUM i < 8 PERFICE
         SI HABET_API(memoria, n, i) == 0 TUNC
             PROCLAMA "ERRATUM: API KERNEL32 requisita deest".
             PROCLAMA i.
