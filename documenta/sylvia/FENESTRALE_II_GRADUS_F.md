@@ -22,7 +22,8 @@ Fenestralis II veritatem nativam adhibet. `programmata_fenestrale_ii.vindex`:
 ## II. Terminus huius gradus
 
 Nucleus 0.51 et `firmamentum_uefi.c` canonicum consulto non mutantur. Client
-separatim construitur et in via experimentali Gradus E exsequendus est. Ita
+separatim verificatur et, post compilationem in ambitu nativo sustento, in via
+experimentali Gradus E exsequendus est. Ita
 opus interface progreditur sine mutationibus sessionis principalis Sylvia OS.
 
 Gradus F framebuffer directe adhibet. Mailbox compositorii et superficies
@@ -52,18 +53,19 @@ privatae post contractum compositorii venient.
 ## V. Constructio et probatio
 
 ```bash
-./vindexc src/programmata_fenestrale_ii.vindex -o /tmp/programmata_fenestrale_ii
+./vindexc --verifica src/programmata_fenestrale_ii.vindex
 python3 tests/proba_programmata_fenestrale_f.py
 ```
 
-Probatio CI confirmat compilationem clientis, usum descriptoris, consumptionem
-eventuum, mensuram taskbar et absentiam rotunditatis vel branding manifesti.
+Probatio CI confirmat analysim syntacticam duorum fontium, usum descriptoris,
+consumptionem eventuum, mensuram taskbar et absentiam rotunditatis vel branding manifesti.
 Probationes ABI Gradus D et integratio Gradus E simul repetuntur.
 
 ## VI. Criterium progressionis
 
-Gradus F perfectus est cum client VINDEX construitur et contractus staticus
-transit. Probatio visiva in QEMU et hardware manet conditio antequam via
+Gradus F perfectus est cum fons clientis VINDEX verificatur et contractus
+staticus transit. Compilatio nativa, deinde probatio visiva in QEMU et hardware,
+manent condiciones antequam via
 experimentalis fiat canonica.
 
 > Client primus apparet; via vetus manet integra.

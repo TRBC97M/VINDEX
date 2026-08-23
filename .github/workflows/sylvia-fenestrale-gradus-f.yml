@@ -13,7 +13,7 @@ on:
 
 jobs:
   client:
-    name: PROGRAMMATA client VINDEX nativus construitur
+    name: PROGRAMMATA client VINDEX nativus verificatur
     runs-on: ubuntu-latest
     steps:
       - name: Repositorium accipe
@@ -23,7 +23,7 @@ jobs:
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: python3 tests/proba_fenestrale_ii_abi_d.py
 
-      - name: Clientem Gradus F construe et verifica
+      - name: Clientem Gradus F verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: python3 tests/proba_programmata_fenestrale_f.py
 

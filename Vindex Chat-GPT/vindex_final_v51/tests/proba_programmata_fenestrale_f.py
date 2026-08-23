@@ -2,10 +2,9 @@
 """Contractum visuale et ABI PROGRAMMATA Gradus F verificat."""
 
 from pathlib import Path
-import platform
 import re
 import subprocess
-import tempfile
+import sys
 
 RADIX = Path(__file__).resolve().parents[1]
 FONS = RADIX / "src" / "programmata_fenestrale_ii.vindex"
@@ -36,12 +35,11 @@ def main() -> None:
         if re.search(r"radius|JL-UX", sine_commentariis, re.IGNORECASE):
             raise SystemExit("ERRATUM: branding aut rotunditas in clientem intravit")
 
-    if platform.system() != "Windows":
-        with tempfile.TemporaryDirectory(prefix="programmata-f-") as td:
-            exitus = Path(td) / "programmata_fenestrale_ii"
-            subprocess.run([str(RADIX / "compilator_vindex"), str(FONS), str(exitus)], cwd=RADIX, check=True)
-            if not exitus.is_file() or exitus.stat().st_size == 0:
-                raise SystemExit("ERRATUM: client VINDEX non constructus est")
+    subprocess.run(
+        [sys.executable, str(RADIX / "instrumenta" / "vindex_verifica.py"), str(FONS)],
+        cwd=RADIX,
+        check=True,
+    )
     print("RECTE: PROGRAMMATA est client VINDEX nativus Fenestralis II Gradus F.")
 
 
