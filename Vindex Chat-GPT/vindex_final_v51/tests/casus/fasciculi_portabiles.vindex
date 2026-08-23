@@ -1,0 +1,40 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA data SICUT ORDO DE LITTERA CAPACITAS 4.
+    data[0] = 86.
+    data[1] = 73.
+    data[2] = 78.
+    data[3] = 88.
+
+    DECLARA fdw SICUT NUMERUS VALENS APERI_SCRIBERE("vindex-pe-io.tmp").
+    SI fdw < 0 TUNC
+        REDDE 11.
+    FIN-SI.
+    DECLARA scripta SICUT NUMERUS VALENS MITTE(fdw, data, 4).
+    DECLARA clausura_w SICUT NUMERUS VALENS CLAUDE(fdw).
+    SI scripta != 4 TUNC
+        REDDE 12.
+    FIN-SI.
+
+    DECLARA fdr SICUT NUMERUS VALENS APERI_LEGERE("vindex-pe-io.tmp").
+    SI fdr < 0 TUNC
+        REDDE 21.
+    FIN-SI.
+    DECLARA lecta SICUT NUMERUS VALENS LEGE(fdr, 4).
+    DECLARA clausura_r SICUT NUMERUS VALENS CLAUDE(fdr).
+    SI lecta != 4 TUNC
+        REDDE 22.
+    FIN-SI.
+    SI OCTETUS(0) != 86 TUNC
+        REDDE 31.
+    FIN-SI.
+    SI OCTETUS(1) != 73 TUNC
+        REDDE 32.
+    FIN-SI.
+    SI OCTETUS(2) != 78 TUNC
+        REDDE 33.
+    FIN-SI.
+    SI OCTETUS(3) != 88 TUNC
+        REDDE 34.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
