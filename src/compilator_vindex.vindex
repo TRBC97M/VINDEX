@@ -3908,7 +3908,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
                         ALITER
-                            SI fons[i] == 83 && i + 1 < n && fons[i+1] == 73 && fons[i+2] == 32 TUNC
+                            SI fons[i] == 83 && i + 2 < n && fons[i+1] == 73 && fons[i+2] == 32 TUNC
                                 CONTENTUM(pos_fontis) = i + 3.
                                 ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
                                 CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 0).

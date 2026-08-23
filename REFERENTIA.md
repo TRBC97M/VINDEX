@@ -207,7 +207,7 @@ PROCLAMA CONTENTUM(p).
 LIBERA(p).
 ```
 
-`RESERVA(typus)` memoriam petit; `LIBERA(acus)` eam reddit. Backend PE acervum per `VirtualAlloc` praeparat. Nulla collectio purgamentorum adest.
+`RESERVA(typus)` memoriam pro uno valore generis dati petit. `RESERVA_OCTETA(quantitas)` numerum exactum octetorum petit; verificatores canonici ea forma utuntur. `LIBERA(acus)` memoriam reddit. Backend PE acervum per `VirtualAlloc` praeparat. Nulla collectio purgamentorum adest.
 
 ## Diagnostica
 
