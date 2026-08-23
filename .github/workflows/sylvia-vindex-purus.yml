@@ -18,15 +18,29 @@ jobs:
       - name: Repositorium accipe
         uses: actions/checkout@v4
 
-      - name: Mutationem mechanicam in exemplari CI applica
+      - name: Nucleum ad runtime VINDEX purum migra
         shell: bash
         run: |
           set -euo pipefail
           if grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'; then
-            # Correctio detectoris in instrumento transitorio: UEFI_POLLE() non est callback historicus POLLE().
+            # Instrumentum transitorium adhuc compilatorem 0.51 tangit; ille mox 0.53 canonico substituitur.
             sed -i 's/if "POLLE()" in nuc:/if "= POLLE()" in nuc:/' instrumenta/custos_patch_vindex_purus.py
             python3 instrumenta/custos_patch_vindex_purus.py
           fi
+
+      - name: Compilatorem VINDEX 0.53 probatum assume et UEFI extende
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --depth=1 origin \
+            refs/heads/chatgpt/vindex-053-compilator-dynamicus:refs/remotes/origin/vindex-053
+          git show refs/remotes/origin/vindex-053:'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
+            > 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          git show refs/remotes/origin/vindex-053:'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' \
+            > 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          python3 instrumenta/custos_patch_vindex_053_uefi.py
+          ! grep -q '50333704' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
 
       - name: Fontes runtime hereditatos ex exemplari CI remove
         shell: bash
@@ -37,12 +51,12 @@ jobs:
             ! -path '*/systema/uefi/bootstrap_uefi.c' -delete
           python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Compilatorem VINDEX se ipsum compilare verifica
+      - name: Compilatorem VINDEX 0.53 extensum se ipsum compilare verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           set -euo pipefail
-          chmod +x compilator_vindex
+          wc -c src/compilator_vindex.vindex
           ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_novus
           chmod +x /tmp/compilator_vindex_novus
           /tmp/compilator_vindex_novus src/compilator_vindex.vindex /tmp/compilator_vindex_bis
