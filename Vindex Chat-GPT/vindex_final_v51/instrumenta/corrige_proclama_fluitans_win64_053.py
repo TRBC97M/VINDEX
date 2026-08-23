@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PROCLAMA fluitans Win64: XMM volatile servat et WriteFile robuste aliniat."""
+"""WriteFile in PROCLAMA ad RSP XVI-alineatum independentem a pila VINDEX redigit."""
 
 from __future__ import annotations
 
@@ -15,7 +15,11 @@ def unum(textus: str, vetus: str, novum: str, nomen: str) -> str:
 
 
 def transforma(textus: str) -> str:
-    if "p = COMPONE_IMPONE(codex, p, 0).\n    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0)." in textus and "CODEX_SCRIBE(codex, p + 2, 244)." in textus:
+    # Correctio XMM0/R15 iam in ramo Claudii est. Hoc instrumentum
+    # tantum vocationem WriteFile contra quamlibet paritatem pilae munit.
+    robustus = """        CODEX_SCRIBE(codex, p, 65).
+        CODEX_SCRIBE(codex, p + 1, 86)."""
+    if robustus in textus and "CODEX_SCRIBE(codex, p + 2, 244)." in textus:
         return textus
 
     textus = unum(
@@ -67,50 +71,18 @@ def transforma(textus: str) -> str:
         p = p + 2.""",
         "epilogi WriteFile robusti",
     )
-
-    # WriteFile potest XMM0..XMM5 delere. Bits fluitantis in pila
-    # servantur. Helper RSP post API exacte restituit, ergo valor
-    # manet sub ELF et Win64 sine registro speciali.
-    textus = unum(
-        textus,
-        """    DECLARA pos_post_flot_sign SICUT NUMERUS VALENS p.
-    DECLARA ig_fps SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_flot_pos, pos_post_flot_sign).
-
-    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0).""",
-        """    DECLARA pos_post_flot_sign SICUT NUMERUS VALENS p.
-    DECLARA ig_fps SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_flot_pos, pos_post_flot_sign).
-
-    p = COMPONE_IMPONE(codex, p, 0).
-    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0).""",
-        "servationis fluitantis in pila",
-    )
-
-    textus = unum(
-        textus,
-        """    p = COMPONE_AUFER(codex, p, 0).
-
-    p = COMPONE_CVTSI2SD(codex, p, 1, 0).
-    p = COMPONE_SUBSD(codex, p, 0, 1).""",
-        """    p = COMPONE_AUFER(codex, p, 0).
-
-    p = COMPONE_CVTSI2SD(codex, p, 1, 0).
-    p = COMPONE_AUFER(codex, p, 0).
-    p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0).
-    p = COMPONE_SUBSD(codex, p, 0, 1).""",
-        "restitutionis XMM0 ex pila",
-    )
     return textus
 
 
 def principale() -> int:
-    p = argparse.ArgumentParser(description="PROCLAMA fluitans Win64 VINDEX 0.53 corrigit.")
+    p = argparse.ArgumentParser(description="Alignationem WriteFile Win64 VINDEX 0.53 corrigit.")
     p.add_argument("fons", type=Path)
     p.add_argument("exitus", nargs="?", type=Path)
     args = p.parse_args()
     exitus = args.exitus or args.fons
     textus = args.fons.read_text(encoding="utf-8")
     exitus.write_text(transforma(textus), encoding="utf-8", newline="\n")
-    print(f"RECTE: PROCLAMA fluitans Win64 correctum est: {exitus}")
+    print(f"RECTE: WriteFile ad pilam XVI-alineatam robustam redactus est: {exitus}")
     return 0
 
 
