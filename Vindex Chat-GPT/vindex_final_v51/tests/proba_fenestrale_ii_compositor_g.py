@@ -65,7 +65,6 @@ def main() -> None:
         require(header, fragmentum, "ABI compositorii")
 
     for fragmentum in (
-        'IMPORTA "bibliotheca/fenestrale_ii.vindex".',
         "REDDE 50335232.",
         "FII_CMP_SUPERFICIEM_PETE",
         "FII_CMP_PRAESENTA",
@@ -74,8 +73,11 @@ def main() -> None:
         "CONTENTUM(basis + (py * linea + px) * 4) = par.",
     ):
         require(bibliotheca, fragmentum, "bibliotheca compositorii")
+    if "IMPORTA " in sine_commentariis(bibliotheca):
+        raise SystemExit("ERRATUM: bibliotheca G importum inclusum continet")
 
     for fragmentum in (
+        'IMPORTA "bibliotheca/fenestrale_ii.vindex".',
         'IMPORTA "bibliotheca/fenestrale_ii_compositor.vindex".',
         "FII_CMP_AD_EST()",
         "FII_CMP_SUPERFICIEM_PETE(1, w, h, 7)",
@@ -96,7 +98,6 @@ def main() -> None:
         raise SystemExit("ERRATUM: rotunditas non canonica in clientem intravit")
 
     compila_header()
-    # Clientis verificatio bibliothecas importatas quoque syntactice inspicit.
     subprocess.run(
         [sys.executable, str(RADIX / "instrumenta" / "vindex_verifica.py"), str(CLIENT)],
         cwd=RADIX,
