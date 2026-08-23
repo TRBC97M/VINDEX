@@ -11,6 +11,8 @@ JL-UX est lingua visualis Sylvia OS; non est nomen systematis ipsum. In interfac
 - `referentia/tabula_canonica_I.svg` — tabula visualis Latina quae fenestram quadratam, palettam et barram operum tenuem demonstrat.
 - `referentia/programmata_I.svg` — referentia visualis canonica applicationis PROGRAMMATA in desktop amplo Sylvia OS.
 - `prototypa/programmata_I.html` — prototypum interactive ad quaesitionem, selectionem, collectiones et actionem `AGE` explorandas.
+- `referentia/fenestrale_II.svg` — referentia desktop multi-fenestralis in resolutione ampla, cum barra operum XXVIII px.
+- `prototypa/fenestrale_II.html` — prototypum interactive Fenestralis II: focus, ordo profunditatis, tractio, minimizatio, maximizatio, clausura, INITIUM et barra operum dynamica.
 
 Norma integra JL-UX legitur in:
 
@@ -19,6 +21,10 @@ Norma integra JL-UX legitur in:
 Norma PROGRAMMATA legitur in:
 
 `documenta/sylvia/PROGRAMMATA_I.md`
+
+Architectura Fenestralis II legitur in:
+
+`documenta/sylvia/FENESTRALE_II.md`
 
 ## Status imaginum conceptuum
 
@@ -36,5 +42,7 @@ Hoc principium prohibet ne experimentum temporarium pro norma Sylvia OS habeatur
 - Vitrum, lumen et metallica adhibentur cum disciplina.
 - Influentia Latina est subtilis, non caricatura.
 - PROGRAMMATA non habet limitem visualem sex locorum; index crescere et volvi potest.
+- Fenestrale II superficiem desktop `320×200` fixam relinquit et resolutionem monitoris nativam targetat.
+- Fenestrae multiplices simul adsunt et ordine profunditatis dynamico componuntur.
 
 *VINDEX Latine cogitat. Sylvia Latine loquitur.*
