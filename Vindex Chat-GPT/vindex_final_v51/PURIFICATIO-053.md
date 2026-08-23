@@ -2,102 +2,80 @@
 
 ## Propositum
 
-Finis huius rami est nucleum VINDEX ita ordinare ut **codex activus linguae et compilatoris, quantum fieri potest, ipso VINDEX scribatur**. Instrumenta historica migrationis, probationes ad tempus scriptae, applicatio graphica, Systema et prototypa PE non sunt pars minima linguae.
+Hic ramus nucleum VINDEX ab ecosystemate, Systemate, instrumentis migrationis et dependentiis historicis separat. Regula est simplex: **codex activus nuclei linguae VINDEX ipso VINDEX scribitur**.
 
-Status completus ante purificationem servatur in ramo:
+Status integer ante purificationem servatur in ramo:
 
 ```text
 archive/vindex-053-avant-purificatio
 9e70b09a8a258a76467b1045aca8337abbf1d4de
 ```
 
-Ita nihil historicum amittitur, etiam si e nucleo activo removetur.
+Nihil historicum deletum est e historia Git.
 
-## I. Nucleus retinendus
+## Nucleus retentus
 
-Haec ad linguam VINDEX hodie directe necessaria sunt:
+Post purificationem servantur tantum:
 
-- `src/compilator_vindex.vindex` — fons compilatoris auto-hospitis, totus VINDEX;
-- `compilator_vindex` — binarium seminale distributum, donec alia via initii tota VINDEX exstet;
-- `tests/casus/*.vindex` quae semanticam linguae probant;
-- exempla minima `.vindex` quae facultates linguae demonstrant;
-- `REFERENTIA.md`, `LEGE-ME.md`, `COMMENTARIUM.md`, `VERSION`, sigilla et documenta architecturae necessaria;
-- `.gitattributes` et `.gitignore`.
+- `src/compilator_vindex.vindex` — fons compilatoris auto-hospitis;
+- `compilator_vindex` — binarium seminale necessarium ad initium auto-hospitii;
+- `tests/casus/*.vindex` et data minima probationum semanticarum;
+- `tests/proba_pe_structuram_053.vindex` — verificator PE scriptus VINDEX;
+- `REFERENTIA.md` — grammatica et semantica;
+- `LEGE-ME.md` — usus nuclei;
+- `VERSION` et `SIGILLA_SHA256.txt`;
+- `.gitattributes` et `.gitignore` ad integritatem repositorii.
 
-Binaria compilata non sunt codex alterius linguae; retineri possunt si ad initium auto-hospitii requiruntur.
+## E nucleo remoto
 
-## II. Reescribenda in VINDEX
+E ramo activo remota sunt:
 
-Haec instrumenta utilia sunt, sed codex eorum hodie alia lingua utitur et functio eorum per VINDEX perfici potest:
+- bootstrap Python et omnia instrumenta Python;
+- instrumenta C, assembler, Bash et PowerShell quae linguam non constituunt;
+- `vindexc` historicum et wrappers orchestrationis;
+- GTK, Graphica, Officina et Salutatio;
+- Systema/Sylvia experimentale, BIOS, UEFI, imagines et binaria derivata;
+- prototypa et archiva collaboratorum;
+- workflows historici et relationes migrationis absolutae;
+- exempla et probationes ecosystematis quae nucleo linguae non pertinent.
 
-1. **Probator structuram PE** — `tests/proba_pe_structuram_053.py`.
-   VINDEX iam fasciculos binarios aperire, octeta legere et numeros componere potest; ergo verificator MZ/PE/IAT in VINDEX scribi potest.
-2. **Cursor probationum linguae** — `tests/run_tests.sh`.
-   VINDEX iam `CURRE`, `EXSEQUERE`, fasciculos, tubulos et codices exitus habet. Probationes igitur a programmate VINDEX regi possunt. Scriptum shell interim tantum infrastructura est.
-3. **Orchestratio puncti fixi** — `bootstrap/reconstruit.sh`.
-   Compilator distributus iam se ipsum compilat. Generatio I/II/III et comparatio binaria per instrumentum VINDEX fieri possunt.
-4. **Interfacies `vindexc`**.
-   Compilatio directa iam per `compilator_vindex fons exitus [pe]` fit. Functiones vere utiles `vindexc` aut in compilatorem ipsum aut in parvum instrumentum VINDEX transferendae sunt.
-5. **Custodiae structurales** (`inventaria_tabula_053.py` et similia) si post purificationem adhuc valorem permanentem habent. Custodiae unius migrationis iam absolutae non reescribendae sunt: removendae sunt.
+## Verificator PE
 
-## III. Removenda, non reescribenda
+Verificator Python `proba_pe_structuram_053.py` substitutus est programmate VINDEX `tests/proba_pe_structuram_053.vindex`. Is structuram DOS/PE32+, AMD64, sectiones `.text` et `.idata`, importationes Kernel32, IAT et vocationes RIP-relative verificat.
 
-Haec instrumenta historica mutationes iam canonicas applicaverunt. In nucleo finali nullum munus runtime habent:
+## Auto-hospitium sine Python
 
-- `instrumenta/applica_*.py`;
-- `instrumenta/corrige_*.py` quae mutationes semel applicaverunt;
-- `instrumenta/migra_*.py`;
-- `instrumenta/diagnostica_*.py` et `.sh` ad investigationes clausas pertinentes;
-- generatoria probationum temporaria Python;
-- relationes intermediae quae relatione canonica recentiore supersessae sunt.
+Compilator distributus fontem suum directe compilat. Generatio prima generat secundam, secunda tertiam; secunda et tertia byte pro byte congruunt, atque secunda cum binario distributo congruit.
 
-Historia eorum ramo archivistico et Git servatur.
+Sigillum puncti fixi:
 
-## IV. Extra nucleum transferenda
+```text
+166a0e666deb83f759f90d1b721474ede01bb3519ec5231b2fe0e9b23158c969
+```
 
-Haec VINDEX demonstrare possunt, sed **linguae ipsi ad operandum non sunt necessaria**:
+Python igitur neque ad usum cotidianum neque ad probationem ordinariam puncti fixi requiritur.
 
-- `systema/` integrum, imagines BIOS/UEFI, `BOOTX64.EFI`, `nucleus_systema.elf` — ad Sylvia/Systema pertinent;
-- `runtime/vindex_graphica_gtk.c`, `vindex_graphica`, `formae/`, `officina/`, `src/officina_vindex.vindex`, `src/salutatio_vindex.vindex`, `bibliotheca/graphica.vindex`, initiatores Officinae/Salutationis — ecosystema graphica separatum;
-- `Vindex Claude Ai/` — prototypa et relationes historicae PE; backend probatus iam in compilatore canonico est;
-- scripturae PowerShell radicis (`repo_guard*.ps1`, `install_repo_guard*.ps1` et similes) — custodia repositorii, non lingua;
-- binaria et imagines derivatae ecosystematis quae ex fontibus externis vel Systemate nascuntur.
+## Infrastructura externa
 
-Haec non delenda ex historia sunt; e ramo activo purificationis removenda sunt post probationem nuclei.
+GitHub Actions non est pars linguae. Duo workflows qui nuclei ELF et backend Win64 probaverunt separatim servantur in ramo:
 
-## V. Infrastructura externa temporarie admissa
+```text
+infrastructura/vindex-053-ci-purificatio
+```
 
-GitHub Actions ipsa VINDEX non est. Fasciculi `.github/workflows/*.yml` et pauca mandata `bash`/`pwsh` in runneribus **infrastructura CI externa** sunt, non implementatio linguae. Interim admittuntur dum faciunt unum tantum opus: compilatorem VINDEX aedificare, programmata VINDEX exsequi et eventum observare.
+Ita nucleus ipse nullum YAML, Bash aut PowerShell activum continet, dum infrastructura probationis recuperabilis manet.
 
-Regula: CI non debet logicam compilatoris, parseris, PE, ELF aut linguae in Python/C/Shell implere.
+## Probationes ante separationem infrastructurae
 
-## VI. Python bootstrap
+Antequam `.github/` e nucleo removeretur, ambae custodiae finales virides fuerunt:
 
-`bootstrap/python/` non requiritur ad usum cotidianum VINDEX neque ad auto-hospitium ex binario distributo. Solum catena fiduciae historica est.
+- `VINDEX 0.53 — Nucleus purus` — punctum fixum, casus semantici, diagnostica et CRLF sine Python;
+- `VINDEX 0.53 — Win64 purus` — verificator PE VINDEX, generatio PE et exsecutio realis sub Windows Server 2025.
 
-Ordo purificationis:
+Purificatio ipsa post has probationes codicem compilatoris non mutat; solum infrastructuram et materiam extraneam removet.
 
-1. probationem puncti fixi **sine Python** stabilire;
-2. semanticam linguae **sine Python** stabilire;
-3. verificatorem PE in VINDEX substituere;
-4. tum `bootstrap/python/` e nucleo activo removere.
+## Regula futura
 
-Ramus archivisticus versionem Python integram servat.
-
-## VII. Limen acceptationis
-
-Purificatio non potest in ramum dynamicum integrari nisi:
-
-- compilator distributus se ipsum ad punctum fixum producit;
-- probationes semanticae nuclei ELF transeunt;
-- PE Win64 minimum et I/O realiter sub Windows transeunt;
-- nullus Python/C/assembler/PowerShell ad **implementationem linguae** requiritur;
-- omnis exceptio non-VINDEX remanens explicite infrastructura externa est;
-- Systema, Officina, GTK et prototypa non amplius nucleum linguae contaminant;
-- index codicis non-VINDEX activi in relatione finali enumeratur, cum ratione cuiusque exceptionis.
-
-## VIII. Primus gradus
-
-Primum additur workflow `VINDEX 0.53 — Nucleus purus` qui punctum fixum et casus linguae **sine Python, GTK, Systemate aut bootstrap externo** probat. Post illum viridem, deletiones fiunt per gradus parvos et probatos.
+Nova pars nuclei alia lingua scribi non debet si VINDEX eam exprimere potest. Exceptio admittenda est tantum pro elemento externo qui ante executionem VINDEX necessario existit; talis pars extra nucleum linguae servanda et explicite documentanda est.
 
 **VINDEX Latine cogitat. Sylvia Latine loquitur.**
