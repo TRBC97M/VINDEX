@@ -1,7 +1,6 @@
 // Sylvia OS — Fenestrale II, Gradus G.
 // Bibliotheca experimentalis clientis ad superficies privatas compositorii.
-
-IMPORTA "bibliotheca/fenestrale_ii.vindex".
+// Client hanc bibliothecam post fenestrale_ii.vindex importare debet.
 
 FUNCTIO FENESTRALE_II_COMPOSITOR_BASIS REDDENS NUMERUS.
     REDDE 50335232.
