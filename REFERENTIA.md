@@ -160,16 +160,6 @@ In modo PE argumenta lineae mandatorum Windows nondum convertuntur; interim `PRI
 
 Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE` per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probata sunt. `APERI_ADICERE` nondum in backend Win64 canonice probatum est.
 
-## Executio aliorum programmatum
-
-- `EXSEQUERE(via)` programma exsequitur.
-- `EXSEQUERE_CAPTURA(via, receptaculum, capacitas)` exitum capit.
-- `CURRE(argumenta, ambitus, descriptor)` programma cum argumentis exsequitur.
-- `CAMBIA(via)` directorium praesens mutat.
-- `TUBUS(receptaculum)` tubum systematis creat.
-
-Haec familia servitiorum systematis sub ELF probata est; nulla portabilitas Win64 praesumenda est nisi separatim probetur.
-
 ## Imperium fluxus
 
 ### Condicio
