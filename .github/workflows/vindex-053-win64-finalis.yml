@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - chatgpt/pe-finalis-053
+  pull_request:
+    branches:
+      - claude/pe-integration-053-v2
   workflow_dispatch:
 
 permissions:
