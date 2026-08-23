@@ -1165,10 +1165,8 @@ FUNCTIO COMPONE_SCRIBE_STDOUT_DYNAMICA REDDENS NUMERUS.
         CODEX_SCRIBE(codex, p + 2, 236).
         CODEX_SCRIBE(codex, p + 3, 40).
         p = p + 4.
-        DECLARA valor_neg_std_output SICUT NUMERUS VALENS 0 - 11.
-        p = COMPONE_ONERA(codex, p, 1, valor_neg_std_output).
-        p = COMPONE_VOCA_IAT_DYNAMICA(codex, p, contextus_parseris, 2).
-        p = COMPONE_TRANSCRIBE(codex, p, 1, 0).
+        p = COMPONE_ONERA(codex, p, 0, 16777216).
+        p = COMPONE_SUME_INDIRECTUM(codex, p, 1, 0).
         p = COMPONE_TRANSCRIBE(codex, p, 2, 13).
         p = COMPONE_TRANSCRIBE(codex, p, 8, 12).
         CODEX_SCRIBE(codex, p, 76).
@@ -4953,6 +4951,16 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 1).
                     pos = COMPONE_ONERA(codex, pos, 2, 33554432).
                     pos = COMPONE_ONERA(codex, pos, 0, 33554448).
+                    pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
+                    pos = COMPONE_ONERA(codex, pos, 1, 16777216).
+                    pos = COMPONE_ONERA(codex, pos, 2, 4096).
+                    pos = COMPONE_ONERA(codex, pos, 8, 12288).
+                    pos = COMPONE_ONERA(codex, pos, 9, 4).
+                    pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 1).
+                    DECLARA valor_neg_std_output_prologus SICUT NUMERUS VALENS 0 - 11.
+                    pos = COMPONE_ONERA(codex, pos, 1, valor_neg_std_output_prologus).
+                    pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 2).
+                    pos = COMPONE_ONERA(codex, pos, 2, 16777216).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
                 ALITER
                     pos = COMPONE_AUFER(codex, pos, 0).

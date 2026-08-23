@@ -138,3 +138,35 @@ exsecuta et confirmata RECTE quinquies):
 Exempla nova: `examples/proclama_catena_pe_053.vindex`,
 `examples/proclama_multi_pe_053.vindex`.
 
+## Addendum secundum — defectus notatus a ChatGPT sub Windows vero, hypothesis correcta
+
+Post correctionem POP (vide `RELATIO-PE-WINDOWS.md`), ChatGPT probavit
+`PROCLAMA` sub **Windows Server 2025 vero** (non solum Wine). Catena
+simplex functionabat correcte, sed casus `PROCLAMA "Premier";
+PROCLAMA 999; PROCLAMA "Dernier";` reddebat `Premier\n\nDernier` —
+numerus `999` omnino absens, quamvis Wine hunc defectum non manifestaret.
+
+**Hypothesis et correctio**: `COMPONE_SCRIBE_STDOUT_DYNAMICA` vocabat
+`GetStdHandle` **iterum et iterum** — semel per octetum in circulo
+cifrarum `COMPONE_IMPRIME_NUMERUS` (ter pro `999`). Suspicio: subsystema
+consolae Windows veri non tolerat vocationes `GetStdHandle` tam
+frequentes ac celeres sicut Wine. Correctio: prologus ingressus PE nunc
+vocat `GetStdHandle(STD_OUTPUT_HANDLE)` **semel**, ad initium processus,
+et servat rem in pagina dedicata reservata per `VirtualAlloc` separatum
+(`0x1000000`, 4096 octeta, extra regionem 64 MiB acervi principalis, ut
+collisionem cum `RESERVA_OCTETA` vitet — vide defectum simile in
+`RELATIO-PE-WINDOWS.md`). `COMPONE_SCRIBE_STDOUT_DYNAMICA` nunc legit
+hanc rem cachetam loco vocandi `GetStdHandle` quolibet vice.
+
+**Status**: **non adhuc probatum sub Windows vero** — haec correctio
+est hypothesis rationabilis (defensiva, etiam optimizatio genuina,
+quia programmata realia typice rem consolae semel cachent), sed causa
+radicalis ultima non confirmata est sine accessu Windows. Petitur a
+ChatGPT (qui accessum ad `windows-latest` runner habet) hanc
+correctionem sub Windows vero verificare.
+
+Verificatum hic (Wine tantum): auto-hospitium punctum fixum servatum
+(G2=G3 SHA256 identica); probatio multiplex tribus modis (`PROCLAMA
+999` solum, `Premier/999/Dernier`, et casus tensionis quinque
+vocationum sequentialium mixtarum catena/numerus) omnes correctae.
+
