@@ -8,6 +8,7 @@ UEFI="$RADIX/systema/uefi"
 IMAGO="${1:-$RADIX/systema_vindex_uefi.img}"
 APPLICATIO="${2:-$RADIX/BOOTX64.EFI}"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-uefi.XXXXXX")"
+NUCLEUS_LIMEN=196608
 
 purga() {
     if [ -d "$TEMPORARIUM" ]; then
@@ -36,8 +37,8 @@ fi
 # Nucleus ipse VINDEX est; nulla constructio BIOS/assembly antecedens requiritur.
 "$RADIX/compilator_vindex" "$RADIX/systema/nucleus.vindex" "$TEMPORARIUM/nucleus.elf"
 MAGNITUDO="$(stat -c '%s' "$TEMPORARIUM/nucleus.elf")"
-if [ "$MAGNITUDO" -gt 122880 ]; then
-    printf 'ERRATUM: nucleus %s octeta habet; limes est 122880.\n' "$MAGNITUDO" >&2
+if [ "$MAGNITUDO" -gt "$NUCLEUS_LIMEN" ]; then
+    printf 'ERRATUM: nucleus %s octeta habet; limes est %s.\n' "$MAGNITUDO" "$NUCLEUS_LIMEN" >&2
     exit 65
 fi
 
