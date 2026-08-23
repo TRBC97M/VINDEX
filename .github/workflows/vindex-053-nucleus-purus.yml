@@ -4,10 +4,10 @@ name: VINDEX 0.53 — Nucleus purus
 on:
   push:
     branches:
-      - infrastructura/vindex-053-ci-argumenta-win64
+      - infrastructura/vindex-053-ci-diagnostica-loci
   pull_request:
     branches:
-      - infrastructura/vindex-053-ci-argumenta-win64
+      - infrastructura/vindex-053-ci-diagnostica-loci
   workflow_dispatch:
 
 permissions:
@@ -22,7 +22,7 @@ jobs:
       - name: Nucleum purum accipe
         uses: actions/checkout@v5
         with:
-          ref: chatgpt/vindex-053-argumenta-win64
+          ref: chatgpt/vindex-053-diagnostica-loci
 
       - name: Compilatorem para
         shell: bash
@@ -94,22 +94,26 @@ jobs:
           C='./compilator_vindex'
 
           reice() {
-            nomen="$1"; fons="$2"; fragmentum="$3"
+            nomen="$1"; fons="$2"; status_exspectatus="$3"; via="$4"; linea="$5"; columna="$6"; nuntius="$7"
             exe="$RUNNER_TEMP/$nomen"
             log="$RUNNER_TEMP/$nomen.log"
             set +e
             "$C" "tests/casus/$fons" "$exe" >"$log" 2>&1
             status=$?
             set -e
-            test "$status" -ne 0
+            test "$status" -eq "$status_exspectatus"
             test ! -e "$exe"
-            grep -Fq "$fragmentum" "$log"
+            productum="$(cat "$log")"
+            exspectatum="$(printf 'DIAGNOSTICUM VINDEX\nFONS\n%s\nLINEA\n%s\nCOLUMNA\n%s\nNUNTIUS\n%s' "$via" "$linea" "$columna" "$nuntius")"
+            test "$productum" = "$exspectatum"
             printf 'RECTE  %s\n' "$nomen"
           }
 
-          reice nativum-principalis erratum_principalis.vindex 'FUNCTIO PRINCIPALIS deest'
-          reice nativum-functio erratum_functio.vindex 'functio vocata non inventa est'
-          reice nativum-importa erratum_importa.vindex 'fons importatus aperiri non potest'
+          reice nativum-instructio erratum_instructio.vindex 65 tests/casus/erratum_instructio.vindex 2 5 'ERRATUM: instructio ignota est'
+          reice nativum-functio erratum_functio.vindex 65 tests/casus/erratum_functio.vindex 2 11 'ERRATUM: functio vocata non inventa est'
+          reice nativum-principalis erratum_principalis.vindex 65 tests/casus/erratum_principalis.vindex 1 1 'ERRATUM: FUNCTIO PRINCIPALIS deest'
+          reice nativum-importa erratum_importa.vindex 66 tests/casus/erratum_importa.vindex 1 1 'ERRATUM: fons importatus aperiri non potest'
+          reice nativum-importatum erratum_importatum.vindex 65 tests/casus/erratum_bibliotheca.vindex 2 11 'ERRATUM: functio vocata non inventa est'
 
       - name: CRLF native comproba
         shell: bash
