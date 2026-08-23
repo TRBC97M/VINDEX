@@ -1,0 +1,89 @@
+name: Sylvia VINDEX purum
+
+on:
+  push:
+    branches:
+      - chatgpt/custos-vindex-purus
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  puritas:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Mutationem mechanicam in exemplari CI applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -q 'POLLE()' 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'; then
+            python3 instrumenta/custos_patch_vindex_purus.py
+          fi
+
+      - name: Fontes runtime hereditatos ex exemplari CI remove
+        shell: bash
+        run: |
+          set -euo pipefail
+          find 'Vindex Chat-GPT/vindex_final_v51/systema' -type f \
+            \( -name '*.c' -o -name '*.h' -o -name '*.cc' -o -name '*.cpp' -o -name '*.cxx' -o -name '*.S' -o -name '*.s' -o -name '*.asm' -o -name '*.rs' \) \
+            ! -path '*/systema/uefi/bootstrap_uefi.c' -delete
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Compilatorem VINDEX se ipsum compilare verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_vindex_novus
+          chmod +x /tmp/compilator_vindex_novus
+          /tmp/compilator_vindex_novus src/compilator_vindex.vindex /tmp/compilator_vindex_bis
+          cmp /tmp/compilator_vindex_novus /tmp/compilator_vindex_bis
+
+      - name: Intrinsecum UEFI_VOCA6 compila et ABI inspice
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/compilator_vindex_novus probationes/uefi_voca6.vindex /tmp/uefi_voca6
+          python3 - <<'PY'
+          from pathlib import Path
+          data = Path('/tmp/uefi_voca6').read_bytes()
+          sig = bytes.fromhex('41 54 49 89 e4 48 83 e4 f0 48 83 ec 30 4c 89 54 24 20 4c 89 5c 24 28 ff d0 4c 89 e4 41 5c')
+          if sig not in data:
+              raise SystemExit('ERRATUM: series ABI Microsoft x64 pro UEFI_VOCA6 in binario non inventa est')
+          print('RECTE: ABI UEFI_VOCA6 in binario inventa est.')
+          PY
+
+      - name: Nucleum VINDEX purum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/compilator_vindex_novus systema/nucleus.vindex /tmp/nucleus_vindex_purus.elf
+          test -s /tmp/nucleus_vindex_purus.elf
+          stat -c 'Nucleus: %s octeta' /tmp/nucleus_vindex_purus.elf
+
+      - name: Applicatio UEFI cum bootstrap minimo construe
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp /tmp/compilator_vindex_novus compilator_vindex
+          chmod +x compilator_vindex systema/uefi/construe_uefi.sh
+          systema/uefi/construe_uefi.sh /tmp/systema_vindex_uefi.img /tmp/BOOTX64.EFI
+          file /tmp/BOOTX64.EFI
+          test -s /tmp/systema_vindex_uefi.img
+
+      - name: Nulla regressio POLLE aut runtime non-VINDEX
+        shell: bash
+        run: |
+          set -euo pipefail
+          ! grep -R --line-number --fixed-strings 'POLLE()' 'Vindex Chat-GPT/vindex_final_v51/systema' --include='*.vindex'
+          python3 instrumenta/verifica_puritatem_sylviae.py
