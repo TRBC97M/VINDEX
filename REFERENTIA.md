@@ -144,7 +144,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 ```
 
-In modo PE argumenta lineae mandatorum Windows nondum convertuntur; interim `PRINCIPALIS` `argc=0` et `argv=0` accipit.
+In modo PE/Win64 linea mandatorum Windows in `argc` et `argv` convertitur. Spatia intra signa duplicia ad idem argumentum pertinent. Haec prima forma octetis paginae codicis Windows nititur; viae extra paginam activam nondum canonicae sunt.
 
 ## Lectio et scriptura
 
@@ -219,7 +219,7 @@ Compilator fontes absentes, importationes vitiosas, `PRINCIPALIS` absentem, inst
 - codex machinalis, fontes et metadatae principales dynamice crescunt;
 - longitudo identificatoris: 32 litterae;
 - parametra functionis probata: 7;
-- argumenta lineae mandatorum PE nondum convertuntur;
+- argumenta lineae mandatorum PE spatia intra signa duplicia servant;
 - nulla collectio purgamentorum;
 - nulla dependentia libc ad compilationem ordinariam.
 

@@ -18,6 +18,8 @@ PE32+ AMD64 Windows:
 ./compilator_vindex programma.vindex programma.exe pe
 ```
 
+Compilator etiam se ipsum in exsecutabile Win64 generat. Binarium illud sub Windows argumenta lineae mandatorum accipit atque alios fontes VINDEX sine bibliotheca C compilare potest.
+
 Nulla bibliotheca C, GCC, NASM, Python, GTK aut alius compilator ad compilationem ordinariam requiritur.
 
 ## Auto-hospitium
