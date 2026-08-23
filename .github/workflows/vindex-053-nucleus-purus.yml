@@ -1,13 +1,10 @@
-# Custodia nuclei VINDEX sine Python, GTK, Systemate aut amorsa externa.
+# Custodia externa nuclei VINDEX purificati.
 name: VINDEX 0.53 — Nucleus purus
 
 on:
   push:
     branches:
-      - chatgpt/vindex-053-purificatio
-  pull_request:
-    branches:
-      - chatgpt/vindex-053-compilator-dynamicus
+      - infrastructura/vindex-053-ci-purificatio
   workflow_dispatch:
 
 permissions:
@@ -19,29 +16,30 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Fontes accipe
+      - name: Nucleum purum accipe
         uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-purificatio
 
       - name: Compilatorem para
         shell: bash
         run: |
           set -euo pipefail
-          chmod 755 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod 755 ./compilator_vindex
 
       - name: Punctum fixum native comproba
         shell: bash
         run: |
           set -euo pipefail
-          R='Vindex Chat-GPT/vindex_final_v51'
-          F="$R/src/compilator_vindex.vindex"
-          "$R/compilator_vindex" "$F" "$RUNNER_TEMP/gen1"
+          F='src/compilator_vindex.vindex'
+          ./compilator_vindex "$F" "$RUNNER_TEMP/gen1"
           chmod 755 "$RUNNER_TEMP/gen1"
           "$RUNNER_TEMP/gen1" "$F" "$RUNNER_TEMP/gen2"
           chmod 755 "$RUNNER_TEMP/gen2"
           "$RUNNER_TEMP/gen2" "$F" "$RUNNER_TEMP/gen3"
           chmod 755 "$RUNNER_TEMP/gen3"
           cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
-          cmp "$R/compilator_vindex" "$RUNNER_TEMP/gen2"
+          cmp ./compilator_vindex "$RUNNER_TEMP/gen2"
           sha256sum "$RUNNER_TEMP/gen2"
           printf '%s\n' 'RECTE: compilator VINDEX sine Python punctum fixum servat.'
 
@@ -49,7 +47,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd 'Vindex Chat-GPT/vindex_final_v51'
           C='./compilator_vindex'
 
           proba() {
@@ -84,7 +81,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd 'Vindex Chat-GPT/vindex_final_v51'
           C='./compilator_vindex'
 
           reice() {
@@ -109,9 +105,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          R='Vindex Chat-GPT/vindex_final_v51'
-          F="$R/src/compilator_vindex.vindex"
+          F='src/compilator_vindex.vindex'
           sed 's/$/\r/' "$F" > "$RUNNER_TEMP/compilator_crlf.vindex"
-          "$R/compilator_vindex" "$RUNNER_TEMP/compilator_crlf.vindex" "$RUNNER_TEMP/compilator_crlf"
+          ./compilator_vindex "$RUNNER_TEMP/compilator_crlf.vindex" "$RUNNER_TEMP/compilator_crlf"
           chmod 755 "$RUNNER_TEMP/compilator_crlf"
           printf '%s\n' 'RECTE: CRLF sine Python compilatur.'
