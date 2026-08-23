@@ -31,37 +31,35 @@ jobs:
           timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_nomen_redde.vindex /tmp/fb_nomen_redde.elf
           file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_parentheses.elf /tmp/fb_nomen_redde.elf | grep -q 'ELF 64-bit'
 
-      - name: Input UEFI VINDEX compila
+      - name: Strata VINDEX separatim compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_input.vindex /tmp/fb_input.elf
-          file /tmp/fb_input.elf | grep -q 'ELF 64-bit'
-
-      - name: Gestorem fenestrarum VINDEX compila
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_gestor.vindex /tmp/fb_gestor.elf
-          file /tmp/fb_gestor.elf | grep -q 'ELF 64-bit'
-
-      - name: Interactionem superiorem compila
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_interactio.vindex /tmp/fb_interactio.elf
-          file /tmp/fb_interactio.elf | grep -q 'ELF 64-bit'
-
-      - name: Ansam eventuum compila
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
-          file /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
+          file /tmp/fb_input.elf /tmp/fb_gestor.elf /tmp/fb_interactio.elf /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
 
-      - name: Corpus B sine PRINCIPALI compila
+      - name: Praefixa corporis B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          awk '/^FUNCTIO PRINCIPALIS REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_corpus.vindex
-          printf '%s\n' 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.' '    REDDE 0.' 'FIN-FUNCTIO.' >> /tmp/fb_corpus.vindex
-          timeout 30s ./compilator_vindex /tmp/fb_corpus.vindex /tmp/fb_corpus.elf
-          file /tmp/fb_corpus.elf | grep -q 'ELF 64-bit'
+          fac_praefixum() {
+            finis="$1"
+            nomen="$2"
+            awk -v finis="$finis" '
+              { print }
+              $0 == "FUNCTIO " finis " REDDENS NUMERUS." { intra=1 }
+              intra == 1 && $0 == "FIN-FUNCTIO." { exit }
+            ' systema/fenestrale_ii_purus_b.vindex > "/tmp/${nomen}.vindex"
+            printf '%s\n' 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.' '    REDDE 0.' 'FIN-FUNCTIO.' >> "/tmp/${nomen}.vindex"
+            timeout 20s ./compilator_vindex "/tmp/${nomen}.vindex" "/tmp/${nomen}.elf"
+            file "/tmp/${nomen}.elf" | grep -q 'ELF 64-bit'
+          }
+          fac_praefixum FB_STALL fb_prefix_input
+          fac_praefixum FB_HIT fb_prefix_hit
+          fac_praefixum FB_CLAUDE fb_prefix_status
+          fac_praefixum FB_TAB_ALTERNA fb_prefix_gestor
+          fac_praefixum FB_REDDE fb_prefix_totum
 
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
