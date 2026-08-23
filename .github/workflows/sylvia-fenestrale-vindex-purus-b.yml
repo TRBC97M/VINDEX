@@ -55,6 +55,14 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
           file /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
 
+      - name: Corpus B sine PRINCIPALI compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          awk '/^FUNCTIO PRINCIPALIS REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_corpus.vindex
+          printf '%s\n' 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.' '    REDDE 0.' 'FIN-FUNCTIO.' >> /tmp/fb_corpus.vindex
+          timeout 30s ./compilator_vindex /tmp/fb_corpus.vindex /tmp/fb_corpus.elf
+          file /tmp/fb_corpus.elf | grep -q 'ELF 64-bit'
+
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
