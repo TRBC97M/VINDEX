@@ -82,7 +82,7 @@ jobs:
           proba recursio recursio.vindex '720'
           proba argumenta argumenta.vindex "$(printf '2\n90')" Zeta
           proba argumenta-septem argumenta_septem.vindex '28'
-          proba vxnat-partem vxnat_partem.vindex "$(printf '83\n65\n76\n86\n69')"
+          proba ordo-partem ordo_partem.vindex "$(printf '83\n65\n76\n86\n69')"
           proba vocationes-nullae vocationes_nullae.vindex '7168'
           proba desine-imbrique desine_imbrique.vindex '48'
           proba lectio-contextus lectio_contextus.vindex '66'
