@@ -1,18 +1,14 @@
-# VINDEX 0.53 — Migratio tabulae historicae
+# VINDEX 0.53 — Migratio tabulae historicae absoluta
 
 ## Propositum
 
-`tabula` olim simul symbola, statum parseris, cursorem pilae, functiones, vocationes pendentes et formas continebat. Collectiones maiores iam ad memoriam crescentem migratae sunt, sed radix historica adhuc exstat:
+`tabula` olim symbola, statum parseris, cursorem pilae, functiones, vocationes pendentes, localia et formas in uno ordine fixo `CAPACITAS 3000` miscebat. Finis migrationis erat statum compilationis nominatum et explicitum obtinere, non numeros magicos alio loco abscondere.
 
-```text
-DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 3000.
-```
+**Migratio nunc absoluta est.** Nulla `tabula` historica in fonte compilatoris restat.
 
-Finis migrationis est statum compilationis nominatum et explicitum obtinere, non numeros magicos alio loco abscondere.
+## Inventarium finale
 
-## Inventarium
-
-`instrumenta/inventaria_tabula_053.py` omnes accessus litterales `tabula[n]` numerat. `instrumenta/TABULA-LITTERALIA-053.txt` basim admittendam figit et GitHub Actions index novus tacitus frangit.
+`instrumenta/inventaria_tabula_053.py` accessus litterales `tabula[n]` numerat et `instrumenta/TABULA-LITTERALIA-053.txt` basim canonicam custodit.
 
 Initio purificationis:
 
@@ -21,22 +17,71 @@ INDICES LITTERALES DISTINCTI: 12
 ACCESSUS LITTERALES TOTALES: 106
 ```
 
-Post migrationem `227`: XI indices, XCVII accessus.
-Post migrationem `2999`: X indices, XCV accessus.
-Post migrationem cursoris `51`: IX indices, XLV accessus.
-Post migrationem descriptorum functionum et vocationum pendentium: VII indices, XLI accessus.
-
-Indices adhuc praesentes:
+Status finalis:
 
 ```text
-2970
-2971
-2972
-2990
-2991
-2992
-2993
+INDICES LITTERALES DISTINCTI: 0
+ACCESSUS LITTERALES TOTALES: 0
 ```
+
+Praeterea CI vetat:
+
+- quemvis accessum `tabula[n]`;
+- declarationem historicam `CAPACITAS 3000`;
+- `ACCIPIT tabula`;
+- ipsum identifier internum `tabula` in fonte compilatoris.
+
+## Gradus migrationis absoluti
+
+### I. Status `DESINE`
+
+`tabula[227]` remota est. `STATUS_DESINE_LEGE` et `STATUS_DESINE_SCRIBE` contextum explicitum accipiunt.
+
+### II. Status lectionis
+
+`tabula[2999]` remota est. Status `LEGE/OCTETUS` in campo explicito contextus servatur.
+
+### III. Cursor pilae functionis
+
+`tabula[51]` remota est. `CURSOR_PILAE_LEGE` et `CURSOR_PILAE_SCRIBE` campum contextus regunt.
+
+### IV. Functiones et vocationes pendentes
+
+Indices historici `2980..2985` remoti sunt. Descriptores collectionum dynamicarum structuram explicitam utuntur:
+
+```text
++0  basis collectionis
++8  capacitas
++16 quantitas
+```
+
+`PARES_LEGE`, `PARES_SCRIBE`, `PARES_QUANTITAS` et `ASSECURA_PARES_DYNAMICA` descriptoris acum accipiunt.
+
+### V. Localia
+
+Indices `2970..2972` remoti sunt. Descriptor localium propriam memoriam explicitam habet; `INITIA_LOCA_DYNAMICA`, `ASSECURA_LOCA_DYNAMICA`, `LOCALE_LEGE`, `LOCALE_SCRIBE`, `RESTITUE_LOCA_DYNAMICA` et `PROXIMUS_LOCUS_LIBER` ab ordine historico omnino separata sunt.
+
+### VI. Formae
+
+Indices `2990..2993` remoti sunt. Descriptor formarum et index ultimae formae contextu/descriptore explicito servantur. Post hunc gradum declaratio fixa `CAPACITAS 3000` ipsa deleta est.
+
+## Contextus compilationis finalis
+
+Post integrationem backend PE/Win64 contextus parseris LXXII octeta continet:
+
+```text
++0   status DESINE
++8   status/intervallum lectionis
++16  cursor pilae functionis
++24  descriptor functionum
++32  descriptor vocationum pendentium
++40  descriptor localium
++48  descriptor formarum
++56  modus targeti ELF/PE
++64  descriptor correctionum IAT PE
+```
+
+Ita extensio Win64 eodem principio migrationis utitur: status nominatus et explicitus, non novi indices magici.
 
 ## Custodia semantica
 
@@ -47,106 +92,37 @@ Suite canonica XXV probationes continet. Inter probationes structuram migrationi
 - `argumenta_septem.vindex`: conventio System V cum septem argumentis, exitus `28`;
 - `lectio_contextus.vindex`: status `LEGE/OCTETUS` per contextum explicitum transit.
 
-Septem argumenta tam compilatore nativo quam amorsa Python probantur.
+Septem argumenta tam compilatore nativo quam amorsa Python probantur. CRLF et pila maior uno MiB separatim custodiuntur.
 
-## I. Status `DESINE` — absolutus
+## Backend PE post migrationem
 
-`tabula[227]` omnino remota est. `STATUS_DESINE_LEGE` et `STATUS_DESINE_SCRIBE` contextum explicitum accipiunt.
-
-## II. Status lectionis `2999` — absolutus
-
-`tabula[2999]` omnino remota est. Status temporarius lectionis in secundo campo contextus servatur.
-
-## III. Cursor pilae `51` — absolutus
-
-`tabula[51]` omnino remota est. `CURSOR_PILAE_LEGE` et `CURSOR_PILAE_SCRIBE` tertium campum contextus regunt. Haec migratio L accessus litterales una mutatione delevit.
-
-## IV. Functiones et vocationes pendentes — absolutae
-
-`tabula[2982]` et `tabula[2985]` omnino remotae sunt. Descriptores functionum et vocationum pendentium nunc memoria propria utuntur, cuius structura est:
+Ordo operis destinatus completus est:
 
 ```text
-+0  basis collectionis
-+8  capacitas
-+16 quantitas
+227 remove                         FACTUM
+2999 remove                        FACTUM
+51 remove                          FACTUM
+functiones/pendentes remove        FACTUM
+localia 2970..2972 remove          FACTUM
+formae 2990..2993 remove           FACTUM
+CAPACITAS 3000 remove              FACTUM
+tabula historica omnino remove     FACTUM
+PE/Windows integra                 FACTUM
 ```
 
-`PARES_LEGE`, `PARES_SCRIBE`, `PARES_QUANTITAS` et `ASSECURA_PARES_DYNAMICA` descriptoris acum accipiunt; indices historici `2980..2985` in call-sites iam non sunt.
-
-Contextus communis nunc XL octeta continet:
-
-```text
-+0  status DESINE
-+8  intervallum temporarium lectionis
-+16 cursor pilae functionis
-+24 acus descriptoris functionum
-+32 acus descriptoris vocationum pendentium
-```
-
-## V. Descriptor localium `2970..2972` — proximus gradus
-
-Localia ipsa iam collectione crescente servantur; tantum descriptor historice in `tabula` manet:
-
-```text
-2970: basis — V accessus
-2971: capacitas — III accessus
-2972: quantitas — XIII accessus
-```
-
-Proximus gradus est descriptor localium in memoriam explicitam transferre et `INITIA_LOCA_DYNAMICA`, `ASSECURA_LOCA_DYNAMICA`, `LOCALE_LEGE`, `LOCALE_SCRIBE`, `RESTITUE_LOCA_DYNAMICA` atque `PROXIMUS_LOCUS_LIBER` ab `tabula` separare. Hoc XXI accessus litterales removebit.
-
-## VI. Descriptor formarum `2990..2993`
-
-Post localia tantum formae manebunt:
-
-```text
-2990: basis — V accessus
-2991: capacitas — III accessus
-2992: quantitas — VIII accessus
-2993: index ultimae formae — IV accessus
-```
-
-His remotis ipsa `CAPACITAS 3000` deleri poterit.
-
-## Disciplina migrationis
-
-Post quemque gradum:
-
-1. numerus accessuum literalium `tabula[n]` minuatur;
-2. basis `TABULA-LITTERALIA-053.txt` renovetur;
-3. nullus index magicus novus introducatur;
-4. auto-hospitium punctum fixum servet;
-5. amorsa Python transeat;
-6. regressiones canonicae omnes transeant;
-7. CRLF et pila > I MiB separatim transeant.
-
-## Ordo operis
-
-```text
-227 remove — FACTUM
-2999 remove — FACTUM
-51 remove — FACTUM
-2982/2985 remove — FACTUM
-descriptor localium 2970..2972 remove
-descriptor formarum 2990..2993 remove
-CAPACITAS 3000 remove
-PE/Windows integra
-```
+Backend PE32+ AMD64 iam in ramo VINDEX 0.53 dynamico integratus est et eodem contextu explicito utitur.
 
 ## Status comprobatus
 
 ```text
 25 probationes rectae; 0 errata.
-PUNCTUM FIXUM SHA-256: 405162aeb6d06302c388d7384723917a6a0e138887a7f6beffa755a700efff1b
-INDICES TABULAE: 7
-ACCESSUS TABULAE: 41
-227: 0
-2999: 0
-51: 0
-2982: 0
-2985: 0
+PUNCTUM FIXUM SHA-256:
+166a0e666deb83f759f90d1b721474ede01bb3519ec5231b2fe0e9b23158c969
+INDICES TABULAE: 0
+ACCESSUS TABULAE: 0
 ARGUMENTA SEPTEM: 28
 PILA MAGNA: 1048592,16
+PE/WIN64: RECTE sub Windows Server 2025
 ```
 
 **VINDEX Latine cogitat. Sylvia Latine loquitur.**
