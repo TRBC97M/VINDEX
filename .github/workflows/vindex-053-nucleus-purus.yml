@@ -4,10 +4,10 @@ name: VINDEX 0.53 — Nucleus purus
 on:
   push:
     branches:
-      - infrastructura/vindex-053-ci-purificatio
+      - infrastructura/vindex-053-ci-argumenta-win64
   pull_request:
     branches:
-      - infrastructura/vindex-053-ci-purificatio
+      - infrastructura/vindex-053-ci-argumenta-win64
   workflow_dispatch:
 
 permissions:
@@ -22,7 +22,7 @@ jobs:
       - name: Nucleum purum accipe
         uses: actions/checkout@v5
         with:
-          ref: chatgpt/vindex-053-purificatio
+          ref: chatgpt/vindex-053-argumenta-win64
 
       - name: Compilatorem para
         shell: bash
