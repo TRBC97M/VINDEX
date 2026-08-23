@@ -1,0 +1,300 @@
+# Backend Win64 coniunctus: PROCLAMA + fasciculi + auto-hospitium + Windows verus.
+name: VINDEX 0.53 — Win64 integratio v2
+
+on:
+  push:
+    branches:
+      - chatgpt/pe-fasciculi-053-v2
+  pull_request:
+    branches:
+      - claude/pe-integration-053-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  construe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Instrumenta probata ex ramis diagnosticis accipe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git fetch origin \
+            chatgpt/pe-fasciculi-053 \
+            chatgpt/fluitans-win64-053 \
+            chatgpt/pe-verificatio-053
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/instrumenta/applica_fasciculos_win64_053.py" > "$RADIX/instrumenta/applica_fasciculos_win64_053.py"
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" > "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py"
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/tests/casus/fasciculi_portabiles.vindex" > "$RADIX/tests/casus/fasciculi_portabiles.vindex"
+          git show origin/chatgpt/fluitans-win64-053:"$RADIX/instrumenta/corrige_proclama_fluitans_win64_053.py" > "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py"
+          git show origin/chatgpt/pe-verificatio-053:"$RADIX/tests/proba_pe_structuram_053.py" > "$RADIX/tests/proba_pe_structuram_053.py"
+          python3 -m py_compile \
+            "$RADIX/instrumenta/applica_fasciculos_win64_053.py" \
+            "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" \
+            "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py" \
+            "$RADIX/tests/proba_pe_structuram_053.py"
+
+      - name: Backend Win64 coniunctum fonti applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py" "$FONS"
+          grep -Fq 'FUNCTIO COMPONE_APERI_FASCICULUM_PE REDDENS NUMERUS.' "$FONS"
+          grep -Fq 'p = COMPONE_MOVQ_DE_XMM(codex, p, 15, 0).' "$FONS"
+          grep -Fq 'CONTENTUM(pos_codicis) = COMPONE_TRANSFER_FASCICULUM_PE' "$FONS"
+          grep -Fq 'numerus_functionum_pe SICUT NUMERUS VALENS 7' "$FONS"
+
+      - name: Compilatorem ad punctum fixum reconstrue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          timeout 45s "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          timeout 45s "$RUNNER_TEMP/gen1" "$FONS" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          timeout 45s "$RUNNER_TEMP/gen2" "$FONS" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          cp "$RUNNER_TEMP/gen2" "$RADIX/compilator_vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          sha256sum "$RADIX/compilator_vindex" | tee "$RUNNER_TEMP/sha.txt"
+
+      - name: Artefacta VINDEX derivata reconstrue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          (
+            cd "$RADIX"
+            ./compilator_vindex src/officina_vindex.vindex "$RUNNER_TEMP/officina_vindex"
+            ./compilator_vindex src/salutatio_vindex.vindex "$RUNNER_TEMP/salutatio_vindex"
+          )
+          mv "$RUNNER_TEMP/officina_vindex" "$RADIX/officina_vindex"
+          mv "$RUNNER_TEMP/salutatio_vindex" "$RADIX/salutatio_vindex"
+          chmod 755 "$RADIX/officina_vindex" "$RADIX/salutatio_vindex"
+
+      - name: Permissiones canonicas restitue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 \
+            "$RADIX/tests/run_tests.sh" \
+            "$RADIX/vindexc" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/bootstrap/reconstruit.sh" \
+            "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex-officina" \
+            "$RADIX/vindex-salutatio" \
+            "$RADIX/vindex-systema" \
+            "$RADIX/vindex_graphica" \
+            "$RADIX/officina_vindex" \
+            "$RADIX/salutatio_vindex" \
+            "$RADIX/systema/construe_systema.sh" \
+            "$RADIX/systema/uefi/construe_uefi.sh"
+
+      - name: XXV probationes canonicas exsequere
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          "$RADIX/tests/run_tests.sh"
+
+      - name: Casum fasciculorum ELF coniunctum proba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          EXE="$RUNNER_TEMP/fasciculi_elf"
+          "$RADIX/compilator_vindex" "$RADIX/tests/casus/fasciculi_portabiles.vindex" "$EXE"
+          chmod 755 "$EXE"
+          (cd "$RUNNER_TEMP" && ./fasciculi_elf)
+          printf '%s\n' 'RECTE: contractus fasciculorum ELF servatus est.'
+
+      - name: Executabilia PE coniuncta construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          cat >"$RUNNER_TEMP/proclama.vindex" <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              PROCLAMA "Premier".
+              PROCLAMA 999.
+              DECLARA x SICUT FLUITANS VALENS 3.14.
+              PROCLAMA x.
+              PROCLAMA "Dernier".
+              REDDE 7.
+          FIN-FUNCTIO.
+          VINDEX
+          "$RADIX/compilator_vindex" "$RUNNER_TEMP/proclama.vindex" "$RUNNER_TEMP/proclama.exe" pe
+          "$RADIX/compilator_vindex" "$RADIX/tests/casus/fasciculi_portabiles.vindex" "$RUNNER_TEMP/fasciculi.exe" pe
+          python3 "$RADIX/tests/proba_pe_structuram_053.py" "$RUNNER_TEMP/proclama.exe" \
+            --requirit ExitProcess --requirit VirtualAlloc --requirit GetStdHandle --requirit WriteFile
+          python3 "$RADIX/tests/proba_pe_structuram_053.py" "$RUNNER_TEMP/fasciculi.exe" \
+            --requirit ExitProcess --requirit VirtualAlloc --requirit WriteFile \
+            --requirit CreateFileA --requirit ReadFile --requirit CloseHandle
+
+      - name: Executabilia PE conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-win64-v2
+          path: |
+            ${{ runner.temp }}/proclama.exe
+            ${{ runner.temp }}/fasciculi.exe
+          if-no-files-found: error
+
+  windows:
+    needs: construe
+    runs-on: windows-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Executabilia accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-win64-v2
+          path: pe
+
+      - name: PROCLAMA et fasciculos sub Windows vero verifica
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $viaProclama = Join-Path $PWD 'pe\proclama.exe'
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $viaProclama
+          $psi.UseShellExecute = $false
+          $psi.RedirectStandardOutput = $true
+          $psi.RedirectStandardError = $true
+          $p = [System.Diagnostics.Process]::new()
+          $p.StartInfo = $psi
+          [void]$p.Start()
+          $stdout = $p.StandardOutput.ReadToEnd()
+          $stderr = $p.StandardError.ReadToEnd()
+          $p.WaitForExit()
+          $out = ($stdout -replace "`r`n", "`n").TrimEnd("`n")
+          Write-Host "PROCLAMA -> status $($p.ExitCode), stdout=[$($out -replace "`n", "\\n")]"
+          if ($stderr.Length -gt 0) { Write-Host "stderr=[$stderr]" }
+          if ($p.ExitCode -ne 7) { throw "ERRATUM: PROCLAMA status $($p.ExitCode); 7 exspectabatur." }
+          if ($out -ne "Premier`n999`n3.140000`nDernier") { throw "ERRATUM: PROCLAMA exitus differt." }
+
+          $dir = Join-Path $PWD 'fasciculi-temp'
+          New-Item -ItemType Directory -Force -Path $dir | Out-Null
+          Copy-Item (Join-Path $PWD 'pe\fasciculi.exe') (Join-Path $dir 'fasciculi.exe')
+          $pf = Start-Process -FilePath (Join-Path $dir 'fasciculi.exe') -WorkingDirectory $dir -Wait -PassThru -NoNewWindow
+          Write-Host "FASCICULI -> status $($pf.ExitCode)"
+          if ($pf.ExitCode -ne 0) { throw "ERRATUM: fasciculi status $($pf.ExitCode); 0 exspectabatur." }
+          $data = [System.IO.File]::ReadAllBytes((Join-Path $dir 'vindex-pe-io.tmp'))
+          $textus = [System.Text.Encoding]::ASCII.GetString($data)
+          Write-Host "FASCICULI -> data=[$textus]"
+          if ($textus -ne 'VINX') { throw "ERRATUM: fasciculus non continet VINX." }
+          Write-Host 'RECTE: PROCLAMA, fluitans et fasciculi sub Windows vero coniunctim operantur.'
+
+  canonica:
+    needs: windows
+    if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+
+    steps:
+      - name: Ramum accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/pe-fasciculi-053-v2
+          fetch-depth: 0
+
+      - name: Instrumenta canonica accipe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git fetch origin chatgpt/pe-fasciculi-053 chatgpt/fluitans-win64-053 chatgpt/pe-verificatio-053
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/instrumenta/applica_fasciculos_win64_053.py" > "$RADIX/instrumenta/applica_fasciculos_win64_053.py"
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" > "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py"
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/tests/casus/fasciculi_portabiles.vindex" > "$RADIX/tests/casus/fasciculi_portabiles.vindex"
+          git show origin/chatgpt/fluitans-win64-053:"$RADIX/instrumenta/corrige_proclama_fluitans_win64_053.py" > "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py"
+          git show origin/chatgpt/pe-verificatio-053:"$RADIX/tests/proba_pe_structuram_053.py" > "$RADIX/tests/proba_pe_structuram_053.py"
+
+      - name: Backend fonti canonico applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py" "$FONS"
+          chmod 755 "$RADIX/compilator_vindex"
+          timeout 45s "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          timeout 45s "$RUNNER_TEMP/gen1" "$FONS" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          timeout 45s "$RUNNER_TEMP/gen2" "$FONS" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          cp "$RUNNER_TEMP/gen2" "$RADIX/compilator_vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          sha256sum "$RADIX/compilator_vindex"
+
+      - name: Artefacta et permissiones restitue
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          (cd "$RADIX" && ./compilator_vindex src/officina_vindex.vindex "$RUNNER_TEMP/officina" && ./compilator_vindex src/salutatio_vindex.vindex "$RUNNER_TEMP/salutatio")
+          mv "$RUNNER_TEMP/officina" "$RADIX/officina_vindex"
+          mv "$RUNNER_TEMP/salutatio" "$RADIX/salutatio_vindex"
+          chmod 755 \
+            "$RADIX/tests/run_tests.sh" "$RADIX/vindexc" "$RADIX/compilator_vindex" \
+            "$RADIX/bootstrap/reconstruit.sh" "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex-officina" "$RADIX/vindex-salutatio" "$RADIX/vindex-systema" \
+            "$RADIX/vindex_graphica" "$RADIX/officina_vindex" "$RADIX/salutatio_vindex" \
+            "$RADIX/systema/construe_systema.sh" "$RADIX/systema/uefi/construe_uefi.sh"
+          "$RADIX/tests/run_tests.sh"
+
+      - name: Mutationes canonicas committe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git config user.name 'VINDEX Automatum'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            "$RADIX/src/compilator_vindex.vindex" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/officina_vindex" \
+            "$RADIX/salutatio_vindex" \
+            "$RADIX/instrumenta/applica_fasciculos_win64_053.py" \
+            "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" \
+            "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py" \
+            "$RADIX/tests/proba_pe_structuram_053.py" \
+            "$RADIX/tests/casus/fasciculi_portabiles.vindex" \
+            "$RADIX/tests/run_tests.sh" "$RADIX/vindexc" "$RADIX/bootstrap/reconstruit.sh" \
+            "$RADIX/installa_officinam.sh" "$RADIX/vindex-officina" "$RADIX/vindex-salutatio" \
+            "$RADIX/vindex-systema" "$RADIX/vindex_graphica" \
+            "$RADIX/systema/construe_systema.sh" "$RADIX/systema/uefi/construe_uefi.sh"
+          if git diff --cached --quiet; then
+            printf '%s\n' 'RECTE: backend iam canonicus est.'
+            exit 0
+          fi
+          git commit -m 'VINDEX 0.53: backend Win64 fasciculorum canonicum integra'
+          git push origin HEAD:chatgpt/pe-fasciculi-053-v2
