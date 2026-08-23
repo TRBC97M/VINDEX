@@ -66,9 +66,9 @@ PY
         programmata_g.elf programmata_g.o
 )
 
-gcc -c -std=c11 -O2 -Wall -Wextra -Werror -ffreestanding -fno-builtin \
-    -fno-stack-protector -fno-pie -fno-ident -m64 -mno-red-zone \
-    -maccumulate-outgoing-args -fshort-wchar \
+gcc -c -std=c11 -O2 -Wall -Wextra -Werror -Wno-error=misleading-indentation \
+    -ffreestanding -fno-builtin -fno-stack-protector -fno-pie -fno-ident \
+    -m64 -mno-red-zone -maccumulate-outgoing-args -fshort-wchar \
     -I "$RADIX/systema" \
     "$UEFI/fenestrale_native_h.c" -o "$TEMPORARIUM/fenestrale_native_h.o"
 
