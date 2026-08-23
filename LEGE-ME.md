@@ -1,6 +1,6 @@
 # VINDEX 0.53 — Nucleus linguae
 
-VINDEX est lingua programmationis Latina quae directe exsecutabilia nativa x86-64 generat. Hic ramus solum nucleum linguae servat: compilatorem auto-hospitem, fontem eius, specificationem et probationes canonicas VINDEX.
+VINDEX est lingua programmationis Latina quae directe exsecutabilia nativa x86-64 generat. Hic ramus solum nucleum linguae servat: compilatorem auto-hospitem, fontem eius, referentiam et probationes canonicas VINDEX.
 
 ## Compilatio
 
@@ -22,23 +22,11 @@ Nulla bibliotheca C, GCC, NASM, Python, GTK aut alius compilator ad compilatione
 
 ## Auto-hospitium
 
-Fons canonicus est:
-
-```text
-src/compilator_vindex.vindex
-```
-
-Binarium seminale est:
-
-```text
-compilator_vindex
-```
-
-Compilator seminale fontem suum compilat; generationes secunda et tertia byte pro byte congruunt, et generatio secunda cum binario distributo congruit. Sigillum SHA-256 est in `SIGILLA_SHA256.txt`.
+Fons canonicus est `src/compilator_vindex.vindex`; binarium seminale est `compilator_vindex`. Compilator seminale fontem suum compilat, generationes secunda et tertia byte pro byte congruunt, atque generatio secunda cum binario distributo congruit. Sigillum SHA-256 est in `SIGILLA_SHA256.txt`.
 
 ## Probationes
 
-`tests/casus/` continet casus semanticos VINDEX. `tests/proba_pe_structuram_053.vindex` structuram PE32+, sectiones, importationes et IAT ipso VINDEX verificat.
+`tests/casus/` continet contractum semanticum minimum. `tests/compara_fasciculos_053.vindex` comparationem byte pro byte ipso VINDEX facit. `tests/proba_pe_structuram_053.vindex` structuram PE32+, sectiones, importationes et IAT ipso VINDEX verificat.
 
 Infrastructura GitHub Actions non est pars nuclei; separatim servatur in ramo `infrastructura/vindex-053-ci-purificatio`.
 
@@ -46,12 +34,11 @@ Infrastructura GitHub Actions non est pars nuclei; separatim servatur in ramo `i
 
 - `src/compilator_vindex.vindex` — compilator auto-hospes;
 - `compilator_vindex` — binarium seminale;
-- `tests/` — probationes VINDEX;
-- `REFERENTIA.md` — grammatica et semantica canonica;
-- `PURIFICATIO-053.md` — relatio purificationis;
+- `tests/` — contractus et verificatores VINDEX;
+- `REFERENTIA.md` — grammatica, semantica et limites canonici;
 - `VERSION` — versio nuclei;
 - `SIGILLA_SHA256.txt` — sigillum compilatoris.
 
-Historia Systematis, Officinae, bootstrap Python, instrumentorum migrationis et ceterorum componentium ante purificationem servatur in ramo `archive/vindex-053-avant-purificatio`.
+Historia ante purificationem servatur in ramo `archive/vindex-053-avant-purificatio`.
 
 **VINDEX Latine cogitat. Sylvia Latine loquitur.**
