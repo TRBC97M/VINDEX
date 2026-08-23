@@ -27,6 +27,7 @@ jobs:
             sed -i 's/if "POLLE()" in nuc:/if "= POLLE()" in nuc:/' instrumenta/custos_patch_vindex_purus.py
             python3 instrumenta/custos_patch_vindex_purus.py
           fi
+          python3 instrumenta/custos_reloca_textus_sylviae.py
 
       - name: Compilatorem VINDEX 0.53 probatum assume et UEFI extende
         shell: bash
