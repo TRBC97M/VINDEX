@@ -24,6 +24,10 @@ Nulla bibliotheca C, GCC, NASM, Python, GTK aut alius compilator ad compilatione
 
 Fons canonicus est `src/compilator_vindex.vindex`; binarium seminale est `compilator_vindex`. Compilator seminale fontem suum compilat, generationes secunda et tertia byte pro byte congruunt, atque generatio secunda cum binario distributo congruit. Sigillum SHA-256 est in `SIGILLA_SHA256.txt`.
 
+## Contractus nuclei
+
+`REFERENTIA.md` est contractus canonicus VINDEX 0.53. Quod ibi non definitur pars API nuclei non est, etiamsi recognitor historicus adhuc in fonte compilatoris maneat. Servitia processuum, tuborum, directorii, firmware et appendendi ad extensionem separatam pertinent, non ad nucleum linguae.
+
 ## Probationes
 
 `tests/casus/` continet contractum semanticum minimum. `tests/compara_fasciculos_053.vindex` comparationem byte pro byte ipso VINDEX facit. `tests/proba_pe_structuram_053.vindex` structuram PE32+, sectiones, importationes et IAT ipso VINDEX verificat.
