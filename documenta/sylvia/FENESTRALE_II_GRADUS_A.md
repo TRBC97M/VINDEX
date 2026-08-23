@@ -23,8 +23,9 @@ novam separatam probat, ut migratio sine regressione fieri possit.
 ## II. Fasciculi
 
 - `systema/uefi/fenestrale_native_a.c` — applicatio UEFI probationis;
-- `systema/uefi/construe_fenestrale_native_a.sh` — constructio PE32+ EFI;
-- exitus localis: `FENESTRALEA.EFI`.
+- `systema/uefi/construe_fenestrale_native_a.sh` — constructio PE32+ EFI et imaginis bootabilis;
+- exitus localis: `FENESTRALEA.EFI`;
+- imago localis: `fenestrale_a_uefi.img`.
 
 Nullus fasciculus nuclei 0.51 in hoc gradu mutatur.
 
@@ -93,20 +94,41 @@ Ex radice `vindex_final_v51`:
 bash systema/uefi/construe_fenestrale_native_a.sh
 ```
 
-Vel exitum explicitum:
+Duo exitus fiunt:
 
-```bash
-bash systema/uefi/construe_fenestrale_native_a.sh /tmp/FENESTRALEA.EFI
+```text
+FENESTRALEA.EFI
+fenestrale_a_uefi.img
 ```
 
-Exitus debet a `file` tamquam PE32+ EFI application agnosci, et `objdump -p`
-subsystema `EFI application` monstrare.
+Vel loca explicita:
+
+```bash
+bash systema/uefi/construe_fenestrale_native_a.sh \
+    /tmp/FENESTRALEA.EFI \
+    /tmp/fenestrale_a_uefi.img
+```
+
+Applicatio debet a `file` tamquam PE32+ EFI application agnosci, et
+`objdump -p` subsystema `EFI application` monstrare.
+
+Imago bootabilis eodem fabricatore GPT/FAT32 ac Sylvia 0.51 utitur, sed
+`/EFI/BOOT/BOOTX64.EFI` probationem Gradus A continet, non systema stabile.
 
 ---
 
 ## VII. Probatio in firmware
 
+Duae viae sunt.
+
+### Applicatio sola
+
 `FENESTRALEA.EFI` e partitione FAT EFI vel EFI Shell aperiri potest.
+
+### Imago bootabilis
+
+`fenestrale_a_uefi.img` directe in QEMU/OVMF aperiri aut in clavem USB
+**experimentalem** restitui potest. Haec imago non est imago Sylvia OS stabilis.
 
 Cum recte incipit:
 
