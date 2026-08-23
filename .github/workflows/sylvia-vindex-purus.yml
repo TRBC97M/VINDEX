@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   puritas:
@@ -103,3 +103,21 @@ jobs:
         run: |
           set -euo pipefail
           python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Mutationes probatas in ramo persiste
+        if: github.event_name == 'push' && github.ref == 'refs/heads/chatgpt/custos-vindex-purus'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A -- \
+            'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
+            'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' \
+            'Vindex Chat-GPT/vindex_final_v51/systema'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Sylvia OS: runtime non-VINDEX expurgatur'
+            git push origin HEAD:chatgpt/custos-vindex-purus
+          else
+            printf '%s\n' 'RECTE: mutationes probatae iam in ramo persistunt.'
+          fi
