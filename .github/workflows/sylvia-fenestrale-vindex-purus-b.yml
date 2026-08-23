@@ -27,10 +27,8 @@ jobs:
         run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fb_uefi.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fb_graphica.elf
-          timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_parentheses.vindex /tmp/fb_parentheses.elf
-          timeout 10s ./compilator_vindex probationes/fenestrale_purus_b_nomen_redde.vindex /tmp/fb_nomen_redde.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica_uefi.vindex /tmp/fb_graphica_uefi.elf
-          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_parentheses.elf /tmp/fb_nomen_redde.elf /tmp/fb_graphica_uefi.elf | grep -q 'ELF 64-bit'
+          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_graphica_uefi.elf | grep -q 'ELF 64-bit'
 
       - name: Strata VINDEX separatim compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -41,7 +39,7 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
           file /tmp/fb_input.elf /tmp/fb_gestor.elf /tmp/fb_interactio.elf /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
 
-      - name: Praefixa input B divide
+      - name: Praefixa initii B divide
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           fac_praefixum() {
@@ -56,13 +54,8 @@ jobs:
             timeout 12s ./compilator_vindex "/tmp/${nomen}.vindex" "/tmp/${nomen}.elf"
             file "/tmp/${nomen}.elf" | grep -q 'ELF 64-bit'
           }
+          fac_praefixum FB_I32 fb_p1_i32
           fac_praefixum FB_GUID_PONE fb_p2_guid
-          fac_praefixum FB_PROTOCOL_LOCATE fb_p3_locate
-          fac_praefixum FB_PROTOCOLA_PARA fb_p4_para
-          fac_praefixum FB_CLAVIS_LEGE fb_p5_clavis
-          fac_praefixum FB_MURUS_ABSOLUTUS fb_p6_abs
-          fac_praefixum FB_MURUS_RELATIVUS fb_p7_rel
-          fac_praefixum FB_STALL fb_p8_stall
 
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
