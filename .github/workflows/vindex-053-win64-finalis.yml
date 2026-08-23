@@ -1,13 +1,13 @@
-# Custodia externa argumentorum Win64 nuclei VINDEX.
-name: VINDEX 0.53 — Argumenta Win64
+# Custodia externa diagnosticorum Win64 nuclei VINDEX.
+name: VINDEX 0.53 — Diagnostica Win64
 
 on:
   push:
     branches:
-      - infrastructura/vindex-053-ci-argumenta-win64
+      - infrastructura/vindex-053-ci-diagnostica-loci
   pull_request:
     branches:
-      - infrastructura/vindex-053-ci-argumenta-win64
+      - infrastructura/vindex-053-ci-diagnostica-loci
   workflow_dispatch:
 
 permissions:
@@ -21,7 +21,7 @@ jobs:
       - name: Nucleum purum accipe
         uses: actions/checkout@v5
         with:
-          ref: chatgpt/vindex-053-argumenta-win64
+          ref: chatgpt/vindex-053-diagnostica-loci
 
       - name: Compilatorem para
         shell: bash
@@ -61,7 +61,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          STAGE="$RUNNER_TEMP/vindex_win64_argumenta"
+          STAGE="$RUNNER_TEMP/vindex_win64_diagnostica"
           mkdir -p "$STAGE"
           cat > "$RUNNER_TEMP/proclama_finalis.vindex" <<'VINDEX'
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
@@ -79,6 +79,7 @@ jobs:
           ./compilator_vindex src/compilator_vindex.vindex "$STAGE/compilator_vindex.exe" pe
           ./compilator_vindex tests/casus/argumenta.vindex "$STAGE/argumenta.exe" pe
           cp tests/casus/salve.vindex "$STAGE/salve fons.vindex"
+          cp tests/casus/erratum_instructio.vindex "$STAGE/erratum fons.vindex"
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/proclama_finalis.exe"
           "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/fasciculi_finalis.exe"
           "$RUNNER_TEMP/proba_pe" "$STAGE/compilator_vindex.exe"
@@ -91,7 +92,7 @@ jobs:
           path: |
             ${{ runner.temp }}/proclama_finalis.exe
             ${{ runner.temp }}/fasciculi_finalis.exe
-            ${{ runner.temp }}/vindex_win64_argumenta
+            ${{ runner.temp }}/vindex_win64_diagnostica
           if-no-files-found: error
 
   windows:
@@ -144,7 +145,7 @@ jobs:
           $textus = [System.Text.Encoding]::ASCII.GetString([System.IO.File]::ReadAllBytes((Join-Path $dir 'vindex-pe-io.tmp')))
           if ($textus -ne 'VINX') { throw "ERRATUM: fasciculus continet [$textus]." }
 
-          $argumenta = Exsequere-Vindex (Join-Path $PWD 'pe\vindex_win64_argumenta\argumenta.exe') @('Zeta Nova')
+          $argumenta = Exsequere-Vindex (Join-Path $PWD 'pe\vindex_win64_diagnostica\argumenta.exe') @('Zeta Nova')
           $statusArgumentorum = [int]$argumenta[0]
           $outArgumentorum = ([string]$argumenta[1] -replace "`r`n", "`n").TrimEnd("`n")
           if ($statusArgumentorum -ne 0) { throw "ERRATUM: argumenta status $statusArgumentorum." }
@@ -157,8 +158,8 @@ jobs:
           $compilator = Join-Path $radix 'compilator vindex.exe'
           $fons = Join-Path $radix 'salve fons.vindex'
           $exitus = Join-Path $radix 'salve compilatum.exe'
-          Copy-Item (Join-Path $PWD 'pe\vindex_win64_argumenta\compilator_vindex.exe') $compilator
-          Copy-Item (Join-Path $PWD 'pe\vindex_win64_argumenta\salve fons.vindex') $fons
+          Copy-Item (Join-Path $PWD 'pe\vindex_win64_diagnostica\compilator_vindex.exe') $compilator
+          Copy-Item (Join-Path $PWD 'pe\vindex_win64_diagnostica\salve fons.vindex') $fons
 
           $compilatio = Exsequere-Vindex $compilator @($fons, $exitus, 'pe')
           $statusCompilationis = [int]$compilatio[0]
@@ -176,4 +177,17 @@ jobs:
           if ($outSalutationis -ne 'Salve, VINDEX!') {
             throw "ERRATUM: PE compilatum produxit [$outSalutationis]."
           }
-          Write-Host 'RECTE: compilator VINDEX Win64 argumenta citata accipit et aliud programma VINDEX compilat.'
+
+          $fonsErratus = Join-Path $radix 'erratum fons.vindex'
+          $exitusErratus = Join-Path $radix 'erratum.exe'
+          Copy-Item (Join-Path $PWD 'pe\vindex_win64_diagnostica\erratum fons.vindex') $fonsErratus
+          $diagnosticum = Exsequere-Vindex $compilator @($fonsErratus, $exitusErratus, 'pe')
+          $statusDiagnostici = [int]$diagnosticum[0]
+          $outDiagnostici = ([string]$diagnosticum[1] -replace "`r`n", "`n").TrimEnd("`n")
+          $exspectatumDiagnostici = "DIAGNOSTICUM VINDEX`nFONS`n$fonsErratus`nLINEA`n2`nCOLUMNA`n5`nNUNTIUS`nERRATUM: instructio ignota est"
+          if ($statusDiagnostici -ne 65) { throw "ERRATUM: diagnosticum status $statusDiagnostici." }
+          if (Test-Path $exitusErratus) { throw 'ERRATUM: diagnosticum PE inutile produxit.' }
+          if ($outDiagnostici -ne $exspectatumDiagnostici) {
+            throw "ERRATUM: diagnosticum Win64 differt: [$outDiagnostici]."
+          }
+          Write-Host 'RECTE: compilator VINDEX Win64 argumenta citata, compilationem et diagnostica loci servat.'
