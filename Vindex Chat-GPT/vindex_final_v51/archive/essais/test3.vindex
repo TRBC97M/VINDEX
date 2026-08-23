@@ -1,8 +1,0 @@
-FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    PROCLAMA "Salve, Numi — lingua tua vivit!".
-    DECLARA larva SICUT NUMERUS VALENS 12.
-    DECLARA valor SICUT NUMERUS VALENS 10.
-    PROCLAMA larva & valor.
-    PROCLAMA larva | valor.
-    REDDE 0.
-FIN-FUNCTIO.

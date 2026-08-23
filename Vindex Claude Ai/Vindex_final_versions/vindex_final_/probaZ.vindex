@@ -1,7 +1,0 @@
-FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    DECLARA x SICUT NUMERUS VALENS 1.
-    x = x + 10.
-    x = x * 2.
-    x = x - 5.
-    REDDE x.
-FIN-FUNCTIO.

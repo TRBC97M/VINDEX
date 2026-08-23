@@ -1,8 +1,0 @@
-window { background-color: #0a100d; color: #dceadf; }
-#marca { color: #8effaa; font-family: monospace; font-size: 18pt; font-weight: bold; }
-#praeceptum, #responsum { color: #b9d9c1; font-size: 12pt; }
-#nomen { background-color: #07100b; color: #e0f5e5; border: 1px solid #39734c;
-  padding: 10px; font-size: 12pt; }
-#saluta { background-image: none; background-color: #174329; color: #e0ffe8;
-  border: 1px solid #68b57d; padding: 10px; font-weight: bold; }
-#status { color: #82a98f; font-family: monospace; }
