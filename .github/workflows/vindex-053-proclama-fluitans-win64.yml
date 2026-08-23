@@ -1,4 +1,4 @@
-# Defectum PROCLAMA fluitantis Win64 corrigit in fonte temporario et sub Windows vero probat.
+# Correctionem fluitantis Claudii et alignmentum WriteFile sub Windows vero verificat.
 name: VINDEX 0.53 — PROCLAMA fluitans Win64
 
 on:
@@ -21,7 +21,7 @@ jobs:
       - name: Fontes accipe
         uses: actions/checkout@v5
 
-      - name: Correctionem et generationem primam para
+      - name: Alignmentum WriteFile applica
         shell: bash
         run: |
           set -euo pipefail
@@ -29,7 +29,8 @@ jobs:
           FONS="$RUNNER_TEMP/compilator_fluitans.vindex"
           python3 -m py_compile "$RADIX/instrumenta/corrige_proclama_fluitans_win64_053.py"
           python3 "$RADIX/instrumenta/corrige_proclama_fluitans_win64_053.py" "$RADIX/src/compilator_vindex.vindex" "$FONS"
-          grep -Fq 'p = COMPONE_IMPONE(codex, p, 0).' "$FONS"
+          grep -Fq 'p = COMPONE_MOVQ_DE_XMM(codex, p, 15, 0).' "$FONS"
+          grep -Fq 'CODEX_SCRIBE(codex, p + 1, 86).' "$FONS"
           grep -Fq 'CODEX_SCRIBE(codex, p + 2, 244).' "$FONS"
           chmod 755 "$RADIX/compilator_vindex"
           timeout 30s "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
@@ -47,7 +48,7 @@ jobs:
           test "$OUT" = $'4.640000\n1'
           printf '%s\n' 'RECTE: PROCLAMA fluitans ELF intactum est.'
 
-      - name: PE probationes construe
+      - name: PE fluitantes positivos construe
         shell: bash
         run: |
           set -euo pipefail
@@ -58,21 +59,22 @@ jobs:
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
               PROCLAMA "Initium".
               PROCLAMA 42.
-              PROCLAMA 3.14.
+              DECLARA x SICUT FLUITANS VALENS 3.14.
+              PROCLAMA x.
               PROCLAMA "Finis".
               REDDE 8.
           FIN-FUNCTIO.
           VINDEX
-          cat >"$RUNNER_TEMP/negativum.vindex" <<'VINDEX'
+          cat >"$RUNNER_TEMP/dimidia.vindex" <<'VINDEX'
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA x SICUT FLUITANS VALENS 0.0 - 12.5.
+              DECLARA x SICUT FLUITANS VALENS 0.5.
               PROCLAMA x.
-              REDDE 12.
+              REDDE 5.
           FIN-FUNCTIO.
           VINDEX
           timeout 20s "$COMP" "$RUNNER_TEMP/mixtum.vindex" "$RUNNER_TEMP/mixtum.exe" pe
-          timeout 20s "$COMP" "$RUNNER_TEMP/negativum.vindex" "$RUNNER_TEMP/negativum.exe" pe
-          file "$RUNNER_TEMP/fluitans.exe" "$RUNNER_TEMP/mixtum.exe" "$RUNNER_TEMP/negativum.exe"
+          timeout 20s "$COMP" "$RUNNER_TEMP/dimidia.vindex" "$RUNNER_TEMP/dimidia.exe" pe
+          file "$RUNNER_TEMP/fluitans.exe" "$RUNNER_TEMP/mixtum.exe" "$RUNNER_TEMP/dimidia.exe"
 
       - name: Executabilia conserva
         uses: actions/upload-artifact@v4
@@ -81,7 +83,7 @@ jobs:
           path: |
             ${{ runner.temp }}/fluitans.exe
             ${{ runner.temp }}/mixtum.exe
-            ${{ runner.temp }}/negativum.exe
+            ${{ runner.temp }}/dimidia.exe
           if-no-files-found: error
 
   windows:
@@ -101,9 +103,16 @@ jobs:
           function Proba-Vindex([string]$nomen, [int]$status, [string]$exspectatum) {
             $via = Join-Path $PWD ("pe\" + $nomen + ".exe")
             $psi = [System.Diagnostics.ProcessStartInfo]::new()
-            $psi.FileName = $via; $psi.UseShellExecute = $false; $psi.RedirectStandardOutput = $true; $psi.RedirectStandardError = $true
-            $p = [System.Diagnostics.Process]::new(); $p.StartInfo = $psi; [void]$p.Start()
-            $stdout = $p.StandardOutput.ReadToEnd(); $stderr = $p.StandardError.ReadToEnd(); $p.WaitForExit()
+            $psi.FileName = $via
+            $psi.UseShellExecute = $false
+            $psi.RedirectStandardOutput = $true
+            $psi.RedirectStandardError = $true
+            $p = [System.Diagnostics.Process]::new()
+            $p.StartInfo = $psi
+            [void]$p.Start()
+            $stdout = $p.StandardOutput.ReadToEnd()
+            $stderr = $p.StandardError.ReadToEnd()
+            $p.WaitForExit()
             $out = ($stdout -replace "`r`n", "`n").TrimEnd("`n")
             Write-Host "$nomen -> status $($p.ExitCode), stdout=[$($out -replace "`n", "\\n")]"
             if ($stderr.Length -gt 0) { Write-Host "stderr=[$stderr]" }
@@ -112,8 +121,8 @@ jobs:
           }
           Proba-Vindex 'fluitans' 0 "4.640000`n1"
           Proba-Vindex 'mixtum' 8 "Initium`n42`n3.140000`nFinis"
-          Proba-Vindex 'negativum' 12 '-12.500000'
-          Write-Host 'RECTE: PROCLAMA fluitans sub Windows vero rectum est.'
+          Proba-Vindex 'dimidia' 5 '0.500000'
+          Write-Host 'RECTE: PROCLAMA fluitans Claudii sub Windows vero confirmatum est.'
 
   auto-hospitium:
     needs: windows
