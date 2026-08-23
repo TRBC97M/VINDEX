@@ -2,7 +2,7 @@
 
 Haec referentia contractum canonicum nuclei linguae VINDEX describit. VINDEX fontes directe in exsecutabilia nativa x86-64 convertit: ELF Linux est modus praedefinitus, PE32+ AMD64 Windows tertio argumento `pe` eligi potest. Compilator ipse VINDEX scriptus est et punctum fixum stabile possidet.
 
-Quod in hac referentia non definitur pars contractus canonici 0.53 non est, etiamsi compilator adhuc recognitores historicos experimentorum veterum contineat.
+Quod in hac referentia non definitur pars contractus canonici 0.53 non est. Recognitores servitiorum historicorum iam e nucleo exscissi sunt; historia eorum in ramis archivis et historia Git servatur.
 
 ## Compilatio
 
@@ -214,9 +214,9 @@ LIBERA(p).
 
 ## Terminus nuclei 0.53
 
-Servitia sequentia non sunt pars contractus canonici nuclei 0.53: `EXSEQUERE`, `EXSEQUERE_CAPTURA`, `CURRE`, `CAMBIA`, `TUBUS`, `POLLE` et `APERI_ADICERE`.
+Servitia sequentia non sunt pars contractus canonici nuclei 0.53 neque a compilatore nuclei recognoscuntur: `EXSEQUERE`, `EXSEQUERE_CAPTURA`, `CURRE`, `CAMBIA`, `TUBUS`, `POLLE` et `APERI_ADICERE`.
 
-Haec nomina ex experimentis Systematis, Officinae, firmware vel servitiorum Unix orta sunt. Recognitores eorum in fonte compilatoris adhuc adesse possunt dum separatio interna perficitur; praesentia talis vestigii compatibilitatem, stabilitatem aut API canonicam non promittit.
+Haec nomina ex experimentis Systematis, Officinae, firmware vel servitiorum Unix orta sunt. Historia eorum extra nucleum servatur; reintroductio futura, si umquam desideretur, extensionem explicitam requiret neque API nuclei 0.53 mutabit.
 
 ## Diagnostica
 
