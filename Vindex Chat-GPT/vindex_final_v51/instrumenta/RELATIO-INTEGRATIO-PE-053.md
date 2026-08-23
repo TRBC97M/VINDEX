@@ -1,350 +1,218 @@
-# VINDEX 0.53 — Integratio PE/Windows in compilatorem (RELATIO, v2)
+# VINDEX 0.53 — Historia integrationis PE/Win64
 
-## Propositum
+> **Nota canonica:** status finalis backend Win64 in
+> `RELATIO-WIN64-CANONICA-053.md` describitur. Hoc documentum historiam
+> investigationis servat; conclusiones intermedias quae postea falsae repertae
+> sunt hic ut tales expresse notantur.
 
-Idem propositum quam relatio prior (integrare mechanismum PE64 in
-`compilator_vindex.vindex`), sed haec versio **rebasata** est super
-statum currentem `chatgpt/vindex-053-compilator-dynamicus` **post**
-dissolutionem completam `tabula` (commits `8860585`, `a3d5368`, et
-alii — 132 commits inter caput antiquum et hoc novum).
+## Fundamentum
 
-Prima versio huius integrationis (in ramo separato, jam PR aperta) facta
-erat super statum **ante** hanc dissolutionem. Cum `tabula` omnino e
-compilatore remota est, mutationes antiquae rebasari debuerunt, non
-simpliciter fundi — hoc fecimus manualiter, applicando easdem mutationes
-super novum fontem, ne quid corrumperetur.
+Integratio PE/Win64 super statum VINDEX 0.53 post deletionem completam
+`tabula` constructa est. Modus ELF praedefinitus intactus mansit; modus PE
+tertio argumento `pe` eligitur.
 
-## Status honestus
+Contextus parseris a LVI ad LXXII octeta extensus est:
 
-Idem consilium conservativum quam antea: modus PE (tertium argumentum
-`pe`) additur iuxta modum ELF, numquam eum mutans. Ambitus idem
-limitatus: programmata solum `REDDE` utentia PE64 realiter generant;
-functiones I/O adhuc solum ELF/Linux.
+```text
++56 modus targeti ELF/PE
++64 descriptor correctionum IAT PE
+```
 
-## Probationes exsecutae (super statum novum, post dissolutionem tabula)
+IAT per descriptorium dynamicum patchatur, ne singulae vocationes WinAPI
+locis magicis vel variabilibus globalibus nitantur.
 
-Omnes hae probationes vere exsecutae sunt, super codicem qui `tabula`
-non amplius continet:
+## Gradus I — PE minimum
 
-- **Verificatio independens dissolutionis `tabula`**: numerus occurrentiam
-  verbi `tabula` in compilatore recepto: **0**. Summa SHA-256 fasciculi
-  binarii recepti: `0a4e4247c800c05da7734d1255bd6e54dd46a099214b081d65e03af577169d49`
-  — identica relationi ChatGPT, verificata hic independenter per
-  `sha256sum` directe in fasciculo dempto ex ramo.
-- **Auto-hospitium punctum fixum, ante ullam mutationem nostram**:
-  compilator receptus compilavit se ipsum, eadem summa. **RECTE**.
-- **Auto-hospitium punctum fixum, post integrationem PE**: compilator
-  mutatus (cum PE) compilavit se ipsum per modum ELF; binaria resultantia
-  identica (SHA-256 `4374276776540d55d5a3caf067f9afd20734c7006f1ee15e208768e1944603ea`).
-  **RECTE**: punctum fixum servatum etiam super novum fundamentum sine
-  `tabula`.
-- **Programma minimum per ELF**: exitus 42. **RECTE**.
-- **Idem per PE**: fasciculus PE32+ validus generatus (`file`, Wine).
-  **RECTE, structuraliter**.
-- **VirtualAlloc + scriptio acervi**: verificata per GDB directe —
-  `0x2000000` continet exacte `0x2000010` post exsecutionem. **RECTE**.
+Prima versio construebat:
 
-## Difficultas nota (eadem quam antea, non nostra)
+- caput DOS/PE32+ AMD64;
+- sectiones `.text` et `.idata`;
+- `ExitProcess`;
+- `VirtualAlloc`;
+- vocationes RIP-relativas `FF 15 disp32` ad IAT.
 
-Terminatio completa sub hoc systemate Wine adhuc causat idem defectum
-exhaustive documentatum in `pe-windows-backend/RELATIO-PE-WINDOWS.md`
-(§3, machina SEH interna Wine). Non mutata ab hac rebasatione — defectus
-in Wine ipso latet, non in nostro codice, ut multipliciter hic et alibi
-demonstratum est.
+Structura PE et IAT instrumentis independentibus verificata est.
 
-## Relatio ad ramum prioris integrationis
+## Gradus II — vitium ingressus Win64
 
-Ramus prior (`claude/pe-integration-053`, PR #7) super statum antiquum
-(cum `tabula`) factus est et probabiliter non amplius directe fundi
-potest sine conflictibus, data magnitudo mutationum interpositarum
-(132 commits). Hic ramus (`claude/pe-integration-053-v2`) illum
-substituit, super statum currentem factus. Consulendum est PR #7
-claudere in favorem huius, vel eam actualizare cum his fasciculis.
+Prima investigatio sub Wine terminationem post `ExitProcess` interdum
+corrumpi ostendit. **Conclusio intermedia "vitium SEH Wine" falsa erat.**
 
-VINDEX Latine cogitat. Sylvia Latine loquitur.
+ChatGPT idem exsecutabile sub Windows Server 2025 vero probavit et
+`0xC0000005 / STATUS_ACCESS_VIOLATION` reproduxit. Causa inventa est in
+wrapper ingressus: ante ramum PE fiebat `POP` ad `argc` Linux et `RSP` inde
+movebatur. Punctum ingressus Windows talem pilam Linux non praebet.
 
-## Addendum — PROCLAMA/MITTE sub PE (secunda pars huius contributionis)
+Correctio:
 
-Post rebasationem super statum sine `tabula`, contributio extensa est ad
-implementandam catenam I/O consolae PE completam:
+- nullum `POP` Linux in ramo PE;
+- `sub rsp,0x28` directe ex ingressu Win64;
+- `argc=0`, `argv=0` interim ad `PRINCIPALIS`;
+- ramus ELF solus conventionem pristinam Linux retinet.
 
-### Mutationes structurales
+Post correctionem programma minimum sub Wine et Windows vero sine ruina
+terminavit. Haec probatio etiam demonstravit quam necessarium sit vitia ABI
+sub systemate vero, non solo emulatore, verificare.
 
-1. **`contextus_parseris` extensus** (56 → 72 octeta): duo nova campa,
-   `modus_pe` (valor simplex) et `descriptor_iat_pe` (punctum ad
-   descriptorem parium dynamicum, per `INITIA_PARES_DYNAMICA` initiatum).
-2. **`COMPONE_VOCA_IAT_DYNAMICA`**: substituit variabiles individuales
-   `loci_iat_exitprocess`/`loci_iat_virtualalloc` prioris versionis.
-   Quaevis vocatio IAT registrat par `(id_functionis, locus_patch)` in
-   lista dynamica parium contextus, reutens infrastructuram `PARES_*`
-   iam existentem pro vocationibus pendentibus.
-3. **`CONSTRUE_CAPUT_PE` extensa ad IV functiones**: `ExitProcess`(0),
-   `VirtualAlloc`(1), `GetStdHandle`(2), `WriteFile`(3). Circulus super
-   omnia paria registrata patchat quamque vocationem ad IAT slot
-   correctum, secundum `id_functionis`.
-4. **`COMPONE_SCRIBE_STDOUT_DYNAMICA`**: functio auxiliaris nova, generat
-   sequentiam `GetStdHandle(STD_OUTPUT_HANDLE)` + `WriteFile` (modo PE)
-   vel `write` syscall (modo ELF), secundum `MODUS_PE_LEGE`. Substituit
-   sex loca in codice ubi antea syscall directus scribebatur:
-   `COMPONE_IMPRIME_NUMERUS` (signum et cifrae), `COMPONE_IMPRIME_CHAR`,
-   `COMPONE_IMPRIME_PADEADO`, et ambo rami `PROCLAMA` (catena litteralis
-   et numerus/fluitans).
+## Gradus III — `GetStdHandle` et `WriteFile`
 
-### Ambitus explicite non tactus
+`PROCLAMA` ad Win64 translatum est. IAT extensa est ad:
 
-`MITTE` **non** mutata est. Haec functio generalior est quam `PROCLAMA`
-(scribit ad quemvis descriptorem fasciculi, non solum stdout, per
-circulum elementum-post-elementum) et intrinsece dependet ab abstractione
-"handle fasciculi" quae adhuc functiones `APERI_LEGERE`/`APERI_SCRIBERE`/
-`CLAUDE` requirit — has, ut convenit, ChatGPT tractabit. Similiter,
-`SCRIBE_LECTUS` (functio quae ultimam litteram lectam rescribit, pars
-familiae `LEGE`) intacta relicta est, quamvis ad stdout scribat, quia
-conceptualiter parti I/O fasciculorum pertinet.
+```text
+ExitProcess
+VirtualAlloc
+GetStdHandle
+WriteFile
+```
 
-### Duo defectus proprii inventi et correcti in hac secunda parte
+Handle stdout semel in ingressu obtinetur atque cachetur. Haec optimizatio
+utilis est, sed non fuit causa radicalis defectus numerici sequentis.
 
-1. **Adresses catenarum litteralium**: codex qui adressem catenae in
-   registrum onerat utebatur constanti `4194304` (0x400000, fundamentum
-   ELF) incondicionaliter. Correctum: calculus conditionalis secundum
-   `MODUS_PE_LEGE`, adhibens fundamentum PE (`5368709120 + 4096 - 512 +
-   sedes_chorda`) in modo PE.
-2. **Defectus resolutionis variabilium ad magnam profunditatem
-   nidificationis**: variabiles simplices `modus_pe` et
-   `capita_reservata` (declaratae ad summum `PRINCIPALIS`) redderunt
-   valores corruptos (verisimiliter adresses pilae) cum lectae intra
-   codicem valde nidificatum rami `PROCLAMA` catenae litteralis (circiter
-   decem gradus nidificationis SI/DUM). **Non plene explicatum** — nota
-   ad investigationem futuram de systemate variabilium localium
-   dynamicarum. Consilium adhibitum: pro `modus_pe`, uti
-   `MODUS_PE_LEGE(contextus_parseris)` (per punctum, non variabilem
-   simplicem); pro `capita_reservata`, valorem constantem 512 directe
-   inserere, quia in hoc contextu (intra `SI modus_pe==1`) semper illud
-   valorem habet.
+## Gradus IV — `PROCLAMA` numerorum
 
-### Probationes exsecutae (omnes vere currunt, non solum scriptae)
+Sub Windows vero casus:
 
-Vide `instrumenta/proba_proclama_pe_localiter_053.sh` (probatio nova,
-exsecuta et confirmata RECTE quinquies):
-- ELF catena: `"Salve ex PE!"`, exitus 33 — RECTE.
-- PE catena: `"Salve ex PE!"` scriptum correcte sub Wine (verificatum
-  per octeta exitus directa, non per codicem terminationis, propter
-  defectum notum SEH Wine) — RECTE.
-- ELF multi (catena+numerus+catena sequentialia): `"Premier\n999\n
-  Dernier"`, exitus 7 — RECTE.
-- PE multi: omnes tres partes praesentes in exitu — RECTE.
-- Auto-hospitium punctum fixum post has mutationes: G2=G3 (SHA-256
-  identica) — RECTE.
+```vindex
+PROCLAMA "Premier".
+PROCLAMA 999.
+PROCLAMA "Dernier".
+```
 
-Exempla nova: `examples/proclama_catena_pe_053.vindex`,
-`examples/proclama_multi_pe_053.vindex`.
+primo `999` omittebat. Hypothesis intermedia frequentium vocationum
+`GetStdHandle` probata est, sed non suffecit.
 
-## Addendum secundum — defectus notatus a ChatGPT sub Windows vero, hypothesis correcta
+Disassemblatio PE causam veram ostendit: cifrae numericae adhuc per
+instructionem Linux `syscall` scribebantur, dum linea nova per `WriteFile`
+ibat. `contextus_parseris` intra auxilia impressionis utebatur sine parametro
+formali explicito.
 
-Post correctionem POP (vide `RELATIO-PE-WINDOWS.md`), ChatGPT probavit
-`PROCLAMA` sub **Windows Server 2025 vero** (non solum Wine). Catena
-simplex functionabat correcte, sed casus `PROCLAMA "Premier";
-PROCLAMA 999; PROCLAMA "Dernier";` reddebat `Premier\n\nDernier` —
-numerus `999` omnino absens, quamvis Wine hunc defectum non manifestaret.
+Correctio:
 
-**Hypothesis et correctio**: `COMPONE_SCRIBE_STDOUT_DYNAMICA` vocabat
-`GetStdHandle` **iterum et iterum** — semel per octetum in circulo
-cifrarum `COMPONE_IMPRIME_NUMERUS` (ter pro `999`). Suspicio: subsystema
-consolae Windows veri non tolerat vocationes `GetStdHandle` tam
-frequentes ac celeres sicut Wine. Correctio: prologus ingressus PE nunc
-vocat `GetStdHandle(STD_OUTPUT_HANDLE)` **semel**, ad initium processus,
-et servat rem in pagina dedicata reservata per `VirtualAlloc` separatum
-(`0x1000000`, 4096 octeta, extra regionem 64 MiB acervi principalis, ut
-collisionem cum `RESERVA_OCTETA` vitet — vide defectum simile in
-`RELATIO-PE-WINDOWS.md`). `COMPONE_SCRIBE_STDOUT_DYNAMICA` nunc legit
-hanc rem cachetam loco vocandi `GetStdHandle` quolibet vice.
+- `contextus_parseris` per `COMPONE_IMPRIME_NUMERUS`,
+  `COMPONE_IMPRIME_CHAR`, `COMPONE_IMPRIME_PADEADO` et
+  `COMPONE_IMPRIME_FLUITANIS` explicite propagatus est;
+- `lpNumberOfBytesWritten` extra XXXII octeta spatii umbrae positum est;
+- alignmentum `RSP` ante vocationes WinAPI robustum factum est.
 
-**Status**: **non adhuc probatum sub Windows vero** — haec correctio
-est hypothesis rationabilis (defensiva, etiam optimizatio genuina,
-quia programmata realia typice rem consolae semel cachent), sed causa
-radicalis ultima non confirmata est sine accessu Windows. Petitur a
-ChatGPT (qui accessum ad `windows-latest` runner habet) hanc
-correctionem sub Windows vero verificare.
+Postea integri sub Windows Server 2025 recte impressi sunt.
 
-Verificatum hic (Wine tantum): auto-hospitium punctum fixum servatum
-(G2=G3 SHA256 identica); probatio multiplex tribus modis (`PROCLAMA
-999` solum, `Premier/999/Dernier`, et casus tensionis quinque
-vocationum sequentialium mixtarum catena/numerus) omnes correctae.
+## Gradus V — fluitantia et ABI Win64
 
-## Addendum tertium — causa radicalis vera inventa a ChatGPT (disassemblatio sub Windows vero), correcta et verificata
+Fluitans `PROCLAMA 3.14159` sub PE initio vel `0.000000` vel defectum
+arithmeticum producebat. Causa radicalis: `XMM0..XMM5` sub ABI Win64 volatilia
+sunt, sed emitter valoris originalis conservationem per `WriteFile` falso
+supponebat.
 
-ChatGPT probavit caput cacheti (`26a8e43`) sub Windows Server 2025 vero:
-cache `GetStdHandle` **non sufficiebat**. `PROCLAMA 999` solum reddebat
-`status 9`, `stdout = "\n"` — cifrae ipsae omnino absentes. Disassemblatio
-`solum.exe` patefecit causam veram: **cifrae adhuc scribebantur per
-`syscall` (0x0F 0x05) Linux directum**, dum sola linea nova post numerum
-per `WriteFile` ibat.
+Correctio:
 
-**Causa radicalis**: `COMPONE_IMPRIME_NUMERUS` (et auxilia
-`COMPONE_IMPRIME_CHAR`, `COMPONE_IMPRIME_PADEADO`,
-`COMPONE_IMPRIME_FLUITANIS`) **non habebant `contextus_parseris` inter
-parametra formalia (`ACCIPIT`)**, quamvis eo intra corpus uterentur (per
-vocationes ad `COMPONE_SCRIBE_STDOUT_DYNAMICA`). Compilator hoc non
-notavit ut errorem — variabilis indefinita resolvebatur ad valorem
-qui, sub Wine, forte functionabat (verisimiliter propter coincidentiam
-positionis pilae), sed sub Windows vero non.
+- bits `XMM0` ante vocationes WinAPI in registro non-volatili servantur;
+- `COMPONE_MOVQ_DE_XMM` addita est;
+- encodatio REX pro registris altis in `COMPONE_MOVQ_A_XMM` correcta est;
+- valor ante computationem partis fractionalis restituitur.
 
-**Correctio applicata hic**:
-1. `contextus_parseris` additus ut parametrum formale explicitum ad
-   omnes quattuor functiones (`COMPONE_IMPRIME_NUMERUS`,
-   `COMPONE_IMPRIME_CHAR`, `COMPONE_IMPRIME_PADEADO`,
-   `COMPONE_IMPRIME_FLUITANIS`), et propagatus per omnes vocationes
-   internas et externas.
-2. **Defectus adiunctus inventus et correctus simul**:
-   `COMPONE_IMPRIME_PADEADO` adhibet registrum `R12` pro suo statu
-   interno (valor cifris dividendus per iterationes). Prior versio
-   `COMPONE_SCRIBE_STDOUT_DYNAMICA` etiam adhibebat `R12`/`R13` ad
-   servandum longitudinem/bufferum trans vocationem `GetStdHandle` —
-   collisio potentialis. Data cachetum `GetStdHandle` (Addendum
-   secundum), haec preservatio non amplius necessaria erat: helper
-   simplificatus, nulla registra R12-R15 amplius adhibet, tantum
-   `R8`/`RDX`/`RCX`/`R9` transitorie intra `sub rsp,40`/`add rsp,40`
-   proprium.
+Fluitantia positiva post hanc correctionem sub ELF et PE congruerunt.
 
-**Verificatum hic (Wine)**: casus exactus a ChatGPT relatus
-(`PROCLAMA "Premier"; PROCLAMA 999; PROCLAMA "Dernier";`) nunc reddit
-`Premier\n999\nDernier\n`, exitus 7, **sine ullo defectu vel vestigio
-`syscall` Linux**. Auto-hospitium punctum fixum servatum (SHA256
-identica G2=G3).
+## Gradus VI — litteralia fluitantia negativa
 
-## Addendum quartum — raffinatio spatii umbrae, confirmata sub Windows vero (PR #13 ChatGPT)
+Probatio `-2.71828` vitium antiquius, commune ELF et PE, detexit. Signum `-`
+ipsum a `PROSPICE_EST_FLUITANS` inspiciebatur loco numeri sequentis; expressio
+ita per arithmeticam integralem bituum tractabatur.
 
-ChatGPT verificavit correctionem `contextus_parseris` (Addendum
-tertium) **sub Windows Server 2025 vero** (PR #13, workflow run
-`32612787672`): `PROCLAMA 999` solum, casus mixtus
-(`Premier/999/Dernier`), et probatio tensionis quinque numerorum
-diversae magnitudinis (`1, 22, 333, 4444, 55555`) — **omnes RECTE**,
-sine ullo vestigio `syscall` Linux, punctum fixum auto-hospitii
-servatum.
+Correctio positionem inspectionis ultra signum praecedentem movit tam in
+analysi expressionis quam in `PROCLAMA`. Subtractio binaria ordinaria separatim
+probata est ne mutatio regressionem induceret.
 
-Additione: ChatGPT notavit necessitatem `lpNumberOfBytesWritten`
-(quartum parametrum `WriteFile`, per registrum `R9`) **extra spatium
-umbrae** (32 octeta prima post `sub rsp`) ponere, ne collisio fiat cum
-usu interno spatii umbrae a `WriteFile` ipso. Prior versio hic posuit
-hanc rem ad `[rsp+24]` — intra spatium umbrae. **Correctum**: spatium
-reservatum crevit ex 40 ad 48 octeta; `lpOverlapped` (quintum
-parametrum) manet ad positionem fixam ABI `[rsp+32]`;
-`lpNumberOfBytesWritten` nunc ad `[rsp+40]`, extra ambo spatium umbrae
-et locum `lpOverlapped`.
+Postea:
 
-**Verificatum hic (Wine)**: casus tensionis exactus ChatGPT (`Initium/
-1/22/333/4444/55555/Finis`) reddit output identicum quam relatum sub
-Windows vero. Auto-hospitium punctum fixum servatum (SHA256 identica
-G2=G3). Modus ELF intactus.
+```text
+-2.718280
+-0.500000
+```
 
-**Limitatio nova inventa, non adhuc soluta**: probatio extensa cum
-numero fluitante (`PROCLAMA 3.14159` post alias vocationes) revelavit
-defectum **distinctum et novum** in modo PE: `COMPONE_IMPRIME_FLUITANIS`
-reddit valorem incorrectum (`0.000000` loco `3.141589`) cum solum
-vocatum, et causat **divisionem per zero** cum in sequentia post alias
-vocationes `PROCLAMA` invocatur. Modus ELF non afficitur (valor
-correctus semper). Hic defectus **non erat pars relationis ChatGPT**
-(qui numeros integros tantum probavit) et **non adhuc investigatus
-neque correctus** — relinquitur ut limitatio nota pro proximo opere,
-extra ambitum huius correctionis specificae.
+recte in ELF et PE apparuerunt.
 
-**Progressus partialis (secunda investigatio)**: pars huius defectus
-inventa et correcta est: `COMPONE_NUMERUM_FLUITANIS` (quae bits
-fluitantis IEEE-754 in codicem inserit et adressam eorum in registrum
-onerat pro `MOVSD`) utebatur eodem defectu quam catenae litterales —
-fundamento ELF (`4194304`) incondicionaliter. Correctum per idem
-schema (calculus conditionalis secundum `MODUS_PE_LEGE`), cum
-`contextus_parseris` additus ut parametrum formale novum. Post hanc
-correctionem, **pars integralis numeri fluitantis nunc recte
-apparet** sub modo PE (verificatum: `3` scriptum correcte pro
-`3.14159`).
+## Gradus VII — fasciculi Win64
 
-**Defectus residuus, non correctus**: computatio partis fractionalis
-(intra `COMPONE_IMPRIME_PADEADO`, post `MULSD`/`CVTTSD2SI`) adhuc
-causat divisionem per zero sub modo PE specifice — registrum `R12`
-continet valorem absurdum (`0xffffffffffd23940`) ad initium `PADEADO`,
-indicans corruptionem alicubi inter calculum valoris fractionalis et
-vocationem eius. Causa radicalis non identificata; investigatio
-posterior requiritur. **Notandum**: functio seorsum inventa
-`COMPONE_LITTERALEM_FLUITANIS` (linea ~689) continet defectum
-adressae identicum, sed **numquam vocatur alicubi in fonte** (codex
-mortuus) — non tacta, quia non pertinens ad ullum defectum currentem.
+ChatGPT stratum fasciculorum addidit super IAT communem. IAT finalis septem API
+KERNEL32 continet:
 
-## Addendum quintum — causa radicalis definitiva inventa a ChatGPT, correcta et verificata: XMM0 volatile sub ABI Win64
+```text
+ExitProcess
+VirtualAlloc
+GetStdHandle
+WriteFile
+CreateFileA
+ReadFile
+CloseHandle
+```
 
-ChatGPT (PR #17) identificavit causam radicalem veram defectus
-residui: **API Win64 licite registra `XMM0..XMM5` delere potest**
-(volatilia sunt, sicut `RCX`/`RDX`/`R8`/`R9`). `COMPONE_IMPRIME_FLUITANIS`
-falso supponebat valorem originalem fluitantis in `XMM0` per
-vocationes `WriteFile` (intra `COMPONE_IMPRIME_NUMERUS`/`CHAR` pro
-parte integrali et puncto) servatum permanere. Sub ELF (syscall Linux
-directus, quae registra XMM non tangit) hoc semper functionabat; sub
-PE (per `WriteFile` reale, quae registra volatilia libere adhibere
-potest) `XMM0` corrumpebatur inter scriptionem partis integralis et
-calculum partis fractionalis (`SUBSD`), causans divisionem per zero
-notatam supra.
+Mapping probatum:
 
-**Correctio applicata hic** (secundum hypothesin ChatGPT, verificata
-independenter): duae novae functiones additae —
-`COMPONE_MOVQ_DE_XMM` (inversa `COMPONE_MOVQ_A_XMM`, servat bits
-`XMM` in registro generali) et correctio simul facta in
-`COMPONE_MOVQ_A_XMM` ipsa (REX byte fixus antea non recte registra
-`>= 8` tractabat — defectus latens, numquam antea exercitus quia
-nulla vocatio prior registrum altum adhibebat). In
-`COMPONE_IMPRIME_FLUITANIS`: bits `XMM0` (valor originalis, post
-`CVTTSD2SI` sed ante ullam vocationem `WriteFile`) servantur in `R15`
-(non-volatile sub Win64) ante vocationes `IMPRIME_NUMERUS`/`CHAR`, et
-restituuntur in `XMM0` statim post, ante `CVTSI2SD`/`SUBSD` sequentia.
+```text
+APERI_SCRIBERE -> CreateFileA(GENERIC_WRITE, CREATE_ALWAYS)
+APERI_LEGERE   -> CreateFileA(GENERIC_READ, OPEN_EXISTING)
+MITTE          -> WriteFile
+LEGE           -> ReadFile
+CLAUDE         -> CloseHandle
+RESERVA_OCTETA -> VirtualAlloc ubi target PE requirit
+```
 
-**Verificatum hic (Wine)**: `PROCLAMA 3.14159` (solum et intra
-sequentiam completa post catenas/numeros) nunc reddit `3.141589`
-**identice modo ELF**, sine ullo defectu vel divisione per zero.
-Probationes additionales (`0.5`, `100.0`) etiam identicae inter ELF
-et PE. Auto-hospitium punctum fixum servatum (SHA256 identica G2=G3).
+Vocationes WinAPI alignmentum pilae, XXXII octeta spatii umbrae et argumenta
+V–VII in pila secundum ABI Win64 servant.
 
-**Nota honesta**: `PROCLAMA -2.71828` (numerus negativus) reddit
-resultatum absurdum (`-4613303441197561856`) — sed **identice in
-utroque modo ELF et PE**, confirmans defectum antiquiorem in analysi
-litteralis negativi fluitantis, omnino seorsum ab hac correctione et
-extra eius ambitum.
+Probatio portabilis scribit `VINX`, fasciculum claudit, iterum aperit, quattuor
+octeta legit et per `OCTETUS` comparat.
 
-## Addendum sextum — defectus litteralis fluitantis negativi (identicus ELF/PE) inventus et correctus
+## Gradus VIII — verificatio duplex
 
-Investigatio propria (non relata a ChatGPT) confirmavit hypothesin
-addendi quinti: defectus erat identicus in ambobus modis, ergo
-praeexistens et omnino seorsum ab integratione PE. Radix duplex
-inventa per lectionem directam fontis:
+Claude integrationem fasciculorum in ramum suum recepit et independenter
+probavit:
 
-1. **`ANALYSA_EXPRESSIO`**: `es_flot_expr` (indicat num pars sinistra
-   expressionis fluitans sit) computabatur per `PROSPICE_EST_FLUITANS`
-   applicatum **ad ipsum signum `-`/`+`**, non ad numerum sequentem.
-   Quia `PROSPICE_EST_FLUITANS` solum cifras (48-57) initio accipit,
-   signum semper falsum reddebat pro `es_flot_expr`.
-2. **Consequentia grammatica**: VINDEX nullum mechanismum proprium
-   "signum minus unarium" habet — `-X` tractatur ut `0 - X` per
-   circulum operatorum binariorum `ANALYSA_EXPRESSIO`. Cum
-   `es_flot_expr` false 0 esset, `0 - (bits fluitantis)` fiebat per
-   **subtractionem integralem** (`COMPONE_SUB` in registris
-   generalibus) loco subtractionis fluitantis propriae (`SUBSD`) —
-   exacte negatio integralis bituum crudorum, non signum inversum
-   IEEE-754.
-3. **Defectus geminus in `PROCLAMA` ipso**: eadem inspectio
-   `PROSPICE_EST_FLUITANS` applicata ad signum (non numerum) etiam
-   ibi accidebat, causans `PROCLAMA` eligere ramum impressionis
-   integralis (`COMPONE_IMPRIME_NUMERUS`) loco fluitantis
-   (`COMPONE_IMPRIME_FLUITANIS`) — defectus secundus, distinctus,
-   necessarius pariter corrigi.
+- punctum fixum auto-hospitii;
+- probationes `PROCLAMA` ELF/Wine;
+- `VINX` sub ELF et Wine;
+- structuram septem importationum;
+- programma mixtum stdout + fasciculi.
 
-**Correctio**: in ambobus locis, positio inspecta per
-`PROSPICE_EST_FLUITANS` nunc **transilit signum praecedentem**
-(`+`/`-`) si adest, antequam numerum ipsum inspicit.
+Caput integrationis factum est:
 
-**Verificatum hic**: probatio extensa (`-2.71828`, `-0.5`, catenae/
-numeri/fluitantes mixti) reddit resultata correcta **identice inter
-ELF et PE**. Subtractio binaria normalis (variabilis-variabilis,
-integralis et fluitans) **non afficitur** — verificatum explicite
-(`10-3=7`, `5-8=-3`, `5.5-2.2=3.299999`, identici ante et post
-correctionem). Auto-hospitium punctum fixum servatum (SHA256 identica
-G2=G3). Duae probationes novae additae ad
-`tests/test_proclama_pe_053.py` (fluitans negativus, subtractio
-binaria non affecta) — omnes 15 probationes RECTE (13.4s).
+`a765ff61fdaba1fa9c27028e089c7e738c00d048`
 
+ChatGPT deinde idem caput independenter per GitHub Actions probavit:
+
+- XXV/XXV regressiones ELF;
+- punctum fixum;
+- structuram PE/IAT;
+- `PROCLAMA` catenae, integri et fluitantes positivi/negativi;
+- fasciculos;
+- executionem sub **Microsoft Windows Server 2025**.
+
+Omnia transierunt.
+
+## Integratio finalis
+
+PR #23 in ramum Claudii integrata est; PR #8 deinde in
+`chatgpt/vindex-053-compilator-dynamicus` fusa est. Workflow permanens
+`VINDEX 0.53 — Win64 finalis` nunc ipsum ramum dynamicum probat.
+
+Punctum fixum canonicum post integrationem:
+
+`166a0e666deb83f759f90d1b721474ede01bb3519ec5231b2fe0e9b23158c969`
+
+## Limites residui
+
+Ambitus probatus non confundendus est cum portatione totius systematis Linux:
+
+- argumenta lineae mandatorum PE nondum convertuntur (`argc=0`, `argv=0`);
+- `APERI_ADICERE` nondum canonice Win64 probatum est;
+- `EXSEQUERE`, `EXSEQUERE_CAPTURA`, `CURRE`, `CAMBIA` et `TUBUS` adhuc
+  historice Linux innituntur nisi postea singillatim portentur.
+
+## Conclusio
+
+Iter integrationis plures hypotheses intermedias refutavit. Disciplina finalis
+est: structuram PE automatice inspicere, ABI Win64 stricte servare, modum ELF
+semper regredi, et executionem realem Windows ante conclusionem canonicam
+requirere.
+
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
