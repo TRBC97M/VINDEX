@@ -18,6 +18,14 @@ PE32+ AMD64 Windows:
 ./compilator_vindex programma.vindex programma.exe pe
 ```
 
+Proiectum per manifestum:
+
+```bash
+./compilator_vindex PROIECTUM via/ad/proiectum.vindex
+```
+
+Manifestum fontem principalem, productum et destinationem `ELF` aut `PE` declarat. Viae relativae ex directorio manifesti resolvuntur; ideo eadem invocatio ex terminali et ex futuro IDE valet.
+
 Compilator etiam se ipsum in exsecutabile Win64 generat. Binarium illud sub Windows argumenta lineae mandatorum accipit atque alios fontes VINDEX sine bibliotheca C compilare potest.
 
 Nulla bibliotheca C, GCC, NASM, Python, GTK aut alius compilator ad compilationem ordinariam requiritur.
@@ -28,7 +36,7 @@ Fons canonicus est `src/compilator_vindex.vindex`; binarium seminale est `compil
 
 ## Probationes
 
-`tests/casus/` continet contractum semanticum minimum. `tests/compara_fasciculos_053.vindex` comparationem byte pro byte ipso VINDEX facit. `tests/proba_pe_structuram_053.vindex` structuram PE32+, sectiones, importationes et IAT ipso VINDEX verificat.
+`tests/casus/` continet contractum semanticum minimum. `tests/proiecta/` compilationem per manifestum, vias relativas et destinationes ELF atque PE probat. `tests/compara_fasciculos_053.vindex` comparationem byte pro byte ipso VINDEX facit. `tests/proba_pe_structuram_053.vindex` structuram PE32+, sectiones, importationes et IAT ipso VINDEX verificat.
 
 Compilator diagnostica structurata cum fonte, linea, columna et nuntio edit. Locus vocationis ignotae etiam intra fontem importatum ad fasciculum originis refertur, ut instrumenta editoria errorem recte ostendere possint.
 
