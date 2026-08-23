@@ -16,13 +16,13 @@ compositorium exsecutabile introducit quod hoc pactum **re vera administrat**.
 Catena huius probationis est:
 
 ```text
-PROGRAMMATA G (VINDEX)
+PROGRAMMATA H (VINDEX, contractus G)
         ↓ CREA
 mailbox SYLCMP2
         ↓
 compositor UEFI H
         ↓ memoria privata XXXII-bit
-PROGRAMMATA G pingit
+PROGRAMMATA H pingit
         ↓ PRAESENTA
 compositor H
         ↓
@@ -44,7 +44,8 @@ Non mutat:
 - `BOOTX64.EFI` canonicum;
 - `systema_vindex_uefi.img` canonicam;
 - volumen 0.51;
-- exsecutionem `.VXNAT` Systematis principalis.
+- exsecutionem `.VXNAT` Systematis principalis;
+- compilatorem VINDEX canonicum.
 
 Exitus sunt:
 
@@ -58,16 +59,26 @@ progressionem nuclearem Sylvia OS.
 
 ---
 
-## III. Client VINDEX verus
+## III. Client VINDEX exsecutabilis
 
-Scriptum constructionis `programmata_fenestrale_ii_g.vindex` compilat per
-compilatorem VINDEX existentem. ELF resultans in applicationem UEFI H includitur.
+Gradus G clientem bibliothecarium plenum definit. In probatione H inventum est
+compilatorem 0.51 unitatem illam ampliorem cum bibliothecis compositorii
+compilandam nondum robuste tractare: verificator syntacticus eam recipit, sed
+compilator hodiernus in tali unitate terminatur.
 
-Compositor memoriam clientis ad `0x00400000` ponit eodem principio quo pons
-UEFI VINDEX hodiernus imaginem ELF nuclei tractat. Ingressus ELF ex campo
-`e_entry` legitur et ante exsecutionem intra magnitudinem imaginis verificatur.
+Hoc gradus **compilatorem non corrigit**, quia id ad progressionem principalem
+VINDEX pertinet. Pro H additur client compactus
+`src/programmata_fenestrale_ii_h.vindex` qui eundem mailbox G, easdem mensuras
+JL-UX et eandem machinam `CREA → PRAESENTA` servat, sed bibliothecas non
+importat. Sic experimentum graphicae pergere potest sine alium ramum invadendo.
 
-Client Gradus G est machina statuum parva:
+Scriptum constructionis clientem H per compilatorem VINDEX canonicum in ELF64
+convertit. Compositor memoriam clientis ad `0x00400000` ponit eodem principio
+quo pons UEFI VINDEX hodiernus imaginem ELF nuclei tractat. Ingressus ELF ex
+campo `e_entry` legitur et ante exsecutionem intra magnitudinem imaginis
+verificatur.
+
+Client H est machina statuum parva:
 
 1. prima vocatio `CREA` petit;
 2. compositor memoriam privatam attribuit et `PERFECTUM` respondet;
@@ -75,7 +86,8 @@ Client Gradus G est machina statuum parva:
 4. compositor superficiem componit;
 5. tertia vocatio responsum consumit et mailbox vacuam relinquit.
 
-Hic circuitus est prima probatio end-to-end clientis VINDEX per ABI compositorii.
+Hic circuitus est prima probatio end-to-end clientis VINDEX compilati per ABI
+compositorii.
 
 ---
 
@@ -113,7 +125,7 @@ Ad `CREA`, compositor:
 - buffer, stride et formatum in mailbox reddit;
 - fenestram intra spatium supra taskbar centrum collocat.
 
-Superficies clientis ut formatum XXXII-bit cum alpha utitur. PROGRAMMATA G
+Superficies clientis ut formatum XXXII-bit cum alpha utitur. PROGRAMMATA H
 pixels opacos alpha `255` scribit.
 
 Ad `PRAESENTA`, compositor:
@@ -122,26 +134,26 @@ Ad `PRAESENTA`, compositor:
 - alpha componit;
 - wallpaper abstractum Sylvia reddit;
 - umbram brevem fenestrae addit;
-- taskbar JL-UX XXVIII px super omnia componit;
+- taskbar XXVIII px super omnia componit;
 - framebuffer GOP RGB vel BGR scribit.
 
 ---
 
 ## VI. Norma visualis servata
 
-PROGRAMMATA ipsa adhuc contractum Gradus G pingit:
+PROGRAMMATA H contractum visualem Gradus G retinet:
 
 - anguli `0 px`;
 - titulus `28 px`;
 - menu `22 px`;
 - instrumenta `34 px`;
 - status `20 px`;
-- vitrum caeruleum mineralis;
+- vitrum caeruleum minerale;
 - superficies ebur et argentum;
 - bronzeum rarum;
 - clausura rubra;
 - tres regiones collectionum/index/proprietatum;
-- `TABULA.VXNAT` unicum programma initiale;
+- `TABULA.VXNAT` unicum programma initiale conceptus;
 - nulla inscriptio `JL-UX` in desktop.
 
 Taskbar a compositor H possidetur et semper `28 px` alta est.
@@ -179,7 +191,7 @@ bash systema/uefi/construe_fenestrale_native_h.sh \
 
 Scriptum:
 
-1. clientem PROGRAMMATA G compilat;
+1. clientem PROGRAMMATA H verificat et compilat;
 2. ELF64 et ingressum eius verificat;
 3. ELF ut sectionem binariam in PE32+ includit;
 4. compositorium UEFI H compilat;
@@ -196,7 +208,7 @@ Gradus H rite constructus est si CI confirmat:
 - regressionem PROGRAMMATA F;
 - Gradus G contractum;
 - contractum staticum H;
-- compilationem realem PROGRAMMATA G;
+- compilationem realem PROGRAMMATA H;
 - PE32+ EFI validum;
 - imaginem bootabilem non vacuam.
 
@@ -207,7 +219,7 @@ QEMU/OVMF et deinde hardware UEFI vero probanda est.
 
 ## X. Proximus gradus
 
-Gradus I debet **multiplices superficies** et registrum dynamicae fenestrarum
+Gradus I debet **multiplices superficies** et registrum dynamicum fenestrarum
 introducere, adhuc in runtime experimentali separato. Inde PROGRAMMATA et
 TABULA possunt simul clientes distincti fieri, sine limite sex locorum aut
 unius fenestrae.
