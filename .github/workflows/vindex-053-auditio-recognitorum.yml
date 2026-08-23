@@ -1,0 +1,126 @@
+# Auditio externa recognitorum et vocationum nuclei post purificationem.
+name: VINDEX 0.53 — Auditio recognitorum
+
+on:
+  pull_request:
+    branches:
+      - infrastructura/vindex-053-ci-purificatio
+
+permissions:
+  contents: read
+
+jobs:
+  auditio:
+    if: github.event.pull_request.head.ref == 'infrastructura/vindex-053-auditio-trigger'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Nucleum accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/vindex-053-excisio-servitiorum
+
+      - name: Recognitores et syscall scrutare
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('src/compilator_vindex.vindex')
+          text = p.read_text(encoding='utf-8')
+          lines = text.splitlines()
+
+          vetita = [
+              'COMPONE_CURRE', 'COMPONE_TUBUS', 'COMPONE_CAMBIA_DIRECTORIUM',
+              'ig_ex SICUT', 'ig_exc SICUT', 'ig_aa SICUT', '50333704',
+          ]
+          for x in vetita:
+              if x in text:
+                  raise SystemExit(f'ERRATUM: vestigium historicum remanet: {x}')
+
+          def functio(nomen: str):
+              signum = f'FUNCTIO {nomen} REDDENS NUMERUS.'
+              try:
+                  i = lines.index(signum)
+              except ValueError:
+                  raise SystemExit(f'ERRATUM: functio {nomen} deest')
+              j = i + 1
+              while j < len(lines) and lines[j].strip() != 'FIN-FUNCTIO.':
+                  j += 1
+              if j == len(lines):
+                  raise SystemExit(f'ERRATUM: finis {nomen} deest')
+              return lines[i:j+1]
+
+          def decode_condition(line: str, index_name: str):
+              # Ex: fons[CONTENTUM(pos_fontis)+3] == 69 vel fons[i+3] == 69.
+              if index_name == 'pos':
+                  pat = re.compile(r'fons\[CONTENTUM\(pos_fontis\)(?:\+(\d+))?\] == (\d+)')
+              else:
+                  pat = re.compile(r'fons\[i(?:\+(\d+))?\] == (\d+)')
+              vals = {}
+              for m in pat.finditer(line):
+                  off = int(m.group(1) or 0)
+                  val = int(m.group(2))
+                  if 32 <= val <= 126:
+                      vals[off] = val
+              if not vals or 0 not in vals:
+                  return None
+              out = []
+              k = 0
+              while k in vals:
+                  out.append(chr(vals[k]))
+                  k += 1
+              s = ''.join(out)
+              return s if len(s) >= 2 else None
+
+          factor = functio('ANALYSA_FACTOR')
+          factor_tokens = []
+          for line in factor:
+              if line.startswith('    SI '):
+                  s = decode_condition(line, 'pos')
+                  if s and s not in factor_tokens:
+                      factor_tokens.append(s)
+
+          blocus = functio('ANALYSA_BLOCUS')
+          block_tokens = []
+          for line in blocus:
+              if 'SI fons[i]' in line or 'SI (fons[i]' in line:
+                  s = decode_condition(line, 'i')
+                  if s and s not in block_tokens:
+                      block_tokens.append(s)
+
+          print('RECOGNITORES FACTORIS:')
+          for s in factor_tokens:
+              print('  ', s)
+          print('RECOGNITORES BLOCORUM:')
+          for s in block_tokens:
+              print('  ', s)
+
+          # Nuclei Linux syscall quae post purificationem in backend canonico manere licet.
+          # RAX (registrum 0) ante `COMPONE_VOCA_NUCLEUM` proximis lineis scrutatur.
+          syscall_ids = set()
+          re_rax = re.compile(r'COMPONE_ONERA\(codex, .*?, 0, (\d+)\)')
+          for i, line in enumerate(lines):
+              if 'COMPONE_VOCA_NUCLEUM(codex' not in line:
+                  continue
+              for prev in reversed(lines[max(0, i-14):i]):
+                  m = re_rax.search(prev)
+                  if m:
+                      syscall_ids.add(int(m.group(1)))
+                      break
+
+          print('SYSCALL IDS STATICAE PROXIMAE:', sorted(syscall_ids))
+          licitae = {0, 1, 2, 3, 9, 60}
+          suspectae = syscall_ids - licitae
+          if suspectae:
+              raise SystemExit(f'ERRATUM: syscall extra nucleum detectae: {sorted(suspectae)}')
+
+          # Vestigia clarissima ecosystematis etiam textu naturali vetantur.
+          for x in ('SYSTEMA', 'OFFICINA', 'SALUTATIO', 'VXNAT', 'UEFI', 'FIRMWARE'):
+              if x in text.upper():
+                  raise SystemExit(f'ERRATUM: nomen ecosystematis in compilatore remanet: {x}')
+
+          print('RECTE: recognitores historici nominati absunt; syscall Linux detectae intra nucleum canonicum manent.')
+          PY
