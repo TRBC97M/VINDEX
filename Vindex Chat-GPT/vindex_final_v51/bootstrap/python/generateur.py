@@ -1,6 +1,6 @@
 """
-Générateur de code : parcourt l'arbre produit par l'analyseur syntaxique
-et pilote l'assembleur pour produire le code machine x86-64 final.
+Generator codicis: arborem ab analysatore syntactico productam percurrit
+et assembleur gubernat ut codicem machinalem x86-64 finalem producat.
 """
 
 from assembleur import Assembleur, RAX, RBX, RCX, RDX, RSP, RBP, RSI, RDI, R8, R9, R10, R11
@@ -16,10 +16,10 @@ from analyseur import (
 import elf
 
 REGISTRES_ARGUMENTS = [RDI, RSI, RDX, RCX, R8, R9]
-TAILLE_PILE_LOCALE = 512  # espace réservé par fonction (généreux, simple pour l'instant)
-TAILLE_TAS = 65536  # zone mémoire statique utilisée par RESERVA (allocateur "bump" simple)
-TAILLE_TAMPON_ECRITURE = 1024  # zone utilisée par SCRIBE pour assembler le texte avant affichage
-TAILLE_TAMPON_LECTURE = 2000000   # zone utilisée par LEGE pour recevoir le contenu d'un fichier
+TAILLE_PILE_LOCALE = 512  # spatium reservatum per functionem (generosum, simplex adhuc)
+TAILLE_TAS = 65536  # zona memoriae staticae a RESERVA adhibita (allocator "bump" simplex)
+TAILLE_TAMPON_ECRITURE = 1024  # zona a SCRIBE adhibita ad textum componendum ante monstrationem
+TAILLE_TAMPON_LECTURE = 2000000   # zona a LEGE adhibita ad contentum fasciculi recipiendum
 
 
 class ErreurGeneration(Exception):
@@ -40,7 +40,7 @@ class Generateur:
         self.compteur_etiquettes += 1
         return f"{base}_{self.compteur_etiquettes}"
 
-    # --- Point d'entrée principal ---
+    # --- Punctum ingressus principale ---
 
     def generer(self, programme: Programme) -> bytes:
         self.formas = {}
@@ -57,9 +57,9 @@ class Generateur:
         self._gen_routine_mitte_serie()
 
         self.asm.etiquette("_debut")
-        # A l'entree ELF, RSP pointe sur argc et argv commence a RSP+8.
-        # Cela permet a l'amorce Python de produire le compilateur VINDEX
-        # moderne, dont PRINCIPALIS recoit les chemins source et sortie.
+        # Ad ingressum ELF, RSP ad argc indicat et argv incipit ad RSP+8.
+        # Hoc amorsae Python permittit compilatorem VINDEX modernum
+        # producere, cuius PRINCIPALIS vias fontis et exitus accipit.
         self.asm.mov_reg_reg(RBX, RSP)
         self.asm.mov_reg_indirect(RDI, RBX)
         self.asm.mov_reg_reg(RSI, RSP)
@@ -100,10 +100,10 @@ class Generateur:
         code_final = self.asm.resoudre(elf.BASE_ADDR + elf.DECALAGE_CODE)
         return elf.construire_elf(code_final, decalage_entree)
 
-    # --- Fonctions ---
+    # --- Functiones ---
 
     def _collecter_declarations(self, instructions):
-        """Retourne une liste de (nom, type_ou_None) pour chaque variable déclarée."""
+        """Elenchum (nomen, genus_vel_None) pro quaque variabili declarata reddit."""
         noms = []
         for instr in instructions:
             if isinstance(instr, Declaration):
@@ -126,9 +126,9 @@ class Generateur:
         self.asm.push_reg(RBP)
         self.asm.mov_reg_reg(RBP, RSP)
 
-        # Table des variables locales. Une variable normale occupe 8 octets ;
-        # une variable de type structure occupe (nb_champs * 8) octets,
-        # et son "offset" pointe vers son champ d'indice 0.
+        # Tabula variabilium localium. Variabilis normalis 8 octeta occupat;
+        # variabilis generis structurae (nb_campi * 8) octeta occupat,
+        # et eius "offset" ad campum indicis 0 indicat.
         self.variables = {}
         self.types_variables = {}
         decalage = -8
@@ -149,8 +149,8 @@ class Generateur:
             else:
                 decalage -= 8
 
-        # La pile doit être assez grande pour TOUTES les variables déclarées
-        # (calculée dynamiquement, pas une taille fixe qui pourrait déborder).
+        # Pila satis magna esse debet pro OMNIBUS variabilibus declaratis
+        # (dynamice calculata, non mensura fixa quae exundare posset).
         taille_necessaire = -decalage
         taille_reservee = ((taille_necessaire + 16 + 15) // 16) * 16  # marge + alignement 16 octets
         self.asm.sub_reg_imm32(RSP, taille_reservee)
@@ -175,7 +175,7 @@ class Generateur:
         self.asm.pop_reg(RBP)
         self.asm.ret()
 
-    # --- Instructions ---
+    # --- Instructiones ---
 
     def _gen_bloc(self, instructions):
         for instr in instructions:
@@ -202,19 +202,19 @@ class Generateur:
         elif isinstance(instr, AffectationIndice):
             self._gen_expr(instr.valeur)                        # valeur -> RAX
             self.asm.push_reg(RAX)
-            self._gen_adresse_indice(instr.nom, instr.indice)   # adresse -> RBX (écrase RAX/RCX, sans souci)
+            self._gen_adresse_indice(instr.nom, instr.indice)   # adressa -> RBX (delet RAX/RCX, sine cura)
             self.asm.pop_reg(RAX)
             self.asm.mov_indirect_reg(RBX, RAX)
 
         elif isinstance(instr, LiberaInstr):
-            self._gen_expr(instr.valeur)             # RAX = pointeur (charge utile) à libérer
-            self.asm.mov_reg_reg(RCX, RAX)             # RCX = ce pointeur
+            self._gen_expr(instr.valeur)             # RAX = index (carga utilis) liberandus
+            self.asm.mov_reg_reg(RCX, RAX)             # RCX = hic index
             self.asm.lea_reg_etiquette(RBX, "tas_libre_tete")
-            self.asm.mov_reg_indirect(RDX, RBX)        # RDX = tête actuelle de la liste libre
-            self.asm.mov_indirect_reg(RCX, RDX)        # on stocke l'ancienne tête DANS le bloc qu'on libère
+            self.asm.mov_reg_indirect(RDX, RBX)        # RDX = caput actuale elenchi liberi
+            self.asm.mov_indirect_reg(RCX, RDX)        # caput vetus IN blocum quem liberamus servamus
             self.asm.mov_reg_imm64(RDX, 8)
-            self.asm.sub_reg_reg(RCX, RDX)             # RCX = adresse de l'en-tête (charge utile - 8)
-            self.asm.mov_indirect_reg(RBX, RCX)        # tas_libre_tete pointe maintenant sur ce bloc
+            self.asm.sub_reg_reg(RCX, RDX)             # RCX = adressa capitis (carga utilis - 8)
+            self.asm.mov_indirect_reg(RBX, RCX)        # tas_libre_tete nunc ad hunc blocum indicat
 
         elif isinstance(instr, EcritureSeries):
             self._gen_expr(instr.longueur)
@@ -237,7 +237,7 @@ class Generateur:
             self.asm.syscall()
 
         elif isinstance(instr, InstructionExpr):
-            self._gen_expr(instr.expr)  # évalué pour ses effets ; résultat ignoré
+            self._gen_expr(instr.expr)  # aestimatum pro effectibus; resultatum ignoratum
 
         elif isinstance(instr, AffectationContentum):
             self._gen_expr(instr.valeur)
@@ -358,7 +358,7 @@ class Generateur:
         self.asm.mov_reg_imm64(RDI, 1)   # stdout
         self.asm.syscall()
 
-    # --- Expressions ---
+    # --- Expressiones ---
 
     OPS_COMPARAISON = {"==", "!=", ">", ">=", "<", "<="}
 
@@ -371,8 +371,8 @@ class Generateur:
         return isinstance(type_, str) and type_.startswith("ACUS<")
 
     def _gen_adresse_base_tableau(self, nom, registre_dest):
-        """Place dans registre_dest l'adresse de l'élément 0 du tableau `nom`
-        (qu'il soit stocké localement, ou reçu en paramètre par référence)."""
+        """In registro_dest adressam elementi 0 tabulae `nom` ponit
+        (sive localiter servatum, sive per parametrum referentiae acceptum)."""
         if self.types_variables.get(nom, "").startswith("SERIES_REF") or self._est_pointeur(nom):
             self.asm.mov_reg_pile(registre_dest, self.variables[nom])
         else:
@@ -389,7 +389,7 @@ class Generateur:
         return self.variables[nom_var] - 8 * index_champ
 
     def _gen_adresse_indice(self, nom, expr_indice):
-        """Calcule l'adresse de nom[indice] et la laisse dans RBX."""
+        """Adressam nom[indice] calculat et in RBX relinquit."""
         self._gen_expr(expr_indice)
         self.asm.push_reg(RAX)
         self._gen_adresse_base_tableau(nom, RBX)
@@ -403,9 +403,9 @@ class Generateur:
 
     def _gen_expr(self, expr):
         if isinstance(expr, Nombre):
-            # Attention : ne jamais passer par float() ici — un float64 ne peut
-            # représenter exactement que ~15-17 chiffres, ce qui corromprait
-            # silencieusement les grands entiers (ex : des empreintes de hachage).
+            # Cautio: numquam per float() hic transire -- float64 tantum
+            # ~15-17 cifras exacte repraesentare potest, quod magnos numeros
+            # integros (exempli gratia signa hachurae) tacite corrumperet.
             valeur_texte = expr.valeur
             if "." in valeur_texte:
                 self.asm.mov_reg_imm64(RAX, int(float(valeur_texte)))
@@ -421,33 +421,33 @@ class Generateur:
             etq_fin = self._nouvelle_etiquette("reserva_fin")
 
             self.asm.lea_reg_etiquette(RBX, "tas_libre_tete")
-            self.asm.mov_reg_indirect(RAX, RBX)   # RAX = tête de la liste des blocs libres
+            self.asm.mov_reg_indirect(RAX, RBX)   # RAX = caput elenchi blocorum liberorum
             self.asm.cmp_reg_imm32(RAX, 0)
             self.asm.je_etiquette(etq_vide)
 
-            # Un bloc libre existe : on le retire de la liste et on le réutilise.
-            self.asm.mov_reg_reg(RCX, RAX)            # RCX = adresse de l'en-tête du bloc
+            # Blocus liber existit: eum ex elencho removemus et reutimur.
+            self.asm.mov_reg_reg(RCX, RAX)            # RCX = adressa capitis bloci
             self.asm.mov_reg_imm64(RDX, 8)
             self.asm.add_reg_reg(RCX, RDX)            # RCX = adresse de la charge utile
-            self.asm.mov_reg_indirect(RDX, RCX)       # RDX = prochain bloc libre (stocké dans la charge utile)
+            self.asm.mov_reg_indirect(RDX, RCX)       # RDX = proximus blocus liber (in carga utili servatus)
             self.asm.mov_indirect_reg(RBX, RDX)       # tas_libre_tete = RDX
-            self.asm.mov_reg_reg(RAX, RCX)             # résultat = adresse de la charge utile
+            self.asm.mov_reg_reg(RAX, RCX)             # resultatum = adressa cargae utilis
             self.asm.jmp_etiquette(etq_fin)
 
-            # Aucun bloc libre : on avance le curseur du tas, avec un nouvel en-tête.
+            # Nullus blocus liber: cursorem acervi promovemus, cum novo capite.
             self.asm.etiquette(etq_vide)
             self.asm.lea_reg_etiquette(RCX, "tas_curseur")
-            self.asm.mov_reg_indirect(R8, RCX)         # R8 = décalage actuel
+            self.asm.mov_reg_indirect(R8, RCX)         # R8 = decalagium actuale
             self.asm.lea_reg_etiquette(R9, "tas_donnees")
-            self.asm.add_reg_reg(R9, R8)               # R9 = adresse de l'en-tête
+            self.asm.add_reg_reg(R9, R8)               # R9 = adressa capitis
             self.asm.mov_reg_imm64(RAX, 8)
-            self.asm.mov_indirect_reg(R9, RAX)         # en-tête = taille du bloc (8 pour l'instant)
+            self.asm.mov_indirect_reg(R9, RAX)         # caput = mensura bloci (8 adhuc)
             self.asm.mov_reg_imm64(RDX, 16)
-            self.asm.add_reg_reg(R8, RDX)              # nouveau décalage = ancien + en-tête + charge utile
-            self.asm.mov_indirect_reg(RCX, R8)         # tas_curseur mis à jour
+            self.asm.add_reg_reg(R8, RDX)              # novum decalagium = vetus + caput + carga utilis
+            self.asm.mov_indirect_reg(RCX, R8)         # tas_curseur renovatus
             self.asm.mov_reg_reg(RAX, R9)
             self.asm.mov_reg_imm64(RDX, 8)
-            self.asm.add_reg_reg(RAX, RDX)             # résultat = en-tête + 8 = charge utile
+            self.asm.add_reg_reg(RAX, RDX)             # resultatum = caput + 8 = carga utilis
 
             self.asm.etiquette(etq_fin)
 
@@ -484,8 +484,8 @@ class Generateur:
             self.asm.push_reg(RAX)
             self._gen_expr(expr.capacite)
             self.asm.mov_reg_reg(RDX, RAX)
-            # Sécurité : quelle que soit la capacité demandée par le programme,
-            # on ne dépasse jamais la taille réelle du tampon réservé en mémoire.
+            # Securitas: quaecumque capacitas a programmate rogata sit,
+            # numquam mensuram veram buffer in memoria reservati excedimus.
             self.asm.cmp_reg_imm32(RDX, TAILLE_TAMPON_LECTURE)
             etq_ok = self._nouvelle_etiquette("lege_capacite_ok")
             self.asm.jle_etiquette(etq_ok)
@@ -590,19 +590,19 @@ class Generateur:
         else:
             raise ErreurGeneration(f"expressio non sustentata: {expr}")
 
-    # --- Routine interne : conversion nombre -> texte décimal ---
+    # --- Ratio interna: conversio numeri -> textum decimale ---
 
     def _gen_routine_conversion(self):
         """
-        Entrée : RAX = nombre (positif ou négatif) à convertir
-        Sortie : RSI = pointeur vers le texte, RDX = longueur (avec saut de ligne inclus)
+        Ingressus: RAX = numerus (positivus vel negativus) convertendus
+        Exitus: RSI = index ad textum, RDX = longitudo (linea nova inclusa)
         """
         self.asm.etiquette("routine_conversion")
         self.asm.push_reg(RBX)
         self.asm.push_reg(RCX)
         self.asm.push_reg(R8)
 
-        self.asm.mov_reg_imm64(R8, 0)  # drapeau "négatif"
+        self.asm.mov_reg_imm64(R8, 0)  # indicium "negativum"
         self.asm.cmp_reg_imm32(RAX, 0)
         self.asm.jge_etiquette("conv_pas_negatif_entree")
         self.asm.neg_reg(RAX)
@@ -644,12 +644,12 @@ class Generateur:
         self.asm.pop_reg(RBX)
         self.asm.ret()
 
-    # --- Routine interne : écrire un tableau de caractères comme texte ---
+    # --- Ratio interna: tabulam litterarum ut textum scribere ---
 
     def _gen_routine_ecriture_serie(self):
         """
-        Entrée : RSI = adresse du premier élément, RCX = nombre de caractères
-        Effet : écrit ces caractères sur la sortie standard, suivis d'un saut de ligne
+        Ingressus: RSI = adressa primi elementi, RCX = numerus litterarum
+        Effectus: has litteras in exitum canonicum scribit, linea nova secuta
         """
         self.asm.etiquette("routine_ecriture_serie")
         self.asm.push_reg(RBX)
@@ -670,9 +670,9 @@ class Generateur:
         self.asm.mov_reg_imm64(RBX, 8)
         self.asm.imul_reg_reg(RAX, RBX)
         self.asm.mov_reg_reg(RBX, RSI)
-        self.asm.sub_reg_reg(RBX, RAX)      # RBX = adresse de l'élément courant (base - index*8)
-        self.asm.mov_reg_indirect(RAX, RBX)  # RAX = code du caractère
-        self.asm.mov_mem_reg8(RDI, RAX)      # écrit l'octet bas dans le tampon
+        self.asm.sub_reg_reg(RBX, RAX)      # RBX = adressa elementi actualis (base - index*8)
+        self.asm.mov_reg_indirect(RAX, RBX)  # RAX = codex litterae
+        self.asm.mov_mem_reg8(RDI, RAX)      # octetum inferius in tampon scribit
         self.asm.inc_reg(RDI)
         self.asm.inc_reg(R10)
         self.asm.jmp_etiquette("scribe_boucle")
@@ -697,9 +697,9 @@ class Generateur:
 
     def _gen_routine_mitte_serie(self):
         """
-        Entrée : RSI = adresse du premier élément, RCX = nombre de caractères, R9 = descripteur
-        Effet : écrit ces caractères vers le descripteur donné (sans saut de ligne ajouté)
-        Sortie : RAX = nombre d'octets réellement écrits
+        Ingressus: RSI = adressa primi elementi, RCX = numerus litterarum, R9 = descriptor
+        Effectus: has litteras ad descriptorem datum scribit (sine linea nova addita)
+        Exitus: RAX = numerus octetorum vere scriptorum
         """
         self.asm.etiquette("routine_mitte_serie")
         self.asm.push_reg(RBX)
@@ -710,7 +710,7 @@ class Generateur:
         self.asm.push_reg(R10)
         self.asm.push_reg(R11)
 
-        self.asm.mov_reg_reg(R11, R9)    # R11 = descripteur (protégé de la boucle)
+        self.asm.mov_reg_reg(R11, R9)    # R11 = descriptor (a circulo protectus)
         self.asm.lea_reg_etiquette(RDI, "tampon_ecriture")
         self.asm.mov_reg_reg(R8, RDI)     # R8 = adresse de base du tampon
         self.asm.mov_reg_imm64(R10, 0)

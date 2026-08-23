@@ -1,13 +1,13 @@
 """
-Analyseur syntaxique pour VINDEX.
-Transforme la liste plate de tokens en un arbre représentant
-la vraie structure grammaticale du programme.
+Analysator syntacticus pro VINDEX.
+Elenchum planum tesserarum in arborem transformat, quae
+veram structuram grammaticalem programmatis repraesentat.
 """
 
 from lexeur import Lexeur, TypeToken, Token
 
 
-# --- Les nœuds de l'arbre (AST : Abstract Syntax Tree) ---
+# --- Nodi arboris (AST: Abstract Syntax Tree) ---
 
 class Noeud:
     pass
@@ -232,7 +232,7 @@ class Si(Noeud):
     def __init__(self, condition, bloc_tunc, bloc_aliter):
         self.condition = condition
         self.bloc_tunc = bloc_tunc
-        self.bloc_aliter = bloc_aliter  # peut être None
+        self.bloc_aliter = bloc_aliter  # potest esse None
 
     def __repr__(self):
         return f"Si({self.condition}, tunc={self.bloc_tunc}, aliter={self.bloc_aliter})"
@@ -327,14 +327,14 @@ class Chaine(Noeud):
         return f"Chaine({self.valeur!r})"
 
 
-# --- Types reconnus par le langage ---
+# --- Genera a lingua agnita ---
 TOKENS_DE_TYPE = {
     TypeToken.TYPE_NUMERUS, TypeToken.TYPE_NUMERUS64, TypeToken.TYPE_LITTERA,
     TypeToken.TYPE_VERITAS, TypeToken.TYPE_ACUS,
     TypeToken.TYPE_SERIES, TypeToken.TYPE_VACUUM,
 }
 
-# Précédence des opérateurs binaires (plus haut = évalué en premier)
+# Praecedentia operatorum binariorum (altior = prius aestimatur)
 PRECEDENCE = {
     TypeToken.VEL: 1, TypeToken.VEL_BIT: 1,
     TypeToken.ET: 2, TypeToken.ET_BIT: 2,
@@ -376,7 +376,7 @@ class Analyseur:
             raise ErreurSyntaxique(message or f"{type_token.name} exspectatur", self._actuel())
         return self._avancer()
 
-    # --- Programme ---
+    # --- Programma ---
 
     def analyser(self):
         fonctions = []
@@ -444,7 +444,7 @@ class Analyseur:
             type_ = f"{type_}<{type_interne}>"
         return type_
 
-    # --- Blocs et instructions ---
+    # --- Bloci et instructiones ---
 
     def _analyser_bloc_jusqua(self, *types_fin):
         instructions = []
@@ -620,7 +620,7 @@ class Analyseur:
         self._attendre(TypeToken.PUNCTUM)
         return Per(variable, debut, fin, corps)
 
-    # --- Expressions (avec gestion de la précédence des opérateurs) ---
+    # --- Expressiones (cum tractatione praecedentiae operatorum) ---
 
     def _analyser_expression(self, precedence_min=0):
         gauche = self._analyser_primaire()

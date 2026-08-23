@@ -13,6 +13,45 @@ GitHub est fons communis et canonicus progressionis. Historia, rami et Pull Requ
 - Archivorum ZIP vel exempla veterum non sunt fundamentum canonica evolutionis.
 - Directorii temporarii synchronizationis, inter quos `.tmp.driveupload/` et `.tmp.drivedownload/`, numquam in historiam Git mittantur.
 
+## Lingua
+
+VINDEX Latine cogitat. Sylvia Latine loquitur. Haec non est solum
+inscriptio decorativa, sed regula obligatoria pro omni parte activa et
+canonica huius repositorii:
+
+- Grammatica ipsa linguae VINDEX (verba clavia, structura syntactica)
+  Latina est et manet.
+- Codex compilatoris (`compilator_vindex.vindex`), instrumenta
+  (`instrumenta/`), probationes (`tests/`), exempla (`examples/`), et
+  relationes (`RELATIO-*.md`) — omnia haec, **commentaria, chordae
+  litterales (nuntii erratorum, `PROCLAMA`, `print`), nomina
+  functionum et variabilium, docstrings, et ipsi tituli fasciculorum
+  ubi rationabiliter fieri potest** — Latine scribenda sunt.
+- Hoc etiam ad instrumenta auxiliaria in aliis linguis scripta (Python,
+  Bash, C) pertinet, non solum ad codicem VINDEX ipsum: catena bootstrap
+  Python (`bootstrap/python/`) et scripta diagnostica quae eam invocant
+  sequuntur eandem regulam.
+- Nuntii commit (`git commit`) et descriptiones Pull Request Latine
+  scribendae sunt, secundum morem iam observatum in historia hoc
+  repositorii.
+- Colloquium inter contributores humanos et agentes (extra Git ipsum,
+  velut hoc CONTRIBUTING.md, vel colloquia in linguis vernaculis) non
+  hac regula tenetur — sola pertinet ad id quod in repositorio ipso,
+  tamquam parte canonica operis, manet.
+
+**Exceptio explicita**: directoria archivalia continentia versiones
+historicas antequam haec regula statuta est (exempli gratia
+`Vindex Claude Ai/Vindex_final_versions/`) non retroactive corrigenda
+sunt. Haec non sunt fundamentum canonica evolutionis (vide regulam
+supra de archivis ZIP et exemplis veterum) et manent tantum ut memoria
+historica, non ut codex activus.
+
+Si agens (Claude, ChatGPT, aliusve) linguam non-Latinam in parte activa
+et canonica repositorii invenit, id corrigere debet cum opportunitas
+datur, praesertim si pars illa iam tangitur ob aliam causam. Non
+necesse est omnem repositorium simul perscrutari; sufficit progressive
+corrigere quod inventum est.
+
 ## Rami collaboratorum
 
 Praefixa agentium servant originem operis:

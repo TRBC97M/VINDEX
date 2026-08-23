@@ -1,5 +1,5 @@
 """
-Construction du fichier exécutable ELF64 final, sans aucun outil externe.
+Constructio fasciculi exsecutabilis ELF64 finalis, sine ullo instrumento externo.
 """
 
 import struct
@@ -12,9 +12,9 @@ DECALAGE_CODE = TAILLE_ENTETE + TAILLE_PROGRAM_HEADER
 
 def construire_elf(code: bytes, decalage_point_entree: int) -> bytes:
     """
-    code : les octets machine complets (fonctions + routines internes + données)
-    decalage_point_entree : position, dans `code`, où l'exécution doit démarrer
-                             (c'est-à-dire l'étiquette de la fonction PRINCIPALIS)
+    code : octeta machinalia completa (functiones + rationes internae + data)
+    decalage_point_entree : positio, intra `code`, ubi exsecutio incipere debet
+                             (id est, tesserula functionis PRINCIPALIS)
     """
     point_entree = BASE_ADDR + DECALAGE_CODE + decalage_point_entree
 
@@ -31,7 +31,7 @@ def construire_elf(code: bytes, decalage_point_entree: int) -> bytes:
     taille_totale = DECALAGE_CODE + len(code)
     program_header = struct.pack(
         "<IIQQQQQQ",
-        1, 7,  # type=LOAD, flags=R+W+X (lecture+écriture+exécution)
+        1, 7,  # typus=LOAD, indicia=R+W+X (lectio+scriptio+exsecutio)
         0, BASE_ADDR, BASE_ADDR,
         taille_totale, taille_totale,
         0x1000

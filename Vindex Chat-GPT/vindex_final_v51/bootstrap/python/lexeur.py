@@ -1,13 +1,13 @@
 """
-Lexeur pour VINDEX
-Découpe le code source en tokens reconnaissables.
+Lexeur pro VINDEX
+Codicem fontis in tesseras (tokens) agnoscibiles dividit.
 """
 
 import re
 from enum import Enum, auto
 
 class TypeToken(Enum):
-    # Mots-clés de structure (style COBOL)
+    # Verba clavia structurae (stylo COBOL)
     FUNCTIO = auto()
     FIN_FUNCTIO = auto()
     REDDENS = auto()
@@ -33,8 +33,8 @@ class TypeToken(Enum):
     SCRIBE = auto()
     PUNCTUM = auto()  # le point final "."
 
-    # Structures et tableaux
-    SERIES = auto()  # déjà présent comme type, mais aussi mot-clé structurel
+    # Structurae et tabulae
+    SERIES = auto()  # jam praesens ut genus, sed etiam verbum clave structurale
     DE = auto()
     CAPACITAS = auto()
     FORMA = auto()
@@ -43,14 +43,14 @@ class TypeToken(Enum):
     CROCHET_OUVRANT = auto()
     CROCHET_FERMANT = auto()
 
-    # Mémoire et constantes
+    # Memoria et constantes
     RESERVA = auto()
     LIBERA = auto()
     CONSTANS = auto()
     SEDES = auto()
     CONTENTUM = auto()
 
-    # Fichiers
+    # Fasciculi
     APERI_LEGERE = auto()
     APERI_SCRIBERE = auto()
     LEGE = auto()
@@ -59,7 +59,7 @@ class TypeToken(Enum):
     MITTE = auto()
     CLAUDE = auto()
 
-    # Bit à bit
+    # Bit ad bit
     ET_BIT = auto()
     VEL_BIT = auto()
     XOR_BIT = auto()
@@ -67,7 +67,7 @@ class TypeToken(Enum):
     DECALAGE_DROITE = auto()
     NON_BIT = auto()
 
-    # Types
+    # Genera
     TYPE_NUMERUS = auto()
     TYPE_NUMERUS64 = auto()
     TYPE_LITTERA = auto()
@@ -76,7 +76,7 @@ class TypeToken(Enum):
     TYPE_SERIES = auto()
     TYPE_VACUUM = auto()
 
-    # Littéraux
+    # Litteralia
     NOMBRE = auto()
     CHAINE = auto()
     CARACTERE = auto()
@@ -84,10 +84,10 @@ class TypeToken(Enum):
     FALSUM = auto()
     NIHIL = auto()
 
-    # Identifiant (nom de variable/fonction)
+    # Identificator (nomen variabilis/functionis)
     IDENTIFIANT = auto()
 
-    # Opérateurs
+    # Operatores
     PLUS = auto()
     MOINS = auto()
     FOIS = auto()
@@ -104,7 +104,7 @@ class TypeToken(Enum):
     VEL = auto()
     NON = auto()
 
-    # Symboles
+    # Signa
     PARENTHESE_OUVRANTE = auto()
     PARENTHESE_FERMANTE = auto()
     ACCOLADE_OUVRANTE = auto()
@@ -222,7 +222,7 @@ class Lexeur:
             if c in " \t\r\n":
                 self._avancer()
             elif c == "/" and self.position + 1 < len(self.source) and self.source[self.position + 1] == "/":
-                # commentaire jusqu'à la fin de la ligne
+                # commentarium usque ad finem lineae
                 while self._caractere_actuel() not in (None, "\n"):
                     self._avancer()
             else:
@@ -233,8 +233,8 @@ class Lexeur:
         debut = self.position
         while self._caractere_actuel() is not None and self._caractere_actuel().isdigit():
             self._avancer()
-        # Un "." ne fait partie du nombre que s'il est suivi d'un chiffre
-        # (partie décimale) — sinon c'est le point de fin d'instruction (style COBOL).
+        # "." tantum pars numeri est si cifra sequitur
+        # (pars decimalis) -- aliter est punctum finis instructionis (stylo COBOL).
         if (self._caractere_actuel() == "."
                 and self.position + 1 < len(self.source)
                 and self.source[self.position + 1].isdigit()):
@@ -249,8 +249,8 @@ class Lexeur:
         debut = self.position
         while self._caractere_actuel() is not None and (self._caractere_actuel().isalnum() or self._caractere_actuel() == "_"):
             self._avancer()
-        # Gère les mots composés type "FIN-DUM", "FIN-SI" : un tiret suivi
-        # directement d'une lettre fait partie du mot-clé, pas de l'opérateur moins.
+        # Verba composita tractat, exempli gratia "FIN-DUM", "FIN-SI": virgula sequente
+        # directe littera pars verbi clavis est, non operatoris minus.
         while (self._caractere_actuel() == "-"
                and self.position + 1 < len(self.source)
                and self.source[self.position + 1].isalpha()):

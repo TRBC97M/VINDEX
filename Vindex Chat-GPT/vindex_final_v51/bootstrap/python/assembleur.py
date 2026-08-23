@@ -1,11 +1,11 @@
 """
-Assembleur x86-64 fait main.
-Encode directement les instructions en octets machine, sans passer
-par aucun outil externe (pas de nasm, pas de gcc).
+Assembleur x86-64 manu factus.
+Instructiones directe in octeta machinalia codificat, sine ullo
+instrumento externo (non nasm, non gcc).
 
-Chaque méthode correspond à une instruction du processeur et sait
-comment la traduire en octets, selon les règles d'encodage x86-64
-(préfixe REX, ModRM, immédiats...).
+Quaevis methodus instructioni processoris respondet et scit
+quomodo eam in octeta transferre, secundum regulas codificationis
+x86-64 (praefixum REX, ModRM, immediata...).
 """
 
 RAX, RCX, RDX, RBX, RSP, RBP, RSI, RDI = range(8)
@@ -18,7 +18,7 @@ class Assembleur:
         self.etiquettes = {}     # nom -> position dans self.code
         self.correctifs = []     # (position, nom_etiquette, taille, mode)
 
-    # --- Utilitaires bas niveau ---
+    # --- Instrumenta gradu infimo ---
 
     def etiquette(self, nom):
         self.etiquettes[nom] = len(self.code)
@@ -40,7 +40,7 @@ class Assembleur:
         self.correctifs.append((len(self.code), nom_etiquette, taille, mode))
         self.code += bytes(taille)
 
-    # --- Transfert de données ---
+    # --- Translatio datorum ---
 
     def mov_reg_imm64(self, dst, valeur):
         self._rex(1, 0, 0, dst >> 3)
@@ -53,52 +53,52 @@ class Assembleur:
         self._modrm(3, src, dst)
 
     def mov_reg_pile(self, dst, decalage):
-        """charge depuis [rbp+decalage] vers dst"""
+        """ex [rbp+decalage] ad dst onerat"""
         self._rex(1, dst >> 3, 0, 0)
         self.code.append(0x8B)
         self._modrm(2, dst, RBP)
         self._imm32(decalage)
 
     def mov_pile_reg(self, decalage, src):
-        """stocke src vers [rbp+decalage]"""
+        """src ad [rbp+decalage] servat"""
         self._rex(1, src >> 3, 0, 0)
         self.code.append(0x89)
         self._modrm(2, src, RBP)
         self._imm32(decalage)
 
     def lea_reg_etiquette(self, dst, nom_etiquette):
-        """dst = adresse absolue de l'étiquette (patché en deux passes)"""
+        """dst = adressa absoluta tesserulae (duobus gradibus corrigitur)"""
         self._rex(1, dst >> 3, 0, 0)
         self.code.append(0x8D)
-        self._modrm(0, dst, 5)  # mod=00, rm=101 => adressage relatif à RIP
+        self._modrm(0, dst, 5)  # mod=00, rm=101 => adressatio relativa ad RIP
         self._reserver_correctif(nom_etiquette, 4, "rip32")
 
     def lea_reg_pile(self, dst, decalage):
-        """dst = adresse de [rbp+decalage] (et non sa valeur)"""
+        """dst = adressa [rbp+decalage] (non eius valor)"""
         self._rex(1, dst >> 3, 0, 0)
         self.code.append(0x8D)
         self._modrm(2, dst, RBP)
         self._imm32(decalage)
 
     def mov_reg_indirect(self, dst, base):
-        """charge depuis [base] vers dst (base ne doit pas être RSP/RBP)"""
+        """ex [base] ad dst onerat (base non debet esse RSP/RBP)"""
         self._rex(1, dst >> 3, 0, base >> 3)
         self.code.append(0x8B)
         self._modrm(0, dst, base)
 
     def movzx_reg_mem8(self, dst, base):
-        """charge un seul octet depuis [base], l'étend avec des zéros, vers dst"""
+        """unum octetum ex [base] onerat, zeris extendit, ad dst"""
         self._rex(1, dst >> 3, 0, base >> 3)
         self.code += bytes([0x0F, 0xB6])
         self._modrm(0, dst, base)
 
     def mov_indirect_reg(self, base, src):
-        """stocke src vers [base] (base ne doit pas être RSP/RBP)"""
+        """src ad [base] servat (base non debet esse RSP/RBP)"""
         self._rex(1, src >> 3, 0, base >> 3)
         self.code.append(0x89)
         self._modrm(0, src, base)
 
-    # --- Arithmétique ---
+    # --- Arithmetica ---
 
     def add_reg_reg(self, dst, src):
         self._rex(1, src >> 3, 0, dst >> 3)
@@ -130,7 +130,7 @@ class Assembleur:
         self._modrm(3, 3, reg)
 
     def div_reg(self, reg):
-        """division non signée RDX:RAX / reg -> quotient RAX, reste RDX"""
+        """divisio non signata RDX:RAX / reg -> quotiens RAX, residuum RDX"""
         self._rex(1, 0, 0, reg >> 3)
         self.code.append(0xF7)
         self._modrm(3, 6, reg)
@@ -158,17 +158,17 @@ class Assembleur:
         self._imm32(valeur)
 
     def mov_mem_imm8(self, base_reg, valeur):
-        """stocke un octet immédiat à l'adresse [base_reg]"""
+        """octetum immediatum ad adressam [base_reg] servat"""
         self.code.append(0xC6)
         self._modrm(0, 0, base_reg)
         self.code.append(valeur & 0xFF)
 
     def mov_mem_reg8(self, base_reg, src_reg):
-        """stocke l'octet bas de src_reg à l'adresse [base_reg]"""
+        """octetum inferius src_reg ad adressam [base_reg] servat"""
         self.code.append(0x88)
         self._modrm(0, src_reg, base_reg)
 
-    # --- Bit à bit ---
+    # --- Bit ad bit ---
 
     def and_reg_reg(self, dst, src):
         self._rex(1, src >> 3, 0, dst >> 3)
@@ -200,10 +200,10 @@ class Assembleur:
         self.code.append(0xD3)
         self._modrm(3, 5, dst)
 
-    # --- Comparaisons ---
+    # --- Comparationes ---
 
     def cmp_reg_reg(self, a, b):
-        """positionne les drapeaux pour (a - b)"""
+        """indicia pro (a - b) ponit"""
         self._rex(1, b >> 3, 0, a >> 3)
         self.code.append(0x39)
         self._modrm(3, b, a)
@@ -225,7 +225,7 @@ class Assembleur:
         self.code += bytes([0x0F, 0xB6])
         self._modrm(3, RAX, RAX)
 
-    # --- Pile et contrôle de flux ---
+    # --- Pila et gubernatio fluxus ---
 
     def push_reg(self, reg):
         if reg >= 8:
@@ -267,10 +267,10 @@ class Assembleur:
         self.code += bytes([0x0F, 0x8E])
         self._reserver_correctif(nom_etiquette, 4, "rel32")
 
-    # --- Résolution finale (deuxième passe) ---
+    # --- Resolutio finalis (secundus gradus) ---
 
     def resoudre(self, adresse_base):
-        """Remplace toutes les étiquettes par leurs adresses/décalages réels."""
+        """Omnes tesserulas per adressas/decalagia realia substituit."""
         for position, nom, taille, mode in self.correctifs:
             cible = self.etiquettes[nom]
             if mode == "rel32":
