@@ -1,0 +1,117 @@
+# Custodia nuclei VINDEX sine Python, GTK, Systemate aut amorsa externa.
+name: VINDEX 0.53 — Nucleus purus
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-053-purificatio
+  pull_request:
+    branches:
+      - chatgpt/vindex-053-compilator-dynamicus
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  nucleus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Fontes accipe
+        uses: actions/checkout@v5
+
+      - name: Compilatorem para
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod 755 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Punctum fixum native comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          R='Vindex Chat-GPT/vindex_final_v51'
+          F="$R/src/compilator_vindex.vindex"
+          "$R/compilator_vindex" "$F" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          "$RUNNER_TEMP/gen1" "$F" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/gen2" "$F" "$RUNNER_TEMP/gen3"
+          chmod 755 "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          cmp "$R/compilator_vindex" "$RUNNER_TEMP/gen2"
+          sha256sum "$RUNNER_TEMP/gen2"
+          printf '%s\n' 'RECTE: compilator VINDEX sine Python punctum fixum servat.'
+
+      - name: Casus semanticos native exsequere
+        shell: bash
+        run: |
+          set -euo pipefail
+          R='Vindex Chat-GPT/vindex_final_v51'
+          C="$R/compilator_vindex"
+
+          proba() {
+            nomen="$1"; fons="$2"; exspectatum="$3"; shift 3
+            exe="$RUNNER_TEMP/$nomen"
+            "$C" "$R/tests/casus/$fons" "$exe"
+            chmod 755 "$exe"
+            productum="$($exe "$@")"
+            status=$?
+            test "$status" -eq 0
+            if [ "$productum" != "$exspectatum" ]; then
+              printf 'ERRATUM %s: [%s] != [%s]\n' "$nomen" "$productum" "$exspectatum" >&2
+              exit 1
+            fi
+            printf 'RECTE  %s\n' "$nomen"
+          }
+
+          proba salve salve.vindex 'Salve, VINDEX!'
+          proba calculus calculus.vindex "$(printf '42\n1\n2\n3\n-42\n2')"
+          proba fluitans fluitans.vindex "$(printf '4.640000\n1')"
+          proba importa importa.vindex '49'
+          proba structura-acus structura_acus.vindex "$(printf '150\n99')"
+          proba recursio recursio.vindex '720'
+          proba argumenta argumenta.vindex "$(printf '2\n90')" Zeta
+          proba argumenta-septem argumenta_septem.vindex '28'
+          proba vxnat-partem vxnat_partem.vindex "$(printf '83\n65\n76\n69')"
+          proba vocationes-nullae vocationes_nullae.vindex '7168'
+          proba desine-imbrique desine_imbrique.vindex '48'
+          proba lectio-contextus lectio_contextus.vindex '66'
+
+      - name: Diagnostica nativa comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          R='Vindex Chat-GPT/vindex_final_v51'
+          C="$R/compilator_vindex"
+
+          reice() {
+            nomen="$1"; fons="$2"; fragmentum="$3"
+            exe="$RUNNER_TEMP/$nomen"
+            log="$RUNNER_TEMP/$nomen.log"
+            set +e
+            "$C" "$R/tests/casus/$fons" "$exe" >"$log" 2>&1
+            status=$?
+            set -e
+            test "$status" -ne 0
+            test ! -e "$exe"
+            grep -Fq "$fragmentum" "$log"
+            printf 'RECTE  %s\n' "$nomen"
+          }
+
+          reice nativum-principalis erratum_principalis.vindex 'FUNCTIO PRINCIPALIS deest'
+          reice nativum-functio erratum_functio.vindex 'functio vocata non inventa est'
+          reice nativum-importa erratum_importa.vindex 'fons importatus aperiri non potest'
+
+      - name: CRLF native comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          R='Vindex Chat-GPT/vindex_final_v51'
+          F="$R/src/compilator_vindex.vindex"
+          sed 's/$/\r/' "$F" > "$RUNNER_TEMP/compilator_crlf.vindex"
+          "$R/compilator_vindex" "$RUNNER_TEMP/compilator_crlf.vindex" "$RUNNER_TEMP/compilator_crlf"
+          chmod 755 "$RUNNER_TEMP/compilator_crlf"
+          printf '%s\n' 'RECTE: CRLF sine Python compilatur.'
