@@ -1158,8 +1158,8 @@ FUNCTIO COMPONE_SCRIBE_STDOUT_DYNAMICA REDDENS NUMERUS.
     DECLARA p SICUT NUMERUS VALENS pos.
     p = COMPONE_ONERA(codex, p, 2, longitudo).
     SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
-        p = COMPONE_TRANSCRIBE(codex, p, 12, 2).
-        p = COMPONE_TRANSCRIBE(codex, p, 13, 6).
+        p = COMPONE_TRANSCRIBE(codex, p, 8, 2).
+        p = COMPONE_TRANSCRIBE(codex, p, 2, 6).
         CODEX_SCRIBE(codex, p, 72).
         CODEX_SCRIBE(codex, p + 1, 131).
         CODEX_SCRIBE(codex, p + 2, 236).
@@ -1167,8 +1167,6 @@ FUNCTIO COMPONE_SCRIBE_STDOUT_DYNAMICA REDDENS NUMERUS.
         p = p + 4.
         p = COMPONE_ONERA(codex, p, 0, 16777216).
         p = COMPONE_SUME_INDIRECTUM(codex, p, 1, 0).
-        p = COMPONE_TRANSCRIBE(codex, p, 2, 13).
-        p = COMPONE_TRANSCRIBE(codex, p, 8, 12).
         CODEX_SCRIBE(codex, p, 76).
         CODEX_SCRIBE(codex, p + 1, 141).
         CODEX_SCRIBE(codex, p + 2, 76).
@@ -2576,6 +2574,7 @@ FUNCTIO COMPONE_IMPRIME_NUMERUS REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT intervallum_scratch SICUT NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p SICUT NUMERUS VALENS pos.
 
     p = COMPONE_ONERA(codex, p, 3, 0).
@@ -2633,6 +2632,7 @@ FUNCTIO COMPONE_IMPRIME_CHAR REDDENS NUMERUS.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT intervallum_scratch SICUT NUMERUS.
     ACCIPIT caracter SICUT NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p SICUT NUMERUS VALENS pos.
     p = COMPONE_ONERA(codex, p, 0, caracter).
     p = COMPONE_SERVA_PILA(codex, p, intervallum_scratch, 0).
@@ -2646,6 +2646,7 @@ FUNCTIO COMPONE_IMPRIME_PADEADO REDDENS NUMERUS.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT intervallum_scratch SICUT NUMERUS.
     ACCIPIT ancho SICUT NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p SICUT NUMERUS VALENS pos.
     p = COMPONE_TRANSCRIBE(codex, p, 12, 0).
 
@@ -2679,6 +2680,7 @@ FUNCTIO COMPONE_IMPRIME_FLUITANIS REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT intervallum_scratch SICUT NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p SICUT NUMERUS VALENS pos.
 
     p = COMPONE_ONERA(codex, p, 3, 0).
@@ -2688,7 +2690,7 @@ FUNCTIO COMPONE_IMPRIME_FLUITANIS REDDENS NUMERUS.
     p = COMPONE_ONERA(codex, p, 3, 9223372036854775807).
     p = COMPONE_AND(codex, p, 0, 3).
     p = COMPONE_IMPONE(codex, p, 0).
-    p = COMPONE_IMPRIME_CHAR(codex, p, intervallum_scratch, 45).
+    p = COMPONE_IMPRIME_CHAR(codex, p, intervallum_scratch, 45, contextus_parseris).
     p = COMPONE_AUFER(codex, p, 0).
     DECLARA pos_post_flot_sign SICUT NUMERUS VALENS p.
     DECLARA ig_fps SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_flot_pos, pos_post_flot_sign).
@@ -2696,8 +2698,8 @@ FUNCTIO COMPONE_IMPRIME_FLUITANIS REDDENS NUMERUS.
     p = COMPONE_MOVQ_A_XMM(codex, p, 0, 0).
     p = COMPONE_CVTTSD2SI(codex, p, 0, 0).
     p = COMPONE_IMPONE(codex, p, 0).
-    p = COMPONE_IMPRIME_NUMERUS(codex, p, intervallum_scratch).
-    p = COMPONE_IMPRIME_CHAR(codex, p, intervallum_scratch, 46).
+    p = COMPONE_IMPRIME_NUMERUS(codex, p, intervallum_scratch, contextus_parseris).
+    p = COMPONE_IMPRIME_CHAR(codex, p, intervallum_scratch, 46, contextus_parseris).
     p = COMPONE_AUFER(codex, p, 0).
 
     p = COMPONE_CVTSI2SD(codex, p, 1, 0).
@@ -2708,7 +2710,7 @@ FUNCTIO COMPONE_IMPRIME_FLUITANIS REDDENS NUMERUS.
     p = COMPONE_MOVSD_CARGA(codex, p, 0, intervallum_scratch).
     p = COMPONE_MULSD(codex, p, 0, 1).
     p = COMPONE_CVTTSD2SI(codex, p, 0, 0).
-    p = COMPONE_IMPRIME_PADEADO(codex, p, intervallum_scratch, 6).
+    p = COMPONE_IMPRIME_PADEADO(codex, p, intervallum_scratch, 6, contextus_parseris).
 
     REDDE p.
 FIN-FUNCTIO.
@@ -4054,9 +4056,9 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                         CONTENTUM(pos_codicis) = COMPONE_IMPRIME_TEXTUS(codex, CONTENTUM(pos_codicis)).
                                     ALITER
                                         SI es_flot_pcs == 1 TUNC
-                                            CONTENTUM(pos_codicis) = COMPONE_IMPRIME_FLUITANIS(codex, CONTENTUM(pos_codicis), intervallum_scratch).
+                                            CONTENTUM(pos_codicis) = COMPONE_IMPRIME_FLUITANIS(codex, CONTENTUM(pos_codicis), intervallum_scratch, contextus_parseris).
                                         ALITER
-                                            CONTENTUM(pos_codicis) = COMPONE_IMPRIME_NUMERUS(codex, CONTENTUM(pos_codicis), intervallum_scratch).
+                                            CONTENTUM(pos_codicis) = COMPONE_IMPRIME_NUMERUS(codex, CONTENTUM(pos_codicis), intervallum_scratch, contextus_parseris).
                                         FIN-SI.
                                     FIN-SI.
 

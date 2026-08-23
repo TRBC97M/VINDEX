@@ -170,3 +170,55 @@ Verificatum hic (Wine tantum): auto-hospitium punctum fixum servatum
 999` solum, `Premier/999/Dernier`, et casus tensionis quinque
 vocationum sequentialium mixtarum catena/numerus) omnes correctae.
 
+## Addendum tertium — causa radicalis vera inventa a ChatGPT (disassemblatio sub Windows vero), correcta et verificata
+
+ChatGPT probavit caput cacheti (`26a8e43`) sub Windows Server 2025 vero:
+cache `GetStdHandle` **non sufficiebat**. `PROCLAMA 999` solum reddebat
+`status 9`, `stdout = "\n"` — cifrae ipsae omnino absentes. Disassemblatio
+`solum.exe` patefecit causam veram: **cifrae adhuc scribebantur per
+`syscall` (0x0F 0x05) Linux directum**, dum sola linea nova post numerum
+per `WriteFile` ibat.
+
+**Causa radicalis**: `COMPONE_IMPRIME_NUMERUS` (et auxilia
+`COMPONE_IMPRIME_CHAR`, `COMPONE_IMPRIME_PADEADO`,
+`COMPONE_IMPRIME_FLUITANIS`) **non habebant `contextus_parseris` inter
+parametra formalia (`ACCIPIT`)**, quamvis eo intra corpus uterentur (per
+vocationes ad `COMPONE_SCRIBE_STDOUT_DYNAMICA`). Compilator hoc non
+notavit ut errorem — variabilis indefinita resolvebatur ad valorem
+qui, sub Wine, forte functionabat (verisimiliter propter coincidentiam
+positionis pilae), sed sub Windows vero non.
+
+**Correctio applicata hic**:
+1. `contextus_parseris` additus ut parametrum formale explicitum ad
+   omnes quattuor functiones (`COMPONE_IMPRIME_NUMERUS`,
+   `COMPONE_IMPRIME_CHAR`, `COMPONE_IMPRIME_PADEADO`,
+   `COMPONE_IMPRIME_FLUITANIS`), et propagatus per omnes vocationes
+   internas et externas.
+2. **Defectus adiunctus inventus et correctus simul**:
+   `COMPONE_IMPRIME_PADEADO` adhibet registrum `R12` pro suo statu
+   interno (valor cifris dividendus per iterationes). Prior versio
+   `COMPONE_SCRIBE_STDOUT_DYNAMICA` etiam adhibebat `R12`/`R13` ad
+   servandum longitudinem/bufferum trans vocationem `GetStdHandle` —
+   collisio potentialis. Data cachetum `GetStdHandle` (Addendum
+   secundum), haec preservatio non amplius necessaria erat: helper
+   simplificatus, nulla registra R12-R15 amplius adhibet, tantum
+   `R8`/`RDX`/`RCX`/`R9` transitorie intra `sub rsp,40`/`add rsp,40`
+   proprium.
+
+**Verificatum hic (Wine)**: casus exactus a ChatGPT relatus
+(`PROCLAMA "Premier"; PROCLAMA 999; PROCLAMA "Dernier";`) nunc reddit
+`Premier\n999\nDernier\n`, exitus 7, **sine ullo defectu vel vestigio
+`syscall` Linux**. Auto-hospitium punctum fixum servatum (SHA256
+identica G2=G3).
+
+**Limitatio nova inventa, non adhuc soluta**: probatio extensa cum
+numero fluitante (`PROCLAMA 3.14159` post alias vocationes) revelavit
+defectum **distinctum et novum** in modo PE: `COMPONE_IMPRIME_FLUITANIS`
+reddit valorem incorrectum (`0.000000` loco `3.141589`) cum solum
+vocatum, et causat **divisionem per zero** cum in sequentia post alias
+vocationes `PROCLAMA` invocatur. Modus ELF non afficitur (valor
+correctus semper). Hic defectus **non erat pars relationis ChatGPT**
+(qui numeros integros tantum probavit) et **non adhuc investigatus
+neque correctus** — relinquitur ut limitatio nota pro proximo opere,
+extra ambitum huius correctionis specificae.
+
