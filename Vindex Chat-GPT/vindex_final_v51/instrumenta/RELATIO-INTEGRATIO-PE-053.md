@@ -307,3 +307,44 @@ utroque modo ELF et PE**, confirmans defectum antiquiorem in analysi
 litteralis negativi fluitantis, omnino seorsum ab hac correctione et
 extra eius ambitum.
 
+## Addendum sextum — defectus litteralis fluitantis negativi (identicus ELF/PE) inventus et correctus
+
+Investigatio propria (non relata a ChatGPT) confirmavit hypothesin
+addendi quinti: defectus erat identicus in ambobus modis, ergo
+praeexistens et omnino seorsum ab integratione PE. Radix duplex
+inventa per lectionem directam fontis:
+
+1. **`ANALYSA_EXPRESSIO`**: `es_flot_expr` (indicat num pars sinistra
+   expressionis fluitans sit) computabatur per `PROSPICE_EST_FLUITANS`
+   applicatum **ad ipsum signum `-`/`+`**, non ad numerum sequentem.
+   Quia `PROSPICE_EST_FLUITANS` solum cifras (48-57) initio accipit,
+   signum semper falsum reddebat pro `es_flot_expr`.
+2. **Consequentia grammatica**: VINDEX nullum mechanismum proprium
+   "signum minus unarium" habet — `-X` tractatur ut `0 - X` per
+   circulum operatorum binariorum `ANALYSA_EXPRESSIO`. Cum
+   `es_flot_expr` false 0 esset, `0 - (bits fluitantis)` fiebat per
+   **subtractionem integralem** (`COMPONE_SUB` in registris
+   generalibus) loco subtractionis fluitantis propriae (`SUBSD`) —
+   exacte negatio integralis bituum crudorum, non signum inversum
+   IEEE-754.
+3. **Defectus geminus in `PROCLAMA` ipso**: eadem inspectio
+   `PROSPICE_EST_FLUITANS` applicata ad signum (non numerum) etiam
+   ibi accidebat, causans `PROCLAMA` eligere ramum impressionis
+   integralis (`COMPONE_IMPRIME_NUMERUS`) loco fluitantis
+   (`COMPONE_IMPRIME_FLUITANIS`) — defectus secundus, distinctus,
+   necessarius pariter corrigi.
+
+**Correctio**: in ambobus locis, positio inspecta per
+`PROSPICE_EST_FLUITANS` nunc **transilit signum praecedentem**
+(`+`/`-`) si adest, antequam numerum ipsum inspicit.
+
+**Verificatum hic**: probatio extensa (`-2.71828`, `-0.5`, catenae/
+numeri/fluitantes mixti) reddit resultata correcta **identice inter
+ELF et PE**. Subtractio binaria normalis (variabilis-variabilis,
+integralis et fluitans) **non afficitur** — verificatum explicite
+(`10-3=7`, `5-8=-3`, `5.5-2.2=3.299999`, identici ante et post
+correctionem). Auto-hospitium punctum fixum servatum (SHA256 identica
+G2=G3). Duae probationes novae additae ad
+`tests/test_proclama_pe_053.py` (fluitans negativus, subtractio
+binaria non affecta) — omnes 15 probationes RECTE (13.4s).
+

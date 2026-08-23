@@ -136,6 +136,41 @@ class ProclamaModusElfTests(unittest.TestCase):
             )
             self.assertEqual(completed.returncode, 5)
 
+    def test_proclama_fluitans_negativus(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="vindex-proclama-elf-") as d:
+            exitus = Path(d) / "exsecutabile"
+            _compila(
+                'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n'
+                '    PROCLAMA -2.71828.\n'
+                '    PROCLAMA -0.5.\n'
+                '    REDDE 0.\n'
+                'FIN-FUNCTIO.\n',
+                exitus,
+            )
+            completed = _exsequere_elf(exitus)
+            self.assertEqual(completed.stdout, "-2.718280\n-0.500000\n")
+
+    def test_subtractio_binaria_non_afficitur(self) -> None:
+        """Verificat correctionem litteralis fluitantis negativi non
+        corrumpere subtractionem binariam normalem (variabilis - variabilis)."""
+        with tempfile.TemporaryDirectory(prefix="vindex-proclama-elf-") as d:
+            exitus = Path(d) / "exsecutabile"
+            _compila(
+                'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n'
+                '    DECLARA a SICUT NUMERUS VALENS 10.\n'
+                '    DECLARA b SICUT NUMERUS VALENS 3.\n'
+                '    PROCLAMA a - b.\n'
+                '    PROCLAMA 5 - 8.\n'
+                '    DECLARA x SICUT FLUITANS VALENS 5.5.\n'
+                '    DECLARA y SICUT FLUITANS VALENS 2.2.\n'
+                '    PROCLAMA x - y.\n'
+                '    REDDE 0.\n'
+                'FIN-FUNCTIO.\n',
+                exitus,
+            )
+            completed = _exsequere_elf(exitus)
+            self.assertEqual(completed.stdout, "7\n-3\n3.299999\n")
+
 
 @unittest.skipUnless(WINE_ADEST, "wine64 deest")
 class ProclamaModusPeTests(unittest.TestCase):
@@ -230,6 +265,21 @@ class ProclamaModusPeTests(unittest.TestCase):
                 stdout,
                 b"Initium\n1\n22\n333\n4444\n55555\nFinis\n",
             )
+
+    def test_proclama_fluitans_negativus(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="vindex-proclama-pe-") as d:
+            exitus = Path(d) / "exsecutabile.exe"
+            _compila(
+                'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n'
+                '    PROCLAMA -2.71828.\n'
+                '    PROCLAMA -0.5.\n'
+                '    REDDE 0.\n'
+                'FIN-FUNCTIO.\n',
+                exitus,
+                modus_pe=True,
+            )
+            stdout = _exsequere_pe_sub_wine(exitus)
+            self.assertEqual(stdout, b"-2.718280\n-0.500000\n")
 
     def test_proclama_boucle_viginti_iterationum(self) -> None:
         with tempfile.TemporaryDirectory(prefix="vindex-proclama-pe-") as d:

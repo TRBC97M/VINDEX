@@ -3269,7 +3269,11 @@ FUNCTIO ANALYSA_EXPRESSIO REDDENS NUMERUS.
         es_flot_expr = PROSPICE_EST_FLUITANS(fons, pos_ante_prospectum, n, DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), contextus_parseris).
         CONTENTUM(pos_fontis) = pos_ante_prospectum.
     ALITER
-        es_flot_expr = PROSPICE_EST_FLUITANS(fons, CONTENTUM(pos_fontis), n, DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), contextus_parseris).
+        DECLARA pos_prospectus_signatus SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
+        SI pos_prospectus_signatus < n && (fons[pos_prospectus_signatus] == 43 || fons[pos_prospectus_signatus] == 45) TUNC
+            pos_prospectus_signatus = pos_prospectus_signatus + 1.
+        FIN-SI.
+        es_flot_expr = PROSPICE_EST_FLUITANS(fons, pos_prospectus_signatus, n, DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), contextus_parseris).
     FIN-SI.
 
     DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_TERMINUM(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
@@ -4048,7 +4052,11 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                 SI fons[i] == 80 && i + 7 < n && fons[i+1] == 82 && fons[i+2] == 79 && fons[i+3] == 67 && fons[i+4] == 76 && fons[i+5] == 65 && fons[i+6] == 77 && fons[i+7] == 65 TUNC
                                     CONTENTUM(pos_fontis) = i + 9.
                                     DECLARA ign_pcs SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
-                                    DECLARA es_flot_pcs SICUT NUMERUS VALENS PROSPICE_EST_FLUITANS(fons, CONTENTUM(pos_fontis), n, DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), contextus_parseris).
+                                    DECLARA pos_flot_pcs_signatus SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
+                                    SI pos_flot_pcs_signatus < n && (fons[pos_flot_pcs_signatus] == 43 || fons[pos_flot_pcs_signatus] == 45) TUNC
+                                        pos_flot_pcs_signatus = pos_flot_pcs_signatus + 1.
+                                    FIN-SI.
+                                    DECLARA es_flot_pcs SICUT NUMERUS VALENS PROSPICE_EST_FLUITANS(fons, pos_flot_pcs_signatus, n, DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), contextus_parseris).
 
                                     SI fons[CONTENTUM(pos_fontis)] == 34 TUNC
                                         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
