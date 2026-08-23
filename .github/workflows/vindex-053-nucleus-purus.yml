@@ -27,6 +27,13 @@ jobs:
           set -euo pipefail
           chmod 755 ./compilator_vindex
 
+      - name: Comparatorem VINDEX construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex tests/compara_fasciculos_053.vindex "$RUNNER_TEMP/compara_fasciculos"
+          chmod 755 "$RUNNER_TEMP/compara_fasciculos"
+
       - name: Punctum fixum native comproba
         shell: bash
         run: |
@@ -38,8 +45,8 @@ jobs:
           chmod 755 "$RUNNER_TEMP/gen2"
           "$RUNNER_TEMP/gen2" "$F" "$RUNNER_TEMP/gen3"
           chmod 755 "$RUNNER_TEMP/gen3"
-          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
-          cmp ./compilator_vindex "$RUNNER_TEMP/gen2"
+          "$RUNNER_TEMP/compara_fasciculos" "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          "$RUNNER_TEMP/compara_fasciculos" ./compilator_vindex "$RUNNER_TEMP/gen2"
           sha256sum "$RUNNER_TEMP/gen2"
           printf '%s\n' 'RECTE: compilator VINDEX sine Python punctum fixum servat.'
 
