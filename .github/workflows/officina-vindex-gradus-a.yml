@@ -89,18 +89,32 @@ jobs:
           $compilator = Join-Path $distributio 'compilator_vindex.exe'
           $relatio = Join-Path ([IO.Path]::GetTempPath()) 'officina-vindex-probatio.txt'
 
-          & $officina --probatio
-          if ($LASTEXITCODE -ne 0) {
+          function Exsequere-Officinam([string[]]$argumenta) {
+            $psi = [System.Diagnostics.ProcessStartInfo]::new()
+            $psi.FileName = $officina
+            foreach ($argumentum in $argumenta) {
+              [void]$psi.ArgumentList.Add($argumentum)
+            }
+            $psi.UseShellExecute = $false
+            $processus = [System.Diagnostics.Process]::new()
+            $processus.StartInfo = $psi
+            [void]$processus.Start()
+            $processus.WaitForExit()
+            return $processus.ExitCode
+          }
+
+          $statusInternus = Exsequere-Officinam @('--probatio')
+          if ($statusInternus -ne 0) {
             if (Test-Path $relatio) { Get-Content $relatio }
-            throw "ERRATUM: probatio interna Officinae defecit ($LASTEXITCODE)."
+            throw "ERRATUM: probatio interna Officinae defecit ($statusInternus)."
           }
           Get-Content $relatio
 
           $manifestum = Join-Path $PWD 'tests\proiecta\salve\proiectum_pe.vindex'
-          & $officina --proba-proiectum $compilator $manifestum
-          if ($LASTEXITCODE -ne 0) {
+          $statusProiecti = Exsequere-Officinam @('--proba-proiectum', $compilator, $manifestum)
+          if ($statusProiecti -ne 0) {
             if (Test-Path $relatio) { Get-Content $relatio }
-            throw "ERRATUM: proiectum per Officinam probari non potest ($LASTEXITCODE)."
+            throw "ERRATUM: proiectum per Officinam probari non potest ($statusProiecti)."
           }
           Get-Content $relatio
           Get-FileHash $officina -Algorithm SHA256
