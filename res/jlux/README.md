@@ -9,10 +9,16 @@ JL-UX est lingua visualis Sylvia OS; non est nomen systematis ipsum. In interfac
 - `jlux_core.css` — valores canonici colorum, mensurarum et temporum motus ad prototypa.
 - `wallpaper/sylvia_caeruleum_I.svg` — imago fundi caerulea abstracta, sine signo neque inscriptione, ad aream operis ordinariam.
 - `referentia/tabula_canonica_I.svg` — tabula visualis Latina quae fenestram quadratam, palettam et barram operum tenuem demonstrat.
+- `referentia/programmata_I.svg` — referentia visualis canonica applicationis PROGRAMMATA in desktop amplo Sylvia OS.
+- `prototypa/programmata_I.html` — prototypum interactive ad quaesitionem, selectionem, collectiones et actionem `AGE` explorandas.
 
-Norma integra legitur in:
+Norma integra JL-UX legitur in:
 
 `documenta/jlux/JL-UX_CORE_I_0.md`
+
+Norma PROGRAMMATA legitur in:
+
+`documenta/sylvia/PROGRAMMATA_I.md`
 
 ## Status imaginum conceptuum
 
@@ -29,5 +35,6 @@ Hoc principium prohibet ne experimentum temporarium pro norma Sylvia OS habeatur
 - Iconographia est volumetrica sed moderata.
 - Vitrum, lumen et metallica adhibentur cum disciplina.
 - Influentia Latina est subtilis, non caricatura.
+- PROGRAMMATA non habet limitem visualem sex locorum; index crescere et volvi potest.
 
 *VINDEX Latine cogitat. Sylvia Latine loquitur.*
