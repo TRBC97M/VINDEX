@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="fundo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f5b91"/>
+      <stop offset="0.46" stop-color="#0a4779"/>
+      <stop offset="1" stop-color="#08233D"/>
+    </linearGradient>
+    <linearGradient id="titulus" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#337eae"/>
+      <stop offset="0.24" stop-color="#1a5d92"/>
+      <stop offset="0.72" stop-color="#0e426f"/>
+      <stop offset="1" stop-color="#082b4c"/>
+    </linearGradient>
+    <linearGradient id="vitrum" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7fbfd" stop-opacity="0.96"/>
+      <stop offset="0.42" stop-color="#dbe7ed" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#b9cbd5" stop-opacity="0.96"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fafaf7"/>
+      <stop offset="1" stop-color="#e5e7e6"/>
+    </linearGradient>
+    <linearGradient id="side" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef4f6"/>
+      <stop offset="1" stop-color="#d7e0e4"/>
+    </linearGradient>
+    <linearGradient id="sel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2c78aa"/>
+      <stop offset="1" stop-color="#14507e"/>
+    </linearGradient>
+    <linearGradient id="bronze" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7b37a"/>
+      <stop offset="1" stop-color="#9b6d39"/>
+    </linearGradient>
+    <linearGradient id="close" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d86a5f"/>
+      <stop offset="1" stop-color="#8d2728"/>
+    </linearGradient>
+    <linearGradient id="task" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#194f78"/>
+      <stop offset="1" stop-color="#08233d"/>
+    </linearGradient>
+    <filter id="lumen" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#fundo)"/>
+  <path d="M-70 760 C330 710, 590 370, 1060 215 C1320 130, 1480 145, 1710 40" fill="none" stroke="#eaf8ff" stroke-opacity="0.28" stroke-width="4"/>
+  <path d="M-90 790 C330 735, 650 440, 1100 315 C1340 250, 1510 220, 1680 145" fill="none" stroke="#62d7f2" stroke-opacity="0.25" stroke-width="2"/>
+  <path d="M0 735 C480 740, 670 705, 990 620" fill="none" stroke="#62d7f2" stroke-opacity="0.16" stroke-width="10" filter="url(#lumen)"/>
+
+  <g font-family="Arial, sans-serif" font-size="14" fill="#f1eee4" text-anchor="middle">
+    <g transform="translate(45 38)">
+      <rect x="0" y="0" width="48" height="36" rx="2" fill="#dce8ed" stroke="#7895a7"/>
+      <rect x="4" y="4" width="40" height="25" fill="#1a5d92"/>
+      <rect x="17" y="36" width="14" height="5" fill="#b9c4cf"/>
+      <rect x="11" y="41" width="26" height="4" fill="#b9c4cf"/>
+      <text x="24" y="66">Computatrum</text>
+    </g>
+    <g transform="translate(45 126)">
+      <path d="M0 10h18l5 7h25v30H0z" fill="#d8a84e" stroke="#8b6128"/>
+      <path d="M2 19h44v26H2z" fill="#f1c66f" opacity="0.9"/>
+      <text x="24" y="66">Documenta</text>
+    </g>
+    <g transform="translate(45 216)">
+      <ellipse cx="24" cy="23" rx="22" ry="21" fill="#1a5d92" stroke="#b9c4cf"/>
+      <path d="M6 22c8-11 28-17 37-4M9 33c9 8 25 10 34 1M22 3c4 11 4 30 0 41" fill="none" stroke="#62d7f2" stroke-width="2"/>
+      <text x="24" y="62">Rete</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="185" y="74" width="1180" height="720" fill="#0a1f31" stroke="#b98a52" stroke-width="1"/>
+    <rect x="187" y="76" width="1176" height="716" fill="url(#panel)" stroke="#9fb1bd"/>
+    <rect x="187" y="76" width="1176" height="42" fill="url(#titulus)"/>
+    <line x1="190" y1="79" x2="1360" y2="79" stroke="#eaf8ff" stroke-opacity="0.78"/>
+    <rect x="194" y="84" width="27" height="27" fill="#0d3556" stroke="#62d7f2" stroke-opacity="0.55"/>
+    <path d="M202 99h11m-5.5-5.5v11" stroke="#d7b37a" stroke-width="2"/>
+    <text x="232" y="103" font-family="Arial, sans-serif" font-weight="bold" font-size="17" fill="#fff">PROGRAMMATA</text>
+    <text x="352" y="103" font-family="Arial, sans-serif" font-size="12" fill="#c9e5f3">Gestor programmatum Sylvia OS</text>
+    <g>
+      <rect x="1265" y="83" width="28" height="28" fill="url(#vitrum)" stroke="#7895a7"/>
+      <rect x="1295" y="83" width="28" height="28" fill="url(#vitrum)" stroke="#7895a7"/>
+      <rect x="1325" y="83" width="31" height="28" fill="url(#close)" stroke="#6e2020"/>
+      <path d="M1272 99h14" stroke="#173047" stroke-width="2"/>
+      <rect x="1303" y="91" width="12" height="11" fill="none" stroke="#173047" stroke-width="2"/>
+      <path d="M1334 91l13 13m0-13l-13 13" stroke="#fff" stroke-width="2"/>
+    </g>
+
+    <rect x="187" y="118" width="1176" height="31" fill="#f1eee4" stroke="#c1c5c5"/>
+    <text x="202" y="139" font-family="Arial, sans-serif" font-size="14" fill="#17202a">Programma</text>
+    <text x="278" y="139" font-family="Arial, sans-serif" font-size="14" fill="#17202a">Editio</text>
+    <text x="329" y="139" font-family="Arial, sans-serif" font-size="14" fill="#17202a">Visus</text>
+    <text x="374" y="139" font-family="Arial, sans-serif" font-size="14" fill="#17202a">Auxilium</text>
+
+    <rect x="187" y="149" width="1176" height="54" fill="#e3e8ea" stroke="#c4cbce"/>
+    <g font-family="Arial, sans-serif" font-size="13" fill="#17202a">
+      <g transform="translate(202 160)"><rect width="82" height="31" fill="url(#vitrum)" stroke="#8da3b0"/><path d="M11 15h13m-6.5-6.5v13" stroke="#0e426f" stroke-width="2"/><text x="32" y="20">NOVUM</text></g>
+      <g transform="translate(290 160)"><rect width="82" height="31" fill="url(#vitrum)" stroke="#8da3b0"/><path d="M10 22l13-13 4 4-13 13-6 2z" fill="#b98a52" stroke="#6b4a28"/><text x="34" y="20">EDITE</text></g>
+      <g transform="translate(378 160)"><rect width="82" height="31" fill="url(#vitrum)" stroke="#8da3b0"/><text x="13" y="20">NOMEN</text></g>
+      <g transform="translate(466 160)"><rect width="72" height="31" fill="url(#vitrum)" stroke="#8da3b0"/><path d="M11 9l13 13m0-13L11 22" stroke="#a83a3a" stroke-width="2"/><text x="32" y="20">DELE</text></g>
+    </g>
+    <rect x="1000" y="160" width="238" height="31" fill="#f9faf8" stroke="#9caab1"/>
+    <text x="1014" y="180" font-family="Arial, sans-serif" font-size="13" fill="#697983">Quaere programmata…</text>
+    <rect x="1244" y="160" width="45" height="31" fill="url(#vitrum)" stroke="#8da3b0"/>
+    <circle cx="1261" cy="174" r="6" fill="none" stroke="#173047" stroke-width="2"/><path d="M1265 179l7 7" stroke="#173047" stroke-width="2"/>
+    <rect x="1295" y="160" width="54" height="31" fill="url(#sel)" stroke="#62d7f2" stroke-opacity="0.7"/>
+    <text x="1322" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#fff">AGE</text>
+
+    <rect x="187" y="203" width="225" height="555" fill="url(#side)" stroke="#c1cbcf"/>
+    <text x="206" y="235" font-family="Georgia, serif" font-size="14" fill="#6e522f" letter-spacing="1.5">COLLECTIONES</text>
+    <g font-family="Arial, sans-serif" font-size="14">
+      <rect x="196" y="250" width="207" height="34" fill="url(#sel)"/>
+      <text x="220" y="272" fill="#fff">OMNIA</text>
+      <text x="376" y="272" fill="#d7edf8" text-anchor="end">I</text>
+      <text x="220" y="312" fill="#17202a">RECENTIA</text>
+      <text x="220" y="352" fill="#17202a">SYSTEMA</text>
+      <text x="220" y="392" fill="#17202a">INSTRUMENTA</text>
+      <text x="220" y="432" fill="#17202a">LUDI</text>
+    </g>
+    <line x1="202" y1="462" x2="397" y2="462" stroke="#b9c4cf"/>
+    <text x="206" y="493" font-family="Georgia, serif" font-size="14" fill="#6e522f" letter-spacing="1.5">STATUS</text>
+    <circle cx="211" cy="523" r="4" fill="#5f7a68"/>
+    <text x="225" y="528" font-family="Arial, sans-serif" font-size="13" fill="#17202a">I programma installatum</text>
+    <circle cx="211" cy="553" r="4" fill="#1a5d92"/>
+    <text x="225" y="558" font-family="Arial, sans-serif" font-size="13" fill="#17202a">Volumen paratum</text>
+
+    <rect x="412" y="203" width="628" height="555" fill="#fbfbf8" stroke="#d0d6d7"/>
+    <text x="438" y="240" font-family="Georgia, serif" font-size="20" fill="#17202a">Programmata installata</text>
+    <text x="438" y="266" font-family="Arial, sans-serif" font-size="13" fill="#68767d">Programmata nativa .VXNAT in hoc systemate inventa.</text>
+
+    <rect x="438" y="292" width="252" height="178" fill="#edf4f7" stroke="#1a5d92" stroke-width="2"/>
+    <rect x="441" y="295" width="246" height="4" fill="#62d7f2" opacity="0.7"/>
+    <g transform="translate(460 317)">
+      <rect x="0" y="0" width="76" height="76" fill="#f1eee4" stroke="#9b8d70"/>
+      <rect x="10" y="12" width="56" height="48" fill="#eaf8ff" stroke="#7c97a6"/>
+      <rect x="10" y="12" width="56" height="12" fill="url(#bronze)"/>
+      <path d="M10 36h56M10 48h56M28 24v36M46 24v36" stroke="#4e82a3" stroke-width="1"/>
+      <rect x="58" y="58" width="15" height="15" fill="#0e426f" stroke="#62d7f2"/>
+      <path d="M62 65h7M65.5 61.5v7" stroke="#f1eee4" stroke-width="1.5"/>
+    </g>
+    <text x="552" y="338" font-family="Georgia, serif" font-size="22" fill="#08233d">TABULA</text>
+    <text x="552" y="361" font-family="Arial, sans-serif" font-size="12" fill="#64747c">TABULA.VXNAT</text>
+    <text x="552" y="392" font-family="Arial, sans-serif" font-size="12" fill="#17202a">Status: PARATUM</text>
+    <text x="552" y="413" font-family="Arial, sans-serif" font-size="12" fill="#17202a">Genus: Programma</text>
+    <rect x="552" y="430" width="92" height="25" fill="url(#sel)" stroke="#0b3555"/>
+    <text x="598" y="447" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#fff">AGE</text>
+
+    <rect x="714" y="292" width="294" height="178" fill="#f7f8f6" stroke="#c9d0d2" stroke-dasharray="5 5"/>
+    <text x="861" y="363" text-anchor="middle" font-family="Georgia, serif" font-size="17" fill="#839096">Spatium ad programmata futura</text>
+    <text x="861" y="390" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#89969d">Nullus limes visualis sex locorum.</text>
+    <text x="861" y="412" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#89969d">Index crescit et volvitur.</text>
+
+    <line x1="438" y1="500" x2="1012" y2="500" stroke="#d6dcde"/>
+    <text x="438" y="530" font-family="Georgia, serif" font-size="15" fill="#6e522f">ORDO ET VISUS</text>
+    <rect x="438" y="548" width="168" height="29" fill="url(#vitrum)" stroke="#9caab1"/>
+    <text x="451" y="568" font-family="Arial, sans-serif" font-size="12" fill="#17202a">Nomen ▾</text>
+    <rect x="617" y="548" width="38" height="29" fill="url(#vitrum)" stroke="#9caab1"/>
+    <rect x="663" y="548" width="38" height="29" fill="url(#vitrum)" stroke="#9caab1"/>
+    <g fill="#0e426f"><rect x="628" y="557" width="6" height="6"/><rect x="638" y="557" width="6" height="6"/><rect x="628" y="567" width="6" height="6"/><rect x="638" y="567" width="6" height="6"/></g>
+    <g stroke="#0e426f" stroke-width="2"><path d="M673 559h18M673 565h18M673 571h18"/></g>
+
+    <rect x="1040" y="203" width="323" height="555" fill="#eaf0f2" stroke="#c5cfd3"/>
+    <text x="1063" y="239" font-family="Georgia, serif" font-size="18" fill="#17202a">TABULA</text>
+    <line x1="1063" y1="252" x2="1338" y2="252" stroke="#b9c4cf"/>
+    <g transform="translate(1063 276)">
+      <rect x="0" y="0" width="96" height="96" fill="#f1eee4" stroke="#9b8d70"/>
+      <rect x="12" y="14" width="72" height="58" fill="#eaf8ff" stroke="#7c97a6"/>
+      <rect x="12" y="14" width="72" height="14" fill="url(#bronze)"/>
+      <path d="M12 43h72M12 57h72M36 28v44M60 28v44" stroke="#4e82a3" stroke-width="1"/>
+    </g>
+    <text x="1176" y="292" font-family="Arial, sans-serif" font-size="12" fill="#65757c">Programma nativum Sylvia OS</text>
+    <text x="1176" y="318" font-family="Arial, sans-serif" font-size="13" fill="#17202a">TABULA.VXNAT</text>
+    <text x="1176" y="344" font-family="Arial, sans-serif" font-size="12" fill="#5f7a68">● PARATUM</text>
+    <line x1="1063" y1="393" x2="1338" y2="393" stroke="#c0c9cc"/>
+    <text x="1063" y="425" font-family="Georgia, serif" font-size="14" fill="#6e522f">INFORMATIONES</text>
+    <g font-family="Arial, sans-serif" font-size="12" fill="#17202a">
+      <text x="1063" y="456">Genus</text><text x="1198" y="456">Programma</text>
+      <text x="1063" y="484">Forma</text><text x="1198" y="484">.VXNAT</text>
+      <text x="1063" y="512">Locus</text><text x="1198" y="512">/Programmata/</text>
+      <text x="1063" y="540">Status</text><text x="1198" y="540">Installatum</text>
+    </g>
+    <rect x="1063" y="584" width="275" height="36" fill="url(#sel)" stroke="#0b3555"/>
+    <text x="1200" y="608" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#fff">AGE PROGRAMMA</text>
+    <rect x="1063" y="632" width="132" height="31" fill="url(#vitrum)" stroke="#8da3b0"/>
+    <rect x="1206" y="632" width="132" height="31" fill="url(#vitrum)" stroke="#8da3b0"/>
+    <text x="1129" y="652" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#17202a">EDITE</text>
+    <text x="1272" y="652" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#17202a">PROPRIETATES</text>
+
+    <rect x="187" y="758" width="1176" height="34" fill="#e1e5e5" stroke="#c2c8c9"/>
+    <text x="203" y="780" font-family="Arial, sans-serif" font-size="12" fill="#45555e">I programma · I electum</text>
+    <text x="1345" y="780" text-anchor="end" font-family="Arial, sans-serif" font-size="12" fill="#45555e">Sylvia OS</text>
+  </g>
+
+  <rect x="0" y="872" width="1600" height="28" fill="url(#task)" stroke="#4e748c"/>
+  <line x1="0" y1="873" x2="1600" y2="873" stroke="#eaf8ff" stroke-opacity="0.36"/>
+  <rect x="4" y="875" width="74" height="22" fill="#0e426f" stroke="#62d7f2" stroke-opacity="0.48"/>
+  <path d="M15 886l5-8 5 8-5 8z" fill="#d7b37a"/>
+  <text x="34" y="890" font-family="Arial, sans-serif" font-size="12" fill="#f1eee4">Initium</text>
+  <rect x="87" y="875" width="26" height="22" fill="#143a55" stroke="#55758a"/>
+  <path d="M93 883h14v8H93z" fill="#d8a84e" stroke="#8b6128"/>
+  <rect x="119" y="875" width="26" height="22" fill="#143a55" stroke="#55758a"/>
+  <rect x="126" y="881" width="12" height="10" fill="#17202a" stroke="#b9c4cf"/>
+  <text x="129" y="889" font-family="monospace" font-size="8" fill="#eaf8ff">&gt;_</text>
+  <rect x="158" y="875" width="190" height="22" fill="#1a5d92" stroke="#62d7f2" stroke-opacity="0.35"/>
+  <text x="172" y="890" font-family="Arial, sans-serif" font-size="12" fill="#fff">PROGRAMMATA</text>
+  <g font-family="Arial, sans-serif" font-size="11" fill="#eaf8ff">
+    <text x="1456" y="890">⌁</text><text x="1481" y="890">▮▮</text><text x="1510" y="890">◉</text><text x="1583" y="890" text-anchor="end">03:44</text>
+  </g>
+</svg>
