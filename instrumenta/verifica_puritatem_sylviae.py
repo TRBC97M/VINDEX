@@ -7,6 +7,7 @@ import sys
 RADIX = Path(__file__).resolve().parents[1]
 SYSTEMA = RADIX / "Vindex Chat-GPT/vindex_final_v51/systema"
 BOOTSTRAP = SYSTEMA / "uefi/bootstrap_uefi.c"
+NUCLEUS = SYSTEMA / "nucleus.vindex"
 
 EXTENSIONES_VETITAE = {".c", ".h", ".cc", ".cpp", ".cxx", ".s", ".S", ".asm", ".rs"}
 POLLE_HEREDITATUM = re.compile(r"(?<![A-Z0-9_])POLLE\(\)")
@@ -34,6 +35,29 @@ else:
     for verbum in vetita:
         if verbum in textus:
             errata.append(f"bootstrap officium runtime vetitum continet: {verbum}")
+    for fragmentum in [
+        "#define UEFI_STATUS (COMMUNIS + 0xB00ULL)",
+        "meta[7] = scala;",
+        "meta[8] = (latitudo - 320 * scala) / 2;",
+        "meta[9] = (altitudo - 200 * scala) / 2;",
+        "((volatile U64 *)UEFI_STATUS)[0] = (U64)(UINTN)imago;",
+    ]:
+        if fragmentum not in textus:
+            errata.append(f"contractus metadatae UEFI deest: {fragmentum}")
+
+if NUCLEUS.exists():
+    nucleus = NUCLEUS.read_text(encoding="utf-8")
+    partes = nucleus.split("// --- UEFI runtime VINDEX purum", 1)
+    if len(partes) != 2:
+        errata.append("sectio runtime UEFI VINDEX puri deest")
+    else:
+        uefi = partes[1]
+        for locus in ["50333752", "50333760", "50333768", "50333792", "50333800"]:
+            if locus in uefi:
+                errata.append(f"status UEFI metadata graphica corrumpit: {locus}")
+        for locus in ["50334464", "50334472", "50334480", "50334488", "50334496"]:
+            if locus not in uefi:
+                errata.append(f"status UEFI separatus deest: {locus}")
 
 for via in SYSTEMA.rglob("*.vindex"):
     textus = via.read_text(encoding="utf-8")

@@ -25,6 +25,7 @@ typedef U64                EFI_PHYSICAL_ADDRESS;
 #define EFI_SUCCESS 0
 #define COMMUNIS 0x03000000ULL
 #define META      (COMMUNIS + 0x800ULL)
+#define UEFI_STATUS (COMMUNIS + 0xB00ULL)
 #define UMBRA     (COMMUNIS + 0x1000ULL)
 #define NUCLEUS_BASE 0x00400000ULL
 #define TEXTUS_BASE  0x00430000ULL
@@ -189,6 +190,9 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     EFI_STATUS status;
     U32 latitudo;
     U32 altitudo;
+    U32 scala_x;
+    U32 scala_y;
+    U32 scala;
     U64 ingressus;
 
     if (!systema || !systema->BootServices) return 1;
@@ -225,6 +229,10 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     latitudo = graphica->Mode->Info->HorizontalResolution;
     altitudo = graphica->Mode->Info->VerticalResolution;
     if (latitudo < 320 || altitudo < 200 || graphica->Mode->FrameBufferBase == 0) return 1;
+    scala_x = latitudo / 320;
+    scala_y = altitudo / 200;
+    scala = scala_x < scala_y ? scala_x : scala_y;
+    if (scala == 0) scala = 1;
 
     memoria_vacua((void *)(UINTN)COMMUNIS, 0x19000);
     memoria_copia((void *)(UINTN)NUCLEUS_BASE, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
@@ -240,15 +248,16 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[4] = latitudo;
     meta[5] = altitudo;
     meta[6] = graphica->Mode->Info->PixelFormat;
-    meta[7] = (U64)(UINTN)imago;
-    meta[8] = 0;
-    meta[9] = 0;
+    meta[7] = scala;
+    meta[8] = (latitudo - 320 * scala) / 2;
+    meta[9] = (altitudo - 200 * scala) / 2;
     meta[10] = UMBRA;
     meta[11] = (U64)(UINTN)_binary_forma_bin_start;
     meta[12] = 0;
     meta[13] = 0;
     meta[14] = 0;
     meta[15] = 0;
+    ((volatile U64 *)UEFI_STATUS)[0] = (U64)(UINTN)imago;
 
     ingressus = *(U64 *)(UINTN)(NUCLEUS_BASE + 24);
     ad_vindex_sali(ingressus);
