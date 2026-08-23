@@ -80,6 +80,7 @@ FUNCTIO T_PINGE REDDENS NUMERUS.
     DECLARA bronzeum SICUT NUMERUS VALENS T_COLOR(185, 138, 82).
     DECLARA rubrum SICUT NUMERUS VALENS T_COLOR(168, 58, 58).
     DECLARA grid SICUT NUMERUS VALENS T_COLOR(207, 216, 220).
+    DECLARA cellula SICUT NUMERUS VALENS T_COLOR(225, 245, 249).
     DECLARA factum SICUT NUMERUS VALENS T_RECT(0, 0, w, h, ebur).
     factum = T_RECT(0, 0, w, 1, bronzeum).
     factum = T_RECT(0, 0, 2, h, argentum).
@@ -124,7 +125,7 @@ FUNCTIO T_PINGE REDDENS NUMERUS.
     // Cellula activa A1: aqua et bronzeum subtiliter.
     DECLARA cellw SICUT NUMERUS VALENS gw / 8.
     DECLARA cellh SICUT NUMERUS VALENS (gh - 24) / 12.
-    factum = T_RECT(left + 2, top + 26, cellw - 4, cellh - 4, T_COLOR(225, 245, 249)).
+    factum = T_RECT(left + 2, top + 26, cellw - 4, cellh - 4, cellula).
     factum = T_RECT(left + 2, top + 26, cellw - 4, 2, bronzeum).
     factum = T_RECT(left + 2, top + 26, 2, cellh - 4, bronzeum).
     factum = T_RECT(2, h - 20, w - 4, 18, argentum).
