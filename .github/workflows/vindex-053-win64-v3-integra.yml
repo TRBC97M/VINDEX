@@ -1,4 +1,4 @@
-# Backend Win64 coniunctus super caput Claudii recentissimum probatur.
+# Backend Win64 coniunctus super caput Claudii recentissimum probatur et post successum stabilitur.
 name: VINDEX 0.53 — Win64 integratio v3
 
 on:
@@ -197,3 +197,97 @@ jobs:
           Write-Host "FASCICULI -> data=[$textus]"
           if ($textus -ne 'VINX') { throw 'ERRATUM: fasciculus non continet VINX.' }
           Write-Host 'RECTE: backend Win64 coniunctus sub Windows vero operatur.'
+
+  canonica:
+    needs: windows
+    if: github.event_name == 'push' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    steps:
+      - name: Ramum v3 accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/pe-fasciculi-053-v3
+          fetch-depth: 0
+
+      - name: Instrumenta in ramo stabilire
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git fetch origin chatgpt/pe-fasciculi-053 chatgpt/fluitans-win64-053 chatgpt/pe-verificatio-053
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/instrumenta/applica_fasciculos_win64_053.py" > "$RADIX/instrumenta/applica_fasciculos_win64_053.py"
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" > "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py"
+          git show origin/chatgpt/fluitans-win64-053:"$RADIX/instrumenta/corrige_proclama_fluitans_win64_053.py" > "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py"
+          git show origin/chatgpt/pe-fasciculi-053:"$RADIX/tests/casus/fasciculi_portabiles.vindex" > "$RADIX/tests/casus/fasciculi_portabiles.vindex"
+          git show origin/chatgpt/pe-verificatio-053:"$RADIX/tests/proba_pe_structuram_053.py" > "$RADIX/tests/proba_pe_structuram_053.py"
+
+      - name: Fontem et binarium canonicos construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          FONS="$RADIX/src/compilator_vindex.vindex"
+          python3 "$RADIX/instrumenta/applica_fasciculos_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" "$FONS"
+          python3 "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py" "$FONS"
+          chmod 755 "$RADIX/compilator_vindex"
+          timeout 45s "$RADIX/compilator_vindex" "$FONS" "$RUNNER_TEMP/gen1"
+          chmod 755 "$RUNNER_TEMP/gen1"
+          timeout 45s "$RUNNER_TEMP/gen1" "$FONS" "$RUNNER_TEMP/gen2"
+          chmod 755 "$RUNNER_TEMP/gen2"
+          timeout 45s "$RUNNER_TEMP/gen2" "$FONS" "$RUNNER_TEMP/gen3"
+          cmp "$RUNNER_TEMP/gen2" "$RUNNER_TEMP/gen3"
+          cp "$RUNNER_TEMP/gen2" "$RADIX/compilator_vindex"
+          chmod 755 "$RADIX/compilator_vindex"
+          sha256sum "$RADIX/compilator_vindex"
+
+      - name: Artefacta derivata et regressiones confirma
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod 755 \
+            "$RADIX/tests/run_tests.sh" "$RADIX/vindexc" "$RADIX/compilator_vindex" \
+            "$RADIX/bootstrap/reconstruit.sh" "$RADIX/installa_officinam.sh" \
+            "$RADIX/vindex-officina" "$RADIX/vindex-salutatio" "$RADIX/vindex-systema" \
+            "$RADIX/vindex_graphica" "$RADIX/systema/construe_systema.sh" "$RADIX/systema/uefi/construe_uefi.sh"
+          (
+            cd "$RADIX"
+            ./compilator_vindex src/officina_vindex.vindex "$RUNNER_TEMP/officina_vindex"
+            ./compilator_vindex src/salutatio_vindex.vindex "$RUNNER_TEMP/salutatio_vindex"
+          )
+          mv "$RUNNER_TEMP/officina_vindex" "$RADIX/officina_vindex"
+          mv "$RUNNER_TEMP/salutatio_vindex" "$RADIX/salutatio_vindex"
+          chmod 755 "$RADIX/officina_vindex" "$RADIX/salutatio_vindex"
+          "$RADIX/tests/run_tests.sh"
+
+      - name: Mutationes canonicas committe
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git config user.name 'VINDEX Automatum'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            "$RADIX/src/compilator_vindex.vindex" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/officina_vindex" \
+            "$RADIX/salutatio_vindex" \
+            "$RADIX/instrumenta/applica_fasciculos_win64_053.py" \
+            "$RADIX/instrumenta/corrige_alignationem_api_win64_053.py" \
+            "$RADIX/instrumenta/corrige_alignationem_stdout_win64_053.py" \
+            "$RADIX/tests/proba_pe_structuram_053.py" \
+            "$RADIX/tests/casus/fasciculi_portabiles.vindex" \
+            "$RADIX/tests/run_tests.sh" "$RADIX/vindexc" "$RADIX/bootstrap/reconstruit.sh" \
+            "$RADIX/installa_officinam.sh" "$RADIX/vindex-officina" "$RADIX/vindex-salutatio" \
+            "$RADIX/vindex-systema" "$RADIX/vindex_graphica" \
+            "$RADIX/systema/construe_systema.sh" "$RADIX/systema/uefi/construe_uefi.sh"
+          if git diff --cached --quiet; then
+            printf '%s\n' 'RECTE: backend Win64 iam canonicus est.'
+            exit 0
+          fi
+          git commit -m 'VINDEX 0.53: backend Win64 recentissimum canonice integra'
+          git push origin HEAD:chatgpt/pe-fasciculi-053-v3
