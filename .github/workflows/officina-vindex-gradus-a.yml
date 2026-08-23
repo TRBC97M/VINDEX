@@ -1,0 +1,115 @@
+# Custodia externa Officinae VINDEX sub Windows vero.
+name: VINDEX Officina — Gradus A
+
+on:
+  push:
+    branches:
+      - infrastructura/officina-vindex-gradus-a
+  pull_request:
+    branches:
+      - infrastructura/officina-vindex-gradus-a
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compilator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Fontes Officinae accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/officina-vindex-gradus-a
+
+      - name: Compilatorem Win64 construe
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod 755 ./compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex "$RUNNER_TEMP/compilator_vindex.exe" pe
+          ./compilator_vindex tests/proba_pe_structuram_053.vindex "$RUNNER_TEMP/proba_pe"
+          chmod 755 "$RUNNER_TEMP/proba_pe"
+          "$RUNNER_TEMP/proba_pe" "$RUNNER_TEMP/compilator_vindex.exe"
+          sha256sum "$RUNNER_TEMP/compilator_vindex.exe"
+
+      - name: Compilatorem conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: compilator-vindex-win64-officina
+          path: ${{ runner.temp }}/compilator_vindex.exe
+          if-no-files-found: error
+          retention-days: 3
+
+  windows:
+    needs: compilator
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Fontes Officinae accipe
+        uses: actions/checkout@v5
+        with:
+          ref: chatgpt/officina-vindex-gradus-a
+
+      - name: Dotnet para
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Compilatorem accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: compilator-vindex-win64-officina
+          path: ${{ runner.temp }}/compilator
+
+      - name: Officinam nativam aedifica
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $distributio = Join-Path $env:RUNNER_TEMP 'officina-vindex-gradus-a'
+          dotnet publish officina/OfficinaVindex.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
+            --output $distributio
+          if ($LASTEXITCODE -ne 0) { throw "ERRATUM: Officina aedificari non potest ($LASTEXITCODE)." }
+          Copy-Item (Join-Path $env:RUNNER_TEMP 'compilator\compilator_vindex.exe') $distributio
+          Get-ChildItem $distributio | Format-Table Name, Length
+
+      - name: Logicam, fenestram et proiectum proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $distributio = Join-Path $env:RUNNER_TEMP 'officina-vindex-gradus-a'
+          $officina = Join-Path $distributio 'officina_vindex.exe'
+          $compilator = Join-Path $distributio 'compilator_vindex.exe'
+          $relatio = Join-Path ([IO.Path]::GetTempPath()) 'officina-vindex-probatio.txt'
+
+          & $officina --probatio
+          if ($LASTEXITCODE -ne 0) {
+            if (Test-Path $relatio) { Get-Content $relatio }
+            throw "ERRATUM: probatio interna Officinae defecit ($LASTEXITCODE)."
+          }
+          Get-Content $relatio
+
+          $manifestum = Join-Path $PWD 'tests\proiecta\salve\proiectum_pe.vindex'
+          & $officina --proba-proiectum $compilator $manifestum
+          if ($LASTEXITCODE -ne 0) {
+            if (Test-Path $relatio) { Get-Content $relatio }
+            throw "ERRATUM: proiectum per Officinam probari non potest ($LASTEXITCODE)."
+          }
+          Get-Content $relatio
+          Get-FileHash $officina -Algorithm SHA256
+          Write-Host 'RECTE: Officina, fenestra, compilator et proiectum sub Windows congruunt.'
+
+      - name: Officinam conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: VINDEX-Officina-Gradus-A-Windows-x64
+          path: ${{ runner.temp }}/officina-vindex-gradus-a
+          if-no-files-found: error
+          retention-days: 14
