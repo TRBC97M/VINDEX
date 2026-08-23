@@ -155,10 +155,9 @@ In modo PE argumenta lineae mandatorum Windows nondum convertuntur; interim `PRI
 - `MITTE(descriptor, ordo, longitudo)` octeta mittit.
 - `APERI_LEGERE(via)` archivum ad legendum aperit.
 - `APERI_SCRIBERE(via)` archivum ad scribendum aperit.
-- `APERI_ADICERE(via)` archivum adiciendum aperit.
 - `CLAUDE(descriptor)` descriptorem claudit.
 
-Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE` per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probata sunt. `APERI_ADICERE` nondum in backend Win64 canonice probatum est.
+Sub PE/Win64 `APERI_LEGERE`, `APERI_SCRIBERE`, `LEGE`, `MITTE` et `CLAUDE` per `CreateFileA`, `ReadFile`, `WriteFile` et `CloseHandle` probata sunt.
 
 ## Imperium fluxus
 
@@ -188,7 +187,7 @@ PER i AB 1 AD 10 PERFICE
 FIN-PER.
 ```
 
-`DESINE.` iterationem finit; `PERGE.` ad iterationem sequentem transit.
+`DESINE.` iterationem finit.
 
 ## Operatores
 
@@ -222,7 +221,6 @@ Compilator fontes absentes, importationes vitiosas, `PRINCIPALIS` absentem et fu
 - longitudo identificatoris: 32 litterae;
 - parametra functionis probata: 7;
 - argumenta lineae mandatorum PE nondum convertuntur;
-- `APERI_ADICERE` Win64 nondum canonice probatum est;
 - nulla collectio purgamentorum;
 - nulla dependentia libc ad compilationem ordinariam.
 

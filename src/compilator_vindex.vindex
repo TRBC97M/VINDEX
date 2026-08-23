@@ -2241,44 +2241,6 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         REDDE 0.
     FIN-SI.
 
-    SI fons[CONTENTUM(pos_fontis)] == 65 && CONTENTUM(pos_fontis) + 13 < n && fons[CONTENTUM(pos_fontis)+1] == 80 && fons[CONTENTUM(pos_fontis)+2] == 69 && fons[CONTENTUM(pos_fontis)+3] == 82 && fons[CONTENTUM(pos_fontis)+4] == 73 && fons[CONTENTUM(pos_fontis)+5] == 95 && fons[CONTENTUM(pos_fontis)+6] == 65 && fons[CONTENTUM(pos_fontis)+7] == 68 && fons[CONTENTUM(pos_fontis)+8] == 73 && fons[CONTENTUM(pos_fontis)+9] == 67 && fons[CONTENTUM(pos_fontis)+10] == 69 && fons[CONTENTUM(pos_fontis)+11] == 82 && fons[CONTENTUM(pos_fontis)+12] == 69 TUNC
-        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 13.
-        DECLARA ig_aa SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
-        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 2.
-
-        DECLARA loci_saltus_viae3 SICUT NUMERUS VALENS 0.
-        CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_viae3)).
-        DECLARA sedes_viae3 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
-            CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), fons[CONTENTUM(pos_fontis)]).
-            CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
-            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        FIN-DUM.
-        CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), 0).
-        CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
-        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-        DECLARA pos_post_viam3 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-        ig_aa = CORRIGE_SALTUM(codex, loci_saltus_viae3, pos_post_viam3).
-
-        ig_aa = IGNORA_SPATIA(fons, pos_fontis, n).
-        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
-
-        SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
-            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 5368709120 + 4096 - 512 + sedes_viae3).
-        ALITER
-            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 7, 4194304 + sedes_viae3).
-        FIN-SI.
-        SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
-            CONTENTUM(pos_codicis) = COMPONE_APERI_FASCICULUM_PE(codex, CONTENTUM(pos_codicis), contextus_parseris, 4, 0, 4).
-        ALITER
-            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 6, 1089).
-            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 420).
-            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 2).
-            CONTENTUM(pos_codicis) = COMPONE_VOCA_NUCLEUM(codex, CONTENTUM(pos_codicis)).
-        FIN-SI.
-        REDDE 0.
-    FIN-SI.
-
     SI fons[CONTENTUM(pos_fontis)] == 67 && CONTENTUM(pos_fontis) + 5 < n && fons[CONTENTUM(pos_fontis)+1] == 76 && fons[CONTENTUM(pos_fontis)+2] == 65 && fons[CONTENTUM(pos_fontis)+3] == 85 && fons[CONTENTUM(pos_fontis)+4] == 68 && fons[CONTENTUM(pos_fontis)+5] == 69 TUNC
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 6.
         DECLARA ig_cl SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
