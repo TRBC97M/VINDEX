@@ -2,7 +2,15 @@
 
 ## Status
 
-Backend Win64 huius rami ex capite Claudii `0103fe0c7ece27fa6ace7e3c381b41ec11ab1623` derivatur et in commit `a26d9f3043d4f918ee0b587f70999cd6b6db1efc` canonice stabilitus est.
+Backend Win64 iam directe in ramo `chatgpt/vindex-053-compilator-dynamicus` integratus est. Catena integrationis fuit:
+
+```text
+claude/pe-integration-053-v2 @ a765ff6
+        -> PR #8
+        -> chatgpt/vindex-053-compilator-dynamicus
+```
+
+PR #8 post verificationes independentes Claudii et ChatGPT fusa est. Nulla fusio ad `main` ex hac relatione automatica fit.
 
 Punctum fixum auto-hospitii integrationis est:
 
@@ -10,13 +18,34 @@ Punctum fixum auto-hospitii integrationis est:
 
 ## Probationes ELF
 
-Suite canonica integra transiit:
+Suite canonica integra post fusionem transiit:
 
 - XXV probationes rectae;
 - nulla errata;
+- compilator distributus reconstructioni ab amorsa congruit;
+- septem argumenta System V ab amorsa Python probata sunt (`28`);
+- CRLF sine tarditate compilatur;
+- pila maior uno MiB probata est (`1048592,16`);
 - Officina et Systema servantur;
-- amorsa Python servatur;
-- fluitantes negativi `-2.71828` et `-0.5` recte imprimuntur.
+- `tabula` historica manet omnino deleta.
+
+## Contextus compilationis
+
+Contextus explicitus LXXII octeta habet:
+
+```text
++0   status DESINE
++8   status/intervallum lectionis
++16  cursor pilae functionis
++24  descriptor functionum
++32  descriptor vocationum pendentium
++40  descriptor localium
++48  descriptor formarum
++56  modus targeti ELF/PE
++64  descriptor correctionum IAT PE
+```
+
+Workflow canonicus hos campos et accessores nominatos custodit.
 
 ## Structura PE32+
 
@@ -36,9 +65,9 @@ Vocationes IAT RIP-relativae automatice verificatae sunt.
 
 ## Probatio sub Windows vero
 
-GitHub Actions in Windows Server 2025 backend coniunctum exsecutus est.
+Workflow permanens `VINDEX 0.53 — Win64 finalis` ex ipso ramo dynamico PE construit atque in `windows-latest` exsequitur. Ultima probatio post fusionem sub Microsoft Windows Server 2025 feliciter transiit.
 
-Probatio `PROCLAMA` reddidit:
+Probatio `PROCLAMA` reddit:
 
 ```text
 Initium
@@ -48,26 +77,47 @@ Initium
 Finis
 ```
 
-Status processus fuit `7`.
+Status processus est `7`.
 
-Probatio fasciculorum `APERI_SCRIBERE` → `MITTE` → `CLAUDE` → `APERI_LEGERE` → `LEGE` → `CLAUDE` statum `0` reddidit et fasciculum cuius contentum exacte `VINX` erat creavit atque relegit.
+Probatio fasciculorum:
+
+```text
+APERI_SCRIBERE
+MITTE
+CLAUDE
+APERI_LEGERE
+LEGE
+CLAUDE
+```
+
+statum `0` reddit et fasciculum cuius contentum exacte `VINX` est creat atque relegit.
 
 ## Proprietates conservatae
 
 Integratio simul servat:
 
-- modum ELF;
+- modum ELF praedefinitum;
 - auto-hospitium compilatoris;
-- backend PE/Win64 Claudii;
+- PE32+ AMD64 sine GCC, NASM aut libc;
 - fluitantes positivos et negativos;
 - allocationem PE per `VirtualAlloc`;
-- alignmentum pilae ad ABI Win64 ante vocationes API;
-- semanticam fasciculorum VINDEX in utroque hospite.
+- alignmentum pilae ad ABI Win64 et spatium umbrae;
+- semanticam fasciculorum VINDEX probatam in ELF et Win64.
+
+## Limites Win64 adhuc expliciti
+
+Backend Win64 non adhuc omnem API historicam Linux substituit:
+
+- argumenta lineae mandatorum PE nondum convertuntur; `PRINCIPALIS` interim `argc=0`, `argv=0` accipit;
+- `APERI_ADICERE` nondum canonice sub Win64 probatum est;
+- `EXSEQUERE`, `EXSEQUERE_CAPTURA`, `CURRE`, `CAMBIA` et `TUBUS` historice Linux innituntur nisi singillatim postea portentur.
+
+Hi limites backend probatum non infirmant; ambitum versionis 0.53 accurate definiunt.
 
 ## Ordo integrationis
 
-PR #23 manet super PR #8 ut mutatio composita clare examinari possit. Nulla fusio in `main` automatica fit.
+PR #8 iam fusa est. PR #3 est nunc unica PR principalis VINDEX 0.53 ad `main` et adhuc *draft* manet donec recensio finalis versionis peragatur.
 
-PR diagnosticae antiquiores #11, #13, #17 et #22 supersessae sunt; historia earum servatur in Git.
+PR diagnosticae intermediae servantur tantum ut historia investigationis; workflow permanens in ramo dynamico eas substituit.
 
-VINDEX Latine cogitat. Sylvia Latine loquitur.
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
