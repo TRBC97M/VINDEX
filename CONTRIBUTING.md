@@ -1,111 +1,62 @@
-# Contributio ad VINDEX et Sylvia OS
+# Contributio ad VINDEX
 
 ## Principium
 
-GitHub est fons communis et canonicus progressionis. Historia, rami et Pull Request statum operis definiunt. Directorium propter nomen agentis solum non habendum est vetitum vel historicum; ante iudicium inspicienda sunt `ARCHITECTURA.md`, ramus activus et contextus mutationis.
+GitHub est fons canonicus progressionis. `main` est linea stabilis; opus novum in ramo separato et per Pull Request recognoscitur.
 
-## Regulae generales
+## Regula linguae
 
-- `main` est linea stabilis communis.
-- Omnis operatio nova in ramo separato fiat.
-- Nulla mutatio directe in `main` facienda est.
-- Pull Request ante coniunctionem ad `main` requiritur.
-- Archivorum ZIP vel exempla veterum non sunt fundamentum canonica evolutionis.
-- Directorii temporarii synchronizationis, inter quos `.tmp.driveupload/` et `.tmp.drivedownload/`, numquam in historiam Git mittantur.
+**Codex fonte activus nuclei VINDEX in VINDEX tantum scribitur.**
 
-## Lingua
+Non admittuntur ad implementationem linguae:
 
-VINDEX Latine cogitat. Sylvia Latine loquitur. Haec non est solum
-inscriptio decorativa, sed regula obligatoria pro omni parte activa et
-canonica huius repositorii:
+- Python;
+- C vel C++;
+- assembler;
+- Shell/Bash;
+- PowerShell;
+- JavaScript vel alia lingua hospitis.
 
-- Grammatica ipsa linguae VINDEX (verba clavia, structura syntactica)
-  Latina est et manet.
-- Codex compilatoris (`compilator_vindex.vindex`), instrumenta
-  (`instrumenta/`), probationes (`tests/`), exempla (`examples/`), et
-  relationes (`RELATIO-*.md`) — omnia haec, **commentaria, chordae
-  litterales (nuntii erratorum, `PROCLAMA`, `print`), nomina
-  functionum et variabilium, docstrings, et ipsi tituli fasciculorum
-  ubi rationabiliter fieri potest** — Latine scribenda sunt.
-- Hoc etiam ad instrumenta auxiliaria in aliis linguis scripta (Python,
-  Bash, C) pertinet, non solum ad codicem VINDEX ipsum: catena bootstrap
-  Python (`bootstrap/python/`) et scripta diagnostica quae eam invocant
-  sequuntur eandem regulam.
-- Nuntii commit (`git commit`) et descriptiones Pull Request Latine
-  scribendae sunt, secundum morem iam observatum in historia hoc
-  repositorii.
-- Colloquium inter contributores humanos et agentes (extra Git ipsum,
-  velut hoc CONTRIBUTING.md, vel colloquia in linguis vernaculis) non
-  hac regula tenetur — sola pertinet ad id quod in repositorio ipso,
-  tamquam parte canonica operis, manet.
+Haec regula ad compilatorem, verificatores binarios, probationes conformitatis et instrumenta permanentia nuclei pertinet.
 
-**Exceptio explicita**: directoria archivalia continentia versiones
-historicas antequam haec regula statuta est (exempli gratia
-`Vindex Claude Ai/Vindex_final_versions/`, vel quaevis directoria
-nomine `archive/` intra alia proiecta, sicut
-`bootstrap/../archive/evolution/`) non retroactive corrigenda sunt.
-Haec non sunt fundamentum canonica evolutionis (vide regulam supra de
-archivis ZIP et exemplis veterum) et manent tantum ut memoria
-historica, non ut codex activus.
+Markdown, data probationum, configurationes Git et YAML GitHub Actions non sunt codex implementans linguam. Mandata minima runneris in CI temporarie admittuntur solum ad compilatorem incipiendum, permissiones fasciculorum ponendas et exitum observandum. Logica parseris, ELF, PE, ABI aut runtime numquam ibi duplicetur.
 
-Si agens (Claude, ChatGPT, aliusve) linguam non-Latinam in parte activa
-et canonica repositorii invenit, id corrigere debet cum opportunitas
-datur, praesertim si pars illa iam tangitur ob aliam causam. Non
-necesse est omnem repositorium simul perscrutari; sufficit progressive
-corrigere quod inventum est.
+## Lingua Latina
 
-## Rami collaboratorum
+VINDEX Latine cogitat. Sylvia Latine loquitur.
 
-Praefixa agentium servant originem operis:
+- verba clavia et grammatica VINDEX Latina sunt;
+- nomina functionum, variabilium, nuntii erratorum et commentaria codicis canonici Latine scribantur;
+- documenta canonica, tituli probationum, commit et descriptiones Pull Request Latine scribantur quantum rationabiliter fieri potest.
 
-- `chatgpt/...` pro ChatGPT;
-- `claude/...` pro Claude;
-- `copilot/...` pro GitHub Copilot;
-- `gemini/...` pro Gemini.
+## Separatio
 
-Rami humanitus creati alio nomine uti possunt, dummodo `main` directe non mutetur.
+Nucleus VINDEX a Sylvia OS et ecosystematibus separatur. Sylvia, Officina, pontes graphici, firmware et prototypa non inserantur in nucleum solum quia VINDEX utuntur. Facultas generalis linguae hic evolvatur; usus eius in projectis externis seorsum maneat.
 
-Ramus novus plerumque ex `main` creetur. Tamen ramus super alium ramum poni potest si mutatio posterior a priore realiter dependet. Talis dependentia in descriptione Pull Request explicanda est, et basis post coniunctionem mutationis prioris ad `main` transferri potest.
+## Auto-hospitium
 
-## Separatio architecturica
+Omnis mutatio compilatoris debet:
 
-Mutationes distinguendae sunt inter:
+1. fontem compilatoris nativo compilatore compilare;
+2. generationem sequentem producere;
+3. generationes finales byte pro byte comparare;
+4. casus conformitatis pertinentes transire;
+5. backend ELF non frangere;
+6. si PE afficitur, verificatorem PE VINDEX et executionem Windows probare.
 
-1. mutationem linguae VINDEX;
-2. mutationem ecosystematis VINDEX;
-3. mutationem Sylvia OS;
-4. mutationem communem.
+## Puritas
 
-Si mutatio grammaticam, ABI, typum, compilatorem aut specificationem afficit, est mutatio VINDEX. Si sola instrumenta, bibliothecae aut Officina tanguntur, est mutatio ecosystematis. Si initium, memoria systematis, fasciculi, fenestrale aut operationes systematis mutantur, est mutatio Sylvia OS. In casu coniunctionis necessitatum, mutatio communis explicite justificetur.
+Ante coniunctionem mutationis quaeratur:
 
-## Disciplina Git
+- num novus codex non-VINDEX introductus sit;
+- num fasciculus historicus vel generator semel adhibitus sine causa in nucleo maneat;
+- num binarium derivatum vere ad initium linguae requiratur;
+- num documenta adhuc vias deletorum ecosystematum describant.
 
-- Ante opus statum praesentem rami et mutationes aliorum inspice.
-- Mutationes parvae, singulares et retractabiles praeferantur.
-- Ante `push`, status Git inspiciatur, ne mutationes alienae aut temporariae includantur.
-- Si alius ramus opus pertinens iam continet, prius inspiciatur quam labor parallelus duplicetur.
-
-## Probationes et qualitas
-
-- Omnis mutatio ad VINDEX aut Sylvia probationem pertinentem aut saltem inspectionem demonstrabilem habeat.
-- Compilator auto-hospes et punctum fixum servanda sunt.
-- Mutationes regressivae evitandae sunt.
-- Nullam probationem transisse affirmare licet nisi vere exsecuta et verificata sit.
+Status integer ante purificationem 0.53 ramo `archive/vindex-053-avant-purificatio` servatur; propterea fasciculi obsoleti e nucleo activo deleri possunt sine historia amittenda.
 
 ## Pull Request
 
-Pull Request contineat:
+Pull Request indicet obiectum, mutationes, probationes vere exsecutas, pericula et dependentias. Nulla probatio transisse affirmetur nisi re vera exsecuta est.
 
-- titulum succinctum et descriptivum;
-- obiectum et ambitum mutationis;
-- genus mutationis: VINDEX, ecosystema, Sylvia OS aut communis;
-- fasciculos principales mutatos;
-- probationes vel inspectiones exsecutas;
-- pericula, limites et eventus notabiles;
-- dependentiam ab alio ramo, si adest.
-
-## Conclusio
-
-Disciplina Git progressionem non impedire debet; debet efficere ut opus plurium collaboratorum componi, recognosci et retractari possit sine ambiguitate.
-
-VINDEX Latine cogitat. Sylvia Latine loquitur.
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
