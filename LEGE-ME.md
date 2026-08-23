@@ -30,6 +30,8 @@ Fons canonicus est `src/compilator_vindex.vindex`; binarium seminale est `compil
 
 `tests/casus/` continet contractum semanticum minimum. `tests/compara_fasciculos_053.vindex` comparationem byte pro byte ipso VINDEX facit. `tests/proba_pe_structuram_053.vindex` structuram PE32+, sectiones, importationes et IAT ipso VINDEX verificat.
 
+Compilator diagnostica structurata cum fonte, linea, columna et nuntio edit. Locus vocationis ignotae etiam intra fontem importatum ad fasciculum originis refertur, ut instrumenta editoria errorem recte ostendere possint.
+
 Infrastructura GitHub Actions non est pars nuclei; separatim servatur in ramo `infrastructura/vindex-053-ci-purificatio`.
 
 ## Ordinatio minima
