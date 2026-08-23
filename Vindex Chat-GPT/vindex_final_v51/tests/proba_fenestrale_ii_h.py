@@ -3,12 +3,11 @@
 
 from pathlib import Path
 import re
-import sys
 
 RADIX = Path(__file__).resolve().parents[1]
 C = RADIX / "systema" / "uefi" / "fenestrale_native_h.c"
 SH = RADIX / "systema" / "uefi" / "construe_fenestrale_native_h.sh"
-CLIENT = RADIX / "src" / "programmata_fenestrale_ii_g.vindex"
+CLIENT = RADIX / "src" / "programmata_fenestrale_ii_h.vindex"
 HEADER = RADIX / "systema" / "fenestrale_ii_compositor_abi.h"
 
 
@@ -40,7 +39,7 @@ def main() -> None:
         require(c, fragmentum, "compositorium H")
 
     for fragmentum in (
-        'programmata_fenestrale_ii_g.vindex',
+        'programmata_fenestrale_ii_h.vindex',
         'programmata_g.elf',
         'objcopy -I binary -O pe-x86-64',
         'fenestrale_native_h.c',
@@ -51,14 +50,23 @@ def main() -> None:
         require(sh, fragmentum, "constructio H")
 
     for fragmentum in (
-        'FII_CMP_SUPERFICIEM_PETE(1, w, h, 7)',
-        'FII_CMP_PRAESENTA(1, superficies, 0, 0, w, h)',
-        'FII_CMP_RECTANGULUM',
+        'CONTENTUM(50335264) = 1.',
+        'CONTENTUM(50335256) = 1.',
+        'CONTENTUM(50335264) = 3.',
+        'H_RECT',
+        'H_PINGE',
+        'CONTENTUM(50334064)',
+        'barra != 28',
     ):
-        require(client, fragmentum, "client PROGRAMMATA G")
+        require(client, fragmentum, "client PROGRAMMATA H")
 
     require(header, '#define FENESTRALE2_COMPOSITOR_BASIS   0x03000E00ULL', 'ABI G')
     require(header, '#define FENESTRALE2_COMPOSITOR_MENSURA 256ULL', 'ABI G')
+
+    if 'FENESTRALE_II_FRAMEBUFFER' in client:
+        raise SystemExit("ERRATUM: client H framebuffer globalem directe petit")
+    if re.search(r'JL-UX', client, re.IGNORECASE):
+        raise SystemExit("ERRATUM: branding JL-UX in cliente H apparuit")
 
     # H manet experimentum separatum; nomina canonica non includuntur ut exitus scribendi.
     if 'BOOTX64.EFI"' in sh or 'systema_vindex_uefi.img"' in sh:
@@ -68,7 +76,7 @@ def main() -> None:
     if re.search(r'systema/nucleus\.vindex', sh):
         raise SystemExit("ERRATUM: Gradus H nucleum canonicum tangit")
 
-    print("RECTE: Gradus H compositorium separatum et clientem G coniungit.")
+    print("RECTE: Gradus H compositorium separatum et clientem H coniungit.")
 
 
 if __name__ == "__main__":
