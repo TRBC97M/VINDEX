@@ -16,7 +16,7 @@ def req(t,s,n):
 def main():
     for s in ('SUPERFICIES_CAPACITAS 8U','superficies[SUPERFICIES_CAPACITAS]','ordo[SUPERFICIES_CAPACITAS]','ordinem_remove','focus(','alterna_focus','_binary_programmata_h_elf_start','_binary_tabula_i_elf_start','clientem_onera','mailbox_age','d->taskbar_altitudo=28'):
         req(C,s,'compositor I')
-    for s in ('programmata_fenestrale_ii_h.vindex','tabula_fenestrale_ii_i.vindex','programmata_h.elf','tabula_i.elf','fenestrale_native_i.c','FENESTRALEI.EFI','fenestrale_i_uefi.img'):
+    for s in ('programmata_fenestrale_ii_h.vindex','tabula_fenestrale_ii_i.vindex','programmata_h','tabula_i','fenestrale_native_i.c','FENESTRALEI.EFI','fenestrale_i_uefi.img'):
         req(SH,s,'constructio I')
     for s in ('CONTENTUM(50335272) = 1.','H_PINGE','barra != 28'):
         req(P,s,'PROGRAMMATA H')
