@@ -79,11 +79,7 @@ FUNCTIO TI_PINGE REDDENS NUMERUS.
     DECLARA lux SICUT NUMERUS VALENS TI_COLOR(234, 248, 255).
     DECLARA bronzeum SICUT NUMERUS VALENS TI_COLOR(185, 138, 82).
     DECLARA rubrum SICUT NUMERUS VALENS TI_COLOR(168, 58, 58).
-    DECLARA grid SICUT NUMERUS VALENS TI_COLOR(207, 216, 220).
-    DECLARA activa SICUT NUMERUS VALENS TI_COLOR(225, 245, 249).
     DECLARA factum SICUT NUMERUS VALENS TI_RECT(0, 0, w, h, ebur).
-
-    // Fenestra quadrata et titulus XXVIII.
     factum = TI_RECT(0, 0, w, 1, bronzeum).
     factum = TI_RECT(0, 0, 2, h, argentum).
     factum = TI_RECT(w - 2, 0, 2, h, profundum).
@@ -94,21 +90,17 @@ FUNCTIO TI_PINGE REDDENS NUMERUS.
     factum = TI_RECT(w - 70, 4, 18, 20, argentum).
     factum = TI_RECT(w - 48, 4, 18, 20, argentum).
     factum = TI_RECT(w - 26, 4, 20, 20, rubrum).
-
-    // Menu XXII et instrumenta XXXIV.
     factum = TI_RECT(2, 28, w - 4, 22, ebur).
     factum = TI_RECT(2, 50, w - 4, 34, argentum).
     factum = TI_RECT(10, 55, 62, 24, lux).
     factum = TI_RECT(78, 55, 62, 24, lux).
     factum = TI_RECT(146, 55, 72, 24, lux).
     factum = TI_RECT(224, 55, 62, 24, lux).
-
     // Barra formulae.
     factum = TI_RECT(8, 88, w - 16, 30, lux).
     factum = TI_RECT(8, 88, 2, 30, medium).
     factum = TI_RECT(18, 98, 58, 8, medium).
-
-    // Rete tabularis compactum sine cyclis generatoriis.
+    // Rete tabularis compactum.
     DECLARA top SICUT NUMERUS VALENS 124.
     DECLARA left SICUT NUMERUS VALENS 42.
     DECLARA gw SICUT NUMERUS VALENS w - 52.
@@ -118,14 +110,14 @@ FUNCTIO TI_PINGE REDDENS NUMERUS.
     factum = TI_RECT(8, top, 34, gh, argentum).
     factum = TI_RECT(left, top, gw, 24, argentum).
     factum = TI_RECT(left, top + 24, gw, gh - 24, lux).
-    factum = TI_RECT(left + cw, top, 2, gh, grid).
-    factum = TI_RECT(left + cw * 2, top, 2, gh, grid).
-    factum = TI_RECT(left + cw * 3, top, 2, gh, grid).
-    factum = TI_RECT(8, top + 24 + rh, w - 18, 2, grid).
-    factum = TI_RECT(8, top + 24 + rh * 2, w - 18, 2, grid).
-    factum = TI_RECT(8, top + 24 + rh * 3, w - 18, 2, grid).
-    factum = TI_RECT(8, top + 24 + rh * 4, w - 18, 2, grid).
-    factum = TI_RECT(left + 2, top + 26, cw - 4, rh - 4, activa).
+    factum = TI_RECT(left + cw, top, 2, gh, argentum).
+    factum = TI_RECT(left + cw * 2, top, 2, gh, argentum).
+    factum = TI_RECT(left + cw * 3, top, 2, gh, argentum).
+    factum = TI_RECT(8, top + 24 + rh, w - 18, 2, argentum).
+    factum = TI_RECT(8, top + 24 + rh * 2, w - 18, 2, argentum).
+    factum = TI_RECT(8, top + 24 + rh * 3, w - 18, 2, argentum).
+    factum = TI_RECT(8, top + 24 + rh * 4, w - 18, 2, argentum).
+    factum = TI_RECT(left + 2, top + 26, cw - 4, rh - 4, aqua).
     factum = TI_RECT(left + 2, top + 26, cw - 4, 2, bronzeum).
     factum = TI_RECT(left + 2, top + 26, 2, rh - 4, bronzeum).
     factum = TI_RECT(2, h - 20, w - 4, 18, argentum).
