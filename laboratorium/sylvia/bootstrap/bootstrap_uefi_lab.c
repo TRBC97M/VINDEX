@@ -2,8 +2,8 @@
  * LABORATORIUM SYLVIAE — bootstrap UEFI experimentalis.
  *
  * Haec unica exceptio pre-VINDEX est. Post saltum nullum runtime C manet.
- * Memoria nuclei et metadata fixa servantur; pila et acervus a firmware
- * separatim reservantur, ne unus tractus XLIV MiB allocationem UEFI frangat.
+ * Memoria nuclei et metadata fixa servantur; pila, acervus et forma a firmware
+ * separatim reservantur, ne regiones communes inter se corrumpantur.
  */
 
 typedef unsigned char      U8;
@@ -27,6 +27,8 @@ typedef U64                EFI_PHYSICAL_ADDRESS;
 #define COMMUNIS_PAGINAE 25ULL
 #define ACERVUS_PAGINAE 2048ULL
 #define PILA_PAGINAE 256ULL
+#define FORMA_PAGINAE 1ULL
+#define FORMA_MENSURA 2048ULL
 
 typedef struct {
     U64 Signature;
@@ -147,6 +149,7 @@ extern U8 _binary_nucleus_elf_end[];
 extern U8 _binary_textus_bin_start[];
 extern U8 _binary_textus_bin_end[];
 extern U8 _binary_forma_bin_start[];
+extern U8 _binary_forma_bin_end[];
 
 static EFI_GUID guid_graphica = {
     0x9042a9de, 0x23dc, 0x4a38,
@@ -194,8 +197,10 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     EFI_PHYSICAL_ADDRESS communis = COMMUNIS;
     EFI_PHYSICAL_ADDRESS acervus = 0;
     EFI_PHYSICAL_ADDRESS pila = 0;
+    EFI_PHYSICAL_ADDRESS forma = 0;
     U64 kernel_mensura = (U64)(_binary_nucleus_elf_end - _binary_nucleus_elf_start);
     U64 textus_mensura = (U64)(_binary_textus_bin_end - _binary_textus_bin_start);
+    U64 forma_mensura = (U64)(_binary_forma_bin_end - _binary_forma_bin_start);
     volatile U64 *meta = (volatile U64 *)META;
     EFI_STATUS status;
     U32 latitudo;
@@ -206,7 +211,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     systema->BootServices->SetWatchdogTimer(0, 0, 0, 0);
     dic(systema, L"SYLVIA LABORATORIUM: INITIUM\r\n");
 
-    if (kernel_mensura > NUCLEUS_LIMEN || textus_mensura > 4096) {
+    if (kernel_mensura > NUCLEUS_LIMEN || textus_mensura > 4096 || forma_mensura < FORMA_MENSURA) {
         dic(systema, L"LAB: MAGNITUDO NUCLEI INVALIDA\r\n");
         return 1;
     }
@@ -232,6 +237,12 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     status = systema->BootServices->AllocatePages(0, 2, PILA_PAGINAE, &pila);
     if (status != EFI_SUCCESS || pila == 0) {
         dic(systema, L"LAB: PILA DEFECIT\r\n");
+        return status ? status : 1;
+    }
+
+    status = systema->BootServices->AllocatePages(0, 2, FORMA_PAGINAE, &forma);
+    if (status != EFI_SUCCESS || forma == 0) {
+        dic(systema, L"LAB: FORMA DEFECIT\r\n");
         return status ? status : 1;
     }
 
@@ -275,6 +286,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     memoria_vacua((void *)(UINTN)COMMUNIS, 0x19000);
     memoria_copia((void *)(UINTN)NUCLEUS_BASE, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
     memoria_copia((void *)(UINTN)TEXTUS_BASE, _binary_textus_bin_start, (UINTN)textus_mensura);
+    memoria_copia((void *)(UINTN)forma, _binary_forma_bin_start, FORMA_MENSURA);
 
     ((volatile U64 *)COMMUNIS)[0] = latitudo / 2;
     ((volatile U64 *)COMMUNIS)[1] = altitudo / 2;
@@ -290,7 +302,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[8] = 0;
     meta[9] = 0;
     meta[10] = UMBRA;
-    meta[11] = (U64)(UINTN)_binary_forma_bin_start;
+    meta[11] = (U64)forma;
     meta[12] = 0;
     meta[13] = 0;
     meta[14] = 0;
