@@ -30,14 +30,12 @@ FUNCTIO FB_GUID_PONE REDDENS NUMERUS.
     ACCIPIT genus SICUT NUMERUS.
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i < 16 PERFICE guid[i] = 0. i = i + 1. FIN-DUM.
-    // EFI_SIMPLE_POINTER_PROTOCOL_GUID
     SI genus == 1 TUNC
         guid[0]=135. guid[1]=140. guid[2]=135. guid[3]=49.
         guid[4]=117. guid[5]=11. guid[6]=213. guid[7]=17.
         guid[8]=154. guid[9]=79. guid[10]=0. guid[11]=144.
         guid[12]=39. guid[13]=63. guid[14]=193. guid[15]=77.
     FIN-SI.
-    // EFI_ABSOLUTE_POINTER_PROTOCOL_GUID
     SI genus == 2 TUNC
         guid[0]=43. guid[1]=211. guid[2]=89. guid[3]=141.
         guid[4]=85. guid[5]=198. guid[6]=233. guid[7]=74.
