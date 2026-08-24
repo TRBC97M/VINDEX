@@ -293,7 +293,6 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     memoria_vacua((void *)(UINTN)COMMUNIS, 0x19000);
     memoria_copia((void *)(UINTN)NUCLEUS_BASE, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
     memoria_copia((void *)(UINTN)TEXTUS_BASE, _binary_textus_bin_start, (UINTN)textus_mensura);
-    memoria_copia((void *)(UINTN)UMBRA, _binary_forma_bin_start, FORMA_MENSURA);
 
     ((volatile U64 *)COMMUNIS)[0] = latitudo / 2;
     ((volatile U64 *)COMMUNIS)[1] = altitudo / 2;
@@ -309,7 +308,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[8] = 0;
     meta[9] = 0;
     meta[10] = UMBRA;
-    meta[11] = UMBRA;
+    meta[11] = (U64)(UINTN)_binary_forma_bin_start;
     meta[12] = 0;
     meta[13] = 0;
     meta[14] = 0;
