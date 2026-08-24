@@ -1,0 +1,16 @@
+// Diagnostica: bibliotheca graphica + duae functiones triviales.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO X_UNA REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO X_DUO REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA a SICUT NUMERUS VALENS X_UNA().
+    a = a + X_DUO().
+    REDDE a.
+FIN-FUNCTIO.
