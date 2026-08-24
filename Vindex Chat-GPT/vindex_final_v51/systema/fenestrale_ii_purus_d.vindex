@@ -1,6 +1,7 @@
 // Sylvia OS — Fenestrale II Purus D.
 // PROGRAMMATA contentum suum in superficie privata VINDEX pingit.
 
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 
 // Status vectoris:
