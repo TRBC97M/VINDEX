@@ -1,0 +1,57 @@
+name: Sylvia OS — Fenestrale II Purus F
+
+on:
+  push:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-f
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_f.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_f_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_F.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-f.yml'
+
+jobs:
+  vindex-purus-f:
+    name: Duo clientes privati VINDEX compilantur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Contractum duorum clientium verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          grep -q 'FUNCTIO TF_CLICK REDDENS NUMERUS' bibliotheca/tabula_clientis_f.vindex
+          grep -q 'FUNCTIO TF_RENDE REDDENS NUMERUS' bibliotheca/tabula_clientis_f.vindex
+          grep -q 's\[30\]=FS_CREA(496,260)' systema/fenestrale_ii_purus_f.vindex
+          grep -q 's\[32\]=FS_CREA(396,226)' systema/fenestrale_ii_purus_f.vindex
+          grep -q 'PE_CLICK(s\[30\],s\[31\],lx-10,ly-52)' systema/fenestrale_ii_purus_f.vindex
+          grep -q 'TF_CLICK(s\[32\],s\[33\],lx-10,ly-52)' systema/fenestrale_ii_purus_f.vindex
+          grep -q 'FS_BLIT(s\[30\]' systema/fenestrale_ii_purus_f.vindex
+          grep -q 'FS_BLIT(s\[32\]' systema/fenestrale_ii_purus_f.vindex
+          ! grep -q 'FV_TABULA(' systema/fenestrale_ii_purus_f.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/tabula_clientis_f.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/programmata_clientis_e.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/fenestrale_ii_superficies.vindex
+          ! grep -q 'POLLE()' bibliotheca/tabula_clientis_f.vindex systema/fenestrale_ii_purus_f.vindex
+          ! grep -q 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_f.vindex
+          ! grep -q 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_f.vindex
+
+      - name: Probationem duorum clientium compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 50s ./compilator_vindex probationes/fenestrale_purus_f_clientes.vindex /tmp/fenestrale_purus_f_clientes.elf
+          file /tmp/fenestrale_purus_f_clientes.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale F totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 120s ./compilator_vindex systema/fenestrale_ii_purus_f.vindex /tmp/fenestrale_ii_purus_f.elf
+          file /tmp/fenestrale_ii_purus_f.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_f.elf)" -lt 393216
+          printf '%s\n' 'RECTE: Fenestrale II Purus F duos clientes privatos VINDEX compilat.'
