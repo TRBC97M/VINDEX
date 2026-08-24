@@ -1,0 +1,66 @@
+// LABORATORIUM SYLVIAE — texta omnium fenestrarum post compositionem pingit.
+// Tituli et inscriptiones hic ABI TEXTUS non utuntur.
+
+FUNCTIO LT_REDDE REDDENS NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    DECLARA profundum SICUT NUMERUS VALENS LG_COLOR(8,35,61).
+    DECLARA medium SICUT NUMERUS VALENS LG_COLOR(26,93,146).
+    DECLARA aqua SICUT NUMERUS VALENS LG_COLOR(98,215,242).
+    DECLARA lux SICUT NUMERUS VALENS LG_COLOR(234,248,255).
+    DECLARA vitrum SICUT NUMERUS VALENS LG_COLOR(14,66,111).
+    DECLARA f SICUT NUMERUS VALENS 0.
+    DECLARA n SICUT NUMERUS VALENS LF_PRIMUS(r).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+48)==0 TUNC
+            DECLARA genus SICUT NUMERUS VALENS CONTENTUM(n+8).
+            DECLARA x SICUT NUMERUS VALENS CONTENTUM(n+16).
+            DECLARA y SICUT NUMERUS VALENS CONTENTUM(n+24).
+            f=LT_TEXT(x+10,y+10,genus,lux).
+            SI genus==1 TUNC
+                f=LT_TEXT(x+18,y+63,4,profundum).
+                f=LT_TEXT(x+86,y+63,5,profundum).
+                f=LT_TEXT(x+154,y+63,6,profundum).
+                f=LT_TEXT(x+20,y+102,7,profundum).
+                f=LT_TEXT(x+246,y+118,8,profundum).
+                f=LT_TEXT(x+246,y+140,9,medium).
+            FIN-SI.
+            SI genus==2 TUNC
+                f=LT_TEXT(x+18,y+63,4,profundum).
+                f=LT_TEXT(x+84,y+63,10,profundum).
+            FIN-SI.
+            SI genus==3 TUNC
+                f=LT_TEXT(x+20,y+66,11,aqua).
+                f=LT_TEXT(x+20,y+102,12,profundum).
+                f=LT_TEXT(x+20,y+124,13,medium).
+                f=LT_TEXT(x+20,y+146,14,medium).
+                f=LT_TEXT(x+20,y+190,15,profundum).
+            FIN-SI.
+        FIN-SI.
+        n=CONTENTUM(n+104).
+    FIN-DUM.
+
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(50333736).
+    f=LT_TEXT(14,sh-18,16,lux).
+    DECLARA aperta SICUT NUMERUS VALENS 0.
+    n=LF_PRIMUS(r).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+48)!=2 TUNC aperta=aperta+1. FIN-SI.
+        n=CONTENTUM(n+104).
+    FIN-DUM.
+    SI aperta<=0 TUNC REDDE 1. FIN-SI.
+    DECLARA bw SICUT NUMERUS VALENS (sw-104)/aperta.
+    SI bw>188 TUNC bw=188. FIN-SI.
+    SI bw<72 TUNC bw=72. FIN-SI.
+    n=LF_PRIMUS(r).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+48)!=2 TUNC
+            DECLARA bx SICUT NUMERUS VALENS 98+i*bw.
+            SI bx<sw-6 TUNC f=LT_TEXT(bx+10,sh-18,CONTENTUM(n+8),lux). FIN-SI.
+            i=i+1.
+        FIN-SI.
+        n=CONTENTUM(n+104).
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
