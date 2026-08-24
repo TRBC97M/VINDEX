@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+"""Probatio visualis automatica Sylviae Laboratorii per monitor QEMU.
+
+Nihil in systemate canonico mutat. Capturas PPM legit et tres res examinat:
+- desktop VINDEX apparuit;
+- glyphi in titulo fenestrae apparuerunt;
+- motus muris mutationem framebuffer produxit.
+"""
+
+from __future__ import annotations
+
+import socket
+import sys
+import time
+from pathlib import Path
+
+
+def hmp(sock: socket.socket, command: str, timeout: float = 2.0) -> str:
+    sock.sendall((command + "\n").encode("ascii"))
+    finis = time.time() + timeout
+    partes: list[bytes] = []
+    while time.time() < finis:
+        try:
+            data = sock.recv(65536)
+        except socket.timeout:
+            break
+        if not data:
+            break
+        partes.append(data)
+        if b"(qemu)" in data:
+            break
+    return b"".join(partes).decode("utf-8", "replace")
+
+
+def lege_ppm(via: Path) -> tuple[int, int, bytes]:
+    data = via.read_bytes()
+    if not data.startswith(b"P6"):
+        raise ValueError("captura non est PPM P6")
+
+    i = 2
+    tokena: list[bytes] = []
+    while len(tokena) < 3:
+        while i < len(data) and data[i] in b" \t\r\n":
+            i += 1
+        if i < len(data) and data[i] == 35:  # '#'
+            while i < len(data) and data[i] not in b"\r\n":
+                i += 1
+            continue
+        initium = i
+        while i < len(data) and data[i] not in b" \t\r\n":
+            i += 1
+        tokena.append(data[initium:i])
+
+    w, h, maximum = map(int, tokena)
+    if maximum != 255:
+        raise ValueError("PPM maximum != 255")
+    while i < len(data) and data[i] in b" \t\r\n":
+        i += 1
+    pix = data[i : i + w * h * 3]
+    if len(pix) != w * h * 3:
+        raise ValueError("captura PPM truncata")
+    return w, h, pix
+
+
+def prope(r: int, g: int, b: int, color: tuple[int, int, int], tol: int = 7) -> bool:
+    return abs(r - color[0]) <= tol and abs(g - color[1]) <= tol and abs(b - color[2]) <= tol
+
+
+def numera_colorem(pix: bytes, color: tuple[int, int, int], tol: int = 7) -> int:
+    n = 0
+    for i in range(0, len(pix), 3):
+        if prope(pix[i], pix[i + 1], pix[i + 2], color, tol):
+            n += 1
+    return n
+
+
+def numera_regionem(
+    pix: bytes,
+    w: int,
+    h: int,
+    x0: int,
+    y0: int,
+    x1: int,
+    y1: int,
+    color: tuple[int, int, int],
+    tol: int = 7,
+) -> int:
+    x0 = max(0, min(w, x0))
+    x1 = max(0, min(w, x1))
+    y0 = max(0, min(h, y0))
+    y1 = max(0, min(h, y1))
+    n = 0
+    for y in range(y0, y1):
+        basis = (y * w + x0) * 3
+        for x in range(x0, x1):
+            i = basis + (x - x0) * 3
+            if prope(pix[i], pix[i + 1], pix[i + 2], color, tol):
+                n += 1
+    return n
+
+
+def differentiae(a: bytes, b: bytes) -> int:
+    if len(a) != len(b):
+        return max(len(a), len(b)) // 3
+    n = 0
+    for i in range(0, len(a), 3):
+        if a[i : i + 3] != b[i : i + 3]:
+            n += 1
+    return n
+
+
+def principale() -> int:
+    if len(sys.argv) != 3:
+        print("USUS: proba_qemu.py MONITOR.sock EXITUS")
+        return 2
+
+    monitor = Path(sys.argv[1])
+    exitus = Path(sys.argv[2])
+    ante = exitus / "sylvia-ante.ppm"
+    post = exitus / "sylvia-post.ppm"
+
+    finis = time.time() + 8.0
+    while not monitor.exists() and time.time() < finis:
+        time.sleep(0.1)
+    if not monitor.exists():
+        print("QEMU: ERRATUM monitor non apparuit")
+        return 3
+
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    s.settimeout(0.35)
+    s.connect(str(monitor))
+    try:
+        try:
+            s.recv(65536)
+        except socket.timeout:
+            pass
+
+        hmp(s, f"screendump {ante}")
+        finis = time.time() + 3.0
+        while not ante.exists() and time.time() < finis:
+            time.sleep(0.1)
+        if not ante.exists():
+            print("QEMU: ERRATUM captura initialis non creata")
+            return 4
+
+        w, h, pix_ante = lege_ppm(ante)
+        ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
+        desktop = ebur > (w * h) // 100
+
+        # Fenestra LABORATORIUM est ultima picta, ergo eius titulus non tegitur.
+        sh = h - 28
+        lx = w * 21 // 100
+        ly = sh * 31 // 100
+        lux_tituli = numera_regionem(
+            pix_ante, w, h,
+            lx + 8, ly + 7,
+            lx + 8 + 13 * 8, ly + 21,
+            (234, 248, 255), 10,
+        )
+        textus = lux_tituli >= 12
+
+        info_mures = hmp(s, "info mice")
+        motus_responsum = hmp(s, "mouse_move 90 40")
+        time.sleep(0.7)
+        hmp(s, f"screendump {post}")
+        finis = time.time() + 3.0
+        while not post.exists() and time.time() < finis:
+            time.sleep(0.1)
+
+        mutatio = -1
+        if post.exists():
+            w2, h2, pix_post = lege_ppm(post)
+            if w2 == w and h2 == h:
+                mutatio = differentiae(pix_ante, pix_post)
+
+        print(f"QEMU: RESOLUTIO {w}x{h}")
+        print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
+        print("QEMU: TEXTUS " + ("RECTE" if textus else "DEFECIT"))
+        if "unknown command" in motus_responsum.lower():
+            print("QEMU: MURUS INCERTUS (monitor mouse_move non sustinet)")
+        elif mutatio < 0:
+            print("QEMU: MURUS INCERTUS (secunda captura deest)")
+        else:
+            print("QEMU: MURUS " + ("RECTE" if mutatio >= 20 else "DEFECIT") + f" ({mutatio} pixeli mutati)")
+
+        linea_muris = " ".join(x.strip() for x in info_mures.splitlines() if x.strip() and x.strip() != "(qemu)")
+        if linea_muris:
+            print("QEMU: MURES " + linea_muris[:300])
+
+        print(f"QEMU: CAPTURA {ante}")
+        return 0 if desktop else 5
+    finally:
+        s.close()
+
+
+if __name__ == "__main__":
+    raise SystemExit(principale())
