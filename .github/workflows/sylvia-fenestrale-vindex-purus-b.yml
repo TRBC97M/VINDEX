@@ -6,13 +6,13 @@ on:
       - chatgpt/sylvia-fenestrale-vindex-purus-b
   pull_request:
     paths:
-      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_graphica_guid.vindex'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
 
 jobs:
   vindex-purus:
-    name: Input sine I32 bisectione examinatur
+    name: Nomen GUID in compositione exploratur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -21,7 +21,20 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Corpus sine I32 genera
+      - name: GUID SOLUS canon diagnosticus compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_guid.vindex /tmp/guid_solus.elf
+          file /tmp/guid_solus.elf | grep -q 'ELF 64-bit'
+
+      - name: Eundem fontem nomine PONE compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          sed 's/FB_GUID_SOLUS/FB_GUID_PONE/g' probationes/fenestrale_purus_b_graphica_guid.vindex > /tmp/guid_pone.vindex
+          timeout 15s ./compilator_vindex /tmp/guid_pone.vindex /tmp/guid_pone.elf
+          file /tmp/guid_pone.elf | grep -q 'ELF 64-bit'
+
+      - name: Praefixum reale nomine SOLUS compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           python3 - <<'PY'
@@ -30,47 +43,10 @@ jobs:
           a = s.index('FUNCTIO FB_I32 REDDENS NUMERUS.')
           b = s.index('FUNCTIO FB_GUID_PONE REDDENS NUMERUS.')
           s = s[:a] + s[b:]
-          old = '    DECLARA crudum_x SICUT NUMERUS VALENS FB_I32(SEDES(status_muris)).\n    DECLARA crudum_y SICUT NUMERUS VALENS FB_I32(SEDES(status_muris) + 4).\n'
-          new = '''    DECLARA crudum_x SICUT NUMERUS VALENS OCTETUS_AB(SEDES(status_muris)).\n    crudum_x = crudum_x | (OCTETUS_AB(SEDES(status_muris) + 1) << 8).\n    crudum_x = crudum_x | (OCTETUS_AB(SEDES(status_muris) + 2) << 16).\n    crudum_x = crudum_x | (OCTETUS_AB(SEDES(status_muris) + 3) << 24).\n    SI crudum_x >= 2147483648 TUNC crudum_x = crudum_x - 4294967296. FIN-SI.\n    DECLARA crudum_y SICUT NUMERUS VALENS OCTETUS_AB(SEDES(status_muris) + 4).\n    crudum_y = crudum_y | (OCTETUS_AB(SEDES(status_muris) + 5) << 8).\n    crudum_y = crudum_y | (OCTETUS_AB(SEDES(status_muris) + 6) << 16).\n    crudum_y = crudum_y | (OCTETUS_AB(SEDES(status_muris) + 7) << 24).\n    SI crudum_y >= 2147483648 TUNC crudum_y = crudum_y - 4294967296. FIN-SI.\n'''
-          if s.count(old) != 1:
-              raise SystemExit('ERRATUM: lectio muris non inventa')
-          Path('/tmp/fb_sine_i32.vindex').write_text(s.replace(old, new, 1), encoding='utf-8')
+          s = s[:s.index('FUNCTIO FB_PROTOCOL_LOCATE REDDENS NUMERUS.')]
+          s = s.replace('FB_GUID_PONE', 'FB_GUID_SOLUS')
+          s += '''FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.\n    REDDE FB_GUID_SOLUS(guid, 1).\nFIN-FUNCTIO.\n'''
+          Path('/tmp/praefixum_solus.vindex').write_text(s, encoding='utf-8')
           PY
-
-      - name: A — GUID solum
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          awk '/^FUNCTIO FB_PROTOCOL_LOCATE REDDENS NUMERUS\./ {exit} {print}' /tmp/fb_sine_i32.vindex > /tmp/fb_a.vindex
-          cat >> /tmp/fb_a.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
-              REDDE FB_GUID_PONE(guid, 1).
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 15s ./compilator_vindex /tmp/fb_a.vindex /tmp/fb_a.elf
-          file /tmp/fb_a.elf | grep -q 'ELF 64-bit'
-
-      - name: B — LocateProtocol adde
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          awk '/^FUNCTIO FB_PROTOCOLA_PARA REDDENS NUMERUS\./ {exit} {print}' /tmp/fb_sine_i32.vindex > /tmp/fb_b.vindex
-          cat >> /tmp/fb_b.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              REDDE FB_PROTOCOL_LOCATE(1).
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_b.vindex /tmp/fb_b.elf
-          file /tmp/fb_b.elf | grep -q 'ELF 64-bit'
-
-      - name: C — protocolorum praeparatio adde
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          awk '/^FUNCTIO FB_CLAVIS_LEGE REDDENS NUMERUS\./ {exit} {print}' /tmp/fb_sine_i32.vindex > /tmp/fb_c.vindex
-          cat >> /tmp/fb_c.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
-              REDDE FB_PROTOCOLA_PARA(s).
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_c.vindex /tmp/fb_c.elf
-          file /tmp/fb_c.elf | grep -q 'ELF 64-bit'
+          timeout 15s ./compilator_vindex /tmp/praefixum_solus.vindex /tmp/praefixum_solus.elf
+          file /tmp/praefixum_solus.elf | grep -q 'ELF 64-bit'
