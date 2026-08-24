@@ -160,6 +160,16 @@ static EFI_GUID guid_graphica = {
     {0x96,0xfb,0x7a,0xde,0xd0,0x80,0x51,0x6a}
 };
 
+static EFI_GUID guid_murus_relativus = {
+    0x31878c87, 0x0b75, 0x11d5,
+    {0x9a,0x4f,0x00,0x90,0x27,0x3f,0xc1,0x4d}
+};
+
+static EFI_GUID guid_murus_absolutus = {
+    0x8d59d32b, 0xc655, 0x4ae9,
+    {0x9b,0x15,0xf2,0x59,0x04,0x99,0x2a,0x43}
+};
+
 static void dic(EFI_SYSTEM_TABLE *systema, const U16 *textus) {
     if (systema && systema->ConOut && systema->ConOut->OutputString) {
         systema->ConOut->OutputString(systema->ConOut, textus);
@@ -197,6 +207,8 @@ __attribute__((noreturn)) static void ad_vindex_sali(U64 ingressus, U64 pila_sum
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     EFI_GRAPHICS_OUTPUT_PROTOCOL *graphica = 0;
+    void *murus_relativus = 0;
+    void *murus_absolutus = 0;
     EFI_PHYSICAL_ADDRESS nucleus = NUCLEUS_BASE;
     EFI_PHYSICAL_ADDRESS communis = COMMUNIS;
     EFI_PHYSICAL_ADDRESS acervus = 0;
@@ -297,6 +309,10 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
         return 1;
     }
 
+    /* Firmware resources are prepared before the permanent jump to VINDEX. */
+    systema->BootServices->LocateProtocol(&guid_murus_relativus, 0, &murus_relativus);
+    systema->BootServices->LocateProtocol(&guid_murus_absolutus, 0, &murus_absolutus);
+
     memoria_vacua((void *)(UINTN)COMMUNIS, 0x19000);
     memoria_copia((void *)(UINTN)NUCLEUS_BASE, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
     memoria_copia((void *)(UINTN)TEXTUS_BASE, _binary_textus_bin_start, (UINTN)textus_mensura);
@@ -330,6 +346,8 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[20] = (U64)pila;
     meta[21] = PILA_PAGINAE * 4096ULL;
     meta[22] = (U64)texta;
+    meta[23] = (U64)(UINTN)murus_relativus;
+    meta[24] = (U64)(UINTN)murus_absolutus;
 
     ingressus = *(U64 *)(UINTN)(NUCLEUS_BASE + 24);
     dic(systema, L"LAB: SALTUS AD VINDEX\r\n");
