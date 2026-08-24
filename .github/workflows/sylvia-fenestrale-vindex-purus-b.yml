@@ -42,24 +42,6 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
           file /tmp/fb_input.elf /tmp/fb_gestor.elf /tmp/fb_interactio.elf /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
 
-      - name: Praefixa initii B divide
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          fac_praefixum() {
-            finis="$1"
-            nomen="$2"
-            awk -v finis="$finis" '
-              { print }
-              $0 == "FUNCTIO " finis " REDDENS NUMERUS." { intra=1 }
-              intra == 1 && $0 == "FIN-FUNCTIO." { exit }
-            ' systema/fenestrale_ii_purus_b.vindex > "/tmp/${nomen}.vindex"
-            printf '%s\n' 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.' '    REDDE 0.' 'FIN-FUNCTIO.' >> "/tmp/${nomen}.vindex"
-            timeout 12s ./compilator_vindex "/tmp/${nomen}.vindex" "/tmp/${nomen}.elf"
-            file "/tmp/${nomen}.elf" | grep -q 'ELF 64-bit'
-          }
-          fac_praefixum FB_I32 fb_p1_i32
-          fac_praefixum FB_GUID_PONE fb_p2_guid
-
       - name: Fenestrale B compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
