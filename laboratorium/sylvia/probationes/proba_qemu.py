@@ -135,6 +135,15 @@ def differentiae(a: bytes, b: bytes) -> int:
     return sum(1 for i in range(0, len(a), 3) if a[i:i+3] != b[i:i+3])
 
 
+def netto_hmp(textus: str) -> str:
+    partes = []
+    for linea in textus.replace("\r", "").split("\n"):
+        linea = linea.strip()
+        if linea and linea != "(qemu)":
+            partes.append(linea)
+    return " | ".join(partes)
+
+
 def principale() -> int:
     if len(sys.argv) != 3:
         print("USUS: proba_qemu.py MONITOR.sock EXITUS")
@@ -171,6 +180,9 @@ def principale() -> int:
             print("QEMU: ERRATUM captura initialis non creata")
             return 4
 
+        # META[18..25]: protocola muris et spatium diagnosticum laboratorii.
+        metadata_muris = netto_hmp(hmp(s, "xp /8gx 0x03000890"))
+
         w, h, pix_ante = lege_ppm(ante)
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
@@ -202,6 +214,7 @@ def principale() -> int:
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
         print(f"QEMU: VNC {vw}x{vh} -> {destinatio_x},{destinatio_y}")
+        print(f"QEMU: META_MURUS {metadata_muris}")
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {lux_tituli}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
