@@ -29,7 +29,18 @@ jobs:
           test -f /usr/share/OVMF/OVMF_VARS_4M.fd
           qemu-system-x86_64 --version
 
-      - name: Sylviam construe
+      - name: Nucleum VINDEX compila
+        run: |
+          mkdir -p /tmp/sylvia-lab
+          timeout 180s "$GITHUB_WORKSPACE/Vindex Chat-GPT/vindex_final_v51/compilator_vindex" \
+            "$GITHUB_WORKSPACE/laboratorium/sylvia/systema/sylvia_laboratorium.vindex" \
+            /tmp/sylvia-lab/nucleus.elf
+          file /tmp/sylvia-lab/nucleus.elf
+          test -s /tmp/sylvia-lab/nucleus.elf
+
+      - name: Imaginem UEFI construe
+        env:
+          SYLVIA_NUCLEUS_PRAECOMPILATUM: '1'
         run: |
           bash laboratorium/sylvia/construe.sh
           file /tmp/sylvia-lab/BOOTX64.EFI
