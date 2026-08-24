@@ -2,7 +2,6 @@
 """Probatio visualis automatica Sylviae Laboratorii per QEMU.
 
 Capturas HMP PPM legit; motum muris per RFB/VNC directe immittit.
-Metadata laboratorii ex memoria physica leguntur ut protocolla UEFI dignoscantur.
 Status 0 redditur tantum si desktop, glyphi et motus cursoris recti sunt.
 """
 
@@ -45,10 +44,12 @@ def recipe_exacte(sock: socket.socket, n: int) -> bytes:
 def vnc_para(host: str = "127.0.0.1", port: int = 5900) -> tuple[socket.socket, int, int]:
     v = socket.create_connection((host, port), timeout=3.0)
     v.settimeout(3.0)
+
     versio = recipe_exacte(v, 12)
     if not versio.startswith(b"RFB "):
         raise RuntimeError(f"VNC versio invalida: {versio!r}")
     v.sendall(b"RFB 003.008\n")
+
     n = recipe_exacte(v, 1)[0]
     if n == 0:
         mensura = struct.unpack(">I", recipe_exacte(v, 4))[0]
@@ -61,7 +62,8 @@ def vnc_para(host: str = "127.0.0.1", port: int = 5900) -> tuple[socket.socket, 
     status = struct.unpack(">I", recipe_exacte(v, 4))[0]
     if status != 0:
         raise RuntimeError(f"VNC securitas status {status}")
-    v.sendall(b"\x01")
+
+    v.sendall(b"\x01")  # ClientInit: communis sessio.
     initium = recipe_exacte(v, 24)
     w, h = struct.unpack(">HH", initium[:4])
     nomen_mensura = struct.unpack(">I", initium[20:24])[0]
@@ -104,23 +106,6 @@ def lege_ppm(via: Path) -> tuple[int, int, bytes]:
     return w, h, pix
 
 
-def lege_meta_input(sock: socket.socket, via: Path) -> tuple[int, ...] | None:
-    try:
-        via.unlink(missing_ok=True)
-        hmp(sock, f"pmemsave 0x03000890 80 {via}")
-        finis = time.time() + 2.0
-        while not via.exists() and time.time() < finis:
-            time.sleep(0.05)
-        if not via.exists():
-            return None
-        data = via.read_bytes()
-        if len(data) < 80:
-            return None
-        return struct.unpack("<10Q", data[:80])
-    except Exception:
-        return None
-
-
 def prope(r: int, g: int, b: int, color: tuple[int, int, int], tol: int = 7) -> bool:
     return abs(r - color[0]) <= tol and abs(g - color[1]) <= tol and abs(b - color[2]) <= tol
 
@@ -150,26 +135,15 @@ def differentiae(a: bytes, b: bytes) -> int:
     return sum(1 for i in range(0, len(a), 3) if a[i:i+3] != b[i:i+3])
 
 
-def meta_linea(nomen: str, m: tuple[int, ...] | None) -> str:
-    if m is None:
-        return f"QEMU: META_{nomen} DEEST"
-    return (
-        f"QEMU: META_{nomen} REL=0x{m[0]:x} ABS=0x{m[1]:x} "
-        f"ABS_STATUS=0x{m[4]:x} REL_STATUS=0x{m[5]:x} "
-        f"ABS_X={m[6]} ABS_Y={m[7]} REL_DX={m[8]} REL_DY={m[9]}"
-    )
-
-
 def principale() -> int:
     if len(sys.argv) != 3:
         print("USUS: proba_qemu.py MONITOR.sock EXITUS")
         return 2
+
     monitor = Path(sys.argv[1])
     exitus = Path(sys.argv[2])
     ante = exitus / "sylvia-ante.ppm"
     post = exitus / "sylvia-post.ppm"
-    meta_ante_via = exitus / "input-ante.bin"
-    meta_post_via = exitus / "input-post.bin"
 
     finis = time.time() + 10.0
     while not monitor.exists() and time.time() < finis:
@@ -187,6 +161,7 @@ def principale() -> int:
             s.recv(65536)
         except socket.timeout:
             pass
+
         time.sleep(4.0)
         hmp(s, f"screendump {ante}")
         finis = time.time() + 3.0
@@ -197,7 +172,6 @@ def principale() -> int:
             return 4
 
         w, h, pix_ante = lege_ppm(ante)
-        meta_ante = lege_meta_input(s, meta_ante_via)
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
         sh = h - 28
@@ -214,7 +188,6 @@ def principale() -> int:
         destinatio_y = max(1, min(vh - 2, vh // 4))
         vnc_murus(v, destinatio_x, destinatio_y)
         time.sleep(1.0)
-        meta_post = lege_meta_input(s, meta_post_via)
         hmp(s, f"screendump {post}")
         finis = time.time() + 3.0
         while not post.exists() and time.time() < finis:
@@ -229,8 +202,6 @@ def principale() -> int:
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
         print(f"QEMU: VNC {vw}x{vh} -> {destinatio_x},{destinatio_y}")
-        print(meta_linea("ANTE", meta_ante))
-        print(meta_linea("POST", meta_post))
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {lux_tituli}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
