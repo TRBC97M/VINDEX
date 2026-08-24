@@ -91,11 +91,7 @@ def prope(r: int, g: int, b: int, color: tuple[int, int, int], tol: int = 7) -> 
 
 
 def numera_colorem(pix: bytes, color: tuple[int, int, int], tol: int = 7) -> int:
-    return sum(
-        1
-        for i in range(0, len(pix), 3)
-        if prope(pix[i], pix[i + 1], pix[i + 2], color, tol)
-    )
+    return sum(1 for i in range(0, len(pix), 3) if prope(pix[i], pix[i + 1], pix[i + 2], color, tol))
 
 
 def numera_regionem(
@@ -156,7 +152,6 @@ def principale() -> int:
             raise RuntimeError(f"QMP capabilities: {cap}")
 
         time.sleep(4.0)
-        hmp(s, f"sendkey esc")  # eventum innocuum; monitor quoque vivum probat
         hmp(s, f"screendump {ante}")
         finis = time.time() + 3.0
         while not ante.exists() and time.time() < finis:
@@ -172,13 +167,11 @@ def principale() -> int:
         lx = w * 21 // 100
         ly = sh * 31 // 100
         lux_tituli = numera_regionem(
-            pix_ante, w, h,
-            lx + 8, ly + 7, lx + 8 + 13 * 8, ly + 21,
+            pix_ante, w, h, lx + 8, ly + 7, lx + 8 + 13 * 8, ly + 21,
             (234, 248, 255), 10,
         )
         textus = lux_tituli >= 12
 
-        # USB tablet QEMU: valores absoluti 0..0x7fff. Duo axes in eodem evento.
         motus = qmp_exsequere(q, "input-send-event", {
             "events": [
                 {"type": "abs", "data": {"axis": "x", "value": 24576}},
