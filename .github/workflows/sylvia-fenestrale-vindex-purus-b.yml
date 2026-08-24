@@ -30,7 +30,8 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica_uefi.vindex /tmp/fb_graphica_uefi.elf
           timeout 12s ./compilator_vindex probationes/fenestrale_purus_b_graphica_functio.vindex /tmp/fb_graphica_functio.elf
           timeout 12s ./compilator_vindex probationes/fenestrale_purus_b_i32_simplex.vindex /tmp/fb_i32_simplex.elf
-          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_graphica_uefi.elf /tmp/fb_graphica_functio.elf /tmp/fb_i32_simplex.elf | grep -q 'ELF 64-bit'
+          timeout 12s ./compilator_vindex probationes/fenestrale_purus_b_i32_nomen.vindex /tmp/fb_i32_nomen.elf
+          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_graphica_uefi.elf /tmp/fb_graphica_functio.elf /tmp/fb_i32_simplex.elf /tmp/fb_i32_nomen.elf | grep -q 'ELF 64-bit'
 
       - name: Strata VINDEX separatim compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
