@@ -5,6 +5,8 @@ Nihil in systemate canonico mutat. Capturas PPM legit et tres res examinat:
 - desktop VINDEX apparuit;
 - glyphi in titulo fenestrae apparuerunt;
 - motus muris mutationem framebuffer produxit.
+
+Status 0 redditur tantum si tria signa simul recta sunt.
 """
 
 from __future__ import annotations
@@ -42,7 +44,7 @@ def lege_ppm(via: Path) -> tuple[int, int, bytes]:
     while len(tokena) < 3:
         while i < len(data) and data[i] in b" \t\r\n":
             i += 1
-        if i < len(data) and data[i] == 35:  # '#'
+        if i < len(data) and data[i] == 35:
             while i < len(data) and data[i] not in b"\r\n":
                 i += 1
             continue
@@ -119,7 +121,7 @@ def principale() -> int:
     ante = exitus / "sylvia-ante.ppm"
     post = exitus / "sylvia-post.ppm"
 
-    finis = time.time() + 8.0
+    finis = time.time() + 10.0
     while not monitor.exists() and time.time() < finis:
         time.sleep(0.1)
     if not monitor.exists():
@@ -135,6 +137,8 @@ def principale() -> int:
         except socket.timeout:
             pass
 
+        # OVMF + bootstrap + primus redraw; CI tardius esse potest.
+        time.sleep(4.0)
         hmp(s, f"screendump {ante}")
         finis = time.time() + 3.0
         while not ante.exists() and time.time() < finis:
@@ -147,7 +151,7 @@ def principale() -> int:
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
 
-        # Fenestra LABORATORIUM est ultima picta, ergo eius titulus non tegitur.
+        # LABORATORIUM ultima fenestra picta est, titulus eius non tegitur.
         sh = h - 28
         lx = w * 21 // 100
         ly = sh * 31 // 100
@@ -161,7 +165,7 @@ def principale() -> int:
 
         info_mures = hmp(s, "info mice")
         motus_responsum = hmp(s, "mouse_move 90 40")
-        time.sleep(0.7)
+        time.sleep(1.0)
         hmp(s, f"screendump {post}")
         finis = time.time() + 3.0
         while not post.exists() and time.time() < finis:
@@ -173,22 +177,32 @@ def principale() -> int:
             if w2 == w and h2 == h:
                 mutatio = differentiae(pix_ante, pix_post)
 
+        murus = "unknown command" not in motus_responsum.lower() and mutatio >= 20
+
         print(f"QEMU: RESOLUTIO {w}x{h}")
+        print(f"QEMU: EBUR {ebur}")
+        print(f"QEMU: GLYPHI_TITULI {lux_tituli}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
         print("QEMU: TEXTUS " + ("RECTE" if textus else "DEFECIT"))
         if "unknown command" in motus_responsum.lower():
-            print("QEMU: MURUS INCERTUS (monitor mouse_move non sustinet)")
+            print("QEMU: MURUS DEFECIT (monitor mouse_move non sustinet)")
         elif mutatio < 0:
-            print("QEMU: MURUS INCERTUS (secunda captura deest)")
+            print("QEMU: MURUS DEFECIT (secunda captura deest)")
         else:
-            print("QEMU: MURUS " + ("RECTE" if mutatio >= 20 else "DEFECIT") + f" ({mutatio} pixeli mutati)")
+            print("QEMU: MURUS " + ("RECTE" if murus else "DEFECIT") + f" ({mutatio} pixeli mutati)")
 
         linea_muris = " ".join(x.strip() for x in info_mures.splitlines() if x.strip() and x.strip() != "(qemu)")
         if linea_muris:
             print("QEMU: MURES " + linea_muris[:300])
 
-        print(f"QEMU: CAPTURA {ante}")
-        return 0 if desktop else 5
+        print(f"QEMU: CAPTURA_ANTE {ante}")
+        print(f"QEMU: CAPTURA_POST {post}")
+
+        if desktop and textus and murus:
+            print("QEMU: SYLVIA RECTE")
+            return 0
+        print("QEMU: SYLVIA DEFECIT")
+        return 5
     finally:
         s.close()
 
