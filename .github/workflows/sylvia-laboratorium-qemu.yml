@@ -1,0 +1,82 @@
+name: Sylvia Laboratorium — QEMU probatio
+
+on:
+  pull_request:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-i
+    paths:
+      - 'laboratorium/sylvia/**'
+      - '.github/workflows/sylvia-laboratorium-qemu.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  qemu:
+    name: Sylvia in OVMF/QEMU probatur
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Instrumenta QEMU et OVMF institue
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86 ovmf binutils gcc file python3
+          test -f /usr/share/OVMF/OVMF_CODE_4M.fd
+          test -f /usr/share/OVMF/OVMF_VARS_4M.fd
+          qemu-system-x86_64 --version
+
+      - name: Sylviam construe
+        run: |
+          bash laboratorium/sylvia/construe.sh
+          file /tmp/sylvia-lab/BOOTX64.EFI
+          test -s /tmp/sylvia-lab/sylvia-laboratorium.img
+
+      - name: QEMU cum muris USB mitte
+        run: |
+          rm -f /tmp/sylvia-lab/OVMF_VARS_TEST.fd /tmp/sylvia-lab/qemu-monitor.sock
+          cp /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/sylvia-lab/OVMF_VARS_TEST.fd
+          qemu-system-x86_64 \
+            -name 'SYLVIA LABORATORIUM' \
+            -machine q35 \
+            -m 256M \
+            -vga std \
+            -device qemu-xhci \
+            -device usb-tablet \
+            -display none \
+            -audiodev none,id=noaudio \
+            -drive if=pflash,format=raw,unit=0,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
+            -drive if=pflash,format=raw,unit=1,file=/tmp/sylvia-lab/OVMF_VARS_TEST.fd \
+            -drive if=ide,format=raw,file=/tmp/sylvia-lab/sylvia-laboratorium.img \
+            -boot order=c \
+            -monitor unix:/tmp/sylvia-lab/qemu-monitor.sock,server,nowait \
+            -vnc 127.0.0.1:0 \
+            -daemonize
+          sleep 2
+          pgrep -af qemu-system-x86_64
+
+      - name: Desktop textus murusque verifica
+        run: |
+          set -o pipefail
+          python3 laboratorium/sylvia/probationes/proba_qemu.py \
+            /tmp/sylvia-lab/qemu-monitor.sock /tmp/sylvia-lab \
+            | tee /tmp/sylvia-lab/qemu-test.log
+
+      - name: Evidentiam conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sylvia-laboratorium-qemu
+          if-no-files-found: warn
+          path: |
+            /tmp/sylvia-lab/qemu-test.log
+            /tmp/sylvia-lab/sylvia-ante.ppm
+            /tmp/sylvia-lab/sylvia-post.ppm
+            /tmp/sylvia-lab/BOOTX64.EFI
+
+      - name: QEMU claude
+        if: always()
+        run: pkill -f 'qemu-system-x86_64.*SYLVIA LABORATORIUM' 2>/dev/null || true
