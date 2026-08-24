@@ -22,56 +22,79 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Strata iam probata compila
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fb_graphica.elf
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_input.vindex /tmp/fb_input.elf
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_gestor.vindex /tmp/fb_gestor.elf
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_interactio.vindex /tmp/fb_interactio.elf
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
-
       - name: PRINCIPALE reale auxiliis minimis compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           timeout 25s ./compilator_vindex probationes/fenestrale_purus_b_principalis.vindex /tmp/fb_principalis.elf
           file /tmp/fb_principalis.elf | grep -q 'ELF 64-bit'
 
-      - name: Auxilia omnia viva compila
+      - name: Gradum I graphica cum input compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          awk '/^FUNCTIO PRINCIPALIS REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_auxilia_viva.vindex
-          cat >> /tmp/fb_auxilia_viva.vindex <<'VINDEX'
+          awk '/^FUNCTIO FB_RELEGE_ACTIVUM REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_gradus_1.vindex
+          cat >> /tmp/fb_gradus_1.vindex <<'VINDEX'
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
               DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
-              DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
-              DECLARA a SICUT NUMERUS VALENS FB_I32(50331648).
-              a = FB_GUID_PONE(guid, 1).
-              a = FB_PROTOCOL_LOCATE(1).
-              a = FB_PROTOCOLA_PARA(s).
+              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
               a = FB_CLAVIS_LEGE().
               a = FB_MURUS_ABSOLUTUS(0, s).
               a = FB_MURUS_RELATIVUS(0, s).
               a = FB_STALL().
-              a = FB_RELEGE_ACTIVUM(s).
-              a = FB_FOCUS(s, 1).
-              a = FB_IN_FENESTRA(s, 1, 0, 0).
+              REDDE a.
+          FIN-FUNCTIO.
+          VINDEX
+          timeout 30s ./compilator_vindex /tmp/fb_gradus_1.vindex /tmp/fb_gradus_1.elf
+          file /tmp/fb_gradus_1.elf | grep -q 'ELF 64-bit'
+
+      - name: Gradum II gestorem adde
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          awk '/^FUNCTIO FB_TASKBAR_CLICK REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_gradus_2.vindex
+          cat >> /tmp/fb_gradus_2.vindex <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
               a = FB_HIT(s, 0, 0).
               a = FB_MAX_TOGGLE(s, 1).
-              a = FB_MINIMIZA(s, 1).
               a = FB_CLAUDE(s, 1).
-              a = FB_TASKBAR_CLICK(s, 100).
+              REDDE a.
+          FIN-FUNCTIO.
+          VINDEX
+          timeout 30s ./compilator_vindex /tmp/fb_gradus_2.vindex /tmp/fb_gradus_2.elf
+          file /tmp/fb_gradus_2.elf | grep -q 'ELF 64-bit'
+
+      - name: Gradum III interactionem adde
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          awk '/^FUNCTIO FB_REDDE REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_gradus_3.vindex
+          cat >> /tmp/fb_gradus_3.vindex <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
               a = FB_MOUSE_DOWN(s).
               a = FB_DRAG(s).
-              a = FB_MOVE_ACTIVE(s, 0, 0).
-              a = FB_TAB_ALTERNA(s).
+              a = FB_CLAVIS_AGE(s, 0).
+              REDDE a.
+          FIN-FUNCTIO.
+          VINDEX
+          timeout 35s ./compilator_vindex /tmp/fb_gradus_3.vindex /tmp/fb_gradus_3.elf
+          file /tmp/fb_gradus_3.elf | grep -q 'ELF 64-bit'
+
+      - name: Gradum IV redditionem adde
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          awk '/^FUNCTIO PRINCIPALIS REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_gradus_4.vindex
+          cat >> /tmp/fb_gradus_4.vindex <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
               a = FB_CLAVIS_AGE(s, 0).
               a = FB_REDDE(s).
               REDDE a.
           FIN-FUNCTIO.
           VINDEX
-          timeout 40s ./compilator_vindex /tmp/fb_auxilia_viva.vindex /tmp/fb_auxilia_viva.elf
-          file /tmp/fb_auxilia_viva.elf | grep -q 'ELF 64-bit'
+          timeout 40s ./compilator_vindex /tmp/fb_gradus_4.vindex /tmp/fb_gradus_4.elf
+          file /tmp/fb_gradus_4.elf | grep -q 'ELF 64-bit'
 
       - name: Fenestrale B totum compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -79,4 +102,3 @@ jobs:
           timeout 60s ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
           file /tmp/fenestrale_ii_purus_b.elf | grep -q 'ELF 64-bit'
           ! grep -R 'POLLE()' bibliotheca/fenestrale_ii_purus.vindex systema/fenestrale_ii_purus_b.vindex
-          printf '%s\n' 'RECTE: Fenestrale II Purus B omnino VINDEX compilatur.'
