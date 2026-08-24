@@ -1,0 +1,52 @@
+name: Sylvia OS — Fenestrale II Purus E
+
+on:
+  push:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-e
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_e.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_e_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_E.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-e.yml'
+
+jobs:
+  vindex-purus-e:
+    name: PROGRAMMATA clientis interactive compilatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Contractum clientis verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          grep -q 'FUNCTIO PE_CLICK REDDENS NUMERUS' bibliotheca/programmata_clientis_e.vindex
+          grep -q 'FUNCTIO PE_RENDE REDDENS NUMERUS' bibliotheca/programmata_clientis_e.vindex
+          grep -q 'PE_CLICK(s\[30\],s\[31\],lx-10,ly-52)' systema/fenestrale_ii_purus_e.vindex
+          grep -q 'PE_RENDE(s\[30\],s\[31\])' systema/fenestrale_ii_purus_e.vindex
+          grep -q 's\[31\]=0' systema/fenestrale_ii_purus_e.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/programmata_clientis_e.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/fenestrale_ii_superficies.vindex
+          ! grep -q 'POLLE()' bibliotheca/programmata_clientis_e.vindex systema/fenestrale_ii_purus_e.vindex
+          ! grep -q 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_e.vindex
+          ! grep -q 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_e.vindex
+
+      - name: Probationem clientis compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 40s ./compilator_vindex probationes/fenestrale_purus_e_clientis.vindex /tmp/fenestrale_purus_e_clientis.elf
+          file /tmp/fenestrale_purus_e_clientis.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale E totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 90s ./compilator_vindex systema/fenestrale_ii_purus_e.vindex /tmp/fenestrale_ii_purus_e.elf
+          file /tmp/fenestrale_ii_purus_e.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_e.elf)" -lt 327680
+          printf '%s\n' 'RECTE: Fenestrale II Purus E PROGRAMMATA clientem interactive compilat.'
