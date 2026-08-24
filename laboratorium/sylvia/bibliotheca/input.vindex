@@ -45,8 +45,10 @@ FIN-FUNCTIO.
 FUNCTIO LI_PARA REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     // Metadata [18..19] ad allocatorem fenestrarum pertinent; muri ibi numquam servantur.
-    s[3]=LI_PROTOCOL_LOCATE(1).
-    s[4]=LI_PROTOCOL_LOCATE(2).
+    DECLARA relativus SICUT NUMERUS VALENS LI_PROTOCOL_LOCATE(1).
+    DECLARA absolutus SICUT NUMERUS VALENS LI_PROTOCOL_LOCATE(2).
+    s[3]=relativus.
+    s[4]=absolutus.
     s[9]=0.
     REDDE 1.
 FIN-FUNCTIO.
