@@ -7,12 +7,11 @@ on:
   pull_request:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_graphica_guid.vindex'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
 
 jobs:
   vindex-purus:
-    name: Nomen GUID in compositione exploratur
+    name: Commentaria quae compilatorem suspendunt isolantur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -21,20 +20,7 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: GUID SOLUS canon diagnosticus compila
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_guid.vindex /tmp/guid_solus.elf
-          file /tmp/guid_solus.elf | grep -q 'ELF 64-bit'
-
-      - name: Eundem fontem nomine PONE compila
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          sed 's/FB_GUID_SOLUS/FB_GUID_PONE/g' probationes/fenestrale_purus_b_graphica_guid.vindex > /tmp/guid_pone.vindex
-          timeout 15s ./compilator_vindex /tmp/guid_pone.vindex /tmp/guid_pone.elf
-          file /tmp/guid_pone.elf | grep -q 'ELF 64-bit'
-
-      - name: Praefixum reale nomine SOLUS compila
+      - name: Variantes minimas genera
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           python3 - <<'PY'
@@ -45,8 +31,25 @@ jobs:
           s = s[:a] + s[b:]
           s = s[:s.index('FUNCTIO FB_PROTOCOL_LOCATE REDDENS NUMERUS.')]
           s = s.replace('FB_GUID_PONE', 'FB_GUID_SOLUS')
-          s += '''FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.\n    REDDE FB_GUID_SOLUS(guid, 1).\nFIN-FUNCTIO.\n'''
-          Path('/tmp/praefixum_solus.vindex').write_text(s, encoding='utf-8')
+          principalis = '''FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.\n    REDDE FB_GUID_SOLUS(guid, 1).\nFIN-FUNCTIO.\n'''
+          def pone(nomen, corpus):
+              Path('/tmp/' + nomen + '.vindex').write_text(corpus.rstrip() + '\n\n' + principalis, encoding='utf-8')
+          pone('commenta_omnia', s)
+          lineae = s.splitlines()
+          pone('sine_efi', '\n'.join(x for x in lineae if 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' not in x and 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' not in x))
+          pone('sine_status', '\n'.join(x for x in lineae if not x.lstrip().startswith('// Status') and not x.lstrip().startswith('//  ')))
+          pone('sine_commentis', '\n'.join(x for x in lineae if not x.lstrip().startswith('//')))
+          pone('sola_capita', '\n'.join(x for x in lineae if not x.lstrip().startswith('// Status') and not x.lstrip().startswith('//  ') and 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' not in x and 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' not in x))
           PY
-          timeout 15s ./compilator_vindex /tmp/praefixum_solus.vindex /tmp/praefixum_solus.elf
-          file /tmp/praefixum_solus.elf | grep -q 'ELF 64-bit'
+
+      - name: Variantes compila et codices exitus conserva
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          set +e
+          for n in commenta_omnia sine_efi sine_status sine_commentis sola_capita; do
+            timeout 8s ./compilator_vindex "/tmp/${n}.vindex" "/tmp/${n}.elf"
+            rc=$?
+            printf '%s=%s\n' "$n" "$rc" | tee -a /tmp/exitus.txt
+          done
+          cat /tmp/exitus.txt
+          grep -q '^sine_commentis=0$' /tmp/exitus.txt
