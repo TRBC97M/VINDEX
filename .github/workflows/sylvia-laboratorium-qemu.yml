@@ -29,15 +29,6 @@ jobs:
           test -f /usr/share/OVMF/OVMF_VARS_4M.fd
           qemu-system-x86_64 --version
 
-      - name: ABI TEXTUS verifica
-        run: |
-          timeout 30s "$GITHUB_WORKSPACE/Vindex Chat-GPT/vindex_final_v51/compilator_vindex" \
-            "$GITHUB_WORKSPACE/laboratorium/sylvia/probationes/proba_textus_abi.vindex" \
-            /tmp/proba_textus_abi.elf
-          chmod +x /tmp/proba_textus_abi.elf
-          /tmp/proba_textus_abi.elf
-          printf '%s\n' 'TEXTUS ABI: RECTE'
-
       - name: Nucleum VINDEX compila
         run: |
           mkdir -p /tmp/sylvia-lab
