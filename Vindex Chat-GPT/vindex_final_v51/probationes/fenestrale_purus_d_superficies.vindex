@@ -1,5 +1,6 @@
 // Probatio compilationis: superficies privata clientis Fenestralis Purus D.
 
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
