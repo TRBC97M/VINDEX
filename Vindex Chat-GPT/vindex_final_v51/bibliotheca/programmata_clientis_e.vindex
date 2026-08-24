@@ -1,0 +1,77 @@
+// Sylvia OS — PROGRAMMATA clientis Gradus E.
+// Status et click intra contentum clientis sine ornamentis systematis.
+
+FUNCTIO PE_CLICK REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI superficies == 0 TUNC REDDE status. FIN-SI.
+    SI y >= 5 && y < 29 TUNC
+        SI x >= 8 && x < 70 TUNC REDDE 2. FIN-SI.
+        SI x >= 76 && x < 138 TUNC REDDE 3. FIN-SI.
+        SI x >= 144 && x < 206 TUNC REDDE 4. FIN-SI.
+        SI x >= 212 && x < 274 TUNC REDDE 5. FIN-SI.
+    FIN-SI.
+    SI x >= 154 && x < CONTENTUM(superficies) - 12 && y >= 48 && y < 164 TUNC
+        REDDE 1.
+    FIN-SI.
+    REDDE status.
+FIN-FUNCTIO.
+
+FUNCTIO PE_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI superficies == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies + 8).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
+    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
+    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(168,58,58).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,ebur).
+    f = FS_RECT(superficies,0,0,w,34,argentum).
+    DECLARA b1 SICUT NUMERUS VALENS lux.
+    DECLARA b2 SICUT NUMERUS VALENS lux.
+    DECLARA b3 SICUT NUMERUS VALENS lux.
+    DECLARA b4 SICUT NUMERUS VALENS lux.
+    SI status == 2 TUNC b1=bronzeum. FIN-SI.
+    SI status == 3 TUNC b2=bronzeum. FIN-SI.
+    SI status == 4 TUNC b3=bronzeum. FIN-SI.
+    SI status == 5 TUNC b4=rubrum. FIN-SI.
+    f = FS_RECT(superficies,8,5,62,24,b1).
+    f = FS_TEXTUM(superficies,16,13,"NOVUM",profundum).
+    f = FS_RECT(superficies,76,5,62,24,b2).
+    f = FS_TEXTUM(superficies,84,13,"EDITE",profundum).
+    f = FS_RECT(superficies,144,5,62,24,b3).
+    f = FS_TEXTUM(superficies,152,13,"NOMEN",profundum).
+    f = FS_RECT(superficies,212,5,62,24,b4).
+    f = FS_TEXTUM(superficies,220,13,"DELE",profundum).
+    f = FS_RECT(superficies,0,34,142,h-34,argentum).
+    f = FS_TEXTUM(superficies,14,54,"LOCORUM",profundum).
+    f = FS_RECT(superficies,10,72,122,22,lux).
+    f = FS_TEXTUM(superficies,20,79,"PROGRAMMATA",profundum).
+    DECLARA card SICUT NUMERUS VALENS lux.
+    SI status == 1 || status == 3 || status == 4 || status == 5 TUNC card=FV_COLOR(225,245,249). FIN-SI.
+    f = FS_RECT(superficies,154,48,w-166,116,card).
+    f = FS_RECT(superficies,154,48,w-166,2,medium).
+    SI status == 1 || status == 3 || status == 4 || status == 5 TUNC
+        f = FS_RECT(superficies,154,48,2,116,bronzeum).
+    FIN-SI.
+    f = FS_RECT(superficies,174,68,66,66,profundum).
+    f = FS_RECT(superficies,184,78,46,46,aqua).
+    f = FS_TEXTUM(superficies,254,82,"TABULA.VXNAT",profundum).
+    f = FS_TEXTUM(superficies,254,104,"APPLICATIO",medium).
+    f = FS_RECT(superficies,154,178,w-166,h-188,argentum).
+    SI status == 0 TUNC f = FS_TEXTUM(superficies,168,194,"PARATUS",profundum). FIN-SI.
+    SI status == 1 TUNC f = FS_TEXTUM(superficies,168,194,"SELECTUM: TABULA.VXNAT",profundum). FIN-SI.
+    SI status == 2 TUNC f = FS_TEXTUM(superficies,168,194,"NOVUM: CLIENTIS ACTIO",profundum). FIN-SI.
+    SI status == 3 TUNC f = FS_TEXTUM(superficies,168,194,"EDITE: TABULA.VXNAT",profundum). FIN-SI.
+    SI status == 4 TUNC f = FS_TEXTUM(superficies,168,194,"NOMEN: TABULA.VXNAT",profundum). FIN-SI.
+    SI status == 5 TUNC f = FS_TEXTUM(superficies,168,194,"DELE: CONFIRMATIO NECESSARIA",rubrum). FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
