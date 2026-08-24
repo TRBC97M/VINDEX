@@ -7,6 +7,7 @@ Status 0 redditur tantum si desktop, glyphi et motus cursoris recti sunt.
 
 from __future__ import annotations
 
+import re
 import socket
 import struct
 import sys
@@ -14,7 +15,21 @@ import time
 from pathlib import Path
 
 
+def exhaure(sock: socket.socket) -> None:
+    pristinum = sock.gettimeout()
+    sock.settimeout(0.03)
+    try:
+        while True:
+            if not sock.recv(65536):
+                break
+    except socket.timeout:
+        pass
+    finally:
+        sock.settimeout(pristinum)
+
+
 def hmp(sock: socket.socket, command: str, timeout: float = 2.0) -> str:
+    exhaure(sock)
     sock.sendall((command + "\n").encode("ascii"))
     finis = time.time() + timeout
     partes: list[bytes] = []
@@ -22,11 +37,12 @@ def hmp(sock: socket.socket, command: str, timeout: float = 2.0) -> str:
         try:
             data = sock.recv(65536)
         except socket.timeout:
-            break
+            continue
         if not data:
             break
         partes.append(data)
-        if b"(qemu)" in data:
+        textus = b"".join(partes)
+        if b"(qemu)" in textus and command.encode("ascii") in textus:
             break
     return b"".join(partes).decode("utf-8", "replace")
 
@@ -44,12 +60,10 @@ def recipe_exacte(sock: socket.socket, n: int) -> bytes:
 def vnc_para(host: str = "127.0.0.1", port: int = 5900) -> tuple[socket.socket, int, int]:
     v = socket.create_connection((host, port), timeout=3.0)
     v.settimeout(3.0)
-
     versio = recipe_exacte(v, 12)
     if not versio.startswith(b"RFB "):
         raise RuntimeError(f"VNC versio invalida: {versio!r}")
     v.sendall(b"RFB 003.008\n")
-
     n = recipe_exacte(v, 1)[0]
     if n == 0:
         mensura = struct.unpack(">I", recipe_exacte(v, 4))[0]
@@ -62,8 +76,7 @@ def vnc_para(host: str = "127.0.0.1", port: int = 5900) -> tuple[socket.socket, 
     status = struct.unpack(">I", recipe_exacte(v, 4))[0]
     if status != 0:
         raise RuntimeError(f"VNC securitas status {status}")
-
-    v.sendall(b"\x01")  # ClientInit: communis sessio.
+    v.sendall(b"\x01")
     initium = recipe_exacte(v, 24)
     w, h = struct.unpack(">HH", initium[:4])
     nomen_mensura = struct.unpack(">I", initium[20:24])[0]
@@ -136,41 +149,36 @@ def differentiae(a: bytes, b: bytes) -> int:
 
 
 def netto_hmp(textus: str) -> str:
-    partes = []
-    for linea in textus.replace("\r", "").split("\n"):
+    textus = re.sub(r"\x1b\[[0-9;?]*[A-Za-z]", "", textus.replace("\r", ""))
+    lineae = []
+    for linea in textus.split("\n"):
         linea = linea.strip()
-        if linea and linea != "(qemu)":
-            partes.append(linea)
-    return " | ".join(partes)
+        if linea and linea != "(qemu)" and not linea.startswith("xp /8gx"):
+            lineae.append(linea)
+    return " | ".join(lineae)
 
 
 def principale() -> int:
     if len(sys.argv) != 3:
         print("USUS: proba_qemu.py MONITOR.sock EXITUS")
         return 2
-
     monitor = Path(sys.argv[1])
     exitus = Path(sys.argv[2])
     ante = exitus / "sylvia-ante.ppm"
     post = exitus / "sylvia-post.ppm"
-
     finis = time.time() + 10.0
     while not monitor.exists() and time.time() < finis:
         time.sleep(0.1)
     if not monitor.exists():
         print("QEMU: ERRATUM monitor non apparuit")
         return 3
-
     s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     s.settimeout(0.35)
     s.connect(str(monitor))
     v: socket.socket | None = None
     try:
-        try:
-            s.recv(65536)
-        except socket.timeout:
-            pass
-
+        time.sleep(0.1)
+        exhaure(s)
         time.sleep(4.0)
         hmp(s, f"screendump {ante}")
         finis = time.time() + 3.0
@@ -180,9 +188,7 @@ def principale() -> int:
             print("QEMU: ERRATUM captura initialis non creata")
             return 4
 
-        # META[18..25]: protocola muris et spatium diagnosticum laboratorii.
         metadata_muris = netto_hmp(hmp(s, "xp /8gx 0x03000890"))
-
         w, h, pix_ante = lege_ppm(ante)
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
