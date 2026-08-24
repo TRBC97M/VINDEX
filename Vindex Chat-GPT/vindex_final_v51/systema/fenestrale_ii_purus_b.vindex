@@ -15,8 +15,13 @@ IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 
 FUNCTIO FB_I32 REDDENS NUMERUS.
     ACCIPIT locus SICUT NUMERUS.
-    DECLARA valor SICUT NUMERUS VALENS OCTETUS_AB(locus) | (OCTETUS_AB(locus + 1) << 8) | (OCTETUS_AB(locus + 2) << 16) | (OCTETUS_AB(locus + 3) << 24).
-    SI valor >= 2147483648 TUNC valor = valor - 4294967296. FIN-SI.
+    DECLARA valor SICUT NUMERUS VALENS OCTETUS_AB(locus).
+    valor = valor | (OCTETUS_AB(locus + 1) << 8).
+    valor = valor | (OCTETUS_AB(locus + 2) << 16).
+    valor = valor | (OCTETUS_AB(locus + 3) << 24).
+    SI valor >= 2147483648 TUNC
+        valor = valor - 4294967296.
+    FIN-SI.
     REDDE valor.
 FIN-FUNCTIO.
 
