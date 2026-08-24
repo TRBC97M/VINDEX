@@ -100,6 +100,19 @@ Post saltum bootstrap:
 
 VINDEX directe legit metadata bootstrap et protocolos firmware necessarios vocat.
 
+## Nota compilationis
+
+In probationibus Gradus B vitium lexicum compilatoris VINDEX repertum est: duae lineae commentarii `//` quae nomina integra protocolorum UEFI continebant compilationem huius unitatis suspendebant, quamquam idem corpus sine illis commentariis statim compilabatur. Lineae illae commentarii remotae sunt; nulla logica exsecutiva mutata est.
+
+Probatio discriminans confirmavit:
+
+- corpus cum commentariis problematicis ad terminum temporis pervenire;
+- idem corpus sine duabus illis lineis recte compilari;
+- commentaria status Fenestralis causam non esse;
+- fontem integrum `fenestrale_ii_purus_b.vindex` post correctionem in ELF64 recte compilari.
+
+Vitium ipsum compilatoris hic non corrigitur, quia Gradus B ad Fenestrale pertinet et mutationem nuclei compilatoris non requirit.
+
 ## Limites Gradus B
 
 Hic Gradus compositorium immediatum totum desktop iterum pingit quando input statum mutat. Hoc consulto simplex est, ut proprietas architectonica ante optimizationem probetur.
