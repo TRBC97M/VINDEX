@@ -44,10 +44,15 @@ FIN-FUNCTIO.
 
 FUNCTIO LI_PARA REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
-    // LocateProtocol sufficit. Reset hic consulto non vocatur: non est
-    // necessarius ad GetState et sub OVMF/QEMU ante primam picturam haerebat.
-    s[3]=LI_PROTOCOL_LOCATE(1).
-    s[4]=LI_PROTOCOL_LOCATE(2).
+    s[3]=LI_PROTOCOL_LOCATE(1). s[4]=LI_PROTOCOL_LOCATE(2).
+    SI s[3]!=0 TUNC
+        DECLARA reset SICUT NUMERUS VALENS CONTENTUM(s[3]).
+        SI reset!=0 TUNC DECLARA r SICUT NUMERUS VALENS UEFI_VOCA6(reset,s[3],0,0,0,0,0). FIN-SI.
+    FIN-SI.
+    SI s[4]!=0 TUNC
+        DECLARA reset2 SICUT NUMERUS VALENS CONTENTUM(s[4]).
+        SI reset2!=0 TUNC DECLARA r2 SICUT NUMERUS VALENS UEFI_VOCA6(reset2,s[4],0,0,0,0,0). FIN-SI.
+    FIN-SI.
     REDDE 1.
 FIN-FUNCTIO.
 
