@@ -7,6 +7,12 @@ on:
     paths:
       - 'laboratorium/sylvia/**'
       - '.github/workflows/sylvia-laboratorium-qemu.yml'
+  pull_request:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-i
+    paths:
+      - 'laboratorium/sylvia/**'
+      - '.github/workflows/sylvia-laboratorium-qemu.yml'
   workflow_dispatch:
 
 permissions:
