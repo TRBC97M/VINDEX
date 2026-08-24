@@ -6,16 +6,22 @@ RADIX="$(git rev-parse --show-toplevel)"
 VINDEX="$RADIX/Vindex Chat-GPT/vindex_final_v51"
 LAB="$RADIX/laboratorium/sylvia"
 EXITUS="${1:-/tmp/sylvia-lab}"
+PRAECOMPILATUM="${SYLVIA_NUCLEUS_PRAECOMPILATUM:-0}"
 
 mkdir -p "$EXITUS"
-rm -f "$EXITUS"/nucleus.elf "$EXITUS"/nucleus.o "$EXITUS"/textus.bin \
+rm -f "$EXITUS"/nucleus.o "$EXITUS"/textus.bin \
       "$EXITUS"/textus.o "$EXITUS"/forma.bin "$EXITUS"/forma.o \
       "$EXITUS"/bootstrap.o "$EXITUS"/BOOTX64.EFI \
       "$EXITUS"/sylvia-laboratorium.img
 
-"$VINDEX/compilator_vindex" \
-  "$LAB/systema/sylvia_laboratorium.vindex" \
-  "$EXITUS/nucleus.elf"
+if [ "$PRAECOMPILATUM" != "1" ]; then
+  rm -f "$EXITUS/nucleus.elf"
+  "$VINDEX/compilator_vindex" \
+    "$LAB/systema/sylvia_laboratorium.vindex" \
+    "$EXITUS/nucleus.elf"
+else
+  test -s "$EXITUS/nucleus.elf"
+fi
 
 cp "$VINDEX/fenestrale_systema.bin" "$EXITUS/textus.bin"
 cp "$VINDEX/systema/uefi/forma.bin" "$EXITUS/forma.bin"
