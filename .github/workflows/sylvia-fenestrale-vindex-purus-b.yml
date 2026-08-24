@@ -13,7 +13,7 @@ on:
 
 jobs:
   vindex-purus:
-    name: Limen compositionis VINDEX exploratur
+    name: Compositio input VINDEX exploratur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -22,26 +22,47 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Graphica cum una functione
+      - name: Corpus sine adiutore I32 genera
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_functio.vindex /tmp/fb_una.elf
-          file /tmp/fb_una.elf | grep -q 'ELF 64-bit'
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('systema/fenestrale_ii_purus_b.vindex')
+          s = p.read_text(encoding='utf-8')
+          vetus = '''FUNCTIO FB_I32 REDDENS NUMERUS.\n    ACCIPIT locus SICUT NUMERUS.\n    DECLARA valor SICUT NUMERUS VALENS OCTETUS_AB(locus).\n    valor = valor | (OCTETUS_AB(locus + 1) << 8).\n    valor = valor | (OCTETUS_AB(locus + 2) << 16).\n    valor = valor | (OCTETUS_AB(locus + 3) << 24).\n    SI valor >= 2147483648 TUNC\n        valor = valor - 4294967296.\n    FIN-SI.\n    REDDE valor.\nFIN-FUNCTIO.\n\n'''
+          if s.count(vetus) != 1:
+              raise SystemExit('ERRATUM: FB_I32 non unica')
+          s = s.replace(vetus, '', 1)
+          vetus2 = '''    DECLARA crudum_x SICUT NUMERUS VALENS FB_I32(SEDES(status_muris)).\n    DECLARA crudum_y SICUT NUMERUS VALENS FB_I32(SEDES(status_muris) + 4).\n'''
+          novum2 = '''    DECLARA crudum_x SICUT NUMERUS VALENS OCTETUS_AB(SEDES(status_muris)).\n    crudum_x = crudum_x | (OCTETUS_AB(SEDES(status_muris) + 1) << 8).\n    crudum_x = crudum_x | (OCTETUS_AB(SEDES(status_muris) + 2) << 16).\n    crudum_x = crudum_x | (OCTETUS_AB(SEDES(status_muris) + 3) << 24).\n    SI crudum_x >= 2147483648 TUNC crudum_x = crudum_x - 4294967296. FIN-SI.\n    DECLARA crudum_y SICUT NUMERUS VALENS OCTETUS_AB(SEDES(status_muris) + 4).\n    crudum_y = crudum_y | (OCTETUS_AB(SEDES(status_muris) + 5) << 8).\n    crudum_y = crudum_y | (OCTETUS_AB(SEDES(status_muris) + 6) << 16).\n    crudum_y = crudum_y | (OCTETUS_AB(SEDES(status_muris) + 7) << 24).\n    SI crudum_y >= 2147483648 TUNC crudum_y = crudum_y - 4294967296. FIN-SI.\n'''
+          if s.count(vetus2) != 1:
+              raise SystemExit('ERRATUM: usus FB_I32 non unicus')
+          s = s.replace(vetus2, novum2, 1)
+          Path('/tmp/fenestrale_b_sine_i32.vindex').write_text(s, encoding='utf-8')
+          PY
+          ! grep -q 'FUNCTIO FB_I32' /tmp/fenestrale_b_sine_i32.vindex
+          ! grep -q 'FB_I32(' /tmp/fenestrale_b_sine_i32.vindex
 
-      - name: Graphica cum duabus functionibus
+      - name: Input sine I32 cum graphica compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_duae.vindex /tmp/fb_duae.elf
-          file /tmp/fb_duae.elf | grep -q 'ELF 64-bit'
+          awk '/^FUNCTIO FB_RELEGE_ACTIVUM REDDENS NUMERUS\./ {exit} {print}' /tmp/fenestrale_b_sine_i32.vindex > /tmp/fb_input_sine_i32.vindex
+          cat >> /tmp/fb_input_sine_i32.vindex <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
+              a = FB_CLAVIS_LEGE().
+              a = FB_MURUS_ABSOLUTUS(0, s).
+              a = FB_MURUS_RELATIVUS(0, s).
+              a = FB_STALL().
+              REDDE a.
+          FIN-FUNCTIO.
+          VINDEX
+          timeout 30s ./compilator_vindex /tmp/fb_input_sine_i32.vindex /tmp/fb_input_sine_i32.elf
+          file /tmp/fb_input_sine_i32.elf | grep -q 'ELF 64-bit'
 
-      - name: Graphica cum sola functione GUID
+      - name: Fenestrale B sine I32 totum compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_guid.vindex /tmp/fb_guid.elf
-          file /tmp/fb_guid.elf | grep -q 'ELF 64-bit'
-
-      - name: Graphica cum I32 sola
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_i32_nomen.vindex /tmp/fb_i32.elf
-          file /tmp/fb_i32.elf | grep -q 'ELF 64-bit'
+          timeout 60s ./compilator_vindex /tmp/fenestrale_b_sine_i32.vindex /tmp/fenestrale_b_sine_i32.elf
+          file /tmp/fenestrale_b_sine_i32.elf | grep -q 'ELF 64-bit'
