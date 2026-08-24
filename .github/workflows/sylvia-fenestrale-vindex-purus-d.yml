@@ -1,0 +1,50 @@
+name: Sylvia OS — Fenestrale II Purus D
+
+on:
+  push:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-d
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_d.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_d_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_D.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-d.yml'
+
+jobs:
+  vindex-purus-d:
+    name: Superficies privata VINDEX compilatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Structuram superficiei verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          grep -q 'FUNCTIO FS_CREA REDDENS NUMERUS' bibliotheca/fenestrale_ii_superficies.vindex
+          grep -q 'FUNCTIO FS_BLIT REDDENS NUMERUS' bibliotheca/fenestrale_ii_superficies.vindex
+          grep -q 'FUNCTIO FS_PROGRAMMATA_RENDE REDDENS NUMERUS' bibliotheca/fenestrale_ii_superficies.vindex
+          grep -q 's\[30\]=FS_CREA(496,260)' systema/fenestrale_ii_purus_d.vindex
+          grep -q 'FUNCTIO FD_PROGRAMMATA REDDENS NUMERUS' systema/fenestrale_ii_purus_d.vindex
+          ! grep -q 'POLLE()' bibliotheca/fenestrale_ii_superficies.vindex systema/fenestrale_ii_purus_d.vindex
+          ! grep -q 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_d.vindex
+          ! grep -q 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_d.vindex
+
+      - name: Probationem superficiei compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 30s ./compilator_vindex probationes/fenestrale_purus_d_superficies.vindex /tmp/fenestrale_purus_d_superficies.elf
+          file /tmp/fenestrale_purus_d_superficies.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale D totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 90s ./compilator_vindex systema/fenestrale_ii_purus_d.vindex /tmp/fenestrale_ii_purus_d.elf
+          file /tmp/fenestrale_ii_purus_d.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_d.elf)" -lt 262144
+          printf '%s\n' 'RECTE: Fenestrale II Purus D superficiem privatam PROGRAMMATA compilat.'
