@@ -1,0 +1,59 @@
+name: Sylvia OS — Fenestrale II Purus G
+
+on:
+  push:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-g
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_eventa_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_gestor_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_g_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_G.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-g.yml'
+
+jobs:
+  vindex-purus-g:
+    name: Coda eventuum VINDEX compilatur et probatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Separationem gestoris et clientium verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          grep -q 'FUNCTIO EG_CREA REDDENS NUMERUS' bibliotheca/fenestrale_eventa_g.vindex
+          grep -q 'FUNCTIO EG_PONE REDDENS NUMERUS' bibliotheca/fenestrale_eventa_g.vindex
+          grep -q 'FUNCTIO EG_CAPE REDDENS NUMERUS' bibliotheca/fenestrale_eventa_g.vindex
+          grep -q 'FUNCTIO CG_AGE REDDENS NUMERUS' bibliotheca/clientes_eventa_g.vindex
+          grep -q 'EG_PONE(coda,1,id,lx-10,ly-52,0)' bibliotheca/fenestrale_gestor_g.vindex
+          grep -q 'CG_AGE(s,s\[34\])' systema/fenestrale_ii_purus_g.vindex
+          ! grep -Eq 'PE_CLICK|TF_CLICK|PE_RENDE|TF_RENDE' bibliotheca/fenestrale_gestor_g.vindex
+          ! grep -Eq 'PE_CLICK|TF_CLICK' systema/fenestrale_ii_purus_g.vindex
+          grep -q 'EG_CREA(32)' systema/fenestrale_ii_purus_g.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/fenestrale_eventa_g.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/clientes_eventa_g.vindex
+          ! grep -q '^IMPORTA ' bibliotheca/fenestrale_gestor_g.vindex
+          ! grep -R 'POLLE()' bibliotheca/fenestrale_eventa_g.vindex bibliotheca/clientes_eventa_g.vindex bibliotheca/fenestrale_gestor_g.vindex systema/fenestrale_ii_purus_g.vindex
+
+      - name: Codam circularem compila et exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 30s ./compilator_vindex probationes/fenestrale_purus_g_eventa.vindex /tmp/fenestrale_purus_g_eventa.elf
+          file /tmp/fenestrale_purus_g_eventa.elf | grep -q 'ELF 64-bit'
+          chmod +x /tmp/fenestrale_purus_g_eventa.elf
+          timeout 10s /tmp/fenestrale_purus_g_eventa.elf
+
+      - name: Fenestrale G totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 150s ./compilator_vindex systema/fenestrale_ii_purus_g.vindex /tmp/fenestrale_ii_purus_g.elf
+          file /tmp/fenestrale_ii_purus_g.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_g.elf)" -lt 524288
+          printf '%s\n' 'RECTE: Fenestrale II Purus G codam eventuum VINDEX inter gestorem et clientes compilat.'
