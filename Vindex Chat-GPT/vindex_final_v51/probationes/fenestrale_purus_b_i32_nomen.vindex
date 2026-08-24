@@ -1,0 +1,11 @@
+// Probatio: nomen FB_I32 cum bibliotheca graphica.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO FB_I32 REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    REDDE OCTETUS_AB(locus).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    REDDE FB_I32(50331648).
+FIN-FUNCTIO.
