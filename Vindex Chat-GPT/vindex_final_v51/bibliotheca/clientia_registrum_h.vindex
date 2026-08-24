@@ -1,0 +1,78 @@
+// Sylvia OS — registrum dynamicum clientium Fenestralis Purus H.
+// Nulla capacitas fixa: nodus pro unoquoque cliente memoria VINDEX reservatur.
+// Caput: numerus, primus. Nodus: id, genus, superficies, status, proximus.
+
+FUNCTIO CH_CREA REDDENS NUMERUS.
+    DECLARA registrum SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    SI registrum < 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(registrum) = 0.
+    CONTENTUM(registrum + 8) = 0.
+    REDDE registrum.
+FIN-FUNCTIO.
+
+FUNCTIO CH_NUMERUS REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    SI registrum == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(registrum).
+FIN-FUNCTIO.
+
+FUNCTIO CH_QUAERE REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI registrum == 0 || id <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(registrum + 8).
+    DUM nodus != 0 PERFICE
+        SI CONTENTUM(nodus) == id TUNC REDDE nodus. FIN-SI.
+        nodus = CONTENTUM(nodus + 32).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO CH_ADDE REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI registrum == 0 || id <= 0 || superficies == 0 TUNC REDDE 0. FIN-SI.
+    SI CH_QUAERE(registrum,id) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS RESERVA_OCTETA(40).
+    SI nodus < 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(nodus) = id.
+    CONTENTUM(nodus + 8) = genus.
+    CONTENTUM(nodus + 16) = superficies.
+    CONTENTUM(nodus + 24) = status.
+    CONTENTUM(nodus + 32) = CONTENTUM(registrum + 8).
+    CONTENTUM(registrum + 8) = nodus.
+    CONTENTUM(registrum) = CONTENTUM(registrum) + 1.
+    REDDE nodus.
+FIN-FUNCTIO.
+
+FUNCTIO CH_GENUS REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS. ACCIPIT id SICUT NUMERUS.
+    DECLARA nodus SICUT NUMERUS VALENS CH_QUAERE(registrum,id).
+    SI nodus == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(nodus + 8).
+FIN-FUNCTIO.
+
+FUNCTIO CH_SUPERFICIES REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS. ACCIPIT id SICUT NUMERUS.
+    DECLARA nodus SICUT NUMERUS VALENS CH_QUAERE(registrum,id).
+    SI nodus == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(nodus + 16).
+FIN-FUNCTIO.
+
+FUNCTIO CH_STATUS REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS. ACCIPIT id SICUT NUMERUS.
+    DECLARA nodus SICUT NUMERUS VALENS CH_QUAERE(registrum,id).
+    SI nodus == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(nodus + 24).
+FIN-FUNCTIO.
+
+FUNCTIO CH_STATUS_PONE REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS. ACCIPIT id SICUT NUMERUS. ACCIPIT status SICUT NUMERUS.
+    DECLARA nodus SICUT NUMERUS VALENS CH_QUAERE(registrum,id).
+    SI nodus == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(nodus + 24) = status.
+    REDDE 1.
+FIN-FUNCTIO.
