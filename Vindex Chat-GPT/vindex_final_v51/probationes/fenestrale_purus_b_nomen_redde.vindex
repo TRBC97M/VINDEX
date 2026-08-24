@@ -1,6 +1,0 @@
-// Diagnostica: nomen locale 'redde' contra verbum reservatum REDDE.
-FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    DECLARA redde SICUT NUMERUS VALENS 0.
-    redde = redde + 1.
-    REDDE redde.
-FIN-FUNCTIO.
