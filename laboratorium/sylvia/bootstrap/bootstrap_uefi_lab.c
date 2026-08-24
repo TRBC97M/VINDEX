@@ -27,6 +27,7 @@ typedef U64                EFI_PHYSICAL_ADDRESS;
 #define COMMUNIS_PAGINAE 25ULL
 #define ACERVUS_PAGINAE 2048ULL
 #define PILA_PAGINAE 256ULL
+#define FORMA_MENSURA 2048ULL
 
 typedef struct {
     U64 Signature;
@@ -147,10 +148,21 @@ extern U8 _binary_nucleus_elf_end[];
 extern U8 _binary_textus_bin_start[];
 extern U8 _binary_textus_bin_end[];
 extern U8 _binary_forma_bin_start[];
+extern U8 _binary_forma_bin_end[];
 
 static EFI_GUID guid_graphica = {
     0x9042a9de, 0x23dc, 0x4a38,
     {0x96,0xfb,0x7a,0xde,0xd0,0x80,0x51,0x6a}
+};
+
+static EFI_GUID guid_murus_relativus = {
+    0x31878c87, 0x0b75, 0x11d5,
+    {0x9a,0x4f,0x00,0x90,0x27,0x3f,0xc1,0x4d}
+};
+
+static EFI_GUID guid_murus_absolutus = {
+    0x8d59d32b, 0xc655, 0x4ae9,
+    {0x9b,0x15,0xf2,0x59,0x04,0x99,0x2a,0x43}
 };
 
 static void dic(EFI_SYSTEM_TABLE *systema, const U16 *textus) {
@@ -190,12 +202,15 @@ __attribute__((noreturn)) static void ad_vindex_sali(U64 ingressus, U64 pila_sum
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     EFI_GRAPHICS_OUTPUT_PROTOCOL *graphica = 0;
+    void *murus_relativus = 0;
+    void *murus_absolutus = 0;
     EFI_PHYSICAL_ADDRESS nucleus = NUCLEUS_BASE;
     EFI_PHYSICAL_ADDRESS communis = COMMUNIS;
     EFI_PHYSICAL_ADDRESS acervus = 0;
     EFI_PHYSICAL_ADDRESS pila = 0;
     U64 kernel_mensura = (U64)(_binary_nucleus_elf_end - _binary_nucleus_elf_start);
     U64 textus_mensura = (U64)(_binary_textus_bin_end - _binary_textus_bin_start);
+    U64 forma_mensura = (U64)(_binary_forma_bin_end - _binary_forma_bin_start);
     volatile U64 *meta = (volatile U64 *)META;
     EFI_STATUS status;
     U32 latitudo;
@@ -206,7 +221,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     systema->BootServices->SetWatchdogTimer(0, 0, 0, 0);
     dic(systema, L"SYLVIA LABORATORIUM: INITIUM\r\n");
 
-    if (kernel_mensura > NUCLEUS_LIMEN || textus_mensura > 4096) {
+    if (kernel_mensura > NUCLEUS_LIMEN || textus_mensura > 4096 || forma_mensura < FORMA_MENSURA) {
         dic(systema, L"LAB: MAGNITUDO NUCLEI INVALIDA\r\n");
         return 1;
     }
@@ -240,6 +255,9 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
         dic(systema, L"LAB: GOP NON INVENTUM\r\n");
         return status ? status : 1;
     }
+
+    systema->BootServices->LocateProtocol(&guid_murus_relativus, 0, &murus_relativus);
+    systema->BootServices->LocateProtocol(&guid_murus_absolutus, 0, &murus_absolutus);
 
     if (graphica->Mode->Info->PixelFormat > 1 ||
         graphica->Mode->Info->HorizontalResolution < 640 ||
@@ -275,6 +293,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     memoria_vacua((void *)(UINTN)COMMUNIS, 0x19000);
     memoria_copia((void *)(UINTN)NUCLEUS_BASE, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
     memoria_copia((void *)(UINTN)TEXTUS_BASE, _binary_textus_bin_start, (UINTN)textus_mensura);
+    memoria_copia((void *)(UINTN)UMBRA, _binary_forma_bin_start, FORMA_MENSURA);
 
     ((volatile U64 *)COMMUNIS)[0] = latitudo / 2;
     ((volatile U64 *)COMMUNIS)[1] = altitudo / 2;
@@ -290,15 +309,15 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[8] = 0;
     meta[9] = 0;
     meta[10] = UMBRA;
-    meta[11] = (U64)(UINTN)_binary_forma_bin_start;
+    meta[11] = UMBRA;
     meta[12] = 0;
     meta[13] = 0;
     meta[14] = 0;
     meta[15] = 0;
     meta[16] = (U64)acervus;
     meta[17] = ACERVUS_PAGINAE * 4096ULL;
-    meta[18] = 0;
-    meta[19] = 0;
+    meta[18] = (U64)(UINTN)murus_relativus;
+    meta[19] = (U64)(UINTN)murus_absolutus;
     meta[20] = (U64)pila;
     meta[21] = PILA_PAGINAE * 4096ULL;
 
