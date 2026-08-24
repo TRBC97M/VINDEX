@@ -1,0 +1,34 @@
+// Probatio compilationis: mutatio mensurae Fenestralis Purus C.
+
+FUNCTIO FC_RESIZE_PROBA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    DECLARA id SICUT NUMERUS VALENS s[14].
+    DECLARA margines SICUT NUMERUS VALENS s[27].
+    SI id == 0 || margines == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA dx SICUT NUMERUS VALENS s[11] - s[15].
+    DECLARA dy SICUT NUMERUS VALENS s[12] - s[16].
+    s[15]=s[11]. s[16]=s[12].
+    DECLARA x SICUT NUMERUS VALENS s[3].
+    DECLARA y SICUT NUMERUS VALENS s[4].
+    DECLARA w SICUT NUMERUS VALENS s[5].
+    DECLARA h SICUT NUMERUS VALENS s[6].
+    DECLARA minw SICUT NUMERUS VALENS 520.
+    DECLARA minh SICUT NUMERUS VALENS 340.
+    SI id == 2 TUNC x=s[7]. y=s[8]. w=s[9]. h=s[10]. minw=420. minh=300. FIN-SI.
+    SI (margines & 1) != 0 TUNC x=x+dx. w=w-dx. FIN-SI.
+    SI (margines & 2) != 0 TUNC w=w+dx. FIN-SI.
+    SI (margines & 4) != 0 TUNC y=y+dy. h=h-dy. FIN-SI.
+    SI (margines & 8) != 0 TUNC h=h+dy. FIN-SI.
+    SI w < minw TUNC w=minw. FIN-SI.
+    SI h < minh TUNC h=minh. FIN-SI.
+    SI id == 1 TUNC s[3]=x. s[4]=y. s[5]=w. s[6]=h. ALITER s[7]=x. s[8]=y. s[9]=w. s[10]=h. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+    s[14]=1. s[27]=10.
+    s[3]=40. s[4]=40. s[5]=700. s[6]=500.
+    s[11]=80. s[12]=70. s[15]=60. s[16]=60.
+    REDDE FC_RESIZE_PROBA(s).
+FIN-FUNCTIO.
