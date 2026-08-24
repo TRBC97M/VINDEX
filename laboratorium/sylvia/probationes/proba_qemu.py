@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
-"""Probatio visualis automatica Sylviae Laboratorii per monitor QEMU.
+"""Probatio visualis automatica Sylviae Laboratorii per QEMU.
 
-Nihil in systemate canonico mutat. Capturas PPM legit et tres res examinat:
-- desktop VINDEX apparuit;
-- glyphi in titulo fenestrae apparuerunt;
-- motus muris mutationem framebuffer produxit.
-
-Status 0 redditur tantum si tria signa simul recta sunt.
+Capturas HMP PPM legit; motum muris per QMP input-send-event immittit.
+Status 0 redditur tantum si desktop, glyphi et motus cursoris recti sunt.
 """
 
 from __future__ import annotations
 
+import json
 import socket
 import sys
 import time
@@ -34,11 +31,37 @@ def hmp(sock: socket.socket, command: str, timeout: float = 2.0) -> str:
     return b"".join(partes).decode("utf-8", "replace")
 
 
+def qmp_linea(sock: socket.socket, timeout: float = 2.0) -> dict:
+    sock.settimeout(timeout)
+    data = bytearray()
+    while True:
+        b = sock.recv(1)
+        if not b:
+            raise RuntimeError("QMP clausum est")
+        if b == b"\n":
+            if data.strip():
+                return json.loads(data.decode("utf-8"))
+            continue
+        data.extend(b)
+
+
+def qmp_exsequere(sock: socket.socket, nomen: str, argumenta: dict | None = None) -> dict:
+    petitio: dict = {"execute": nomen}
+    if argumenta is not None:
+        petitio["arguments"] = argumenta
+    sock.sendall((json.dumps(petitio, separators=(",", ":")) + "\r\n").encode("utf-8"))
+    finis = time.time() + 3.0
+    while time.time() < finis:
+        responsum = qmp_linea(sock, max(0.1, finis - time.time()))
+        if "return" in responsum or "error" in responsum:
+            return responsum
+    raise RuntimeError("QMP responsum deest")
+
+
 def lege_ppm(via: Path) -> tuple[int, int, bytes]:
     data = via.read_bytes()
     if not data.startswith(b"P6"):
         raise ValueError("captura non est PPM P6")
-
     i = 2
     tokena: list[bytes] = []
     while len(tokena) < 3:
@@ -52,7 +75,6 @@ def lege_ppm(via: Path) -> tuple[int, int, bytes]:
         while i < len(data) and data[i] not in b" \t\r\n":
             i += 1
         tokena.append(data[initium:i])
-
     w, h, maximum = map(int, tokena)
     if maximum != 255:
         raise ValueError("PPM maximum != 255")
@@ -69,33 +91,23 @@ def prope(r: int, g: int, b: int, color: tuple[int, int, int], tol: int = 7) -> 
 
 
 def numera_colorem(pix: bytes, color: tuple[int, int, int], tol: int = 7) -> int:
-    n = 0
-    for i in range(0, len(pix), 3):
-        if prope(pix[i], pix[i + 1], pix[i + 2], color, tol):
-            n += 1
-    return n
+    return sum(
+        1
+        for i in range(0, len(pix), 3)
+        if prope(pix[i], pix[i + 1], pix[i + 2], color, tol)
+    )
 
 
 def numera_regionem(
-    pix: bytes,
-    w: int,
-    h: int,
-    x0: int,
-    y0: int,
-    x1: int,
-    y1: int,
-    color: tuple[int, int, int],
-    tol: int = 7,
+    pix: bytes, w: int, h: int, x0: int, y0: int, x1: int, y1: int,
+    color: tuple[int, int, int], tol: int = 7,
 ) -> int:
-    x0 = max(0, min(w, x0))
-    x1 = max(0, min(w, x1))
-    y0 = max(0, min(h, y0))
-    y1 = max(0, min(h, y1))
+    x0, x1 = max(0, min(w, x0)), max(0, min(w, x1))
+    y0, y1 = max(0, min(h, y0)), max(0, min(h, y1))
     n = 0
     for y in range(y0, y1):
-        basis = (y * w + x0) * 3
         for x in range(x0, x1):
-            i = basis + (x - x0) * 3
+            i = (y * w + x) * 3
             if prope(pix[i], pix[i + 1], pix[i + 2], color, tol):
                 n += 1
     return n
@@ -104,41 +116,47 @@ def numera_regionem(
 def differentiae(a: bytes, b: bytes) -> int:
     if len(a) != len(b):
         return max(len(a), len(b)) // 3
-    n = 0
-    for i in range(0, len(a), 3):
-        if a[i : i + 3] != b[i : i + 3]:
-            n += 1
-    return n
+    return sum(1 for i in range(0, len(a), 3) if a[i:i+3] != b[i:i+3])
 
 
 def principale() -> int:
-    if len(sys.argv) != 3:
-        print("USUS: proba_qemu.py MONITOR.sock EXITUS")
+    if len(sys.argv) != 4:
+        print("USUS: proba_qemu.py MONITOR.sock QMP.sock EXITUS")
         return 2
 
     monitor = Path(sys.argv[1])
-    exitus = Path(sys.argv[2])
+    qmp_via = Path(sys.argv[2])
+    exitus = Path(sys.argv[3])
     ante = exitus / "sylvia-ante.ppm"
     post = exitus / "sylvia-post.ppm"
 
     finis = time.time() + 10.0
-    while not monitor.exists() and time.time() < finis:
+    while (not monitor.exists() or not qmp_via.exists()) and time.time() < finis:
         time.sleep(0.1)
-    if not monitor.exists():
-        print("QEMU: ERRATUM monitor non apparuit")
+    if not monitor.exists() or not qmp_via.exists():
+        print("QEMU: ERRATUM monitor vel QMP non apparuit")
         return 3
 
     s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     s.settimeout(0.35)
     s.connect(str(monitor))
+    q = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    q.connect(str(qmp_via))
     try:
         try:
             s.recv(65536)
         except socket.timeout:
             pass
 
-        # OVMF + bootstrap + primus redraw; CI tardius esse potest.
+        salutatio = qmp_linea(q)
+        if "QMP" not in salutatio:
+            raise RuntimeError("salutatio QMP invalida")
+        cap = qmp_exsequere(q, "qmp_capabilities")
+        if "error" in cap:
+            raise RuntimeError(f"QMP capabilities: {cap}")
+
         time.sleep(4.0)
+        hmp(s, f"sendkey esc")  # eventum innocuum; monitor quoque vivum probat
         hmp(s, f"screendump {ante}")
         finis = time.time() + 3.0
         while not ante.exists() and time.time() < finis:
@@ -150,21 +168,24 @@ def principale() -> int:
         w, h, pix_ante = lege_ppm(ante)
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
-
-        # LABORATORIUM ultima fenestra picta est, titulus eius non tegitur.
         sh = h - 28
         lx = w * 21 // 100
         ly = sh * 31 // 100
         lux_tituli = numera_regionem(
             pix_ante, w, h,
-            lx + 8, ly + 7,
-            lx + 8 + 13 * 8, ly + 21,
+            lx + 8, ly + 7, lx + 8 + 13 * 8, ly + 21,
             (234, 248, 255), 10,
         )
         textus = lux_tituli >= 12
 
-        info_mures = hmp(s, "info mice")
-        motus_responsum = hmp(s, "mouse_move 90 40")
+        # USB tablet QEMU: valores absoluti 0..0x7fff. Duo axes in eodem evento.
+        motus = qmp_exsequere(q, "input-send-event", {
+            "events": [
+                {"type": "abs", "data": {"axis": "x", "value": 24576}},
+                {"type": "abs", "data": {"axis": "y", "value": 8192}},
+            ]
+        })
+        qmp_ok = "return" in motus and "error" not in motus
         time.sleep(1.0)
         hmp(s, f"screendump {post}")
         finis = time.time() + 3.0
@@ -176,28 +197,22 @@ def principale() -> int:
             w2, h2, pix_post = lege_ppm(post)
             if w2 == w and h2 == h:
                 mutatio = differentiae(pix_ante, pix_post)
-
-        murus = "unknown command" not in motus_responsum.lower() and mutatio >= 20
+        murus = qmp_ok and mutatio >= 20
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {lux_tituli}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
         print("QEMU: TEXTUS " + ("RECTE" if textus else "DEFECIT"))
-        if "unknown command" in motus_responsum.lower():
-            print("QEMU: MURUS DEFECIT (monitor mouse_move non sustinet)")
+        if not qmp_ok:
+            print("QEMU: MURUS DEFECIT (QMP input-send-event recusatum)")
+            print("QEMU: QMP " + json.dumps(motus, ensure_ascii=False))
         elif mutatio < 0:
             print("QEMU: MURUS DEFECIT (secunda captura deest)")
         else:
             print("QEMU: MURUS " + ("RECTE" if murus else "DEFECIT") + f" ({mutatio} pixeli mutati)")
-
-        linea_muris = " ".join(x.strip() for x in info_mures.splitlines() if x.strip() and x.strip() != "(qemu)")
-        if linea_muris:
-            print("QEMU: MURES " + linea_muris[:300])
-
         print(f"QEMU: CAPTURA_ANTE {ante}")
         print(f"QEMU: CAPTURA_POST {post}")
-
         if desktop and textus and murus:
             print("QEMU: SYLVIA RECTE")
             return 0
@@ -205,6 +220,7 @@ def principale() -> int:
         return 5
     finally:
         s.close()
+        q.close()
 
 
 if __name__ == "__main__":
