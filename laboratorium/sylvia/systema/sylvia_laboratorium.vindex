@@ -4,6 +4,8 @@
 IMPORTA "laboratorium/sylvia/bibliotheca/graphica.vindex".
 IMPORTA "laboratorium/sylvia/bibliotheca/fenestrae.vindex".
 IMPORTA "laboratorium/sylvia/bibliotheca/input.vindex".
+IMPORTA "laboratorium/sylvia/bibliotheca/texta.vindex".
+IMPORTA "laboratorium/sylvia/bibliotheca/texta_redde.vindex".
 
 FUNCTIO LL_TITULUS REDDENS TEXTUS.
     ACCIPIT genus SICUT NUMERUS.
@@ -114,7 +116,7 @@ FUNCTIO LL_REDDE REDDENS NUMERUS.
         SI CONTENTUM(n+48)==0 TUNC f=LL_FENESTRA(r,n). FIN-SI.
         n=CONTENTUM(n+104).
     FIN-DUM.
-    f=LL_TASKBAR(r). f=LG_CURSOR(m[0],m[1]).
+    f=LL_TASKBAR(r). f=LT_REDDE(r). f=LG_CURSOR(m[0],m[1]).
     REDDE 1.
 FIN-FUNCTIO.
 
