@@ -42,7 +42,17 @@ jobs:
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
           file /tmp/fb_input.elf /tmp/fb_gestor.elf /tmp/fb_interactio.elf /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
 
-      - name: Fenestrale B compila
+      - name: Fenestrale B monolithicum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          cat bibliotheca/fenestrale_ii_purus.vindex > /tmp/fenestrale_ii_purus_b_mono.vindex
+          printf '\n' >> /tmp/fenestrale_ii_purus_b_mono.vindex
+          grep -v '^IMPORTA "bibliotheca/fenestrale_ii_purus.vindex"\.$' systema/fenestrale_ii_purus_b.vindex >> /tmp/fenestrale_ii_purus_b_mono.vindex
+          timeout 60s ./compilator_vindex /tmp/fenestrale_ii_purus_b_mono.vindex /tmp/fenestrale_ii_purus_b_mono.elf
+          file /tmp/fenestrale_ii_purus_b_mono.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_b_mono.elf)" -lt 196608
+
+      - name: Fenestrale B cum IMPORTA compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           timeout 60s ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
