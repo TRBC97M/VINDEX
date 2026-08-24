@@ -1,0 +1,4 @@
+# Laboratorium Sylviae: fasciculi exsecutabiles Unix semper LF servant.
+*.sh text eol=lf
+*.c text eol=lf
+*.vindex text eol=lf
