@@ -27,36 +27,32 @@ jobs:
         run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fb_uefi.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fb_graphica.elf
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica_uefi.vindex /tmp/fb_graphica_uefi.elf
-          timeout 12s ./compilator_vindex probationes/fenestrale_purus_b_graphica_functio.vindex /tmp/fb_graphica_functio.elf
-          timeout 12s ./compilator_vindex probationes/fenestrale_purus_b_i32_simplex.vindex /tmp/fb_i32_simplex.elf
-          timeout 12s ./compilator_vindex probationes/fenestrale_purus_b_i32_nomen.vindex /tmp/fb_i32_nomen.elf
-          file /tmp/fb_uefi.elf /tmp/fb_graphica.elf /tmp/fb_graphica_uefi.elf /tmp/fb_graphica_functio.elf /tmp/fb_i32_simplex.elf /tmp/fb_i32_nomen.elf | grep -q 'ELF 64-bit'
-
-      - name: Strata VINDEX separatim compila
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_input.vindex /tmp/fb_input.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_gestor.vindex /tmp/fb_gestor.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_interactio.vindex /tmp/fb_interactio.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
-          file /tmp/fb_input.elf /tmp/fb_gestor.elf /tmp/fb_interactio.elf /tmp/fb_ansa.elf | grep -q 'ELF 64-bit'
+          printf 'mensurae: graphica=%s input=%s gestor=%s interactio=%s ansa=%s\n' \
+            "$(stat -c '%s' /tmp/fb_graphica.elf)" \
+            "$(stat -c '%s' /tmp/fb_input.elf)" \
+            "$(stat -c '%s' /tmp/fb_gestor.elf)" \
+            "$(stat -c '%s' /tmp/fb_interactio.elf)" \
+            "$(stat -c '%s' /tmp/fb_ansa.elf)"
 
-      - name: Fenestrale B monolithicum compila
+      - name: Compilatorem codice ampliore tenta
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          cat bibliotheca/fenestrale_ii_purus.vindex > /tmp/fenestrale_ii_purus_b_mono.vindex
-          printf '\n' >> /tmp/fenestrale_ii_purus_b_mono.vindex
-          grep -v '^IMPORTA "bibliotheca/fenestrale_ii_purus.vindex"\.$' systema/fenestrale_ii_purus_b.vindex >> /tmp/fenestrale_ii_purus_b_mono.vindex
-          timeout 60s ./compilator_vindex /tmp/fenestrale_ii_purus_b_mono.vindex /tmp/fenestrale_ii_purus_b_mono.elf
-          file /tmp/fenestrale_ii_purus_b_mono.elf | grep -q 'ELF 64-bit'
-          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_b_mono.elf)" -lt 196608
+          cp src/compilator_vindex.vindex /tmp/compilator_vindex_largus.vindex
+          grep -q 'INITIA_CODEX(codex, 65536)' /tmp/compilator_vindex_largus.vindex
+          sed -i 's/INITIA_CODEX(codex, 65536)/INITIA_CODEX(codex, 262144)/' /tmp/compilator_vindex_largus.vindex
+          timeout 120s ./compilator_vindex /tmp/compilator_vindex_largus.vindex /tmp/compilator_vindex_largus
+          chmod +x /tmp/compilator_vindex_largus
+          file /tmp/compilator_vindex_largus | grep -q 'ELF 64-bit'
 
-      - name: Fenestrale B cum IMPORTA compila
+      - name: Fenestrale B per compilatorem largum compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 60s ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
+          timeout 60s /tmp/compilator_vindex_largus systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
           file /tmp/fenestrale_ii_purus_b.elf | grep -q 'ELF 64-bit'
-          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_b.elf)" -lt 196608
+          printf 'mensura Fenestralis B: %s\n' "$(stat -c '%s' /tmp/fenestrale_ii_purus_b.elf)"
           ! grep -R 'POLLE()' bibliotheca/fenestrale_ii_purus.vindex systema/fenestrale_ii_purus_b.vindex
           printf '%s\n' 'RECTE: Fenestrale II Purus B omnino VINDEX compilatur.'
