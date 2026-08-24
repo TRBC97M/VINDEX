@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Probatio visualis automatica Sylviae Laboratorii per QEMU.
 
-Capturas HMP PPM legit; motum muris per QMP input-send-event immittit.
+Capturas HMP PPM legit; motum muris per RFB/VNC directe immittit.
 Status 0 redditur tantum si desktop, glyphi et motus cursoris recti sunt.
 """
 
 from __future__ import annotations
 
-import json
 import socket
+import struct
 import sys
 import time
 from pathlib import Path
@@ -31,31 +31,51 @@ def hmp(sock: socket.socket, command: str, timeout: float = 2.0) -> str:
     return b"".join(partes).decode("utf-8", "replace")
 
 
-def qmp_linea(sock: socket.socket, timeout: float = 2.0) -> dict:
-    sock.settimeout(timeout)
+def recipe_exacte(sock: socket.socket, n: int) -> bytes:
     data = bytearray()
-    while True:
-        b = sock.recv(1)
-        if not b:
-            raise RuntimeError("QMP clausum est")
-        if b == b"\n":
-            if data.strip():
-                return json.loads(data.decode("utf-8"))
-            continue
-        data.extend(b)
+    while len(data) < n:
+        pars = sock.recv(n - len(data))
+        if not pars:
+            raise RuntimeError("VNC clausum est")
+        data.extend(pars)
+    return bytes(data)
 
 
-def qmp_exsequere(sock: socket.socket, nomen: str, argumenta: dict | None = None) -> dict:
-    petitio: dict = {"execute": nomen}
-    if argumenta is not None:
-        petitio["arguments"] = argumenta
-    sock.sendall((json.dumps(petitio, separators=(",", ":")) + "\r\n").encode("utf-8"))
-    finis = time.time() + 3.0
-    while time.time() < finis:
-        responsum = qmp_linea(sock, max(0.1, finis - time.time()))
-        if "return" in responsum or "error" in responsum:
-            return responsum
-    raise RuntimeError("QMP responsum deest")
+def vnc_para(host: str = "127.0.0.1", port: int = 5900) -> tuple[socket.socket, int, int]:
+    v = socket.create_connection((host, port), timeout=3.0)
+    v.settimeout(3.0)
+
+    versio = recipe_exacte(v, 12)
+    if not versio.startswith(b"RFB "):
+        raise RuntimeError(f"VNC versio invalida: {versio!r}")
+    v.sendall(b"RFB 003.008\n")
+
+    n = recipe_exacte(v, 1)[0]
+    if n == 0:
+        mensura = struct.unpack(">I", recipe_exacte(v, 4))[0]
+        ratio = recipe_exacte(v, mensura).decode("utf-8", "replace")
+        raise RuntimeError(f"VNC securitas recusata: {ratio}")
+    genera = recipe_exacte(v, n)
+    if 1 not in genera:
+        raise RuntimeError(f"VNC sine securitate non adest: {list(genera)}")
+    v.sendall(b"\x01")
+    status = struct.unpack(">I", recipe_exacte(v, 4))[0]
+    if status != 0:
+        raise RuntimeError(f"VNC securitas status {status}")
+
+    v.sendall(b"\x01")  # ClientInit: communis sessio.
+    initium = recipe_exacte(v, 24)
+    w, h = struct.unpack(">HH", initium[:4])
+    nomen_mensura = struct.unpack(">I", initium[20:24])[0]
+    if nomen_mensura:
+        recipe_exacte(v, nomen_mensura)
+    return v, w, h
+
+
+def vnc_murus(v: socket.socket, x: int, y: int, tesserae: int = 0) -> None:
+    x = max(0, min(65535, x))
+    y = max(0, min(65535, y))
+    v.sendall(struct.pack(">BBHH", 5, tesserae & 0xFF, x, y))
 
 
 def lege_ppm(via: Path) -> tuple[int, int, bytes]:
@@ -116,40 +136,31 @@ def differentiae(a: bytes, b: bytes) -> int:
 
 
 def principale() -> int:
-    if len(sys.argv) != 4:
-        print("USUS: proba_qemu.py MONITOR.sock QMP.sock EXITUS")
+    if len(sys.argv) != 3:
+        print("USUS: proba_qemu.py MONITOR.sock EXITUS")
         return 2
 
     monitor = Path(sys.argv[1])
-    qmp_via = Path(sys.argv[2])
-    exitus = Path(sys.argv[3])
+    exitus = Path(sys.argv[2])
     ante = exitus / "sylvia-ante.ppm"
     post = exitus / "sylvia-post.ppm"
 
     finis = time.time() + 10.0
-    while (not monitor.exists() or not qmp_via.exists()) and time.time() < finis:
+    while not monitor.exists() and time.time() < finis:
         time.sleep(0.1)
-    if not monitor.exists() or not qmp_via.exists():
-        print("QEMU: ERRATUM monitor vel QMP non apparuit")
+    if not monitor.exists():
+        print("QEMU: ERRATUM monitor non apparuit")
         return 3
 
     s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     s.settimeout(0.35)
     s.connect(str(monitor))
-    q = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    q.connect(str(qmp_via))
+    v: socket.socket | None = None
     try:
         try:
             s.recv(65536)
         except socket.timeout:
             pass
-
-        salutatio = qmp_linea(q)
-        if "QMP" not in salutatio:
-            raise RuntimeError("salutatio QMP invalida")
-        cap = qmp_exsequere(q, "qmp_capabilities")
-        if "error" in cap:
-            raise RuntimeError(f"QMP capabilities: {cap}")
 
         time.sleep(4.0)
         hmp(s, f"screendump {ante}")
@@ -172,13 +183,10 @@ def principale() -> int:
         )
         textus = lux_tituli >= 12
 
-        motus = qmp_exsequere(q, "input-send-event", {
-            "events": [
-                {"type": "abs", "data": {"axis": "x", "value": 24576}},
-                {"type": "abs", "data": {"axis": "y", "value": 8192}},
-            ]
-        })
-        qmp_ok = "return" in motus and "error" not in motus
+        v, vw, vh = vnc_para()
+        destinatio_x = max(1, min(vw - 2, vw * 3 // 4))
+        destinatio_y = max(1, min(vh - 2, vh // 4))
+        vnc_murus(v, destinatio_x, destinatio_y)
         time.sleep(1.0)
         hmp(s, f"screendump {post}")
         finis = time.time() + 3.0
@@ -190,17 +198,15 @@ def principale() -> int:
             w2, h2, pix_post = lege_ppm(post)
             if w2 == w and h2 == h:
                 mutatio = differentiae(pix_ante, pix_post)
-        murus = qmp_ok and mutatio >= 20
+        murus = mutatio >= 20
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
+        print(f"QEMU: VNC {vw}x{vh} -> {destinatio_x},{destinatio_y}")
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {lux_tituli}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
         print("QEMU: TEXTUS " + ("RECTE" if textus else "DEFECIT"))
-        if not qmp_ok:
-            print("QEMU: MURUS DEFECIT (QMP input-send-event recusatum)")
-            print("QEMU: QMP " + json.dumps(motus, ensure_ascii=False))
-        elif mutatio < 0:
+        if mutatio < 0:
             print("QEMU: MURUS DEFECIT (secunda captura deest)")
         else:
             print("QEMU: MURUS " + ("RECTE" if murus else "DEFECIT") + f" ({mutatio} pixeli mutati)")
@@ -213,7 +219,8 @@ def principale() -> int:
         return 5
     finally:
         s.close()
-        q.close()
+        if v is not None:
+            v.close()
 
 
 if __name__ == "__main__":
