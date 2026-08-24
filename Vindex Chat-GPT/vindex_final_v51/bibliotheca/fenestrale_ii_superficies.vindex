@@ -1,0 +1,190 @@
+// Sylvia OS — superficies privata clientis Fenestralis II.
+// Ornamentum fenestrae a contento clientis separatur.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO FS_CREA REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA caput SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI caput < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pixela SICUT NUMERUS VALENS RESERVA_OCTETA(w * h * 4).
+    SI pixela < 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(caput) = w.
+    CONTENTUM(caput + 8) = h.
+    CONTENTUM(caput + 16) = w.
+    CONTENTUM(caput + 24) = pixela.
+    CONTENTUM(caput + 32) = 0.
+    CONTENTUM(caput + 40) = 0.
+    CONTENTUM(caput + 48) = w.
+    CONTENTUM(caput + 56) = h.
+    REDDE caput.
+FIN-FUNCTIO.
+
+FUNCTIO FS_PIXEL REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    SI superficies == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies + 8).
+    SI x < 0 || y < 0 || x >= w || y >= h TUNC REDDE 0. FIN-SI.
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(superficies + 16).
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(superficies + 24).
+    DECLARA locus SICUT NUMERUS VALENS basis + (y * linea + x) * 4.
+    SCRIBE_OCTETUM_AB(locus, color & 255).
+    SCRIBE_OCTETUM_AB(locus + 1, (color >> 8) & 255).
+    SCRIBE_OCTETUM_AB(locus + 2, (color >> 16) & 255).
+    SCRIBE_OCTETUM_AB(locus + 3, 0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS_RECT REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    SI superficies == 0 || latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(superficies + 8).
+    SI x < 0 TUNC latitudo=latitudo+x. x=0. FIN-SI.
+    SI y < 0 TUNC altitudo=altitudo+y. y=0. FIN-SI.
+    SI x >= sw || y >= sh || latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    SI x+latitudo > sw TUNC latitudo=sw-x. FIN-SI.
+    SI y+altitudo > sh TUNC altitudo=sh-y. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(superficies + 24).
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(superficies + 16).
+    DECLARA finis_x SICUT NUMERUS VALENS x+latitudo.
+    DECLARA finis_y SICUT NUMERUS VALENS y+altitudo.
+    DECLARA par SICUT NUMERUS VALENS color + color * 4294967296.
+    DECLARA py SICUT NUMERUS VALENS y.
+    DUM py < finis_y PERFICE
+        DECLARA px SICUT NUMERUS VALENS x.
+        DUM px + 1 < finis_x PERFICE
+            CONTENTUM(basis + (py * linea + px) * 4) = par.
+            px=px+2.
+        FIN-DUM.
+        SI px < finis_x TUNC
+            DECLARA locus SICUT NUMERUS VALENS basis + (py * linea + px) * 4.
+            SCRIBE_OCTETUM_AB(locus, color & 255).
+            SCRIBE_OCTETUM_AB(locus + 1, (color >> 8) & 255).
+            SCRIBE_OCTETUM_AB(locus + 2, (color >> 16) & 255).
+            SCRIBE_OCTETUM_AB(locus + 3, 0).
+        FIN-SI.
+        py=py+1.
+    FIN-DUM.
+    CONTENTUM(superficies + 32)=0.
+    CONTENTUM(superficies + 40)=0.
+    CONTENTUM(superficies + 48)=sw.
+    CONTENTUM(superficies + 56)=sh.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS_TEXTUM REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA forma SICUT NUMERUS VALENS CONTENTUM(50333784).
+    SI superficies == 0 || forma == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA longitudo SICUT NUMERUS VALENS CONTENTUM(textus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        DECLARA littera SICUT NUMERUS VALENS OCTETUS_AB(textus + 8 + i).
+        DECLARA py SICUT NUMERUS VALENS 0.
+        DUM py < 8 PERFICE
+            DECLARA bits SICUT NUMERUS VALENS OCTETUS_AB(forma + littera * 8 + py).
+            DECLARA px SICUT NUMERUS VALENS 0.
+            DUM px < 8 PERFICE
+                SI (bits & (128 >> px)) != 0 TUNC
+                    DECLARA f SICUT NUMERUS VALENS FS_PIXEL(superficies, x + i * 8 + px, y + py, color).
+                FIN-SI.
+                px=px+1.
+            FIN-DUM.
+            py=py+1.
+        FIN-DUM.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS_BLIT REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT maxw SICUT NUMERUS.
+    ACCIPIT maxh SICUT NUMERUS.
+    SI superficies == 0 || maxw <= 0 || maxh <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies + 8).
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI w > maxw TUNC w=maxw. FIN-SI.
+    SI h > maxh TUNC h=maxh. FIN-SI.
+    SI dx < 0 || dy < 0 || dx >= sw || dy >= sh TUNC REDDE 0. FIN-SI.
+    SI dx+w > sw TUNC w=sw-dx. FIN-SI.
+    SI dy+h > sh TUNC h=sh-dy. FIN-SI.
+    DECLARA src SICUT NUMERUS VALENS CONTENTUM(superficies + 24).
+    DECLARA src_linea SICUT NUMERUS VALENS CONTENTUM(superficies + 16).
+    DECLARA dst SICUT NUMERUS VALENS CONTENTUM(50333712).
+    DECLARA dst_linea SICUT NUMERUS VALENS CONTENTUM(50333720).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py < h PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px + 1 < w PERFICE
+            CONTENTUM(dst + ((dy + py) * dst_linea + dx + px) * 4) = CONTENTUM(src + (py * src_linea + px) * 4).
+            px=px+2.
+        FIN-DUM.
+        SI px < w TUNC
+            DECLARA ls SICUT NUMERUS VALENS src + (py * src_linea + px) * 4.
+            DECLARA ld SICUT NUMERUS VALENS dst + ((dy + py) * dst_linea + dx + px) * 4.
+            SCRIBE_OCTETUM_AB(ld, OCTETUS_AB(ls)).
+            SCRIBE_OCTETUM_AB(ld + 1, OCTETUS_AB(ls + 1)).
+            SCRIBE_OCTETUM_AB(ld + 2, OCTETUS_AB(ls + 2)).
+            SCRIBE_OCTETUM_AB(ld + 3, 0).
+        FIN-SI.
+        py=py+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS_PROGRAMMATA_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI superficies == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies + 8).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
+    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
+    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,ebur).
+    f = FS_RECT(superficies,0,0,w,34,argentum).
+    f = FS_RECT(superficies,8,5,62,24,lux).
+    f = FS_TEXTUM(superficies,16,13,"NOVUM",profundum).
+    f = FS_RECT(superficies,76,5,62,24,lux).
+    f = FS_TEXTUM(superficies,84,13,"EDITE",profundum).
+    f = FS_RECT(superficies,144,5,62,24,lux).
+    f = FS_TEXTUM(superficies,152,13,"NOMEN",profundum).
+    f = FS_RECT(superficies,212,5,62,24,lux).
+    f = FS_TEXTUM(superficies,220,13,"DELE",profundum).
+    f = FS_RECT(superficies,0,34,142,h-34,argentum).
+    f = FS_TEXTUM(superficies,14,54,"LOCORUM",profundum).
+    f = FS_RECT(superficies,10,72,122,22,lux).
+    f = FS_TEXTUM(superficies,20,79,"PROGRAMMATA",profundum).
+    f = FS_RECT(superficies,154,48,w-166,116,lux).
+    f = FS_RECT(superficies,154,48,w-166,2,medium).
+    f = FS_RECT(superficies,174,68,66,66,profundum).
+    f = FS_RECT(superficies,184,78,46,46,aqua).
+    f = FS_TEXTUM(superficies,254,82,"TABULA.VXNAT",profundum).
+    f = FS_TEXTUM(superficies,254,104,"APPLICATIO",medium).
+    f = FS_RECT(superficies,154,178,w-166,h-188,argentum).
+    f = FS_TEXTUM(superficies,168,194,"CLIENTIS SUPERFICIES PRIVATA",profundum).
+    REDDE 1.
+FIN-FUNCTIO.
