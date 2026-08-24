@@ -143,11 +143,8 @@ FUNCTIO LI_LEGE REDDENS NUMERUS.
     SI s[4]!=0 TUNC abscol=aqua. FIN-SI.
     DECLARA relstatus SICUT NUMERUS VALENS 299.
     DECLARA absstatus SICUT NUMERUS VALENS 199.
-    SI s[3]!=0 TUNC
-        relstatus=LI_RELATIVUS(s).
-    ALITER
-        SI s[4]!=0 TUNC absstatus=LI_ABSOLUTUS(s). FIN-SI.
-    FIN-SI.
+    SI s[3]!=0 TUNC relstatus=LI_RELATIVUS(s). FIN-SI.
+    SI relstatus!=2 && s[4]!=0 TUNC absstatus=LI_ABSOLUTUS(s). FIN-SI.
     DECLARA absstate SICUT NUMERUS VALENS rubrum.
     DECLARA relstate SICUT NUMERUS VALENS rubrum.
     SI absstatus==106 TUNC absstate=flavum. FIN-SI.
