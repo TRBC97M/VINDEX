@@ -141,9 +141,13 @@ FUNCTIO LI_LEGE REDDENS NUMERUS.
     DECLARA abscol SICUT NUMERUS VALENS rubrum.
     SI s[3]!=0 TUNC relcol=viride. FIN-SI.
     SI s[4]!=0 TUNC abscol=aqua. FIN-SI.
-    DECLARA absstatus SICUT NUMERUS VALENS LI_ABSOLUTUS(s).
     DECLARA relstatus SICUT NUMERUS VALENS 299.
-    SI absstatus!=1 TUNC relstatus=LI_RELATIVUS(s). FIN-SI.
+    DECLARA absstatus SICUT NUMERUS VALENS 199.
+    SI s[3]!=0 TUNC
+        relstatus=LI_RELATIVUS(s).
+    ALITER
+        SI s[4]!=0 TUNC absstatus=LI_ABSOLUTUS(s). FIN-SI.
+    FIN-SI.
     DECLARA absstate SICUT NUMERUS VALENS rubrum.
     DECLARA relstate SICUT NUMERUS VALENS rubrum.
     SI absstatus==106 TUNC absstate=flavum. FIN-SI.
@@ -158,7 +162,7 @@ FUNCTIO LI_LEGE REDDENS NUMERUS.
     DECLARA dr3 SICUT NUMERUS VALENS LG_RECT(22,2,8,8,eventcol).
     DECLARA dr4 SICUT NUMERUS VALENS LG_RECT(32,2,8,8,absstate).
     DECLARA dr5 SICUT NUMERUS VALENS LG_RECT(42,2,8,8,relstate).
-    SI absstatus==1 || relstatus==2 TUNC REDDE 1. FIN-SI.
+    SI relstatus==2 || absstatus==1 TUNC REDDE 1. FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
