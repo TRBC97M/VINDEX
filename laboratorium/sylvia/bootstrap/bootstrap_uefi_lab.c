@@ -4,8 +4,6 @@
  * Haec unica exceptio pre-VINDEX est. Post saltum nullum runtime C manet.
  * Memoria nuclei et metadata fixa servantur; pila, acervus, forma et texta a
  * firmware separatim reservantur, ne regiones communes inter se corrumpantur.
- * Protocolorum muris descriptoria tantum ante saltum reperiuntur et VINDEX
- * traduntur; omnis lectio eventuum post saltum in VINDEX manet.
  */
 
 typedef unsigned char      U8;
@@ -162,16 +160,6 @@ static EFI_GUID guid_graphica = {
     {0x96,0xfb,0x7a,0xde,0xd0,0x80,0x51,0x6a}
 };
 
-static EFI_GUID guid_murus_relativus = {
-    0x31878c87, 0x0b75, 0x11d5,
-    {0x9a,0x4f,0x00,0x90,0x27,0x3f,0xc1,0x4d}
-};
-
-static EFI_GUID guid_murus_absolutus = {
-    0x8d59d32b, 0xc655, 0x4ae9,
-    {0x9b,0x15,0xf2,0x59,0x04,0x99,0x2a,0x43}
-};
-
 static void dic(EFI_SYSTEM_TABLE *systema, const U16 *textus) {
     if (systema && systema->ConOut && systema->ConOut->OutputString) {
         systema->ConOut->OutputString(systema->ConOut, textus);
@@ -209,12 +197,6 @@ __attribute__((noreturn)) static void ad_vindex_sali(U64 ingressus, U64 pila_sum
 
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     EFI_GRAPHICS_OUTPUT_PROTOCOL *graphica = 0;
-    void *murus_relativus = 0;
-    void *murus_absolutus = 0;
-    void *rel_getstate = 0;
-    void *abs_getstate = 0;
-    void *rel_modus = 0;
-    void *abs_modus = 0;
     EFI_PHYSICAL_ADDRESS nucleus = NUCLEUS_BASE;
     EFI_PHYSICAL_ADDRESS communis = COMMUNIS;
     EFI_PHYSICAL_ADDRESS acervus = 0;
@@ -284,19 +266,6 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
         return status ? status : 1;
     }
 
-    status = systema->BootServices->LocateProtocol(&guid_murus_relativus, 0, &murus_relativus);
-    if (status != EFI_SUCCESS) murus_relativus = 0;
-    status = systema->BootServices->LocateProtocol(&guid_murus_absolutus, 0, &murus_absolutus);
-    if (status != EFI_SUCCESS) murus_absolutus = 0;
-    if (murus_relativus) {
-        rel_getstate = ((void **)murus_relativus)[1];
-        rel_modus = ((void **)murus_relativus)[3];
-    }
-    if (murus_absolutus) {
-        abs_getstate = ((void **)murus_absolutus)[1];
-        abs_modus = ((void **)murus_absolutus)[3];
-    }
-
     if (graphica->Mode->Info->PixelFormat > 1 ||
         graphica->Mode->Info->HorizontalResolution < 640 ||
         graphica->Mode->Info->VerticalResolution < 480) {
@@ -356,15 +325,11 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[15] = 0;
     meta[16] = (U64)acervus;
     meta[17] = ACERVUS_PAGINAE * 4096ULL;
-    meta[18] = (U64)(UINTN)murus_relativus;
-    meta[19] = (U64)(UINTN)murus_absolutus;
+    meta[18] = 0;
+    meta[19] = 0;
     meta[20] = (U64)pila;
     meta[21] = PILA_PAGINAE * 4096ULL;
     meta[22] = (U64)texta;
-    meta[23] = (U64)(UINTN)rel_getstate;
-    meta[24] = (U64)(UINTN)abs_getstate;
-    meta[25] = (U64)(UINTN)rel_modus;
-    meta[26] = (U64)(UINTN)abs_modus;
 
     ingressus = *(U64 *)(UINTN)(NUCLEUS_BASE + 24);
     dic(systema, L"LAB: SALTUS AD VINDEX\r\n");
