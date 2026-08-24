@@ -1,0 +1,48 @@
+name: Sylvia OS — Fenestrale II Purus C
+
+on:
+  push:
+    branches:
+      - chatgpt/sylvia-fenestrale-vindex-purus-c
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_c.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_c_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_C.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-c.yml'
+
+jobs:
+  vindex-purus-c:
+    name: Mutatio mensurae VINDEX compilatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Structuram Gradus C verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          grep -q 'FUNCTIO FC_RESIZE REDDENS NUMERUS' systema/fenestrale_ii_purus_c.vindex
+          grep -q 's\[27\].*margines' systema/fenestrale_ii_purus_c.vindex
+          grep -q 'minw SICUT NUMERUS VALENS 520' systema/fenestrale_ii_purus_c.vindex
+          grep -q 'minw=420. minh=300' systema/fenestrale_ii_purus_c.vindex
+          ! grep -q 'POLLE()' systema/fenestrale_ii_purus_c.vindex
+          ! grep -q 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_c.vindex
+          ! grep -q 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_c.vindex
+
+      - name: Probationem resize compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_c_resize.vindex /tmp/fenestrale_purus_c_resize.elf
+          file /tmp/fenestrale_purus_c_resize.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale C totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 60s ./compilator_vindex systema/fenestrale_ii_purus_c.vindex /tmp/fenestrale_ii_purus_c.elf
+          file /tmp/fenestrale_ii_purus_c.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_c.elf)" -lt 196608
+          printf '%s\n' 'RECTE: Fenestrale II Purus C mutationem mensurae VINDEX compilat.'
