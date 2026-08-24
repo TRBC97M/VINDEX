@@ -22,37 +22,61 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Fundamenta separatim compila
+      - name: Strata iam probata compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_uefi.vindex /tmp/fb_uefi.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fb_graphica.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_input.vindex /tmp/fb_input.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_gestor.vindex /tmp/fb_gestor.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_interactio.vindex /tmp/fb_interactio.elf
           timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
-          printf 'mensurae: graphica=%s input=%s gestor=%s interactio=%s ansa=%s\n' \
-            "$(stat -c '%s' /tmp/fb_graphica.elf)" \
-            "$(stat -c '%s' /tmp/fb_input.elf)" \
-            "$(stat -c '%s' /tmp/fb_gestor.elf)" \
-            "$(stat -c '%s' /tmp/fb_interactio.elf)" \
-            "$(stat -c '%s' /tmp/fb_ansa.elf)"
 
-      - name: Compilatorem codice ampliore tenta
+      - name: PRINCIPALE reale auxiliis minimis compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          cp src/compilator_vindex.vindex /tmp/compilator_vindex_largus.vindex
-          grep -q 'INITIA_CODEX(codex, 65536)' /tmp/compilator_vindex_largus.vindex
-          sed -i 's/INITIA_CODEX(codex, 65536)/INITIA_CODEX(codex, 262144)/' /tmp/compilator_vindex_largus.vindex
-          timeout 120s ./compilator_vindex /tmp/compilator_vindex_largus.vindex /tmp/compilator_vindex_largus
-          chmod +x /tmp/compilator_vindex_largus
-          file /tmp/compilator_vindex_largus | grep -q 'ELF 64-bit'
+          timeout 25s ./compilator_vindex probationes/fenestrale_purus_b_principalis.vindex /tmp/fb_principalis.elf
+          file /tmp/fb_principalis.elf | grep -q 'ELF 64-bit'
 
-      - name: Fenestrale B per compilatorem largum compila
+      - name: Auxilia omnia viva compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 60s /tmp/compilator_vindex_largus systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
+          awk '/^FUNCTIO PRINCIPALIS REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_auxilia_viva.vindex
+          cat >> /tmp/fb_auxilia_viva.vindex <<'VINDEX'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+              DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
+              DECLARA a SICUT NUMERUS VALENS FB_I32(50331648).
+              a = FB_GUID_PONE(guid, 1).
+              a = FB_PROTOCOL_LOCATE(1).
+              a = FB_PROTOCOLA_PARA(s).
+              a = FB_CLAVIS_LEGE().
+              a = FB_MURUS_ABSOLUTUS(0, s).
+              a = FB_MURUS_RELATIVUS(0, s).
+              a = FB_STALL().
+              a = FB_RELEGE_ACTIVUM(s).
+              a = FB_FOCUS(s, 1).
+              a = FB_IN_FENESTRA(s, 1, 0, 0).
+              a = FB_HIT(s, 0, 0).
+              a = FB_MAX_TOGGLE(s, 1).
+              a = FB_MINIMIZA(s, 1).
+              a = FB_CLAUDE(s, 1).
+              a = FB_TASKBAR_CLICK(s, 100).
+              a = FB_MOUSE_DOWN(s).
+              a = FB_DRAG(s).
+              a = FB_MOVE_ACTIVE(s, 0, 0).
+              a = FB_TAB_ALTERNA(s).
+              a = FB_CLAVIS_AGE(s, 0).
+              a = FB_REDDE(s).
+              REDDE a.
+          FIN-FUNCTIO.
+          VINDEX
+          timeout 40s ./compilator_vindex /tmp/fb_auxilia_viva.vindex /tmp/fb_auxilia_viva.elf
+          file /tmp/fb_auxilia_viva.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale B totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 60s ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
           file /tmp/fenestrale_ii_purus_b.elf | grep -q 'ELF 64-bit'
-          printf 'mensura Fenestralis B: %s\n' "$(stat -c '%s' /tmp/fenestrale_ii_purus_b.elf)"
           ! grep -R 'POLLE()' bibliotheca/fenestrale_ii_purus.vindex systema/fenestrale_ii_purus_b.vindex
           printf '%s\n' 'RECTE: Fenestrale II Purus B omnino VINDEX compilatur.'
