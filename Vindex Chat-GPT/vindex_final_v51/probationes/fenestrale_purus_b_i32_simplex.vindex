@@ -1,0 +1,19 @@
+// Probatio: graphica Purus + lectio I32 gradatim, sine expressione composita.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO FB_I32_SIMPLEX REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    DECLARA valor SICUT NUMERUS VALENS OCTETUS_AB(locus).
+    valor = valor | (OCTETUS_AB(locus + 1) << 8).
+    valor = valor | (OCTETUS_AB(locus + 2) << 16).
+    valor = valor | (OCTETUS_AB(locus + 3) << 24).
+    SI valor >= 2147483648 TUNC
+        valor = valor - 4294967296.
+    FIN-SI.
+    REDDE valor.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS FB_I32_SIMPLEX(50331648).
+    REDDE v.
+FIN-FUNCTIO.
