@@ -1,10 +1,37 @@
 // LABORATORIUM SYLVIAE — registrum dynamicum fenestrarum VINDEX.
 // Registrum: numerus, ima, summa, focus, id sequens.
 // Nodus: id, genus, x, y, w, h, status, maximus, rx, ry, rw, rh, prior, proximus.
+// Acervus experimentalis a bootstrap UEFI in metadata [16..19] traditur.
+
+FUNCTIO LM_RESERVA REDDENS NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI mensura<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50333824).
+    DECLARA amplitudo SICUT NUMERUS VALENS CONTENTUM(50333832).
+    SI basis==0 || amplitudo<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA cursor SICUT NUMERUS VALENS CONTENTUM(50333840).
+    DECLARA finis SICUT NUMERUS VALENS CONTENTUM(50333848).
+    SI cursor==0 TUNC
+        cursor=basis.
+        finis=basis+amplitudo.
+        CONTENTUM(50333840)=cursor.
+        CONTENTUM(50333848)=finis.
+    FIN-SI.
+    DECLARA m SICUT NUMERUS VALENS ((mensura+7)/8)*8.
+    SI cursor+m>finis TUNC REDDE 0. FIN-SI.
+    DECLARA exitus SICUT NUMERUS VALENS cursor.
+    CONTENTUM(50333840)=cursor+m.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<m PERFICE
+        SCRIBE_OCTETUM_AB(exitus+i,0).
+        i=i+1.
+    FIN-DUM.
+    REDDE exitus.
+FIN-FUNCTIO.
 
 FUNCTIO LF_CREA REDDENS NUMERUS.
-    DECLARA r SICUT NUMERUS VALENS RESERVA_OCTETA(40).
-    SI r<0 TUNC REDDE 0. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS LM_RESERVA(40).
+    SI r==0 TUNC REDDE 0. FIN-SI.
     CONTENTUM(r)=0. CONTENTUM(r+8)=0. CONTENTUM(r+16)=0. CONTENTUM(r+24)=0. CONTENTUM(r+32)=1.
     REDDE r.
 FIN-FUNCTIO.
@@ -48,8 +75,8 @@ FUNCTIO LF_ADDE REDDENS NUMERUS.
     ACCIPIT r SICUT NUMERUS. ACCIPIT genus SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS. ACCIPIT y SICUT NUMERUS. ACCIPIT w SICUT NUMERUS. ACCIPIT h SICUT NUMERUS.
     SI r==0 || genus<=0 || w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA n SICUT NUMERUS VALENS RESERVA_OCTETA(112).
-    SI n<0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LM_RESERVA(112).
+    SI n==0 TUNC REDDE 0. FIN-SI.
     DECLARA id SICUT NUMERUS VALENS CONTENTUM(r+32).
     DECLARA summa SICUT NUMERUS VALENS CONTENTUM(r+16).
     CONTENTUM(n)=id. CONTENTUM(n+8)=genus.
