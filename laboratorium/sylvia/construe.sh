@@ -11,6 +11,7 @@ PRAECOMPILATUM="${SYLVIA_NUCLEUS_PRAECOMPILATUM:-0}"
 mkdir -p "$EXITUS"
 rm -f "$EXITUS"/nucleus.o "$EXITUS"/textus.bin \
       "$EXITUS"/textus.o "$EXITUS"/forma.bin "$EXITUS"/forma.o \
+      "$EXITUS"/texta.bin "$EXITUS"/texta.o \
       "$EXITUS"/bootstrap.o "$EXITUS"/BOOTX64.EFI \
       "$EXITUS"/sylvia-laboratorium.img
 
@@ -25,12 +26,14 @@ fi
 
 cp "$VINDEX/fenestrale_systema.bin" "$EXITUS/textus.bin"
 cp "$VINDEX/systema/uefi/forma.bin" "$EXITUS/forma.bin"
+cp "$LAB/res/texta.txt" "$EXITUS/texta.bin"
 
 (
   cd "$EXITUS"
   objcopy -I binary -O pe-x86-64 -B i386:x86-64 nucleus.elf nucleus.o
   objcopy -I binary -O pe-x86-64 -B i386:x86-64 textus.bin textus.o
   objcopy -I binary -O pe-x86-64 -B i386:x86-64 forma.bin forma.o
+  objcopy -I binary -O pe-x86-64 -B i386:x86-64 texta.bin texta.o
 
   gcc -c -std=c11 -O2 -Wall -Wextra -Werror \
     -ffreestanding -fno-builtin -fno-stack-protector -fno-pie -fno-ident \
@@ -42,7 +45,7 @@ cp "$VINDEX/systema/uefi/forma.bin" "$EXITUS/forma.bin"
   ld -mi386pep --subsystem 10 --entry efi_main --image-base 0x08000000 \
     --no-insert-timestamp --stack 0x200000 \
     --section-alignment 4096 --file-alignment 512 \
-    bootstrap.o nucleus.o textus.o forma.o -o BOOTX64.EFI
+    bootstrap.o nucleus.o textus.o forma.o texta.o -o BOOTX64.EFI
 )
 
 python3 "$VINDEX/systema/uefi/fac_imaginem_uefi.py" \
