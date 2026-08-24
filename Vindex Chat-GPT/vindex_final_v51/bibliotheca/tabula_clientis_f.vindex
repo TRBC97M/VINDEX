@@ -1,0 +1,91 @@
+// Sylvia OS — TABULA clientis Gradus F.
+// Status, selectio cellularum et pictura intra superficiem privatam.
+
+FUNCTIO TF_CLICK REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI superficies == 0 TUNC REDDE status. FIN-SI.
+    SI y >= 5 && y < 29 TUNC
+        SI x >= 8 && x < 66 TUNC REDDE 101. FIN-SI.
+        SI x >= 72 && x < 130 TUNC REDDE 102. FIN-SI.
+    FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies + 8).
+    DECLARA left SICUT NUMERUS VALENS 34.
+    DECLARA top SICUT NUMERUS VALENS 62.
+    DECLARA gw SICUT NUMERUS VALENS w - 44.
+    DECLARA gh SICUT NUMERUS VALENS h - 84.
+    SI gw <= 0 || gh <= 22 TUNC REDDE status. FIN-SI.
+    SI x >= left && x < left + gw && y >= top + 22 && y < top + gh TUNC
+        DECLARA col SICUT NUMERUS VALENS (x - left) * 8 / gw.
+        DECLARA row SICUT NUMERUS VALENS (y - top - 22) * 12 / (gh - 22).
+        SI col < 0 TUNC col = 0. FIN-SI. SI col > 7 TUNC col = 7. FIN-SI.
+        SI row < 0 TUNC row = 0. FIN-SI. SI row > 11 TUNC row = 11. FIN-SI.
+        REDDE 1 + row * 8 + col.
+    FIN-SI.
+    REDDE status.
+FIN-FUNCTIO.
+
+FUNCTIO TF_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI superficies == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies + 8).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
+    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
+    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA grid SICUT NUMERUS VALENS FV_COLOR(207,216,220).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,ebur).
+    f = FS_RECT(superficies,0,0,w,34,argentum).
+    DECLARA b1 SICUT NUMERUS VALENS lux. DECLARA b2 SICUT NUMERUS VALENS lux.
+    SI status == 101 TUNC b1=bronzeum. FIN-SI. SI status == 102 TUNC b2=bronzeum. FIN-SI.
+    f = FS_RECT(superficies,8,5,58,24,b1). f = FS_TEXTUM(superficies,16,13,"NOVUM",profundum).
+    f = FS_RECT(superficies,72,5,58,24,b2). f = FS_TEXTUM(superficies,82,13,"SERVA",profundum).
+    f = FS_RECT(superficies,8,38,w-16,20,lux). f = FS_RECT(superficies,8,38,2,20,medium).
+    SI status >= 1 && status <= 96 TUNC
+        f = FS_TEXTUM(superficies,18,44,"CELLA SELECTA",medium).
+    ALITER
+        f = FS_TEXTUM(superficies,18,44,"A1",medium).
+    FIN-SI.
+    DECLARA left SICUT NUMERUS VALENS 34. DECLARA top SICUT NUMERUS VALENS 62.
+    DECLARA gw SICUT NUMERUS VALENS w - 44. DECLARA gh SICUT NUMERUS VALENS h - 84.
+    SI gw <= 0 || gh <= 22 TUNC REDDE 1. FIN-SI.
+    f = FS_RECT(superficies,8,top,26,gh,argentum).
+    f = FS_RECT(superficies,left,top,gw,22,argentum).
+    f = FS_RECT(superficies,left,top+22,gw,gh-22,lux).
+    DECLARA col SICUT NUMERUS VALENS 0.
+    DUM col <= 8 PERFICE
+        DECLARA gx SICUT NUMERUS VALENS left + col * gw / 8.
+        f = FS_RECT(superficies,gx,top,1,gh,grid).
+        col = col + 1.
+    FIN-DUM.
+    DECLARA row SICUT NUMERUS VALENS 0.
+    DUM row <= 12 PERFICE
+        DECLARA gy SICUT NUMERUS VALENS top + 22 + row * (gh - 22) / 12.
+        f = FS_RECT(superficies,8,gy,w-18,1,grid).
+        row = row + 1.
+    FIN-DUM.
+    SI status >= 1 && status <= 96 TUNC
+        DECLARA index SICUT NUMERUS VALENS status - 1.
+        DECLARA sc SICUT NUMERUS VALENS index % 8.
+        DECLARA sr SICUT NUMERUS VALENS index / 8.
+        DECLARA x0 SICUT NUMERUS VALENS left + sc * gw / 8.
+        DECLARA x1 SICUT NUMERUS VALENS left + (sc + 1) * gw / 8.
+        DECLARA y0 SICUT NUMERUS VALENS top + 22 + sr * (gh - 22) / 12.
+        DECLARA y1 SICUT NUMERUS VALENS top + 22 + (sr + 1) * (gh - 22) / 12.
+        f = FS_RECT(superficies,x0+2,y0+2,x1-x0-4,2,bronzeum).
+        f = FS_RECT(superficies,x0+2,y0+2,2,y1-y0-4,bronzeum).
+        f = FS_RECT(superficies,x0+2,y1-4,x1-x0-4,2,bronzeum).
+        f = FS_RECT(superficies,x1-4,y0+2,2,y1-y0-4,bronzeum).
+    FIN-SI.
+    SI status == 101 TUNC f = FS_TEXTUM(superficies,144,13,"NOVUM: ACTIO CLIENTIS",profundum). FIN-SI.
+    SI status == 102 TUNC f = FS_TEXTUM(superficies,144,13,"SERVA: ACTIO CLIENTIS",profundum). FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
