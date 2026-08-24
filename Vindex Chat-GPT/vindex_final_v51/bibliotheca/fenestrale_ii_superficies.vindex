@@ -1,7 +1,6 @@
 // Sylvia OS — superficies privata clientis Fenestralis II.
 // Ornamentum fenestrae a contento clientis separatur.
-
-IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+// Bibliotheca folium est: dependentiae a fonte principali importandae sunt.
 
 FUNCTIO FS_CREA REDDENS NUMERUS.
     ACCIPIT w SICUT NUMERUS.
