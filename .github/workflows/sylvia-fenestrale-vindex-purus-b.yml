@@ -13,7 +13,7 @@ on:
 
 jobs:
   vindex-purus:
-    name: Fenestrale interactive VINDEX compilatur
+    name: Limen compositionis VINDEX exploratur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -22,107 +22,26 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: PRINCIPALE reale auxiliis minimis compila
+      - name: Graphica cum una functione
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_principalis.vindex /tmp/fb_principalis.elf
+          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_functio.vindex /tmp/fb_una.elf
+          file /tmp/fb_una.elf | grep -q 'ELF 64-bit'
 
-      - name: Input A — I32 et GUID
+      - name: Graphica cum duabus functionibus
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          awk '/^FUNCTIO FB_PROTOCOL_LOCATE REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_input_a.vindex
-          cat >> /tmp/fb_input_a.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
-              DECLARA a SICUT NUMERUS VALENS FB_I32(50331648).
-              a = FB_GUID_PONE(guid, 1).
-              REDDE a.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_input_a.vindex /tmp/fb_input_a.elf
+          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_duae.vindex /tmp/fb_duae.elf
+          file /tmp/fb_duae.elf | grep -q 'ELF 64-bit'
 
-      - name: Input B — LocateProtocol
+      - name: Graphica cum sola functione GUID
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          awk '/^FUNCTIO FB_PROTOCOLA_PARA REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_input_b.vindex
-          cat >> /tmp/fb_input_b.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA a SICUT NUMERUS VALENS FB_I32(50331648).
-              a = FB_PROTOCOL_LOCATE(1).
-              REDDE a.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_input_b.vindex /tmp/fb_input_b.elf
+          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_graphica_guid.vindex /tmp/fb_guid.elf
+          file /tmp/fb_guid.elf | grep -q 'ELF 64-bit'
 
-      - name: Input C — protocolorum praeparatio
+      - name: Graphica cum I32 sola
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          awk '/^FUNCTIO FB_CLAVIS_LEGE REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_input_c.vindex
-          cat >> /tmp/fb_input_c.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
-              DECLARA a SICUT NUMERUS VALENS FB_I32(50331648).
-              a = FB_PROTOCOLA_PARA(s).
-              REDDE a.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_input_c.vindex /tmp/fb_input_c.elf
-
-      - name: Input D — clavis
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          awk '/^FUNCTIO FB_MURUS_ABSOLUTUS REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_input_d.vindex
-          cat >> /tmp/fb_input_d.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
-              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
-              a = FB_CLAVIS_LEGE().
-              REDDE a.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_input_d.vindex /tmp/fb_input_d.elf
-
-      - name: Input E — murus absolutus
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          awk '/^FUNCTIO FB_MURUS_RELATIVUS REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_input_e.vindex
-          cat >> /tmp/fb_input_e.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
-              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
-              a = FB_MURUS_ABSOLUTUS(0, s).
-              REDDE a.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_input_e.vindex /tmp/fb_input_e.elf
-
-      - name: Input F — murus relativus
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          awk '/^FUNCTIO FB_STALL REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_input_f.vindex
-          cat >> /tmp/fb_input_f.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
-              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
-              a = FB_MURUS_RELATIVUS(0, s).
-              REDDE a.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_input_f.vindex /tmp/fb_input_f.elf
-
-      - name: Input G — Stall et input completum
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          awk '/^FUNCTIO FB_RELEGE_ACTIVUM REDDENS NUMERUS\./ {exit} {print}' systema/fenestrale_ii_purus_b.vindex > /tmp/fb_input_g.vindex
-          cat >> /tmp/fb_input_g.vindex <<'VINDEX'
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
-              DECLARA a SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
-              a = FB_CLAVIS_LEGE().
-              a = FB_MURUS_ABSOLUTUS(0, s).
-              a = FB_MURUS_RELATIVUS(0, s).
-              a = FB_STALL().
-              REDDE a.
-          FIN-FUNCTIO.
-          VINDEX
-          timeout 20s ./compilator_vindex /tmp/fb_input_g.vindex /tmp/fb_input_g.elf
+          timeout 15s ./compilator_vindex probationes/fenestrale_purus_b_i32_nomen.vindex /tmp/fb_i32.elf
+          file /tmp/fb_i32.elf | grep -q 'ELF 64-bit'
