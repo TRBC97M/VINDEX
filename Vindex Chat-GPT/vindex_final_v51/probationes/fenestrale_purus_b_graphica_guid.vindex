@@ -1,0 +1,27 @@
+// Diagnostica: bibliotheca graphica + sola functio GUID.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO FB_GUID_SOLUS REDDENS NUMERUS.
+    ACCIPIT guid SICUT ACUS<LITTERA>.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE guid[i] = 0. i = i + 1. FIN-DUM.
+    SI genus == 1 TUNC
+        guid[0]=135. guid[1]=140. guid[2]=135. guid[3]=49.
+        guid[4]=117. guid[5]=11. guid[6]=213. guid[7]=17.
+        guid[8]=154. guid[9]=79. guid[10]=0. guid[11]=144.
+        guid[12]=39. guid[13]=63. guid[14]=193. guid[15]=77.
+    FIN-SI.
+    SI genus == 2 TUNC
+        guid[0]=43. guid[1]=211. guid[2]=89. guid[3]=141.
+        guid[4]=85. guid[5]=198. guid[6]=233. guid[7]=74.
+        guid[8]=155. guid[9]=21. guid[10]=242. guid[11]=89.
+        guid[12]=4. guid[13]=153. guid[14]=42. guid[15]=67.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
+    REDDE FB_GUID_SOLUS(guid, 1).
+FIN-FUNCTIO.
