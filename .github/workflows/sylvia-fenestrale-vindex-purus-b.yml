@@ -6,12 +6,14 @@ on:
       - chatgpt/sylvia-fenestrale-vindex-purus-b
   pull_request:
     paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_*.vindex'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
 
 jobs:
   vindex-purus:
-    name: Commentaria quae compilatorem suspendunt isolantur
+    name: Fenestrale interactive VINDEX compilatur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -20,36 +22,28 @@ jobs:
       - name: Puritatem Sylviae verifica
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Variantes minimas genera
+      - name: Commentaria UEFI periculosa absunt
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          s = Path('systema/fenestrale_ii_purus_b.vindex').read_text(encoding='utf-8')
-          a = s.index('FUNCTIO FB_I32 REDDENS NUMERUS.')
-          b = s.index('FUNCTIO FB_GUID_PONE REDDENS NUMERUS.')
-          s = s[:a] + s[b:]
-          s = s[:s.index('FUNCTIO FB_PROTOCOL_LOCATE REDDENS NUMERUS.')]
-          s = s.replace('FB_GUID_PONE', 'FB_GUID_SOLUS')
-          principalis = '''FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.\n    REDDE FB_GUID_SOLUS(guid, 1).\nFIN-FUNCTIO.\n'''
-          def pone(nomen, corpus):
-              Path('/tmp/' + nomen + '.vindex').write_text(corpus.rstrip() + '\n\n' + principalis, encoding='utf-8')
-          pone('commenta_omnia', s)
-          lineae = s.splitlines()
-          pone('sine_efi', '\n'.join(x for x in lineae if 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' not in x and 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' not in x))
-          pone('sine_status', '\n'.join(x for x in lineae if not x.lstrip().startswith('// Status') and not x.lstrip().startswith('//  ')))
-          pone('sine_commentis', '\n'.join(x for x in lineae if not x.lstrip().startswith('//')))
-          pone('sola_capita', '\n'.join(x for x in lineae if not x.lstrip().startswith('// Status') and not x.lstrip().startswith('//  ') and 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' not in x and 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' not in x))
-          PY
+          ! grep -q 'EFI_SIMPLE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_b.vindex
+          ! grep -q 'EFI_ABSOLUTE_POINTER_PROTOCOL_GUID' systema/fenestrale_ii_purus_b.vindex
 
-      - name: Variantes compila et codices exitus conserva
+      - name: Strata Purus B separatim compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
-          set +e
-          for n in commenta_omnia sine_efi sine_status sine_commentis sola_capita; do
-            timeout 8s ./compilator_vindex "/tmp/${n}.vindex" "/tmp/${n}.elf"
-            rc=$?
-            printf '%s=%s\n' "$n" "$rc" | tee -a /tmp/exitus.txt
-          done
-          cat /tmp/exitus.txt
-          grep -q '^sine_commentis=0$' /tmp/exitus.txt
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_graphica.vindex /tmp/fb_graphica.elf
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_input.vindex /tmp/fb_input.elf
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_gestor.vindex /tmp/fb_gestor.elf
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_interactio.vindex /tmp/fb_interactio.elf
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_ansa.vindex /tmp/fb_ansa.elf
+          timeout 20s ./compilator_vindex probationes/fenestrale_purus_b_principalis.vindex /tmp/fb_principalis.elf
+          file /tmp/fb_graphica.elf /tmp/fb_input.elf /tmp/fb_gestor.elf /tmp/fb_interactio.elf /tmp/fb_ansa.elf /tmp/fb_principalis.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale B totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          timeout 60s ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
+          file /tmp/fenestrale_ii_purus_b.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_b.elf)" -lt 196608
+          ! grep -R 'POLLE()' bibliotheca/fenestrale_ii_purus.vindex systema/fenestrale_ii_purus_b.vindex
+          printf '%s\n' 'RECTE: Fenestrale II Purus B omnino VINDEX compilatur.'
