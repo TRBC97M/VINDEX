@@ -48,7 +48,7 @@ jobs:
 
       - name: QEMU cum muris USB mitte
         run: |
-          rm -f /tmp/sylvia-lab/OVMF_VARS_TEST.fd /tmp/sylvia-lab/qemu-monitor.sock /tmp/sylvia-lab/qmp.sock
+          rm -f /tmp/sylvia-lab/OVMF_VARS_TEST.fd /tmp/sylvia-lab/qemu-monitor.sock
           cp /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/sylvia-lab/OVMF_VARS_TEST.fd
           qemu-system-x86_64 \
             -name 'SYLVIA LABORATORIUM' \
@@ -64,7 +64,6 @@ jobs:
             -drive if=ide,format=raw,file=/tmp/sylvia-lab/sylvia-laboratorium.img \
             -boot order=c \
             -monitor unix:/tmp/sylvia-lab/qemu-monitor.sock,server,nowait \
-            -qmp unix:/tmp/sylvia-lab/qmp.sock,server=on,wait=off \
             -vnc 127.0.0.1:0 \
             -daemonize
           sleep 2
@@ -74,9 +73,7 @@ jobs:
         run: |
           set -o pipefail
           python3 laboratorium/sylvia/probationes/proba_qemu.py \
-            /tmp/sylvia-lab/qemu-monitor.sock \
-            /tmp/sylvia-lab/qmp.sock \
-            /tmp/sylvia-lab \
+            /tmp/sylvia-lab/qemu-monitor.sock /tmp/sylvia-lab \
             | tee /tmp/sylvia-lab/qemu-test.log
 
       - name: Evidentiam conserva
