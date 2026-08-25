@@ -22,6 +22,10 @@ from proba_qemu import (
 )
 
 
+def telemetria(sock: socket.socket) -> str:
+    return netto_hmp(hmp(sock, "xp /8bx 0x030008c8"))
+
+
 def principale() -> int:
     if len(sys.argv) != 4:
         print("USUS: proba_qemu_mus.py MONITOR.sock QMP.sock EXITUS")
@@ -82,6 +86,7 @@ def principale() -> int:
             print("QEMU: ERRATUM captura initialis non creata")
             return 4
 
+        tele_ante = telemetria(s)
         w, h, pix_ante = lege_ppm(ante)
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
@@ -95,6 +100,7 @@ def principale() -> int:
         textus = glyphi >= 12
 
         eventus = []
+        tele_eventus: list[str] = []
         for dx, dy in ((96, -64), (64, 48), (-24, 16)):
             r = qmp_exsequere(q, "input-send-event", {
                 "events": [
@@ -103,10 +109,13 @@ def principale() -> int:
                 ]
             })
             eventus.append(r)
-            time.sleep(0.18)
+            time.sleep(0.08)
+            tele_eventus.append(telemetria(s))
+            time.sleep(0.10)
 
         qmp_ok = all("return" in r and "error" not in r for r in eventus)
-        time.sleep(1.0)
+        time.sleep(0.7)
+        tele_post = telemetria(s)
         hmp(s, f"screendump {post}")
         finis = time.time() + 3.0
         while not post.exists() and time.time() < finis:
@@ -127,6 +136,10 @@ def principale() -> int:
         print("QEMU: QMP_MURES_POST " + json.dumps(mures_post, ensure_ascii=False, separators=(",", ":")))
         print("QEMU: MUS_CURRENS " + ("RECTE" if mus_currens else "DEFECIT"))
         print("QEMU: QMP_MOTUS " + ("RECTE" if qmp_ok else "DEFECIT"))
+        print(f"QEMU: TELEMETRIA_ANTE {tele_ante}")
+        for i, t in enumerate(tele_eventus, 1):
+            print(f"QEMU: TELEMETRIA_EVENTUS_{i} {t}")
+        print(f"QEMU: TELEMETRIA_POST {tele_post}")
         print(f"QEMU: META_MURUS {metadata}")
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {glyphi}")
