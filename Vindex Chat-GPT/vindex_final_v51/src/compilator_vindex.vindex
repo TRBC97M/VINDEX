@@ -1481,8 +1481,18 @@ FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
     ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
-    DUM CONTENTUM(pos) < n && (fons[CONTENTUM(pos)] == 32 || fons[CONTENTUM(pos)] == 10 || fons[CONTENTUM(pos)] == 13 || fons[CONTENTUM(pos)] == 9) PERFICE
-        CONTENTUM(pos) = CONTENTUM(pos) + 1.
+    DECLARA iterum SICUT NUMERUS VALENS 1.
+    DUM iterum == 1 PERFICE
+        iterum = 0.
+        DUM CONTENTUM(pos) < n && (fons[CONTENTUM(pos)] == 32 || fons[CONTENTUM(pos)] == 10 || fons[CONTENTUM(pos)] == 13 || fons[CONTENTUM(pos)] == 9) PERFICE
+            CONTENTUM(pos) = CONTENTUM(pos) + 1.
+        FIN-DUM.
+        SI CONTENTUM(pos) + 1 < n && fons[CONTENTUM(pos)] == 47 && fons[CONTENTUM(pos) + 1] == 47 TUNC
+            DUM CONTENTUM(pos) < n && fons[CONTENTUM(pos)] != 10 PERFICE
+                CONTENTUM(pos) = CONTENTUM(pos) + 1.
+            FIN-DUM.
+            iterum = 1.
+        FIN-SI.
     FIN-DUM.
     REDDE 0.
 FIN-FUNCTIO.
