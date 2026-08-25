@@ -129,6 +129,7 @@ def principale() -> int:
 
         murus = mus_currens and qmp_ok and mutatio >= 20
         metadata = netto_hmp(hmp(s, "xp /8gx 0x03000890"))
+        inventarium = netto_hmp(hmp(s, "xp /18gx 0x03000900"))
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
         print("QEMU: QMP_MURES_ANTE " + json.dumps(mures_ante, ensure_ascii=False, separators=(",", ":")))
@@ -141,6 +142,7 @@ def principale() -> int:
             print(f"QEMU: TELEMETRIA_EVENTUS_{i} {t}")
         print(f"QEMU: TELEMETRIA_POST {tele_post}")
         print(f"QEMU: META_MURUS {metadata}")
+        print(f"QEMU: INVENTARIUM_MURIS {inventarium}")
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {glyphi}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
