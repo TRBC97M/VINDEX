@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Probatio muris USB relativi per OVMF et QEMU."""
+"""Probatio muris relativi per OVMF et QEMU."""
 
 from __future__ import annotations
 
@@ -61,9 +61,9 @@ def principale() -> int:
 
         mures_ante = qmp_exsequere(q, "query-mice")
         lista = mures_ante.get("return", [])
-        candidati = [m for m in lista if "HID Mouse" in str(m.get("name", ""))]
+        candidati = [m for m in lista if "PS/2 Mouse" in str(m.get("name", ""))]
         if not candidati:
-            print("QEMU: MURUS DEFECIT (QEMU HID Mouse deest)")
+            print("QEMU: MURUS DEFECIT (QEMU PS/2 Mouse deest)")
             print("QEMU: QMP_MURES " + json.dumps(mures_ante, ensure_ascii=False, separators=(",", ":")))
             return 5
 
@@ -132,7 +132,7 @@ def principale() -> int:
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
         print("QEMU: QMP_MURES_ANTE " + json.dumps(mures_ante, ensure_ascii=False, separators=(",", ":")))
-        print(f"QEMU: QMP_SELECTIO index={index} {selectio}")
+        print(f"QEMU: QMP_SELECTIO_PS2 index={index} {selectio}")
         print("QEMU: QMP_MURES_POST " + json.dumps(mures_post, ensure_ascii=False, separators=(",", ":")))
         print("QEMU: MUS_CURRENS " + ("RECTE" if mus_currens else "DEFECIT"))
         print("QEMU: QMP_MOTUS " + ("RECTE" if qmp_ok else "DEFECIT"))
