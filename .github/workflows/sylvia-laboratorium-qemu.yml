@@ -32,20 +32,8 @@ jobs:
       - name: Nucleum VINDEX compila
         run: |
           mkdir -p /tmp/sylvia-lab
-          python3 - <<'PY'
-          from pathlib import Path
-          src = Path('laboratorium/sylvia/systema/sylvia_laboratorium.vindex').read_text()
-          src = src.replace(
-              'IMPORTA "laboratorium/sylvia/bibliotheca/input.vindex".',
-              'IMPORTA "laboratorium/sylvia/bibliotheca/input.vindex".\nIMPORTA "laboratorium/sylvia/bibliotheca/input_ps2.vindex".'
-          )
-          src = src.replace('ORDO DE NUMERUS CAPACITAS 10', 'ORDO DE NUMERUS CAPACITAS 14')
-          src = src.replace('LI_PARA(m)', 'LP_PARA(m)')
-          src = src.replace('LI_LEGE(m)', 'LP_LEGE(m)')
-          Path('/tmp/sylvia-lab/sylvia_ps2.vindex').write_text(src)
-          PY
           timeout 180s "$GITHUB_WORKSPACE/Vindex Chat-GPT/vindex_final_v51/compilator_vindex" \
-            /tmp/sylvia-lab/sylvia_ps2.vindex \
+            "$GITHUB_WORKSPACE/laboratorium/sylvia/systema/sylvia_laboratorium.vindex" \
             /tmp/sylvia-lab/nucleus.elf
           file /tmp/sylvia-lab/nucleus.elf
           test -s /tmp/sylvia-lab/nucleus.elf
