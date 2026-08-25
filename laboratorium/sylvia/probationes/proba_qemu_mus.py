@@ -23,7 +23,7 @@ from proba_qemu import (
 
 
 def telemetria(sock: socket.socket) -> str:
-    return netto_hmp(hmp(sock, "xp /8bx 0x030008c8"))
+    return netto_hmp(hmp(sock, "xp /12bx 0x030008c8"))
 
 
 def principale() -> int:
