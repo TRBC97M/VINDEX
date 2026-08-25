@@ -1,0 +1,17 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA tabula_systematis SICUT NUMERUS VALENS CONTENTUM(16777224).
+    DECLARA conout SICUT NUMERUS VALENS CONTENTUM(tabula_systematis + 64).
+    DECLARA scribe_catenam SICUT NUMERUS VALENS CONTENTUM(conout + 8).
+
+    DECLARA k16 SICUT NUMERUS VALENS 65536.
+    DECLARA k32 SICUT NUMERUS VALENS k16 * k16.
+    DECLARA k48 SICUT NUMERUS VALENS k32 * k16.
+
+    DECLARA nuntius SICUT ORDO DE NUMERUS CAPACITAS 8.
+    nuntius[0] = 86 + (73 * k16) + (78 * k32) + (68 * k48).
+    nuntius[1] = 69 + (88 * k16) + (13 * k32) + (10 * k48).
+    nuntius[2] = 0.
+
+    DECLARA ig SICUT NUMERUS VALENS UEFI_VOCA6(scribe_catenam, conout, SEDES(nuntius[0]), 0, 0, 0, 0).
+    REDDE 0.
+FIN-FUNCTIO.

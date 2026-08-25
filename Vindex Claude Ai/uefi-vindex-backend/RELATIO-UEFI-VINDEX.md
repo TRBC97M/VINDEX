@@ -111,4 +111,56 @@ Gradus proximi suasi, ordine:
 nuntio erroris. `bootstrap_uefi.c` servandus est functionalis donec versio
 VINDEX plene probata sit; deinde substitutio fiat.
 
+## Gradus II probatus: VINDEX purus firmware UEFI vocat
+
+Post modum `uefi` compilatori additum (commit `7797906`), probatio
+sequens facta est: programma **in VINDEX puro scriptum**, per
+`compilator_vindex ... uefi` compilatum, quod firmware ipsum vocat.
+
+Vide `exempla/salve_uefi.vindex` (fons) et `exempla/salve_uefi.efi`
+(exsecutabile generatum).
+
+Mechanismus:
+1. Prologus modi `uefi` `SystemTable` (RDX a firmware acceptam) ad
+   `0x1000008` servat;
+2. programma eam legit per `CONTENTUM(16777224)`;
+3. `SystemTable->ConOut` ad offset 64, `ConOut->OutputString` ad offset 8;
+4. `UEFI_VOCA6(scribe_catenam, conout, SEDES(nuntius), 0, 0, 0, 0)`.
+
+**Resultatum sub QEMU + OVMF: `VINDEX` in schermo vere apparuit.**
+
+Hoc probat catenam completam: fons VINDEX -> `compilator_vindex` ->
+exsecutabile EFI -> firmware verum -> vocatio servitii firmware ->
+exitus in schermo. **Nullus C in tota via.**
+
+### Duo impedimenta vera inventa (documentanda pro opere sequenti)
+
+1. **`ORDO DE LITTERA` octeta compacta non praebet.** Elementa per octo
+   octeta disponuntur, non per unum (verificatum: `SEDES(t[1]) -
+   SEDES(t[0])` non unum reddit; `CONTENTUM(SEDES(t[0]))` valorem
+   integrum reddit). Ergo catenae CHAR16 (UTF-16, duo octeta per
+   litteram) directe construi non possunt hoc modo. **Consilium
+   adhibitum**: quattuor litteras CHAR16 in uno verbo LXIV-bit componere
+   (`littera + littera*65536 + littera*2^32 + littera*2^48`), quod
+   dispositionem memoriae rectam producit. **Solutio vera pro futuro**:
+   primitivam VINDEX addere quae octeta singula in memoriam scribat
+   (velut `SCRIBE_OCTETUM(adressa, valor)`), quae etiam pro ponticulo
+   completo necessaria erit.
+
+2. **Litterales numerici magni compilatorem exhauriunt.** Constans
+   `281474976710656` (2^48) scripta directe compilationem occidit
+   (status 137, memoria exhausta). **Consilium adhibitum**: valores per
+   multiplicationes successivas computare (`k16 = 65536; k32 = k16 *
+   k16; k48 = k32 * k16`). Causa radicalis non investigata; defectus
+   verisimiliter in analysi litteralium magnorum latet, seorsum ab opere
+   UEFI, sed notandus.
+
+### Gradus proximi
+
+Cum catena probata sit, opus sequens est migratio ipsius ponticuli:
+protocollum graphicum invenire (`LocateProtocol`, quod `nucleus.vindex`
+iam facit), modum eligere, nucleum copiare, metadata implere, salire.
+Primitiva `SCRIBE_OCTETUM` (vel similis) prius addenda videtur, quia
+copia memoriae octetim necessaria est.
+
 VINDEX Latine cogitat. Sylvia Latine loquitur.
