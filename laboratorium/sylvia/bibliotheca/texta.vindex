@@ -1,0 +1,45 @@
+// LABORATORIUM SYLVIAE — texta humilia sine ABI TEXTUS.
+// Res ASCII newline-separata a bootstrap praeparatur; VINDEX eam directe legit.
+// META[22] = basis textorum.
+
+FUNCTIO LT_GLYPH REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS. ACCIPIT y SICUT NUMERUS.
+    ACCIPIT littera SICUT NUMERUS. ACCIPIT color SICUT NUMERUS.
+    DECLARA forma SICUT NUMERUS VALENS CONTENTUM(50333784).
+    SI forma==0 || littera<0 || littera>255 TUNC REDDE 0. FIN-SI.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<8 PERFICE
+        DECLARA bits SICUT NUMERUS VALENS OCTETUS_AB(forma+littera*8+py).
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px<8 PERFICE
+            SI (bits&(128>>px))!=0 TUNC
+                DECLARA q SICUT NUMERUS VALENS LG_PIXEL(x+px,y+py,color).
+            FIN-SI.
+            px=px+1.
+        FIN-DUM.
+        py=py+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO LT_TEXT REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS. ACCIPIT y SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS. ACCIPIT color SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50333872).
+    SI basis==0 || id<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA linea SICUT NUMERUS VALENS 1.
+    DECLARA p SICUT NUMERUS VALENS basis.
+    DUM linea<id && OCTETUS_AB(p)!=0 PERFICE
+        SI OCTETUS_AB(p)==10 TUNC linea=linea+1. FIN-SI.
+        p=p+1.
+    FIN-DUM.
+    SI linea!=id TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM OCTETUS_AB(p)!=0 && OCTETUS_AB(p)!=10 PERFICE
+        DECLARA c SICUT NUMERUS VALENS OCTETUS_AB(p).
+        DECLARA q SICUT NUMERUS VALENS LT_GLYPH(x+i*8,y,c,color).
+        p=p+1.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
