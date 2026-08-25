@@ -201,14 +201,14 @@ FIN-FUNCTIO.
 FUNCTIO DESKTOP_SCRIBE REDDENS NUMERUS.
     ACCIPIT modus SICUT NUMERUS.
     DECLARA factum SICUT NUMERUS VALENS RECTANGULUM(0, 0, 320, 200, 3).
-    factum = TEXTUM_SCRIBE(120, 20, 4317184, 21, 11).
+    factum = TEXTUM_SCRIBE(120, 20, 4390912, 21, 11).
     factum = RECTANGULUM(27, 19, 38, 34, 0).
     factum = RECTANGULUM(28, 20, 36, 32, 15).
     factum = RECTANGULUM(31, 23, 30, 6, 1).
     factum = RECTANGULUM(33, 32, 26, 2, 3).
     factum = RECTANGULUM(33, 37, 20, 1, 8).
     factum = RECTANGULUM(33, 41, 24, 1, 8).
-    factum = TEXTUM_SCRIBE(13, 58, 4317232, 8, 15).
+    factum = TEXTUM_SCRIBE(13, 58, 4390960, 8, 15).
     factum = RECTANGULUM(29, 87, 36, 36, 0).
     factum = RECTANGULUM(30, 88, 34, 34, 15).
     factum = RECTANGULUM(34, 92, 26, 26, 0).
@@ -217,53 +217,53 @@ FUNCTIO DESKTOP_SCRIBE REDDENS NUMERUS.
     factum = RECTANGULUM(50, 108, 6, 6, 10).
     factum = RECTANGULUM(50, 96, 6, 6, 14).
     factum = RECTANGULUM(38, 108, 6, 6, 14).
-    factum = TEXTUM_SCRIBE(17, 128, 4317248, 7, 15).
+    factum = TEXTUM_SCRIBE(17, 128, 4390976, 7, 15).
     factum = RECTANGULUM(121, 87, 42, 31, 0).
     factum = RECTANGULUM(122, 88, 40, 29, 15).
     factum = RECTANGULUM(126, 94, 14, 5, 14).
     factum = RECTANGULUM(126, 99, 32, 14, 14).
     factum = RECTANGULUM(129, 102, 26, 8, 6).
-    factum = TEXTUM_SCRIBE(105, 128, 4317600, 9, 15).
+    factum = TEXTUM_SCRIBE(105, 128, 4391328, 9, 15).
     factum = RECTANGULUM(213, 87, 42, 31, 0).
     factum = RECTANGULUM(214, 88, 40, 29, 15).
     factum = RECTANGULUM(217, 91, 34, 6, 1).
     factum = RECTANGULUM(218, 101, 8, 8, 10).
     factum = RECTANGULUM(230, 101, 8, 8, 11).
     factum = RECTANGULUM(242, 101, 8, 8, 14).
-    factum = TEXTUM_SCRIBE(190, 128, 4318016, 11, 15).
+    factum = TEXTUM_SCRIBE(190, 128, 4391744, 11, 15).
     factum = RECTANGULUM(0, 179, 320, 21, 0).
     factum = RECTANGULUM(0, 180, 320, 20, 7).
     factum = RECTANGULUM(1, 180, 318, 1, 15).
     factum = RECTANGULUM(2, 182, 70, 16, 0).
     factum = RECTANGULUM(3, 183, 68, 14, 7).
     factum = RECTANGULUM(4, 184, 66, 1, 15).
-    factum = TEXTUM_SCRIBE(8, 186, 4317216, 7, 0).
+    factum = TEXTUM_SCRIBE(8, 186, 4390944, 7, 0).
     SI modus == 1 TUNC
         factum = RECTANGULUM(77, 182, 126, 16, 0).
         factum = RECTANGULUM(78, 183, 124, 14, 8).
-        factum = TEXTUM_SCRIBE(84, 186, 4317232, 8, 15).
+        factum = TEXTUM_SCRIBE(84, 186, 4390960, 8, 15).
     FIN-SI.
     SI modus == 2 TUNC
         factum = RECTANGULUM(77, 182, 126, 16, 0).
         factum = RECTANGULUM(78, 183, 124, 14, 8).
-        factum = TEXTUM_SCRIBE(84, 186, 4317248, 7, 15).
+        factum = TEXTUM_SCRIBE(84, 186, 4390976, 7, 15).
     FIN-SI.
     SI modus == 3 TUNC
         factum = RECTANGULUM(77, 182, 126, 16, 0).
         factum = RECTANGULUM(78, 183, 124, 14, 8).
-        factum = TEXTUM_SCRIBE(84, 186, 4317600, 9, 15).
+        factum = TEXTUM_SCRIBE(84, 186, 4391328, 9, 15).
     FIN-SI.
     SI modus == 4 TUNC
         factum = RECTANGULUM(77, 182, 126, 16, 0).
         factum = RECTANGULUM(78, 183, 124, 14, 8).
-        factum = TEXTUM_SCRIBE(84, 186, 4318016, 11, 15).
+        factum = TEXTUM_SCRIBE(84, 186, 4391744, 11, 15).
     FIN-SI.
     SI modus == 5 TUNC
         factum = RECTANGULUM(77, 182, 126, 16, 0).
         factum = RECTANGULUM(78, 183, 124, 14, 8).
-        factum = TEXTUM_SCRIBE(84, 186, 4318152, 5, 15).
+        factum = TEXTUM_SCRIBE(84, 186, 4391880, 5, 15).
     FIN-SI.
-    factum = TEXTUM_SCRIBE(224, 186, 4317568, 11, 0).
+    factum = TEXTUM_SCRIBE(224, 186, 4391296, 11, 0).
     REDDE factum.
 FIN-FUNCTIO.
 
@@ -273,13 +273,13 @@ FUNCTIO MENUM_INITII_SCRIBE REDDENS NUMERUS.
     factum = RECTANGULUM(2, 35, 130, 143, 7).
     factum = RECTANGULUM(3, 36, 18, 141, 1).
     factum = RECTANGULUM(24, 39, 104, 29, 15).
-    factum = TEXTUM_SCRIBE(32, 49, 4317232, 8, 0).
+    factum = TEXTUM_SCRIBE(32, 49, 4390960, 8, 0).
     factum = RECTANGULUM(24, 72, 104, 29, 15).
-    factum = TEXTUM_SCRIBE(32, 82, 4317600, 9, 0).
+    factum = TEXTUM_SCRIBE(32, 82, 4391328, 9, 0).
     factum = RECTANGULUM(24, 105, 104, 29, 15).
-    factum = TEXTUM_SCRIBE(32, 115, 4318016, 11, 0).
+    factum = TEXTUM_SCRIBE(32, 115, 4391744, 11, 0).
     factum = RECTANGULUM(24, 138, 104, 29, 15).
-    factum = TEXTUM_SCRIBE(32, 148, 4317248, 7, 0).
+    factum = TEXTUM_SCRIBE(32, 148, 4390976, 7, 0).
     REDDE factum.
 FIN-FUNCTIO.
 
@@ -424,35 +424,35 @@ FUNCTIO SCRIPTOR_SCRIBE REDDENS NUMERUS.
     ACCIPIT prima_linea SICUT NUMERUS.
     DECLARA status_archivi SICUT NUMERUS VALENS CONTENTUM(50333832).
     DECLARA fasciculus_activus SICUT NUMERUS VALENS CONTENTUM(50333840).
-    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 286, 164, 4317304, 18).
+    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 286, 164, 4391032, 18).
     factum = RECTANGULUM(x + 3, y + 21, 280, 15, 7).
     factum = RECTANGULUM(x + 7, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 8, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 11, y + 25, 4317664, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 11, y + 25, 4391392, 5, 0).
     factum = RECTANGULUM(x + 59, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 60, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 63, y + 25, 4317656, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 63, y + 25, 4391384, 5, 0).
     SI fasciculus_activus < 12 && CONTENTUM(50401344 + fasciculus_activus * 32) == 1 TUNC
         factum = TEXTUM_SCRIBE(x + 120, y + 25, 50401360 + fasciculus_activus * 32, 12, 8).
     ALITER
-        factum = TEXTUM_SCRIBE(x + 120, y + 25, 4317640, 12, 8).
+        factum = TEXTUM_SCRIBE(x + 120, y + 25, 4391368, 12, 8).
     FIN-SI.
     factum = RECTANGULUM(x + 7, y + 38, 272, 105, 0).
     factum = RECTANGULUM(x + 8, y + 39, 270, 103, 15).
     SI longitudo == 0 TUNC
-        factum = TEXTUM_SCRIBE(x + 16, y + 47, 4317368, 10, 8).
+        factum = TEXTUM_SCRIBE(x + 16, y + 47, 4391096, 10, 8).
     FIN-SI.
     factum = TEXTUM_EDITORIS_SCRIBE(x + 16, y + 47, textus, longitudo, cursor, prima_linea).
     factum = RECTANGULUM(x + 7, y + 146, 272, 13, 15).
     SI fasciculus_activus < 12 && CONTENTUM(50401344 + fasciculus_activus * 32) == 1 TUNC
         factum = TEXTUM_SCRIBE(x + 12, y + 149, 50401360 + fasciculus_activus * 32, 12, 8).
     ALITER
-        factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317640, 12, 8).
+        factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391368, 12, 8).
     FIN-SI.
-    SI status_archivi == 0 TUNC factum = TEXTUM_SCRIBE(x + 210, y + 149, 4317536, 7, 8). FIN-SI.
-    SI status_archivi == 1 TUNC factum = TEXTUM_SCRIBE(x + 202, y + 149, 4317672, 8, 2). FIN-SI.
-    SI status_archivi == 2 TUNC factum = TEXTUM_SCRIBE(x + 210, y + 149, 4317688, 7, 1). FIN-SI.
-    SI status_archivi == 3 TUNC factum = TEXTUM_SCRIBE(x + 210, y + 149, 4317712, 7, 4). FIN-SI.
+    SI status_archivi == 0 TUNC factum = TEXTUM_SCRIBE(x + 210, y + 149, 4391264, 7, 8). FIN-SI.
+    SI status_archivi == 1 TUNC factum = TEXTUM_SCRIBE(x + 202, y + 149, 4391400, 8, 2). FIN-SI.
+    SI status_archivi == 2 TUNC factum = TEXTUM_SCRIBE(x + 210, y + 149, 4391416, 7, 1). FIN-SI.
+    SI status_archivi == 3 TUNC factum = TEXTUM_SCRIBE(x + 210, y + 149, 4391440, 7, 4). FIN-SI.
     REDDE factum.
 FIN-FUNCTIO.
 
@@ -479,22 +479,22 @@ FUNCTIO FASCICULI_SCRIBE REDDENS NUMERUS.
     ACCIPIT nomen SICUT ORDO DE LITTERA.
     ACCIPIT longitudo_nominis SICUT NUMERUS.
     DECLARA status SICUT NUMERUS VALENS CONTENTUM(50333824).
-    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 286, 164, 4317616, 16).
+    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 286, 164, 4391344, 16).
 
     factum = RECTANGULUM(x + 3, y + 21, 280, 16, 7).
     factum = RECTANGULUM(x + 7, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 8, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 11, y + 25, 4317664, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 11, y + 25, 4391392, 5, 0).
     factum = RECTANGULUM(x + 59, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 60, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 63, y + 25, 4317776, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 63, y + 25, 4391504, 5, 0).
     factum = RECTANGULUM(x + 111, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 112, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 115, y + 25, 4317784, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 115, y + 25, 4391512, 5, 0).
     factum = RECTANGULUM(x + 163, y + 42 - 20, 40, 14, 0).
     factum = RECTANGULUM(x + 164, y + 43 - 20, 38, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 167, y + 45 - 20, 4317792, 4, 0).
-    factum = TEXTUM_SCRIBE(x + 213, y + 25, 4317912, 8, 8).
+    factum = TEXTUM_SCRIBE(x + 167, y + 45 - 20, 4391520, 4, 0).
+    factum = TEXTUM_SCRIBE(x + 213, y + 25, 4391640, 8, 8).
 
     factum = RECTANGULUM(x + 7, y + 39, 272, 104, 0).
     factum = RECTANGULUM(x + 8, y + 40, 270, 102, 15).
@@ -515,51 +515,51 @@ FUNCTIO FASCICULI_SCRIBE REDDENS NUMERUS.
         FIN-SI.
         i = i + 1.
     FIN-DUM.
-    SI inventus == 0 TUNC factum = TEXTUM_SCRIBE(x + 18, y + 60, 4317704, 6, 8). FIN-SI.
+    SI inventus == 0 TUNC factum = TEXTUM_SCRIBE(x + 18, y + 60, 4391432, 6, 8). FIN-SI.
 
     factum = RECTANGULUM(x + 7, y + 146, 272, 13, 15).
-    SI status == 0 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317536, 7, 8). FIN-SI.
-    SI status == 1 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317672, 8, 2). FIN-SI.
-    SI status == 2 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317864, 7, 2). FIN-SI.
-    SI status == 3 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317872, 7, 4). FIN-SI.
-    SI status == 4 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317712, 7, 4). FIN-SI.
-    SI status == 5 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317928, 14, 4). FIN-SI.
-    SI CONTENTUM(50333816) == 1 TUNC factum = TEXTUM_SCRIBE(x + 206, y + 149, 4317744, 8, 2). FIN-SI.
-    SI CONTENTUM(50333816) == 2 TUNC factum = TEXTUM_SCRIBE(x + 198, y + 149, 4317760, 9, 14). FIN-SI.
+    SI status == 0 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391264, 7, 8). FIN-SI.
+    SI status == 1 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391400, 8, 2). FIN-SI.
+    SI status == 2 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391592, 7, 2). FIN-SI.
+    SI status == 3 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391600, 7, 4). FIN-SI.
+    SI status == 4 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391440, 7, 4). FIN-SI.
+    SI status == 5 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391656, 14, 4). FIN-SI.
+    SI CONTENTUM(50333816) == 1 TUNC factum = TEXTUM_SCRIBE(x + 206, y + 149, 4391472, 8, 2). FIN-SI.
+    SI CONTENTUM(50333816) == 2 TUNC factum = TEXTUM_SCRIBE(x + 198, y + 149, 4391488, 9, 14). FIN-SI.
 
     SI nomen_modus > 0 TUNC
         factum = RECTANGULUM(x + 34, y + 48, 218, 91, 8).
         factum = RECTANGULUM(x + 30, y + 44, 218, 91, 0).
         factum = RECTANGULUM(x + 31, y + 45, 216, 89, 7).
         factum = RECTANGULUM(x + 32, y + 46, 214, 17, 1).
-        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4317824, 16, 15).
+        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4391552, 16, 15).
         factum = RECTANGULUM(x + 39, y + 69, 198, 18, 0).
         factum = RECTANGULUM(x + 40, y + 70, 196, 16, 15).
         factum = ORDINEM_SCRIBE(x + 45, y + 74, nomen, longitudo_nominis, 0).
-        factum = TEXTUM_SCRIBE(x + 45 + longitudo_nominis * 8, y + 74, 4317840, 4, 8).
+        factum = TEXTUM_SCRIBE(x + 45 + longitudo_nominis * 8, y + 74, 4391568, 4, 8).
         factum = RECTANGULUM(x + 39, y + 92, 82, 16, 0).
         factum = RECTANGULUM(x + 40, y + 93, 80, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4317800, 8, 0).
+        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4391528, 8, 0).
         factum = RECTANGULUM(x + 127, y + 92, 74, 16, 0).
         factum = RECTANGULUM(x + 128, y + 93, 72, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4317816, 6, 0).
-        factum = TEXTUM_SCRIBE(x + 39, y + 115, 4317880, 14, 8).
-        factum = TEXTUM_SCRIBE(x + 159, y + 115, 4317896, 10, 8).
+        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4391544, 6, 0).
+        factum = TEXTUM_SCRIBE(x + 39, y + 115, 4391608, 14, 8).
+        factum = TEXTUM_SCRIBE(x + 159, y + 115, 4391624, 10, 8).
     FIN-SI.
     SI CONTENTUM(50333848) == 1 TUNC
         factum = RECTANGULUM(x + 34, y + 48, 218, 91, 8).
         factum = RECTANGULUM(x + 30, y + 44, 218, 91, 0).
         factum = RECTANGULUM(x + 31, y + 45, 216, 89, 7).
         factum = RECTANGULUM(x + 32, y + 46, 214, 17, 1).
-        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4317944, 16, 15).
+        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4391672, 16, 15).
         factum = RECTANGULUM(x + 39, y + 92, 82, 16, 0).
         factum = RECTANGULUM(x + 40, y + 93, 80, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4317800, 8, 0).
+        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4391528, 8, 0).
         factum = RECTANGULUM(x + 127, y + 92, 74, 16, 0).
         factum = RECTANGULUM(x + 128, y + 93, 72, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4317816, 6, 0).
-        factum = TEXTUM_SCRIBE(x + 39, y + 115, 4317880, 14, 8).
-        factum = TEXTUM_SCRIBE(x + 159, y + 115, 4317896, 10, 8).
+        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4391544, 6, 0).
+        factum = TEXTUM_SCRIBE(x + 39, y + 115, 4391608, 14, 8).
+        factum = TEXTUM_SCRIBE(x + 159, y + 115, 4391624, 10, 8).
     FIN-SI.
     REDDE factum.
 FIN-FUNCTIO.
@@ -572,24 +572,24 @@ FUNCTIO PROGRAMMATA_SCRIBE REDDENS NUMERUS.
     ACCIPIT nomen SICUT ORDO DE LITTERA.
     ACCIPIT longitudo_nominis SICUT NUMERUS.
     DECLARA status SICUT NUMERUS VALENS CONTENTUM(50333856).
-    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 286, 164, 4318032, 18).
+    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 286, 164, 4391760, 18).
     factum = RECTANGULUM(x + 3, y + 21, 280, 16, 7).
 
     factum = RECTANGULUM(x + 7, y + 22, 40, 14, 0).
     factum = RECTANGULUM(x + 8, y + 23, 38, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 15, y + 25, 4318056, 3, 0).
+    factum = TEXTUM_SCRIBE(x + 15, y + 25, 4391784, 3, 0).
     factum = RECTANGULUM(x + 51, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 52, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 55, y + 25, 4318064, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 55, y + 25, 4391792, 5, 0).
     factum = RECTANGULUM(x + 103, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 104, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 107, y + 25, 4317776, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 107, y + 25, 4391504, 5, 0).
     factum = RECTANGULUM(x + 155, y + 22, 48, 14, 0).
     factum = RECTANGULUM(x + 156, y + 23, 46, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 159, y + 25, 4317784, 5, 0).
+    factum = TEXTUM_SCRIBE(x + 159, y + 25, 4391512, 5, 0).
     factum = RECTANGULUM(x + 207, y + 22, 40, 14, 0).
     factum = RECTANGULUM(x + 208, y + 23, 38, 12, 15).
-    factum = TEXTUM_SCRIBE(x + 211, y + 25, 4317792, 4, 0).
+    factum = TEXTUM_SCRIBE(x + 211, y + 25, 4391520, 4, 0).
 
     factum = RECTANGULUM(x + 7, y + 39, 272, 104, 0).
     factum = RECTANGULUM(x + 8, y + 40, 270, 102, 15).
@@ -610,47 +610,47 @@ FUNCTIO PROGRAMMATA_SCRIBE REDDENS NUMERUS.
         FIN-SI.
         i = i + 1.
     FIN-DUM.
-    SI inventus == 0 TUNC factum = TEXTUM_SCRIBE(x + 18, y + 60, 4318104, 6, 8). FIN-SI.
+    SI inventus == 0 TUNC factum = TEXTUM_SCRIBE(x + 18, y + 60, 4391832, 6, 8). FIN-SI.
 
     factum = RECTANGULUM(x + 7, y + 146, 272, 13, 15).
-    SI status == 0 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317536, 7, 8). FIN-SI.
-    SI status == 1 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317848, 8, 2). FIN-SI.
-    SI status == 2 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317864, 7, 2). FIN-SI.
-    SI status == 3 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317872, 7, 4). FIN-SI.
-    SI status == 4 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317712, 7, 4). FIN-SI.
-    SI status == 5 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4317928, 14, 4). FIN-SI.
+    SI status == 0 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391264, 7, 8). FIN-SI.
+    SI status == 1 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391576, 8, 2). FIN-SI.
+    SI status == 2 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391592, 7, 2). FIN-SI.
+    SI status == 3 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391600, 7, 4). FIN-SI.
+    SI status == 4 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391440, 7, 4). FIN-SI.
+    SI status == 5 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391656, 14, 4). FIN-SI.
 
     SI nomen_modus > 0 TUNC
         factum = RECTANGULUM(x + 34, y + 48, 218, 91, 8).
         factum = RECTANGULUM(x + 30, y + 44, 218, 91, 0).
         factum = RECTANGULUM(x + 31, y + 45, 216, 89, 7).
         factum = RECTANGULUM(x + 32, y + 46, 214, 17, 1).
-        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4318072, 18, 15).
+        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4391800, 18, 15).
         factum = RECTANGULUM(x + 39, y + 69, 198, 18, 0).
         factum = RECTANGULUM(x + 40, y + 70, 196, 16, 15).
         factum = ORDINEM_SCRIBE(x + 45, y + 74, nomen, longitudo_nominis, 0).
-        factum = TEXTUM_SCRIBE(x + 45 + longitudo_nominis * 8, y + 74, 4318096, 6, 8).
+        factum = TEXTUM_SCRIBE(x + 45 + longitudo_nominis * 8, y + 74, 4391824, 6, 8).
         factum = RECTANGULUM(x + 39, y + 92, 82, 16, 0).
         factum = RECTANGULUM(x + 40, y + 93, 80, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4317800, 8, 0).
+        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4391528, 8, 0).
         factum = RECTANGULUM(x + 127, y + 92, 74, 16, 0).
         factum = RECTANGULUM(x + 128, y + 93, 72, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4317816, 6, 0).
-        factum = TEXTUM_SCRIBE(x + 39, y + 115, 4317880, 14, 8).
-        factum = TEXTUM_SCRIBE(x + 159, y + 115, 4317896, 10, 8).
+        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4391544, 6, 0).
+        factum = TEXTUM_SCRIBE(x + 39, y + 115, 4391608, 14, 8).
+        factum = TEXTUM_SCRIBE(x + 159, y + 115, 4391624, 10, 8).
     FIN-SI.
     SI CONTENTUM(50333848) == 1 TUNC
         factum = RECTANGULUM(x + 34, y + 48, 218, 91, 8).
         factum = RECTANGULUM(x + 30, y + 44, 218, 91, 0).
         factum = RECTANGULUM(x + 31, y + 45, 216, 89, 7).
         factum = RECTANGULUM(x + 32, y + 46, 214, 17, 1).
-        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4318352, 15, 15).
+        factum = TEXTUM_SCRIBE(x + 39, y + 50, 4392080, 15, 15).
         factum = RECTANGULUM(x + 39, y + 92, 82, 16, 0).
         factum = RECTANGULUM(x + 40, y + 93, 80, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4317800, 8, 0).
+        factum = TEXTUM_SCRIBE(x + 45, y + 96, 4391528, 8, 0).
         factum = RECTANGULUM(x + 127, y + 92, 74, 16, 0).
         factum = RECTANGULUM(x + 128, y + 93, 72, 14, 15).
-        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4317816, 6, 0).
+        factum = TEXTUM_SCRIBE(x + 133, y + 96, 4391544, 6, 0).
     FIN-SI.
     REDDE factum.
 FIN-FUNCTIO.
@@ -684,7 +684,7 @@ FUNCTIO PROGRAMMA_SCRIBE REDDENS NUMERUS.
     ACCIPIT textus SICUT ORDO DE LITTERA.
     ACCIPIT longitudo SICUT NUMERUS.
     ACCIPIT indice SICUT NUMERUS.
-    DECLARA titulus SICUT NUMERUS VALENS 4318112.
+    DECLARA titulus SICUT NUMERUS VALENS 4391840.
     SI FASCICULUM_VXNAT(indice) == 1 TUNC titulus = 50401360 + indice * 32. FIN-SI.
     DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 286, 164, titulus, 12).
     factum = RECTANGULUM(x + 7, y + 25, 272, 118, 0).
@@ -763,8 +763,8 @@ FUNCTIO PROGRAMMA_SCRIBE REDDENS NUMERUS.
         i = i + 1.
     FIN-DUM.
     factum = RECTANGULUM(x + 7, y + 146, 272, 13, 15).
-    SI erratum == 0 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4318112, 14, 2). FIN-SI.
-    SI erratum == 1 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4318128, 17, 4). FIN-SI.
+    SI erratum == 0 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391840, 14, 2). FIN-SI.
+    SI erratum == 1 TUNC factum = TEXTUM_SCRIBE(x + 12, y + 149, 4391856, 17, 4). FIN-SI.
     REDDE factum.
 FIN-FUNCTIO.
 
@@ -789,7 +789,7 @@ FUNCTIO SERPENS_SCRIBE REDDENS NUMERUS.
     ACCIPIT serpent_y SICUT ORDO DE NUMERUS.
     ACCIPIT longitudo SICUT NUMERUS.
     ACCIPIT puncta SICUT NUMERUS.
-    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 220, 164, 4317328, 14).
+    DECLARA factum SICUT NUMERUS VALENS FENESTRAM_SCRIBE(x, y, 220, 164, 4391056, 14).
     factum = RECTANGULUM(x + 12, y + 25, 196, 111, 0).
     factum = RECTANGULUM(x + 20, y + 32, 180, 100, 0).
     DECLARA i SICUT NUMERUS VALENS longitudo - 1.
@@ -801,14 +801,14 @@ FUNCTIO SERPENS_SCRIBE REDDENS NUMERUS.
         factum = RECTANGULUM(x + 22 + serpent_x[i] * 8, y + 34 + serpent_y[i] * 8, 7, 7, color).
         i = i - 1.
     FIN-DUM.
-    factum = TEXTUM_SCRIBE(x + 12, y + 146, 4317384, 6, 0).
+    factum = TEXTUM_SCRIBE(x + 12, y + 146, 4391112, 6, 0).
     DECLARA decem SICUT NUMERUS VALENS puncta / 10.
     DECLARA unum SICUT NUMERUS VALENS puncta % 10.
     SI decem > 0 TUNC
         factum = LITTERAM_SCRIBE(x + 64, y + 146, 48 + decem, 0).
     FIN-SI.
     factum = LITTERAM_SCRIBE(x + 72, y + 146, 48 + unum, 0).
-    factum = TEXTUM_SCRIBE(x + 92, y + 146, 4317456, 15, 8).
+    factum = TEXTUM_SCRIBE(x + 92, y + 146, 4391184, 15, 8).
     REDDE factum.
 FIN-FUNCTIO.
 
@@ -885,8 +885,8 @@ FUNCTIO PROGRAMMA_EXEMPLUM_PONE REDDENS NUMERUS.
         SCRIBE_OCTETUM_AB(50401368 + indice * 32, 88). SCRIBE_OCTETUM_AB(50401369 + indice * 32, 78).
         SCRIBE_OCTETUM_AB(50401370 + indice * 32, 65). SCRIBE_OCTETUM_AB(50401371 + indice * 32, 84).
     FIN-SI.
-    DECLARA textus SICUT NUMERUS VALENS 4318384.
-    SI genus == 1 TUNC textus = 4318176. FIN-SI.
+    DECLARA textus SICUT NUMERUS VALENS 4392112.
+    SI genus == 1 TUNC textus = 4391904. FIN-SI.
     DECLARA locus SICUT NUMERUS VALENS FASCICULUM_LOCUS(indice).
     i = 0.
     DUM i < 1280 PERFICE SCRIBE_OCTETUM_AB(locus + i, 0). i = i + 1. FIN-DUM.
@@ -900,26 +900,306 @@ FUNCTIO PROGRAMMA_EXEMPLUM_PONE REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO PROGRAMMATA_EXEMPLA_PARA REDDENS NUMERUS.
-    DECLARA salve SICUT NUMERUS VALENS 0.
     DECLARA tabula SICUT NUMERUS VALENS 0.
     DECLARA i SICUT NUMERUS VALENS 6.
     DUM i < 12 PERFICE
-        SI PROGRAMMA_NOMEN_EST(i, 0) == 1 TUNC salve = 1. FIN-SI.
         SI PROGRAMMA_NOMEN_EST(i, 1) == 1 TUNC tabula = 1. FIN-SI.
         i = i + 1.
     FIN-DUM.
     DECLARA addita SICUT NUMERUS VALENS 0.
-    SI salve == 0 TUNC
-        i = 6.
-        DUM i < 12 && CONTENTUM(50401344 + i * 32) == 1 PERFICE i = i + 1. FIN-DUM.
-        SI i < 12 TUNC addita = addita + PROGRAMMA_EXEMPLUM_PONE(i, 0). FIN-SI.
-    FIN-SI.
     SI tabula == 0 TUNC
         i = 6.
         DUM i < 12 && CONTENTUM(50401344 + i * 32) == 1 PERFICE i = i + 1. FIN-DUM.
         SI i < 12 TUNC addita = addita + PROGRAMMA_EXEMPLUM_PONE(i, 1). FIN-SI.
     FIN-SI.
     REDDE addita.
+FIN-FUNCTIO.
+
+// --- UEFI runtime VINDEX purum -------------------------------------------------
+// META + 8 continet EFI_SYSTEM_TABLE*; status UEFI incipit ad 0x03000B00.
+// Nulla functio C post ingressum nuclei revocatur.
+
+FUNCTIO UEFI_I32 REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    DECLARA valor SICUT NUMERUS VALENS OCTETUS_AB(locus) | (OCTETUS_AB(locus + 1) << 8) | (OCTETUS_AB(locus + 2) << 16) | (OCTETUS_AB(locus + 3) << 24).
+    SI valor >= 2147483648 TUNC valor = valor - 4294967296. FIN-SI.
+    REDDE valor.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_CLAVIS_IMPONE REDDENS NUMERUS.
+    ACCIPIT clavis SICUT NUMERUS.
+    DECLARA caput SICUT NUMERUS VALENS CONTENTUM(50331712).
+    SCRIBE_OCTETUM_AB(50332416 + (caput & 63), clavis).
+    CONTENTUM(50331712) = caput + 1.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_LITTERA_CLAVIS REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    SI c == 97 TUNC REDDE 16. FIN-SI. SI c == 122 TUNC REDDE 17. FIN-SI.
+    SI c == 101 TUNC REDDE 18. FIN-SI. SI c == 114 TUNC REDDE 19. FIN-SI.
+    SI c == 116 TUNC REDDE 20. FIN-SI. SI c == 121 TUNC REDDE 21. FIN-SI.
+    SI c == 117 TUNC REDDE 22. FIN-SI. SI c == 105 TUNC REDDE 23. FIN-SI.
+    SI c == 111 TUNC REDDE 24. FIN-SI. SI c == 112 TUNC REDDE 25. FIN-SI.
+    SI c == 113 TUNC REDDE 30. FIN-SI. SI c == 115 TUNC REDDE 31. FIN-SI.
+    SI c == 100 TUNC REDDE 32. FIN-SI. SI c == 102 TUNC REDDE 33. FIN-SI.
+    SI c == 103 TUNC REDDE 34. FIN-SI. SI c == 104 TUNC REDDE 35. FIN-SI.
+    SI c == 106 TUNC REDDE 36. FIN-SI. SI c == 107 TUNC REDDE 37. FIN-SI.
+    SI c == 108 TUNC REDDE 38. FIN-SI. SI c == 109 TUNC REDDE 39. FIN-SI.
+    SI c == 119 TUNC REDDE 44. FIN-SI. SI c == 120 TUNC REDDE 45. FIN-SI.
+    SI c == 99 TUNC REDDE 46. FIN-SI. SI c == 118 TUNC REDDE 47. FIN-SI.
+    SI c == 98 TUNC REDDE 48. FIN-SI. SI c == 110 TUNC REDDE 49. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_UNICODE_INPONE REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    DECLARA maius SICUT NUMERUS VALENS 0.
+    SI c >= 65 && c <= 90 TUNC maius = 1. c = c + 32. FIN-SI.
+    DECLARA clavis SICUT NUMERUS VALENS UEFI_LITTERA_CLAVIS(c).
+    SI clavis != 0 TUNC
+        SI maius == 1 TUNC DECLARA a SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(42). FIN-SI.
+        DECLARA b SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(clavis).
+        SI maius == 1 TUNC DECLARA d SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(170). FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    SI c >= 49 && c <= 57 TUNC clavis = 2 + c - 49. FIN-SI.
+    SI c == 48 TUNC clavis = 11. FIN-SI.
+    SI c == 32 TUNC clavis = 57. FIN-SI.
+    SI c == 8 TUNC clavis = 14. FIN-SI.
+    SI c == 13 || c == 10 TUNC clavis = 28. FIN-SI.
+    SI c == 44 TUNC clavis = 50. FIN-SI.
+    SI c == 59 TUNC clavis = 51. FIN-SI.
+    SI c == 58 TUNC clavis = 52. FIN-SI.
+    SI c == 33 TUNC clavis = 53. FIN-SI.
+    SI clavis != 0 TUNC DECLARA e SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(clavis). REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_CLAVES_POLLE REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA conin SICUT NUMERUS VALENS CONTENTUM(systema + 48).
+    SI conin == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(conin + 8).
+    SI lege == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA data_clavis SICUT NUMERUS VALENS 0.
+    DECLARA numerus SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS 0.
+    DUM numerus < 8 PERFICE
+        data_clavis = 0.
+        status = UEFI_VOCA6(lege, conin, SEDES(data_clavis), 0, 0, 0, 0).
+        SI status != 0 TUNC REDDE numerus. FIN-SI.
+        DECLARA scan SICUT NUMERUS VALENS OCTETUS_AB(SEDES(data_clavis)) | (OCTETUS_AB(SEDES(data_clavis) + 1) << 8).
+        DECLARA unicode SICUT NUMERUS VALENS OCTETUS_AB(SEDES(data_clavis) + 2) | (OCTETUS_AB(SEDES(data_clavis) + 3) << 8).
+        SI unicode != 0 TUNC DECLARA u SICUT NUMERUS VALENS UEFI_UNICODE_INPONE(unicode). FIN-SI.
+        SI scan == 1 TUNC DECLARA s1 SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(72). FIN-SI.
+        SI scan == 2 TUNC DECLARA s2 SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(80). FIN-SI.
+        SI scan == 3 TUNC DECLARA s3 SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(77). FIN-SI.
+        SI scan == 4 TUNC DECLARA s4 SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(75). FIN-SI.
+        SI scan == 9 TUNC DECLARA s9 SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(73). FIN-SI.
+        SI scan == 10 TUNC DECLARA s10 SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(81). FIN-SI.
+        SI scan == 23 TUNC DECLARA s23 SICUT NUMERUS VALENS UEFI_CLAVIS_IMPONE(1). FIN-SI.
+        numerus = numerus + 1.
+    FIN-DUM.
+    REDDE numerus.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_MURIS_PUBLICA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT bullae SICUT NUMERUS.
+    SI x < 0 TUNC x = 0. FIN-SI. SI x > 306 TUNC x = 306. FIN-SI.
+    SI y < 0 TUNC y = 0. FIN-SI. SI y > 186 TUNC y = 186. FIN-SI.
+    SI CONTENTUM(50331648) != x || CONTENTUM(50331656) != y || CONTENTUM(50331664) != bullae TUNC
+        CONTENTUM(50331648) = x.
+        CONTENTUM(50331656) = y.
+        CONTENTUM(50331664) = bullae.
+        CONTENTUM(50331672) = CONTENTUM(50331672) + 1.
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_MURIS_ABS_POLLE REDDENS NUMERUS.
+    DECLARA murus SICUT NUMERUS VALENS CONTENTUM(50334496).
+    SI murus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(murus + 8).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(murus + 24).
+    SI lege == 0 || modus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status_muris SICUT ORDO DE NUMERUS CAPACITAS 4.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, murus, SEDES(status_muris), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA minx SICUT NUMERUS VALENS CONTENTUM(modus).
+    DECLARA miny SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+    DECLARA maxx SICUT NUMERUS VALENS CONTENTUM(modus + 24).
+    DECLARA maxy SICUT NUMERUS VALENS CONTENTUM(modus + 32).
+    DECLARA dx SICUT NUMERUS VALENS maxx - minx.
+    DECLARA dy SICUT NUMERUS VALENS maxy - miny.
+    SI dx <= 0 || dy <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS (status_muris[0] - minx) * 306 / dx.
+    DECLARA y SICUT NUMERUS VALENS (status_muris[1] - miny) * 186 / dy.
+    DECLARA bullae SICUT NUMERUS VALENS status_muris[3] & 3.
+    REDDE UEFI_MURIS_PUBLICA(x, y, bullae).
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_MURIS_REL_POLLE REDDENS NUMERUS.
+    DECLARA murus SICUT NUMERUS VALENS CONTENTUM(50334488).
+    SI murus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(murus + 8).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(murus + 24).
+    SI lege == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status_muris SICUT ORDO DE NUMERUS CAPACITAS 2.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, murus, SEDES(status_muris), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mx SICUT NUMERUS VALENS UEFI_I32(SEDES(status_muris)).
+    DECLARA my SICUT NUMERUS VALENS UEFI_I32(SEDES(status_muris) + 4).
+    DECLARA rx SICUT NUMERUS VALENS 0.
+    DECLARA ry SICUT NUMERUS VALENS 0.
+    SI modus != 0 TUNC rx = CONTENTUM(modus). ry = CONTENTUM(modus + 8). FIN-SI.
+    SI rx > 0 TUNC mx = mx * 6 / rx. FIN-SI. SI ry > 0 TUNC my = my * 6 / ry. FIN-SI.
+    SI mx == 0 && UEFI_I32(SEDES(status_muris)) != 0 TUNC SI UEFI_I32(SEDES(status_muris)) < 0 TUNC mx = 0 - 1. ALITER mx = 1. FIN-SI. FIN-SI.
+    SI my == 0 && UEFI_I32(SEDES(status_muris) + 4) != 0 TUNC SI UEFI_I32(SEDES(status_muris) + 4) < 0 TUNC my = 0 - 1. ALITER my = 1. FIN-SI. FIN-SI.
+    DECLARA bullae SICUT NUMERUS VALENS 0.
+    SI OCTETUS_AB(SEDES(status_muris) + 12) != 0 TUNC bullae = bullae | 1. FIN-SI.
+    SI OCTETUS_AB(SEDES(status_muris) + 13) != 0 TUNC bullae = bullae | 2. FIN-SI.
+    REDDE UEFI_MURIS_PUBLICA(CONTENTUM(50331648) + mx, CONTENTUM(50331656) + my, bullae).
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_GUID_PONE REDDENS NUMERUS.
+    ACCIPIT guid SICUT ACUS<LITTERA>.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE guid[i] = 0. i = i + 1. FIN-DUM.
+    SI genus == 1 TUNC
+        guid[0]=135. guid[1]=140. guid[2]=135. guid[3]=49. guid[4]=117. guid[5]=11. guid[6]=213. guid[7]=17.
+        guid[8]=154. guid[9]=79. guid[10]=0. guid[11]=144. guid[12]=39. guid[13]=63. guid[14]=193. guid[15]=77.
+    FIN-SI.
+    SI genus == 2 TUNC
+        guid[0]=43. guid[1]=211. guid[2]=89. guid[3]=141. guid[4]=85. guid[5]=198. guid[6]=233. guid[7]=74.
+        guid[8]=155. guid[9]=21. guid[10]=242. guid[11]=89. guid[12]=4. guid[13]=153. guid[14]=42. guid[15]=67.
+    FIN-SI.
+    SI genus == 3 TUNC
+        guid[0]=161. guid[1]=49. guid[2]=27. guid[3]=91. guid[4]=98. guid[5]=149. guid[6]=210. guid[7]=17.
+        guid[8]=142. guid[9]=63. guid[10]=0. guid[11]=160. guid[12]=201. guid[13]=105. guid[14]=114. guid[15]=59.
+    FIN-SI.
+    SI genus == 4 TUNC
+        guid[0]=34. guid[1]=91. guid[2]=78. guid[3]=150. guid[4]=89. guid[5]=100. guid[6]=210. guid[7]=17.
+        guid[8]=142. guid[9]=57. guid[10]=0. guid[11]=160. guid[12]=201. guid[13]=105. guid[14]=114. guid[15]=59.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_VOLUMEN_APERI REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    DECLARA imago SICUT NUMERUS VALENS CONTENTUM(50334464).
+    SI systema == 0 || imago == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI boot == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA handle SICUT NUMERUS VALENS CONTENTUM(boot + 152).
+    SI handle == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
+    DECLARA factum SICUT NUMERUS VALENS UEFI_GUID_PONE(guid, 3).
+    DECLARA onusta SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(handle, imago, SEDES(guid), SEDES(onusta), 0, 0, 0).
+    SI status != 0 || onusta == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA fabrica SICUT NUMERUS VALENS CONTENTUM(onusta + 24).
+    factum = UEFI_GUID_PONE(guid, 4).
+    DECLARA fs SICUT NUMERUS VALENS 0.
+    status = UEFI_VOCA6(handle, fabrica, SEDES(guid), SEDES(fs), 0, 0, 0).
+    SI status != 0 || fs == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA radix SICUT NUMERUS VALENS 0.
+    DECLARA aperi_volumen SICUT NUMERUS VALENS CONTENTUM(fs + 8).
+    status = UEFI_VOCA6(aperi_volumen, fs, SEDES(radix), 0, 0, 0, 0).
+    SI status != 0 || radix == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA nomen SICUT ORDO DE LITTERA CAPACITAS 20.
+    DECLARA k SICUT NUMERUS VALENS 0. DUM k < 20 PERFICE nomen[k]=0. k=k+1. FIN-DUM.
+    nomen[0]=86. nomen[2]=73. nomen[4]=78. nomen[6]=68. nomen[8]=69. nomen[10]=88. nomen[12]=46. nomen[14]=70. nomen[16]=83.
+    DECLARA fasciculus SICUT NUMERUS VALENS 0.
+    DECLARA aperi SICUT NUMERUS VALENS CONTENTUM(radix + 8).
+    DECLARA crea SICUT NUMERUS VALENS (4611686018427387904 << 1) | 3.
+    status = UEFI_VOCA6(aperi, radix, SEDES(fasciculus), SEDES(nomen), crea, 0, 0).
+    SI status == 0 && fasciculus != 0 TUNC
+        CONTENTUM(50334472) = fasciculus. CONTENTUM(50334480) = 1.
+    ALITER
+        fasciculus = 0.
+        status = UEFI_VOCA6(aperi, radix, SEDES(fasciculus), SEDES(nomen), 1, 0, 0).
+        SI status == 0 && fasciculus != 0 TUNC CONTENTUM(50334472)=fasciculus. CONTENTUM(50334480)=0. FIN-SI.
+    FIN-SI.
+    DECLARA claude_radix SICUT NUMERUS VALENS CONTENTUM(radix + 16).
+    SI claude_radix != 0 TUNC DECLARA cr SICUT NUMERUS VALENS UEFI_VOCA6(claude_radix, radix, 0, 0, 0, 0, 0). FIN-SI.
+    SI CONTENTUM(50334472) != 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_VOLUMEN_RELEGE REDDENS NUMERUS.
+    DECLARA fasciculus SICUT NUMERUS VALENS CONTENTUM(50334472).
+    SI fasciculus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pone SICUT NUMERUS VALENS CONTENTUM(fasciculus + 56).
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(fasciculus + 32).
+    SI pone == 0 || lege == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(pone, fasciculus, 0, 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mensura SICUT NUMERUS VALENS 32768.
+    status = UEFI_VOCA6(lege, fasciculus, SEDES(mensura), 50401280, 0, 0, 0).
+    SI status == 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_VOLUMEN_SERVA REDDENS NUMERUS.
+    DECLARA fasciculus SICUT NUMERUS VALENS CONTENTUM(50334472).
+    SI fasciculus == 0 || CONTENTUM(50334480) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pone SICUT NUMERUS VALENS CONTENTUM(fasciculus + 56).
+    DECLARA scribe SICUT NUMERUS VALENS CONTENTUM(fasciculus + 40).
+    DECLARA flush SICUT NUMERUS VALENS CONTENTUM(fasciculus + 80).
+    SI pone == 0 || scribe == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(pone, fasciculus, 0, 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mensura SICUT NUMERUS VALENS 32768.
+    status = UEFI_VOCA6(scribe, fasciculus, SEDES(mensura), 50401280, 0, 0, 0).
+    SI status != 0 || mensura != 32768 TUNC REDDE 0. FIN-SI.
+    SI flush != 0 TUNC status = UEFI_VOCA6(flush, fasciculus, 0, 0, 0, 0, 0). FIN-SI.
+    SI status == 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_PARA REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI boot == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA locate SICUT NUMERUS VALENS CONTENTUM(boot + 320).
+    SI locate != 0 TUNC
+        DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
+        DECLARA rel SICUT NUMERUS VALENS 0.
+        DECLARA abs SICUT NUMERUS VALENS 0.
+        DECLARA f SICUT NUMERUS VALENS UEFI_GUID_PONE(guid, 1).
+        DECLARA s SICUT NUMERUS VALENS UEFI_VOCA6(locate, SEDES(guid), 0, SEDES(rel), 0, 0, 0).
+        SI s == 0 TUNC CONTENTUM(50334488) = rel. FIN-SI.
+        f = UEFI_GUID_PONE(guid, 2).
+        s = UEFI_VOCA6(locate, SEDES(guid), 0, SEDES(abs), 0, 0, 0).
+        SI s == 0 TUNC CONTENTUM(50334496) = abs. FIN-SI.
+        SI rel != 0 TUNC DECLARA rr SICUT NUMERUS VALENS UEFI_VOCA6(CONTENTUM(rel), rel, 0, 0, 0, 0, 0). FIN-SI.
+        SI abs != 0 TUNC DECLARA ra SICUT NUMERUS VALENS UEFI_VOCA6(CONTENTUM(abs), abs, 0, 0, 0, 0, 0). FIN-SI.
+    FIN-SI.
+    DECLARA vol SICUT NUMERUS VALENS UEFI_VOLUMEN_APERI().
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO UEFI_POLLE REDDENS NUMERUS.
+    DECLARA cl SICUT NUMERUS VALENS UEFI_CLAVES_POLLE().
+    DECLARA ma SICUT NUMERUS VALENS UEFI_MURIS_ABS_POLLE().
+    SI ma == 0 TUNC ma = UEFI_MURIS_REL_POLLE(). FIN-SI.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema != 0 TUNC
+        DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+        SI boot != 0 TUNC
+            DECLARA stall SICUT NUMERUS VALENS CONTENTUM(boot + 248).
+            SI stall != 0 TUNC DECLARA st SICUT NUMERUS VALENS UEFI_VOCA6(stall, 10000, 0, 0, 0, 0, 0). FIN-SI.
+        FIN-SI.
+    FIN-SI.
+    CONTENTUM(50331728) = CONTENTUM(50331728) + 1.
+    REDDE cl + ma.
 FIN-FUNCTIO.
 
 FUNCTIO VOLUMEN_PARA REDDENS NUMERUS.
@@ -1018,22 +1298,11 @@ FUNCTIO VOLUMEN_NUMERA REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO VOLUMEN_SERVA REDDENS NUMERUS.
-    SI CONTENTUM(50333696) == 1 && CONTENTUM(50333792) == 1 TUNC
-        CONTENTUM(50333808) = 0.
-        CONTENTUM(50333800) = 1.
-        DECLARA factum SICUT NUMERUS VALENS POLLE().
-        SI CONTENTUM(50333808) == 1 TUNC REDDE 1. FIN-SI.
-    FIN-SI.
-    REDDE 0.
+    REDDE UEFI_VOLUMEN_SERVA().
 FIN-FUNCTIO.
 
 FUNCTIO VOLUMEN_RELEGE REDDENS NUMERUS.
-    SI CONTENTUM(50333696) == 1 && CONTENTUM(50333792) > 0 TUNC
-        CONTENTUM(50333808) = 0.
-        CONTENTUM(50333800) = 2.
-        DECLARA factum SICUT NUMERUS VALENS POLLE().
-        SI CONTENTUM(50333808) == 1 && VOLUMEN_PARA() < 2 TUNC REDDE 1. FIN-SI.
-    FIN-SI.
+    SI UEFI_VOLUMEN_RELEGE() == 1 && VOLUMEN_PARA() < 2 TUNC REDDE 1. FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -1140,6 +1409,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA cursor_positus SICUT NUMERUS VALENS 0.
     DECLARA pingendum SICUT NUMERUS VALENS 1.
     DECLARA factum SICUT NUMERUS VALENS 0.
+    DECLARA uefi_paratus SICUT NUMERUS VALENS UEFI_PARA().
+    DECLARA volumen_lectum SICUT NUMERUS VALENS UEFI_VOLUMEN_RELEGE().
     DECLARA migratio SICUT NUMERUS VALENS VOLUMEN_PARA().
     SI migratio == 1 TUNC factum = VOLUMEN_SERVA(). FIN-SI.
     fasciculus_activus = CONTENTUM(50401312).
@@ -1171,7 +1442,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     DUM 1 == 1 PERFICE
         SI CONTENTUM(50333696) == 1 TUNC
-            factum = POLLE().
+            factum = UEFI_POLLE().
         FIN-SI.
         DECLARA mus_mutatus SICUT NUMERUS VALENS 0.
         DECLARA novus_numerus_muris SICUT NUMERUS VALENS CONTENTUM(50331672).
@@ -1677,7 +1948,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     CONTENTUM(50401352 + locus_novus * 32) = 0.
                     DECLARA nomen_i SICUT NUMERUS VALENS 0.
                     DUM nomen_i < 12 PERFICE
-                        SCRIBE_OCTETUM_AB(50401360 + locus_novus * 32 + nomen_i, OCTETUS_AB(4317640 + nomen_i)).
+                        SCRIBE_OCTETUM_AB(50401360 + locus_novus * 32 + nomen_i, OCTETUS_AB(4391368 + nomen_i)).
                         nomen_i = nomen_i + 1.
                     FIN-DUM.
                     factum = VOLUMEN_NUMERA().
@@ -1854,8 +2125,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 SI nomen_creatio == 1 && nomen_genus == 1 TUNC
                     longitudo_editoris = 0.
                     DECLARA locus_programmatis_novi SICUT NUMERUS VALENS FASCICULUM_LOCUS(nomen_scopus).
-                    DUM longitudo_editoris < 1279 && OCTETUS_AB(4318176 + longitudo_editoris) != 0 PERFICE
-                        editor[longitudo_editoris] = OCTETUS_AB(4318176 + longitudo_editoris).
+                    DUM longitudo_editoris < 1279 && OCTETUS_AB(4391904 + longitudo_editoris) != 0 PERFICE
+                        editor[longitudo_editoris] = OCTETUS_AB(4391904 + longitudo_editoris).
                         SCRIBE_OCTETUM_AB(locus_programmatis_novi + longitudo_editoris, editor[longitudo_editoris]).
                         longitudo_editoris = longitudo_editoris + 1.
                     FIN-DUM.
@@ -1947,8 +2218,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 ALITER
                     factum = RECTANGULUM(fenestra_x + 43, fenestra_y + 67, 134, 43, 7).
                     factum = RECTANGULUM(fenestra_x + 44, fenestra_y + 68, 132, 41, 15).
-                    factum = TEXTUM_SCRIBE(fenestra_x + 70, fenestra_y + 75, 4317416, 10, 4).
-                    factum = TEXTUM_SCRIBE(fenestra_x + 58, fenestra_y + 92, 4317432, 13, 0).
+                    factum = TEXTUM_SCRIBE(fenestra_x + 70, fenestra_y + 75, 4391144, 10, 4).
+                    factum = TEXTUM_SCRIBE(fenestra_x + 58, fenestra_y + 92, 4391160, 13, 0).
                 FIN-SI.
             FIN-SI.
             SI menu == 1 TUNC

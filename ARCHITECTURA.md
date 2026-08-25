@@ -14,7 +14,31 @@ Sylvia non est programma demonstrativum abiciendum. VINDEX non est lingua privat
 
 VINDEX facultates praebet quibus Sylvia construitur. Sylvia necessitates reales detegit quae progressionem VINDEX dirigere possunt. Si Sylvia facultate caret quia VINDEX eam nondum exprimit, primum quaerendum est utrum facultas generalis in VINDEX vel eius bibliotheca standardi creanda sit, non utrum exceptio privata in Sylvia fingenda sit.
 
-Eodem tempore Sylvia libertatem architectonicam retinet: partes humiles quae ante executionem codicis VINDEX necessariae sunt — initium firmware, ingressus machinae et pontes minimi — aliis linguis vel codice machinae scribi possunt, dummodo terminus inter eas et VINDEX clarus maneat.
+## Puritas VINDEX in Sylvia OS
+
+**Sylvia OS post initium firmware tota lingua VINDEX scribenda est.** Haec regula architectonica absoluta est.
+
+Alius sermo, ut C aut codex machinalis manualis, tantum in ponticulo UEFI initiali toleratur ubi firmware directe aliter vocari nondum potest. Ponticulus ille nihil ultra officium amorçandi faciat:
+
+- modum graphicum et framebuffer a firmware obtineat;
+- memoriam necessariam initialem reservet;
+- imaginem primi programmatis VINDEX oneret;
+- descriptorum minimorum initii valores VINDEX tradat, inter quos tabula systematis UEFI si opus est;
+- imperium semel ad primum ingressum VINDEX transferat.
+
+Post translationem imperii, ponticulus non debet manere minister runtime nec iterum vocari. Non licet ei:
+
+- ansam eventuum tenere;
+- clavierem aut murem pollere;
+- framebuffer pingere vel componere;
+- fenestras, focus, z-order, taskbar aut superficies administrare;
+- systema fasciculorum interpretari vel I/O runtime praestare;
+- applicationes VINDEX ut clientes intra runtime C regere;
+- functionem residentem praebere quam VINDEX continuo revocet.
+
+Si VINDEX facultate necessaria caret — exempli gratia vocatione indirecta UEFI, accessu memoriae-mappatae, input, disco, interruptione aut alio mechanismo — **lingua VINDEX, compilator eius, ABI aut bibliotheca standardis extendenda sunt.** Defectus facultatis VINDEX numquam causa valida est logicam Sylviae in C transferendi.
+
+Codex non-VINDEX qui historice ultra hunc terminum processit habetur experimentum hereditatum, non exemplar architectonicum. Gradus novi eum non amplificent; migrandus est in VINDEX aut removendus.
 
 ## Tres columnae
 
@@ -62,7 +86,7 @@ Versiones VINDEX et Sylvia separatim numerandae sunt. Nulla versio Sylviae impli
 
 VINDEX 0.51 iam compilat directe in ELF x86-64, compilatorem auto-hospitem habet, memoriam, formas, acus, fluitantia, importationes, I/O et pontem graphicum declarativum. Systema experimentale praesens BIOS/UEFI, nucleum VINDEX et ambitum fenestralem continet.
 
-Hoc opus non deletur. Est fundamentum historicum et technicum ex quo nova architectura evolvetur.
+Hoc opus historicum ad probationem et migrationem servari potest, sed nulla pars runtime non-VINDEX ex eo canonica habenda est si regulam puritatis supra violat.
 
 ## Directio Sylviae
 
@@ -76,8 +100,8 @@ Intentio visualis est systema desktop distinctum, legibile et humanum: spiritus 
 
 ## Proximi gradus
 
-1. Status VINDEX 0.51 exacte cartographandus et probationibus conservandus.
-2. Specificationis canonicae VINDEX fundamentum separandum a documentis unius distributionis.
-3. Limites actuales nuclei/Systematis qui Sylviae progressionem impediunt enumerandi.
-4. Sylviae architectura moderna definienda: framebuffer/resolutiones, memoria, fasciculi, processus/applicationes, input et API VINDEX.
-5. Prima facultas communis VINDEX + Sylvia eligenda et verticaliter perficienda, sine regressione compilatoris auto-hospitis.
+1. Ponticulum UEFI ad initium strictum redigere et omnem logicam runtime ex eo expellere.
+2. Facultates linguae VINDEX quae accessui firmware/hardware directo desunt definire et implementare.
+3. Fenestrale, compositorium, input, focus, z-order et taskbar in VINDEX nativo migrare.
+4. Systema fasciculorum et I/O runtime ex pontibus residentibus in VINDEX transferre.
+5. Probationem CI instituere quae novam logicam runtime non-VINDEX in Sylvia prohibet.

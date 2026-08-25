@@ -1,0 +1,8 @@
+// Probatio compilationis: vocatio indirecta UEFI sex argumentorum.
+// Binarium non exsequitur; CI formam instructionum ABI inspicit.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA functio SICUT NUMERUS VALENS 1.
+    DECLARA effectus SICUT NUMERUS VALENS UEFI_VOCA6(functio, 11, 22, 33, 44, 55, 66).
+    REDDE effectus.
+FIN-FUNCTIO.

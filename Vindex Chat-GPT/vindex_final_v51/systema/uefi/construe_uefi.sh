@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# BOOTX64.EFI et imaginem GPT/FAT32 VINDEX construit.
+# Sylvia OS UEFI: bootstrap minimus C, deinde runtime VINDEX purum.
 
 set -eu
 
@@ -8,6 +8,7 @@ UEFI="$RADIX/systema/uefi"
 IMAGO="${1:-$RADIX/systema_vindex_uefi.img}"
 APPLICATIO="${2:-$RADIX/BOOTX64.EFI}"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-uefi.XXXXXX")"
+NUCLEUS_LIMEN=196608
 
 purga() {
     if [ -d "$TEMPORARIUM" ]; then
@@ -24,12 +25,23 @@ for instrumentum in gcc ld objcopy python3 install file objdump; do
     fi
 done
 
-if [ ! -f "$RADIX/nucleus_systema.elf" ] || [ ! -f "$RADIX/fenestrale_systema.bin" ]; then
-    printf '%s\n' 'ERRATUM: prius construe Systema BIOS.' >&2
+if [ ! -x "$RADIX/compilator_vindex" ]; then
+    printf '%s\n' 'ERRATUM: compilator_vindex exsecutabilis deest.' >&2
+    exit 66
+fi
+if [ ! -f "$RADIX/fenestrale_systema.bin" ]; then
+    printf '%s\n' 'ERRATUM: data textuum Fenestralis desunt.' >&2
     exit 66
 fi
 
-install -m 0644 "$RADIX/nucleus_systema.elf" "$TEMPORARIUM/nucleus.elf"
+# Nucleus ipse VINDEX est; nulla constructio BIOS/assembly antecedens requiritur.
+"$RADIX/compilator_vindex" "$RADIX/systema/nucleus.vindex" "$TEMPORARIUM/nucleus.elf"
+MAGNITUDO="$(stat -c '%s' "$TEMPORARIUM/nucleus.elf")"
+if [ "$MAGNITUDO" -gt "$NUCLEUS_LIMEN" ]; then
+    printf 'ERRATUM: nucleus %s octeta habet; limes est %s.\n' "$MAGNITUDO" "$NUCLEUS_LIMEN" >&2
+    exit 65
+fi
+
 install -m 0644 "$RADIX/fenestrale_systema.bin" "$TEMPORARIUM/textus.bin"
 install -m 0644 "$UEFI/forma.bin" "$TEMPORARIUM/forma.bin"
 
@@ -40,16 +52,17 @@ install -m 0644 "$UEFI/forma.bin" "$TEMPORARIUM/forma.bin"
     objcopy -I binary -O pe-x86-64 -B i386:x86-64 forma.bin forma.o
 )
 
+# Unica exceptio linguae non-VINDEX: bootstrap UEFI initii.
 gcc -c -std=c11 -O2 -Wall -Wextra -Werror -ffreestanding -fno-builtin \
     -fno-stack-protector -fno-pie -fno-ident -m64 -mno-red-zone -maccumulate-outgoing-args \
-    -fshort-wchar "$UEFI/firmamentum_uefi.c" -o "$TEMPORARIUM/firmamentum.o"
+    -fshort-wchar "$UEFI/bootstrap_uefi.c" -o "$TEMPORARIUM/bootstrap.o"
 objcopy --remove-section .comment --remove-section .note.GNU-stack \
-    "$TEMPORARIUM/firmamentum.o"
+    "$TEMPORARIUM/bootstrap.o"
 
 ld -mi386pep --subsystem 10 --entry efi_main --image-base 0x10000000 \
     --no-insert-timestamp \
     --stack 0x200000 --section-alignment 4096 --file-alignment 512 \
-    "$TEMPORARIUM/firmamentum.o" "$TEMPORARIUM/nucleus.o" \
+    "$TEMPORARIUM/bootstrap.o" "$TEMPORARIUM/nucleus.o" \
     "$TEMPORARIUM/textus.o" "$TEMPORARIUM/forma.o" \
     -o "$TEMPORARIUM/BOOTX64.EFI"
 
@@ -69,6 +82,6 @@ mkdir -p "$(dirname "$IMAGO")" "$(dirname "$APPLICATIO")"
 cp -f "$TEMPORARIUM/BOOTX64.EFI" "$APPLICATIO"
 cp -f "$TEMPORARIUM/systema_vindex_uefi.img" "$IMAGO"
 chmod 0644 "$APPLICATIO" "$IMAGO"
-printf '%s\n' 'RECTE: VINDEX Systema UEFI constructum est.'
+printf '%s\n' 'RECTE: Sylvia OS UEFI constructa est; runtime post bootstrap VINDEX purum est.'
 printf 'APPLICATIO: %s\n' "$APPLICATIO"
 printf 'IMAGO: %s\n' "$IMAGO"
