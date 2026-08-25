@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Probatio visualis automatica Sylviae Laboratorii per QEMU.
 
-Capturas HMP PPM legit; motum muris per QMP input-send-event immittit.
-Status 0 redditur tantum si desktop, glyphi et motus cursoris recti sunt.
+Capturas HMP PPM legit; tabulam absolutam eligit; motum muris per QMP
+input-send-event immittit. Status 0 redditur tantum si desktop, glyphi et
+motus cursoris recti sunt.
 """
 
 from __future__ import annotations
@@ -174,7 +175,22 @@ def principale() -> int:
         cap = qmp_exsequere(q, "qmp_capabilities")
         if "error" in cap:
             raise RuntimeError(f"QMP capabilities: {cap}")
-        mures = qmp_exsequere(q, "query-mice")
+
+        mures_ante = qmp_exsequere(q, "query-mice")
+        lista_murum = mures_ante.get("return", [])
+        absoluti = [m for m in lista_murum if m.get("absolute")]
+        if not absoluti:
+            print("QEMU: MURUS DEFECIT (instrumentum absolutum deest)")
+            print("QEMU: QMP_MURES " + json.dumps(mures_ante, ensure_ascii=False, separators=(",", ":")))
+            return 5
+        index_absolutus = int(absoluti[0]["index"])
+        selectio = netto_hmp(hmp(s, f"mouse_set {index_absolutus}"))
+        time.sleep(0.2)
+        mures_post_selectio = qmp_exsequere(q, "query-mice")
+        tabula_currens = any(
+            int(m.get("index", -1)) == index_absolutus and bool(m.get("current"))
+            for m in mures_post_selectio.get("return", [])
+        )
 
         time.sleep(4.0)
         hmp(s, f"screendump {ante}")
@@ -216,16 +232,22 @@ def principale() -> int:
             w2, h2, pix_post = lege_ppm(post)
             if w2 == w and h2 == h:
                 mutatio = differentiae(pix_ante, pix_post)
-        murus = qmp_ok and mutatio >= 20
+        murus = tabula_currens and qmp_ok and mutatio >= 20
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
-        print("QEMU: QMP_MURES " + json.dumps(mures, ensure_ascii=False, separators=(",", ":")))
+        print("QEMU: QMP_MURES_ANTE " + json.dumps(mures_ante, ensure_ascii=False, separators=(",", ":")))
+        print(f"QEMU: QMP_SELECTIO index={index_absolutus} {selectio}")
+        print("QEMU: QMP_MURES_POST " + json.dumps(mures_post_selectio, ensure_ascii=False, separators=(",", ":")))
+        print("QEMU: TABULA_CURRENS " + ("RECTE" if tabula_currens else "DEFECIT"))
+        print("QEMU: QMP_MOTUS " + ("RECTE" if qmp_ok else "DEFECIT"))
         print(f"QEMU: META_MURUS {metadata_muris}")
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {lux_tituli}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
         print("QEMU: TEXTUS " + ("RECTE" if textus else "DEFECIT"))
-        if not qmp_ok:
+        if not tabula_currens:
+            print("QEMU: MURUS DEFECIT (tabula absoluta non est receptora)")
+        elif not qmp_ok:
             print("QEMU: MURUS DEFECIT (QMP input-send-event recusatum)")
             print("QEMU: QMP " + json.dumps(motus, ensure_ascii=False, separators=(",", ":")))
         elif mutatio < 0:
