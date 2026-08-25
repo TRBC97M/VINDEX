@@ -1833,7 +1833,28 @@ FUNCTIO COMPONE_RESERVA_OCTETA_DYNAMICA REDDENS NUMERUS.
     ACCIPIT pos SICUT NUMERUS.
     ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     DECLARA p_mem_dyn SICUT NUMERUS VALENS pos.
-    SI MODUS_PE_LEGE(contextus_parseris) >= 1 TUNC
+    SI MODUS_PE_LEGE(contextus_parseris) == 2 TUNC
+        p_mem_dyn = COMPONE_TRANSCRIBE(codex, p_mem_dyn, 12, 0).
+        p_mem_dyn = COMPONE_ONERA(codex, p_mem_dyn, 1, 16777232).
+        p_mem_dyn = COMPONE_SUME_INDIRECTUM(codex, p_mem_dyn, 0, 1).
+        CODEX_SCRIBE(codex, p_mem_dyn, 73).
+        CODEX_SCRIBE(codex, p_mem_dyn + 1, 1).
+        CODEX_SCRIBE(codex, p_mem_dyn + 2, 196).
+        p_mem_dyn = p_mem_dyn + 3.
+        CODEX_SCRIBE(codex, p_mem_dyn, 73).
+        CODEX_SCRIBE(codex, p_mem_dyn + 1, 131).
+        CODEX_SCRIBE(codex, p_mem_dyn + 2, 196).
+        CODEX_SCRIBE(codex, p_mem_dyn + 3, 15).
+        p_mem_dyn = p_mem_dyn + 4.
+        CODEX_SCRIBE(codex, p_mem_dyn, 73).
+        CODEX_SCRIBE(codex, p_mem_dyn + 1, 131).
+        CODEX_SCRIBE(codex, p_mem_dyn + 2, 228).
+        CODEX_SCRIBE(codex, p_mem_dyn + 3, 240).
+        p_mem_dyn = p_mem_dyn + 4.
+        p_mem_dyn = COMPONE_SERVA_INDIRECTUM(codex, p_mem_dyn, 1, 12).
+        REDDE p_mem_dyn.
+    FIN-SI.
+    SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
         p_mem_dyn = COMPONE_TRANSCRIBE(codex, p_mem_dyn, 12, 0).
         CODEX_SCRIBE(codex, p_mem_dyn, 73).
         CODEX_SCRIBE(codex, p_mem_dyn + 1, 137).
@@ -5374,6 +5395,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 0, 1).
                     pos = COMPONE_ONERA(codex, pos, 0, 16777224).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 0, 2).
+                    pos = COMPONE_ONERA(codex, pos, 0, 16777232).
+                    pos = COMPONE_ONERA(codex, pos, 1, 33554432).
+                    pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 0, 1).
                     pos = COMPONE_ONERA(codex, pos, 2, 33554432).
                     pos = COMPONE_ONERA(codex, pos, 0, 33554448).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
