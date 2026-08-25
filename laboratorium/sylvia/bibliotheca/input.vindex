@@ -44,7 +44,6 @@ FIN-FUNCTIO.
 
 FUNCTIO LI_PARA REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
-    // Metadata [18..19] allocatoris sunt; [23..24] muris bootstrap dedicantur.
     s[3]=CONTENTUM(50333880).
     s[4]=CONTENTUM(50333888).
     SI s[3]==0 TUNC s[3]=LI_PROTOCOL_LOCATE(1). FIN-SI.
