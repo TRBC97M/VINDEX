@@ -1,0 +1,76 @@
+// Probatio SALI_AD: codicem machinalem in memoriam scribe, deinde ad eum sali.
+// Codex scriptus vocat ConOut->OutputString et deinde in circulo HLT manet.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA ts SICUT NUMERUS VALENS CONTENTUM(16777224).
+    DECLARA co SICUT NUMERUS VALENS CONTENTUM(ts + 64).
+    DECLARA sc SICUT NUMERUS VALENS CONTENTUM(co + 8).
+
+    DECLARA nuntius SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    SCRIBE_OCTETUM_AB(nuntius, 83).
+    SCRIBE_OCTETUM_AB(nuntius + 1, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 2, 65).
+    SCRIBE_OCTETUM_AB(nuntius + 3, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 4, 76).
+    SCRIBE_OCTETUM_AB(nuntius + 5, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 6, 84).
+    SCRIBE_OCTETUM_AB(nuntius + 7, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 8, 85).
+    SCRIBE_OCTETUM_AB(nuntius + 9, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 10, 83).
+    SCRIBE_OCTETUM_AB(nuntius + 11, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 12, 13).
+    SCRIBE_OCTETUM_AB(nuntius + 13, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 14, 10).
+    SCRIBE_OCTETUM_AB(nuntius + 15, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 16, 0).
+    SCRIBE_OCTETUM_AB(nuntius + 17, 0).
+
+    // Codex machinalis, ABI Microsoft x64:
+    //   sub rsp, 40
+    //   mov rcx, <co>       (48 b9 imm64)
+    //   mov rdx, <nuntius>  (48 ba imm64)
+    //   mov rax, <sc>       (48 b8 imm64)
+    //   call rax            (ff d0)
+    //   hlt ; jmp -3
+    DECLARA c SICUT NUMERUS VALENS RESERVA_OCTETA(96).
+    DECLARA p SICUT NUMERUS VALENS 0.
+
+    SCRIBE_OCTETUM_AB(c + p, 72). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 131). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 236). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 40). p = p + 1.
+
+    SCRIBE_OCTETUM_AB(c + p, 72). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 185). p = p + 1.
+    DECLARA v SICUT NUMERUS VALENS co.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 8 PERFICE
+        SCRIBE_OCTETUM_AB(c + p, v % 256). p = p + 1. v = v / 256. i = i + 1.
+    FIN-DUM.
+
+    SCRIBE_OCTETUM_AB(c + p, 72). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 186). p = p + 1.
+    v = nuntius. i = 0.
+    DUM i < 8 PERFICE
+        SCRIBE_OCTETUM_AB(c + p, v % 256). p = p + 1. v = v / 256. i = i + 1.
+    FIN-DUM.
+
+    SCRIBE_OCTETUM_AB(c + p, 72). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 184). p = p + 1.
+    v = sc. i = 0.
+    DUM i < 8 PERFICE
+        SCRIBE_OCTETUM_AB(c + p, v % 256). p = p + 1. v = v / 256. i = i + 1.
+    FIN-DUM.
+
+    SCRIBE_OCTETUM_AB(c + p, 255). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 208). p = p + 1.
+
+    SCRIBE_OCTETUM_AB(c + p, 244). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 235). p = p + 1.
+    SCRIBE_OCTETUM_AB(c + p, 253). p = p + 1.
+
+    SALI_AD(c).
+
+    REDDE 0.
+FIN-FUNCTIO.

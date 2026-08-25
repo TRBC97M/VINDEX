@@ -1227,6 +1227,37 @@ FUNCTIO COMPONE_VOCA_UEFI6 REDDENS NUMERUS.
     REDDE p.
 FIN-FUNCTIO.
 
+FUNCTIO COMPONE_SALI_AD REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    DECLARA p_sal SICUT NUMERUS VALENS indice.
+    // RAX continet adressam ingressus (resultatum expressionis).
+    // Pilam ad 0x1000000 pone, ad 16 octeta aligna, deinde voca.
+    // Post vocationem, si umquam revertitur, HLT in circulo.
+    CODEX_SCRIBE(codex, p_sal, 72).
+    CODEX_SCRIBE(codex, p_sal + 1, 199).
+    CODEX_SCRIBE(codex, p_sal + 2, 196).
+    CODEX_SCRIBE(codex, p_sal + 3, 0).
+    CODEX_SCRIBE(codex, p_sal + 4, 0).
+    CODEX_SCRIBE(codex, p_sal + 5, 0).
+    CODEX_SCRIBE(codex, p_sal + 6, 1).
+    p_sal = p_sal + 7.
+    CODEX_SCRIBE(codex, p_sal, 72).
+    CODEX_SCRIBE(codex, p_sal + 1, 131).
+    CODEX_SCRIBE(codex, p_sal + 2, 228).
+    CODEX_SCRIBE(codex, p_sal + 3, 240).
+    p_sal = p_sal + 4.
+    CODEX_SCRIBE(codex, p_sal, 255).
+    CODEX_SCRIBE(codex, p_sal + 1, 208).
+    p_sal = p_sal + 2.
+    CODEX_SCRIBE(codex, p_sal, 244).
+    p_sal = p_sal + 1.
+    CODEX_SCRIBE(codex, p_sal, 235).
+    CODEX_SCRIBE(codex, p_sal + 1, 253).
+    p_sal = p_sal + 2.
+    REDDE p_sal.
+FIN-FUNCTIO.
+
 FUNCTIO COMPONE_VOCA_IAT_FUTURUM REDDENS NUMERUS.
     ACCIPIT codex SICUT ACUS<NUMERUS>.
     ACCIPIT indice SICUT NUMERUS.
@@ -2271,6 +2302,15 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ign_oab = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         CONTENTUM(pos_codicis) = COMPONE_MOVZX(codex, CONTENTUM(pos_codicis), 0, 0).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 83 && CONTENTUM(pos_fontis) + 7 < n && fons[CONTENTUM(pos_fontis)+1] == 65 && fons[CONTENTUM(pos_fontis)+2] == 76 && fons[CONTENTUM(pos_fontis)+3] == 73 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 65 && fons[CONTENTUM(pos_fontis)+6] == 68 && fons[CONTENTUM(pos_fontis)+7] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 8.
+        DECLARA ig_sali SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        ig_sali = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_SALI_AD(codex, CONTENTUM(pos_codicis)).
         REDDE 0.
     FIN-SI.
 
