@@ -26,6 +26,10 @@ def telemetria(sock: socket.socket) -> str:
     return netto_hmp(hmp(sock, "xp /12bx 0x030008c8"))
 
 
+def ps2(sock: socket.socket) -> str:
+    return netto_hmp(hmp(sock, "xp /5bx 0x03018840"))
+
+
 def principale() -> int:
     if len(sys.argv) != 4:
         print("USUS: proba_qemu_mus.py MONITOR.sock QMP.sock EXITUS")
@@ -87,6 +91,7 @@ def principale() -> int:
             return 4
 
         tele_ante = telemetria(s)
+        ps2_ante = ps2(s)
         registra = netto_hmp(hmp(s, "info registers"))
         usb = netto_hmp(hmp(s, "info usb"))
         w, h, pix_ante = lege_ppm(ante)
@@ -103,6 +108,7 @@ def principale() -> int:
 
         eventus = []
         tele_eventus: list[str] = []
+        ps2_eventus: list[str] = []
         for dx, dy in ((96, -64), (64, 48), (-24, 16)):
             r = qmp_exsequere(q, "input-send-event", {
                 "events": [
@@ -113,11 +119,13 @@ def principale() -> int:
             eventus.append(r)
             time.sleep(0.08)
             tele_eventus.append(telemetria(s))
+            ps2_eventus.append(ps2(s))
             time.sleep(0.10)
 
         qmp_ok = all("return" in r and "error" not in r for r in eventus)
         time.sleep(0.7)
         tele_post = telemetria(s)
+        ps2_post = ps2(s)
         hmp(s, f"screendump {post}")
         finis = time.time() + 3.0
         while not post.exists() and time.time() < finis:
@@ -143,9 +151,12 @@ def principale() -> int:
         print(f"QEMU: USB {usb}")
         print(f"QEMU: REGISTRA_CPU {registra}")
         print(f"QEMU: TELEMETRIA_ANTE {tele_ante}")
+        print(f"QEMU: PS2_ANTE {ps2_ante}")
         for i, t in enumerate(tele_eventus, 1):
             print(f"QEMU: TELEMETRIA_EVENTUS_{i} {t}")
+            print(f"QEMU: PS2_EVENTUS_{i} {ps2_eventus[i-1]}")
         print(f"QEMU: TELEMETRIA_POST {tele_post}")
+        print(f"QEMU: PS2_POST {ps2_post}")
         print(f"QEMU: META_MURUS {metadata}")
         print(f"QEMU: INVENTARIUM_MURIS {inventarium}")
         print(f"QEMU: MODERATORES {moderatores}")
