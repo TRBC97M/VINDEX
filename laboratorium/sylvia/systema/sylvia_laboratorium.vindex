@@ -4,6 +4,7 @@
 IMPORTA "laboratorium/sylvia/bibliotheca/graphica.vindex".
 IMPORTA "laboratorium/sylvia/bibliotheca/fenestrae.vindex".
 IMPORTA "laboratorium/sylvia/bibliotheca/input.vindex".
+IMPORTA "laboratorium/sylvia/bibliotheca/input_ps2.vindex".
 IMPORTA "laboratorium/sylvia/bibliotheca/texta.vindex".
 IMPORTA "laboratorium/sylvia/bibliotheca/texta_redde.vindex".
 
@@ -177,14 +178,14 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA t SICUT NUMERUS VALENS LF_ADDE(r,2,sw*48/100,sh*20/100,sw*43/100,sh*55/100).
     DECLARA l SICUT NUMERUS VALENS LF_ADDE(r,3,sw*21/100,sh*31/100,sw*48/100,sh*46/100).
     SI p==0 || t==0 || l==0 TUNC REDDE 71. FIN-SI.
-    DECLARA m SICUT ORDO DE NUMERUS CAPACITAS 10.
+    DECLARA m SICUT ORDO DE NUMERUS CAPACITAS 14.
     m[0]=sw/2. m[1]=sh/2. m[2]=0. m[5]=0. m[6]=0.
-    DECLARA para SICUT NUMERUS VALENS LI_PARA(m).
+    DECLARA para SICUT NUMERUS VALENS LP_PARA(m).
     DECLARA f SICUT NUMERUS VALENS LL_REDDE(r,m).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
         DECLARA redde SICUT NUMERUS VALENS 0.
-        DECLARA mutata SICUT NUMERUS VALENS LI_LEGE(m).
+        DECLARA mutata SICUT NUMERUS VALENS LP_LEGE(m).
         SI mutata==1 TUNC
             SI (m[2]&1)!=0 && (m[5]&1)==0 TUNC DECLARA md SICUT NUMERUS VALENS LL_MOUSE_DOWN(r,m). redde=1. FIN-SI.
             SI (m[2]&1)!=0 && m[6]!=0 TUNC DECLARA dr SICUT NUMERUS VALENS LL_DRAG(r,m). redde=1. FIN-SI.
