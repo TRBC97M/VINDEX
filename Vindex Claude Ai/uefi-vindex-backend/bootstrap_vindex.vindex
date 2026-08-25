@@ -1,0 +1,199 @@
+// VINDEX 0.53 -- Ponticulus UEFI in VINDEX puro.
+//
+// Substituit bootstrap_uefi.c, ultimam exceptionem non-VINDEX in
+// ARCHITECTURA.md. Facit exacte quod ille faciebat, nec plus:
+//   - vigilem firmware exstinguere (SetWatchdogTimer);
+//   - paginas memoriae pro nucleo reservare (AllocatePages);
+//   - protocollum graphicum invenire (LocateProtocol) et modum eligere;
+//   - nucleum et textum in memoriam copiare;
+//   - metadata pro nucleo implere;
+//   - semel ad nucleum salire, numquam reverti.
+//
+// Nulla ansa residens, nullum ministerium runtime: post saltum,
+// Sylvia OS omnino in VINDEX regnat.
+//
+// Offsets structurarum UEFI (ex specificatione, verificati contra
+// bootstrap_uefi.c):
+//   SystemTable: ConIn=48, ConOut=64, BootServices=96
+//   BootServices: AllocatePages=40, LocateProtocol=320, SetWatchdogTimer=256
+//   GOP: QueryMode=0, SetMode=8, Mode=24
+//   GOP.Mode: MaxMode=0, Mode=4, Info=8, SizeOfInfo=16, FrameBufferBase=24
+//   Info: Version=0, HorizontalResolution=4, VerticalResolution=8,
+//         PixelFormat=12, PixelsPerScanLine=36
+
+FUNCTIO LEGE_U32 REDDENS NUMERUS.
+    ACCIPIT adressa SICUT NUMERUS.
+    DECLARA b0 SICUT NUMERUS VALENS OCTETUS_AB(adressa).
+    DECLARA b1 SICUT NUMERUS VALENS OCTETUS_AB(adressa + 1).
+    DECLARA b2 SICUT NUMERUS VALENS OCTETUS_AB(adressa + 2).
+    DECLARA b3 SICUT NUMERUS VALENS OCTETUS_AB(adressa + 3).
+    REDDE b0 + (b1 * 256) + (b2 * 65536) + (b3 * 16777216).
+FIN-FUNCTIO.
+
+FUNCTIO MEMORIA_VACUA REDDENS NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(destinatio + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO MEMORIA_COPIA REDDENS NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(destinatio + i, OCTETUS_AB(fons + i)).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO GUID_GRAPHICUM_PONE REDDENS NUMERUS.
+    ACCIPIT guid SICUT NUMERUS.
+    // 9042a9de-23dc-4a38-96fb-7aded080516a
+    SCRIBE_OCTETUM_AB(guid, 222).
+    SCRIBE_OCTETUM_AB(guid + 1, 169).
+    SCRIBE_OCTETUM_AB(guid + 2, 66).
+    SCRIBE_OCTETUM_AB(guid + 3, 144).
+    SCRIBE_OCTETUM_AB(guid + 4, 220).
+    SCRIBE_OCTETUM_AB(guid + 5, 35).
+    SCRIBE_OCTETUM_AB(guid + 6, 56).
+    SCRIBE_OCTETUM_AB(guid + 7, 74).
+    SCRIBE_OCTETUM_AB(guid + 8, 150).
+    SCRIBE_OCTETUM_AB(guid + 9, 251).
+    SCRIBE_OCTETUM_AB(guid + 10, 122).
+    SCRIBE_OCTETUM_AB(guid + 11, 222).
+    SCRIBE_OCTETUM_AB(guid + 12, 208).
+    SCRIBE_OCTETUM_AB(guid + 13, 128).
+    SCRIBE_OCTETUM_AB(guid + 14, 81).
+    SCRIBE_OCTETUM_AB(guid + 15, 106).
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA imago SICUT NUMERUS VALENS CONTENTUM(16777216).
+    DECLARA ts SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI ts == 0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(ts + 96).
+    SI bs == 0 TUNC REDDE 1. FIN-SI.
+
+    // Vigilem firmware exstingue, ne post quinque minuta systema restituat.
+    DECLARA vigil SICUT NUMERUS VALENS CONTENTUM(bs + 256).
+    DECLARA ig_vigil SICUT NUMERUS VALENS UEFI_VOCA6(vigil, 0, 0, 0, 0, 0, 0).
+
+    // Paginas pro nucleo reserva: AllocateAddress(2), EfiLoaderData(2).
+    DECLARA locus_mem SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    CONTENTUM(locus_mem) = 4194304.
+    DECLARA paginae SICUT NUMERUS VALENS 12441.
+    DECLARA alloca SICUT NUMERUS VALENS CONTENTUM(bs + 40).
+    DECLARA st_alloc SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 2, 2, paginae, locus_mem, 0, 0).
+    SI st_alloc != 0 TUNC REDDE 2. FIN-SI.
+    SI CONTENTUM(locus_mem) != 4194304 TUNC REDDE 2. FIN-SI.
+
+    // Protocollum graphicum inveni.
+    DECLARA guid SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    DECLARA ig_guid SICUT NUMERUS VALENS GUID_GRAPHICUM_PONE(guid).
+    DECLARA locus_gop SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    CONTENTUM(locus_gop) = 0.
+    DECLARA loca SICUT NUMERUS VALENS CONTENTUM(bs + 320).
+    DECLARA st_gop SICUT NUMERUS VALENS UEFI_VOCA6(loca, guid, 0, locus_gop, 0, 0, 0).
+    SI st_gop != 0 TUNC REDDE 3. FIN-SI.
+
+    DECLARA gop SICUT NUMERUS VALENS CONTENTUM(locus_gop).
+    SI gop == 0 TUNC REDDE 3. FIN-SI.
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(gop + 24).
+    SI modus == 0 TUNC REDDE 3. FIN-SI.
+    DECLARA info SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+    SI info == 0 TUNC REDDE 3. FIN-SI.
+
+    DECLARA latitudo SICUT NUMERUS VALENS LEGE_U32(info + 4).
+    DECLARA altitudo SICUT NUMERUS VALENS LEGE_U32(info + 8).
+    DECLARA forma_pixeli SICUT NUMERUS VALENS LEGE_U32(info + 12).
+
+    // Si modus currens non convenit, meliorem quaere.
+    SI forma_pixeli > 1 || latitudo < 320 || altitudo < 200 TUNC
+        DECLARA max_modus SICUT NUMERUS VALENS LEGE_U32(modus).
+        DECLARA quaere SICUT NUMERUS VALENS CONTENTUM(gop).
+        DECLARA pone SICUT NUMERUS VALENS CONTENTUM(gop + 8).
+        DECLARA locus_info SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+        DECLARA locus_mensura SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+        DECLARA electus SICUT NUMERUS VALENS 0 - 1.
+        DECLARA area_optima SICUT NUMERUS VALENS 0.
+        DECLARA m SICUT NUMERUS VALENS 0.
+        DUM m < max_modus PERFICE
+            CONTENTUM(locus_info) = 0.
+            CONTENTUM(locus_mensura) = 0.
+            DECLARA st_q SICUT NUMERUS VALENS UEFI_VOCA6(quaere, gop, m, locus_mensura, locus_info, 0, 0).
+            SI st_q == 0 TUNC
+                DECLARA inf SICUT NUMERUS VALENS CONTENTUM(locus_info).
+                SI inf != 0 TUNC
+                    DECLARA lat_m SICUT NUMERUS VALENS LEGE_U32(inf + 4).
+                    DECLARA alt_m SICUT NUMERUS VALENS LEGE_U32(inf + 8).
+                    DECLARA fp_m SICUT NUMERUS VALENS LEGE_U32(inf + 12).
+                    DECLARA area SICUT NUMERUS VALENS lat_m * alt_m.
+                    SI fp_m <= 1 && lat_m >= 320 && alt_m >= 200 && area > area_optima TUNC
+                        electus = m.
+                        area_optima = area.
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+            m = m + 1.
+        FIN-DUM.
+        SI area_optima == 0 TUNC REDDE 4. FIN-SI.
+        DECLARA st_p SICUT NUMERUS VALENS UEFI_VOCA6(pone, gop, electus, 0, 0, 0, 0).
+        SI st_p != 0 TUNC REDDE 4. FIN-SI.
+        modus = CONTENTUM(gop + 24).
+        info = CONTENTUM(modus + 8).
+        latitudo = LEGE_U32(info + 4).
+        altitudo = LEGE_U32(info + 8).
+        forma_pixeli = LEGE_U32(info + 12).
+    FIN-SI.
+
+    DECLARA framebuffer SICUT NUMERUS VALENS CONTENTUM(modus + 24).
+    SI latitudo < 320 || altitudo < 200 || framebuffer == 0 TUNC REDDE 5. FIN-SI.
+
+    DECLARA per_lineam SICUT NUMERUS VALENS LEGE_U32(info + 36).
+
+    // Scala maxima quae 320x200 in schermum capit.
+    DECLARA scala_x SICUT NUMERUS VALENS latitudo / 320.
+    DECLARA scala_y SICUT NUMERUS VALENS altitudo / 200.
+    DECLARA scala SICUT NUMERUS VALENS scala_x.
+    SI scala_y < scala_x TUNC scala = scala_y. FIN-SI.
+    SI scala == 0 TUNC scala = 1. FIN-SI.
+
+    // Regionem communem purga.
+    DECLARA ig_vac SICUT NUMERUS VALENS MEMORIA_VACUA(50331648, 102400).
+
+    // Cursor muris in medio.
+    CONTENTUM(50331648) = 160.
+    CONTENTUM(50331656) = 100.
+
+    // Metadata pro nucleo (META = COMMUNIS + 0x800 = 50333696).
+    CONTENTUM(50333696) = 1.
+    CONTENTUM(50333704) = ts.
+    CONTENTUM(50333712) = framebuffer.
+    CONTENTUM(50333720) = per_lineam.
+    CONTENTUM(50333728) = latitudo.
+    CONTENTUM(50333736) = altitudo.
+    CONTENTUM(50333744) = forma_pixeli.
+    CONTENTUM(50333752) = scala.
+    CONTENTUM(50333760) = (latitudo - (320 * scala)) / 2.
+    CONTENTUM(50333768) = (altitudo - (200 * scala)) / 2.
+    CONTENTUM(50333776) = 50335744.
+    CONTENTUM(50333784) = 0.
+    CONTENTUM(50333792) = 0.
+    CONTENTUM(50333800) = 0.
+    CONTENTUM(50333808) = 0.
+    CONTENTUM(50333816) = 0.
+
+    // Manubrium imaginis pro nucleo (UEFI_STATUS = COMMUNIS + 0xB00).
+    CONTENTUM(50334464) = imago.
+
+    REDDE 0.
+FIN-FUNCTIO.
