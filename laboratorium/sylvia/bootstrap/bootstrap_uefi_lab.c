@@ -17,6 +17,7 @@ typedef U64                EFI_PHYSICAL_ADDRESS;
 
 #define EFIAPI __attribute__((ms_abi))
 #define EFI_SUCCESS 0
+#define ALL_HANDLES 0
 #define BY_PROTOCOL 2
 #define COMMUNIS 0x03000000ULL
 #define META      (COMMUNIS + 0x800ULL)
@@ -121,7 +122,7 @@ struct _EFI_BOOT_SERVICES {
     void *GetNextMonotonicCount;
     void *Stall;
     EFI_STATUS (EFIAPI *SetWatchdogTimer)(UINTN, U64, UINTN, const U16 *);
-    void *ConnectController;
+    EFI_STATUS (EFIAPI *ConnectController)(EFI_HANDLE, EFI_HANDLE *, void *, U8);
     void *DisconnectController;
     void *OpenProtocol;
     void *CloseProtocol;
@@ -195,6 +196,21 @@ static void memoria_copia(void *destinatio, const void *fons, UINTN mensura) {
     }
 }
 
+static UINTN moderatores_coniunge(EFI_SYSTEM_TABLE *systema) {
+    EFI_HANDLE *ansae = 0;
+    UINTN numerus = 0;
+    UINTN coniuncta = 0;
+    UINTN i;
+    if (!systema || !systema->BootServices) return 0;
+    if (!systema->BootServices->LocateHandleBuffer || !systema->BootServices->ConnectController) return 0;
+    if (systema->BootServices->LocateHandleBuffer(ALL_HANDLES, 0, 0, &numerus, &ansae) != EFI_SUCCESS || !ansae) return 0;
+    for (i = 0; i < numerus; i++) {
+        EFI_STATUS s = systema->BootServices->ConnectController(ansae[i], 0, 0, 1);
+        if (s == EFI_SUCCESS) coniuncta++;
+    }
+    return coniuncta;
+}
+
 static UINTN protocolla_enumera(EFI_SYSTEM_TABLE *systema, EFI_GUID *guid, void **exitus, UINTN maximum) {
     EFI_HANDLE *ansae = 0;
     UINTN numerus = 0;
@@ -232,6 +248,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     void *mures_absoluti[MURES_MAX] = {0};
     UINTN mures_relativi_n = 0;
     UINTN mures_absoluti_n = 0;
+    UINTN moderatores_n = 0;
     EFI_PHYSICAL_ADDRESS nucleus = NUCLEUS_BASE;
     EFI_PHYSICAL_ADDRESS communis = COMMUNIS;
     EFI_PHYSICAL_ADDRESS acervus = 0;
@@ -333,6 +350,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
         return 1;
     }
 
+    moderatores_n = moderatores_coniunge(systema);
     systema->BootServices->LocateProtocol(&guid_murus_relativus, 0, &murus_relativus);
     systema->BootServices->LocateProtocol(&guid_murus_absolutus, 0, &murus_absolutus);
     mures_relativi_n = protocolla_enumera(systema, &guid_murus_relativus, mures_relativi, MURES_MAX);
@@ -377,6 +395,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     for (i = 0; i < MURES_MAX; i++) meta[33 + i] = (U64)(UINTN)mures_relativi[i];
     meta[41] = mures_absoluti_n;
     for (i = 0; i < MURES_MAX; i++) meta[42 + i] = (U64)(UINTN)mures_absoluti[i];
+    meta[50] = moderatores_n;
 
     ingressus = *(U64 *)(UINTN)(NUCLEUS_BASE + 24);
     dic(systema, L"LAB: SALTUS AD VINDEX\r\n");
