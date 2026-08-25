@@ -1,0 +1,79 @@
+// Ponticulus UEFI in VINDEX: protocollum graphicum invenire ET modum legere.
+// GOP: QueryMode=0, SetMode=8, Blt=16, Mode=24.
+// Mode: MaxMode=0, Mode=4, Info=8, SizeOfInfo=16, FrameBufferBase=24.
+// Info: Version=0, HorizontalResolution=4, VerticalResolution=8, PixelFormat=12.
+
+FUNCTIO CIFRA_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, 48 + valor).
+    SCRIBE_OCTETUM_AB(buf + positio + 1, 0).
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO NUMERUM_UTF16_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS numerus.
+    DECLARA cifrae SICUT NUMERUS VALENS 0.
+    DECLARA temp SICUT NUMERUS VALENS n.
+    SI temp == 0 TUNC cifrae = 1. FIN-SI.
+    DUM temp > 0 PERFICE
+        cifrae = cifrae + 1.
+        temp = temp / 10.
+    FIN-DUM.
+    DECLARA i SICUT NUMERUS VALENS cifrae.
+    SI n == 0 TUNC
+        DECLARA ig0 SICUT NUMERUS VALENS CIFRA_SCRIBE(buf, 0, 0).
+    FIN-SI.
+    DUM n > 0 PERFICE
+        i = i - 1.
+        DECLARA ig1 SICUT NUMERUS VALENS CIFRA_SCRIBE(buf, i * 2, n % 10).
+        n = n / 10.
+    FIN-DUM.
+    REDDE cifrae * 2.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA ts SICUT NUMERUS VALENS CONTENTUM(16777224).
+    DECLARA co SICUT NUMERUS VALENS CONTENTUM(ts + 64).
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(ts + 96).
+    DECLARA loca SICUT NUMERUS VALENS CONTENTUM(bs + 320).
+    DECLARA sc SICUT NUMERUS VALENS CONTENTUM(co + 8).
+
+    DECLARA guid SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    SCRIBE_OCTETUM_AB(guid, 222). SCRIBE_OCTETUM_AB(guid + 1, 169).
+    SCRIBE_OCTETUM_AB(guid + 2, 66). SCRIBE_OCTETUM_AB(guid + 3, 144).
+    SCRIBE_OCTETUM_AB(guid + 4, 220). SCRIBE_OCTETUM_AB(guid + 5, 35).
+    SCRIBE_OCTETUM_AB(guid + 6, 56). SCRIBE_OCTETUM_AB(guid + 7, 74).
+    SCRIBE_OCTETUM_AB(guid + 8, 150). SCRIBE_OCTETUM_AB(guid + 9, 251).
+    SCRIBE_OCTETUM_AB(guid + 10, 122). SCRIBE_OCTETUM_AB(guid + 11, 222).
+    SCRIBE_OCTETUM_AB(guid + 12, 208). SCRIBE_OCTETUM_AB(guid + 13, 128).
+    SCRIBE_OCTETUM_AB(guid + 14, 81). SCRIBE_OCTETUM_AB(guid + 15, 106).
+
+    DECLARA locus_gop SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    CONTENTUM(locus_gop) = 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(loca, guid, 0, locus_gop, 0, 0, 0).
+    SI status != 0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA gop SICUT NUMERUS VALENS CONTENTUM(locus_gop).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(gop + 24).
+    DECLARA info SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+    DECLARA fb SICUT NUMERUS VALENS CONTENTUM(modus + 24).
+
+    DECLARA lat SICUT NUMERUS VALENS OCTETUS_AB(info + 4) + (OCTETUS_AB(info + 5) * 256).
+    DECLARA alt SICUT NUMERUS VALENS OCTETUS_AB(info + 8) + (OCTETUS_AB(info + 9) * 256).
+
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    DECLARA len SICUT NUMERUS VALENS NUMERUM_UTF16_SCRIBE(buf, lat).
+    SCRIBE_OCTETUM_AB(buf + len, 120). SCRIBE_OCTETUM_AB(buf + len + 1, 0).
+    DECLARA len2 SICUT NUMERUS VALENS NUMERUM_UTF16_SCRIBE(buf + len + 2, alt).
+    DECLARA fin SICUT NUMERUS VALENS len + 2 + len2.
+    SCRIBE_OCTETUM_AB(buf + fin, 13). SCRIBE_OCTETUM_AB(buf + fin + 1, 0).
+    SCRIBE_OCTETUM_AB(buf + fin + 2, 10). SCRIBE_OCTETUM_AB(buf + fin + 3, 0).
+    SCRIBE_OCTETUM_AB(buf + fin + 4, 0). SCRIBE_OCTETUM_AB(buf + fin + 5, 0).
+
+    DECLARA ig SICUT NUMERUS VALENS UEFI_VOCA6(sc, co, buf, 0, 0, 0, 0).
+    REDDE 0.
+FIN-FUNCTIO.
