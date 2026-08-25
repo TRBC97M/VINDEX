@@ -17,6 +17,7 @@ typedef U64                EFI_PHYSICAL_ADDRESS;
 
 #define EFIAPI __attribute__((ms_abi))
 #define EFI_SUCCESS 0
+#define BY_PROTOCOL 2
 #define COMMUNIS 0x03000000ULL
 #define META      (COMMUNIS + 0x800ULL)
 #define UMBRA     (COMMUNIS + 0x1000ULL)
@@ -31,6 +32,7 @@ typedef U64                EFI_PHYSICAL_ADDRESS;
 #define FORMA_MENSURA 2048ULL
 #define TEXTA_PAGINAE 1ULL
 #define TEXTA_LIMEN 4096ULL
+#define MURES_MAX 8ULL
 
 typedef struct {
     U64 Signature;
@@ -105,7 +107,7 @@ struct _EFI_BOOT_SERVICES {
     void *InstallProtocolInterface;
     void *ReinstallProtocolInterface;
     void *UninstallProtocolInterface;
-    void *HandleProtocol;
+    EFI_STATUS (EFIAPI *HandleProtocol)(EFI_HANDLE, EFI_GUID *, void **);
     void *Reserved;
     void *RegisterProtocolNotify;
     void *LocateHandle;
@@ -125,7 +127,7 @@ struct _EFI_BOOT_SERVICES {
     void *CloseProtocol;
     void *OpenProtocolInformation;
     void *ProtocolsPerHandle;
-    void *LocateHandleBuffer;
+    EFI_STATUS (EFIAPI *LocateHandleBuffer)(U32, EFI_GUID *, void *, UINTN *, EFI_HANDLE **);
     EFI_STATUS (EFIAPI *LocateProtocol)(EFI_GUID *, void *, void **);
 };
 
@@ -193,6 +195,23 @@ static void memoria_copia(void *destinatio, const void *fons, UINTN mensura) {
     }
 }
 
+static UINTN protocolla_enumera(EFI_SYSTEM_TABLE *systema, EFI_GUID *guid, void **exitus, UINTN maximum) {
+    EFI_HANDLE *ansae = 0;
+    UINTN numerus = 0;
+    UINTN inventa = 0;
+    UINTN i;
+    if (!systema || !systema->BootServices || !exitus || maximum == 0) return 0;
+    if (!systema->BootServices->LocateHandleBuffer || !systema->BootServices->HandleProtocol) return 0;
+    if (systema->BootServices->LocateHandleBuffer(BY_PROTOCOL, guid, 0, &numerus, &ansae) != EFI_SUCCESS || !ansae) return 0;
+    for (i = 0; i < numerus && inventa < maximum; i++) {
+        void *protocol = 0;
+        if (systema->BootServices->HandleProtocol(ansae[i], guid, &protocol) == EFI_SUCCESS && protocol) {
+            exitus[inventa++] = protocol;
+        }
+    }
+    return inventa;
+}
+
 __attribute__((noreturn)) static void ad_vindex_sali(U64 ingressus, U64 pila_summa) {
     __asm__ volatile (
         "mov %1, %%rsp\n\t"
@@ -209,6 +228,10 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     EFI_GRAPHICS_OUTPUT_PROTOCOL *graphica = 0;
     void *murus_relativus = 0;
     void *murus_absolutus = 0;
+    void *mures_relativi[MURES_MAX] = {0};
+    void *mures_absoluti[MURES_MAX] = {0};
+    UINTN mures_relativi_n = 0;
+    UINTN mures_absoluti_n = 0;
     EFI_PHYSICAL_ADDRESS nucleus = NUCLEUS_BASE;
     EFI_PHYSICAL_ADDRESS communis = COMMUNIS;
     EFI_PHYSICAL_ADDRESS acervus = 0;
@@ -224,6 +247,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     U32 latitudo;
     U32 altitudo;
     U64 ingressus;
+    UINTN i;
 
     if (!systema || !systema->BootServices) return 1;
     systema->BootServices->SetWatchdogTimer(0, 0, 0, 0);
@@ -309,9 +333,10 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
         return 1;
     }
 
-    /* Firmware resources are prepared before the permanent jump to VINDEX. */
     systema->BootServices->LocateProtocol(&guid_murus_relativus, 0, &murus_relativus);
     systema->BootServices->LocateProtocol(&guid_murus_absolutus, 0, &murus_absolutus);
+    mures_relativi_n = protocolla_enumera(systema, &guid_murus_relativus, mures_relativi, MURES_MAX);
+    mures_absoluti_n = protocolla_enumera(systema, &guid_murus_absolutus, mures_absoluti, MURES_MAX);
 
     memoria_vacua((void *)(UINTN)COMMUNIS, 0x19000);
     memoria_copia((void *)(UINTN)NUCLEUS_BASE, _binary_nucleus_elf_start, (UINTN)kernel_mensura);
@@ -348,6 +373,10 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE imago, EFI_SYSTEM_TABLE *systema) {
     meta[22] = (U64)texta;
     meta[23] = (U64)(UINTN)murus_relativus;
     meta[24] = (U64)(UINTN)murus_absolutus;
+    meta[32] = mures_relativi_n;
+    for (i = 0; i < MURES_MAX; i++) meta[33 + i] = (U64)(UINTN)mures_relativi[i];
+    meta[41] = mures_absoluti_n;
+    for (i = 0; i < MURES_MAX; i++) meta[42 + i] = (U64)(UINTN)mures_absoluti[i];
 
     ingressus = *(U64 *)(UINTN)(NUCLEUS_BASE + 24);
     dic(systema, L"LAB: SALTUS AD VINDEX\r\n");
