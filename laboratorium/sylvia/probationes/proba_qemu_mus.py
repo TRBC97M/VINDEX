@@ -88,6 +88,7 @@ def principale() -> int:
 
         tele_ante = telemetria(s)
         registra = netto_hmp(hmp(s, "info registers"))
+        usb = netto_hmp(hmp(s, "info usb"))
         w, h, pix_ante = lege_ppm(ante)
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
@@ -131,6 +132,7 @@ def principale() -> int:
         murus = mus_currens and qmp_ok and mutatio >= 20
         metadata = netto_hmp(hmp(s, "xp /8gx 0x03000890"))
         inventarium = netto_hmp(hmp(s, "xp /18gx 0x03000900"))
+        moderatores = netto_hmp(hmp(s, "xp /1gx 0x03000990"))
 
         print(f"QEMU: RESOLUTIO {w}x{h}")
         print("QEMU: QMP_MURES_ANTE " + json.dumps(mures_ante, ensure_ascii=False, separators=(",", ":")))
@@ -138,6 +140,7 @@ def principale() -> int:
         print("QEMU: QMP_MURES_POST " + json.dumps(mures_post, ensure_ascii=False, separators=(",", ":")))
         print("QEMU: MUS_CURRENS " + ("RECTE" if mus_currens else "DEFECIT"))
         print("QEMU: QMP_MOTUS " + ("RECTE" if qmp_ok else "DEFECIT"))
+        print(f"QEMU: USB {usb}")
         print(f"QEMU: REGISTRA_CPU {registra}")
         print(f"QEMU: TELEMETRIA_ANTE {tele_ante}")
         for i, t in enumerate(tele_eventus, 1):
@@ -145,6 +148,7 @@ def principale() -> int:
         print(f"QEMU: TELEMETRIA_POST {tele_post}")
         print(f"QEMU: META_MURUS {metadata}")
         print(f"QEMU: INVENTARIUM_MURIS {inventarium}")
+        print(f"QEMU: MODERATORES {moderatores}")
         print(f"QEMU: EBUR {ebur}")
         print(f"QEMU: GLYPHI_TITULI {glyphi}")
         print("QEMU: DESKTOP " + ("RECTE" if desktop else "DEFECIT"))
