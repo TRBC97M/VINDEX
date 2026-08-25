@@ -1,0 +1,55 @@
+// Ponticulus UEFI: pictura directa in framebuffer, ex VINDEX puro.
+// Probat accessum ad memoriam graphicam veram, non solum lectionem modi.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA ts SICUT NUMERUS VALENS CONTENTUM(16777224).
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(ts + 96).
+    DECLARA loca SICUT NUMERUS VALENS CONTENTUM(bs + 320).
+
+    DECLARA guid SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    SCRIBE_OCTETUM_AB(guid, 222). SCRIBE_OCTETUM_AB(guid + 1, 169).
+    SCRIBE_OCTETUM_AB(guid + 2, 66). SCRIBE_OCTETUM_AB(guid + 3, 144).
+    SCRIBE_OCTETUM_AB(guid + 4, 220). SCRIBE_OCTETUM_AB(guid + 5, 35).
+    SCRIBE_OCTETUM_AB(guid + 6, 56). SCRIBE_OCTETUM_AB(guid + 7, 74).
+    SCRIBE_OCTETUM_AB(guid + 8, 150). SCRIBE_OCTETUM_AB(guid + 9, 251).
+    SCRIBE_OCTETUM_AB(guid + 10, 122). SCRIBE_OCTETUM_AB(guid + 11, 222).
+    SCRIBE_OCTETUM_AB(guid + 12, 208). SCRIBE_OCTETUM_AB(guid + 13, 128).
+    SCRIBE_OCTETUM_AB(guid + 14, 81). SCRIBE_OCTETUM_AB(guid + 15, 106).
+
+    DECLARA locus_gop SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    CONTENTUM(locus_gop) = 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(loca, guid, 0, locus_gop, 0, 0, 0).
+    SI status != 0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA gop SICUT NUMERUS VALENS CONTENTUM(locus_gop).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(gop + 24).
+    DECLARA info SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+    DECLARA fb SICUT NUMERUS VALENS CONTENTUM(modus + 24).
+    DECLARA lat SICUT NUMERUS VALENS OCTETUS_AB(info + 4) + (OCTETUS_AB(info + 5) * 256).
+
+    // Quadratum caeruleum 100x100 in angulo superiore sinistro pingere.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y < 100 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x < 100 PERFICE
+            DECLARA locus SICUT NUMERUS VALENS fb + ((y * lat + x) * 4).
+            SCRIBE_OCTETUM_AB(locus, 220).
+            SCRIBE_OCTETUM_AB(locus + 1, 80).
+            SCRIBE_OCTETUM_AB(locus + 2, 30).
+            SCRIBE_OCTETUM_AB(locus + 3, 0).
+            x = x + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+
+    // Exspecta clavem ut pictura in schermo maneat, ne firmware eam obtegat.
+    DECLARA conin SICUT NUMERUS VALENS CONTENTUM(ts + 48).
+    DECLARA lege_clavem SICUT NUMERUS VALENS CONTENTUM(conin + 8).
+    DECLARA clavis SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    DECLARA st SICUT NUMERUS VALENS 1.
+    DUM st != 0 PERFICE
+        st = UEFI_VOCA6(lege_clavem, conin, clavis, 0, 0, 0, 0).
+    FIN-DUM.
+
+    REDDE 0.
+FIN-FUNCTIO.
