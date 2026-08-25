@@ -87,6 +87,7 @@ def principale() -> int:
             return 4
 
         tele_ante = telemetria(s)
+        registra = netto_hmp(hmp(s, "info registers"))
         w, h, pix_ante = lege_ppm(ante)
         ebur = numera_colorem(pix_ante, (241, 238, 228), 9)
         desktop = ebur > (w * h) // 100
@@ -137,6 +138,7 @@ def principale() -> int:
         print("QEMU: QMP_MURES_POST " + json.dumps(mures_post, ensure_ascii=False, separators=(",", ":")))
         print("QEMU: MUS_CURRENS " + ("RECTE" if mus_currens else "DEFECIT"))
         print("QEMU: QMP_MOTUS " + ("RECTE" if qmp_ok else "DEFECIT"))
+        print(f"QEMU: REGISTRA_CPU {registra}")
         print(f"QEMU: TELEMETRIA_ANTE {tele_ante}")
         for i, t in enumerate(tele_eventus, 1):
             print(f"QEMU: TELEMETRIA_EVENTUS_{i} {t}")
