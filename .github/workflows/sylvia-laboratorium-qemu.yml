@@ -32,8 +32,20 @@ jobs:
       - name: Nucleum VINDEX compila
         run: |
           mkdir -p /tmp/sylvia-lab
+          python3 - <<'PY'
+          from pathlib import Path
+          src = Path('laboratorium/sylvia/systema/sylvia_laboratorium.vindex').read_text()
+          src = src.replace(
+              'IMPORTA "laboratorium/sylvia/bibliotheca/input.vindex".',
+              'IMPORTA "laboratorium/sylvia/bibliotheca/input.vindex".\nIMPORTA "laboratorium/sylvia/bibliotheca/input_ps2.vindex".'
+          )
+          src = src.replace('ORDO DE NUMERUS CAPACITAS 10', 'ORDO DE NUMERUS CAPACITAS 14')
+          src = src.replace('LI_PARA(m)', 'LP_PARA(m)')
+          src = src.replace('LI_LEGE(m)', 'LP_LEGE(m)')
+          Path('/tmp/sylvia-lab/sylvia_ps2.vindex').write_text(src)
+          PY
           timeout 180s "$GITHUB_WORKSPACE/Vindex Chat-GPT/vindex_final_v51/compilator_vindex" \
-            "$GITHUB_WORKSPACE/laboratorium/sylvia/systema/sylvia_laboratorium.vindex" \
+            /tmp/sylvia-lab/sylvia_ps2.vindex \
             /tmp/sylvia-lab/nucleus.elf
           file /tmp/sylvia-lab/nucleus.elf
           test -s /tmp/sylvia-lab/nucleus.elf
@@ -46,7 +58,7 @@ jobs:
           file /tmp/sylvia-lab/BOOTX64.EFI
           test -s /tmp/sylvia-lab/sylvia-laboratorium.img
 
-      - name: QEMU cum mure USB mitte
+      - name: QEMU cum mure PS2 mitte
         run: |
           rm -f /tmp/sylvia-lab/OVMF_VARS_TEST.fd /tmp/sylvia-lab/qemu-monitor.sock /tmp/sylvia-lab/qemu-qmp.sock
           cp /usr/share/OVMF/OVMF_VARS_4M.fd /tmp/sylvia-lab/OVMF_VARS_TEST.fd
@@ -55,8 +67,6 @@ jobs:
             -machine q35 \
             -m 256M \
             -vga std \
-            -device qemu-xhci \
-            -device usb-mouse \
             -display none \
             -audiodev none,id=noaudio \
             -drive if=pflash,format=raw,unit=0,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
