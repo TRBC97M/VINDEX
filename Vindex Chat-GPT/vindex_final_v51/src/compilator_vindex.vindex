@@ -2187,6 +2187,17 @@ FUNCTIO COMPONE_TRANSFER_FASCICULUM_PE REDDENS NUMERUS.
     CODEX_SCRIBE(codex, p_tr + 3, 64).
     p_tr = p_tr + 4.
 
+    SI id_api == 3 TUNC
+        p_tr = COMPONE_ONERA(codex, p_tr, 0, 1).
+        p_tr = COMPONE_CMP(codex, p_tr, 7, 0).
+        DECLARA loci_descriptor_stdout SICUT NUMERUS VALENS 0.
+        p_tr = COMPONE_JNE_FUTURUM(codex, p_tr, SEDES(loci_descriptor_stdout)).
+        p_tr = COMPONE_ONERA(codex, p_tr, 0, 16777216).
+        p_tr = COMPONE_SUME_INDIRECTUM(codex, p_tr, 7, 0).
+        DECLARA pos_descriptor_stdout SICUT NUMERUS VALENS p_tr.
+        DECLARA ign_descriptor_stdout SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_descriptor_stdout, pos_descriptor_stdout).
+    FIN-SI.
+
     p_tr = COMPONE_TRANSCRIBE(codex, p_tr, 1, 7).
     p_tr = COMPONE_TRANSCRIBE(codex, p_tr, 2, 13).
     p_tr = COMPONE_TRANSCRIBE(codex, p_tr, 8, 12).
