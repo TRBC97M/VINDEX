@@ -15,7 +15,7 @@ internal static class ColoratorVindex
 
     private static readonly Regex VerbaClavia = new($@"\b(?:{Verba})\b", RegexOptions.CultureInvariant);
     private static readonly Regex Numeri = new(@"(?<![\w])(?:-?\d+(?:\.\d+)?)(?![\w])", RegexOptions.CultureInvariant);
-    private static readonly Regex Cathenae = new("\"(?:\\.|[^\"\\])*\"", RegexOptions.CultureInvariant);
+    private static readonly Regex Cathenae = new(@"""(?:\\.|[^""\\])*""", RegexOptions.CultureInvariant);
     private static readonly Regex Commentaria = new(@"//[^\r\n]*", RegexOptions.CultureInvariant);
 
     public static int NumeraVerbaClavia(string textus) => VerbaClavia.Matches(textus).Count;
