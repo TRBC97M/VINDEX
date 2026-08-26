@@ -68,10 +68,10 @@ jobs:
           [void]$psi.ArgumentList.Add('--probatio')
           $processus = [System.Diagnostics.Process]::Start($psi)
           $processus.WaitForExit()
-          if ($processus.ExitCode -ne 0) { throw "probatio Officinae exitus $($processus.ExitCode)" }
           $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
+          if (Test-Path $relatio) { Get-Content $relatio }
+          if ($processus.ExitCode -ne 0) { throw "probatio Officinae exitus $($processus.ExitCode)" }
           if (!(Test-Path $relatio)) { throw 'relatio probationis deest' }
-          Get-Content $relatio
           if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'probatio interna non est RECTE' }
       - name: Proiectum PE per Officinam construe et exsequere
         shell: pwsh
@@ -89,11 +89,8 @@ jobs:
           $processus = [System.Diagnostics.Process]::Start($psi)
           $processus.WaitForExit()
           $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
-          if ($processus.ExitCode -ne 0) {
-            if (Test-Path $relatio) { Get-Content $relatio }
-            throw "probatio proiecti Officinae exitus $($processus.ExitCode)"
-          }
-          Get-Content $relatio
+          if (Test-Path $relatio) { Get-Content $relatio }
+          if ($processus.ExitCode -ne 0) { throw "probatio proiecti Officinae exitus $($processus.ExitCode)" }
           if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'proiectum per Officinam non est RECTE' }
       - name: Diagnosticum reale R2 per Officinam proba
         shell: pwsh
@@ -109,11 +106,8 @@ jobs:
           $processus = [System.Diagnostics.Process]::Start($psi)
           $processus.WaitForExit()
           $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
-          if ($processus.ExitCode -ne 0) {
-            if (Test-Path $relatio) { Get-Content $relatio }
-            throw "probatio diagnostici Officinae exitus $($processus.ExitCode)"
-          }
-          Get-Content $relatio
+          if (Test-Path $relatio) { Get-Content $relatio }
+          if ($processus.ExitCode -ne 0) { throw "probatio diagnostici Officinae exitus $($processus.ExitCode)" }
           if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'diagnosticum reale per Officinam non est RECTE' }
       - name: Nulla technologia interretialis in Officina lateat
         shell: pwsh
