@@ -22,6 +22,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 instrumenta/transplanta_diagnostica_r2.py
+          python3 instrumenta/corrige_instructio_ignota_r2.py
 
       - name: Compilatorem ex fonte novo recrea
         working-directory: Vindex Chat-GPT/vindex_final_v51
