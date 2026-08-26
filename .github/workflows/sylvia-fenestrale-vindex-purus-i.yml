@@ -76,115 +76,19 @@ jobs:
           ! grep -Eq 'PE_CLICK|TF_CLICK|PE_RENDE|TF_RENDE' "$g"
           ! grep -Eq 'FI_(MOVE|RESIZE|FOCUS|HIT|MINIMIZA|CLAUDE)' "$i"
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
+          ! grep -Eq 'n==0[[:space:]]*\|\|[[:space:]]*CONTENTUM\(n\+' "$r"
+          ! grep -Eq 'n!=0[[:space:]]*&&[[:space:]]*CONTENTUM\(n\+' "$r"
           for f in "$r" "$g" "$i" "$c" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
           printf '%s\n' 'RECTE: fenestrae, geometria, focus et ordo Z ex registro dynamico VINDEX veniunt.'
 
-      - name: Casum LXXX fenestrarum per gradus diagnostica
+      - name: Octoginta fenestras compila et exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           set -euo pipefail
           chmod +x compilator_vindex
-
-          cat > probationes/fenestrale_purus_i_diag_a.vindex <<'EOF'
-          IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA r SICUT NUMERUS VALENS FI_CREA().
-              SI r==0 TUNC REDDE 71. FIN-SI.
-              DECLARA i SICUT NUMERUS VALENS 0.
-              DUM i<80 PERFICE
-                  DECLARA id SICUT NUMERUS VALENS FI_ADDE(r,1000+i,10+i,20+i,360,240).
-                  SI id!=i+1 TUNC REDDE 65. FIN-SI.
-                  i=i+1.
-              FIN-DUM.
-              REDDE 0.
-          FIN-FUNCTIO.
-          EOF
-
-          cat > probationes/fenestrale_purus_i_diag_b.vindex <<'EOF'
-          IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA r SICUT NUMERUS VALENS FI_CREA().
-              SI r==0 TUNC REDDE 71. FIN-SI.
-              DECLARA i SICUT NUMERUS VALENS 0.
-              DUM i<80 PERFICE
-                  DECLARA id SICUT NUMERUS VALENS FI_ADDE(r,1000+i,10+i,20+i,360,240).
-                  SI id!=i+1 TUNC REDDE 65. FIN-SI.
-                  i=i+1.
-              FIN-DUM.
-              SI FI_NUMERUS(r)!=80 TUNC REDDE 65. FIN-SI.
-              SI FI_FOCUS_ID(r)!=80 TUNC REDDE 65. FIN-SI.
-              SI FI_QUAERE(r,1)==0 TUNC REDDE 65. FIN-SI.
-              SI FI_QUAERE(r,80)==0 TUNC REDDE 65. FIN-SI.
-              REDDE 0.
-          FIN-FUNCTIO.
-          EOF
-
-          cat > probationes/fenestrale_purus_i_diag_c.vindex <<'EOF'
-          IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA r SICUT NUMERUS VALENS FI_CREA().
-              SI r==0 TUNC REDDE 71. FIN-SI.
-              DECLARA i SICUT NUMERUS VALENS 0.
-              DUM i<80 PERFICE
-                  DECLARA id SICUT NUMERUS VALENS FI_ADDE(r,1000+i,10+i,20+i,360,240).
-                  SI id!=i+1 TUNC REDDE 65. FIN-SI.
-                  i=i+1.
-              FIN-DUM.
-              DECLARA f SICUT NUMERUS VALENS FI_FOCUS(r,1).
-              SI f!=1 || FI_FOCUS_ID(r)!=1 TUNC REDDE 65. FIN-SI.
-              DECLARA sup SICUT NUMERUS VALENS FI_SUPREMUS(r).
-              SI sup==0 TUNC REDDE 65. FIN-SI.
-              SI CONTENTUM(sup)!=1 TUNC REDDE 65. FIN-SI.
-              REDDE 0.
-          FIN-FUNCTIO.
-          EOF
-
-          cat > probationes/fenestrale_purus_i_diag_d.vindex <<'EOF'
-          IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA r SICUT NUMERUS VALENS FI_CREA().
-              SI r==0 TUNC REDDE 71. FIN-SI.
-              DECLARA i SICUT NUMERUS VALENS 0.
-              DUM i<80 PERFICE
-                  DECLARA id SICUT NUMERUS VALENS FI_ADDE(r,1000+i,10+i,20+i,360,240).
-                  SI id!=i+1 TUNC REDDE 65. FIN-SI.
-                  i=i+1.
-              FIN-DUM.
-              DECLARA f SICUT NUMERUS VALENS FI_FOCUS(r,1).
-              DECLARA m SICUT NUMERUS VALENS FI_MINIMIZA(r,1).
-              SI m!=1 || FI_STATUS(r,1)!=1 TUNC REDDE 65. FIN-SI.
-              DECLARA rr SICUT NUMERUS VALENS FI_STATUS_PONE(r,1,0).
-              f=FI_FOCUS(r,1).
-              DECLARA z SICUT NUMERUS VALENS FI_MAX_TOGGLE(r,1,1280,720).
-              SI z!=1 TUNC REDDE 65. FIN-SI.
-              z=FI_MAX_TOGGLE(r,1,1280,720).
-              SI z!=1 TUNC REDDE 65. FIN-SI.
-              DECLARA c SICUT NUMERUS VALENS FI_CLAUDE(r,40).
-              SI c!=1 || FI_APERTA_NUM(r)!=79 TUNC REDDE 65. FIN-SI.
-              REDDE 0.
-          FIN-FUNCTIO.
-          EOF
-
-          for littera in a b c d; do
-            printf '%s\n' "--- DIAGNOSTICA ${littera} ---"
-            ./compilator_vindex "probationes/fenestrale_purus_i_diag_${littera}.vindex" "/tmp/fenestrale_i_${littera}.elf"
-            chmod +x "/tmp/fenestrale_i_${littera}.elf"
-            set +e
-            timeout 10s "/tmp/fenestrale_i_${littera}.elf"
-            rc=$?
-            set -e
-            printf 'DIAGNOSTICA %s: exitus %s\n' "$littera" "$rc"
-            if [ "$rc" -ne 0 ]; then exit "$rc"; fi
-          done
-
-      - name: Octoginta fenestras canonice compila et exsequere
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        shell: bash
-        run: |
-          set -euo pipefail
           ./compilator_vindex probationes/fenestrale_purus_i_fenestrae.vindex /tmp/fenestrale_purus_i_fenestrae.elf
           file /tmp/fenestrale_purus_i_fenestrae.elf | grep -q 'ELF 64-bit'
           chmod +x /tmp/fenestrale_purus_i_fenestrae.elf
