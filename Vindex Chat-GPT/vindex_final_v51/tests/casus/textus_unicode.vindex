@@ -1,0 +1,50 @@
+IMPORTA "bibliotheca/textus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA textus SICUT TEXTUS VALENS "Aé€😀".
+    SI LONGITUDO(textus) != 10 TUNC REDDE 10. FIN-SI.
+    SI UTF8_VALIDUS(textus) != 1 TUNC REDDE 11. FIN-SI.
+    SI LONGITUDO_SCALARUM(textus) != 4 TUNC REDDE 12. FIN-SI.
+    SI UTF8_SCALARE_CAPE(textus, 0) != 65 TUNC REDDE 13. FIN-SI.
+    SI UTF8_SCALARE_CAPE(textus, 1) != 233 TUNC REDDE 14. FIN-SI.
+    SI UTF8_SCALARE_CAPE(textus, 2) != 8364 TUNC REDDE 15. FIN-SI.
+    SI UTF8_SCALARE_CAPE(textus, 3) != 128512 TUNC REDDE 16. FIN-SI.
+    SI UTF8_SCALARE_CAPE(textus, 4) != -1 TUNC REDDE 17. FIN-SI.
+
+    DECLARA vacuum SICUT TEXTUS VALENS "".
+    SI UTF8_VALIDUS(vacuum) != 1 TUNC REDDE 20. FIN-SI.
+    SI LONGITUDO_SCALARUM(vacuum) != 0 TUNC REDDE 21. FIN-SI.
+    SI UTF8_SCALARE_CAPE(vacuum, 0) != -1 TUNC REDDE 22. FIN-SI.
+
+    DECLARA superlongus SICUT TEXTUS VALENS "x" + "x".
+    SCRIBE_OCTETUM_AB(superlongus + 16, 192).
+    SCRIBE_OCTETUM_AB(superlongus + 17, 128).
+    SI UTF8_VALIDUS(superlongus) != 0 TUNC REDDE 30. FIN-SI.
+    SI LONGITUDO_SCALARUM(superlongus) != -1 TUNC REDDE 31. FIN-SI.
+    SI UTF8_SCALARE_CAPE(superlongus, 0) != -1 TUNC REDDE 32. FIN-SI.
+
+    DECLARA truncatus SICUT TEXTUS VALENS "x" + "x".
+    SCRIBE_OCTETUM_AB(truncatus + 16, 226).
+    SCRIBE_OCTETUM_AB(truncatus + 17, 130).
+    SI UTF8_VALIDUS(truncatus) != 0 TUNC REDDE 40. FIN-SI.
+
+    DECLARA surrogatum SICUT TEXTUS VALENS "x" + "xx".
+    SCRIBE_OCTETUM_AB(surrogatum + 16, 237).
+    SCRIBE_OCTETUM_AB(surrogatum + 17, 160).
+    SCRIBE_OCTETUM_AB(surrogatum + 18, 128).
+    SI UTF8_VALIDUS(surrogatum) != 0 TUNC REDDE 50. FIN-SI.
+
+    DECLARA supra_maximum SICUT TEXTUS VALENS "xx" + "xx".
+    SCRIBE_OCTETUM_AB(supra_maximum + 16, 244).
+    SCRIBE_OCTETUM_AB(supra_maximum + 17, 144).
+    SCRIBE_OCTETUM_AB(supra_maximum + 18, 128).
+    SCRIBE_OCTETUM_AB(supra_maximum + 19, 128).
+    SI UTF8_VALIDUS(supra_maximum) != 0 TUNC REDDE 60. FIN-SI.
+
+    DECLARA continuatio_sola SICUT TEXTUS VALENS "x" + "".
+    SCRIBE_OCTETUM_AB(continuatio_sola + 16, 128).
+    SI UTF8_VALIDUS(continuatio_sola) != 0 TUNC REDDE 70. FIN-SI.
+
+    PROCLAMA "UNICODE RECTE".
+    REDDE 0.
+FIN-FUNCTIO.
