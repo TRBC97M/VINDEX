@@ -1,0 +1,66 @@
+name: Certificatio temporaria — Fenestrale II Purus F
+
+on:
+  push:
+    branches:
+      - chatgpt/certificatio-fenestrale-f
+
+jobs:
+  certificatio:
+    name: Fenestrale F independenter certificatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontes VINDEX verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_f.vindex
+          python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_f_clientes.vindex
+
+      - name: Contractum duorum clientium verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          f='systema/fenestrale_ii_purus_f.vindex'
+          t='bibliotheca/tabula_clientis_f.vindex'
+          grep -Fq 'FUNCTIO TF_CLICK' "$t"
+          grep -Fq 'FUNCTIO TF_RENDE' "$t"
+          grep -Fq 's[32]' "$f"
+          grep -Fq 's[33]' "$f"
+          grep -Fq 'FS_CREA(396,226)' "$f"
+          grep -Fq 'PE_CLICK' "$f"
+          grep -Fq 'TF_CLICK' "$f"
+          grep -Fq 'FS_BLIT' "$f"
+          ! grep -Fq 'FV_TABULA' "$f"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$t"
+
+      - name: Probationem duorum clientium compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex probationes/fenestrale_purus_f_clientes.vindex /tmp/fenestrale_purus_f_clientes.elf
+          file /tmp/fenestrale_purus_f_clientes.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale F totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex systema/fenestrale_ii_purus_f.vindex /tmp/fenestrale_ii_purus_f.elf
+          file /tmp/fenestrale_ii_purus_f.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_f.elf)" -lt 196608
+          printf '%s\n' 'RECTE: Gradus F independenter certificatus est.'
