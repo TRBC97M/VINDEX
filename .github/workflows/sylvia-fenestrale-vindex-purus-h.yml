@@ -1,0 +1,86 @@
+name: Sylvia OS — Fenestrale II Purus H canonicus
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_eventa_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_gestor_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientia_registrum_h.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_h.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_h.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_h_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_H.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-h.yml'
+
+jobs:
+  vindex-purus-h:
+    name: Registrum dynamicum clientium Fenestralis H VINDEX certificatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontes VINDEX verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_h.vindex
+          python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_h_registrum.vindex
+
+      - name: Registrum sine limite fixo verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          r='bibliotheca/clientia_registrum_h.vindex'
+          c='bibliotheca/clientes_eventa_h.vindex'
+          s='systema/fenestrale_ii_purus_h.vindex'
+          grep -Fq 'FUNCTIO CH_CREA REDDENS NUMERUS' "$r"
+          grep -Fq 'FUNCTIO CH_ADDE REDDENS NUMERUS' "$r"
+          grep -Fq 'FUNCTIO CH_QUAERE REDDENS NUMERUS' "$r"
+          grep -Fq 'RESERVA_OCTETA(40)' "$r"
+          grep -Fq 'FUNCTIO CH_EVENTA_AGE REDDENS NUMERUS' "$c"
+          grep -Fq 'CH_EVENTA_AGE(s,s[36],s[34])' "$s"
+          grep -Fq 'CH_ADDE(s[36],1,1,superficies_p,0)' "$s"
+          grep -Fq 'CH_ADDE(s[36],2,2,superficies_t,0)' "$s"
+          ! grep -Eq 's\[(30|31|32|33)\][[:space:]]*=' "$s"
+          ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$r"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$c"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$s"
+          printf '%s\n' 'RECTE: clientes non iam locis fixis vectoris systematis continentur.'
+
+      - name: Registrum compila et exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex probationes/fenestrale_purus_h_registrum.vindex /tmp/fenestrale_purus_h_registrum.elf
+          file /tmp/fenestrale_purus_h_registrum.elf | grep -q 'ELF 64-bit'
+          chmod +x /tmp/fenestrale_purus_h_registrum.elf
+          timeout 10s /tmp/fenestrale_purus_h_registrum.elf
+
+      - name: Fenestrale H totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex systema/fenestrale_ii_purus_h.vindex /tmp/fenestrale_ii_purus_h.elf
+          file /tmp/fenestrale_ii_purus_h.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_h.elf)" -lt 589824
+          printf '%s\n' 'RECTE: Fenestrale II Purus H clientia per registrum dynamicum VINDEX administrat.'
