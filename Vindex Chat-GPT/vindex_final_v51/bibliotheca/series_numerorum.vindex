@@ -1,0 +1,163 @@
+// VINDEX — Series dynamica contigua NUMERUS.
+// Descriptor: +0 numerus, +8 capacitas, +16 basis elementorum.
+// Elementa contigua sunt, singulum VIII octeta.
+// VINDEX Latine cogitat. Sylvia Latine loquitur.
+
+FUNCTIO SN_CREA REDDENS NUMERUS.
+    DECLARA series SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI series <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA basis SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    SI basis <= 0 TUNC
+        LIBERA(series).
+        REDDE 0.
+    FIN-SI.
+
+    CONTENTUM(series) = 0.
+    CONTENTUM(series + 8) = 4.
+    CONTENTUM(series + 16) = basis.
+    REDDE series.
+FIN-FUNCTIO.
+
+FUNCTIO SN_NUMERUS REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    SI series == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(series).
+FIN-FUNCTIO.
+
+FUNCTIO SN_CAPACITAS REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    SI series == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(series + 8).
+FIN-FUNCTIO.
+
+FUNCTIO SN_BASIS REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    SI series == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(series + 16).
+FIN-FUNCTIO.
+
+FUNCTIO SN_ASSECURA REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    ACCIPIT necessaria SICUT NUMERUS.
+    SI series == 0 || necessaria < 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA capacitas SICUT NUMERUS VALENS CONTENTUM(series + 8).
+    SI necessaria <= capacitas TUNC REDDE 1. FIN-SI.
+
+    DECLARA nova_capacitas SICUT NUMERUS VALENS capacitas * 2.
+    SI nova_capacitas < 4 TUNC nova_capacitas = 4. FIN-SI.
+    DUM nova_capacitas < necessaria PERFICE
+        nova_capacitas = nova_capacitas * 2.
+    FIN-DUM.
+
+    DECLARA nova_basis SICUT NUMERUS VALENS RESERVA_OCTETA(nova_capacitas * 8).
+    SI nova_basis <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA vetus_basis SICUT NUMERUS VALENS CONTENTUM(series + 16).
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(series).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        CONTENTUM(nova_basis + (i * 8)) = CONTENTUM(vetus_basis + (i * 8)).
+        i = i + 1.
+    FIN-DUM.
+
+    LIBERA(vetus_basis).
+    CONTENTUM(series + 8) = nova_capacitas.
+    CONTENTUM(series + 16) = nova_basis.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SN_RESERVA REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    REDDE SN_ASSECURA(series, capacitas).
+FIN-FUNCTIO.
+
+FUNCTIO SN_CAPE REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI series == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    SI index >= CONTENTUM(series) TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(CONTENTUM(series + 16) + (index * 8)).
+FIN-FUNCTIO.
+
+FUNCTIO SN_PONE REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI series == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    SI index >= CONTENTUM(series) TUNC REDDE 0. FIN-SI.
+    CONTENTUM(CONTENTUM(series + 16) + (index * 8)) = valor.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SN_ADDE REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI series == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(series).
+    SI SN_ASSECURA(series, numerus + 1) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(series + 16).
+    CONTENTUM(basis + (numerus * 8)) = valor.
+    CONTENTUM(series) = numerus + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SN_INSERE REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI series == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(series).
+    SI index > numerus TUNC REDDE 0. FIN-SI.
+    SI SN_ASSECURA(series, numerus + 1) == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(series + 16).
+    DECLARA i SICUT NUMERUS VALENS numerus.
+    DUM i > index PERFICE
+        CONTENTUM(basis + (i * 8)) = CONTENTUM(basis + ((i - 1) * 8)).
+        i = i - 1.
+    FIN-DUM.
+
+    CONTENTUM(basis + (index * 8)) = valor.
+    CONTENTUM(series) = numerus + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SN_DELE REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI series == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(series).
+    SI index >= numerus TUNC REDDE 0. FIN-SI.
+
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(series + 16).
+    DECLARA i SICUT NUMERUS VALENS index.
+    DUM i < numerus - 1 PERFICE
+        CONTENTUM(basis + (i * 8)) = CONTENTUM(basis + ((i + 1) * 8)).
+        i = i + 1.
+    FIN-DUM.
+
+    CONTENTUM(series) = numerus - 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SN_PURGA REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    SI series == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(series) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SN_LIBERA REDDENS NUMERUS.
+    ACCIPIT series SICUT NUMERUS.
+    SI series == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(series + 16).
+    SI basis != 0 TUNC LIBERA(basis). FIN-SI.
+    LIBERA(series).
+    REDDE 1.
+FIN-FUNCTIO.
