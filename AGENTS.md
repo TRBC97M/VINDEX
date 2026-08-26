@@ -1,6 +1,6 @@
 # AGENTES — Porta communis collaboratorum
 
-Hoc fasciculum brevem intentionally servamus. Fons veritatis non hic duplicandus est.
+Hoc fasciculum consulto brevem servamus. Fons veritatis non hic duplicandus est.
 
 Omnis agens qui in hoc repositorio operatur ante mutationem:
 
