@@ -2,9 +2,6 @@ name: VINDEX 0.53 — Instrumenta R5
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - chatgpt/vindex-053-r5-instrumenta
   pull_request:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
