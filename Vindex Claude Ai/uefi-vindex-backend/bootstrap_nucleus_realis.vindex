@@ -172,22 +172,30 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA mensura_vera SICUT NUMERUS VALENS CONTENTUM(info_buf + 8).
     SI mensura_vera == 0 TUNC REDDE 18. FIN-SI.
 
-    // Nucleus ad 0x400000 (p_vaddr ELF) et regio COMMUNIS ad 0x3000000
-    // separatim reservantur, quia unus blocus continuus a firmware
-    // negatur (regiones intermediae iam occupatae sunt).
+    // Contractus memoriae: nucleus ELF p_memsz magnum declarat, quia
+    // acervus ELF ad 0x2000000 fixus est. Firmware unum blocum continuum
+    // negat, sed frusta minora accipit. Ergo totam regionem frustatim
+    // reservamus, a 0x400000 usque ad COMMUNIS + spatium.
     DECLARA locus_mem SICUT NUMERUS VALENS RESERVA_OCTETA(8).
     DECLARA alloca SICUT NUMERUS VALENS CONTENTUM(bs + 40).
+    DECLARA frustum SICUT NUMERUS VALENS 4194304.
+    DECLARA adr SICUT NUMERUS VALENS 4194304.
+    DECLARA meta SICUT NUMERUS VALENS 50331648.
+    DECLARA reservata SICUT NUMERUS VALENS 0.
+    DUM adr < meta PERFICE
+        CONTENTUM(locus_mem) = adr.
+        DECLARA sr SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 2, 2, 1024, locus_mem, 0, 0).
+        SI sr == 0 TUNC
+            reservata = reservata + 1.
+        FIN-SI.
+        adr = adr + frustum.
+    FIN-DUM.
 
-    // Paginae exactae ex mensura vera nuclei computatae.
-    DECLARA paginae_nuclei SICUT NUMERUS VALENS (mensura_vera + 4095) / 4096.
-    CONTENTUM(locus_mem) = 4194304.
-    st = UEFI_VOCA6(alloca, 2, 2, paginae_nuclei, locus_mem, 0, 0).
-    SI st != 0 TUNC REDDE 14. FIN-SI.
+    // Regio COMMUNIS ipsa, cum spatio pro UMBRA.
+    CONTENTUM(locus_mem) = meta.
+    DECLARA sc2 SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 2, 2, 64, locus_mem, 0, 0).
 
-    CONTENTUM(locus_mem) = 50331648.
-    st = UEFI_VOCA6(alloca, 2, 2, 64, locus_mem, 0, 0).
-    SI st != 0 TUNC REDDE 17. FIN-SI.
-
+    SI reservata == 0 TUNC REDDE 14. FIN-SI.
     DECLARA sedes_nuclei SICUT NUMERUS VALENS 4194304.
 
     // V. Nucleum lege.
@@ -198,6 +206,13 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI st != 0 TUNC REDDE 15. FIN-SI.
     DECLARA lecta SICUT NUMERUS VALENS CONTENTUM(locus_mensura).
     SI lecta == 0 TUNC REDDE 15. FIN-SI.
+
+    // BSS purga: onerans ELF regionem [p_filesz, p_memsz) ad zerum ponere
+    // DEBET. Sine hoc, nucleus valores fortuitos ut indices legit
+    // (verificatum: CR2 = 0x1028A0A0908, adressa absurda).
+    // Purgamus quantum rationabiliter possumus post codicem lectum.
+    DECLARA purganda SICUT NUMERUS VALENS 2097152.
+    DECLARA ig_bss SICUT NUMERUS VALENS MEMORIA_VACUA(sedes_nuclei + lecta, purganda).
 
     DECLARA claude SICUT NUMERUS VALENS CONTENTUM(fasc + 16).
     DECLARA ig_c SICUT NUMERUS VALENS UEFI_VOCA6(claude, fasc, 0, 0, 0, 0, 0).
