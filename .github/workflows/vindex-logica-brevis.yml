@@ -1,0 +1,93 @@
+name: VINDEX — Logica brevis
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/logica_brevis.vindex'
+      - '.github/workflows/vindex-logica-brevis.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/logica_brevis.vindex'
+      - '.github/workflows/vindex-logica-brevis.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  logica-brevis:
+    name: Operatores logici breves VINDEX certificantur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Contractum logicum verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          C='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          grep -Fq 'FUNCTIO ANALYSA_COMPARATIO_SIMPLEX REDDENS NUMERUS.' "$C"
+          grep -Fq 'FUNCTIO ANALYSA_CONIUNCTIO_LOGICA REDDENS NUMERUS.' "$C"
+          grep -Fq 'FUNCTIO EST_CONIUNCTIO_LOGICA REDDENS NUMERUS.' "$C"
+          grep -Fq 'FUNCTIO EST_DISIUNCTIO_LOGICA REDDENS NUMERUS.' "$C"
+          printf '%s\n' 'RECTE: && et || stratis logicis propriis administrantur.'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Probationem VINDEX verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          python3 "$RADIX/instrumenta/vindex_verifica.py" "$RADIX/probationes/logica_brevis.vindex"
+
+      - name: Auto-hospitium et punctum fixum comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          chmod +x "$RADIX/compilator_vindex"
+          "$RADIX/compilator_vindex" "$RADIX/src/compilator_vindex.vindex" /tmp/g1
+          chmod +x /tmp/g1
+          /tmp/g1 "$RADIX/src/compilator_vindex.vindex" /tmp/g2
+          chmod +x /tmp/g2
+          /tmp/g2 "$RADIX/src/compilator_vindex.vindex" /tmp/g3
+          chmod +x /tmp/g3
+          cmp -s /tmp/g2 /tmp/g3
+          cmp -s "$RADIX/compilator_vindex" /tmp/g3
+          printf '%s\n' 'RECTE: G2 et G3 identici sunt; binarium canonicum fonti respondet.'
+
+      - name: Aestimationem brevem exsequere
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          /tmp/g3 "$RADIX/probationes/logica_brevis.vindex" /tmp/logica_brevis
+          chmod +x /tmp/logica_brevis
+          timeout 10s /tmp/logica_brevis
+          printf '%s\n' 'RECTE: dextra pars periculosa non aestimatur et ordo && ante || servatur.'
+
+      - name: Fenestrale I cum compilatore novo comproba
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          cd "$RADIX"
+          /tmp/g3 probationes/fenestrale_purus_i_fenestrae.vindex /tmp/fenestrale_i
+          chmod +x /tmp/fenestrale_i
+          timeout 10s /tmp/fenestrale_i
+          /tmp/g3 systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
+          file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 786432
+          printf '%s\n' 'RECTE: LXXX fenestrae et Fenestrale I integrum cum logica brevi transeunt.'

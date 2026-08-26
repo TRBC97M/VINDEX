@@ -1,0 +1,34 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS 0.
+
+    SI p != 0 && CONTENTUM(p + 48) == 0 TUNC
+        REDDE 41.
+    FIN-SI.
+
+    SI p == 0 || CONTENTUM(p + 48) == 0 TUNC
+        DECLARA rectum_vel SICUT NUMERUS VALENS 1.
+    ALITER
+        REDDE 42.
+    FIN-SI.
+
+    SI 0 && CONTENTUM(48) == 0 || 1 TUNC
+        DECLARA rectum_ordo SICUT NUMERUS VALENS 1.
+    ALITER
+        REDDE 43.
+    FIN-SI.
+
+    SI 1 || CONTENTUM(48) == 0 && CONTENTUM(56) == 0 TUNC
+        DECLARA rectum_saltus SICUT NUMERUS VALENS 1.
+    ALITER
+        REDDE 44.
+    FIN-SI.
+
+    SI (6 & 3) != 2 TUNC
+        REDDE 45.
+    FIN-SI.
+    SI (4 | 1) != 5 TUNC
+        REDDE 46.
+    FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
