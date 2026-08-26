@@ -1,12 +1,14 @@
 # Referentia linguae VINDEX
 
-Haec referentia facultates re vera probatas describit. VINDEX fontes directe in
-exsecutabilia ELF x86-64 Linux convertit. Compilator ipse VINDEX scriptus est et
-punctum fixum stabile possidet.
+Haec referentia facultates **canonicas et re vera probatas** describit. Fines futuros vide in `ARCHITECTURA.md` et `CONSILIUM.md`.
 
-## Structura programmatis
+VINDEX est lingua generalis in constructione. Compilator canonicus ipse VINDEX scriptus est, ELF64 x86-64 et PE32+ Win64 generat atque punctum fixum auto-hospitii servat.
 
-Omne programma functionem `PRINCIPALIS` habere debet:
+---
+
+# I. Structura programmatis
+
+Programma ordinarium functionem `PRINCIPALIS` habet:
 
 ```vindex
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
@@ -15,63 +17,43 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 ```
 
-Quodque praeceptum puncto terminatur. Bloci verbo suo aperiuntur et forma
-`FIN-...` congruente clauduntur.
+Praecepta puncto terminantur. Bloci verbis propriis aperiuntur et `FIN-...` congruente clauduntur.
 
-## Officina, compilatio et diagnostica
+---
 
-Officina graphica nativa:
+# II. Compilatio
 
-```bash
-./vindex-officina
-```
-
-Fenestra editoris bullas `NOVUM`, `APERI`, `SERVA`, `COMPILA` et `EXSEQUERE`,
-dialogos fasciculorum atque relationem compilationis et executionis praebet.
-Forma `formae/officina.forma` structuram declarat. Applicatio VINDEX eventa e
-`bibliotheca/graphica.vindex` tractat; pons GTK generalis formas pingit, valores
-exportat et eventa transmittit. Altera applicatio `vindex-salutatio` eodem
-motore utitur. HTML,
-navigatrum, minister localis, terminale et Python ad executionem non
-requiruntur.
-
-Linea mandatorum commendata:
-
-```bash
-./vindexc programma.vindex -o programma
-./programma
-```
-
-Verificatio sine compilatione:
-
-```bash
-./vindexc --verifica programma.vindex
-```
-
-Diagnostica provecta formam `archivum:linea:columna: erratum: nuntius`
-habent. Compilator nativus directe quoque vocari potest:
+## ELF64 x86-64
 
 ```bash
 ./compilator_vindex programma.vindex programma
-chmod +x programma
+chmod +x programa
+./programma
 ```
 
-## Nucleus sine systemate hospite
-
-Fons `systema/nucleus.vindex` ab eodem `compilator_vindex` in ELF x86-64
-convertitur. Quia nucleus nullum servitium Linux vocat et memoriam VGA directe
-scribit, sector `systema/boot.S` eum sine systemate hospite exsequi potest.
+Forma publica commendata:
 
 ```bash
-make systema
-./vindex-systema
+./vindexc programa.vindex -o programa
 ```
 
-In hac prima versione memoria infra primum GiB identice mappatur, ELF ad
-`0x400000`, pila ad 16 MiB et allocator VINDEX ad 32 MiB ponuntur. Nucleus
-minimum 64 MiB memoriae postulat; initiator QEMU 128 MiB praebet.
+`vindexc` fontem verificat, in archivum temporarium compilat, ELF validum confirmat et productum atomice publicat.
 
-## Functiones
+## PE32+ Win64
+
+```bash
+./compilator_vindex programma.vindex programa.exe pe
+```
+
+Backend Win64 in CI sub Windows vero probatur, non solum per inspectionem structuram PE.
+
+## UEFI
+
+Target UEFI VINDEX purus est opus experimentale activum et nondum pars huius contractus stabilis. Ne facultates rami experimentalis quasi syntaxin canonicam huius referentiae praesumas.
+
+---
+
+# III. Functiones
 
 ```vindex
 FUNCTIO ADDE REDDENS NUMERUS.
@@ -84,36 +66,71 @@ FIN-FUNCTIO.
 - `ACCIPIT nomen SICUT typus.` parametrum declarat.
 - `REDDENS typus` typum reditus declarat.
 - `REDDE expressio.` valorem reddit atque functionem finit.
-- Usque ad sex parametra per functionem sustinentur.
-- Vocatio functionis posterius definitae et recursio sustinentur.
-- `VACUUM` reditum sine valore significativo indicat; ex consuetudine tamen
-  `REDDE 0.` adhiberi potest.
+- Vocatio functionis posterius definitae sustinetur.
+- Recursio sustinetur.
+- `VACUUM` reditum sine valore significativo indicat.
+- Probatio canonica R1 **septem argumenta SysV** exercet.
 
-## Typi
+Win64 proprium ABI adhibet; eius correctiones per probationes Windows R4 muniuntur.
+
+---
+
+# IV. Typi canonici
 
 | Typus | Natura |
 | --- | --- |
 | `NUMERUS` | integer signatus 64 bituum |
-| `LITTERA` | littera vel octetum |
-| `VERITAS` | valor Booleanus, 0 aut 1 |
-| `FLUITANS` | numerus IEEE-754 duplicis praecisionis |
-| `ACUS<T>` | acus ad valorem generis `T` |
-| `ORDO DE T CAPACITAS n` | ordo `n` elementorum |
-| `FORMA` | structura camporum |
+| `LITTERA` | littera / octetum in locis humilibus |
+| `VERITAS` | valor logicus 0 aut 1 |
+| `FLUITANS` | IEEE-754 duplicis praecisionis |
+| `TEXTUS` | descriptor textus dynamici UTF-8 |
+| `ACUS<T>` | acus ad genus `T` |
+| `ORDO DE T CAPACITAS n` | ordo capacitate statica |
+| `FORMA` / nomen formae | aggregatum camporum |
 | `VACUUM` | reditus sine valore significativo |
 
-### Variabilia et ordines
+---
+
+# V. Variabilia et assignatio
 
 ```vindex
 DECLARA x SICUT NUMERUS VALENS 42.
-DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 10.
-DECLARA textus SICUT ORDO DE LITTERA CAPACITAS 20.
+DECLARA y SICUT FLUITANS VALENS 3.5.
+DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
 ```
 
-Elementa per `tabula[index]` leguntur et scribuntur. Capacitas in tempore
-compilationis nota esse debet.
+Assignatio:
 
-### Formae
+```vindex
+x = x + 1.
+nomen = "VINDEX".
+```
+
+Frames functionum dynamice dimensionantur; probatio R1 frame plus quam unam paginam et centena localia exercet.
+
+---
+
+# VI. Ordines
+
+```vindex
+DECLARA tabula SICUT ORDO DE NUMERUS CAPACITAS 10.
+DECLARA litterae SICUT ORDO DE LITTERA CAPACITAS 64.
+```
+
+Accessus:
+
+```vindex
+tabula[3] = 99.
+PROCLAMA tabula[3].
+```
+
+Capacitas ordinis statici tempore compilationis nota est.
+
+`ORDO DE LITTERA` manet utilissimum ubi collocatio exacta et buffer fixus desiderantur; `TEXTUS` ad textum dynamicum commodior est.
+
+---
+
+# VII. Formae
 
 ```vindex
 FORMA Punctum.
@@ -130,10 +147,17 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 ```
 
-Campus forma `campus DE variabile` acceditur. Forma ordines internos et ordo
-formas continere possunt.
+Campus forma:
 
-### Acus
+```vindex
+campus DE variabile
+```
+
+Formae ordines internos et ordines formarum continere possunt. Acus ad formas quoque sustinentur.
+
+---
+
+# VIII. Acus et memoria directa
 
 ```vindex
 DECLARA x SICUT NUMERUS VALENS 10.
@@ -145,74 +169,78 @@ CONTENTUM(p) = 99.
 - `CONTENTUM(acus)` valorem indicatum legit vel scribit.
 - `p + 1` magnitudine generis indicati movetur.
 - `p[index]` eadem scala utitur.
-- `ACUS<Forma>` campum per `campus DE CONTENTUM(p)` accedere potest.
+- `ACUS<Forma>` cum campis formae adhiberi potest.
 - `OCTETUS_AB(sedes)` unum octetum legit.
 - `SCRIBE_OCTETUM_AB(sedes, valor)` unum octetum scribit.
 
-## Numeri fluitantes
-
-`FLUITANS` est numerus IEEE-754 64 bituum. Operationes `+`, `-`, `*`, `/` et
-comparationes `<`, `>`, `<=`, `>=`, `==`, `!=` sustinentur.
+Memoria manualis:
 
 ```vindex
-DECLARA x SICUT FLUITANS VALENS 3.14.
-DECLARA y SICUT FLUITANS VALENS 1.5.
-DECLARA z SICUT FLUITANS VALENS x + y.
-PROCLAMA z.
+DECLARA p SICUT ACUS<NUMERUS> VALENS RESERVA(NUMERUS).
+CONTENTUM(p) = 42.
+LIBERA(p).
 ```
 
-`PROCLAMA` sex cifras post punctum exhibet. Fluitantia in functionibus, formis
-et ordinibus adhiberi possunt.
+Acus invalida aut accessus extra memoriam mores indefinitos efficere potest. VINDEX hodiernus libertatem basimi gradus servat; systema memoriae tutius futurum hoc contractum humilem abolere non debet.
 
-## Fontes multiplices
+---
 
-```vindex
-IMPORTA "bibliotheca.vindex".
+# IX. TEXTUS
+
+`TEXTUS` est genus nativum textus dynamici. Repraesentatio canonica primae implementationis descriptor est:
+
+```text
++0   longitudo octetorum : u64
++8   capacitas           : u64
++16  octeta UTF-8 ...
 ```
 
-`IMPORTA` tantum in gradu supremo poni potest. Via importationis nunc a
-directorio praesenti resolvitur. Summa fontium coniunctorum 212999 octeta
-excedere non potest. Cyclus et importatio inclusa reiciuntur.
-
-## Argumenta lineae mandatorum
-
-`PRINCIPALIS` potest `argc` et `argv` accipere:
+Exemplum:
 
 ```vindex
+IMPORTA "bibliotheca/textus.vindex".
+
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    ACCIPIT argc SICUT NUMERUS.
-    ACCIPIT argv SICUT ACUS<NUMERUS>.
-    PROCLAMA argc.
-    SI argc > 1 TUNC
-        PROCLAMA OCTETUS_AB(CONTENTUM(argv + 1)).
-    FIN-SI.
+    DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
+    DECLARA titulus SICUT TEXTUS VALENS nomen + " OS".
+    PROCLAMA titulus.
+    PROCLAMA LONGITUDO(titulus).
     REDDE 0.
 FIN-FUNCTIO.
 ```
 
-## Lectio et scriptura
+Facultates probatae:
 
-- `PROCLAMA valor.` valorem cum transitu lineae exhibet.
-- `SCRIBE ordo CAPACITAS n.` litteras ordinis exhibet.
-- `LEGE(descriptor, maximum)` ex descriptore legit.
-- `OCTETUS(index)` octetum novissime lectum reddit.
-- `MITTE(descriptor, ordo, longitudo)` octeta mittit.
-- `APERI_LEGERE(via)` archivum ad legendum aperit.
-- `APERI_SCRIBERE(via)` archivum ad scribendum aperit.
-- `APERI_ADICERE(via)` archivum adiciendum aperit.
-- `CLAUDE(descriptor)` descriptorem claudit.
+- litteralia textus;
+- assignatio `TEXTUS`;
+- concatenatio per `+`;
+- comparatio contenti per `==` et `!=`;
+- parametrum functionis;
+- `PROCLAMA`;
+- `LONGITUDO(textus)` e `bibliotheca/textus.vindex`.
 
-## Executio aliorum programmatum
+`LONGITUDO` octeta UTF-8 numerat, non scalaria Unicode. Unicode semanticum plenius futurum est.
 
-- `EXSEQUERE(via)` programma exsequitur.
-- `EXSEQUERE_CAPTURA(via, receptaculum, capacitas)` exitum capit.
-- `CURRE(argumenta, ambitus, descriptor)` programma cum argumentis exsequitur.
-- `CAMBIA(via)` directorium praesens mutat.
-- `TUBUS(receptaculum)` tubum systematis creat.
+---
 
-## Imperium fluxus
+# X. Fluitantia
 
-### Condicio
+`FLUITANS` est IEEE-754 64 bituum.
+
+```vindex
+DECLARA x SICUT FLUITANS VALENS 3.14.
+DECLARA y SICUT FLUITANS VALENS -1.25.
+DECLARA z SICUT FLUITANS VALENS x + y.
+PROCLAMA z.
+```
+
+Operationes probatae includunt arithmeticam et comparationes ordinarias. Valores negativi R1 quoque probantur.
+
+---
+
+# XI. Imperium fluxus
+
+## Condicio
 
 ```vindex
 SI x > 10 TUNC
@@ -222,7 +250,7 @@ ALITER
 FIN-SI.
 ```
 
-### Iteratio conditionalis
+## DUM
 
 ```vindex
 DUM x < 10 PERFICE
@@ -230,7 +258,7 @@ DUM x < 10 PERFICE
 FIN-DUM.
 ```
 
-### Iteratio finita
+## PER
 
 ```vindex
 PER i AB 1 AD 10 PERFICE
@@ -238,44 +266,237 @@ PER i AB 1 AD 10 PERFICE
 FIN-PER.
 ```
 
-`DESINE.` iterationem finit; `PERGE.` ad iterationem sequentem transit.
+- `DESINE.` iterationem finit.
+- `PERGE.` ad iterationem sequentem transit.
 
-## Operatores
+---
 
-- arithmetici: `+`, `-`, `*`, `/`, `%`;
-- comparativi: `==`, `!=`, `<`, `>`, `<=`, `>=`;
-- logici: `&&`, `||`, `!`;
-- bituales: `&`, `|`, `^`, `<<`, `>>`;
-- assignatio: `=`.
+# XII. Operatores
 
-Praecedentia ordinaria servatur; parenthesibus mutari potest.
+## Arithmetici
 
-## Memoria
-
-```vindex
-DECLARA p SICUT ACUS<NUMERUS> VALENS RESERVA(NUMERUS).
-CONTENTUM(p) = 42.
-PROCLAMA CONTENTUM(p).
-LIBERA(p).
+```text
++  -  *  /  %
 ```
 
-`RESERVA(typus)` memoriam petit; `LIBERA(acus)` eam reddit. Allocator internus
-simplex est. Acus invalida vel memoria extra fines mores indefinitos efficere
-potest; verificator staticus haec omnia demonstrare non potest.
+## Comparativi
 
-## Limites generales
+```text
+==  !=  <  >  <=  >=
+```
 
-- architectura: Linux x86-64;
-- summa fontium: 212999 octeta;
-- longitudo identificatoris: 32 litterae;
-- parametra functionis: 6;
-- fons in Officina: 1048576 octeta;
-- pons graphicus: GTK 3;
-- nucleus Systematis: BIOS x86-64, imago 1 MiB, nucleus maximus 16384 octeta;
-- nulla collectio purgamentorum;
-- nulla bibliotheca libc.
+## Logici
 
-## Exemplum integrum
+```text
+!  &&  ||
+```
+
+`&&` et `||` **aestimationem brevem** habent.
+
+```vindex
+SI p != 0 && CONTENTUM(p) == 42 TUNC
+    PROCLAMA 1.
+FIN-SI.
+```
+
+Si `p == 0`, `CONTENTUM(p)` non aestimatur.
+
+Prioritas logica canonica:
+
+```text
+comparatio → && → ||
+```
+
+## Bituales
+
+```text
+&  |  ^  <<  >>
+```
+
+`&` et `|` ab operatoribus logicis separati sunt et utramque partem ut valores bituales tractant.
+
+---
+
+# XIII. Importationes
+
+```vindex
+IMPORTA "bibliotheca/textus.vindex".
+```
+
+`IMPORTA` in gradu supremo ponitur. Viae fontium per systema projectuum et contextum compilationis resolvuntur.
+
+Compilator hodiernus buffers fontium, functionum et codicis dynamice administrat. **Vetus limes publicus 212999 octetorum non amplius contractus canonicus est.** Probationes R1 multas functiones, frames magnas et codicem multo maiorem quam veteres casus ordinarios exercent.
+
+Importationes invalidas compilator cum diagnosticis structis reicit.
+
+---
+
+# XIV. Argumenta lineae mandatorum
+
+`PRINCIPALIS` potest argumenta processūs accipere:
+
+```vindex
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+    PROCLAMA argc.
+    REDDE 0.
+FIN-FUNCTIO.
+```
+
+ELF et Win64 utrumque contractum argumentorum probationibus dedicatis muniuntur.
+
+---
+
+# XV. I/O et fasciculi
+
+Praecepta / intrinseca probata includunt:
+
+- `PROCLAMA valor.`;
+- `SCRIBE ordo CAPACITAS n.`;
+- `LEGE(descriptor, maximum)`;
+- `OCTETUS(index)`;
+- `MITTE(descriptor, ordo, longitudo)`;
+- `APERI_LEGERE(via)`;
+- `APERI_SCRIBERE(via)`;
+- `APERI_ADICERE(via)`;
+- `CLAUDE(descriptor)`.
+
+Instrumenta processūs includunt, secundum target et ambitum:
+
+- `EXSEQUERE(via)`;
+- `EXSEQUERE_CAPTURA(...)`;
+- `CURRE(...)`;
+- `CAMBIA(via)`;
+- `TUBUS(...)`.
+
+---
+
+# XVI. PROIECTUM
+
+Projectum VINDEX potest manifesto describi. Contractus R3 vias relativas et destinationes ELF/PE probat.
+
+Exempla canonica sunt sub:
+
+```text
+tests/proiecta/
+```
+
+Officina canonica eodem contractu projectuum utitur.
+
+---
+
+# XVII. Diagnostica
+
+Compilator canonicus diagnostica structa generat:
+
+```text
+DIAGNOSTICUM VINDEX
+FONS
+<via>
+LINEA
+<numerus>
+COLUMNA
+<numerus>
+NUNTIUS
+<descriptio>
+```
+
+Origines importationum et errores compilationis probationibus R2 muniuntur. Officina haec diagnostica legit et ad fontem navigare potest.
+
+---
+
+# XVIII. Auto-hospitium
+
+Fons compilatoris:
+
+```text
+src/compilator_vindex.vindex
+```
+
+Probatio:
+
+```bash
+make auto-hospitium
+```
+
+Contractus canonicus postulat:
+
+```text
+compilator versionatus = G2 = G3
+```
+
+Mutationes linguae non canonizentur si punctum fixum frangunt.
+
+---
+
+# XIX. Probationes
+
+```bash
+make probatio
+```
+
+Suite localis canonica post PR #99 viginti tres probationes exercet sine errore, inter quas:
+
+- arithmeticam;
+- fluitantia;
+- importationes;
+- formas et acus;
+- recursionem;
+- argumenta;
+- diagnostica;
+- auto-hospitium;
+- logicam brevem;
+- PE32+;
+- puritatem Sylviae;
+- Fenestrale II Purus.
+
+Workflow separati Win64 et Officina sub Windows vero probant.
+
+---
+
+# XX. Officina
+
+Officina canonica hodierna in radice repositorii sub `officina/` est applicatio Windows nativa. Non est pons GTK historicus.
+
+Ea projecta VINDEX aperit, fontes editat, syntaxin colorat, build/run exercet et diagnostica navigabilia exhibet.
+
+Syntax linguae non dependet ab Officina; compilator lineae mandatorum auctoritas manet.
+
+---
+
+# XXI. Sylvia OS et lingua
+
+Sylvia VINDEX adhibet sed non definit. Codex Sylviae post initium firmware VINDEX purus esse debet.
+
+Facultates Fenestralis, UEFI aut gubernatorum quae generaliter utiles sunt, ubi possibile est in linguam, ABI aut bibliothecam VINDEX generalem evolvantur potius quam exceptiones privatae fiant.
+
+---
+
+# XXII. Limites praesentis linguae
+
+VINDEX nondum habet plenitudinem destinatam. Inter facultates futuras nondum in hac referentia canonicas sunt:
+
+- integri multarum dimensionum ut typi publici pleni;
+- enumerationes et uniones maturae;
+- generica generalia;
+- functiones/callback ut valores primi ordinis plene definiti;
+- closures;
+- modules et compilationes separatae maturae;
+- ownership vel alius modus memoriae tutior;
+- exceptiones aut mechanismus errorum alti gradus finalis;
+- fila, atomica et async;
+- SIMD publicum maturum;
+- reflection / metaprogrammatio;
+- debugger et optimizer maturi;
+- package manager;
+- targeta ARM64 et WebAssembly canonica.
+
+Haec absentia non mutat legem universalitatis: sunt agenda, non limites philosophici.
+
+---
+
+# XXIII. Exemplum integrum
 
 ```vindex
 FUNCTIO FACTORIA REDDENS NUMERUS.
@@ -293,4 +514,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 ```
 
-Exitus est `720`.
+Exitus:
+
+```text
+720
+```
+
+---
+
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
