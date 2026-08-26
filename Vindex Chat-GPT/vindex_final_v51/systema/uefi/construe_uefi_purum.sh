@@ -13,7 +13,7 @@ set -eu
 
 RADIX="$(cd "$(dirname "$0")/../.." && pwd)"
 UEFI="$RADIX/systema/uefi"
-PONTICULUS="${PONTICULUS_FONS:-$RADIX/../../Vindex Claude Ai/uefi-vindex-backend/bootstrap_integer.vindex}"
+PONTICULUS="${PONTICULUS_FONS:-$RADIX/../../Vindex Claude Ai/uefi-vindex-backend/bootstrap_nucleus_realis.vindex}"
 IMAGO="${1:-$RADIX/systema_vindex_uefi_purum.img}"
 APPLICATIO="${2:-$RADIX/BOOTX64_PURUM.EFI}"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-uefi-purum.XXXXXX")"
@@ -67,23 +67,22 @@ if [ -f "$UEFI/forma.bin" ]; then
     cp -f "$UEFI/forma.bin" "$TEMPORARIUM/FORMA.BIN"
 fi
 
-# IV. Imaginem ESP construe, cum omnibus fasciculis in volumine.
-printf '%s\n' 'III. Imago ESP...'
+# IV. Imaginem ESP construe, cum nucleo VERE in volumine incluso.
+printf '%s\n' 'III. Imago ESP (cum NUCLEUS.BIN in radice voluminis)...'
 python3 "$UEFI/fac_imaginem_uefi.py" \
-    "$TEMPORARIUM/BOOTX64.EFI" "$TEMPORARIUM/imago.img" \
-    2>/dev/null || {
-        printf '%s\n' 'NOTA: fac_imaginem_uefi.py solum BOOTX64.EFI accipit;'
-        printf '%s\n' '      nucleus separatim in volumine ponendus est.'
-    }
+    "$TEMPORARIUM/BOOTX64.EFI" "$TEMPORARIUM/imago.img" "$TEMPORARIUM/NUCLEUS.BIN"
+
+# Verifica nucleum vere in imagine adesse, non solum iuxta eam.
+if ! grep -qa 'NUCLEUS BIN' "$TEMPORARIUM/imago.img"; then
+    printf '%s\n' 'ERRATUM: NUCLEUS.BIN in imagine non invenitur.' >&2
+    exit 65
+fi
 
 mkdir -p "$(dirname "$IMAGO")" "$(dirname "$APPLICATIO")"
 cp -f "$TEMPORARIUM/BOOTX64.EFI" "$APPLICATIO"
-if [ -f "$TEMPORARIUM/imago.img" ]; then
-    cp -f "$TEMPORARIUM/imago.img" "$IMAGO"
-fi
-cp -f "$TEMPORARIUM/NUCLEUS.BIN" "$(dirname "$APPLICATIO")/NUCLEUS.BIN"
+cp -f "$TEMPORARIUM/imago.img" "$IMAGO"
 
 printf '%s\n' 'RECTE: Sylvia OS UEFI constructa est OMNINO in VINDEX.'
 printf '%s\n' 'Nullum gcc, nullum ld, nullum objcopy, nullus C adhibitus est.'
 printf 'APPLICATIO: %s\n' "$APPLICATIO"
-printf 'NUCLEUS:    %s\n' "$(dirname "$APPLICATIO")/NUCLEUS.BIN"
+printf 'IMAGO:      %s (nucleum inclusum continet)\n' "$IMAGO"

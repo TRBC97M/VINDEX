@@ -46,12 +46,18 @@ def ingressus_directorii(nomen: bytes, attributum: int, botrus: int, mensura: in
 
 
 def principale() -> int:
-    if len(sys.argv) != 3:
-        print("USUS: fac_imaginem_uefi.py BOOTX64.EFI systema_vindex_uefi.img", file=sys.stderr)
+    if len(sys.argv) not in (3, 4):
+        print(
+            "USUS: fac_imaginem_uefi.py BOOTX64.EFI systema_vindex_uefi.img [NUCLEUS.BIN]",
+            file=sys.stderr,
+        )
         return 64
     via_efi = Path(sys.argv[1])
     via_imaginis = Path(sys.argv[2])
     efi = via_efi.read_bytes()
+    # Nucleus, si datus, in radice voluminis ponitur, ut ponticulus eum
+    # per protocollum fasciculorum UEFI aperire possit.
+    nucleus = Path(sys.argv[3]).read_bytes() if len(sys.argv) == 4 else b""
 
     reservati = 32
     numerus_fat = 2
@@ -70,10 +76,13 @@ def principale() -> int:
     fasciculi_botri = (len(efi) + SECTOR - 1) // SECTOR
     primus_fasciculi = 5
     ultimus_fasciculi = primus_fasciculi + fasciculi_botri - 1
+    nuclei_botri = (len(nucleus) + SECTOR - 1) // SECTOR if nucleus else 0
+    primus_nuclei = ultimus_fasciculi + 1
+    ultimus_nuclei = primus_nuclei + nuclei_botri - 1
     voluminis_botri = MENSURA_VOLUMINIS // SECTOR
-    primus_voluminis = ultimus_fasciculi + 1
+    primus_voluminis = (ultimus_nuclei if nucleus else ultimus_fasciculi) + 1
     ultimus_voluminis = primus_voluminis + voluminis_botri - 1
-    si_occupati = 3 + fasciculi_botri + voluminis_botri
+    si_occupati = 3 + fasciculi_botri + nuclei_botri + voluminis_botri
 
     imago = bytearray(SECTORES_TOTALES * SECTOR)
 
@@ -185,6 +194,9 @@ def principale() -> int:
     for botrus in range(primus_fasciculi, ultimus_fasciculi + 1):
         proximus = 0x0FFFFFFF if botrus == ultimus_fasciculi else botrus + 1
         u32(fat, botrus * 4, proximus)
+    for botrus in range(primus_nuclei, ultimus_nuclei + 1):
+        proximus = 0x0FFFFFFF if botrus == ultimus_nuclei else botrus + 1
+        u32(fat, botrus * 4, proximus)
     for botrus in range(primus_voluminis, ultimus_voluminis + 1):
         proximus = 0x0FFFFFFF if botrus == ultimus_voluminis else botrus + 1
         u32(fat, botrus * 4, proximus)
@@ -202,6 +214,10 @@ def principale() -> int:
     radix[32:64] = ingressus_directorii(
         b"VINDEX  FS ", 0x20, primus_voluminis, MENSURA_VOLUMINIS
     )
+    if nucleus:
+        radix[64:96] = ingressus_directorii(
+            b"NUCLEUS BIN", 0x20, primus_nuclei, len(nucleus)
+        )
     imago[locus_botri(2):locus_botri(2) + SECTOR] = radix
 
     directorium_efi = bytearray(SECTOR)
@@ -219,6 +235,9 @@ def principale() -> int:
     imago[locus_botri(4):locus_botri(4) + SECTOR] = directorium_boot
     debut_efi = locus_botri(primus_fasciculi)
     imago[debut_efi:debut_efi + len(efi)] = efi
+    if nucleus:
+        debut_nuclei = locus_botri(primus_nuclei)
+        imago[debut_nuclei:debut_nuclei + len(nucleus)] = nucleus
 
     # LBA 0 partitionis signum pontis habet; LBA 1..64 sunt volumen VINDEX.
     locus_voluminis = VOLUMEN_INITIUM * SECTOR

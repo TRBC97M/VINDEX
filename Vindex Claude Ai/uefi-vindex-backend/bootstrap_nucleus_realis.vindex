@@ -84,6 +84,17 @@ FUNCTIO GUID_PONE REDDENS NUMERUS.
         SCRIBE_OCTETUM_AB(guid + 12, 201). SCRIBE_OCTETUM_AB(guid + 13, 105).
         SCRIBE_OCTETUM_AB(guid + 14, 114). SCRIBE_OCTETUM_AB(guid + 15, 59).
     FIN-SI.
+    // 5 = EFI_FILE_INFO (09576e92-6d3f-11d2-8e39-00a0c969723b)
+    SI genus == 5 TUNC
+        SCRIBE_OCTETUM_AB(guid, 146). SCRIBE_OCTETUM_AB(guid + 1, 110).
+        SCRIBE_OCTETUM_AB(guid + 2, 87). SCRIBE_OCTETUM_AB(guid + 3, 9).
+        SCRIBE_OCTETUM_AB(guid + 4, 63). SCRIBE_OCTETUM_AB(guid + 5, 109).
+        SCRIBE_OCTETUM_AB(guid + 6, 210). SCRIBE_OCTETUM_AB(guid + 7, 17).
+        SCRIBE_OCTETUM_AB(guid + 8, 142). SCRIBE_OCTETUM_AB(guid + 9, 57).
+        SCRIBE_OCTETUM_AB(guid + 10, 0). SCRIBE_OCTETUM_AB(guid + 11, 160).
+        SCRIBE_OCTETUM_AB(guid + 12, 201). SCRIBE_OCTETUM_AB(guid + 13, 105).
+        SCRIBE_OCTETUM_AB(guid + 14, 114). SCRIBE_OCTETUM_AB(guid + 15, 59).
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -150,14 +161,27 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI fasc == 0 TUNC REDDE 13. FIN-SI.
 
     // IV. Memoriam pro nucleo reserva (AnyPages: firmware eligit).
+    // Mensuram veram fasciculi per GetInfo pete; nullum limen fixum.
+    DECLARA info_buf SICUT NUMERUS VALENS RESERVA_OCTETA(512).
+    DECLARA locus_info_mens SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    CONTENTUM(locus_info_mens) = 512.
+    DECLARA ig_gi SICUT NUMERUS VALENS GUID_PONE(guid, 5).
+    DECLARA info_pete SICUT NUMERUS VALENS CONTENTUM(fasc + 64).
+    st = UEFI_VOCA6(info_pete, fasc, guid, locus_info_mens, info_buf, 0, 0).
+    SI st != 0 TUNC REDDE 18. FIN-SI.
+    DECLARA mensura_vera SICUT NUMERUS VALENS CONTENTUM(info_buf + 8).
+    SI mensura_vera == 0 TUNC REDDE 18. FIN-SI.
+
     // Nucleus ad 0x400000 (p_vaddr ELF) et regio COMMUNIS ad 0x3000000
     // separatim reservantur, quia unus blocus continuus a firmware
     // negatur (regiones intermediae iam occupatae sunt).
     DECLARA locus_mem SICUT NUMERUS VALENS RESERVA_OCTETA(8).
     DECLARA alloca SICUT NUMERUS VALENS CONTENTUM(bs + 40).
 
+    // Paginae exactae ex mensura vera nuclei computatae.
+    DECLARA paginae_nuclei SICUT NUMERUS VALENS (mensura_vera + 4095) / 4096.
     CONTENTUM(locus_mem) = 4194304.
-    st = UEFI_VOCA6(alloca, 2, 2, 256, locus_mem, 0, 0).
+    st = UEFI_VOCA6(alloca, 2, 2, paginae_nuclei, locus_mem, 0, 0).
     SI st != 0 TUNC REDDE 14. FIN-SI.
 
     CONTENTUM(locus_mem) = 50331648.
@@ -169,7 +193,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     // V. Nucleum lege.
     DECLARA lege SICUT NUMERUS VALENS CONTENTUM(fasc + 32).
     DECLARA locus_mensura SICUT NUMERUS VALENS RESERVA_OCTETA(8).
-    CONTENTUM(locus_mensura) = 2097152.
+    CONTENTUM(locus_mensura) = mensura_vera.
     st = UEFI_VOCA6(lege, fasc, locus_mensura, sedes_nuclei, 0, 0, 0).
     SI st != 0 TUNC REDDE 15. FIN-SI.
     DECLARA lecta SICUT NUMERUS VALENS CONTENTUM(locus_mensura).
