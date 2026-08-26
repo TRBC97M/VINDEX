@@ -14,6 +14,11 @@ FUNCTIO TEXTUS_SEDES REDDENS NUMERUS.
     REDDE textus.
 FIN-FUNCTIO.
 
+FUNCTIO TEXTUS_EX_SEDE REDDENS TEXTUS.
+    ACCIPIT sedes SICUT NUMERUS.
+    REDDE sedes.
+FIN-FUNCTIO.
+
 FUNCTIO TEXTUS_BASIS_OCTETORUM REDDENS NUMERUS.
     ACCIPIT textus SICUT TEXTUS.
     DECLARA descriptor SICUT NUMERUS VALENS TEXTUS_SEDES(textus).
@@ -127,4 +132,76 @@ FUNCTIO UTF8_SCALARE_CAPE REDDENS NUMERUS.
     FIN-DUM.
 
     REDDE -1.
+FIN-FUNCTIO.
+
+// Positio octeti quae initium scalaris indicati est.
+// Index aequalis longitudini scalarum finem textus legitime significat.
+FUNCTIO UTF8_POSITIO_SCALARIS REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI index < 0 TUNC REDDE -1. FIN-SI.
+
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA positio SICUT NUMERUS VALENS 0.
+    DECLARA currente SICUT NUMERUS VALENS 0.
+
+    DUM currente < index && positio < n PERFICE
+        DECLARA mensura SICUT NUMERUS VALENS UTF8_SCALAE_MENSURA(textus, positio).
+        SI mensura == 0 TUNC REDDE -1. FIN-SI.
+        positio = positio + mensura.
+        currente = currente + 1.
+    FIN-DUM.
+
+    SI currente == index TUNC REDDE positio. FIN-SI.
+    REDDE -1.
+FIN-FUNCTIO.
+
+// Copiam novam descriptoris TEXTUS ex intervallo octetorum fontis creat.
+// 0 ut TEXTUS reddit si intervallum invalidum est aut memoria deest.
+FUNCTIO TEXTUS_COPIA_OCTETORUM REDDENS TEXTUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT initium SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    SI TEXTUS_SEDES(textus) == 0 TUNC REDDE 0. FIN-SI.
+    SI initium < 0 || numerus < 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    SI initium > n TUNC REDDE 0. FIN-SI.
+    SI numerus > n - initium TUNC REDDE 0. FIN-SI.
+
+    DECLARA descriptor SICUT NUMERUS VALENS RESERVA_OCTETA(17 + numerus).
+    SI descriptor <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(descriptor) = numerus.
+    CONTENTUM(descriptor + 8) = numerus.
+
+    DECLARA basis_fontis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(textus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        SCRIBE_OCTETUM_AB(descriptor + 16 + i, OCTETUS_AB(basis_fontis + initium + i)).
+        i = i + 1.
+    FIN-DUM.
+    SCRIBE_OCTETUM_AB(descriptor + 16 + numerus, 0).
+    REDDE TEXTUS_EX_SEDE(descriptor).
+FIN-FUNCTIO.
+
+// Subtextum per indices scalarum Unicode creat; fines UTF-8 numquam secat.
+// Error vel UTF-8 invalidum TEXTUS nullum reddit; subtextum vacuum validum descriptor non-nullum reddit.
+FUNCTIO SUBTEXTUS_SCALARUM REDDENS TEXTUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT initium SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    SI TEXTUS_SEDES(textus) == 0 TUNC REDDE 0. FIN-SI.
+    SI initium < 0 || numerus < 0 TUNC REDDE 0. FIN-SI.
+    SI UTF8_VALIDUS(textus) == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA totalis SICUT NUMERUS VALENS LONGITUDO_SCALARUM(textus).
+    SI totalis < 0 TUNC REDDE 0. FIN-SI.
+    SI initium > totalis TUNC REDDE 0. FIN-SI.
+    SI numerus > totalis - initium TUNC REDDE 0. FIN-SI.
+
+    DECLARA positio_initii SICUT NUMERUS VALENS UTF8_POSITIO_SCALARIS(textus, initium).
+    DECLARA positio_finis SICUT NUMERUS VALENS UTF8_POSITIO_SCALARIS(textus, initium + numerus).
+    SI positio_initii < 0 || positio_finis < positio_initii TUNC REDDE 0. FIN-SI.
+
+    REDDE TEXTUS_COPIA_OCTETORUM(textus, positio_initii, positio_finis - positio_initii).
 FIN-FUNCTIO.
