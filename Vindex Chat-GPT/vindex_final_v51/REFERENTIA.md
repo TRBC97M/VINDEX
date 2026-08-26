@@ -42,7 +42,7 @@ Forma publica commendata:
 ## PE32+ Win64
 
 ```bash
-./compilator_vindex programma.vindex programa.exe pe
+./compilator_vindex programa.vindex programa.exe pe
 ```
 
 Backend Win64 in CI sub Windows vero probatur, non solum per inspectionem structuram PE.
@@ -69,7 +69,16 @@ FIN-FUNCTIO.
 - Vocatio functionis posterius definitae sustinetur.
 - Recursio sustinetur.
 - `VACUUM` reditum sine valore significativo indicat.
+- `TEXTUS` typus reditus canonice probatus est: functio litteralem, parametrum aut concatenationem dynamicam redire potest, et valor a vocante ut `TEXTUS` plene adhibetur.
 - Probatio canonica R1 **septem argumenta SysV** exercet.
+
+Exemplum reditus textus:
+
+```vindex
+FUNCTIO SALUTATIO REDDENS TEXTUS.
+    REDDE "Salve".
+FIN-FUNCTIO.
+```
 
 Win64 proprium ABI adhibet; eius correctiones per probationes Windows R4 muniuntur.
 
@@ -216,10 +225,19 @@ Facultates probatae:
 - concatenatio per `+`;
 - comparatio contenti per `==` et `!=`;
 - parametrum functionis;
+- reditus `TEXTUS` a functionibus, etiam pro concatenatione dynamica;
 - `PROCLAMA`;
-- `LONGITUDO(textus)` e `bibliotheca/textus.vindex`.
+- `LONGITUDO(textus)` — numerus octetorum UTF-8;
+- `UTF8_VALIDUS(textus)` — validatio UTF-8 stricta;
+- `LONGITUDO_SCALARUM(textus)` — numerus scalarum Unicode;
+- `UTF8_SCALARE_CAPE(textus, index)` — valor scalaris Unicode;
+- `SUBTEXTUS_SCALARUM(textus, initium, numerus)` — nova copia textus per limites scalarum Unicode.
 
-`LONGITUDO` octeta UTF-8 numerat, non scalaria Unicode. Unicode semanticum plenius futurum est.
+`LONGITUDO` octeta UTF-8 numerat, non scalaria Unicode. Haec semantica humilis gradus deliberate servatur.
+
+`SUBTEXTUS_SCALARUM` sequentiam UTF-8 numquam in medio incidit. Subtextum vacuum legitimum descriptor non-nullus longitudine zero est; input invalidum vel UTF-8 invalidum `TEXTUS` nullum reddit.
+
+Scalae Unicode non idem sunt ac graphemata visibilia. Segmentatio graphematum, normalizatio NFC/NFD, proprietates Unicode et case folding adhuc futura sunt.
 
 ---
 
@@ -436,7 +454,7 @@ Mutationes linguae non canonizentur si punctum fixum frangunt.
 make probatio
 ```
 
-Suite localis canonica post PR #99 viginti tres probationes exercet sine errore, inter quas:
+Suite localis canonica post PR #108 **viginti novem probationes** exercet sine errore, inter quas:
 
 - arithmeticam;
 - fluitantia;
@@ -445,6 +463,10 @@ Suite localis canonica post PR #99 viginti tres probationes exercet sine errore,
 - recursionem;
 - argumenta;
 - diagnostica;
+- collectiones, series et segmenta `NUMERUS`;
+- `TEXTUS` UTF-8 et scalaria Unicode;
+- reditum `TEXTUS` a functionibus;
+- subtextum Unicode per scalaria;
 - auto-hospitium;
 - logicam brevem;
 - PE32+;
@@ -488,6 +510,7 @@ VINDEX nondum habet plenitudinem destinatam. Inter facultates futuras nondum in 
 - fila, atomica et async;
 - SIMD publicum maturum;
 - reflection / metaprogrammatio;
+- graphemata, normalizatio et transformationes Unicode superiores;
 - debugger et optimizer maturi;
 - package manager;
 - targeta ARM64 et WebAssembly canonica.
