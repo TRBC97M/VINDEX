@@ -19,6 +19,12 @@ internal static class Programma
                 .GetAwaiter().GetResult();
         }
 
+        if (argumenta.Length >= 2 && argumenta[0] == "--proba-diagnosticum")
+        {
+            return Probationes.ProbaDiagnosticumAsync(argumenta[1])
+                .GetAwaiter().GetResult();
+        }
+
         ApplicationConfiguration.Initialize();
         ConfiguratioOfficinae configuratio = ConfiguratioOfficinae.Lege(AppContext.BaseDirectory);
         string? manifestum = argumenta.FirstOrDefault(via =>
