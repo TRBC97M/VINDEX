@@ -1,0 +1,129 @@
+// VINDEX — Collectio dynamica NUMERUS.
+// Caput: +0 numerus, +8 primus, +16 ultimus.
+// Nodus: +0 valor, +8 proximus.
+// VINDEX Latine cogitat. Sylvia Latine loquitur.
+
+FUNCTIO CN_CREA REDDENS NUMERUS.
+    DECLARA collectio SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI collectio <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(collectio) = 0.
+    CONTENTUM(collectio + 8) = 0.
+    CONTENTUM(collectio + 16) = 0.
+    REDDE collectio.
+FIN-FUNCTIO.
+
+FUNCTIO CN_NUMERUS REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    SI collectio == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(collectio).
+FIN-FUNCTIO.
+
+FUNCTIO CN_NODUS REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI collectio == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    SI index >= CONTENTUM(collectio) TUNC REDDE 0. FIN-SI.
+
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(collectio + 8).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM nodus != 0 && i < index PERFICE
+        nodus = CONTENTUM(nodus + 8).
+        i = i + 1.
+    FIN-DUM.
+    REDDE nodus.
+FIN-FUNCTIO.
+
+FUNCTIO CN_CAPE REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    DECLARA nodus SICUT NUMERUS VALENS CN_NODUS(collectio, index).
+    SI nodus == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(nodus).
+FIN-FUNCTIO.
+
+FUNCTIO CN_PONE REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA nodus SICUT NUMERUS VALENS CN_NODUS(collectio, index).
+    SI nodus == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(nodus) = valor.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CN_ADDE REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI collectio == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA nodus SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    SI nodus <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(nodus) = valor.
+    CONTENTUM(nodus + 8) = 0.
+
+    SI CONTENTUM(collectio) == 0 TUNC
+        CONTENTUM(collectio + 8) = nodus.
+        CONTENTUM(collectio + 16) = nodus.
+    ALITER
+        DECLARA ultimus SICUT NUMERUS VALENS CONTENTUM(collectio + 16).
+        CONTENTUM(ultimus + 8) = nodus.
+        CONTENTUM(collectio + 16) = nodus.
+    FIN-SI.
+
+    CONTENTUM(collectio) = CONTENTUM(collectio) + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CN_DELE REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI collectio == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(collectio).
+    SI index >= numerus TUNC REDDE 0. FIN-SI.
+
+    DECLARA nodus SICUT NUMERUS VALENS 0.
+    SI index == 0 TUNC
+        nodus = CONTENTUM(collectio + 8).
+        CONTENTUM(collectio + 8) = CONTENTUM(nodus + 8).
+        SI numerus == 1 TUNC
+            CONTENTUM(collectio + 16) = 0.
+        FIN-SI.
+    ALITER
+        DECLARA prior SICUT NUMERUS VALENS CN_NODUS(collectio, index - 1).
+        SI prior == 0 TUNC REDDE 0. FIN-SI.
+        nodus = CONTENTUM(prior + 8).
+        CONTENTUM(prior + 8) = CONTENTUM(nodus + 8).
+        SI index == numerus - 1 TUNC
+            CONTENTUM(collectio + 16) = prior.
+        FIN-SI.
+    FIN-SI.
+
+    CONTENTUM(collectio) = numerus - 1.
+    LIBERA(nodus).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CN_PURGA REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    SI collectio == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(collectio + 8).
+    DUM nodus != 0 PERFICE
+        DECLARA proximus SICUT NUMERUS VALENS CONTENTUM(nodus + 8).
+        LIBERA(nodus).
+        nodus = proximus.
+    FIN-DUM.
+
+    CONTENTUM(collectio) = 0.
+    CONTENTUM(collectio + 8) = 0.
+    CONTENTUM(collectio + 16) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CN_LIBERA REDDENS NUMERUS.
+    ACCIPIT collectio SICUT NUMERUS.
+    SI collectio == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA ignoratum SICUT NUMERUS VALENS CN_PURGA(collectio).
+    LIBERA(collectio).
+    REDDE 1.
+FIN-FUNCTIO.
