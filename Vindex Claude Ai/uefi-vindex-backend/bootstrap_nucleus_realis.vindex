@@ -275,6 +275,40 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI scala_y < scala_x TUNC scala = scala_y. FIN-SI.
     SI scala == 0 TUNC scala = 1. FIN-SI.
 
+    // FORMA.BIN (forma litterarum) onera; ponticulus C eius adressam in
+    // meta[11] ponebat (linea 255). Sine hoc, nucleus indicem nullum
+    // legit et coordinatas absurdas computat -- causa vera defectus.
+    DECLARA sedes_formae SICUT NUMERUS VALENS 4587520.
+    DECLARA nomen_f SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    DECLARA ig_nf SICUT NUMERUS VALENS MEMORIA_VACUA(nomen_f, 32).
+    SCRIBE_OCTETUM_AB(nomen_f, 70).
+    SCRIBE_OCTETUM_AB(nomen_f + 2, 79).
+    SCRIBE_OCTETUM_AB(nomen_f + 4, 82).
+    SCRIBE_OCTETUM_AB(nomen_f + 6, 77).
+    SCRIBE_OCTETUM_AB(nomen_f + 8, 65).
+    SCRIBE_OCTETUM_AB(nomen_f + 10, 46).
+    SCRIBE_OCTETUM_AB(nomen_f + 12, 66).
+    SCRIBE_OCTETUM_AB(nomen_f + 14, 73).
+    SCRIBE_OCTETUM_AB(nomen_f + 16, 78).
+    CONTENTUM(locus) = 0.
+    DECLARA st_f SICUT NUMERUS VALENS UEFI_VOCA6(aperi, radix, locus, nomen_f, 1, 0, 0).
+    SI st_f == 0 TUNC
+        DECLARA fasc_f SICUT NUMERUS VALENS CONTENTUM(locus).
+        SI fasc_f != 0 TUNC
+            CONTENTUM(locus_info_mens) = 512.
+            DECLARA ig_gf SICUT NUMERUS VALENS GUID_PONE(guid, 5).
+            DECLARA info_f SICUT NUMERUS VALENS CONTENTUM(fasc_f + 64).
+            DECLARA stif SICUT NUMERUS VALENS UEFI_VOCA6(info_f, fasc_f, guid, locus_info_mens, info_buf, 0, 0).
+            SI stif == 0 TUNC
+                CONTENTUM(locus_mensura) = CONTENTUM(info_buf + 8).
+                DECLARA lege_f SICUT NUMERUS VALENS CONTENTUM(fasc_f + 32).
+                DECLARA stlf SICUT NUMERUS VALENS UEFI_VOCA6(lege_f, fasc_f, locus_mensura, sedes_formae, 0, 0, 0).
+            FIN-SI.
+            DECLARA cl_f SICUT NUMERUS VALENS CONTENTUM(fasc_f + 16).
+            DECLARA ig_cf SICUT NUMERUS VALENS UEFI_VOCA6(cl_f, fasc_f, 0, 0, 0, 0, 0).
+        FIN-SI.
+    FIN-SI.
+
     // VII. Metadata pro nucleo.
     DECLARA ig_vac SICUT NUMERUS VALENS MEMORIA_VACUA(50331648, 4096).
     CONTENTUM(50331648) = 160.
@@ -290,6 +324,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     CONTENTUM(50333760) = (latitudo - (320 * scala)) / 2.
     CONTENTUM(50333768) = (altitudo - (200 * scala)) / 2.
     CONTENTUM(50333776) = 50335744.
+    CONTENTUM(50333784) = sedes_formae.
     CONTENTUM(50334464) = imago.
 
     // VIII. Nuntium ante saltum, ut successum videas.

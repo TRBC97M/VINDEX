@@ -69,14 +69,14 @@ fi
 
 # IV. Imaginem ESP construe, cum nucleo VERE in volumine incluso.
 printf '%s\n' 'III. Imago ESP (cum NUCLEUS.BIN in radice voluminis)...'
+ARGS_IMAGINIS="$TEMPORARIUM/BOOTX64.EFI $TEMPORARIUM/imago.img $TEMPORARIUM/NUCLEUS.BIN"
 if [ -f "$TEMPORARIUM/TEXTUS.BIN" ]; then
-    python3 "$UEFI/fac_imaginem_uefi.py" \
-        "$TEMPORARIUM/BOOTX64.EFI" "$TEMPORARIUM/imago.img" \
-        "$TEMPORARIUM/NUCLEUS.BIN" "$TEMPORARIUM/TEXTUS.BIN"
-else
-    python3 "$UEFI/fac_imaginem_uefi.py" \
-        "$TEMPORARIUM/BOOTX64.EFI" "$TEMPORARIUM/imago.img" "$TEMPORARIUM/NUCLEUS.BIN"
+    ARGS_IMAGINIS="$ARGS_IMAGINIS $TEMPORARIUM/TEXTUS.BIN"
+    if [ -f "$TEMPORARIUM/FORMA.BIN" ]; then
+        ARGS_IMAGINIS="$ARGS_IMAGINIS $TEMPORARIUM/FORMA.BIN"
+    fi
 fi
+python3 "$UEFI/fac_imaginem_uefi.py" $ARGS_IMAGINIS
 
 # Verifica nucleum vere in imagine adesse, non solum iuxta eam.
 if ! grep -qa 'NUCLEUS BIN' "$TEMPORARIUM/imago.img"; then

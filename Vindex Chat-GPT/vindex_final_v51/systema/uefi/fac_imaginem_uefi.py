@@ -46,9 +46,9 @@ def ingressus_directorii(nomen: bytes, attributum: int, botrus: int, mensura: in
 
 
 def principale() -> int:
-    if len(sys.argv) not in (3, 4, 5):
+    if len(sys.argv) not in (3, 4, 5, 6):
         print(
-            "USUS: fac_imaginem_uefi.py BOOTX64.EFI imago.img [NUCLEUS.BIN] [TEXTUS.BIN]",
+            "USUS: fac_imaginem_uefi.py BOOTX64.EFI imago.img [NUCLEUS.BIN] [TEXTUS.BIN] [FORMA.BIN]",
             file=sys.stderr,
         )
         return 64
@@ -58,7 +58,8 @@ def principale() -> int:
     # Nucleus, si datus, in radice voluminis ponitur, ut ponticulus eum
     # per protocollum fasciculorum UEFI aperire possit.
     nucleus = Path(sys.argv[3]).read_bytes() if len(sys.argv) >= 4 else b""
-    textus = Path(sys.argv[4]).read_bytes() if len(sys.argv) == 5 else b""
+    textus = Path(sys.argv[4]).read_bytes() if len(sys.argv) >= 5 else b""
+    forma = Path(sys.argv[5]).read_bytes() if len(sys.argv) == 6 else b""
 
     reservati = 32
     numerus_fat = 2
@@ -83,13 +84,17 @@ def principale() -> int:
     textus_botri = (len(textus) + SECTOR - 1) // SECTOR if textus else 0
     primus_textus = (ultimus_nuclei if nucleus else ultimus_fasciculi) + 1
     ultimus_textus = primus_textus + textus_botri - 1
+    forma_botri = (len(forma) + SECTOR - 1) // SECTOR if forma else 0
+    primus_formae = (ultimus_textus if textus else (
+        ultimus_nuclei if nucleus else ultimus_fasciculi)) + 1
+    ultimus_formae = primus_formae + forma_botri - 1
     voluminis_botri = MENSURA_VOLUMINIS // SECTOR
-    ultimus_ante_volumen = ultimus_textus if textus else (
-        ultimus_nuclei if nucleus else ultimus_fasciculi
-    )
+    ultimus_ante_volumen = ultimus_formae if forma else (
+        ultimus_textus if textus else (
+            ultimus_nuclei if nucleus else ultimus_fasciculi))
     primus_voluminis = ultimus_ante_volumen + 1
     ultimus_voluminis = primus_voluminis + voluminis_botri - 1
-    si_occupati = 3 + fasciculi_botri + nuclei_botri + textus_botri + voluminis_botri
+    si_occupati = 3 + fasciculi_botri + nuclei_botri + textus_botri + forma_botri + voluminis_botri
 
     imago = bytearray(SECTORES_TOTALES * SECTOR)
 
@@ -207,6 +212,9 @@ def principale() -> int:
     for botrus in range(primus_textus, ultimus_textus + 1):
         proximus = 0x0FFFFFFF if botrus == ultimus_textus else botrus + 1
         u32(fat, botrus * 4, proximus)
+    for botrus in range(primus_formae, ultimus_formae + 1):
+        proximus = 0x0FFFFFFF if botrus == ultimus_formae else botrus + 1
+        u32(fat, botrus * 4, proximus)
     for botrus in range(primus_voluminis, ultimus_voluminis + 1):
         proximus = 0x0FFFFFFF if botrus == ultimus_voluminis else botrus + 1
         u32(fat, botrus * 4, proximus)
@@ -232,6 +240,10 @@ def principale() -> int:
         radix[96:128] = ingressus_directorii(
             b"TEXTUS  BIN", 0x20, primus_textus, len(textus)
         )
+    if forma:
+        radix[128:160] = ingressus_directorii(
+            b"FORMA   BIN", 0x20, primus_formae, len(forma)
+        )
     imago[locus_botri(2):locus_botri(2) + SECTOR] = radix
 
     directorium_efi = bytearray(SECTOR)
@@ -255,6 +267,9 @@ def principale() -> int:
     if textus:
         debut_textus = locus_botri(primus_textus)
         imago[debut_textus:debut_textus + len(textus)] = textus
+    if forma:
+        debut_formae = locus_botri(primus_formae)
+        imago[debut_formae:debut_formae + len(forma)] = forma
 
     # LBA 0 partitionis signum pontis habet; LBA 1..64 sunt volumen VINDEX.
     locus_voluminis = VOLUMEN_INITIUM * SECTOR
