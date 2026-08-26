@@ -1,0 +1,15 @@
+// Probatio compilationis: superficies privata clientis Fenestralis Purus D.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA superficies SICUT NUMERUS VALENS FS_CREA(64, 48).
+    SI superficies == 0 TUNC REDDE 71. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies, 0, 0, 64, 48, FV_COLOR(8, 35, 61)).
+    f = FS_RECT(superficies, 4, 4, 56, 40, FV_COLOR(241, 238, 228)).
+    f = FS_TEXTUM(superficies, 8, 10, "TABULA.VXNAT", FV_COLOR(8, 35, 61)).
+    SI CONTENTUM(superficies) != 64 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(superficies + 8) != 48 TUNC REDDE 65. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
