@@ -1,66 +1,97 @@
-# Probationes VINDEX
+# PROBATIONES VINDEX CANONICAE
 
-Omnes probationes e radice incipe:
+## Usus
+
+Ex radice `Vindex Chat-GPT/vindex_final_v51`:
 
 ```bash
-./tests/run_tests.sh
-# aut
+bash tests/run_tests.sh
+```
+
+aut:
+
+```bash
 make probatio
 ```
 
-Casus recti exitum et statum exsecutabilium probant. Casus vitiosi confirmant
-`vindexc` et compilatorem nativum fontem invalidum reicere neque ELF
-imperfectum relinquere. Denique compilator ab Python restituitur et punctum
-fixum nativum verificatur.
-Casus `vxnat-partem` quinque litteras a positione septima ordinis legit et
-valores `SALVE` confirmat; hic regressio acuminis vitiosi versionis 0.49 est.
+Haec est probatio localis canonica compilatoris VINDEX et fundamentorum Sylviae quae sub Linux sine firmware nec machina externa verificari possunt.
 
-Octo probationes Graphicae confirmant:
+## Quid probatur
 
-- fontem VINDEX idem ELF initiatoris distributi reproducere;
-- pontem GTK declarativum omnia symbola necessaria invenire;
-- duas formas applicationum rectas esse;
-- bibliothecam graphicam eventa Latina praebere;
-- logicam VINDEX eventum graphicum accipere, compilare et exsequi;
-- alteram applicationem nomen accipere et salutationem in VINDEX componere;
-- installationem Fedora fenestram sine terminali declarare;
-- interfaciem interretialem et terminalem omnino abesse.
+### Lingua et interfacies publica
 
-Sola Officina:
+Casus recti per `vindexc` et `compilator_vindex` compilantur atque vere exsequuntur:
 
-```bash
-make probatio-officina
-```
+- `SALVE` et exitus textus;
+- arithmetica et comparationes;
+- numeri fluitantes;
+- `IMPORTA`;
+- structurae et acus;
+- recursio;
+- `ARGV`;
+- lectio partis ordinis `.VXNAT`.
 
-Duodeviginti probationes Systematis confirmant:
+Casus vitiosi confirmant fontem invalidum reici, diagnosticum rectum reddi et exsecutabile imperfectum non relinqui. Interfacies publica `vindexc` et compilator nativus separatim examinantur ubi contractus eorum differunt.
 
-- fontem nuclei idem ELF distributum reproducere;
-- ELF unum segmentum ad basim `0x400000` habere;
-- nucleum memoriam VGA `0xA0000` et formam BIOS `0x8000` directe attingere;
-- sectorem BIOS 512 octeta et signum `55aa` habere;
-- modum VGA 320×200, paginationem et modum longum contineri;
-- rectores IRQ0, IRQ1, IRQ12, PIT, circulum claviaturae et PS/2 continere;
-- omnes inscriptiones Fenestrales Latinas esse;
-- `SERVA`, `APERI`, `NOVUM`, `NOMEN`, `DELE`, `FASCICULI` et formatum internum
-  sex documentorum atque sex programmatum VINDEX in nucleo adesse;
-- nullam functionem nuclei conventionem sex argumentorum excedere;
-- `APERI` in Fasciculis ingressum electum sine lectione disci supervacua
-  directe ad Scriptorem transferre;
-- Scriptorem II documenta 4095 octetorum, cursorem mobilem, volutationem verticalem,
-  nomen activum, migrationem voluminis et confirmationem deletionis continere;
-- `PROGRAMMATA` fasciculos `.VXNAT` in regione separata creare, nominare, in
-  Scriptore mutare atque exempla `SALVE.VXNAT` et `TABULA.VXNAT` instituere;
-- programmata
-  mandata `SCRIBE`, `COLOR`, `LOCUS`, `RECTANGULUM` et `MARGO` directe exsequi;
-- pontem UEFI volumen opacum 32 KiB legere, scribere atque expurgare;
-- imaginem UEFI fasciculum praeparatum `VINDEX.FS` in FAT32 continere;
-- secundam partitionem GPT signo `VINDEXV0` et volumine vacuo contineri;
-- rectorem binalem scribere, expurgare, relegere, initium novum simulare atque
-  corruptionem pro successu numquam accipere;
-- imaginem sectorem, nucleum, textus et rectores recto loco servare;
-- reconstructionem imaginem byte pro byte identicam creare.
+### Auto-hospitium
 
-Si QEMU adest, probatio addita confirmat nucleum currere neque triplici errato
-statim terminari.
+Compilator canonicus fontem suum iterum componit usque ad generationes `G2` et `G3`.
 
-Fontes `casus/erratum_*.vindex` consulto invalidi sunt.
+Probatio requirit:
+
+- `G2 = G3` byte pro byte;
+- binarium `compilator_vindex` in repositorio = `G3` byte pro byte.
+
+Ita fons et compilator distributus unum idemque statum linguae repraesentant.
+
+### Logica brevis
+
+`probationes/logica_brevis.vindex` confirmat:
+
+- `&&` dextram partem non aestimare si sinistra falsa est;
+- `||` dextram partem non aestimare si sinistra vera est;
+- accessum periculosum `CONTENTUM(48)` vere evitari;
+- `&&` ante `||` aestimari;
+- `&` et `|` operationes bitarias manere.
+
+### PE32+
+
+Compilator idem fontem simplicem in modum `pe` componit. Exitus signum `MZ` et structuram PE32+ x86-64 habere debet.
+
+Executio sub Windows vero a custodia dedicata `VINDEX 0.53 — Win64 R4` probatur.
+
+### Puritas Sylviae
+
+`instrumenta/verifica_puritatem_sylviae.py` confirmat runtime Sylviae post pontem UEFI minimum VINDEX purum manere secundum contractum canonicum praesentem.
+
+### Fenestrale II Purus I
+
+Probatio localis:
+
+- LXXX fenestras in registro dynamico creat atque runtime exsequitur;
+- `systema/fenestrale_ii_purus_i.vindex` integrum in ELF64 componit.
+
+Sic mutatio compilatoris non potest Fenestrale dynamicum tacite frangere.
+
+## Probationes dedicatae
+
+Quaedam proprietates machinam aut ambitum specialem requirunt et a GitHub Actions separatim custodiuntur:
+
+- Win64 verum: `VINDEX 0.53 — Win64 R4`;
+- Officina Windows nativa: `Officina VINDEX — canonica`;
+- Fenestrale et puritas: custodiae Sylviae propriae;
+- UEFI/QEMU: custodiae UEFI propriae cum firmware apto.
+
+`make probatio` has custodias non fingit neque veteres pontes alienae linguae adhibet.
+
+## Probationes historicae
+
+`test_systema.py` et `test_officina.py` ad generationes anteriores pertinent. Illae BIOS/VGA, `rectores.S`, pontem UEFI C et veterem Officinam GTK/C examinant; hae viae post purificationem architecturae canonicae non amplius sunt auctoritas praesentis systematis.
+
+Archiva historica manent ad evolutionem intellegendam, sed `run_tests.sh` ea consulto non exsequitur. Non licet probationem canonicam ad architecturam repudiatam redire tantum ut testis vetus virescat.
+
+## Norma
+
+Probatio canonica debet statum hodiernum VINDEX comprobare, non imaginem veterem repositorii conservare.
+
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
