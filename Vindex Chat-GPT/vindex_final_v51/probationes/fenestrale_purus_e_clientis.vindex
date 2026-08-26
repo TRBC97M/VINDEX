@@ -1,0 +1,17 @@
+// Probatio compilationis: PROGRAMMATA clientis interactive Gradus E.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/programmata_clientis_e.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA superficies SICUT NUMERUS VALENS FS_CREA(496, 260).
+    SI superficies == 0 TUNC REDDE 71. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS 0.
+    DECLARA f SICUT NUMERUS VALENS PE_RENDE(superficies, status).
+    status = PE_CLICK(superficies, status, 180, 80).
+    SI status != 1 TUNC REDDE 65. FIN-SI.
+    status = PE_CLICK(superficies, status, 20, 12).
+    SI status != 2 TUNC REDDE 65. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
