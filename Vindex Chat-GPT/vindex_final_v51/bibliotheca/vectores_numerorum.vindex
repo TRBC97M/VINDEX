@@ -1,0 +1,147 @@
+// VINDEX — Vector dynamicus NUMERUS.
+// Caput: +0 numerus, +8 capacitas, +16 data.
+// Data: valores NUMERUS contigui, octo octeta singuli.
+// VINDEX Latine cogitat. Sylvia Latine loquitur.
+
+FUNCTIO VN_CREA_CUM REDDENS NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    SI capacitas < 1 TUNC
+        capacitas = 4.
+    FIN-SI.
+
+    DECLARA vector SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI vector <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA data SICUT NUMERUS VALENS RESERVA_OCTETA(capacitas * 8).
+    SI data <= 0 TUNC
+        LIBERA(vector).
+        REDDE 0.
+    FIN-SI.
+
+    CONTENTUM(vector) = 0.
+    CONTENTUM(vector + 8) = capacitas.
+    CONTENTUM(vector + 16) = data.
+    REDDE vector.
+FIN-FUNCTIO.
+
+FUNCTIO VN_CREA REDDENS NUMERUS.
+    REDDE VN_CREA_CUM(4).
+FIN-FUNCTIO.
+
+FUNCTIO VN_NUMERUS REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    SI vector == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(vector).
+FIN-FUNCTIO.
+
+FUNCTIO VN_CAPACITAS REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    SI vector == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(vector + 8).
+FIN-FUNCTIO.
+
+FUNCTIO VN_AUGE REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    ACCIPIT minima SICUT NUMERUS.
+    SI vector == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA capacitas SICUT NUMERUS VALENS CONTENTUM(vector + 8).
+    SI capacitas >= minima TUNC REDDE 1. FIN-SI.
+    SI capacitas < 1 TUNC capacitas = 4. FIN-SI.
+
+    DECLARA nova_capacitas SICUT NUMERUS VALENS capacitas.
+    DUM nova_capacitas < minima PERFICE
+        nova_capacitas = nova_capacitas * 2.
+    FIN-DUM.
+
+    DECLARA nova_data SICUT NUMERUS VALENS RESERVA_OCTETA(nova_capacitas * 8).
+    SI nova_data <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA vetus_data SICUT NUMERUS VALENS CONTENTUM(vector + 16).
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(vector).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        CONTENTUM(nova_data + i * 8) = CONTENTUM(vetus_data + i * 8).
+        i = i + 1.
+    FIN-DUM.
+
+    SI vetus_data != 0 TUNC
+        LIBERA(vetus_data).
+    FIN-SI.
+
+    CONTENTUM(vector + 8) = nova_capacitas.
+    CONTENTUM(vector + 16) = nova_data.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VN_CAPE REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI vector == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    SI index >= CONTENTUM(vector) TUNC REDDE 0. FIN-SI.
+    DECLARA data SICUT NUMERUS VALENS CONTENTUM(vector + 16).
+    REDDE CONTENTUM(data + index * 8).
+FIN-FUNCTIO.
+
+FUNCTIO VN_PONE REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI vector == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    SI index >= CONTENTUM(vector) TUNC REDDE 0. FIN-SI.
+    DECLARA data SICUT NUMERUS VALENS CONTENTUM(vector + 16).
+    CONTENTUM(data + index * 8) = valor.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VN_ADDE REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI vector == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(vector).
+    SI VN_AUGE(vector, numerus + 1) == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA data SICUT NUMERUS VALENS CONTENTUM(vector + 16).
+    CONTENTUM(data + numerus * 8) = valor.
+    CONTENTUM(vector) = numerus + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VN_DELE REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI vector == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(vector).
+    SI index >= numerus TUNC REDDE 0. FIN-SI.
+
+    DECLARA data SICUT NUMERUS VALENS CONTENTUM(vector + 16).
+    DECLARA i SICUT NUMERUS VALENS index.
+    DUM i + 1 < numerus PERFICE
+        CONTENTUM(data + i * 8) = CONTENTUM(data + (i + 1) * 8).
+        i = i + 1.
+    FIN-DUM.
+
+    CONTENTUM(vector) = numerus - 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VN_PURGA REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    SI vector == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(vector) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VN_LIBERA REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    SI vector == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA data SICUT NUMERUS VALENS CONTENTUM(vector + 16).
+    SI data != 0 TUNC
+        LIBERA(data).
+    FIN-SI.
+    LIBERA(vector).
+    REDDE 1.
+FIN-FUNCTIO.
