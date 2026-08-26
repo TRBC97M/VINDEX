@@ -6,9 +6,9 @@ internal static class Probationes
 
     public static int Exsequere()
     {
+        string radix = Path.Combine(Path.GetTempPath(), "officina-vindex-" + Guid.NewGuid().ToString("N"));
         try
         {
-            string radix = Path.Combine(Path.GetTempPath(), "officina-vindex-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(radix);
             string fons = Path.Combine(radix, "principalis.vindex");
             string manifestum = Path.Combine(radix, "proiectum.vindex");
@@ -39,6 +39,13 @@ internal static class Probationes
             File.WriteAllText(ViaRelationis, erratum.ToString());
             return 1;
         }
+        finally
+        {
+            if (Directory.Exists(radix))
+            {
+                Directory.Delete(radix, true);
+            }
+        }
     }
 
     public static async Task<int> ProbaProiectumAsync(string compilator, string manifestum)
@@ -59,6 +66,49 @@ internal static class Probationes
         {
             File.WriteAllText(ViaRelationis, erratum.ToString());
             return 1;
+        }
+    }
+
+    public static async Task<int> ProbaDiagnosticumAsync(string compilator)
+    {
+        string radix = Path.Combine(Path.GetTempPath(), "officina-vindex-diagnosticum-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            Directory.CreateDirectory(radix);
+            string fons = Path.Combine(radix, "principalis.vindex");
+            string manifestum = Path.Combine(radix, "proiectum.vindex");
+            File.WriteAllText(fons,
+                "FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n" +
+                "    IGNOTUM.\n" +
+                "    REDDE 0.\n" +
+                "FIN-FUNCTIO.\n");
+            File.WriteAllText(manifestum,
+                "PROIECTUM VINDEX.\nFONS \"principalis.vindex\".\nPRODUCTUM \"erratum.exe\".\nDESTINATIO PE.\nFIN-PROIECTUM.\n");
+
+            ProiectumVindex proiectum = ProiectumVindex.Lege(manifestum);
+            ResultatumProcessus compilatio = await ExecutorVindex.ConstrueAsync(compilator, proiectum);
+            Exige(compilatio.Status != 0, "Compilatio errata falso successit.");
+            string relatio = compilatio.Exitus + "\n" + compilatio.Errata;
+            IReadOnlyList<DiagnosticumVindex> diagnostica = DiagnosticumVindex.Extrahe(relatio);
+            DiagnosticumVindex? diagnosticum = diagnostica.FirstOrDefault(d =>
+                d.Linea == 2 && d.Columna == 5 && d.Nuntius.Contains("instructio ignota", StringComparison.OrdinalIgnoreCase));
+            Exige(diagnosticum is not null, "Diagnosticum reale R2 ab Officina non lectum est.\n" + relatio);
+            Exige(Path.GetFileName(diagnosticum.Via).Equals("principalis.vindex", StringComparison.OrdinalIgnoreCase),
+                "Fons diagnostici realis falsus est.");
+            File.WriteAllText(ViaRelationis, "RECTE: diagnosticum reale compilatoris per Officinam lectum est.\n");
+            return 0;
+        }
+        catch (Exception erratum)
+        {
+            File.WriteAllText(ViaRelationis, erratum.ToString());
+            return 1;
+        }
+        finally
+        {
+            if (Directory.Exists(radix))
+            {
+                Directory.Delete(radix, true);
+            }
         }
     }
 
