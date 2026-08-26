@@ -5,7 +5,7 @@
 Haec bibliotheca nunc tria genera rerum continet:
 
 1. facultates generales linguae, ut `textus.vindex`;
-2. collectiones generales, ut `collectiones_numerorum.vindex`;
+2. collectiones generales, ut `collectiones_numerorum.vindex` et `series_numerorum.vindex`;
 3. bibliothecas Fenestralis II Purus, quae pars Sylviae canonicae hodiernae sunt.
 
 Nonnulli fasciculi veteres, praesertim `graphica.vindex`, ad architecturam GTK historicam pertinent et non sunt fundamentum Officinae canonicae Windows hodiernae.
@@ -78,7 +78,53 @@ Prima implementatio consulto `NUMERUS` tantum tractat. Generica futura debent ha
 
 ---
 
-# III. Fenestrale II Purus
+# III. Series numerorum
+
+`series_numerorum.vindex` seriem dynamicam **contiguam** praebet. Ea collectionem ligatam non substituit: contractus alius est. Series accessum indicis directum et memoriam contiguam praebet, dum collectio vinculata additiones et deletiones nodorum sine relocatione totius memoriae sustinet.
+
+Importatio:
+
+```vindex
+IMPORTA "bibliotheca/series_numerorum.vindex".
+```
+
+API:
+
+- `SN_CREA()` — seriem vacuam cum capacitate initiali creat;
+- `SN_NUMERUS(s)` — longitudinem logicam reddit;
+- `SN_CAPACITAS(s)` — capacitatem memoriae praesentem reddit;
+- `SN_BASIS(s)` — basim contiguam elementorum reddit;
+- `SN_RESERVA(s, capacitas)` — capacitatem minimam postulat;
+- `SN_CAPE(s, index)` — elementum indice legit;
+- `SN_PONE(s, index, valor)` — elementum exsistens mutat;
+- `SN_ADDE(s, valor)` — elementum in fine addit;
+- `SN_INSERE(s, index, valor)` — elementum inserit, posteriora movens;
+- `SN_DELE(s, index)` — elementum delet, posteriora contrahens;
+- `SN_PURGA(s)` — longitudinem ad zero reducit sed capacitatem retinet;
+- `SN_LIBERA(s)` — basim et descriptorem liberat.
+
+Repraesentatio:
+
+```text
+series:
++0   numerus elementorum
++8   capacitas elementorum
++16  basis memoriae contiguae
+
+basis:
++0   elementum 0
++8   elementum 1
++16  elementum 2
+...
+```
+
+Cum capacitas deficit, nova regio maior reservatur, elementa servantur et vetus regio liberatur. Ideo valor a `SN_BASIS` redditus **post operationem quae seriem augere potest invalidari potest**; ne acus veterem post `SN_ADDE`, `SN_INSERE` aut `SN_RESERVA` quae relocationem efficit servaveris.
+
+Haec implementatio consulto `NUMERUS` tantum tractat. Ea fundamentum practicum praebet ad futuras series/slices et generica linguae sine semantica nondum canonica fingenda.
+
+---
+
+# IV. Fenestrale II Purus
 
 Bibliothecae hodiernae Fenestralis includunt:
 
@@ -96,7 +142,7 @@ Fasciculi suffixis gradus `g`, `h`, `i` historiam canonizationis servant. Auctor
 
 ---
 
-# IV. Graphica historica
+# V. Graphica historica
 
 `graphica.vindex` eventa veteris motoris declarativi GTK describit. Servatur ad historiam et compatibilitatem experimentorum pristinorum.
 
@@ -106,7 +152,7 @@ Ne novam bibliothecam generalem super contractum GTK historicum construas nisi e
 
 ---
 
-# V. Regula evolutionis bibliothecae
+# VI. Regula evolutionis bibliothecae
 
 Bibliotheca generalis VINDEX paulatim crescere debet ad:
 
@@ -125,7 +171,7 @@ Sed bibliotheca standardis futura non debet facultates humilis gradus auferre ne
 
 ---
 
-# VI. Importatio
+# VII. Importatio
 
 Forma ordinaria:
 
