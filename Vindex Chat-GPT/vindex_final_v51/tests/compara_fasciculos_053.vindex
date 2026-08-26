@@ -1,0 +1,110 @@
+// Comparatio byte pro byte duorum fasciculorum, tota in VINDEX.
+
+FUNCTIO LEGE_TOTUM_PROBATIONIS REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT longitudo SICUT ACUS<NUMERUS>.
+
+    DECLARA limen SICUT NUMERUS VALENS 65536.
+    DECLARA basis SICUT NUMERUS VALENS RESERVA_OCTETA(limen).
+    SI basis < 0 TUNC
+        CONTENTUM(longitudo) = 0 - 1.
+        REDDE basis.
+    FIN-SI.
+
+    DECLARA quantitas SICUT NUMERUS VALENS 0.
+    DECLARA persevera SICUT NUMERUS VALENS 1.
+    DUM persevera == 1 PERFICE
+        DECLARA pars SICUT NUMERUS VALENS LEGE(descriptor, 65536).
+        SI pars < 0 TUNC
+            CONTENTUM(longitudo) = 0 - 1.
+            REDDE pars.
+        FIN-SI.
+        SI pars == 0 TUNC
+            persevera = 0.
+        ALITER
+            SI quantitas + pars > limen TUNC
+                DECLARA novum_limen SICUT NUMERUS VALENS limen * 2.
+                DUM novum_limen < quantitas + pars PERFICE
+                    novum_limen = novum_limen * 2.
+                FIN-DUM.
+                DECLARA nova_basis SICUT NUMERUS VALENS RESERVA_OCTETA(novum_limen).
+                SI nova_basis < 0 TUNC
+                    CONTENTUM(longitudo) = 0 - 1.
+                    REDDE nova_basis.
+                FIN-SI.
+                DECLARA i SICUT NUMERUS VALENS 0.
+                DUM i < quantitas PERFICE
+                    SCRIBE_OCTETUM_AB(nova_basis + i, OCTETUS_AB(basis + i)).
+                    i = i + 1.
+                FIN-DUM.
+                basis = nova_basis.
+                limen = novum_limen.
+            FIN-SI.
+
+            DECLARA j SICUT NUMERUS VALENS 0.
+            DUM j < pars PERFICE
+                SCRIBE_OCTETUM_AB(basis + quantitas + j, OCTETUS(j)).
+                j = j + 1.
+            FIN-DUM.
+            quantitas = quantitas + pars.
+        FIN-SI.
+    FIN-DUM.
+
+    CONTENTUM(longitudo) = quantitas.
+    REDDE basis.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    SI argc < 3 TUNC
+        PROCLAMA "USUS: compara_fasciculos <primus> <secundus>".
+        REDDE 64.
+    FIN-SI.
+
+    DECLARA primus SICUT NUMERUS VALENS APERI_LEGERE(argv[1]).
+    SI primus < 0 TUNC
+        PROCLAMA "ERRATUM: primus fasciculus aperiri non potest".
+        REDDE 66.
+    FIN-SI.
+
+    DECLARA longitudo_primi SICUT NUMERUS VALENS 0.
+    DECLARA memoria_primi SICUT NUMERUS VALENS LEGE_TOTUM_PROBATIONIS(primus, SEDES(longitudo_primi)).
+    DECLARA clausus_primus SICUT NUMERUS VALENS CLAUDE(primus).
+    SI memoria_primi < 0 || longitudo_primi < 0 TUNC
+        PROCLAMA "ERRATUM: primus fasciculus legi non potest".
+        REDDE 74.
+    FIN-SI.
+
+    DECLARA secundus SICUT NUMERUS VALENS APERI_LEGERE(argv[2]).
+    SI secundus < 0 TUNC
+        PROCLAMA "ERRATUM: secundus fasciculus aperiri non potest".
+        REDDE 66.
+    FIN-SI.
+
+    DECLARA longitudo_secundi SICUT NUMERUS VALENS 0.
+    DECLARA memoria_secundi SICUT NUMERUS VALENS LEGE_TOTUM_PROBATIONIS(secundus, SEDES(longitudo_secundi)).
+    DECLARA clausus_secundus SICUT NUMERUS VALENS CLAUDE(secundus).
+    SI memoria_secundi < 0 || longitudo_secundi < 0 TUNC
+        PROCLAMA "ERRATUM: secundus fasciculus legi non potest".
+        REDDE 74.
+    FIN-SI.
+
+    SI longitudo_primi != longitudo_secundi TUNC
+        PROCLAMA "ERRATUM: magnitudines fasciculorum differunt".
+        REDDE 1.
+    FIN-SI.
+
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DUM index < longitudo_primi PERFICE
+        SI OCTETUS_AB(memoria_primi + index) != OCTETUS_AB(memoria_secundi + index) TUNC
+            PROCLAMA "ERRATUM: fasciculi byte pro byte differunt".
+            REDDE 1.
+        FIN-SI.
+        index = index + 1.
+    FIN-DUM.
+
+    PROCLAMA "RECTE: fasciculi byte pro byte congruunt".
+    REDDE 0.
+FIN-FUNCTIO.

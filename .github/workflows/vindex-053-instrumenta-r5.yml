@@ -1,0 +1,73 @@
+name: VINDEX 0.53 — Instrumenta R5
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/compara_fasciculos_053.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_pe_structuram_053.vindex'
+      - '.github/workflows/vindex-053-instrumenta-r5.yml'
+
+jobs:
+  instrumenta:
+    name: Instrumenta VINDEX, ELF, PE et punctum fixum probantur
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem para
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: chmod +x compilator_vindex
+
+      - name: Instrumenta ipsa in VINDEX compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/vindex-r5
+          ./compilator_vindex tests/compara_fasciculos_053.vindex /tmp/vindex-r5/compara_fasciculos
+          ./compilator_vindex tests/proba_pe_structuram_053.vindex /tmp/vindex-r5/proba_pe_structuram
+          chmod +x /tmp/vindex-r5/compara_fasciculos /tmp/vindex-r5/proba_pe_structuram
+
+      - name: Punctum fixum per comparatorem VINDEX proba
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/vindex-r5/compilator_g2
+          chmod +x /tmp/vindex-r5/compilator_g2
+          /tmp/vindex-r5/compilator_g2 src/compilator_vindex.vindex /tmp/vindex-r5/compilator_g3
+          chmod +x /tmp/vindex-r5/compilator_g3
+          /tmp/vindex-r5/compara_fasciculos /tmp/vindex-r5/compilator_g2 /tmp/vindex-r5/compilator_g3
+
+      - name: ELF generatum exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex tests/casus/argumenta_win64.vindex /tmp/vindex-r5/proba_elf
+          chmod +x /tmp/vindex-r5/proba_elf
+          exitus="$(/tmp/vindex-r5/proba_elf alpha 'beta gamma' delta)"
+          expectatum=$'4\n97\n98\n32\n103\n100\n0'
+          test "$exitus" = "$expectatum"
+
+      - name: PE generatum per verificatorem VINDEX inspice
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex tests/casus/argumenta_win64.vindex /tmp/vindex-r5/proba_pe.exe pe
+          /tmp/vindex-r5/proba_pe_structuram /tmp/vindex-r5/proba_pe.exe
+
+      - name: Regressionem R3 R2 R1 exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest tests/test_proiectum_053.py -v
+          python3 -m unittest tests/test_diagnostica_053.py -v
+          python3 -m unittest tests/test_baseline_053.py -v
