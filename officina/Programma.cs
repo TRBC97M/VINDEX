@@ -25,11 +25,18 @@ internal static class Programma
                 .GetAwaiter().GetResult();
         }
 
+        if (argumenta.Length >= 2 && argumenta[0] == "--proba-novum-proiectum")
+        {
+            return Probationes.ProbaNovumProiectumAsync(argumenta[1])
+                .GetAwaiter().GetResult();
+        }
+
         ApplicationConfiguration.Initialize();
         ConfiguratioOfficinae configuratio = ConfiguratioOfficinae.Lege(AppContext.BaseDirectory);
         string? manifestum = argumenta.FirstOrDefault(via =>
             via.EndsWith(".vindex", StringComparison.OrdinalIgnoreCase));
-        Application.Run(new FenestraOfficinae(configuratio, manifestum));
+        ContextusOfficinae contextus = new(configuratio, manifestum);
+        Application.Run(contextus);
         return 0;
     }
 }

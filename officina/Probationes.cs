@@ -28,8 +28,10 @@ internal static class Probationes
             ConfiguratioOfficinae configuratio = ConfiguratioOfficinae.Lege(AppContext.BaseDirectory);
             Exige(configuratio.Titulus == "VINDEX // OFFICINA", "Forma Officinae non lecta est.");
             using FenestraOfficinae fenestra = new(configuratio, null);
+            AmplificatioGradusB.Applica(fenestra, configuratio, _ => { });
             fenestra.CreateControl();
             Exige(fenestra.Text == "VINDEX // OFFICINA" && fenestra.Controls.Count > 0, "Fenestra Officinae non constructa est.");
+            Exige(fenestra.Controls.Find("novum", true).Length == 1, "Actio NOVUM PROIECTUM deest.");
 
             File.WriteAllText(ViaRelationis, "RECTE: probationes Officinae perfectae sunt.\n");
             return 0;
@@ -99,6 +101,50 @@ internal static class Probationes
             Exige(Path.GetFileName(diagnosticum.Via).Equals("principalis.vindex", StringComparison.OrdinalIgnoreCase),
                 "Fons diagnostici realis falsus est.");
             File.WriteAllText(ViaRelationis, "RECTE: diagnosticum reale compilatoris per Officinam lectum est.\n");
+            return 0;
+        }
+        catch (Exception erratum)
+        {
+            File.WriteAllText(ViaRelationis, erratum.ToString());
+            return 1;
+        }
+        finally
+        {
+            if (Directory.Exists(radix))
+            {
+                Directory.Delete(radix, true);
+            }
+        }
+    }
+
+    public static async Task<int> ProbaNovumProiectumAsync(string compilator)
+    {
+        string radix = Path.Combine(Path.GetTempPath(), "officina-vindex-novum-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            ProiectumVindex proiectum = FabricaProiectiVindex.Crea(radix);
+            Exige(File.Exists(proiectum.ViaManifesti), "Manifestum novi proiecti deest.");
+            Exige(File.Exists(proiectum.ViaFontis), "Fons novi proiecti deest.");
+            Exige(proiectum.Destinatio == "PE", "Destinatio novi proiecti non est PE.");
+
+            bool rescriptioRecusata = false;
+            try
+            {
+                _ = FabricaProiectiVindex.Crea(radix);
+            }
+            catch (InvalidOperationException)
+            {
+                rescriptioRecusata = true;
+            }
+            Exige(rescriptioRecusata, "Fabrica proiectum exsistens rescribere permisit.");
+
+            ResultatumProcessus compilatio = await ExecutorVindex.ConstrueAsync(compilator, proiectum);
+            Exige(compilatio.Status == 0, compilatio.Exitus + compilatio.Errata);
+            Exige(File.Exists(proiectum.ViaProducti), "Productum novi proiecti deest.");
+            ResultatumProcessus executio = await ExecutorVindex.ExsequereAsync(proiectum);
+            Exige(executio.Status == 0, executio.Exitus + executio.Errata);
+            Exige(executio.Exitus.Replace("\r\n", "\n").Trim() == "Salve, VINDEX!", "Exitus novi proiecti differt.");
+            File.WriteAllText(ViaRelationis, "RECTE: novum proiectum creatum, constructum et exsecutum est.\n");
             return 0;
         }
         catch (Exception erratum)
