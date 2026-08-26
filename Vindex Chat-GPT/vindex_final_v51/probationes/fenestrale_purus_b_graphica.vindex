@@ -1,0 +1,7 @@
+// Probatio minima bibliothecae graphicae Fenestralis II Puri.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA c SICUT NUMERUS VALENS FV_COLOR(8, 35, 61).
+    REDDE c & 255.
+FIN-FUNCTIO.

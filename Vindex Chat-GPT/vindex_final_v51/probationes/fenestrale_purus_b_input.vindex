@@ -1,0 +1,131 @@
+// Diagnostica Gradus B: input UEFI totum VINDEX separatim compilatur.
+
+FUNCTIO I_I32 REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    DECLARA valor SICUT NUMERUS VALENS OCTETUS_AB(locus) | (OCTETUS_AB(locus + 1) << 8) | (OCTETUS_AB(locus + 2) << 16) | (OCTETUS_AB(locus + 3) << 24).
+    SI valor >= 2147483648 TUNC valor = valor - 4294967296. FIN-SI.
+    REDDE valor.
+FIN-FUNCTIO.
+
+FUNCTIO I_GUID_PONE REDDENS NUMERUS.
+    ACCIPIT guid SICUT ACUS<LITTERA>.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE guid[i] = 0. i = i + 1. FIN-DUM.
+    SI genus == 1 TUNC
+        guid[0]=135. guid[1]=140. guid[2]=135. guid[3]=49. guid[4]=117. guid[5]=11. guid[6]=213. guid[7]=17.
+        guid[8]=154. guid[9]=79. guid[10]=0. guid[11]=144. guid[12]=39. guid[13]=63. guid[14]=193. guid[15]=77.
+    FIN-SI.
+    SI genus == 2 TUNC
+        guid[0]=43. guid[1]=211. guid[2]=89. guid[3]=141. guid[4]=85. guid[5]=198. guid[6]=233. guid[7]=74.
+        guid[8]=155. guid[9]=21. guid[10]=242. guid[11]=89. guid[12]=4. guid[13]=153. guid[14]=42. guid[15]=67.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO I_PROTOCOL_LOCATE REDDENS NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI boot == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA locate SICUT NUMERUS VALENS CONTENTUM(boot + 320).
+    SI locate == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
+    DECLARA f SICUT NUMERUS VALENS I_GUID_PONE(guid, genus).
+    DECLARA protocol SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(locate, SEDES(guid), 0, SEDES(protocol), 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    REDDE protocol.
+FIN-FUNCTIO.
+
+FUNCTIO I_PROTOCOLA_PARA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    s[28] = I_PROTOCOL_LOCATE(1).
+    s[29] = I_PROTOCOL_LOCATE(2).
+    SI s[28] != 0 TUNC
+        DECLARA reset_rel SICUT NUMERUS VALENS CONTENTUM(s[28]).
+        SI reset_rel != 0 TUNC DECLARA rr SICUT NUMERUS VALENS UEFI_VOCA6(reset_rel, s[28], 0, 0, 0, 0, 0). FIN-SI.
+    FIN-SI.
+    SI s[29] != 0 TUNC
+        DECLARA reset_abs SICUT NUMERUS VALENS CONTENTUM(s[29]).
+        SI reset_abs != 0 TUNC DECLARA ra SICUT NUMERUS VALENS UEFI_VOCA6(reset_abs, s[29], 0, 0, 0, 0, 0). FIN-SI.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO I_CLAVIS_LEGE REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA conin SICUT NUMERUS VALENS CONTENTUM(systema + 48).
+    SI conin == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(conin + 8).
+    SI lege == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA data_clavis SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, conin, SEDES(data_clavis), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA scan SICUT NUMERUS VALENS OCTETUS_AB(SEDES(data_clavis)) | (OCTETUS_AB(SEDES(data_clavis) + 1) << 8).
+    DECLARA unicode SICUT NUMERUS VALENS OCTETUS_AB(SEDES(data_clavis) + 2) | (OCTETUS_AB(SEDES(data_clavis) + 3) << 8).
+    REDDE 1 + scan * 2 + unicode * 131072.
+FIN-FUNCTIO.
+
+FUNCTIO I_MURUS_ABS REDDENS NUMERUS.
+    ACCIPIT murus SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI murus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(murus + 8).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(murus + 24).
+    SI lege == 0 || modus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status_muris SICUT ORDO DE NUMERUS CAPACITAS 4.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, murus, SEDES(status_muris), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA minx SICUT NUMERUS VALENS CONTENTUM(modus).
+    DECLARA miny SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+    DECLARA maxx SICUT NUMERUS VALENS CONTENTUM(modus + 24).
+    DECLARA maxy SICUT NUMERUS VALENS CONTENTUM(modus + 32).
+    DECLARA dx SICUT NUMERUS VALENS maxx - minx.
+    DECLARA dy SICUT NUMERUS VALENS maxy - miny.
+    SI dx <= 0 || dy <= 0 TUNC REDDE 0. FIN-SI.
+    s[11] = (status_muris[0] - minx) * (CONTENTUM(50333728) - 1) / dx.
+    s[12] = (status_muris[1] - miny) * (CONTENTUM(50333736) - 1) / dy.
+    DECLARA bullae SICUT NUMERUS VALENS status_muris[3] & 3.
+    REDDE bullae + 1.
+FIN-FUNCTIO.
+
+FUNCTIO I_MURUS_REL REDDENS NUMERUS.
+    ACCIPIT murus SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI murus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(murus + 8).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(murus + 24).
+    SI lege == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status_muris SICUT ORDO DE NUMERUS CAPACITAS 2.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, murus, SEDES(status_muris), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA crudum_x SICUT NUMERUS VALENS I_I32(SEDES(status_muris)).
+    DECLARA crudum_y SICUT NUMERUS VALENS I_I32(SEDES(status_muris) + 4).
+    DECLARA mx SICUT NUMERUS VALENS crudum_x.
+    DECLARA my SICUT NUMERUS VALENS crudum_y.
+    SI modus != 0 TUNC
+        DECLARA rx SICUT NUMERUS VALENS CONTENTUM(modus).
+        DECLARA ry SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+        SI rx > 0 TUNC mx = crudum_x * 6 / rx. FIN-SI.
+        SI ry > 0 TUNC my = crudum_y * 6 / ry. FIN-SI.
+    FIN-SI.
+    s[11] = s[11] + mx.
+    s[12] = s[12] + my.
+    DECLARA bullae SICUT NUMERUS VALENS 0.
+    SI OCTETUS_AB(SEDES(status_muris) + 12) != 0 TUNC bullae = bullae | 1. FIN-SI.
+    SI OCTETUS_AB(SEDES(status_muris) + 13) != 0 TUNC bullae = bullae | 2. FIN-SI.
+    REDDE bullae + 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+    s[11]=10. s[12]=10.
+    DECLARA p SICUT NUMERUS VALENS I_PROTOCOLA_PARA(s).
+    DECLARA q SICUT NUMERUS VALENS I_CLAVIS_LEGE().
+    DECLARA a SICUT NUMERUS VALENS I_MURUS_ABS(s[29],s).
+    DECLARA r SICUT NUMERUS VALENS I_MURUS_REL(s[28],s).
+    REDDE p + q + a + r.
+FIN-FUNCTIO.

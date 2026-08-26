@@ -1,0 +1,93 @@
+name: Sylvia OS — Fenestrale II Purus B canonicus
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_b.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_b_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_B.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-b.yml'
+
+jobs:
+  vindex-purus:
+    name: Interactio Fenestralis B VINDEX certificatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontes exsecutabiles VINDEX verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_b.vindex
+          for f in probationes/fenestrale_purus_b_*.vindex; do
+            python3 instrumenta/vindex_verifica.py "$f"
+          done
+
+      - name: Probationes separatas compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          for f in \
+            probationes/fenestrale_purus_b_graphica.vindex \
+            probationes/fenestrale_purus_b_gestor.vindex \
+            probationes/fenestrale_purus_b_input.vindex \
+            probationes/fenestrale_purus_b_interactio.vindex \
+            probationes/fenestrale_purus_b_ansa.vindex \
+            probationes/fenestrale_purus_b_principalis.vindex
+          do
+            nomen="$(basename "$f" .vindex)"
+            ./compilator_vindex "$f" "/tmp/${nomen}.elf"
+            file "/tmp/${nomen}.elf" | grep -q 'ELF 64-bit'
+          done
+
+      - name: Gestorem integrum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex systema/fenestrale_ii_purus_b.vindex /tmp/fenestrale_ii_purus_b.elf
+          file /tmp/fenestrale_ii_purus_b.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_b.elf)" -lt 196608
+
+      - name: Contractum interactionis verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          f='systema/fenestrale_ii_purus_b.vindex'
+          b='bibliotheca/fenestrale_ii_purus.vindex'
+          for signum in \
+            'FUNCTIO FV_AD_EST' 'FUNCTIO FV_FUNDUM' \
+            'FUNCTIO FV_FENESTRA' 'FUNCTIO FV_PROGRAMMATA' \
+            'FUNCTIO FV_TABULA' 'FUNCTIO FV_TASKBAR' 'FUNCTIO FV_CURSOR' \
+            'UEFI_VOCA6' 'FUNCTIO FB_PROTOCOLA_PARA' \
+            'FUNCTIO FB_CLAVIS_LEGE' 'FUNCTIO FB_MURUS_ABSOLUTUS' \
+            'FUNCTIO FB_MURUS_RELATIVUS' 'FUNCTIO FB_HIT' \
+            'FUNCTIO FB_MOUSE_DOWN' 'FUNCTIO FB_DRAG' \
+            'FUNCTIO FB_MINIMIZA' 'FUNCTIO FB_MAX_TOGGLE' \
+            'FUNCTIO FB_CLAUDE' 'FUNCTIO FB_TASKBAR_CLICK' \
+            'FUNCTIO FB_REDDE' 'FUNCTIO PRINCIPALIS'
+          do
+            if ! grep -q "$signum" "$f" && ! grep -q "$signum" "$b"; then
+              echo "ERRATUM: $signum deest"
+              exit 1
+            fi
+          done
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$b"
+          printf '%s\n' 'RECTE: Fenestrale II Purus B canonicum VINDEX certificatur.'

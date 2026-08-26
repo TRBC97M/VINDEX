@@ -1,0 +1,75 @@
+// Diagnostica Gradus B: forma ansae eventuum cum stubs VINDEX.
+
+FUNCTIO A_CLAVIS REDDENS NUMERUS.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO A_CLAVIS_AGE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT q SICUT NUMERUS.
+    REDDE q.
+FIN-FUNCTIO.
+
+FUNCTIO A_MURUS_ABS REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO A_MURUS_REL REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO A_DOWN REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO A_DRAG REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO A_REDDE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO A_STALL REDDENS NUMERUS.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+    s[13]=0. s[14]=0. s[28]=0. s[29]=0.
+    DECLARA f SICUT NUMERUS VALENS A_REDDE(s).
+    DECLARA finis SICUT NUMERUS VALENS 0.
+    DECLARA circuitus SICUT NUMERUS VALENS 0.
+    DUM finis == 0 && circuitus < 2 PERFICE
+        DECLARA pingendum SICUT NUMERUS VALENS 0.
+        DECLARA q SICUT NUMERUS VALENS A_CLAVIS().
+        SI q != 0 TUNC
+            DECLARA qa SICUT NUMERUS VALENS A_CLAVIS_AGE(s,q).
+            SI qa == 2 TUNC
+                finis=1.
+            ALITER
+                SI qa == 1 TUNC pingendum=1. FIN-SI.
+            FIN-SI.
+        FIN-SI.
+        DECLARA muris SICUT NUMERUS VALENS A_MURUS_ABS(s[29],s).
+        SI muris == 0 TUNC muris=A_MURUS_REL(s[28],s). FIN-SI.
+        SI muris != 0 TUNC
+            DECLARA bullae SICUT NUMERUS VALENS muris-1.
+            SI (bullae & 1) != 0 && (s[13] & 1) == 0 TUNC DECLARA md SICUT NUMERUS VALENS A_DOWN(s). FIN-SI.
+            SI (bullae & 1) != 0 && s[14] != 0 TUNC DECLARA dr SICUT NUMERUS VALENS A_DRAG(s). FIN-SI.
+            SI (bullae & 1) == 0 && (s[13] & 1) != 0 TUNC s[14]=0. FIN-SI.
+            s[13]=bullae. pingendum=1.
+        FIN-SI.
+        SI pingendum == 1 TUNC f=A_REDDE(s). FIN-SI.
+        DECLARA pausa SICUT NUMERUS VALENS A_STALL().
+        circuitus=circuitus+1.
+    FIN-DUM.
+    REDDE f.
+FIN-FUNCTIO.
