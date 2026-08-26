@@ -202,15 +202,16 @@ Officina non est “finita”: amplianda est cum debugger, refactoring, explorat
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit.
+PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit.
 
-`make probatio` / `tests/run_tests.sh` nunc **XXIII probationes, nulla errata** exercet, inter quas:
+`make probatio` / `tests/run_tests.sh` nunc **XXIV probationes, nulla errata** exercet, inter quas:
 
 - casus fundamentales linguae;
 - diagnostica valida et invalida;
 - auto-hospitium `G2 = G3`;
 - identitas binarii canonici cum fonte;
 - `&&` / `||` brevia;
+- collectio dynamica `NUMERUS`;
 - PE32+;
 - puritas Sylviae;
 - LXXX fenestrae;
@@ -241,9 +242,15 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 
 ## P9 — Fundamenta typorum et structurae programmatis
 
-**Status:** `PARATUM per incrementa`, dum P1 alienum opus manet.
+**Status:** `ACTIVUM per incrementa`, dum P1 alienum opus manet.
 
 **Finis:** VINDEX non solum lingua nuclei esse debet. Prima strata universalitatis debent programmata magna facilius et tutius exprimere sine libertate basimi gradus minuenda.
+
+### Iam canonicum
+
+- PR #102 — prima collectio dynamica generalis `NUMERUS`, tota VINDEX scripta, cum creatione, additione, lectione, mutatione, deletione, purgatione et liberatione;
+- regressio collectionis inclusa in probationibus canonicis XXIV/XXIV;
+- nulla generica ficta ante facultatem linguae: abstractio concreta `NUMERUS` fundamentum migrationis futurae praebet.
 
 ### Facultates candidatae
 
@@ -400,9 +407,9 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 
 Dum Claude P1 exercet, via recta independentis progressionis est:
 
-1. documenta canonica ad statum hodiernum reconciliare;
-2. probationes 23/23 custodire;
-3. deinde **P9 per incrementum parvum et generalem** incipere, non per magnam mutationem simul;
+1. documenta canonica statui hodierno congruentia servare;
+2. probationes 24/24 custodire;
+3. **P9 per incrementa parva et generalia continuare**, non per magnam mutationem simul;
 4. ubi Claude terminaverit, opus P1 denuo inspicere ante integrationem.
 
 ---
