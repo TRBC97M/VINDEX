@@ -14,11 +14,14 @@ Nonnulli fasciculi veteres, praesertim `graphica.vindex`, ad architecturam GTK h
 
 # I. TEXTUS
 
-`textus.vindex` operationes generales generis `TEXTUS` continet.
+`textus.vindex` operationes generales generis `TEXTUS` continet. `TEXTUS` octeta UTF-8 servat; bibliotheca nunc et longitudinem humilis gradus et scalaria Unicode tractat.
 
 Hodie definit:
 
-- `LONGITUDO(textus)` — numerum octetorum UTF-8 descriptoris reddit.
+- `LONGITUDO(textus)` — numerum octetorum UTF-8 descriptoris reddit;
+- `UTF8_VALIDUS(textus)` — validitatem strictam UTF-8 probat;
+- `LONGITUDO_SCALARUM(textus)` — numerum scalarum Unicode reddit, vel `-1` pro UTF-8 invalido;
+- `UTF8_SCALARE_CAPE(textus, index)` — valorem scalaris Unicode indice legit, vel `-1` pro indice aut UTF-8 invalido.
 
 Exemplum:
 
@@ -26,13 +29,17 @@ Exemplum:
 IMPORTA "bibliotheca/textus.vindex".
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
-    DECLARA titulus SICUT TEXTUS VALENS nomen + " OS".
-    PROCLAMA titulus.
+    DECLARA titulus SICUT TEXTUS VALENS "Sylvia 😀".
     PROCLAMA LONGITUDO(titulus).
+    PROCLAMA LONGITUDO_SCALARUM(titulus).
+    PROCLAMA UTF8_SCALARE_CAPE(titulus, 7).
     REDDE 0.
 FIN-FUNCTIO.
 ```
+
+`LONGITUDO` octeta numerare pergit; haec semantica ad fasciculos, protocolla et API externas utilis est neque mutatur. `LONGITUDO_SCALARUM` scalaria Unicode numerat, non graphemata visualia.
+
+Validator formas superlongas, sequentias truncatas, surrogata, valores supra `U+10FFFF` et continuationes solitarias reicit. Contractus plenus in `documenta/vindex/TEXTUS_UNICODE.md` definitur.
 
 `TEXTUS` ipse genus nativum est; bibliotheca auxilia generalia supra genus praebet.
 

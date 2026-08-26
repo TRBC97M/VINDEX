@@ -202,9 +202,9 @@ Officina non est “finita”: amplianda est cum debugger, refactoring, explorat
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit; PR #104 seriem dynamicam contiguam `NUMERUS` addidit; PR #105 segmenta mutuata zero-copy addit.
+PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit; PR #104 seriem dynamicam contiguam `NUMERUS` addidit; PR #105 segmenta mutuata zero-copy addidit; PR #106 `TEXTUS` validatione UTF-8 et scalaribus Unicode munit.
 
-`make probatio` / `tests/run_tests.sh` nunc **XXVI probationes, nulla errata** exercet, inter quas:
+`make probatio` / `tests/run_tests.sh` nunc **XXVII probationes, nulla errata** exercet, inter quas:
 
 - casus fundamentales linguae;
 - diagnostica valida et invalida;
@@ -214,6 +214,7 @@ PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praes
 - collectio dynamica `NUMERUS`;
 - series dynamica contigua `NUMERUS`;
 - segmenta mutuata `NUMERUS`;
+- `TEXTUS` cum validatione stricta UTF-8 et scalaribus Unicode;
 - PE32+;
 - puritas Sylviae;
 - LXXX fenestrae;
@@ -253,7 +254,8 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 - PR #102 — prima collectio dynamica generalis `NUMERUS`, tota VINDEX scripta, cum creatione, additione, lectione, mutatione, deletione, purgatione et liberatione;
 - PR #104 — series dynamica contigua `NUMERUS`, cum longitudine et capacitate separatis, relocatione automatica, insertione, deletione et basi contigua ad futuras series/slices praeparanda;
 - PR #105 — segmenta mutuata `NUMERUS`, cum basi et longitudine, accessu mutabili zero-copy et subsegmentis sine copia; relationes vitae memoriae et invalidatio post relocationem explicite documentantur;
-- regressiones collectionum et segmentorum inclusae in probationibus canonicis XXVI/XXVI;
+- PR #106 — `TEXTUS` validationem UTF-8 strictam, numerationem scalarum Unicode et accessum ad scalare indice accipit sine mutatione ABI; arithmetica descriptoris a semantica concatenationis `TEXTUS + TEXTUS` explicite separatur;
+- regressiones collectionum, segmentorum et Unicode inclusae in probationibus canonicis XXVII/XXVII;
 - nulla generica ficta ante facultatem linguae: abstractiones concretae `NUMERUS` fundamentum migrationis futurae praebent.
 
 ### Facultates candidatae
@@ -412,7 +414,7 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 Dum Claude P1 exercet, via recta independentis progressionis est:
 
 1. documenta canonica statui hodierno congruentia servare;
-2. probationes 26/26 custodire;
+2. probationes 27/27 custodire;
 3. **P9 per incrementa parva et generalia continuare**, non per magnam mutationem simul;
 4. ubi Claude terminaverit, opus P1 denuo inspicere ante integrationem.
 

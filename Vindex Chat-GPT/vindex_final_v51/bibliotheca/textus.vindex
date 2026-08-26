@@ -1,7 +1,130 @@
-// Bibliotheca TEXTUS VINDEX 0.52.
+// Bibliotheca TEXTUS VINDEX.
+// UTF-8 stricte validatur; TEXTUS ABI non mutatur.
 // VINDEX Latine cogitat. Sylvia Latine loquitur.
 
 FUNCTIO LONGITUDO REDDENS NUMERUS.
     ACCIPIT textus SICUT TEXTUS.
     REDDE CONTENTUM(textus).
+FIN-FUNCTIO.
+
+// Conversionem explicitam descriptoris TEXTUS ad sedem numericam praebet.
+// Hoc necessarium est ante arithmeticam acus, quia + inter TEXTUS concatenationem significat.
+FUNCTIO TEXTUS_SEDES REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    REDDE textus.
+FIN-FUNCTIO.
+
+FUNCTIO TEXTUS_BASIS_OCTETORUM REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA descriptor SICUT NUMERUS VALENS TEXTUS_SEDES(textus).
+    REDDE descriptor + 16.
+FIN-FUNCTIO.
+
+FUNCTIO UTF8_CONTINUATIO REDDENS NUMERUS.
+    ACCIPIT octetum SICUT NUMERUS.
+    SI octetum >= 128 && octetum <= 191 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UTF8_SCALAE_MENSURA REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT positio SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    SI positio < 0 || positio >= n TUNC REDDE 0. FIN-SI.
+
+    DECLARA basis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(textus).
+    DECLARA b0 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio).
+    SI b0 <= 127 TUNC REDDE 1. FIN-SI.
+
+    SI b0 >= 194 && b0 <= 223 TUNC
+        SI positio + 1 >= n TUNC REDDE 0. FIN-SI.
+        DECLARA b1_2 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 1).
+        SI UTF8_CONTINUATIO(b1_2) == 0 TUNC REDDE 0. FIN-SI.
+        REDDE 2.
+    FIN-SI.
+
+    SI b0 >= 224 && b0 <= 239 TUNC
+        SI positio + 2 >= n TUNC REDDE 0. FIN-SI.
+        DECLARA b1_3 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 1).
+        DECLARA b2_3 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 2).
+        SI UTF8_CONTINUATIO(b1_3) == 0 || UTF8_CONTINUATIO(b2_3) == 0 TUNC REDDE 0. FIN-SI.
+        SI b0 == 224 && b1_3 < 160 TUNC REDDE 0. FIN-SI.
+        SI b0 == 237 && b1_3 > 159 TUNC REDDE 0. FIN-SI.
+        REDDE 3.
+    FIN-SI.
+
+    SI b0 >= 240 && b0 <= 244 TUNC
+        SI positio + 3 >= n TUNC REDDE 0. FIN-SI.
+        DECLARA b1_4 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 1).
+        DECLARA b2_4 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 2).
+        DECLARA b3_4 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 3).
+        SI UTF8_CONTINUATIO(b1_4) == 0 || UTF8_CONTINUATIO(b2_4) == 0 || UTF8_CONTINUATIO(b3_4) == 0 TUNC REDDE 0. FIN-SI.
+        SI b0 == 240 && b1_4 < 144 TUNC REDDE 0. FIN-SI.
+        SI b0 == 244 && b1_4 > 143 TUNC REDDE 0. FIN-SI.
+        REDDE 4.
+    FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO UTF8_VALIDUS REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA positio SICUT NUMERUS VALENS 0.
+    DUM positio < n PERFICE
+        DECLARA mensura SICUT NUMERUS VALENS UTF8_SCALAE_MENSURA(textus, positio).
+        SI mensura == 0 TUNC REDDE 0. FIN-SI.
+        positio = positio + mensura.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO LONGITUDO_SCALARUM REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA positio SICUT NUMERUS VALENS 0.
+    DECLARA numerus SICUT NUMERUS VALENS 0.
+    DUM positio < n PERFICE
+        DECLARA mensura SICUT NUMERUS VALENS UTF8_SCALAE_MENSURA(textus, positio).
+        SI mensura == 0 TUNC REDDE -1. FIN-SI.
+        positio = positio + mensura.
+        numerus = numerus + 1.
+    FIN-DUM.
+    REDDE numerus.
+FIN-FUNCTIO.
+
+FUNCTIO UTF8_SCALARE_CAPE REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI index < 0 TUNC REDDE -1. FIN-SI.
+
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA basis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(textus).
+    DECLARA positio SICUT NUMERUS VALENS 0.
+    DECLARA currente SICUT NUMERUS VALENS 0.
+
+    DUM positio < n PERFICE
+        DECLARA mensura SICUT NUMERUS VALENS UTF8_SCALAE_MENSURA(textus, positio).
+        SI mensura == 0 TUNC REDDE -1. FIN-SI.
+
+        SI currente == index TUNC
+            DECLARA b0 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio).
+            SI mensura == 1 TUNC REDDE b0. FIN-SI.
+            DECLARA b1 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 1).
+            SI mensura == 2 TUNC
+                REDDE ((b0 & 31) * 64) + (b1 & 63).
+            FIN-SI.
+            DECLARA b2 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 2).
+            SI mensura == 3 TUNC
+                REDDE ((b0 & 15) * 4096) + ((b1 & 63) * 64) + (b2 & 63).
+            FIN-SI.
+            DECLARA b3 SICUT NUMERUS VALENS OCTETUS_AB(basis + positio + 3).
+            REDDE ((b0 & 7) * 262144) + ((b1 & 63) * 4096) + ((b2 & 63) * 64) + (b3 & 63).
+        FIN-SI.
+
+        positio = positio + mensura.
+        currente = currente + 1.
+    FIN-DUM.
+
+    REDDE -1.
 FIN-FUNCTIO.
