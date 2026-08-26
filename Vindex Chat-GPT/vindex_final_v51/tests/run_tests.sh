@@ -200,6 +200,7 @@ exsequere_casum "collectiones-numerorum" "tests/casus/collectiones_numerorum.vin
 exsequere_casum "series-numerorum" "tests/casus/series_numerorum.vindex" "SERIES RECTE"
 exsequere_casum "segmenta-numerorum" "tests/casus/segmenta_numerorum.vindex" "SEGMENTA RECTE"
 exsequere_casum "textus-unicode" "tests/casus/textus_unicode.vindex" "UNICODE RECTE"
+exsequere_casum "textus-reditus" "tests/casus/textus_reditus.vindex" "TEXTUS REDITUS RECTE"
 
 respice_reiectionem "erratum-principalis" "tests/casus/erratum_principalis.vindex" "FUNCTIO PRINCIPALIS deest"
 respice_reiectionem "erratum-functio" "tests/casus/erratum_functio.vindex" "functio 'FUNCTIO_IGNOTA' non definita"
