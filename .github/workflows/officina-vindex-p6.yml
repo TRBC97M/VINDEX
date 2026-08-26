@@ -1,0 +1,118 @@
+name: Officina VINDEX — P6
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'officina/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proiecta/**'
+      - '.github/workflows/officina-vindex-p6.yml'
+
+jobs:
+  compilator-win64:
+    name: Compilator VINDEX Win64 ex main canonico generatur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+      - name: Compilatorem Win64 genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          mkdir -p /tmp/officina-p6
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/officina-p6/compilator_vindex.exe pe
+          file /tmp/officina-p6/compilator_vindex.exe
+      - name: Compilatorem conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: officina-p6-compilator-win64
+          path: /tmp/officina-p6/compilator_vindex.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  officina-windows:
+    name: Officina construit, probat et proiectum VINDEX exsequitur
+    needs: compilator-win64
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+      - name: .NET VIII para
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compilatorem Win64 accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: officina-p6-compilator-win64
+          path: instrumenta
+      - name: Officinam construe
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          dotnet build .\officina\OfficinaVindex.csproj -c Release --nologo
+          if ($LASTEXITCODE -ne 0) { throw "dotnet build exitus $LASTEXITCODE" }
+      - name: Structuram et fenestram Officinae proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $officina = (Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $officina
+          $psi.UseShellExecute = $false
+          [void]$psi.ArgumentList.Add('--probatio')
+          $processus = [System.Diagnostics.Process]::Start($psi)
+          $processus.WaitForExit()
+          $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
+          if (Test-Path $relatio) { Get-Content $relatio }
+          if ($processus.ExitCode -ne 0) { throw "probatio Officinae exitus $($processus.ExitCode)" }
+          if (!(Test-Path $relatio)) { throw 'relatio probationis deest' }
+          if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'probatio interna non est RECTE' }
+      - name: Proiectum PE per Officinam construe et exsequere
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $officina = (Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe').Path
+          $compilator = (Resolve-Path '.\instrumenta\compilator_vindex.exe').Path
+          $manifestum = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\tests\proiecta\salve\proiectum_pe.vindex').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $officina
+          $psi.UseShellExecute = $false
+          [void]$psi.ArgumentList.Add('--proba-proiectum')
+          [void]$psi.ArgumentList.Add($compilator)
+          [void]$psi.ArgumentList.Add($manifestum)
+          $processus = [System.Diagnostics.Process]::Start($psi)
+          $processus.WaitForExit()
+          $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
+          if (Test-Path $relatio) { Get-Content $relatio }
+          if ($processus.ExitCode -ne 0) { throw "probatio proiecti Officinae exitus $($processus.ExitCode)" }
+          if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'proiectum per Officinam non est RECTE' }
+      - name: Diagnosticum reale R2 per Officinam proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $officina = (Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe').Path
+          $compilator = (Resolve-Path '.\instrumenta\compilator_vindex.exe').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $officina
+          $psi.UseShellExecute = $false
+          [void]$psi.ArgumentList.Add('--proba-diagnosticum')
+          [void]$psi.ArgumentList.Add($compilator)
+          $processus = [System.Diagnostics.Process]::Start($psi)
+          $processus.WaitForExit()
+          $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
+          if (Test-Path $relatio) { Get-Content $relatio }
+          if ($processus.ExitCode -ne 0) { throw "probatio diagnostici Officinae exitus $($processus.ExitCode)" }
+          if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'diagnosticum reale per Officinam non est RECTE' }
+      - name: Nulla technologia interretialis in Officina lateat
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $vetita = Get-ChildItem .\officina -Recurse -File | Where-Object { $_.Extension -in '.html','.htm','.css','.js','.ts','.jsx','.tsx' }
+          if ($vetita) { $vetita | ForEach-Object { Write-Host $_.FullName }; throw 'technologia interretialis inventa est' }
+          Write-Host 'RECTE: Officina Windows nativa manet.'
