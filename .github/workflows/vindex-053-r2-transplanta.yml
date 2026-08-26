@@ -1,0 +1,125 @@
+name: VINDEX 0.53 — Transplantatio R2
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-053-r2-diagnostica
+
+permissions:
+  contents: write
+
+jobs:
+  transplanta:
+    name: Diagnostica 0.53 in compilatorem canonicum transplantantur
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Diagnostica historica sine mutatione Win64 transplanta
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          radix = Path.cwd()
+          via = radix / 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          hodiernus = via.read_text(encoding='utf-8')
+
+          # Si iam transplantatum est, operatio est idempotens.
+          if 'FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.' in hodiernus:
+              print('RECTE: diagnostica R2 iam in fonte sunt.')
+              raise SystemExit(0)
+
+          commit = 'dd45d7c97e5c80c42598a6baf4d76e0e2c8cbfbe'
+          subprocess.run(['git', 'fetch', '--depth=2', 'origin', commit], check=True)
+          parens = subprocess.check_output(['git', 'rev-parse', commit + '^'], text=True).strip()
+          ante = subprocess.check_output(['git', 'show', f'{parens}:src/compilator_vindex.vindex'], text=True)
+          post = subprocess.check_output(['git', 'show', f'{commit}:src/compilator_vindex.vindex'], text=True)
+
+          tmp = radix / '.tmp-r2'
+          tmp.mkdir(exist_ok=True)
+          p_hodie = tmp / 'hodiernus.vindex'
+          p_ante = tmp / 'ante.vindex'
+          p_post = tmp / 'post.vindex'
+          p_hodie.write_text(hodiernus, encoding='utf-8')
+          p_ante.write_text(ante, encoding='utf-8')
+          p_post.write_text(post, encoding='utf-8')
+
+          fusio = subprocess.run(
+              ['git', 'merge-file', '-p', str(p_hodie), str(p_ante), str(p_post)],
+              text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+          )
+          if fusio.returncode not in (0, 1):
+              raise SystemExit(f'ERRATUM: merge-file status {fusio.returncode}: {fusio.stderr}')
+          novus = fusio.stdout
+          if '<<<<<<<' in novus or '=======' in novus or '>>>>>>>' in novus:
+              raise SystemExit('ERRATUM: conflictus in transplantatione R2 inventus est')
+
+          # Commit historicus idem etiam correctionem stdout Win64 continebat.
+          # R2 eam consulto non recipit: functio integra ex fonte hodierno restituitur.
+          nomen = 'FUNCTIO COMPONE_TRANSFER_FASCICULUM_PE REDDENS NUMERUS.'
+          def extrahe_functio(textus: str, caput: str) -> str:
+              initium = textus.index(caput)
+              finis = textus.index('FIN-FUNCTIO.', initium) + len('FIN-FUNCTIO.')
+              return textus[initium:finis]
+
+          vetus_fn = extrahe_functio(hodiernus, nomen)
+          novus_fn = extrahe_functio(novus, nomen)
+          novus = novus.replace(novus_fn, vetus_fn, 1)
+
+          requisita = [
+              'FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.',
+              'FUNCTIO POSITIONES_PENDENTES_LEGE REDDENS NUMERUS.',
+              'DECLARA tabula_importorum SICUT NUMERUS',
+              'DECLARA positio_fontis_p SICUT NUMERUS',
+          ]
+          for fragmentum in requisita:
+              if fragmentum not in novus:
+                  raise SystemExit(f'ERRATUM: fragmentum R2 deest: {fragmentum}')
+
+          via.write_text(novus, encoding='utf-8')
+          print('RECTE: diagnostica R2 transplantata sunt; correctio Win64 extra R2 relicta est.')
+          PY
+
+      - name: Compilatorem ex fonte novo recrea
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_r2_g2
+          chmod +x /tmp/compilator_r2_g2
+          /tmp/compilator_r2_g2 src/compilator_vindex.vindex /tmp/compilator_r2_g3
+          cmp /tmp/compilator_r2_g2 /tmp/compilator_r2_g3
+          cp /tmp/compilator_r2_g2 compilator_vindex
+          chmod +x compilator_vindex
+
+      - name: Diagnostica et baseline exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest tests/test_diagnostica_053.py -v
+          python3 -m unittest tests/test_baseline_053.py -v
+
+      - name: Mutationem probatam persiste
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .tmp-r2
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
+                     'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          if git diff --cached --quiet; then
+            printf '%s\n' 'RECTE: nihil novum persistendum est.'
+          else
+            git commit -m 'VINDEX 0.53 R2: diagnostica fontis locis integra'
+            git push origin HEAD:chatgpt/vindex-053-r2-diagnostica
+          fi
