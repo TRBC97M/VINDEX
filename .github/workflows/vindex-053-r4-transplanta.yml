@@ -1,0 +1,57 @@
+name: VINDEX 0.53 — Transplantatio R4
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-053-r4-win64
+
+permissions:
+  contents: write
+
+jobs:
+  transplanta:
+    name: Argumenta Win64 in compilatorem canonicum transplantantur
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Argumenta Win64 per ancra verificata transplanta
+        run: python3 instrumenta/transplanta_argumenta_win64_r4.py
+
+      - name: Compilatorem ex fonte novo recrea
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_r4_g2
+          chmod +x /tmp/compilator_r4_g2
+          /tmp/compilator_r4_g2 src/compilator_vindex.vindex /tmp/compilator_r4_g3
+          cmp /tmp/compilator_r4_g2 /tmp/compilator_r4_g3
+          cp /tmp/compilator_r4_g2 compilator_vindex
+          chmod +x compilator_vindex
+
+      - name: R3 R2 R1 non regrediantur
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest tests/test_proiectum_053.py -v
+          python3 -m unittest tests/test_diagnostica_053.py -v
+          python3 -m unittest tests/test_baseline_053.py -v
+
+      - name: Mutationem probatam persiste
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'; then
+            echo 'RECTE: nulla mutatio nova persistenda est.'
+            exit 0
+          fi
+          git config user.name 'TRBC97M'
+          git config user.email 'trbc97m@protonmail.com'
+          git add -- 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          git commit -m 'R4: argumenta Win64 nativa restitue'
+          git push origin HEAD:chatgpt/vindex-053-r4-win64
