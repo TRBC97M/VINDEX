@@ -1,0 +1,352 @@
+// Sylvia OS — Fenestrale II Purus A.
+// Prima demonstratio graphica resolutionis nativae omnino in VINDEX.
+// Bootstrap UEFI tantum metadata initii tradit; post saltum nullus runtime
+// alienae linguae adhibetur.
+
+FUNCTIO P_AD_EST REDDENS NUMERUS.
+    SI CONTENTUM(50333696) != 1 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50333712) == 0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50333728) < 1024 || CONTENTUM(50333736) < 600 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50333720) < CONTENTUM(50333728) TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(50333744) > 1 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_COLOR REDDENS NUMERUS.
+    ACCIPIT rubrum SICUT NUMERUS.
+    ACCIPIT viride SICUT NUMERUS.
+    ACCIPIT caeruleum SICUT NUMERUS.
+    SI CONTENTUM(50333744) == 0 TUNC
+        REDDE rubrum + viride * 256 + caeruleum * 65536.
+    FIN-SI.
+    REDDE caeruleum + viride * 256 + rubrum * 65536.
+FIN-FUNCTIO.
+
+FUNCTIO P_PIXEL REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT rubrum SICUT NUMERUS.
+    ACCIPIT viride SICUT NUMERUS.
+    ACCIPIT caeruleum SICUT NUMERUS.
+    DECLARA latitudo SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA altitudo SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI x < 0 || y < 0 || x >= latitudo || y >= altitudo TUNC REDDE 0. FIN-SI.
+    DECLARA locus SICUT NUMERUS VALENS CONTENTUM(50333712) + (y * CONTENTUM(50333720) + x) * 4.
+    SI CONTENTUM(50333744) == 0 TUNC
+        SCRIBE_OCTETUM_AB(locus, rubrum).
+        SCRIBE_OCTETUM_AB(locus + 1, viride).
+        SCRIBE_OCTETUM_AB(locus + 2, caeruleum).
+    ALITER
+        SCRIBE_OCTETUM_AB(locus, caeruleum).
+        SCRIBE_OCTETUM_AB(locus + 1, viride).
+        SCRIBE_OCTETUM_AB(locus + 2, rubrum).
+    FIN-SI.
+    SCRIBE_OCTETUM_AB(locus + 3, 0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_RECT REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    SI x < 0 TUNC latitudo = latitudo + x. x = 0. FIN-SI.
+    SI y < 0 TUNC altitudo = altitudo + y. y = 0. FIN-SI.
+    SI x >= sw || y >= sh || latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    SI x + latitudo > sw TUNC latitudo = sw - x. FIN-SI.
+    SI y + altitudo > sh TUNC altitudo = sh - y. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(50333712).
+    DECLARA linea SICUT NUMERUS VALENS CONTENTUM(50333720).
+    DECLARA finis_x SICUT NUMERUS VALENS x + latitudo.
+    DECLARA finis_y SICUT NUMERUS VALENS y + altitudo.
+    DECLARA par SICUT NUMERUS VALENS color + color * 4294967296.
+    DECLARA py SICUT NUMERUS VALENS y.
+    DUM py < finis_y PERFICE
+        DECLARA px SICUT NUMERUS VALENS x.
+        SI px % 2 != 0 TUNC
+            DECLARA raw SICUT NUMERUS VALENS color.
+            DECLARA locus_unus SICUT NUMERUS VALENS basis + (py * linea + px) * 4.
+            SCRIBE_OCTETUM_AB(locus_unus, raw & 255).
+            SCRIBE_OCTETUM_AB(locus_unus + 1, (raw >> 8) & 255).
+            SCRIBE_OCTETUM_AB(locus_unus + 2, (raw >> 16) & 255).
+            SCRIBE_OCTETUM_AB(locus_unus + 3, 0).
+            px = px + 1.
+        FIN-SI.
+        DUM px + 1 < finis_x PERFICE
+            CONTENTUM(basis + (py * linea + px) * 4) = par.
+            px = px + 2.
+        FIN-DUM.
+        SI px < finis_x TUNC
+            DECLARA locus_fin SICUT NUMERUS VALENS basis + (py * linea + px) * 4.
+            SCRIBE_OCTETUM_AB(locus_fin, color & 255).
+            SCRIBE_OCTETUM_AB(locus_fin + 1, (color >> 8) & 255).
+            SCRIBE_OCTETUM_AB(locus_fin + 2, (color >> 16) & 255).
+            SCRIBE_OCTETUM_AB(locus_fin + 3, 0).
+        FIN-SI.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_TEXTUM REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA forma SICUT NUMERUS VALENS CONTENTUM(50333784).
+    SI forma == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA longitudo SICUT NUMERUS VALENS CONTENTUM(textus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < longitudo PERFICE
+        DECLARA littera SICUT NUMERUS VALENS OCTETUS_AB(textus + 8 + i).
+        DECLARA py SICUT NUMERUS VALENS 0.
+        DUM py < 8 PERFICE
+            DECLARA bits SICUT NUMERUS VALENS OCTETUS_AB(forma + littera * 8 + py).
+            DECLARA px SICUT NUMERUS VALENS 0.
+            DUM px < 8 PERFICE
+                SI (bits & (128 >> px)) != 0 TUNC
+                    DECLARA locus SICUT NUMERUS VALENS CONTENTUM(50333712) + ((y + py) * CONTENTUM(50333720) + x + i * 8 + px) * 4.
+                    SI x + i * 8 + px >= 0 && y + py >= 0 && x + i * 8 + px < CONTENTUM(50333728) && y + py < CONTENTUM(50333736) TUNC
+                        SCRIBE_OCTETUM_AB(locus, color & 255).
+                        SCRIBE_OCTETUM_AB(locus + 1, (color >> 8) & 255).
+                        SCRIBE_OCTETUM_AB(locus + 2, (color >> 16) & 255).
+                        SCRIBE_OCTETUM_AB(locus + 3, 0).
+                    FIN-SI.
+                FIN-SI.
+                px = px + 1.
+            FIN-DUM.
+            py = py + 1.
+        FIN-DUM.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_FUNDUM REDDENS NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA banda SICUT NUMERUS VALENS 0.
+    DUM banda < 32 PERFICE
+        DECLARA y0 SICUT NUMERUS VALENS banda * h / 32.
+        DECLARA y1 SICUT NUMERUS VALENS (banda + 1) * h / 32.
+        DECLARA r SICUT NUMERUS VALENS (8 * (32 - banda) + 5 * banda) / 32.
+        DECLARA g SICUT NUMERUS VALENS (52 * (32 - banda) + 24 * banda) / 32.
+        DECLARA b SICUT NUMERUS VALENS (90 * (32 - banda) + 48 * banda) / 32.
+        DECLARA factum SICUT NUMERUS VALENS P_RECT(0, y0, w, y1 - y0, P_COLOR(r, g, b)).
+        banda = banda + 1.
+    FIN-DUM.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 54 PERFICE
+        DECLARA x SICUT NUMERUS VALENS w * 8 / 100 + i * w * 83 / 5400.
+        DECLARA y SICUT NUMERUS VALENS h * 61 / 100 - (i * i * h) / 190000.
+        DECLARA factum_arcus SICUT NUMERUS VALENS P_RECT(x, y, w / 120 + 2, 2, P_COLOR(46, 130, 171)).
+        i = i + 1.
+    FIN-DUM.
+    i = 0.
+    DUM i < 46 PERFICE
+        DECLARA x2 SICUT NUMERUS VALENS w * 20 / 100 + i * w * 67 / 4600.
+        DECLARA y2 SICUT NUMERUS VALENS h * 69 / 100 - (i * i * h) / 160000.
+        DECLARA factum_arcus2 SICUT NUMERUS VALENS P_RECT(x2, y2, w / 150 + 2, 1, P_COLOR(98, 215, 242)).
+        i = i + 1.
+    FIN-DUM.
+    DECLARA horizon SICUT NUMERUS VALENS h * 78 / 100.
+    DECLARA factum_h SICUT NUMERUS VALENS P_RECT(0, horizon, w, h - horizon - 28, P_COLOR(7, 29, 52)).
+    factum_h = P_RECT(0, horizon, w, 1, P_COLOR(55, 126, 164)).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_FENESTRA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT titulus SICUT TEXTUS.
+    ACCIPIT activa SICUT NUMERUS.
+    DECLARA ebur SICUT NUMERUS VALENS P_COLOR(241, 238, 228).
+    DECLARA argentum SICUT NUMERUS VALENS P_COLOR(185, 196, 207).
+    DECLARA profundum SICUT NUMERUS VALENS P_COLOR(8, 35, 61).
+    DECLARA vitrum SICUT NUMERUS VALENS P_COLOR(14, 66, 111).
+    DECLARA medium SICUT NUMERUS VALENS P_COLOR(26, 93, 146).
+    DECLARA aqua SICUT NUMERUS VALENS P_COLOR(98, 215, 242).
+    DECLARA lux SICUT NUMERUS VALENS P_COLOR(234, 248, 255).
+    DECLARA bronzeum SICUT NUMERUS VALENS P_COLOR(185, 138, 82).
+    DECLARA rubrum SICUT NUMERUS VALENS P_COLOR(168, 58, 58).
+    DECLARA margo SICUT NUMERUS VALENS argentum.
+    SI activa == 1 TUNC margo = bronzeum. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS P_RECT(x + 6, y + 7, w, h, P_COLOR(4, 18, 31)).
+    f = P_RECT(x, y, w, h, ebur).
+    f = P_RECT(x, y, w, 1, margo).
+    f = P_RECT(x, y, 2, h, argentum).
+    f = P_RECT(x + w - 2, y, 2, h, profundum).
+    f = P_RECT(x, y + h - 2, w, 2, profundum).
+    f = P_RECT(x + 2, y + 1, w - 4, 27, vitrum).
+    f = P_RECT(x + 2, y + 1, w - 4, 1, aqua).
+    SI activa == 0 TUNC f = P_RECT(x + 2, y + 2, w - 4, 26, medium). FIN-SI.
+    f = P_TEXTUM(x + 10, y + 10, titulus, lux).
+    f = P_RECT(x + w - 70, y + 4, 18, 20, argentum).
+    f = P_RECT(x + w - 48, y + 4, 18, 20, argentum).
+    f = P_RECT(x + w - 26, y + 4, 20, 20, rubrum).
+    f = P_RECT(x + 2, y + 28, w - 4, 22, ebur).
+    f = P_RECT(x + 2, y + 50, w - 4, 34, argentum).
+    f = P_RECT(x + 2, y + h - 20, w - 4, 18, argentum).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_PROGRAMMATA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    DECLARA f SICUT NUMERUS VALENS P_FENESTRA(x, y, w, h, "PROGRAMMATA", 1).
+    DECLARA ebur SICUT NUMERUS VALENS P_COLOR(241, 238, 228).
+    DECLARA argentum SICUT NUMERUS VALENS P_COLOR(185, 196, 207).
+    DECLARA medium SICUT NUMERUS VALENS P_COLOR(26, 93, 146).
+    DECLARA aqua SICUT NUMERUS VALENS P_COLOR(98, 215, 242).
+    DECLARA lux SICUT NUMERUS VALENS P_COLOR(234, 248, 255).
+    DECLARA profundum SICUT NUMERUS VALENS P_COLOR(8, 35, 61).
+    f = P_RECT(x + 10, y + 55, 62, 24, lux).
+    f = P_TEXTUM(x + 18, y + 63, "NOVUM", profundum).
+    f = P_RECT(x + 78, y + 55, 62, 24, lux).
+    f = P_TEXTUM(x + 86, y + 63, "EDITE", profundum).
+    f = P_RECT(x + 146, y + 55, 62, 24, lux).
+    f = P_TEXTUM(x + 154, y + 63, "NOMEN", profundum).
+    f = P_RECT(x + w - 82, y + 55, 70, 24, medium).
+    f = P_TEXTUM(x + w - 65, y + 63, "AGE", lux).
+    DECLARA corpus_y SICUT NUMERUS VALENS y + 84.
+    DECLARA corpus_h SICUT NUMERUS VALENS h - 104.
+    DECLARA sinister SICUT NUMERUS VALENS w * 20 / 100.
+    DECLARA dexter SICUT NUMERUS VALENS w * 25 / 100.
+    DECLARA medius_x SICUT NUMERUS VALENS x + sinister + 14.
+    DECLARA medius_w SICUT NUMERUS VALENS w - sinister - dexter - 30.
+    f = P_RECT(x + 2, corpus_y, sinister, corpus_h, argentum).
+    f = P_RECT(x + 12, corpus_y + 18, sinister - 20, 24, medium).
+    f = P_TEXTUM(x + 22, corpus_y + 26, "OMNIA", lux).
+    f = P_RECT(x + 12, corpus_y + 50, sinister - 20, 20, ebur).
+    f = P_TEXTUM(x + 22, corpus_y + 56, "PROGRAMMATA", profundum).
+    f = P_RECT(medius_x, corpus_y + 22, medius_w, 122, lux).
+    f = P_RECT(medius_x, corpus_y + 22, medius_w, 2, medium).
+    f = P_RECT(medius_x + 20, corpus_y + 42, 72, 72, profundum).
+    f = P_RECT(medius_x + 30, corpus_y + 52, 52, 52, aqua).
+    f = P_TEXTUM(medius_x + 112, corpus_y + 54, "TABULA.VXNAT", profundum).
+    f = P_TEXTUM(medius_x + 112, corpus_y + 74, "APPLICATIO", medium).
+    f = P_RECT(x + w - dexter, corpus_y, dexter - 2, corpus_h, argentum).
+    f = P_TEXTUM(x + w - dexter + 18, corpus_y + 24, "TABULA", profundum).
+    f = P_TEXTUM(x + w - dexter + 18, corpus_y + 46, "VXNAT", medium).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_TABULA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    DECLARA f SICUT NUMERUS VALENS P_FENESTRA(x, y, w, h, "TABULA", 0).
+    DECLARA argentum SICUT NUMERUS VALENS P_COLOR(185, 196, 207).
+    DECLARA medium SICUT NUMERUS VALENS P_COLOR(26, 93, 146).
+    DECLARA lux SICUT NUMERUS VALENS P_COLOR(234, 248, 255).
+    DECLARA grid SICUT NUMERUS VALENS P_COLOR(207, 216, 220).
+    DECLARA bronzeum SICUT NUMERUS VALENS P_COLOR(185, 138, 82).
+    DECLARA profundum SICUT NUMERUS VALENS P_COLOR(8, 35, 61).
+    f = P_RECT(x + 10, y + 55, 58, 24, lux).
+    f = P_TEXTUM(x + 18, y + 63, "NOVUM", profundum).
+    f = P_RECT(x + 74, y + 55, 58, 24, lux).
+    f = P_TEXTUM(x + 84, y + 63, "SERVA", profundum).
+    f = P_RECT(x + 8, y + 88, w - 16, 30, lux).
+    f = P_RECT(x + 8, y + 88, 2, 30, medium).
+    f = P_TEXTUM(x + 18, y + 98, "A1", medium).
+    DECLARA top SICUT NUMERUS VALENS y + 124.
+    DECLARA left SICUT NUMERUS VALENS x + 42.
+    DECLARA gw SICUT NUMERUS VALENS w - 52.
+    DECLARA gh SICUT NUMERUS VALENS h - 152.
+    f = P_RECT(x + 8, top, 34, gh, argentum).
+    f = P_RECT(left, top, gw, 24, argentum).
+    f = P_RECT(left, top + 24, gw, gh - 24, lux).
+    DECLARA col SICUT NUMERUS VALENS 0.
+    DUM col <= 8 PERFICE
+        DECLARA gx SICUT NUMERUS VALENS left + col * gw / 8.
+        f = P_RECT(gx, top, 1, gh, grid).
+        col = col + 1.
+    FIN-DUM.
+    DECLARA row SICUT NUMERUS VALENS 0.
+    DUM row <= 12 PERFICE
+        DECLARA gy SICUT NUMERUS VALENS top + 24 + row * (gh - 24) / 12.
+        f = P_RECT(x + 8, gy, w - 18, 1, grid).
+        row = row + 1.
+    FIN-DUM.
+    DECLARA cw SICUT NUMERUS VALENS gw / 8.
+    DECLARA ch SICUT NUMERUS VALENS (gh - 24) / 12.
+    f = P_RECT(left + 2, top + 26, cw - 4, ch - 4, P_COLOR(225, 245, 249)).
+    f = P_RECT(left + 2, top + 26, cw - 4, 2, bronzeum).
+    f = P_RECT(left + 2, top + 26, 2, ch - 4, bronzeum).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_TASKBAR REDDENS NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA profundum SICUT NUMERUS VALENS P_COLOR(8, 35, 61).
+    DECLARA vitrum SICUT NUMERUS VALENS P_COLOR(14, 66, 111).
+    DECLARA medium SICUT NUMERUS VALENS P_COLOR(26, 93, 146).
+    DECLARA aqua SICUT NUMERUS VALENS P_COLOR(98, 215, 242).
+    DECLARA lux SICUT NUMERUS VALENS P_COLOR(234, 248, 255).
+    DECLARA f SICUT NUMERUS VALENS P_RECT(0, h - 28, w, 28, profundum).
+    f = P_RECT(0, h - 28, w, 1, aqua).
+    f = P_RECT(4, h - 24, 86, 20, vitrum).
+    f = P_TEXTUM(14, h - 18, "INITIUM", lux).
+    f = P_RECT(98, h - 24, 188, 20, medium).
+    f = P_TEXTUM(110, h - 18, "PROGRAMMATA", lux).
+    f = P_RECT(292, h - 24, 138, 20, vitrum).
+    f = P_TEXTUM(304, h - 18, "TABULA", lux).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO P_CURSOR REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA niger SICUT NUMERUS VALENS P_COLOR(12, 20, 27).
+    DECLARA ebur SICUT NUMERUS VALENS P_COLOR(241, 238, 228).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py < 14 PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px <= py / 2 + 1 PERFICE
+            DECLARA c SICUT NUMERUS VALENS ebur.
+            SI px == 0 || px == py / 2 + 1 || py == 13 TUNC c = niger. FIN-SI.
+            DECLARA locus SICUT NUMERUS VALENS CONTENTUM(50333712) + ((y + py) * CONTENTUM(50333720) + x + px) * 4.
+            SCRIBE_OCTETUM_AB(locus, c & 255).
+            SCRIBE_OCTETUM_AB(locus + 1, (c >> 8) & 255).
+            SCRIBE_OCTETUM_AB(locus + 2, (c >> 16) & 255).
+            SCRIBE_OCTETUM_AB(locus + 3, 0).
+            px = px + 1.
+        FIN-DUM.
+        py = py + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI P_AD_EST() == 0 TUNC REDDE 5. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA f SICUT NUMERUS VALENS P_FUNDUM().
+    DECLARA pw SICUT NUMERUS VALENS w * 58 / 100.
+    DECLARA ph SICUT NUMERUS VALENS (h - 28) * 66 / 100.
+    DECLARA tw SICUT NUMERUS VALENS w * 42 / 100.
+    DECLARA th SICUT NUMERUS VALENS (h - 28) * 52 / 100.
+    SI pw < 640 TUNC pw = 640. FIN-SI.
+    SI ph < 420 TUNC ph = 420. FIN-SI.
+    SI tw < 500 TUNC tw = 500. FIN-SI.
+    SI th < 360 TUNC th = 360. FIN-SI.
+    DECLARA px SICUT NUMERUS VALENS w * 6 / 100.
+    DECLARA py SICUT NUMERUS VALENS h * 7 / 100.
+    DECLARA tx SICUT NUMERUS VALENS w - tw - w * 5 / 100.
+    DECLARA ty SICUT NUMERUS VALENS h * 21 / 100.
+    f = P_TABULA(tx, ty, tw, th).
+    f = P_PROGRAMMATA(px, py, pw, ph).
+    f = P_TASKBAR().
+    f = P_CURSOR(w / 2, h / 2).
+    REDDE 0.
+FIN-FUNCTIO.
