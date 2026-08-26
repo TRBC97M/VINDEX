@@ -20,9 +20,22 @@ Repraesentatio manet:
 
 - `UTF8_VALIDUS(textus)` — `1` si omnis catena UTF-8 canonice valida est, aliter `0`;
 - `LONGITUDO_SCALARUM(textus)` — numerum scalarum Unicode reddit; `-1` si catena invalida est;
-- `UTF8_SCALARE_CAPE(textus, index)` — valorem scalaris Unicode indice a zero reddit; `-1` si index invalidus aut catena UTF-8 invalida est.
+- `UTF8_SCALARE_CAPE(textus, index)` — valorem scalaris Unicode indice a zero reddit; `-1` si index invalidus aut catena UTF-8 invalida est;
+- `UTF8_POSITIO_SCALARIS(textus, index)` — positionem octeti ad limitem scalaris reddit, fine textus ut indice legitimo admisso;
+- `SUBTEXTUS_SCALARUM(textus, initium, numerus)` — novum `TEXTUS` ex intervallo scalarum Unicode creat sine sequentiam UTF-8 incidere.
 
 Textus vacuus UTF-8 validus est et zero scalaria continet.
+
+`SUBTEXTUS_SCALARUM` inter vacuum et errorem distinguit:
+
+- subtextum vacuum legitimum descriptor `TEXTUS` non-nullus longitudine zero est;
+- input invalidum, UTF-8 invalidum vel defectus memoriae `TEXTUS` nullum (`0`) reddit.
+
+## Functiones et reditus TEXTUS
+
+PR #107 contractum iam implicitum canonice probavit: functio VINDEX `TEXTUS` redire potest, sive litteralem, sive parametrum, sive concatenationem dynamicam. Valor redditus a vocante comparari, mensurari et operationibus Unicode tradi potest.
+
+Hoc fundamentum permittit ut `SUBTEXTUS_SCALARUM` et futurae operationes textuales nova obiecta `TEXTUS` naturaliter reddant sine syntaxeos vel ABI mutatione.
 
 ## Validatio stricta
 
@@ -45,11 +58,17 @@ Intervalla canonica igitur sunt:
 
 ## Scalae, non graphemata
 
-`LONGITUDO_SCALARUM` et `UTF8_SCALARE_CAPE` scalaria Unicode numerant, non graphemata quae usor visu pro uno charactere habet.
+`LONGITUDO_SCALARUM`, `UTF8_SCALARE_CAPE` et `SUBTEXTUS_SCALARUM` scalaria Unicode tractant, non graphemata quae usor visu pro uno charactere habet.
 
 Exempli gratia littera cum signo combinanti duas scalaria continere potest. Segmentatio graphematum, normalizatio NFC/NFD, proprietates Unicode et case folding sunt gradus futuri separati.
 
 Haec distinctio deliberata est: primum fundamentum UTF-8 exactum et parvum canonizatur; deinde abstractiones textus superiores super eo aedificari possunt.
+
+## Memoria et copia
+
+`SUBTEXTUS_SCALARUM` novum descriptorem `TEXTUS` et nova octeta reservat. Itaque subtextus fontem non mutuat et post creationem sedem propriam habet.
+
+Adiutor `TEXTUS_COPIA_OCTETORUM` copiam humilis gradus facit et terminatorem nullum post contentum servat. `TEXTUS_EX_SEDE` conversionem explicitam a sede numerica ad genus `TEXTUS` praebet.
 
 ## Compatibilitas
 
@@ -71,5 +90,18 @@ Casus `tests/casus/textus_unicode.vindex` probat:
 - surrogatum;
 - valorem supra `U+10FFFF`;
 - continuationem solitariam.
+
+Casus `tests/casus/textus_reditus.vindex` reditum `TEXTUS` a functionibus probat.
+
+Casus `tests/casus/subtextus_unicode.vindex` probat:
+
+- extractionem centralem ex `Aé€😀Z`;
+- limites primum et ultimum;
+- subtextum vacuum in medio et fine;
+- copiam totius fontis cum descriptore distincto;
+- indices negativos et ultra fines;
+- rejectionem fontis UTF-8 corrupti.
+
+Post PR #108 suite canonica **XXIX probationes rectas, nulla errata** refert.
 
 **VINDEX Latine cogitat. Sylvia Latine loquitur.**
