@@ -61,9 +61,14 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $officina = Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe'
-          & $officina --probatio
-          if ($LASTEXITCODE -ne 0) { throw "probatio Officinae exitus $LASTEXITCODE" }
+          $officina = (Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $officina
+          $psi.UseShellExecute = $false
+          [void]$psi.ArgumentList.Add('--probatio')
+          $processus = [System.Diagnostics.Process]::Start($psi)
+          $processus.WaitForExit()
+          if ($processus.ExitCode -ne 0) { throw "probatio Officinae exitus $($processus.ExitCode)" }
           $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
           if (!(Test-Path $relatio)) { throw 'relatio probationis deest' }
           Get-Content $relatio
@@ -72,16 +77,22 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $officina = Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe'
-          $compilator = Resolve-Path '.\instrumenta\compilator_vindex.exe'
-          $manifestum = Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\tests\proiecta\salve\proiectum_pe.vindex'
-          & $officina --proba-proiectum $compilator $manifestum
-          if ($LASTEXITCODE -ne 0) {
-            $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
-            if (Test-Path $relatio) { Get-Content $relatio }
-            throw "probatio proiecti Officinae exitus $LASTEXITCODE"
-          }
+          $officina = (Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe').Path
+          $compilator = (Resolve-Path '.\instrumenta\compilator_vindex.exe').Path
+          $manifestum = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\tests\proiecta\salve\proiectum_pe.vindex').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $officina
+          $psi.UseShellExecute = $false
+          [void]$psi.ArgumentList.Add('--proba-proiectum')
+          [void]$psi.ArgumentList.Add($compilator)
+          [void]$psi.ArgumentList.Add($manifestum)
+          $processus = [System.Diagnostics.Process]::Start($psi)
+          $processus.WaitForExit()
           $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
+          if ($processus.ExitCode -ne 0) {
+            if (Test-Path $relatio) { Get-Content $relatio }
+            throw "probatio proiecti Officinae exitus $($processus.ExitCode)"
+          }
           Get-Content $relatio
           if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'proiectum per Officinam non est RECTE' }
       - name: Nulla technologia interretialis in Officina lateat
