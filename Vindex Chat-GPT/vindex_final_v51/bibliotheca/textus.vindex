@@ -23,12 +23,14 @@ FUNCTIO TEXTUS_INDEX REDDENS NUMERUS.
     SI m == 0 TUNC REDDE 0. FIN-SI.
     SI m > n TUNC REDDE -1. FIN-SI.
 
+    DECLARA basis_textus SICUT NUMERUS VALENS CONTENTUM(SEDES(textus)).
+    DECLARA basis_fragmenti SICUT NUMERUS VALENS CONTENTUM(SEDES(fragmentum)).
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i <= n - m PERFICE
         DECLARA j SICUT NUMERUS VALENS 0.
         DECLARA par SICUT NUMERUS VALENS 1.
         DUM j < m && par == 1 PERFICE
-            SI OCTETUS_AB(textus + 16 + i + j) != OCTETUS_AB(fragmentum + 16 + j) TUNC
+            SI OCTETUS_AB(basis_textus + 16 + i + j) != OCTETUS_AB(basis_fragmenti + 16 + j) TUNC
                 par = 0.
             FIN-SI.
             j = j + 1.
@@ -64,9 +66,11 @@ FUNCTIO TEXTUS_SUFFIXUM REDDENS NUMERUS.
     SI m > n TUNC REDDE 0. FIN-SI.
     SI m == 0 TUNC REDDE 1. FIN-SI.
 
+    DECLARA basis_textus SICUT NUMERUS VALENS CONTENTUM(SEDES(textus)).
+    DECLARA basis_suffixi SICUT NUMERUS VALENS CONTENTUM(SEDES(suffixum)).
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i < m PERFICE
-        SI OCTETUS_AB(textus + 16 + n - m + i) != OCTETUS_AB(suffixum + 16 + i) TUNC
+        SI OCTETUS_AB(basis_textus + 16 + n - m + i) != OCTETUS_AB(basis_suffixi + 16 + i) TUNC
             REDDE 0.
         FIN-SI.
         i = i + 1.
