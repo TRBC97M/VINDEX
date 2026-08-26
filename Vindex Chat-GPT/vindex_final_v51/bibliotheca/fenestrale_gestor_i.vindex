@@ -1,0 +1,99 @@
+// Sylvia OS — gestor fenestrarum Fenestralis Purus I.
+// Omnis geometria et ordo Z per registrum dynamicum FI administrantur.
+
+FUNCTIO GI_TASKBAR REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    SI registrum==0 || x<98 TUNC REDDE 0. FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS FI_APERTA_NUM(registrum).
+    SI numerus<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA spatium SICUT NUMERUS VALENS sw-108.
+    SI spatium<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA bw SICUT NUMERUS VALENS spatium/numerus.
+    SI bw>180 TUNC bw=180. FIN-SI. SI bw<1 TUNC bw=1. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS (x-98)/bw.
+    SI index<0 || index>=numerus TUNC REDDE 0. FIN-SI.
+    DECLARA id SICUT NUMERUS VALENS FI_APERTA_N(registrum,index).
+    SI id==0 TUNC REDDE 0. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS FI_STATUS(registrum,id).
+    SI status==1 TUNC DECLARA r SICUT NUMERUS VALENS FI_STATUS_PONE(registrum,id,0). DECLARA f SICUT NUMERUS VALENS FI_FOCUS(registrum,id). REDDE 1. FIN-SI.
+    SI FI_FOCUS_ID(registrum)==id TUNC DECLARA m SICUT NUMERUS VALENS FI_MINIMIZA(registrum,id). REDDE 1. FIN-SI.
+    DECLARA f2 SICUT NUMERUS VALENS FI_FOCUS(registrum,id).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GI_MOUSE_DOWN REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    DECLARA mx SICUT NUMERUS VALENS s[11]. DECLARA my SICUT NUMERUS VALENS s[12].
+    SI my>=CONTENTUM(50333736)-28 TUNC REDDE GI_TASKBAR(s,registrum,mx). FIN-SI.
+    DECLARA id SICUT NUMERUS VALENS FI_HIT(registrum,mx,my).
+    SI id==0 TUNC REDDE 0. FIN-SI.
+    DECLARA foc SICUT NUMERUS VALENS FI_FOCUS(registrum,id).
+    DECLARA n SICUT NUMERUS VALENS FI_QUAERE(registrum,id).
+    SI n==0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(n+16). DECLARA y SICUT NUMERUS VALENS CONTENTUM(n+24).
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(n+32). DECLARA h SICUT NUMERUS VALENS CONTENTUM(n+40).
+    DECLARA maximus SICUT NUMERUS VALENS CONTENTUM(n+56).
+    DECLARA lx SICUT NUMERUS VALENS mx-x. DECLARA ly SICUT NUMERUS VALENS my-y.
+    SI ly>=4 && ly<24 && lx>=w-26 && lx<w-6 TUNC DECLARA c SICUT NUMERUS VALENS FI_CLAUDE(registrum,id). REDDE 1. FIN-SI.
+    SI ly>=4 && ly<24 && lx>=w-70 && lx<w-52 TUNC DECLARA m SICUT NUMERUS VALENS FI_MINIMIZA(registrum,id). REDDE 1. FIN-SI.
+    SI ly>=4 && ly<24 && lx>=w-48 && lx<w-30 TUNC
+        DECLARA z SICUT NUMERUS VALENS FI_MAX_TOGGLE(registrum,id,CONTENTUM(50333728),CONTENTUM(50333736)).
+        REDDE 1.
+    FIN-SI.
+    SI maximus==0 TUNC
+        DECLARA margines SICUT NUMERUS VALENS 0.
+        SI lx>=0 && lx<6 TUNC margines=margines|1. FIN-SI. SI lx>=w-6 && lx<w TUNC margines=margines|2. FIN-SI.
+        SI ly>=0 && ly<6 TUNC margines=margines|4. FIN-SI. SI ly>=h-6 && ly<h TUNC margines=margines|8. FIN-SI.
+        SI margines!=0 TUNC s[14]=id. s[27]=margines. s[15]=mx. s[16]=my. REDDE 1. FIN-SI.
+    FIN-SI.
+    SI ly>=0 && ly<28 && lx>=0 && lx<w-74 && maximus==0 TUNC
+        s[14]=id. s[27]=0. s[15]=mx-x. s[16]=my-y. REDDE 1.
+    FIN-SI.
+    SI lx>=10 && ly>=52 && lx<w-10 && ly<h-22 TUNC
+        DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(n+8).
+        DECLARA positum SICUT NUMERUS VALENS EG_PONE(coda,1,cliens,lx-10,ly-52,0).
+        SI positum==0 TUNC s[35]=s[35]+1. FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    REDDE foc.
+FIN-FUNCTIO.
+
+FUNCTIO GI_DRAG REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    DECLARA id SICUT NUMERUS VALENS s[14].
+    SI id==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS FI_QUAERE(registrum,id).
+    SI n==0 || CONTENTUM(n+48)!=0 TUNC s[14]=0. s[27]=0. REDDE 0. FIN-SI.
+    SI s[27]!=0 TUNC
+        DECLARA dx SICUT NUMERUS VALENS s[11]-s[15]. DECLARA dy SICUT NUMERUS VALENS s[12]-s[16].
+        s[15]=s[11]. s[16]=s[12].
+        REDDE FI_RESIZE(registrum,id,s[27],dx,dy).
+    FIN-SI.
+    DECLARA nx SICUT NUMERUS VALENS s[11]-s[15]. DECLARA ny SICUT NUMERUS VALENS s[12]-s[16].
+    DECLARA dx2 SICUT NUMERUS VALENS nx-CONTENTUM(n+16). DECLARA dy2 SICUT NUMERUS VALENS ny-CONTENTUM(n+24).
+    REDDE FI_MOVE(registrum,id,dx2,dy2).
+FIN-FUNCTIO.
+
+FUNCTIO GI_CLAVIS REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT q SICUT NUMERUS.
+    SI q==0 TUNC REDDE 0. FIN-SI.
+    DECLARA scan SICUT NUMERUS VALENS (q/2)%65536.
+    DECLARA unicode SICUT NUMERUS VALENS q/131072.
+    SI scan==23 || unicode==27 TUNC REDDE 2. FIN-SI.
+    SI unicode==9 TUNC DECLARA t SICUT NUMERUS VALENS FI_ALTERNA(registrum). REDDE 1. FIN-SI.
+    DECLARA id SICUT NUMERUS VALENS FI_RELEGE_FOCUS(registrum).
+    SI id==0 TUNC REDDE 0. FIN-SI.
+    SI scan==1 TUNC DECLARA a1 SICUT NUMERUS VALENS FI_MOVE(registrum,id,0,0-12). REDDE 1. FIN-SI.
+    SI scan==2 TUNC DECLARA a2 SICUT NUMERUS VALENS FI_MOVE(registrum,id,0,12). REDDE 1. FIN-SI.
+    SI scan==3 TUNC DECLARA a3 SICUT NUMERUS VALENS FI_MOVE(registrum,id,12,0). REDDE 1. FIN-SI.
+    SI scan==4 TUNC DECLARA a4 SICUT NUMERUS VALENS FI_MOVE(registrum,id,0-12,0). REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
