@@ -202,9 +202,9 @@ Officina non est “finita”: amplianda est cum debugger, refactoring, explorat
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit; PR #104 seriem dynamicam contiguam `NUMERUS` addidit; PR #105 segmenta mutuata zero-copy addidit; PR #106 `TEXTUS` validatione UTF-8 et scalaribus Unicode munit.
+PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit; PR #104 seriem dynamicam contiguam `NUMERUS` addidit; PR #105 segmenta mutuata zero-copy addidit; PR #106 `TEXTUS` validatione UTF-8 et scalaribus Unicode munit; PR #107 reditum `TEXTUS` a functionibus canonice probat; PR #108 subtextum Unicode per scalaria addit.
 
-`make probatio` / `tests/run_tests.sh` nunc **XXVII probationes, nulla errata** exercet, inter quas:
+`make probatio` / `tests/run_tests.sh` nunc **XXIX probationes, nulla errata** exercet, inter quas:
 
 - casus fundamentales linguae;
 - diagnostica valida et invalida;
@@ -215,6 +215,8 @@ PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praes
 - series dynamica contigua `NUMERUS`;
 - segmenta mutuata `NUMERUS`;
 - `TEXTUS` cum validatione stricta UTF-8 et scalaribus Unicode;
+- reditus `TEXTUS` a functionibus, etiam post concatenationem dynamicam;
+- subtextus Unicode per limites scalarum, cum vacuo et erroribus distinctis;
 - PE32+;
 - puritas Sylviae;
 - LXXX fenestrae;
@@ -235,7 +237,8 @@ Historia non deletur ad speciem mundandam, sed PR apertae non debent vias mortua
 ### PR apertae hodiernae relevantes
 
 - **#82** — P1, UEFI VINDEX purum, reservata Claudio;
-- **#71** — probatio laboratorii PS/2, fons selective canonizandus post P1/P3.
+- **#71** — probatio laboratorii PS/2, fons selective canonizandus post P1/P3;
+- **#108** — P9, subtextus Unicode per scalaria, probatus XXIX/XXIX et canonizandus.
 
 Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizationem.
 
@@ -255,7 +258,9 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 - PR #104 — series dynamica contigua `NUMERUS`, cum longitudine et capacitate separatis, relocatione automatica, insertione, deletione et basi contigua ad futuras series/slices praeparanda;
 - PR #105 — segmenta mutuata `NUMERUS`, cum basi et longitudine, accessu mutabili zero-copy et subsegmentis sine copia; relationes vitae memoriae et invalidatio post relocationem explicite documentantur;
 - PR #106 — `TEXTUS` validationem UTF-8 strictam, numerationem scalarum Unicode et accessum ad scalare indice accipit sine mutatione ABI; arithmetica descriptoris a semantica concatenationis `TEXTUS + TEXTUS` explicite separatur;
-- regressiones collectionum, segmentorum et Unicode inclusae in probationibus canonicis XXVII/XXVII;
+- PR #107 — functiones `TEXTUS` redire canonice possunt, etiam si valor redditus concatenatione dynamica creatus est;
+- PR #108 — `SUBTEXTUS_SCALARUM` novum `TEXTUS` per limites scalarum Unicode creat, sine UTF-8 incidere; vacuum legitimum a `TEXTUS` nullo erroris distinguitur;
+- regressiones collectionum, segmentorum et Unicode inclusae in probationibus canonicis XXIX/XXIX;
 - nulla generica ficta ante facultatem linguae: abstractiones concretae `NUMERUS` fundamentum migrationis futurae praebent.
 
 ### Facultates candidatae
@@ -268,7 +273,7 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 - functiones ut valores et callback;
 - moduli et compilationes separatae;
 - contractus ABI expliciti;
-- textus et Unicode maturior.
+- textus et Unicode maturior: graphemata, normalizatio et transformationes superiores.
 
 ### Disciplina
 
@@ -414,9 +419,10 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 Dum Claude P1 exercet, via recta independentis progressionis est:
 
 1. documenta canonica statui hodierno congruentia servare;
-2. probationes 27/27 custodire;
+2. probationes 29/29 custodire;
 3. **P9 per incrementa parva et generalia continuare**, non per magnam mutationem simul;
-4. ubi Claude terminaverit, opus P1 denuo inspicere ante integrationem.
+4. textum post fundamenta scalarum ad graphemata/normalizationem aut alias necessitates generales mature extendere, non ante probationes;
+5. ubi Claude terminaverit, opus P1 denuo inspicere ante integrationem.
 
 ---
 
