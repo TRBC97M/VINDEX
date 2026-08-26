@@ -1483,6 +1483,84 @@ FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO EXHIBE_CATHENAM_DIAGNOSTICI REDDENS NUMERUS.
+    ACCIPIT textus SICUT ACUS<LITTERA>.
+    DECLARA buffer SICUT ORDO DE LITTERA CAPACITAS 256.
+    DECLARA positio SICUT NUMERUS VALENS 0.
+    DECLARA continua SICUT NUMERUS VALENS 1.
+    DUM continua == 1 PERFICE
+        DECLARA mensura SICUT NUMERUS VALENS 0.
+        DUM mensura < 256 && OCTETUS_AB(textus + positio + mensura) != 0 PERFICE
+            buffer[mensura] = OCTETUS_AB(textus + positio + mensura).
+            mensura = mensura + 1.
+        FIN-DUM.
+        SI mensura > 0 TUNC
+            DECLARA scriptum SICUT NUMERUS VALENS MITTE(1, buffer, mensura).
+        FIN-SI.
+        positio = positio + mensura.
+        SI mensura < 256 TUNC
+            continua = 0.
+        FIN-SI.
+    FIN-DUM.
+    REDDE positio.
+FIN-FUNCTIO.
+
+FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.
+    ACCIPIT via SICUT ACUS<LITTERA>.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT mensura_fontis SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+
+    SI positio < 0 TUNC
+        positio = 0.
+    FIN-SI.
+    SI positio > mensura_fontis TUNC
+        positio = mensura_fontis.
+    FIN-SI.
+
+    DECLARA linea SICUT NUMERUS VALENS 1.
+    DECLARA columna SICUT NUMERUS VALENS 1.
+    DECLARA i_diagnosticum SICUT NUMERUS VALENS 0.
+    DUM i_diagnosticum < positio PERFICE
+        SI fons[i_diagnosticum] == 10 TUNC
+            linea = linea + 1.
+            columna = 1.
+        ALITER
+            SI fons[i_diagnosticum] != 13 TUNC
+                columna = columna + 1.
+            FIN-SI.
+        FIN-SI.
+        i_diagnosticum = i_diagnosticum + 1.
+    FIN-DUM.
+
+    PROCLAMA "DIAGNOSTICUM VINDEX".
+    PROCLAMA "FONS".
+    DECLARA scripta_via SICUT NUMERUS VALENS EXHIBE_CATHENAM_DIAGNOSTICI(via).
+    PROCLAMA "".
+    PROCLAMA "LINEA".
+    PROCLAMA linea.
+    PROCLAMA "COLUMNA".
+    PROCLAMA columna.
+    PROCLAMA "NUNTIUS".
+    SI genus == 1 TUNC
+        PROCLAMA "ERRATUM: instructio ignota est".
+    FIN-SI.
+    SI genus == 2 TUNC
+        PROCLAMA "ERRATUM: functio vocata non inventa est".
+    FIN-SI.
+    SI genus == 3 TUNC
+        PROCLAMA "ERRATUM: FUNCTIO PRINCIPALIS deest".
+    FIN-SI.
+    SI genus == 4 TUNC
+        PROCLAMA "ERRATUM: fons importatus aperiri non potest".
+    FIN-SI.
+    SI genus == 5 TUNC
+        PROCLAMA "ERRATUM: fons importatus legi non potest".
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
 FUNCTIO STATUS_DESINE_LEGE REDDENS NUMERUS.
     ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     REDDE CONTENTUM(contextus_parseris).
@@ -1588,6 +1666,18 @@ FUNCTIO DESCRIPTOR_IAT_PE_SCRIBE REDDENS NUMERUS.
     ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
     ACCIPIT valor SICUT NUMERUS.
     CONTENTUM(contextus_parseris + 64) = valor.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO POSITIONES_PENDENTES_LEGE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    REDDE CONTENTUM(contextus_parseris + 72).
+FIN-FUNCTIO.
+
+FUNCTIO POSITIONES_PENDENTES_SCRIBE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT ACUS<NUMERUS>.
+    ACCIPIT valor SICUT NUMERUS.
+    CONTENTUM(contextus_parseris + 72) = valor.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -2813,8 +2903,22 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
     FIN-SI.
 
     SI (fons[CONTENTUM(pos_fontis)] >= 65 && fons[CONTENTUM(pos_fontis)] <= 90) TUNC
+        DECLARA positio_vocationis SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
         DECLARA nomen_fn SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
         ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+
+        SI CONTENTUM(pos_fontis) >= n || fons[CONTENTUM(pos_fontis)] != 40 TUNC
+            DECLARA idx_instructio_ignota SICUT NUMERUS VALENS PARES_QUANTITAS(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris)).
+            DECLARA ig_instructio_ignota SICUT NUMERUS VALENS PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_instructio_ignota, 0, 0).
+            ig_instructio_ignota = PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_instructio_ignota, 1, 0).
+            ig_instructio_ignota = PARES_SCRIBE(POSITIONES_PENDENTES_LEGE(contextus_parseris), idx_instructio_ignota, 0, positio_vocationis).
+            CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 0).
+            DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
+                CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+            FIN-DUM.
+            REDDE 0.
+        FIN-SI.
+
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
         DECLARA numerus_argumentorum SICUT NUMERUS VALENS 0.
@@ -2872,6 +2976,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             DECLARA idx_pendens SICUT NUMERUS VALENS PARES_QUANTITAS(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris)).
             DECLARA ig_pendens_dyn SICUT NUMERUS VALENS PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_pendens, 0, loci_appel_pendens).
             ig_pendens_dyn = PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_pendens, 1, nomen_fn).
+            ig_pendens_dyn = PARES_SCRIBE(POSITIONES_PENDENTES_LEGE(contextus_parseris), idx_pendens, 0, positio_vocationis).
         FIN-SI.
         SI numerus_argumentorum == 7 TUNC
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 10).
@@ -5017,6 +5122,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         REDDE 74.
     FIN-SI.
     DECLARA fons_brut SICUT ACUS<LITTERA> VALENS basis_fons_brut.
+    DECLARA n_fons_principalis SICUT NUMERUS VALENS n.
     DECLARA capacitas_fons SICUT NUMERUS VALENS 65536.
     DECLARA basis_fons SICUT NUMERUS VALENS RESERVA_OCTETA(capacitas_fons).
     SI basis_fons < 0 TUNC
@@ -5025,9 +5131,17 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
     DECLARA pos_out_imp SICUT NUMERUS VALENS 0.
     DECLARA i_imp SICUT NUMERUS VALENS 0.
+    DECLARA capacitas_tabulae_importorum SICUT NUMERUS VALENS 1024.
+    DECLARA tabula_importorum SICUT NUMERUS VALENS RESERVA_OCTETA(capacitas_tabulae_importorum).
+    SI tabula_importorum < 0 TUNC
+        PROCLAMA "ERRATUM: memoria tabulae importorum reservata non est".
+        REDDE 71.
+    FIN-SI.
+    DECLARA numerus_importorum SICUT NUMERUS VALENS 0.
 
     DUM i_imp < n PERFICE
         SI fons_brut[i_imp] == 73 && i_imp + 7 < n && fons_brut[i_imp+1] == 77 && fons_brut[i_imp+2] == 80 && fons_brut[i_imp+3] == 79 && fons_brut[i_imp+4] == 82 && fons_brut[i_imp+5] == 84 && fons_brut[i_imp+6] == 65 && fons_brut[i_imp+7] == 32 TUNC
+            DECLARA positio_importae SICUT NUMERUS VALENS i_imp.
             i_imp = i_imp + 8.
             DUM i_imp < n && fons_brut[i_imp] != 34 PERFICE
                 i_imp = i_imp + 1.
@@ -5061,9 +5175,21 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 DECLARA basis_imp SICUT NUMERUS VALENS LEGE_TOTUM_DYNAMICUM(fd_imp2, SEDES(n_imp2)).
                 CLAUDE(fd_imp2).
                 SI n_imp2 < 0 || basis_imp < 0 TUNC
-                    PROCLAMA "ERRATUM: fons importatus legi non potest".
+                    DECLARA ign_diag_imp_lectio SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(argv[1], fons_brut, positio_importae, n_fons_principalis, 5).
                     REDDE 74.
                 FIN-SI.
+                DECLARA necessaria_tabulae_importorum SICUT NUMERUS VALENS (numerus_importorum + 1) * 32.
+                DECLARA nova_tabula_importorum SICUT NUMERUS VALENS ASSECURA_BUFFERUM(tabula_importorum, numerus_importorum * 32, necessaria_tabulae_importorum, SEDES(capacitas_tabulae_importorum)).
+                SI nova_tabula_importorum < 0 TUNC
+                    PROCLAMA "ERRATUM: memoria tabulae importorum augeri non potest".
+                    REDDE 71.
+                FIN-SI.
+                tabula_importorum = nova_tabula_importorum.
+                CONTENTUM(tabula_importorum + numerus_importorum * 32) = pos_out_imp.
+                CONTENTUM(tabula_importorum + numerus_importorum * 32 + 8) = n_imp2.
+                CONTENTUM(tabula_importorum + numerus_importorum * 32 + 16) = basis_imp.
+                CONTENTUM(tabula_importorum + numerus_importorum * 32 + 24) = nomen_base_imp.
+                numerus_importorum = numerus_importorum + 1.
                 DECLARA basis_crescens SICUT NUMERUS VALENS ASSECURA_BUFFERUM(basis_fons, pos_out_imp, pos_out_imp + n_imp2 + 1, SEDES(capacitas_fons)).
                 SI basis_crescens < 0 TUNC
                     PROCLAMA "ERRATUM: memoria fontium augeri non potest".
@@ -5079,7 +5205,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 SCRIBE_OCTETUM_AB(basis_fons + pos_out_imp, 10).
                 pos_out_imp = pos_out_imp + 1.
             ALITER
-                PROCLAMA "ERRATUM: fons importatus aperiri non potest".
+                DECLARA ign_diag_imp_apertio SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(argv[1], fons_brut, positio_importae, n_fons_principalis, 4).
                 REDDE 66.
             FIN-SI.
         ALITER
@@ -5087,6 +5213,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         FIN-SI.
     FIN-DUM.
 
+    DECLARA initium_fontis_principalis SICUT NUMERUS VALENS pos_out_imp.
     DECLARA basis_finalis SICUT NUMERUS VALENS ASSECURA_BUFFERUM(basis_fons, pos_out_imp, pos_out_imp + n, SEDES(capacitas_fons)).
     SI basis_finalis < 0 TUNC
         PROCLAMA "ERRATUM: memoria fontis finalis augeri non potest".
@@ -5122,7 +5249,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA loci_iat_exitprocess SICUT NUMERUS VALENS 0.
     DECLARA loci_iat_virtualalloc SICUT NUMERUS VALENS 0.
 
-    DECLARA contextus_parseris SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(72).
+    DECLARA contextus_parseris SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(80).
     SI contextus_parseris < 0 TUNC
         PROCLAMA "ERRATUM: memoria contextus parseris reservata non est".
         REDDE 71.
@@ -5148,6 +5275,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
     DESCRIPTOR_FUNCTIONUM_SCRIBE(contextus_parseris, descriptor_functionum_contextus).
     DESCRIPTOR_PENDENTIUM_SCRIBE(contextus_parseris, descriptor_pendentium_contextus).
+    DECLARA descriptor_pos_pend_contextus SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI descriptor_pos_pend_contextus < 0 TUNC
+        PROCLAMA "ERRATUM: memoria positionum pendentium reservata non est".
+        REDDE 71.
+    FIN-SI.
+    POSITIONES_PENDENTES_SCRIBE(contextus_parseris, descriptor_pos_pend_contextus).
     DECLARA descriptor_localium_contextus SICUT NUMERUS VALENS RESERVA_OCTETA(24).
     SI descriptor_localium_contextus < 0 TUNC
         PROCLAMA "ERRATUM: memoria descriptoris localium reservata non est".
@@ -5168,7 +5301,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
     DECLARA status_functionum_dynam SICUT NUMERUS VALENS INITIA_PARES_DYNAMICA(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), 64).
     DECLARA status_pendentium_dynam SICUT NUMERUS VALENS INITIA_PARES_DYNAMICA(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), 64).
-    SI status_functionum_dynam != 0 || status_pendentium_dynam != 0 TUNC
+    DECLARA status_pos_pend_dynam SICUT NUMERUS VALENS INITIA_PARES_DYNAMICA(POSITIONES_PENDENTES_LEGE(contextus_parseris), 64).
+    SI status_functionum_dynam != 0 || status_pendentium_dynam != 0 || status_pos_pend_dynam != 0 TUNC
         PROCLAMA "ERRATUM: memoria functionum dynamicarum reservata non est".
         REDDE 71.
     FIN-SI.
@@ -5507,7 +5641,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-DUM.
 
     SI inventa_principalis == 0 TUNC
-        PROCLAMA "ERRATUM: FUNCTIO PRINCIPALIS deest".
+        DECLARA ign_diag_principalis SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(argv[1], fons_brut, 0, n_fons_principalis, 3).
         REDDE 65.
     FIN-SI.
 
@@ -5515,9 +5649,36 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DUM k_pendens < PARES_QUANTITAS(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris)) PERFICE
         DECLARA loci_p SICUT NUMERUS VALENS PARES_LEGE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), k_pendens, 0).
         DECLARA nomen_p SICUT NUMERUS VALENS PARES_LEGE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), k_pendens, 1).
+        DECLARA positio_fontis_p SICUT NUMERUS VALENS PARES_LEGE(POSITIONES_PENDENTES_LEGE(contextus_parseris), k_pendens, 0).
         DECLARA loci_cible SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(contextus_parseris, nomen_p).
         SI loci_cible == 0 TUNC
-            PROCLAMA "ERRATUM: functio vocata non inventa est".
+            DECLARA genus_diagnostici SICUT NUMERUS VALENS 2.
+            SI nomen_p == 0 TUNC
+                genus_diagnostici = 1.
+            FIN-SI.
+            DECLARA diagnosticum_scriptum SICUT NUMERUS VALENS 0.
+            SI positio_fontis_p >= initium_fontis_principalis TUNC
+                DECLARA pos_principalis_diag SICUT NUMERUS VALENS positio_fontis_p - initium_fontis_principalis.
+                DECLARA ign_diag_p SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(argv[1], fons_brut, pos_principalis_diag, n_fons_principalis, genus_diagnostici).
+                diagnosticum_scriptum = 1.
+            ALITER
+                DECLARA idx_importi_diag SICUT NUMERUS VALENS 0.
+                DUM idx_importi_diag < numerus_importorum PERFICE
+                    DECLARA initium_importi_diag SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_importi_diag * 32).
+                    DECLARA mensura_importi_diag SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_importi_diag * 32 + 8).
+                    SI diagnosticum_scriptum == 0 && positio_fontis_p >= initium_importi_diag && positio_fontis_p < initium_importi_diag + mensura_importi_diag TUNC
+                        DECLARA fons_importi_diag SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_importi_diag * 32 + 16).
+                        DECLARA via_importi_diag SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_importi_diag * 32 + 24).
+                        DECLARA positio_importi_diag SICUT NUMERUS VALENS positio_fontis_p - initium_importi_diag.
+                        DECLARA ign_diag_i SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_importi_diag, fons_importi_diag, positio_importi_diag, mensura_importi_diag, genus_diagnostici).
+                        diagnosticum_scriptum = 1.
+                    FIN-SI.
+                    idx_importi_diag = idx_importi_diag + 1.
+                FIN-DUM.
+            FIN-SI.
+            SI diagnosticum_scriptum == 0 TUNC
+                DECLARA ign_diag_unum SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(argv[1], fons, positio_fontis_p, n, genus_diagnostici).
+            FIN-SI.
             REDDE 65.
         FIN-SI.
         DECLARA ig_patch SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_p, loci_cible).
