@@ -1,0 +1,79 @@
+name: Sylvia OS — Fenestrale II Purus F canonicus
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_f.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_f_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_F.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-f.yml'
+
+jobs:
+  vindex-purus-f:
+    name: Duo clientes privati Fenestralis F VINDEX certificantur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontes VINDEX verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_f.vindex
+          python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_f_clientes.vindex
+
+      - name: Contractum duorum clientium verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          f='systema/fenestrale_ii_purus_f.vindex'
+          t='bibliotheca/tabula_clientis_f.vindex'
+          for signum in \
+            'FUNCTIO TF_CLICK' 'FUNCTIO TF_RENDE' \
+            's[32]' 's[33]' 'FS_CREA(396,226)' \
+            'PE_CLICK' 'PE_RENDE' 'TF_CLICK' 'TF_RENDE' 'FS_BLIT'
+          do
+            if ! grep -Fq "$signum" "$f" && ! grep -Fq "$signum" "$t"; then
+              echo "ERRATUM: $signum deest"
+              exit 1
+            fi
+          done
+          ! grep -Fq 'FV_TABULA' "$f"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$t"
+          printf '%s\n' 'RECTE: duo clientes privati Fenestralis F separati sunt.'
+
+      - name: Probationem duorum clientium compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex probationes/fenestrale_purus_f_clientes.vindex /tmp/fenestrale_purus_f_clientes.elf
+          file /tmp/fenestrale_purus_f_clientes.elf | grep -q 'ELF 64-bit'
+
+      - name: Fenestrale F totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex systema/fenestrale_ii_purus_f.vindex /tmp/fenestrale_ii_purus_f.elf
+          file /tmp/fenestrale_ii_purus_f.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_f.elf)" -lt 196608
+          printf '%s\n' 'RECTE: Fenestrale II Purus F duo clientes privatos VINDEX compilat.'

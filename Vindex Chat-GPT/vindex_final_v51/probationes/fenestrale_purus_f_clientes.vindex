@@ -1,0 +1,23 @@
+// Probatio compilationis: duo clientes privati Fenestralis Purus F.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/programmata_clientis_e.vindex".
+IMPORTA "bibliotheca/tabula_clientis_f.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA programmata SICUT NUMERUS VALENS FS_CREA(496,260).
+    DECLARA tabula SICUT NUMERUS VALENS FS_CREA(396,226).
+    SI programmata == 0 || tabula == 0 TUNC REDDE 71. FIN-SI.
+    DECLARA sp SICUT NUMERUS VALENS PE_CLICK(programmata,0,180,80).
+    SI sp != 1 TUNC REDDE 65. FIN-SI.
+    DECLARA rp SICUT NUMERUS VALENS PE_RENDE(programmata,sp).
+    DECLARA st SICUT NUMERUS VALENS TF_CLICK(tabula,0,80,100).
+    SI st < 1 || st > 96 TUNC REDDE 65. FIN-SI.
+    DECLARA rt SICUT NUMERUS VALENS TF_RENDE(tabula,st).
+    DECLARA sn SICUT NUMERUS VALENS TF_CLICK(tabula,st,20,12).
+    SI sn != 101 TUNC REDDE 65. FIN-SI.
+    DECLARA ss SICUT NUMERUS VALENS TF_CLICK(tabula,sn,90,12).
+    SI ss != 102 TUNC REDDE 65. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
