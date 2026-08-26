@@ -139,6 +139,12 @@ FIN-FUNCTIO.
             self.assertEqual(0, prima.returncode, prima.stdout)
             os.chmod(gen2, 0o755)
 
+            self.assertEqual(
+                COMPILATOR.read_bytes(),
+                gen2.read_bytes(),
+                "compilator commissus G1 et compilator ex fonte canonico G2 differunt",
+            )
+
             secunda = subprocess.run(
                 [str(gen2), str(FONS_COMPILATORIS), str(gen3)],
                 cwd=RADIX,
