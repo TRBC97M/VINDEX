@@ -63,11 +63,19 @@ Si res in hoc documento et status realis Git dissentiunt, **status realis Git pr
 
 ## P2 — Reconciliatio VINDEX 0.53 cum linea canonica
 
-**Status:** `PARATUM`, sed P1 ante mutationes magnas recensendum est.  
-**Fontes principales:** ramus historicus VINDEX 0.53 et rami reconciliationis.  
-**Causa:** 0.53 multas facultates maturas continet — fontes et buffers dynamicos, functiones et locales dynamicos, contextum compilationis explicitum, Win64 PE32+, argumenta plura ABI, PROIECTUM, diagnostica, ARGV et alia — sed ramus historicus non est directe miscendus cum `main`.
+**Status:** `IMPEDITUM a P1 post R5`; gradus R0–R5 `PERFECTUM`.  
+**Fontes principales:** ramus historicus VINDEX 0.53, probationes canonicae R1–R5 et opus UEFI reservatum P1.  
+**Causa:** facultates maturae 0.53 recuperandae erant selective, sine fusione monolithica neque regressione architecturae praesentis.
 
-**Actio proxima:** facultates 0.53 inventariare contra `main`, deinde eas parvis commitibus portare, auto-hospitio et regressionibus ELF/PE/UEFI post singulos gradus verificatis.
+**Perfectum:**  
+- R0 — inventarium et matrix migrationis;
+- R1 — baseline dynamicorum, septem argumenta SysV, magnae frames et punctum fixum;
+- R2 — diagnostica `FONS/LINEA/COLUMNA/NUNTIUS` et origo importorum;
+- R3 — `PROIECTUM`, viae relativae et destinationes ELF/PE;
+- R4 — `argc/argv` Win64 nativum et certificatio sub Windows vero;
+- R5 — verificator PE et comparator binarius in VINDEX, matrice ELF/PE et auto-hospitio.
+
+**Actio proxima P2:** R6 — harmonizatio UEFI — manet `RESERVATUM P1`; nihil ibi agendum est donec Claude a usuario resumatur et ramus eius denuo inspectus sit. Interim aliud opus independens ex `CONSILIUM` eligendum est.
 
 **Criterium victoriae:** compilator canonicus modernus omnes facultates probatas 0.53 retinet, structuram praesentem observat, auto-hospitium punctum fixum servat et targeta ELF, PE/Win64 atque UEFI non regreditur.
 
