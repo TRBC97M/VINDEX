@@ -309,3 +309,50 @@ Quaerendum ergo est **quis `RECTANGULUM` cum mensuris absurdis vocet**,
 et unde illae mensurae veniant. Instrumentum idoneum iam paratum est:
 breakpoint conditionalis super initium `RECTANGULUM` cum inspectione
 parametrorum et adressae reditus.
+
+
+## Addendum: CAUSA VERA INVENTA -- framebuffer non mappatus
+
+Per GDB, metadata in memoria vera inspecta sunt eo momento quo
+`RECTANGULUM` vocatur:
+
+```
+meta0=1  FB=0x80000000  lat=1280  scala=4  umbra=0x3001000
+```
+
+**Omnia metadata RECTA sunt.** Ponticulus VINDEX opus suum perfecte
+perficit.
+
+`RECTANGULUM` semel vocatur, cum parametris `(0, 0, 320, 200)` --
+omnino normalibus.
+
+**Causa vera**: `RAX = 0x80000000` in defectu **est ipsa adressa
+framebuffer**, non coordinata corrupta. Nucleus in framebuffer scribit
+(`0x80000000` = 2 GiB exacte), sed illa regio in tabulis paginarum
+currentibus **non est praesens** (`#PF` cum `P:0`).
+
+Ratio: OVMF regiones MMIO supra memoriam physicam ponit. Ponticulus
+noster `ExitBootServices` non vocat, ergo tabulae paginarum firmware
+manent -- sed nucleus scribit ad regionem quam illae tabulae non
+tegunt.
+
+Probatum: idem defectus cum 1024 MiB et cum 2048 MiB (framebuffer
+utroque casu supra memoriam manet).
+
+### Quid hoc significat
+
+Defectus **non est in ponticulo VINDEX**: metadata recta, nucleus
+recte oneratus, saltus rectus, vocationes rectae. Quaestio est de
+**contractu inter nucleum et ambitum executionis**:
+
+- vel nucleus in `UMBRA` tantum pingere debet (quod `meta[0]=1`
+  significare videtur) et umbram in framebuffer per vocationem
+  explicitam transferre;
+- vel ponticulus `ExitBootServices` vocare et tabulas paginarum proprias
+  construere debet, quae framebuffer tegant;
+- vel framebuffer per `AllocatePages`/`SetVirtualAddressMap` explicite
+  mappandus est.
+
+Haec est quaestio architectonica, eadem quam ChatGPT de contractu
+memoriae proposuit -- sed nunc **cum causa exacte identificata**, non
+coniecturali.
