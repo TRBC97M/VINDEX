@@ -1,13 +1,24 @@
 name: VINDEX — Logica brevis
 
 on:
-  push:
-    branches:
-      - chatgpt/vindex-logica-brevis
   workflow_dispatch:
+  push:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/logica_brevis.vindex'
+      - '.github/workflows/vindex-logica-brevis.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/logica_brevis.vindex'
+      - '.github/workflows/vindex-logica-brevis.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   logica-brevis:
@@ -16,19 +27,17 @@ jobs:
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
-        with:
-          ref: chatgpt/vindex-logica-brevis
-          fetch-depth: 0
 
-      - name: Mutationem logicam applica
+      - name: Contractum logicum verifica
         shell: bash
         run: |
           set -euo pipefail
-          RADIX='Vindex Chat-GPT/vindex_final_v51'
-          python3 "$RADIX/instrumenta/applica_logicam_brevem.py"
-          grep -Fq 'FUNCTIO ANALYSA_COMPARATIO_SIMPLEX REDDENS NUMERUS.' "$RADIX/src/compilator_vindex.vindex"
-          grep -Fq 'FUNCTIO ANALYSA_CONIUNCTIO_LOGICA REDDENS NUMERUS.' "$RADIX/src/compilator_vindex.vindex"
-          grep -Fq 'FUNCTIO EST_DISIUNCTIO_LOGICA REDDENS NUMERUS.' "$RADIX/src/compilator_vindex.vindex"
+          C='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          grep -Fq 'FUNCTIO ANALYSA_COMPARATIO_SIMPLEX REDDENS NUMERUS.' "$C"
+          grep -Fq 'FUNCTIO ANALYSA_CONIUNCTIO_LOGICA REDDENS NUMERUS.' "$C"
+          grep -Fq 'FUNCTIO EST_CONIUNCTIO_LOGICA REDDENS NUMERUS.' "$C"
+          grep -Fq 'FUNCTIO EST_DISIUNCTIO_LOGICA REDDENS NUMERUS.' "$C"
+          printf '%s\n' 'RECTE: && et || stratis logicis propriis administrantur.'
 
       - name: Puritatem Sylviae verifica
         shell: bash
@@ -54,17 +63,17 @@ jobs:
           /tmp/g1 "$RADIX/src/compilator_vindex.vindex" /tmp/g2
           chmod +x /tmp/g2
           /tmp/g2 "$RADIX/src/compilator_vindex.vindex" /tmp/g3
+          chmod +x /tmp/g3
           cmp -s /tmp/g2 /tmp/g3
-          cp /tmp/g3 "$RADIX/compilator_vindex"
-          chmod 755 "$RADIX/compilator_vindex"
-          printf '%s\n' 'RECTE: G2 et G3 identici sunt.'
+          cmp -s "$RADIX/compilator_vindex" /tmp/g3
+          printf '%s\n' 'RECTE: G2 et G3 identici sunt; binarium canonicum fonti respondet.'
 
       - name: Aestimationem brevem exsequere
         shell: bash
         run: |
           set -euo pipefail
           RADIX='Vindex Chat-GPT/vindex_final_v51'
-          "$RADIX/compilator_vindex" "$RADIX/probationes/logica_brevis.vindex" /tmp/logica_brevis
+          /tmp/g3 "$RADIX/probationes/logica_brevis.vindex" /tmp/logica_brevis
           chmod +x /tmp/logica_brevis
           timeout 10s /tmp/logica_brevis
           printf '%s\n' 'RECTE: dextra pars periculosa non aestimatur et ordo && ante || servatur.'
@@ -74,24 +83,10 @@ jobs:
         run: |
           set -euo pipefail
           RADIX='Vindex Chat-GPT/vindex_final_v51'
-          cd "$RADIX"
-          ./compilator_vindex probationes/fenestrale_purus_i_fenestrae.vindex /tmp/fenestrale_i
+          /tmp/g3 "$RADIX/probationes/fenestrale_purus_i_fenestrae.vindex" /tmp/fenestrale_i
           chmod +x /tmp/fenestrale_i
           timeout 10s /tmp/fenestrale_i
-          ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
+          /tmp/g3 "$RADIX/systema/fenestrale_ii_purus_i.vindex" /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
           test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 786432
-          printf '%s\n' 'RECTE: LXXX fenestrae et Fenestrale I integrum cum logica nova transeunt.'
-
-      - name: Compilatorem certificatum conserva
-        shell: bash
-        run: |
-          set -euo pipefail
-          RADIX='Vindex Chat-GPT/vindex_final_v51'
-          git config user.name 'VINDEX Centurio'
-          git config user.email 'actions@users.noreply.github.com'
-          git add "$RADIX/src/compilator_vindex.vindex" "$RADIX/compilator_vindex"
-          if ! git diff --cached --quiet; then
-            git commit -m 'VINDEX: && et || aestimationem brevem accipiunt'
-            git push origin HEAD:chatgpt/vindex-logica-brevis
-          fi
+          printf '%s\n' 'RECTE: LXXX fenestrae et Fenestrale I integrum cum logica brevi transeunt.'
