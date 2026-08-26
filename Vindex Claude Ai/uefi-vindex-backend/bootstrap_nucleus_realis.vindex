@@ -1,0 +1,240 @@
+// VINDEX 0.53 -- Ponticulus UEFI integer in VINDEX puro.
+//
+// Substituit bootstrap_uefi.c omnino. Nullum C, nullum assembler externum.
+// Nucleum ex disco legit (NUCLEUS.BIN in eodem volumine), in memoriam
+// ponit, metadata implet, et semel ad eum salit.
+//
+// Offsets UEFI:
+//   SystemTable: ConIn=48, ConOut=64, BootServices=96
+//   BootServices: AllocatePages=40, HandleProtocol=152, LocateProtocol=320,
+//                 SetWatchdogTimer=256
+//   LoadedImage: DeviceHandle=24
+//   SimpleFileSystem: OpenVolume=8
+//   FileProtocol: Open=8, Close=16, Read=32, SetPosition=56, GetInfo=64
+//   GOP: QueryMode=0, SetMode=8, Mode=24
+//   GOP.Mode: MaxMode=0, Info=8, FrameBufferBase=24
+//   Info: HorizontalResolution=4, VerticalResolution=8, PixelFormat=12,
+//         PixelsPerScanLine=36
+
+FUNCTIO LEGE_U32 REDDENS NUMERUS.
+    ACCIPIT adressa SICUT NUMERUS.
+    DECLARA b0 SICUT NUMERUS VALENS OCTETUS_AB(adressa).
+    DECLARA b1 SICUT NUMERUS VALENS OCTETUS_AB(adressa + 1).
+    DECLARA b2 SICUT NUMERUS VALENS OCTETUS_AB(adressa + 2).
+    DECLARA b3 SICUT NUMERUS VALENS OCTETUS_AB(adressa + 3).
+    REDDE b0 + (b1 * 256) + (b2 * 65536) + (b3 * 16777216).
+FIN-FUNCTIO.
+
+FUNCTIO MEMORIA_VACUA REDDENS NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(destinatio + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_CATENAM REDDENS NUMERUS.
+    ACCIPIT conout SICUT NUMERUS.
+    ACCIPIT catena SICUT NUMERUS.
+    DECLARA sc SICUT NUMERUS VALENS CONTENTUM(conout + 8).
+    REDDE UEFI_VOCA6(sc, conout, catena, 0, 0, 0, 0).
+FIN-FUNCTIO.
+
+FUNCTIO GUID_PONE REDDENS NUMERUS.
+    ACCIPIT guid SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE
+        SCRIBE_OCTETUM_AB(guid + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    // 1 = protocollum graphicum (9042a9de-23dc-4a38-96fb-7aded080516a)
+    SI genus == 1 TUNC
+        SCRIBE_OCTETUM_AB(guid, 222). SCRIBE_OCTETUM_AB(guid + 1, 169).
+        SCRIBE_OCTETUM_AB(guid + 2, 66). SCRIBE_OCTETUM_AB(guid + 3, 144).
+        SCRIBE_OCTETUM_AB(guid + 4, 220). SCRIBE_OCTETUM_AB(guid + 5, 35).
+        SCRIBE_OCTETUM_AB(guid + 6, 56). SCRIBE_OCTETUM_AB(guid + 7, 74).
+        SCRIBE_OCTETUM_AB(guid + 8, 150). SCRIBE_OCTETUM_AB(guid + 9, 251).
+        SCRIBE_OCTETUM_AB(guid + 10, 122). SCRIBE_OCTETUM_AB(guid + 11, 222).
+        SCRIBE_OCTETUM_AB(guid + 12, 208). SCRIBE_OCTETUM_AB(guid + 13, 128).
+        SCRIBE_OCTETUM_AB(guid + 14, 81). SCRIBE_OCTETUM_AB(guid + 15, 106).
+    FIN-SI.
+    // 3 = LoadedImage (5b1b31a1-9562-11d2-8e3f-00a0c969723b)
+    SI genus == 3 TUNC
+        SCRIBE_OCTETUM_AB(guid, 161). SCRIBE_OCTETUM_AB(guid + 1, 49).
+        SCRIBE_OCTETUM_AB(guid + 2, 27). SCRIBE_OCTETUM_AB(guid + 3, 91).
+        SCRIBE_OCTETUM_AB(guid + 4, 98). SCRIBE_OCTETUM_AB(guid + 5, 149).
+        SCRIBE_OCTETUM_AB(guid + 6, 210). SCRIBE_OCTETUM_AB(guid + 7, 17).
+        SCRIBE_OCTETUM_AB(guid + 8, 142). SCRIBE_OCTETUM_AB(guid + 9, 63).
+        SCRIBE_OCTETUM_AB(guid + 10, 0). SCRIBE_OCTETUM_AB(guid + 11, 160).
+        SCRIBE_OCTETUM_AB(guid + 12, 201). SCRIBE_OCTETUM_AB(guid + 13, 105).
+        SCRIBE_OCTETUM_AB(guid + 14, 114). SCRIBE_OCTETUM_AB(guid + 15, 59).
+    FIN-SI.
+    // 4 = SimpleFileSystem (964e5b22-6459-11d2-8e39-00a0c969723b)
+    SI genus == 4 TUNC
+        SCRIBE_OCTETUM_AB(guid, 34). SCRIBE_OCTETUM_AB(guid + 1, 91).
+        SCRIBE_OCTETUM_AB(guid + 2, 78). SCRIBE_OCTETUM_AB(guid + 3, 150).
+        SCRIBE_OCTETUM_AB(guid + 4, 89). SCRIBE_OCTETUM_AB(guid + 5, 100).
+        SCRIBE_OCTETUM_AB(guid + 6, 210). SCRIBE_OCTETUM_AB(guid + 7, 17).
+        SCRIBE_OCTETUM_AB(guid + 8, 142). SCRIBE_OCTETUM_AB(guid + 9, 57).
+        SCRIBE_OCTETUM_AB(guid + 10, 0). SCRIBE_OCTETUM_AB(guid + 11, 160).
+        SCRIBE_OCTETUM_AB(guid + 12, 201). SCRIBE_OCTETUM_AB(guid + 13, 105).
+        SCRIBE_OCTETUM_AB(guid + 14, 114). SCRIBE_OCTETUM_AB(guid + 15, 59).
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA imago SICUT NUMERUS VALENS CONTENTUM(16777216).
+    DECLARA ts SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI ts == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA co SICUT NUMERUS VALENS CONTENTUM(ts + 64).
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(ts + 96).
+    SI bs == 0 TUNC REDDE 1. FIN-SI.
+
+    // I. Vigilem firmware exstingue.
+    DECLARA vigil SICUT NUMERUS VALENS CONTENTUM(bs + 256).
+    DECLARA ig_v SICUT NUMERUS VALENS UEFI_VOCA6(vigil, 0, 0, 0, 0, 0, 0).
+
+    // II. Fabricam ex qua onerati sumus inveni.
+    DECLARA guid SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    DECLARA locus SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    DECLARA handle SICUT NUMERUS VALENS CONTENTUM(bs + 152).
+
+    DECLARA ig_g3 SICUT NUMERUS VALENS GUID_PONE(guid, 3).
+    CONTENTUM(locus) = 0.
+    DECLARA st SICUT NUMERUS VALENS UEFI_VOCA6(handle, imago, guid, locus, 0, 0, 0).
+    SI st != 0 TUNC REDDE 10. FIN-SI.
+    DECLARA onusta SICUT NUMERUS VALENS CONTENTUM(locus).
+    SI onusta == 0 TUNC REDDE 10. FIN-SI.
+    DECLARA fabrica SICUT NUMERUS VALENS CONTENTUM(onusta + 24).
+
+    DECLARA ig_g4 SICUT NUMERUS VALENS GUID_PONE(guid, 4).
+    CONTENTUM(locus) = 0.
+    st = UEFI_VOCA6(handle, fabrica, guid, locus, 0, 0, 0).
+    SI st != 0 TUNC REDDE 11. FIN-SI.
+    DECLARA fs SICUT NUMERUS VALENS CONTENTUM(locus).
+    SI fs == 0 TUNC REDDE 11. FIN-SI.
+
+    // III. Volumen aperi et nucleum quaere.
+    DECLARA aperi_vol SICUT NUMERUS VALENS CONTENTUM(fs + 8).
+    CONTENTUM(locus) = 0.
+    st = UEFI_VOCA6(aperi_vol, fs, locus, 0, 0, 0, 0).
+    SI st != 0 TUNC REDDE 12. FIN-SI.
+    DECLARA radix SICUT NUMERUS VALENS CONTENTUM(locus).
+    SI radix == 0 TUNC REDDE 12. FIN-SI.
+
+    // Nomen "NUCLEUS.BIN" in UTF-16.
+    DECLARA nomen SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    DECLARA ig_n SICUT NUMERUS VALENS MEMORIA_VACUA(nomen, 32).
+    SCRIBE_OCTETUM_AB(nomen, 78).
+    SCRIBE_OCTETUM_AB(nomen + 2, 85).
+    SCRIBE_OCTETUM_AB(nomen + 4, 67).
+    SCRIBE_OCTETUM_AB(nomen + 6, 76).
+    SCRIBE_OCTETUM_AB(nomen + 8, 69).
+    SCRIBE_OCTETUM_AB(nomen + 10, 85).
+    SCRIBE_OCTETUM_AB(nomen + 12, 83).
+    SCRIBE_OCTETUM_AB(nomen + 14, 46).
+    SCRIBE_OCTETUM_AB(nomen + 16, 66).
+    SCRIBE_OCTETUM_AB(nomen + 18, 73).
+    SCRIBE_OCTETUM_AB(nomen + 20, 78).
+
+    DECLARA aperi SICUT NUMERUS VALENS CONTENTUM(radix + 8).
+    CONTENTUM(locus) = 0.
+    st = UEFI_VOCA6(aperi, radix, locus, nomen, 1, 0, 0).
+    SI st != 0 TUNC REDDE 13. FIN-SI.
+    DECLARA fasc SICUT NUMERUS VALENS CONTENTUM(locus).
+    SI fasc == 0 TUNC REDDE 13. FIN-SI.
+
+    // IV. Memoriam pro nucleo reserva (AnyPages: firmware eligit).
+    // Nucleus ad 0x400000 (p_vaddr ELF) et regio COMMUNIS ad 0x3000000
+    // separatim reservantur, quia unus blocus continuus a firmware
+    // negatur (regiones intermediae iam occupatae sunt).
+    DECLARA locus_mem SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    DECLARA alloca SICUT NUMERUS VALENS CONTENTUM(bs + 40).
+
+    CONTENTUM(locus_mem) = 4194304.
+    st = UEFI_VOCA6(alloca, 2, 2, 256, locus_mem, 0, 0).
+    SI st != 0 TUNC REDDE 14. FIN-SI.
+
+    CONTENTUM(locus_mem) = 50331648.
+    st = UEFI_VOCA6(alloca, 2, 2, 64, locus_mem, 0, 0).
+    SI st != 0 TUNC REDDE 17. FIN-SI.
+
+    DECLARA sedes_nuclei SICUT NUMERUS VALENS 4194304.
+
+    // V. Nucleum lege.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(fasc + 32).
+    DECLARA locus_mensura SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    CONTENTUM(locus_mensura) = 2097152.
+    st = UEFI_VOCA6(lege, fasc, locus_mensura, sedes_nuclei, 0, 0, 0).
+    SI st != 0 TUNC REDDE 15. FIN-SI.
+    DECLARA lecta SICUT NUMERUS VALENS CONTENTUM(locus_mensura).
+    SI lecta == 0 TUNC REDDE 15. FIN-SI.
+
+    DECLARA claude SICUT NUMERUS VALENS CONTENTUM(fasc + 16).
+    DECLARA ig_c SICUT NUMERUS VALENS UEFI_VOCA6(claude, fasc, 0, 0, 0, 0, 0).
+
+    // VI. Protocollum graphicum et modus.
+    DECLARA ig_g1 SICUT NUMERUS VALENS GUID_PONE(guid, 1).
+    CONTENTUM(locus) = 0.
+    DECLARA loca SICUT NUMERUS VALENS CONTENTUM(bs + 320).
+    st = UEFI_VOCA6(loca, guid, 0, locus, 0, 0, 0).
+    SI st != 0 TUNC REDDE 16. FIN-SI.
+    DECLARA gop SICUT NUMERUS VALENS CONTENTUM(locus).
+    SI gop == 0 TUNC REDDE 16. FIN-SI.
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(gop + 24).
+    DECLARA info SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+    DECLARA framebuffer SICUT NUMERUS VALENS CONTENTUM(modus + 24).
+    DECLARA latitudo SICUT NUMERUS VALENS LEGE_U32(info + 4).
+    DECLARA altitudo SICUT NUMERUS VALENS LEGE_U32(info + 8).
+    DECLARA forma SICUT NUMERUS VALENS LEGE_U32(info + 12).
+    DECLARA per_lineam SICUT NUMERUS VALENS LEGE_U32(info + 36).
+
+    DECLARA scala_x SICUT NUMERUS VALENS latitudo / 320.
+    DECLARA scala_y SICUT NUMERUS VALENS altitudo / 200.
+    DECLARA scala SICUT NUMERUS VALENS scala_x.
+    SI scala_y < scala_x TUNC scala = scala_y. FIN-SI.
+    SI scala == 0 TUNC scala = 1. FIN-SI.
+
+    // VII. Metadata pro nucleo.
+    DECLARA ig_vac SICUT NUMERUS VALENS MEMORIA_VACUA(50331648, 4096).
+    CONTENTUM(50331648) = 160.
+    CONTENTUM(50331656) = 100.
+    CONTENTUM(50333696) = 1.
+    CONTENTUM(50333704) = ts.
+    CONTENTUM(50333712) = framebuffer.
+    CONTENTUM(50333720) = per_lineam.
+    CONTENTUM(50333728) = latitudo.
+    CONTENTUM(50333736) = altitudo.
+    CONTENTUM(50333744) = forma.
+    CONTENTUM(50333752) = scala.
+    CONTENTUM(50333760) = (latitudo - (320 * scala)) / 2.
+    CONTENTUM(50333768) = (altitudo - (200 * scala)) / 2.
+    CONTENTUM(50333776) = 50335744.
+    CONTENTUM(50334464) = imago.
+
+    // VIII. Nuntium ante saltum, ut successum videas.
+    DECLARA nuntius SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    DECLARA ig_nv SICUT NUMERUS VALENS MEMORIA_VACUA(nuntius, 32).
+    SCRIBE_OCTETUM_AB(nuntius, 80).
+    SCRIBE_OCTETUM_AB(nuntius + 2, 79).
+    SCRIBE_OCTETUM_AB(nuntius + 4, 78).
+    SCRIBE_OCTETUM_AB(nuntius + 6, 84).
+    SCRIBE_OCTETUM_AB(nuntius + 8, 79).
+    SCRIBE_OCTETUM_AB(nuntius + 10, 75).
+    SCRIBE_OCTETUM_AB(nuntius + 12, 13).
+    SCRIBE_OCTETUM_AB(nuntius + 14, 10).
+    DECLARA ig_s SICUT NUMERUS VALENS SCRIBE_CATENAM(co, nuntius).
+
+    // IX. Ad nucleum sali; numquam revertimur.
+    // Punctum ingressus ex capite ELF (offset 24) lege; nucleus ad
+    // 0x400000 oneratus est, ergo adressa absoluta directe adhibetur.
+    DECLARA ingressus SICUT NUMERUS VALENS CONTENTUM(sedes_nuclei + 24).
+    SALI_AD(ingressus).
+
+    REDDE 0.
+FIN-FUNCTIO.

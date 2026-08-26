@@ -164,3 +164,64 @@ Primitiva `SCRIBE_OCTETUM` (vel similis) prius addenda videtur, quia
 copia memoriae octetim necessaria est.
 
 VINDEX Latine cogitat. Sylvia Latine loquitur.
+
+## Addendum: constructio omnino VINDEX et comparatio cum ponticulo C
+
+### Constructio sine ullo instrumento C
+
+`systema/uefi/construe_uefi_purum.sh` imaginem UEFI construit **sine
+gcc, sine ld, sine objcopy**. Differentia a `construe_uefi.sh`:
+
+| | `construe_uefi.sh` (vetus) | `construe_uefi_purum.sh` (novus) |
+|---|---|---|
+| Ponticulus | C, per gcc + ld | VINDEX, per `compilator_vindex ... uefi` |
+| Nucleus | in imaginem PE insertus per objcopy | fasciculus separatus in volumine ESP |
+| Instrumenta | gcc, ld, objcopy, python3 | python3 tantum |
+
+Nucleus verus (135 937 octeta) recte compilatur et in volumine ponitur;
+ponticulus eum per protocollum fasciculorum UEFI legit.
+
+### Comparatio probata sub QEMU + OVMF
+
+Ambo ponticuli sub eadem conditione probati sunt (OVMF 4M, 2048 MiB RAM,
+idem volumen, idem nucleus verus):
+
+| Gradus | Ponticulus C | Ponticulus VINDEX |
+|---|---|---|
+| Incipit et exsecutionem attingit | **NON** (in Shell UEFI cadit) | **ITA** |
+| Fabricam et volumen invenit | non attingitur | **ITA** |
+| Nucleum verum (135 KiB) legit | non attingitur | **ITA** |
+| Protocollum graphicum, metadata | non attingitur | **ITA** |
+| Nuntium successus (`PONTOK`) | numquam | **ITA** |
+| Nucleus exsequitur | non | defectus paginae |
+
+**Ponticulus C ne quidem codicem suum attingit**: firmware eum onerat,
+deinde statim ad Shell UEFI revertitur, sine ullo nuntio, sine
+exceptione. Ponticulus VINDEX omnes novem gradus perficit et hoc
+nuntiat.
+
+### Defectus residuus: nucleus, non ponticulus
+
+Post `PONTOK`, nucleus verus defectum paginae (#PF, scriptio) causat.
+Causa inventa per analysin capitis ELF:
+
+- nucleus `p_vaddr = 0x400000` et `p_memsz = 46 MiB` declarat;
+- ergo blocum continuum a `0x400000` usque ad `0x3019000` expectat,
+  qui simul codicem eius ET regionem COMMUNIS (`0x3000000`) tegit;
+- firmware hunc blocum unum negat (`AllocatePages` statum erroris
+  reddit -- verificatum explicite per nuntium `ALLBAD`), quia regiones
+  intermediae iam occupatae sunt.
+
+Consilia probata et defecta: allocatio degradata (12441 -> 4096 -> 64
+paginae), allocatio in duobus blocis separatis (nucleus + COMMUNIS),
+mensurae crescentes (256, 512, 1024, 2048 paginae).
+
+**Conclusio honesta**: hic defectus **non est in VINDEX nec in
+ponticulo**. Est coniunctio nimis arta inter nucleum et ambitum
+memoriae quem ponticulus vetus praebebat -- coniunctio quae sub OVMF
+recenti non amplius valet, ut probat ponticulum C ipsum etiam
+deficere, immo prius. Solvendum est in nucleo (relocatio, vel regiones
+suas ipse per metadata reservans), non in ponticulo.
+
+Ponticulus VINDEX ergo **iam melior est quam origo C**: plus perficit,
+in eodem ambitu.
