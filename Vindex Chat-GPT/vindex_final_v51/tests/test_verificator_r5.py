@@ -37,6 +37,16 @@ class VerificatorR5(unittest.TestCase):
         self.assertEqual(0, status, textus)
         self.assertIn("VINDEX: verificatio perfecta", textus)
 
+    def test_reserva_octeta_intrinsecum_accipitur(self) -> None:
+        status, textus = self.verifica(
+            "FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n"
+            "    DECLARA memoria SICUT NUMERUS VALENS RESERVA_OCTETA(64).\n"
+            "    REDDE memoria.\n"
+            "FIN-FUNCTIO.\n"
+        )
+        self.assertEqual(0, status, textus)
+        self.assertIn("VINDEX: verificatio perfecta", textus)
+
     def test_functio_revera_ignota_reicitur(self) -> None:
         status, textus = self.verifica(
             "FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n"
