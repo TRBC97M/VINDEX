@@ -312,6 +312,12 @@ Hi commits non sunt cherry-pickandi caece; sunt indices ad mechanismos et probat
 - `9bdae138f67bfa980ef95417106ad2eb78dfb711` — comparator binarius VINDEX;
 - `6881e3bad6c364fe39e27791db2625857108a5df` — migratio tabulae historicae absoluta.
 
+## Limites huius auditionis
+
+R0 fuit auditio statica et historica. Non affirmat omnes mechanismos `IAM IN MAIN` hodie runtime perfecte operari. Id est ipsum munus R1: probationibus reproducibilibus praesentem baseline certificare.
+
+Praesertim status `PROBANDUM` deliberate non habetur victoria. Nulla facultas inde canonice completa dicenda est ante probationem executionis congruentem.
+
 ## Quid non faciendum est
 
 - non merge totum PR historicum #3;
