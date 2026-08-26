@@ -72,10 +72,16 @@ jobs:
           f='systema/fenestrale_ii_purus_b.vindex'
           b='bibliotheca/fenestrale_ii_purus.vindex'
           for signum in \
-            'P_INIT' 'P_FENESTRA' 'P_TASKBAR' 'P_CURSOR' \
-            'UEFI_VOCA6' 'WAIT_EVT' 'READ_KEY' \
-            'FUNCTIO HIT' 'FUNCTIO ACTIO' \
-            'MOVERE' 'MINIMIZA' 'MAXIMIZA_RESTAURA' 'CLAUDE' 'P_TEXT'
+            'FUNCTIO FV_AD_EST' 'FUNCTIO FV_FUNDUM' \
+            'FUNCTIO FV_FENESTRA' 'FUNCTIO FV_PROGRAMMATA' \
+            'FUNCTIO FV_TABULA' 'FUNCTIO FV_TASKBAR' 'FUNCTIO FV_CURSOR' \
+            'UEFI_VOCA6' 'FUNCTIO FB_PROTOCOLA_PARA' \
+            'FUNCTIO FB_CLAVIS_LEGE' 'FUNCTIO FB_MURUS_ABSOLUTUS' \
+            'FUNCTIO FB_MURUS_RELATIVUS' 'FUNCTIO FB_HIT' \
+            'FUNCTIO FB_MOUSE_DOWN' 'FUNCTIO FB_DRAG' \
+            'FUNCTIO FB_MINIMIZA' 'FUNCTIO FB_MAX_TOGGLE' \
+            'FUNCTIO FB_CLAUDE' 'FUNCTIO FB_TASKBAR_CLICK' \
+            'FUNCTIO FB_REDDE' 'FUNCTIO PRINCIPALIS'
           do
             if ! grep -q "$signum" "$f" && ! grep -q "$signum" "$b"; then
               echo "ERRATUM: $signum deest"
