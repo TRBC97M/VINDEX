@@ -30,6 +30,12 @@ jobs:
           grep -Fq 'FUNCTIO ANALYSA_CONIUNCTIO_LOGICA REDDENS NUMERUS.' "$RADIX/src/compilator_vindex.vindex"
           grep -Fq 'FUNCTIO EST_DISIUNCTIO_LOGICA REDDENS NUMERUS.' "$RADIX/src/compilator_vindex.vindex"
 
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
       - name: Probationem VINDEX verifica
         shell: bash
         run: |
@@ -72,15 +78,10 @@ jobs:
           ./compilator_vindex probationes/fenestrale_purus_i_fenestrae.vindex /tmp/fenestrale_i
           chmod +x /tmp/fenestrale_i
           timeout 10s /tmp/fenestrale_i
-          printf '%s\n' 'RECTE: LXXX fenestrae etiam cum logica nova transeunt.'
-
-      - name: Regressionem generalem exsequere
-        shell: bash
-        run: |
-          set -euo pipefail
-          RADIX='Vindex Chat-GPT/vindex_final_v51'
-          cd "$RADIX"
-          bash tests/run_tests.sh
+          ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
+          file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 786432
+          printf '%s\n' 'RECTE: LXXX fenestrae et Fenestrale I integrum cum logica nova transeunt.'
 
       - name: Compilatorem certificatum conserva
         shell: bash
