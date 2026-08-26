@@ -1,0 +1,52 @@
+name: VINDEX — Probationes canonicae
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/Makefile'
+      - 'Vindex Chat-GPT/vindex_final_v51/vindexc'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/run_tests.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/logica_brevis.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_fenestrae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'instrumenta/verifica_puritatem_sylviae.py'
+      - '.github/workflows/vindex-probationes-canonicae.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/Makefile'
+      - 'Vindex Chat-GPT/vindex_final_v51/vindexc'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/run_tests.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/logica_brevis.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_fenestrae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'instrumenta/verifica_puritatem_sylviae.py'
+      - '.github/workflows/vindex-probationes-canonicae.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probationes:
+    name: VINDEX et fundamenta Sylviae canonica probantur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Probationes canonicas exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./tests/run_tests.sh
