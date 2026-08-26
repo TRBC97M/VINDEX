@@ -81,7 +81,7 @@ jobs:
           done
           printf '%s\n' 'RECTE: fenestrae, geometria, focus et ordo Z ex registro dynamico VINDEX veniunt.'
 
-      - name: Octoginta fenestras compila et exsequere
+      - name: Octoginta fenestras compila et diagnostica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -90,7 +90,28 @@ jobs:
           ./compilator_vindex probationes/fenestrale_purus_i_fenestrae.vindex /tmp/fenestrale_purus_i_fenestrae.elf
           file /tmp/fenestrale_purus_i_fenestrae.elf | grep -q 'ELF 64-bit'
           chmod +x /tmp/fenestrale_purus_i_fenestrae.elf
+          set +e
           timeout 10s /tmp/fenestrale_purus_i_fenestrae.elf
+          rc=$?
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            printf 'ERRATUM: probatio LXXX exitum %s dedit.\n' "$rc"
+            if command -v gdb >/dev/null 2>&1; then
+              gdb -q -batch \
+                -ex 'set pagination off' \
+                -ex run \
+                -ex 'info registers' \
+                -ex 'x/24i $rip-48' \
+                -ex bt \
+                --args /tmp/fenestrale_purus_i_fenestrae.elf || true
+            fi
+            if command -v strace >/dev/null 2>&1; then
+              strace -f -o /tmp/fenestrale_i.strace /tmp/fenestrale_purus_i_fenestrae.elf || true
+              printf '%s\n' '--- vestigia systematis ultima ---'
+              tail -n 100 /tmp/fenestrale_i.strace || true
+            fi
+            exit "$rc"
+          fi
 
       - name: Fenestrale I totum compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
