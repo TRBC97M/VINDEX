@@ -5,7 +5,10 @@ Haec praecepta toti repositorio valent.
 ## Principia canonica
 
 - `ARCHITECTURA.md` ante omnem mutationem lege et eius principia tamquam canonica considera.
-- GitHub est fons veritatis huius operis. Ne utere archivis ZIP aut exemplaribus veteribus tamquam fundamento canonico.
+- `CONSILIUM.md` statim post `ARCHITECTURA.md` lege: est tabula operativa canonica quae prioritates, dependentias, curatores, statum et actionem proximam definit.
+- Si usor opus novum non expresse delegat, primum opus maximae prioritatis in `CONSILIUM.md` quod `PARATUM` est et non ab alio agente reservatur elige.
+- GitHub est fons veritatis huius operis. Si `CONSILIUM.md` a statu reali Git dissentit, Git praevalet et tabula postea corrigenda est.
+- Ne utere archivis ZIP aut exemplaribus veteribus tamquam fundamento canonico.
 - `CONTRIBUTING.md` et `.github/pull_request_template.md`, ubi adsunt, sunt documenta operativa contributionum et Pull Request.
 - Nomina directoriorum agentium historiam originis indicare possunt, sed non sufficiunt ad statuendum fasciculum esse non canonicum. Statum praesentem ramorum et operis inspice antequam directorium historicum vel vetitum iudices.
 - VINDEX et Sylvia OS sunt duo opera principalia et distincta: VINDEX est lingua programmandi generalis; Sylvia OS est systema operationale verum et diuturnum quod VINDEX late exercet.
@@ -48,10 +51,13 @@ Haec praecepta toti repositorio valent.
 ## Modus operandi
 
 - Ante mutationem amplam, statum praesentem codicis inspice.
+- Ante novum opus, statum operis in `CONSILIUM.md` inspice et cum Git reconcilia.
 - Praefer mutationes parvas, singulares et facile retractabiles.
 - Si opus incertum est, primum analysim fac; noli statim structuram totam reficere.
 - Si alius ramus `chatgpt/...`, `claude/...`, `copilot/...` aut `gemini/...` mutationes pertinentes continet, inspice eas ante opus parallelum duplicandum.
-- In conflictu inter hoc fasciculum et `ARCHITECTURA.md`, `ARCHITECTURA.md` praevalet.
+- Opus `ACTIVUM` vel `RESERVATUM` ab alio agente non duplica sine recognitione explicita status.
+- Post mutationem quae ordinem, statum, dependentiam aut actionem proximam mutat, `CONSILIUM.md` renovandum considera.
+- In conflictu inter hoc fasciculum et `ARCHITECTURA.md`, `ARCHITECTURA.md` praevalet. In quaestionibus ordinis operativi, `CONSILIUM.md` praevalet nisi status Git recentior sit.
 
 ## Norma qualitatis
 
@@ -59,5 +65,7 @@ Haec praecepta toti repositorio valent.
 - Nomina significativa et Latina praeferantur ubi pars canonica VINDEX vel Sylvia sunt.
 - Mutationes regressiones vitent et compatibilitatem cum codice existente servent, nisi ruptura explicite deliberata est.
 - Omnis nova facultas linguistica, si fieri potest, exemplo parvo et probatione acceptationis muniatur.
+
+ARCHITECTURA est lex. CONSILIUM est via. Git historia est.
 
 VINDEX Latine cogitat. Sylvia Latine loquitur.
