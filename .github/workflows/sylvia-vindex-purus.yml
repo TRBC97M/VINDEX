@@ -29,18 +29,15 @@ jobs:
           fi
           python3 instrumenta/custos_reloca_textus_sylviae.py
 
-      - name: Compilatorem VINDEX 0.53 probatum assume et UEFI extende
+      - name: Compilatorem canonicum praesentem verifica
         shell: bash
         run: |
           set -euo pipefail
-          git fetch --depth=1 origin \
-            refs/heads/chatgpt/vindex-053-compilator-dynamicus:refs/remotes/origin/vindex-053
-          git show refs/remotes/origin/vindex-053:'src/compilator_vindex.vindex' \
-            > 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          git show refs/remotes/origin/vindex-053:'compilator_vindex' \
-            > 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          test -s 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          test -s 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
           chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          python3 instrumenta/custos_patch_vindex_053_uefi.py
+          grep -q 'FUNCTIO COMPONE_VOCA_UEFI6' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          grep -q 'UEFI_VOCA6' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
           ! grep -q '50333704' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
 
       - name: Fontes runtime hereditatos ex exemplari CI remove
@@ -52,7 +49,7 @@ jobs:
             ! -path '*/systema/uefi/bootstrap_uefi.c' -delete
           python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Compilatorem VINDEX 0.53 extensum se ipsum compilare verifica
+      - name: Compilatorem canonicum se ipsum compilare verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
