@@ -1,0 +1,74 @@
+// Sylvia OS — Fenestrale II Purus G.
+// Coda circularis eventuum clientium omnino VINDEX.
+// Caput: capacitas, lectio, scriptio, numerus. Eventum: genus, cliens, x, y, datum.
+
+FUNCTIO EG_CREA REDDENS NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    SI capacitas <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA coda SICUT NUMERUS VALENS RESERVA_OCTETA(32 + capacitas * 40).
+    SI coda < 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda) = capacitas.
+    CONTENTUM(coda + 8) = 0.
+    CONTENTUM(coda + 16) = 0.
+    CONTENTUM(coda + 24) = 0.
+    REDDE coda.
+FIN-FUNCTIO.
+
+FUNCTIO EG_NUMERUS REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(coda + 24).
+FIN-FUNCTIO.
+
+FUNCTIO EG_PONE REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT cliens SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT datum SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA capacitas SICUT NUMERUS VALENS CONTENTUM(coda).
+    DECLARA numerus SICUT NUMERUS VALENS CONTENTUM(coda + 24).
+    SI capacitas <= 0 || numerus >= capacitas TUNC REDDE 0. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS CONTENTUM(coda + 16).
+    DECLARA basis SICUT NUMERUS VALENS coda + 32 + index * 40.
+    CONTENTUM(basis) = genus.
+    CONTENTUM(basis + 8) = cliens.
+    CONTENTUM(basis + 16) = x.
+    CONTENTUM(basis + 24) = y.
+    CONTENTUM(basis + 32) = datum.
+    index = index + 1.
+    SI index >= capacitas TUNC index = 0. FIN-SI.
+    CONTENTUM(coda + 16) = index.
+    CONTENTUM(coda + 24) = numerus + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO EG_CAPE REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT eventum SICUT ORDO DE NUMERUS.
+    SI coda == 0 || CONTENTUM(coda + 24) <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA capacitas SICUT NUMERUS VALENS CONTENTUM(coda).
+    DECLARA index SICUT NUMERUS VALENS CONTENTUM(coda + 8).
+    DECLARA basis SICUT NUMERUS VALENS coda + 32 + index * 40.
+    eventum[0] = CONTENTUM(basis).
+    eventum[1] = CONTENTUM(basis + 8).
+    eventum[2] = CONTENTUM(basis + 16).
+    eventum[3] = CONTENTUM(basis + 24).
+    eventum[4] = CONTENTUM(basis + 32).
+    index = index + 1.
+    SI index >= capacitas TUNC index = 0. FIN-SI.
+    CONTENTUM(coda + 8) = index.
+    CONTENTUM(coda + 24) = CONTENTUM(coda + 24) - 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO EG_VACUA REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda + 8) = 0.
+    CONTENTUM(coda + 16) = 0.
+    CONTENTUM(coda + 24) = 0.
+    REDDE 1.
+FIN-FUNCTIO.

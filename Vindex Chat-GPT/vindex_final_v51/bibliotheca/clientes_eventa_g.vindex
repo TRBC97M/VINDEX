@@ -1,0 +1,31 @@
+// Sylvia OS — dispatcher clientium Fenestralis Purus G.
+// Fenestrale tradit eventa; hoc stratum clientes cognoscit et status suos mutat.
+
+FUNCTIO CG_AGE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mutata SICUT NUMERUS VALENS 0.
+    DUM EG_NUMERUS(coda) > 0 PERFICE
+        DECLARA e SICUT ORDO DE NUMERUS CAPACITAS 5.
+        DECLARA captum SICUT NUMERUS VALENS EG_CAPE(coda,e).
+        SI captum == 0 TUNC REDDE mutata. FIN-SI.
+        SI e[0] == 1 && e[1] == 1 && s[1] == 0 TUNC
+            DECLARA novus_p SICUT NUMERUS VALENS PE_CLICK(s[30],s[31],e[2],e[3]).
+            SI novus_p != s[31] TUNC
+                s[31] = novus_p.
+                DECLARA rp SICUT NUMERUS VALENS PE_RENDE(s[30],s[31]).
+                mutata = mutata + 1.
+            FIN-SI.
+        FIN-SI.
+        SI e[0] == 1 && e[1] == 2 && s[2] == 0 TUNC
+            DECLARA novus_t SICUT NUMERUS VALENS TF_CLICK(s[32],s[33],e[2],e[3]).
+            SI novus_t != s[33] TUNC
+                s[33] = novus_t.
+                DECLARA rt SICUT NUMERUS VALENS TF_RENDE(s[32],s[33]).
+                mutata = mutata + 1.
+            FIN-SI.
+        FIN-SI.
+    FIN-DUM.
+    REDDE mutata.
+FIN-FUNCTIO.

@@ -1,0 +1,86 @@
+name: Sylvia OS — Fenestrale II Purus G canonicus
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_eventa_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_gestor_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_g.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_g_*.vindex'
+      - 'documenta/sylvia/FENESTRALE_II_PVRVS_G.md'
+      - '.github/workflows/sylvia-fenestrale-vindex-purus-g.yml'
+
+jobs:
+  vindex-purus-g:
+    name: Coda eventuum Fenestralis G VINDEX certificatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontes VINDEX verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_g.vindex
+          python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_g_eventa.vindex
+
+      - name: Separationem gestoris et clientium verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          e='bibliotheca/fenestrale_eventa_g.vindex'
+          c='bibliotheca/clientes_eventa_g.vindex'
+          g='bibliotheca/fenestrale_gestor_g.vindex'
+          s='systema/fenestrale_ii_purus_g.vindex'
+          grep -Fq 'FUNCTIO EG_CREA REDDENS NUMERUS' "$e"
+          grep -Fq 'FUNCTIO EG_PONE REDDENS NUMERUS' "$e"
+          grep -Fq 'FUNCTIO EG_CAPE REDDENS NUMERUS' "$e"
+          grep -Fq 'FUNCTIO CG_AGE REDDENS NUMERUS' "$c"
+          grep -Fq 'EG_PONE(coda,1,id,lx-10,ly-52,0)' "$g"
+          grep -Fq 'CG_AGE(s,s[34])' "$s"
+          grep -Fq 'EG_CREA(32)' "$s"
+          ! grep -Eq 'PE_CLICK|TF_CLICK|PE_RENDE|TF_RENDE' "$g"
+          ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$e"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$c"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$g"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$s"
+          printf '%s\n' 'RECTE: gestor eventa producit et clientes separatim ea consumunt.'
+
+      - name: Codam circularem compila et exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex probationes/fenestrale_purus_g_eventa.vindex /tmp/fenestrale_purus_g_eventa.elf
+          file /tmp/fenestrale_purus_g_eventa.elf | grep -q 'ELF 64-bit'
+          chmod +x /tmp/fenestrale_purus_g_eventa.elf
+          timeout 10s /tmp/fenestrale_purus_g_eventa.elf
+
+      - name: Fenestrale G totum compila
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex systema/fenestrale_ii_purus_g.vindex /tmp/fenestrale_ii_purus_g.elf
+          file /tmp/fenestrale_ii_purus_g.elf | grep -q 'ELF 64-bit'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_g.elf)" -lt 524288
+          printf '%s\n' 'RECTE: Fenestrale II Purus G codam eventuum VINDEX inter gestorem et clientes compilat.'
