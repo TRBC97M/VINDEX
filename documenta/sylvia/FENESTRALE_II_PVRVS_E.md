@@ -54,7 +54,9 @@ Cliens igitur ornamentum fenestrae numquam possidet.
 
 Si click intra corpus PROGRAMMATA est, gestor coordinatas systematis in
 coordinatas locales convertit per `lx - 10` et `ly - 52`, deinde `PE_CLICK`
-vocat. Si status mutatur, `PE_RENDE` superficiem privatam iterum pingit.
+vocat. Punctum `(0,0)` huius spatii localis est angulus superior sinister
+superficiei clientis, non angulus fenestrae neque framebuffer. Si status
+mutatur, `PE_RENDE` superficiem privatam iterum pingit.
 
 ---
 
