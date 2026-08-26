@@ -225,3 +225,43 @@ suas ipse per metadata reservans), non in ponticulo.
 
 Ponticulus VINDEX ergo **iam melior est quam origo C**: plus perficit,
 in eodem ambitu.
+
+
+## Addendum: diagnostica praecisa defectus paginae (gradus IV)
+
+Investigatio methodica per registra exceptionis et desassemblationem:
+
+**Locus exactus**: `RIP = 0x400B62`. Nucleus recte incepit ad punctum
+ingressus (`0x4212cf`) et functionem `PIXEL_SCRIBE` vocavit (prima
+functio in `nucleus.vindex`, linea 4). Octeta ad `0xB62` sunt `88 18`
+= `mov [rax], bl` -- id est, `SCRIBE_OCTETUM_AB`.
+
+**Valor fautor**: `CR2 = RAX = 0x1028A0A0908`.
+
+**Probatio quod UMBRA ipsa corrupta est, non coordinatae**:
+`PIXEL_SCRIBE` scribit ad `umbra + y*320 + x`, ubi `umbra =
+CONTENTUM(50333776)`. Cum `y < 200` et `x < 320`, offset maximus est
+`0xFB40`. Si `umbra` recta esset (`0x3001000`), adressa maxima esset
+`0x3010B40`. Sed `CR2` eam excedit per `0x1028709F908`. Ergo **`umbra`
+ipsa valorem fortuitum continet**, non coordinatae.
+
+**Quod exclusum est per probationem**:
+- ponticulus metadatum recte scribit (`CONTENTUM(50333776) = 50335744`,
+  linea 256, post purgationem regionis);
+- ordo rectus est (allocatio -> lectio -> metadata -> saltus);
+- memoria scribi potest (aliter ponticulus ipse deficeret, sed `PONTOK`
+  apparet post scriptionem);
+- purgatio BSS post codicem valorem non mutat (probatum: idem `CR2`).
+
+**Conclusio**: regio COMMUNIS (`0x3000000`) inter scriptionem
+ponticuli et lectionem nuclei **superscribitur**. Suspicio principalis:
+acervus ELF nuclei, ad `0x2000000` fixus, in COMMUNIS crescit (spatium
+inter eos solum 16 MiB est). Hoc congruit cum inventione de `p_memsz`
+codice fixo: backend ELF regionem usque ad COMMUNIS reservat, sed nihil
+impedit quominus acervus eam invadat.
+
+**Ergo quaestio architectonica est**, ut ChatGPT recte suspicatus est:
+dispositio memoriae (codex, acervus, regio systematis) contractum
+explicitum requirit, non conventiones implicitas in constantibus
+codice fixis dispersas. Solutio in backend ELF et in dispositione
+nuclei quaerenda est, non in ponticulo.
