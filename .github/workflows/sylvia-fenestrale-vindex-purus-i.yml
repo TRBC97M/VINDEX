@@ -169,7 +169,7 @@ jobs:
           EOF
 
           for littera in a b c d; do
-            printf '--- DIAGNOSTICA %s ---\n' "$littera"
+            printf '%s\n' "--- DIAGNOSTICA ${littera} ---"
             ./compilator_vindex "probationes/fenestrale_purus_i_diag_${littera}.vindex" "/tmp/fenestrale_i_${littera}.elf"
             chmod +x "/tmp/fenestrale_i_${littera}.elf"
             set +e
