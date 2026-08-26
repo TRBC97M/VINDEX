@@ -48,6 +48,8 @@ Utraque superficies per `FS_BLIT` intra corpus ornamentatum componitur.
 
 Click Fenestralis prius ornamenta systematis tractat. Si click in corpore clientis incidit, gestor coordinatas fenestrae in spatium locale clientis convertit et ad clientem rectum tradit.
 
+Spatium locale cuiusque clientis originem `(0,0)` in angulo superiore sinistro superficiei propriae habet. Cliens igitur positionem fenestrae in desktop neque ornamentum systematis cognoscere debet.
+
 PROGRAMMATA `PE_CLICK` et `PE_RENDE` adhibet. TABULA `TF_CLICK` et `TF_RENDE` adhibet.
 
 Nullus cliens bullas tituli, resize, drag aut focus systematis possidet.
