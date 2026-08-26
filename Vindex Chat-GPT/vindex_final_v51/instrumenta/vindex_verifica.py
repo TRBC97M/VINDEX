@@ -39,6 +39,7 @@ BUILTIN_CALLS = {
     "OCTETUS_AB",
     "REDDE",
     "RESERVA",
+    "RESERVA_OCTETA",
     "SCRIBE_OCTETUM_AB",
     "SEDES",
     "SI",
