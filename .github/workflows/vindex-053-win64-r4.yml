@@ -2,9 +2,6 @@ name: VINDEX 0.53 — Win64 R4
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - chatgpt/vindex-053-r4-win64
   pull_request:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
