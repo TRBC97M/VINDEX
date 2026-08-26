@@ -1,0 +1,5 @@
+IMPORTA "tests/casus/erratum_bibliotheca.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    REDDE ERRATUM_IMPORTATUM().
+FIN-FUNCTIO.
