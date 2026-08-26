@@ -356,3 +356,71 @@ recte oneratus, saltus rectus, vocationes rectae. Quaestio est de
 Haec est quaestio architectonica, eadem quam ChatGPT de contractu
 memoriae proposuit -- sed nunc **cum causa exacte identificata**, non
 coniecturali.
+
+
+## Addendum finale: MISSIO PERFECTA -- Sylvia in schermo, catena certificata
+
+### Causa vera defectus paginae: offset falsus quattuor octetorum
+
+`linea` (`PixelsPerScanLine`) valorem `2947526575` continebat loco
+`1280`. In `EFI_GRAPHICS_OUTPUT_MODE_INFORMATION`:
+
+```
+Version              offset  0
+HorizontalResolution offset  4
+VerticalResolution   offset  8
+PixelFormat          offset 12
+PixelInformation     offset 16..31   (EFI_PIXEL_BITMASK = 4 x U32)
+PixelsPerScanLine    offset 32       <- NON 36
+```
+
+Legebam quattuor octeta ultra. Valor fortuitus deinde in computatione
+`PIXEL_SCRIBE` adhibebatur, adressam absurdam producens.
+
+**Una littera mutata**: `info + 36` -> `info + 32`.
+
+### Status gradus missionis a ChatGPT propositae
+
+| Gradus | Status |
+|---|---|
+| I. Ponticulus rectus praedefinitus | **PERFECTUS** |
+| II. NUCLEUS.BIN vere in ESP | **PERFECTUS** (+ TEXTUS.BIN, FORMA.BIN) |
+| III. GetInfo loco limitis 2 MiB | **PERFECTUS** |
+| IV. Contractus memoriae | **EXPLICITUS** (vide infra) |
+| V. Catena sine #PF | **PERFECTUS** -- Sylvia pingit |
+| VI. CI QEMU/OVMF | **PERFECTUS** |
+
+### Reservationes annexae
+
+| Reservatio | Status |
+|---|---|
+| Separatio UEFI vs PE/Win64 | **FACTA** -- repertoria (0,0) sub UEFI |
+| Importationes Windows sub UEFI | **SUBLATAE** |
+| Pila SALI_AD reservata | **VERIFICATA** -- 0x1000000 intra regionem allocatam |
+| Limen 2 MiB nuclei | **SUBLATUM** -- GetInfo |
+| Regiones fixae (0x1000000) | **DOCUMENTATAE**, intra allocationem |
+
+### Quaestio architectonica manens
+
+`p_memsz` nunc explicite derivatur, non amplius constans magica:
+`(acervus_sedes - basis) + acervus_spatium`. Ratio perspicua est.
+
+Sed dispositio ipsa quaestionem manifestat quam ChatGPT recte notavit:
+acervus ad `0x2000000` fixus cogit OMNE binarium, etiam minimum (307
+octetorum), spatium 46 MiB declarare. **Solutio vera** esset acervum
+post codicem ponere, vel plura segmenta `PT_LOAD` emittere cum onerante
+qui ea segmentatim legat. Illa refectio maior est, seorsum tractanda,
+et in ambitu huius missionis non erat.
+
+### Errores mei, honeste notandi
+
+Ter conclusiones falsas traxi antequam GDB veritatem dedit:
+1. 'UMBRA corrupta est' -- falsum (watchpoint: una sola scriptio, valor
+   rectus);
+2. 'coordinatae absurdae sunt' -- falsum (`RECTANGULUM(0,0,320,200)`);
+3. 'framebuffer non mappatus est' -- falsum (`FBOK!` ex ponticulo).
+
+Sola observatio directa (watchpoint, breakpoint conditionalis, lectio
+metadatorum in memoria vera) veritatem dedit. Methodus, non coniectura.
+
+VINDEX IMPERATOR EST.
