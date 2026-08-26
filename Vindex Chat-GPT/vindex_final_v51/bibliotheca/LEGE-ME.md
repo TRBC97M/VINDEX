@@ -2,10 +2,11 @@
 
 `bibliotheca/` codicem VINDEX communem continet qui per `IMPORTA` adhiberi potest.
 
-Haec bibliotheca duas aetates simul servat:
+Haec bibliotheca nunc tria genera rerum continet:
 
 1. facultates generales linguae, ut `textus.vindex`;
-2. bibliothecas Fenestralis II Purus, quae pars Sylviae canonicae hodiernae sunt.
+2. collectiones generales, ut `collectiones_numerorum.vindex`;
+3. bibliothecas Fenestralis II Purus, quae pars Sylviae canonicae hodiernae sunt.
 
 Nonnulli fasciculi veteres, praesertim `graphica.vindex`, ad architecturam GTK historicam pertinent et non sunt fundamentum Officinae canonicae Windows hodiernae.
 
@@ -37,7 +38,47 @@ FIN-FUNCTIO.
 
 ---
 
-# II. Fenestrale II Purus
+# II. Collectio numerorum
+
+`collectiones_numerorum.vindex` est prima collectio dynamica generalis bibliothecae standardis nasciturae. Nulla mutatio compilatoris requiritur: tantum facultatibus memoriae VINDEX canonicis utitur.
+
+Importatio:
+
+```vindex
+IMPORTA "bibliotheca/collectiones_numerorum.vindex".
+```
+
+API:
+
+- `CN_CREA()` — collectionem vacuam creat;
+- `CN_NUMERUS(c)` — numerum elementorum reddit;
+- `CN_ADDE(c, valor)` — valorem in fine addit;
+- `CN_CAPE(c, index)` — valorem indice legit;
+- `CN_PONE(c, index, valor)` — valorem indice mutat;
+- `CN_DELE(c, index)` — elementum delet et memoriam nodi liberat;
+- `CN_PURGA(c)` — omnia elementa delet, collectionem ipsam servans;
+- `CN_LIBERA(c)` — omnia elementa et collectionem ipsam liberat.
+
+Indices a zero incipiunt. Mutationes quae succedunt `1` reddunt; index invalidus aut collectio nulla `0` reddit. `CN_CAPE` quoque `0` pro indice invalido reddit, itaque si valor zero legitime continetur, validitas indicis per `CN_NUMERUS` separatim cognoscenda est.
+
+Repraesentatio interna est lista simpliciter vinculata:
+
+```text
+collectio:
++0   numerus elementorum
++8   primus nodus
++16  ultimus nodus
+
+nodus:
++0   valor NUMERUS
++8   proximus nodus
+```
+
+Prima implementatio consulto `NUMERUS` tantum tractat. Generica futura debent hanc necessitatem generalizare, non API fictam genericam ante facultatem linguae simulare.
+
+---
+
+# III. Fenestrale II Purus
 
 Bibliothecae hodiernae Fenestralis includunt:
 
@@ -55,7 +96,7 @@ Fasciculi suffixis gradus `g`, `h`, `i` historiam canonizationis servant. Auctor
 
 ---
 
-# III. Graphica historica
+# IV. Graphica historica
 
 `graphica.vindex` eventa veteris motoris declarativi GTK describit. Servatur ad historiam et compatibilitatem experimentorum pristinorum.
 
@@ -65,7 +106,7 @@ Ne novam bibliothecam generalem super contractum GTK historicum construas nisi e
 
 ---
 
-# IV. Regula evolutionis bibliothecae
+# V. Regula evolutionis bibliothecae
 
 Bibliotheca generalis VINDEX paulatim crescere debet ad:
 
@@ -84,7 +125,7 @@ Sed bibliotheca standardis futura non debet facultates humilis gradus auferre ne
 
 ---
 
-# V. Importatio
+# VI. Importatio
 
 Forma ordinaria:
 
