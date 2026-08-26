@@ -5,7 +5,7 @@
 Haec bibliotheca nunc tria genera rerum continet:
 
 1. facultates generales linguae, ut `textus.vindex`;
-2. collectiones generales, ut `collectiones_numerorum.vindex` et `series_numerorum.vindex`;
+2. collectiones generales, ut `collectiones_numerorum.vindex`, `series_numerorum.vindex` et `segmenta_numerorum.vindex`;
 3. bibliothecas Fenestralis II Purus, quae pars Sylviae canonicae hodiernae sunt.
 
 Nonnulli fasciculi veteres, praesertim `graphica.vindex`, ad architecturam GTK historicam pertinent et non sunt fundamentum Officinae canonicae Windows hodiernae.
@@ -124,7 +124,45 @@ Haec implementatio consulto `NUMERUS` tantum tractat. Ea fundamentum practicum p
 
 ---
 
-# IV. Fenestrale II Purus
+# IV. Segmenta numerorum
+
+`segmenta_numerorum.vindex` visum mutabile super memoriam contiguam praebet. Segmentum **memoriam elementorum non possidet**: basim et longitudinem tantum describit. Ita pars seriei vel alterius regionis contiguae sine copia tractari potest.
+
+Importatio:
+
+```vindex
+IMPORTA "bibliotheca/segmenta_numerorum.vindex".
+```
+
+API:
+
+- `SG_CREA(basis, numerus)` — segmentum super memoriam iam exsistentem creat;
+- `SG_NUMERUS(s)` — numerum elementorum visibilium reddit;
+- `SG_BASIS(s)` — basim mutuatam reddit;
+- `SG_CAPE(s, index)` — elementum legit;
+- `SG_PONE(s, index, valor)` — elementum in memoria fonte mutat;
+- `SG_SUBSEGMENTUM(s, initium, numerus)` — subsegmentum zero-copy creat;
+- `SG_LIBERA(s)` — descriptorem segmenti tantum liberat.
+
+Repraesentatio:
+
+```text
+segmentum:
++0   basis mutuata
++8   numerus elementorum
+```
+
+Segmentum non reservat, non movet et non liberat memoriam elementorum. Fons igitur segmentum et omnia subsegmenta eius superare debet.
+
+Si segmentum ad `SN_BASIS(series)` vel partem eius spectat, operatio seriei quae relocationem efficit potest omnia segmenta priora invalidare. Praesertim `SN_ADDE`, `SN_INSERE` et `SN_RESERVA` si capacitatem augent novam basim creare possunt. Post talem mutationem novum segmentum ex nova basi creandum est.
+
+Haec regula hodie explicita est quia VINDEX nondum systema lifetime/ownership canonicum habet. Futurum systema tutius hanc relationem exprimere debet sine facultate memoriae humilis gradus tollenda.
+
+Segmentum vacuum licitum est, etiam cum initium ad finem segmenti parentis cadit. Indices extra longitudinem et subsegmenta ultra fines reiciuntur.
+
+---
+
+# V. Fenestrale II Purus
 
 Bibliothecae hodiernae Fenestralis includunt:
 
@@ -142,7 +180,7 @@ Fasciculi suffixis gradus `g`, `h`, `i` historiam canonizationis servant. Auctor
 
 ---
 
-# V. Graphica historica
+# VI. Graphica historica
 
 `graphica.vindex` eventa veteris motoris declarativi GTK describit. Servatur ad historiam et compatibilitatem experimentorum pristinorum.
 
@@ -152,7 +190,7 @@ Ne novam bibliothecam generalem super contractum GTK historicum construas nisi e
 
 ---
 
-# VI. Regula evolutionis bibliothecae
+# VII. Regula evolutionis bibliothecae
 
 Bibliotheca generalis VINDEX paulatim crescere debet ad:
 
@@ -171,7 +209,7 @@ Sed bibliotheca standardis futura non debet facultates humilis gradus auferre ne
 
 ---
 
-# VII. Importatio
+# VIII. Importatio
 
 Forma ordinaria:
 

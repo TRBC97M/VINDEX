@@ -198,6 +198,7 @@ exsequere_casum "argumenta" "tests/casus/argumenta.vindex" $'2\n90' "Zeta"
 exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n86\n69'
 exsequere_casum "collectiones-numerorum" "tests/casus/collectiones_numerorum.vindex" "COLLECTIONES RECTE"
 exsequere_casum "series-numerorum" "tests/casus/series_numerorum.vindex" "SERIES RECTE"
+exsequere_casum "segmenta-numerorum" "tests/casus/segmenta_numerorum.vindex" "SEGMENTA RECTE"
 
 respice_reiectionem "erratum-principalis" "tests/casus/erratum_principalis.vindex" "FUNCTIO PRINCIPALIS deest"
 respice_reiectionem "erratum-functio" "tests/casus/erratum_functio.vindex" "functio 'FUNCTIO_IGNOTA' non definita"

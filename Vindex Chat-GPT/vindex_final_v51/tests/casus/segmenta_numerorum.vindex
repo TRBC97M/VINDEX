@@ -1,0 +1,54 @@
+IMPORTA "bibliotheca/series_numerorum.vindex".
+IMPORTA "bibliotheca/segmenta_numerorum.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA series SICUT NUMERUS VALENS SN_CREA().
+    SI series == 0 TUNC REDDE 10. FIN-SI.
+
+    SI SN_ADDE(series, 10) == 0 TUNC REDDE 11. FIN-SI.
+    SI SN_ADDE(series, 20) == 0 TUNC REDDE 12. FIN-SI.
+    SI SN_ADDE(series, 30) == 0 TUNC REDDE 13. FIN-SI.
+    SI SN_ADDE(series, 40) == 0 TUNC REDDE 14. FIN-SI.
+    SI SN_ADDE(series, 50) == 0 TUNC REDDE 15. FIN-SI.
+
+    DECLARA segmentum SICUT NUMERUS VALENS SG_CREA(SN_BASIS(series) + 8, 3).
+    SI segmentum == 0 TUNC REDDE 20. FIN-SI.
+    SI SG_NUMERUS(segmentum) != 3 TUNC REDDE 21. FIN-SI.
+    SI SG_CAPE(segmentum, 0) != 20 TUNC REDDE 22. FIN-SI.
+    SI SG_CAPE(segmentum, 1) != 30 TUNC REDDE 23. FIN-SI.
+    SI SG_CAPE(segmentum, 2) != 40 TUNC REDDE 24. FIN-SI.
+
+    SI SG_PONE(segmentum, 1, 99) == 0 TUNC REDDE 30. FIN-SI.
+    SI SN_CAPE(series, 2) != 99 TUNC REDDE 31. FIN-SI.
+
+    DECLARA sub SICUT NUMERUS VALENS SG_SUBSEGMENTUM(segmentum, 1, 2).
+    SI sub == 0 TUNC REDDE 40. FIN-SI.
+    SI SG_NUMERUS(sub) != 2 TUNC REDDE 41. FIN-SI.
+    SI SG_CAPE(sub, 0) != 99 TUNC REDDE 42. FIN-SI.
+    SI SG_CAPE(sub, 1) != 40 TUNC REDDE 43. FIN-SI.
+
+    SI SG_PONE(sub, 1, 77) == 0 TUNC REDDE 50. FIN-SI.
+    SI SN_CAPE(series, 3) != 77 TUNC REDDE 51. FIN-SI.
+    SI SG_CAPE(segmentum, 2) != 77 TUNC REDDE 52. FIN-SI.
+
+    SI SG_CAPE(segmentum, 3) != 0 TUNC REDDE 60. FIN-SI.
+    SI SG_PONE(segmentum, 3, 1) != 0 TUNC REDDE 61. FIN-SI.
+    SI SG_SUBSEGMENTUM(segmentum, 4, 0) != 0 TUNC REDDE 62. FIN-SI.
+    SI SG_SUBSEGMENTUM(segmentum, 2, 2) != 0 TUNC REDDE 63. FIN-SI.
+
+    DECLARA vacuum SICUT NUMERUS VALENS SG_SUBSEGMENTUM(segmentum, 3, 0).
+    SI vacuum == 0 TUNC REDDE 70. FIN-SI.
+    SI SG_NUMERUS(vacuum) != 0 TUNC REDDE 71. FIN-SI.
+
+    SI SG_LIBERA(vacuum) == 0 TUNC REDDE 80. FIN-SI.
+    SI SG_LIBERA(sub) == 0 TUNC REDDE 81. FIN-SI.
+    SI SG_LIBERA(segmentum) == 0 TUNC REDDE 82. FIN-SI.
+
+    SI SN_NUMERUS(series) != 5 TUNC REDDE 90. FIN-SI.
+    SI SN_CAPE(series, 2) != 99 TUNC REDDE 91. FIN-SI.
+    SI SN_CAPE(series, 3) != 77 TUNC REDDE 92. FIN-SI.
+    SI SN_LIBERA(series) == 0 TUNC REDDE 93. FIN-SI.
+
+    PROCLAMA "SEGMENTA RECTE".
+    REDDE 0.
+FIN-FUNCTIO.

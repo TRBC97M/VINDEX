@@ -202,9 +202,9 @@ Officina non est “finita”: amplianda est cum debugger, refactoring, explorat
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit; PR #104 seriem dynamicam contiguam `NUMERUS` addit.
+PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit; PR #104 seriem dynamicam contiguam `NUMERUS` addidit; PR #105 segmenta mutuata zero-copy addit.
 
-`make probatio` / `tests/run_tests.sh` nunc **XXV probationes, nulla errata** exercet, inter quas:
+`make probatio` / `tests/run_tests.sh` nunc **XXVI probationes, nulla errata** exercet, inter quas:
 
 - casus fundamentales linguae;
 - diagnostica valida et invalida;
@@ -213,6 +213,7 @@ PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praes
 - `&&` / `||` brevia;
 - collectio dynamica `NUMERUS`;
 - series dynamica contigua `NUMERUS`;
+- segmenta mutuata `NUMERUS`;
 - PE32+;
 - puritas Sylviae;
 - LXXX fenestrae;
@@ -251,7 +252,8 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 
 - PR #102 — prima collectio dynamica generalis `NUMERUS`, tota VINDEX scripta, cum creatione, additione, lectione, mutatione, deletione, purgatione et liberatione;
 - PR #104 — series dynamica contigua `NUMERUS`, cum longitudine et capacitate separatis, relocatione automatica, insertione, deletione et basi contigua ad futuras series/slices praeparanda;
-- regressiones collectionum inclusae in probationibus canonicis XXV/XXV;
+- PR #105 — segmenta mutuata `NUMERUS`, cum basi et longitudine, accessu mutabili zero-copy et subsegmentis sine copia; relationes vitae memoriae et invalidatio post relocationem explicite documentantur;
+- regressiones collectionum et segmentorum inclusae in probationibus canonicis XXVI/XXVI;
 - nulla generica ficta ante facultatem linguae: abstractiones concretae `NUMERUS` fundamentum migrationis futurae praebent.
 
 ### Facultates candidatae
@@ -410,7 +412,7 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 Dum Claude P1 exercet, via recta independentis progressionis est:
 
 1. documenta canonica statui hodierno congruentia servare;
-2. probationes 25/25 custodire;
+2. probationes 26/26 custodire;
 3. **P9 per incrementa parva et generalia continuare**, non per magnam mutationem simul;
 4. ubi Claude terminaverit, opus P1 denuo inspicere ante integrationem.
 
