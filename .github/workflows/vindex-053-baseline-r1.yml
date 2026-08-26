@@ -1,0 +1,28 @@
+name: VINDEX 0.53 — Baseline R1
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/test_baseline_053.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/argumenta_septem.vindex'
+      - '.github/workflows/vindex-053-baseline-r1.yml'
+  workflow_dispatch:
+
+jobs:
+  baseline:
+    name: Fundamenta dynamica et auto-hospitium probantur
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem exsecutabilem para
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: chmod +x compilator_vindex
+
+      - name: Baseline R1 exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 -m unittest tests/test_baseline_053.py -v
