@@ -78,3 +78,35 @@ jobs:
           if (($exitus -join '|') -ne ($expectata -join '|')) {
             throw "argumenta secunda prava: $($exitus -join '|')"
           }
+      - name: FONS diagnostici R2 sub Win64 proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $radix = Join-Path $PWD 'r4\diagnosticum'
+          New-Item -ItemType Directory -Force -Path $radix | Out-Null
+          $fons = Join-Path $radix 'principalis.vindex'
+          $productum = Join-Path $radix 'erratum.exe'
+          @(
+            'FUNCTIO PRINCIPALIS REDDENS NUMERUS.'
+            '    IGNOTUM.'
+            '    REDDE 0.'
+            'FIN-FUNCTIO.'
+          ) | Set-Content -Path $fons -Encoding utf8NoBOM
+
+          $exitus = @(& .\r4\compilator_win64.exe $fons $productum pe 2>&1)
+          $status = $LASTEXITCODE
+          $exitus | ForEach-Object { Write-Host $_ }
+          if ($status -eq 0) { throw 'compilatio errata falso successit' }
+
+          $indexFons = [Array]::IndexOf($exitus, 'FONS')
+          if ($indexFons -lt 0 -or $indexFons + 1 -ge $exitus.Count) { throw 'campus FONS deest' }
+          if ([string]::IsNullOrWhiteSpace([string]$exitus[$indexFons + 1])) { throw 'campus FONS vacuus est' }
+          if ([string]$exitus[$indexFons + 1] -notmatch 'principalis\.vindex$') {
+            throw "FONS pravus: $($exitus[$indexFons + 1])"
+          }
+
+          $indexLinea = [Array]::IndexOf($exitus, 'LINEA')
+          $indexColumna = [Array]::IndexOf($exitus, 'COLUMNA')
+          if ($indexLinea -lt 0 -or [string]$exitus[$indexLinea + 1] -ne '2') { throw 'LINEA diagnostici prava est' }
+          if ($indexColumna -lt 0 -or [string]$exitus[$indexColumna + 1] -ne '5') { throw 'COLUMNA diagnostici prava est' }
+          if (($exitus -join "`n") -notmatch 'ERRATUM: instructio ignota est') { throw 'NUNTIUS diagnostici pravus est' }
