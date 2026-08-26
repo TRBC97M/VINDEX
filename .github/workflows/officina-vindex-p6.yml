@@ -1,4 +1,4 @@
-name: Officina VINDEX — P6
+name: Officina VINDEX — canonica
 
 on:
   workflow_dispatch:
@@ -23,19 +23,19 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x compilator_vindex
-          mkdir -p /tmp/officina-p6
-          ./compilator_vindex src/compilator_vindex.vindex /tmp/officina-p6/compilator_vindex.exe pe
-          file /tmp/officina-p6/compilator_vindex.exe
+          mkdir -p /tmp/officina
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/officina/compilator_vindex.exe pe
+          file /tmp/officina/compilator_vindex.exe
       - name: Compilatorem conserva
         uses: actions/upload-artifact@v4
         with:
-          name: officina-p6-compilator-win64
-          path: /tmp/officina-p6/compilator_vindex.exe
+          name: officina-compilator-win64
+          path: /tmp/officina/compilator_vindex.exe
           if-no-files-found: error
           retention-days: 1
 
   officina-windows:
-    name: Officina construit, probat et proiectum VINDEX exsequitur
+    name: Officina construit, probat et proiecta VINDEX exsequitur
     needs: compilator-win64
     runs-on: windows-latest
     timeout-minutes: 20
@@ -49,7 +49,7 @@ jobs:
       - name: Compilatorem Win64 accipe
         uses: actions/download-artifact@v4
         with:
-          name: officina-p6-compilator-win64
+          name: officina-compilator-win64
           path: instrumenta
       - name: Officinam construe
         shell: pwsh
@@ -57,7 +57,7 @@ jobs:
           $ErrorActionPreference = 'Stop'
           dotnet build .\officina\OfficinaVindex.csproj -c Release --nologo
           if ($LASTEXITCODE -ne 0) { throw "dotnet build exitus $LASTEXITCODE" }
-      - name: Structuram et fenestram Officinae proba
+      - name: Structuram, fenestram et Gradum B Officinae proba
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -92,6 +92,23 @@ jobs:
           if (Test-Path $relatio) { Get-Content $relatio }
           if ($processus.ExitCode -ne 0) { throw "probatio proiecti Officinae exitus $($processus.ExitCode)" }
           if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'proiectum per Officinam non est RECTE' }
+      - name: Novum proiectum crea, construe et exsequere
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $officina = (Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe').Path
+          $compilator = (Resolve-Path '.\instrumenta\compilator_vindex.exe').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $officina
+          $psi.UseShellExecute = $false
+          [void]$psi.ArgumentList.Add('--proba-novum-proiectum')
+          [void]$psi.ArgumentList.Add($compilator)
+          $processus = [System.Diagnostics.Process]::Start($psi)
+          $processus.WaitForExit()
+          $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
+          if (Test-Path $relatio) { Get-Content $relatio }
+          if ($processus.ExitCode -ne 0) { throw "probatio novi proiecti exitus $($processus.ExitCode)" }
+          if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'novum proiectum non est RECTE' }
       - name: Diagnosticum reale R2 per Officinam proba
         shell: pwsh
         run: |
