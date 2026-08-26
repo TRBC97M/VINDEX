@@ -10,6 +10,34 @@ VINDEX et Sylvia OS sunt duo projecta primi ordinis.
 
 Sylvia non est programma demonstrativum abiciendum. VINDEX non est lingua privata Sylviae.
 
+## Principium universalitatis VINDEX
+
+**Nullum genus programmatis extra fines VINDEX esse debet.**
+
+Haec est lex fundamentalis progressionis linguae. VINDEX non tantum C imitari, C++ aequare, aut linguam aliam substituere destinatur. Meta diuturna est ut VINDEX, secundum gradum abstractionis opportunum, ad omne genus operis computatorii adhiberi possit quod in machina moderna rationabiliter perfici potest.
+
+Ita VINDEX paulatim capax esse debet ad scribenda, inter alia:
+
+- firmware, pontes initiales, nucleos et gubernatores ferramentorum;
+- systemata operativa et instrumenta basimi gradus;
+- compilatores, coniunctores, debugatores et instrumenta evolutionis;
+- applicationes graphicas, Officinam, ludos et machinamenta ludorum;
+- servitores, protocolla retis, clientes et navigatores interretiales;
+- programmata scientifica, mathematica, multimedia et computationis intensivae;
+- programmata magni gradus abstractionis, ubi memoria et structurae complexae commode administrantur;
+- codicem portabilem ad plura systemata et architecturas, ubi natura operis id permittit.
+
+Universalitas non significat omnes proprietates C++, Rust, Python, JavaScript aut aliarum linguarum ad litteram imitandas esse. **Facultas, non imitatio, norma est.** Si genus quaestionis ab alia lingua solvi potest, VINDEX tandem viam nativam, coherentem et VINDEX propriam ad idem genus quaestionis solvendum praebere debet.
+
+VINDEX igitur duos fines simul servet:
+
+1. **Libertas basimi gradus** — memoria directa, ABI, hardware, codex machinalis, systemata sine runtime necessario et imperium exactum super machinam manere debent possibilia.
+2. **Potentia alti gradus** — typi divites, abstractiones, collectiones, generica, concurrentia, instrumenta automatica memoriae et aliae commoditates addi possunt sine facultatibus basimi gradus tollendis.
+
+Nulla futura commoditas magni gradus debet VINDEX ad runtime obligatoriam ligare. Nulla fidelitas basimo gradui debet impedire ne lingua ad applicationes magnas, modernas et commodas crescat.
+
+**Non C est terminus VINDEX. Non C++ est terminus VINDEX. Terminus est ut nullum genus operis computatorii VINDEX alienum sit.**
+
 ## Relatio
 
 VINDEX facultates praebet quibus Sylvia construitur. Sylvia necessitates reales detegit quae progressionem VINDEX dirigere possunt. Si Sylvia facultate caret quia VINDEX eam nondum exprimit, primum quaerendum est utrum facultas generalis in VINDEX vel eius bibliotheca standardi creanda sit, non utrum exceptio privata in Sylvia fingenda sit.
@@ -49,7 +77,8 @@ Codex non-VINDEX qui historice ultra hunc terminum processit habetur experimentu
 - typi, memoria, functiones et moduli;
 - ABI et formae binariae;
 - diagnostica et probationes conformitatis;
-- documentum specificationis versionatum.
+- documentum specificationis versionatum;
+- facultates basimi et alti gradus ita componendae ut nullum genus programmatis ex consilio excludatur.
 
 ### 2. Ecosystema VINDEX
 
