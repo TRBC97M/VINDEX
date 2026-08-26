@@ -6,8 +6,10 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/vindex_verifica.py'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/compara_fasciculos_053.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_pe_structuram_053.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/test_verificator_r5.py'
       - '.github/workflows/vindex-053-instrumenta-r5.yml'
 
 jobs:
@@ -22,6 +24,13 @@ jobs:
       - name: Compilatorem para
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: chmod +x compilator_vindex
+
+      - name: Verificatorem R5 proba
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest tests/test_verificator_r5.py -v
 
       - name: Instrumenta ipsa in VINDEX compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
