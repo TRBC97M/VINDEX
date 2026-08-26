@@ -110,3 +110,4 @@ jobs:
           if ($indexLinea -lt 0 -or [string]$exitus[$indexLinea + 1] -ne '2') { throw 'LINEA diagnostici prava est' }
           if ($indexColumna -lt 0 -or [string]$exitus[$indexColumna + 1] -ne '5') { throw 'COLUMNA diagnostici prava est' }
           if (($exitus -join "`n") -notmatch 'ERRATUM: instructio ignota est') { throw 'NUNTIUS diagnostici pravus est' }
+          exit 0
