@@ -217,6 +217,42 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA claude SICUT NUMERUS VALENS CONTENTUM(fasc + 16).
     DECLARA ig_c SICUT NUMERUS VALENS UEFI_VOCA6(claude, fasc, 0, 0, 0, 0, 0).
 
+    // TEXTUS.BIN ad 0x430000 (TEXTUS_BASE) onera. Ponticulus C hoc
+    // faciebat (linea 239); sine eo nucleus data non initiata legit et
+    // ut indices adhibet -- causa vera defectus paginae.
+    DECLARA nomen_t SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    DECLARA ig_nt SICUT NUMERUS VALENS MEMORIA_VACUA(nomen_t, 32).
+    SCRIBE_OCTETUM_AB(nomen_t, 84).
+    SCRIBE_OCTETUM_AB(nomen_t + 2, 69).
+    SCRIBE_OCTETUM_AB(nomen_t + 4, 88).
+    SCRIBE_OCTETUM_AB(nomen_t + 6, 84).
+    SCRIBE_OCTETUM_AB(nomen_t + 8, 85).
+    SCRIBE_OCTETUM_AB(nomen_t + 10, 83).
+    SCRIBE_OCTETUM_AB(nomen_t + 12, 46).
+    SCRIBE_OCTETUM_AB(nomen_t + 14, 66).
+    SCRIBE_OCTETUM_AB(nomen_t + 16, 73).
+    SCRIBE_OCTETUM_AB(nomen_t + 18, 78).
+
+    CONTENTUM(locus) = 0.
+    DECLARA st_t SICUT NUMERUS VALENS UEFI_VOCA6(aperi, radix, locus, nomen_t, 1, 0, 0).
+    SI st_t == 0 TUNC
+        DECLARA fasc_t SICUT NUMERUS VALENS CONTENTUM(locus).
+        SI fasc_t != 0 TUNC
+            CONTENTUM(locus_info_mens) = 512.
+            DECLARA ig_gt SICUT NUMERUS VALENS GUID_PONE(guid, 5).
+            DECLARA info_t SICUT NUMERUS VALENS CONTENTUM(fasc_t + 64).
+            DECLARA sti SICUT NUMERUS VALENS UEFI_VOCA6(info_t, fasc_t, guid, locus_info_mens, info_buf, 0, 0).
+            SI sti == 0 TUNC
+                DECLARA mens_t SICUT NUMERUS VALENS CONTENTUM(info_buf + 8).
+                CONTENTUM(locus_mensura) = mens_t.
+                DECLARA lege_t SICUT NUMERUS VALENS CONTENTUM(fasc_t + 32).
+                DECLARA stl SICUT NUMERUS VALENS UEFI_VOCA6(lege_t, fasc_t, locus_mensura, 4390912, 0, 0, 0).
+            FIN-SI.
+            DECLARA cl_t SICUT NUMERUS VALENS CONTENTUM(fasc_t + 16).
+            DECLARA ig_ct SICUT NUMERUS VALENS UEFI_VOCA6(cl_t, fasc_t, 0, 0, 0, 0, 0).
+        FIN-SI.
+    FIN-SI.
+
     // VI. Protocollum graphicum et modus.
     DECLARA ig_g1 SICUT NUMERUS VALENS GUID_PONE(guid, 1).
     CONTENTUM(locus) = 0.
