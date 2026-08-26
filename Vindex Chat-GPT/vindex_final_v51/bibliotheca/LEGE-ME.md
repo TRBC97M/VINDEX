@@ -1,40 +1,99 @@
 # Bibliotheca VINDEX
 
-Bibliotheca VINDEX codicem communem continet quem programmata per `IMPORTA` adhibere possunt.
+`bibliotheca/` codicem VINDEX communem continet qui per `IMPORTA` adhiberi potest.
 
-## TEXTUS
+Haec bibliotheca duas aetates simul servat:
 
-`textus.vindex` operationes communes generis `TEXTUS` definit. In VINDEX 0.52 prima operatio est:
+1. facultates generales linguae, ut `textus.vindex`;
+2. bibliothecas Fenestralis II Purus, quae pars Sylviae canonicae hodiernae sunt.
 
-- `LONGITUDO(textus)` — numerum octetorum utilium descriptoris reddit.
+Nonnulli fasciculi veteres, praesertim `graphica.vindex`, ad architecturam GTK historicam pertinent et non sunt fundamentum Officinae canonicae Windows hodiernae.
+
+---
+
+# I. TEXTUS
+
+`textus.vindex` operationes generales generis `TEXTUS` continet.
+
+Hodie definit:
+
+- `LONGITUDO(textus)` — numerum octetorum UTF-8 descriptoris reddit.
 
 Exemplum:
 
 ```vindex
 IMPORTA "bibliotheca/textus.vindex".
 
-DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
-PROCLAMA LONGITUDO(nomen).
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA nomen SICUT TEXTUS VALENS "Sylvia".
+    DECLARA titulus SICUT TEXTUS VALENS nomen + " OS".
+    PROCLAMA titulus.
+    PROCLAMA LONGITUDO(titulus).
+    REDDE 0.
+FIN-FUNCTIO.
 ```
 
-## Graphica
+`TEXTUS` ipse genus nativum est; bibliotheca auxilia generalia supra genus praebet.
 
-`graphica.vindex` definit conventiones inter applicationes VINDEX et motorem Formarum GTK. Applicatio manet dominus eventuum: VINDEX eventum elementorum accipit, logicam suam perficit et responsum ad formam reddit.
+---
 
-Officina et Salutatio eodem ponte utuntur. Pons formam legit, elementa libere creat, dialogos systematis aperit, valores exportat atque eventa transmittit; neque Officinam novit neque programma VINDEX exsequitur.
+# II. Fenestrale II Purus
 
-Conventiones eventuum praesentium:
+Bibliothecae hodiernae Fenestralis includunt:
 
-- `GRAPHICA_EVENTUM_NOVI()`;
-- `GRAPHICA_EVENTUM_APERTIONIS()`;
-- `GRAPHICA_EVENTUM_SERVATIONIS()`;
-- `GRAPHICA_EVENTUM_COMPILATIONIS()`;
-- `GRAPHICA_EVENTUM_EXECUTIONIS()`;
-- `GRAPHICA_EVENTUM_CLAUSURAE()`;
-- `GRAPHICA_EVENTUM_SALUTATIONIS()`;
-- `GRAPHICA_COMPILATIO_INCEPTA()`;
-- `GRAPHICA_EXECUTIO_INCEPTA()`;
-- `GRAPHICA_RESPONSUM_RECTUM()`;
-- `GRAPHICA_RESPONSUM_ERRATUM()`.
+- `fenestrale_ii_superficies.vindex` — superficies clientium et compositio;
+- `fenestrale_eventa_g.vindex` — coda eventuum;
+- `clientia_registrum_h.vindex` — registrum dynamicum clientium;
+- `fenestrae_registrum_i.vindex` — registrum dynamicum fenestrarum;
+- `fenestrale_input_i.vindex` — separatio input a geometria fenestrarum;
+- `fenestrale_gestor_i.vindex` — focus, ordo Z, motus, resize et status fenestrarum;
+- `clientes_eventa_i.vindex` — distributio eventuum ad clientes;
+- `programmata_clientis_e.vindex` — cliens PROGRAMMATA;
+- `tabula_clientis_f.vindex` — cliens TABULA.
 
-Numeri bullarum in archivo `.forma` etiam libere eligi possunt. Grammatica Formarum in `formae/LEGE-ME.md` describitur.
+Fasciculi suffixis gradus `g`, `h`, `i` historiam canonizationis servant. Auctoritas praesentis systematis est catena Gradus I et probationes eius in `main`.
+
+---
+
+# III. Graphica historica
+
+`graphica.vindex` eventa veteris motoris declarativi GTK describit. Servatur ad historiam et compatibilitatem experimentorum pristinorum.
+
+**Officina canonica hodierna non eo ponte nititur.** Officina actualis est applicatio Windows nativa in radice repositorii sub `officina/`, sine HTML/CSS/JavaScript et sine motore GTK canonico.
+
+Ne novam bibliothecam generalem super contractum GTK historicum construas nisi expresse ad migrationem vel archivum pertinet.
+
+---
+
+# IV. Regula evolutionis bibliothecae
+
+Bibliotheca generalis VINDEX paulatim crescere debet ad:
+
+- textum et Unicode;
+- collectiones;
+- fasciculos;
+- projecta;
+- rete;
+- cryptographiam;
+- mathematicam;
+- concurrentiam;
+- utilitates systematis;
+- abstractiones portabiles inter targeta.
+
+Sed bibliotheca standardis futura non debet facultates humilis gradus auferre neque runtime obligatoriam omnibus programmatibus imponere.
+
+---
+
+# V. Importatio
+
+Forma ordinaria:
+
+```vindex
+IMPORTA "bibliotheca/textus.vindex".
+```
+
+Viae in projectis maioribus per contractum `PROIECTUM` et contextum compilationis administrari possunt.
+
+---
+
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
