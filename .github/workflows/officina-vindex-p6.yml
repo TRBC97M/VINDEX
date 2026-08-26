@@ -95,6 +95,26 @@ jobs:
           }
           Get-Content $relatio
           if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'proiectum per Officinam non est RECTE' }
+      - name: Diagnosticum reale R2 per Officinam proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $officina = (Resolve-Path '.\officina\bin\Release\net8.0-windows\win-x64\officina_vindex.exe').Path
+          $compilator = (Resolve-Path '.\instrumenta\compilator_vindex.exe').Path
+          $psi = [System.Diagnostics.ProcessStartInfo]::new()
+          $psi.FileName = $officina
+          $psi.UseShellExecute = $false
+          [void]$psi.ArgumentList.Add('--proba-diagnosticum')
+          [void]$psi.ArgumentList.Add($compilator)
+          $processus = [System.Diagnostics.Process]::Start($psi)
+          $processus.WaitForExit()
+          $relatio = Join-Path $env:TEMP 'officina-vindex-probatio.txt'
+          if ($processus.ExitCode -ne 0) {
+            if (Test-Path $relatio) { Get-Content $relatio }
+            throw "probatio diagnostici Officinae exitus $($processus.ExitCode)"
+          }
+          Get-Content $relatio
+          if ((Get-Content $relatio -Raw) -notmatch 'RECTE') { throw 'diagnosticum reale per Officinam non est RECTE' }
       - name: Nulla technologia interretialis in Officina lateat
         shell: pwsh
         run: |
