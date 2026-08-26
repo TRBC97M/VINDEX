@@ -409,10 +409,24 @@ FUNCTIO CONSTRUE_CAPUT_PE REDDENS NUMERUS.
     DECLARA igak SICUT NUMERUS VALENS SCRIBE_U32(codex, 192, 0).
     DECLARA igal SICUT NUMERUS VALENS SCRIBE_U32(codex, 196, 16).
 
-    DECLARA igam SICUT NUMERUS VALENS SCRIBE_U32(codex, 208, rva_idata).
-    DECLARA igan SICUT NUMERUS VALENS SCRIBE_U32(codex, 212, 40).
-    DECLARA igao SICUT NUMERUS VALENS SCRIBE_U32(codex, 296, rva_iat).
-    DECLARA igap2 SICUT NUMERUS VALENS SCRIBE_U32(codex, 300, numerus_functionum_pe * 8).
+    // Sub UEFI nulla tabula importationis adhibetur: firmware nullam
+    // kernel32.dll praebet, omnia per tabulam systematis transeunt.
+    // Repertoria ergo vacua relinquuntur, ne exsecutabile importationes
+    // Windows inutiles ferat.
+    DECLARA rva_idata_dir SICUT NUMERUS VALENS rva_idata.
+    DECLARA mens_idata_dir SICUT NUMERUS VALENS 40.
+    DECLARA rva_iat_dir SICUT NUMERUS VALENS rva_iat.
+    DECLARA mens_iat_dir SICUT NUMERUS VALENS numerus_functionum_pe * 8.
+    SI MODUS_PE_LEGE(contextus_parseris) == 2 TUNC
+        rva_idata_dir = 0.
+        mens_idata_dir = 0.
+        rva_iat_dir = 0.
+        mens_iat_dir = 0.
+    FIN-SI.
+    DECLARA igam SICUT NUMERUS VALENS SCRIBE_U32(codex, 208, rva_idata_dir).
+    DECLARA igan SICUT NUMERUS VALENS SCRIBE_U32(codex, 212, mens_idata_dir).
+    DECLARA igao SICUT NUMERUS VALENS SCRIBE_U32(codex, 296, rva_iat_dir).
+    DECLARA igap2 SICUT NUMERUS VALENS SCRIBE_U32(codex, 300, mens_iat_dir).
 
     CODEX_SCRIBE(codex, 328, 46).
     CODEX_SCRIBE(codex, 329, 116).
