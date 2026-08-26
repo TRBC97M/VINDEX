@@ -83,10 +83,11 @@ jobs:
         run: |
           set -euo pipefail
           RADIX='Vindex Chat-GPT/vindex_final_v51'
-          /tmp/g3 "$RADIX/probationes/fenestrale_purus_i_fenestrae.vindex" /tmp/fenestrale_i
+          cd "$RADIX"
+          /tmp/g3 probationes/fenestrale_purus_i_fenestrae.vindex /tmp/fenestrale_i
           chmod +x /tmp/fenestrale_i
           timeout 10s /tmp/fenestrale_i
-          /tmp/g3 "$RADIX/systema/fenestrale_ii_purus_i.vindex" /tmp/fenestrale_ii_purus_i.elf
+          /tmp/g3 systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
           test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 786432
           printf '%s\n' 'RECTE: LXXX fenestrae et Fenestrale I integrum cum logica brevi transeunt.'
