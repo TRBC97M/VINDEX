@@ -1,0 +1,430 @@
+// Sylvia OS — Fenestrale II Purus B.
+// Desktop nativus interactive: compositorium immediatum, focus, z-order,
+// murus UEFI, tractio, minimizatio, maximizatio et clausura omnia in VINDEX.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+
+// Status vectoris:
+//  0 activum; 1 status PROGRAMMATA; 2 status TABULA
+//  3..6 PROGRAMMATA x/y/w/h; 7..10 TABULA x/y/w/h
+// 11/12 murus x/y; 13 bullae veteres; 14 id tractionis; 15/16 offset
+// 17 max PROGRAMMATA; 18..21 geometria restituta
+// 22 max TABULA; 23..26 geometria restituta
+// 28 simple pointer; 29 absolute pointer.
+// Status fenestrae: 0 visibilis, 1 minima, 2 clausa.
+
+FUNCTIO FB_I32 REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    DECLARA valor SICUT NUMERUS VALENS OCTETUS_AB(locus).
+    valor = valor | (OCTETUS_AB(locus + 1) << 8).
+    valor = valor | (OCTETUS_AB(locus + 2) << 16).
+    valor = valor | (OCTETUS_AB(locus + 3) << 24).
+    SI valor >= 2147483648 TUNC
+        valor = valor - 4294967296.
+    FIN-SI.
+    REDDE valor.
+FIN-FUNCTIO.
+
+FUNCTIO FB_GUID_PONE REDDENS NUMERUS.
+    ACCIPIT guid SICUT ACUS<LITTERA>.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE guid[i] = 0. i = i + 1. FIN-DUM.
+    SI genus == 1 TUNC
+        guid[0]=135. guid[1]=140. guid[2]=135. guid[3]=49.
+        guid[4]=117. guid[5]=11. guid[6]=213. guid[7]=17.
+        guid[8]=154. guid[9]=79. guid[10]=0. guid[11]=144.
+        guid[12]=39. guid[13]=63. guid[14]=193. guid[15]=77.
+    FIN-SI.
+    SI genus == 2 TUNC
+        guid[0]=43. guid[1]=211. guid[2]=89. guid[3]=141.
+        guid[4]=85. guid[5]=198. guid[6]=233. guid[7]=74.
+        guid[8]=155. guid[9]=21. guid[10]=242. guid[11]=89.
+        guid[12]=4. guid[13]=153. guid[14]=42. guid[15]=67.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_PROTOCOL_LOCATE REDDENS NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI boot == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA locate SICUT NUMERUS VALENS CONTENTUM(boot + 320).
+    SI locate == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
+    DECLARA f SICUT NUMERUS VALENS FB_GUID_PONE(guid, genus).
+    DECLARA protocol SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(locate, SEDES(guid), 0, SEDES(protocol), 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    REDDE protocol.
+FIN-FUNCTIO.
+
+FUNCTIO FB_PROTOCOLA_PARA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    s[28] = FB_PROTOCOL_LOCATE(1).
+    s[29] = FB_PROTOCOL_LOCATE(2).
+    SI s[28] != 0 TUNC
+        DECLARA reset_rel SICUT NUMERUS VALENS CONTENTUM(s[28]).
+        SI reset_rel != 0 TUNC DECLARA rr SICUT NUMERUS VALENS UEFI_VOCA6(reset_rel, s[28], 0, 0, 0, 0, 0). FIN-SI.
+    FIN-SI.
+    SI s[29] != 0 TUNC
+        DECLARA reset_abs SICUT NUMERUS VALENS CONTENTUM(s[29]).
+        SI reset_abs != 0 TUNC DECLARA ra SICUT NUMERUS VALENS UEFI_VOCA6(reset_abs, s[29], 0, 0, 0, 0, 0). FIN-SI.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FB_CLAVIS_LEGE REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA conin SICUT NUMERUS VALENS CONTENTUM(systema + 48).
+    SI conin == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(conin + 8).
+    SI lege == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA data_clavis SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, conin, SEDES(data_clavis), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA scan SICUT NUMERUS VALENS OCTETUS_AB(SEDES(data_clavis)) | (OCTETUS_AB(SEDES(data_clavis) + 1) << 8).
+    DECLARA unicode SICUT NUMERUS VALENS OCTETUS_AB(SEDES(data_clavis) + 2) | (OCTETUS_AB(SEDES(data_clavis) + 3) << 8).
+    REDDE 1 + scan * 2 + unicode * 131072.
+FIN-FUNCTIO.
+
+FUNCTIO FB_MURUS_ABSOLUTUS REDDENS NUMERUS.
+    ACCIPIT murus SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI murus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(murus + 8).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(murus + 24).
+    SI lege == 0 || modus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status_muris SICUT ORDO DE NUMERUS CAPACITAS 4.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, murus, SEDES(status_muris), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA minx SICUT NUMERUS VALENS CONTENTUM(modus).
+    DECLARA miny SICUT NUMERUS VALENS CONTENTUM(modus + 8).
+    DECLARA maxx SICUT NUMERUS VALENS CONTENTUM(modus + 24).
+    DECLARA maxy SICUT NUMERUS VALENS CONTENTUM(modus + 32).
+    DECLARA dx SICUT NUMERUS VALENS maxx - minx.
+    DECLARA dy SICUT NUMERUS VALENS maxy - miny.
+    SI dx <= 0 || dy <= 0 TUNC REDDE 0. FIN-SI.
+    s[11] = (status_muris[0] - minx) * (CONTENTUM(50333728) - 1) / dx.
+    s[12] = (status_muris[1] - miny) * (CONTENTUM(50333736) - 1) / dy.
+    SI s[11] < 0 TUNC s[11] = 0. FIN-SI.
+    SI s[12] < 0 TUNC s[12] = 0. FIN-SI.
+    SI s[11] >= CONTENTUM(50333728) TUNC s[11] = CONTENTUM(50333728) - 1. FIN-SI.
+    SI s[12] >= CONTENTUM(50333736) TUNC s[12] = CONTENTUM(50333736) - 1. FIN-SI.
+    REDDE (status_muris[3] & 3) + 1.
+FIN-FUNCTIO.
+
+FUNCTIO FB_MURUS_RELATIVUS REDDENS NUMERUS.
+    ACCIPIT murus SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI murus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(murus + 8).
+    DECLARA modus SICUT NUMERUS VALENS CONTENTUM(murus + 24).
+    SI lege == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status_muris SICUT ORDO DE NUMERUS CAPACITAS 2.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(lege, murus, SEDES(status_muris), 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA crudum_x SICUT NUMERUS VALENS FB_I32(SEDES(status_muris)).
+    DECLARA crudum_y SICUT NUMERUS VALENS FB_I32(SEDES(status_muris) + 4).
+    DECLARA mx SICUT NUMERUS VALENS crudum_x.
+    DECLARA my SICUT NUMERUS VALENS crudum_y.
+    DECLARA rx SICUT NUMERUS VALENS 0.
+    DECLARA ry SICUT NUMERUS VALENS 0.
+    SI modus != 0 TUNC rx = CONTENTUM(modus). ry = CONTENTUM(modus + 8). FIN-SI.
+    SI rx > 0 TUNC mx = crudum_x * 6 / rx. FIN-SI.
+    SI ry > 0 TUNC my = crudum_y * 6 / ry. FIN-SI.
+    SI mx == 0 && crudum_x != 0 TUNC SI crudum_x < 0 TUNC mx = 0 - 1. ALITER mx = 1. FIN-SI. FIN-SI.
+    SI my == 0 && crudum_y != 0 TUNC SI crudum_y < 0 TUNC my = 0 - 1. ALITER my = 1. FIN-SI. FIN-SI.
+    mx = mx * CONTENTUM(50333728) / 320.
+    my = my * CONTENTUM(50333736) / 200.
+    SI mx == 0 && crudum_x != 0 TUNC SI crudum_x < 0 TUNC mx = 0 - 1. ALITER mx = 1. FIN-SI. FIN-SI.
+    SI my == 0 && crudum_y != 0 TUNC SI crudum_y < 0 TUNC my = 0 - 1. ALITER my = 1. FIN-SI. FIN-SI.
+    s[11] = s[11] + mx.
+    s[12] = s[12] + my.
+    SI s[11] < 0 TUNC s[11] = 0. FIN-SI.
+    SI s[12] < 0 TUNC s[12] = 0. FIN-SI.
+    SI s[11] >= CONTENTUM(50333728) TUNC s[11] = CONTENTUM(50333728) - 1. FIN-SI.
+    SI s[12] >= CONTENTUM(50333736) TUNC s[12] = CONTENTUM(50333736) - 1. FIN-SI.
+    DECLARA bullae SICUT NUMERUS VALENS 0.
+    SI OCTETUS_AB(SEDES(status_muris) + 12) != 0 TUNC bullae = bullae | 1. FIN-SI.
+    SI OCTETUS_AB(SEDES(status_muris) + 13) != 0 TUNC bullae = bullae | 2. FIN-SI.
+    REDDE bullae + 1.
+FIN-FUNCTIO.
+
+FUNCTIO FB_STALL REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI boot == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA stall SICUT NUMERUS VALENS CONTENTUM(boot + 248).
+    SI stall == 0 TUNC REDDE 0. FIN-SI.
+    REDDE UEFI_VOCA6(stall, 12000, 0, 0, 0, 0, 0).
+FIN-FUNCTIO.
+
+FUNCTIO FB_RELEGE_ACTIVUM REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI s[0] == 1 && s[1] == 0 TUNC REDDE 1. FIN-SI.
+    SI s[0] == 2 && s[2] == 0 TUNC REDDE 2. FIN-SI.
+    SI s[1] == 0 TUNC s[0] = 1. REDDE 1. FIN-SI.
+    SI s[2] == 0 TUNC s[0] = 2. REDDE 2. FIN-SI.
+    s[0] = 0.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_FOCUS REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI id == 1 && s[1] == 0 TUNC s[0] = 1. REDDE 1. FIN-SI.
+    SI id == 2 && s[2] == 0 TUNC s[0] = 2. REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_IN_FENESTRA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI id == 1 TUNC
+        SI s[1] != 0 TUNC REDDE 0. FIN-SI.
+        SI x >= s[3] && y >= s[4] && x < s[3] + s[5] && y < s[4] + s[6] TUNC REDDE 1. FIN-SI.
+        REDDE 0.
+    FIN-SI.
+    SI id == 2 TUNC
+        SI s[2] != 0 TUNC REDDE 0. FIN-SI.
+        SI x >= s[7] && y >= s[8] && x < s[7] + s[9] && y < s[8] + s[10] TUNC REDDE 1. FIN-SI.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_HIT REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI s[0] == 1 TUNC
+        SI FB_IN_FENESTRA(s, 1, x, y) == 1 TUNC REDDE 1. FIN-SI.
+        SI FB_IN_FENESTRA(s, 2, x, y) == 1 TUNC REDDE 2. FIN-SI.
+    FIN-SI.
+    SI s[0] == 2 TUNC
+        SI FB_IN_FENESTRA(s, 2, x, y) == 1 TUNC REDDE 2. FIN-SI.
+        SI FB_IN_FENESTRA(s, 1, x, y) == 1 TUNC REDDE 1. FIN-SI.
+    FIN-SI.
+    SI s[0] == 0 TUNC
+        SI FB_IN_FENESTRA(s, 1, x, y) == 1 TUNC REDDE 1. FIN-SI.
+        SI FB_IN_FENESTRA(s, 2, x, y) == 1 TUNC REDDE 2. FIN-SI.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_MAX_TOGGLE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736) - 28.
+    SI id == 1 TUNC
+        SI s[17] == 0 TUNC
+            s[18]=s[3]. s[19]=s[4]. s[20]=s[5]. s[21]=s[6].
+            s[3]=0. s[4]=0. s[5]=w. s[6]=h. s[17]=1.
+        ALITER
+            s[3]=s[18]. s[4]=s[19]. s[5]=s[20]. s[6]=s[21]. s[17]=0.
+        FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    SI id == 2 TUNC
+        SI s[22] == 0 TUNC
+            s[23]=s[7]. s[24]=s[8]. s[25]=s[9]. s[26]=s[10].
+            s[7]=0. s[8]=0. s[9]=w. s[10]=h. s[22]=1.
+        ALITER
+            s[7]=s[23]. s[8]=s[24]. s[9]=s[25]. s[10]=s[26]. s[22]=0.
+        FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_MINIMIZA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI id == 1 && s[1] == 0 TUNC s[1] = 1. FIN-SI.
+    SI id == 2 && s[2] == 0 TUNC s[2] = 1. FIN-SI.
+    DECLARA a SICUT NUMERUS VALENS FB_RELEGE_ACTIVUM(s).
+    REDDE a.
+FIN-FUNCTIO.
+
+FUNCTIO FB_CLAUDE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI id == 1 TUNC s[1] = 2. FIN-SI.
+    SI id == 2 TUNC s[2] = 2. FIN-SI.
+    s[14] = 0.
+    DECLARA a SICUT NUMERUS VALENS FB_RELEGE_ACTIVUM(s).
+    REDDE a.
+FIN-FUNCTIO.
+
+FUNCTIO FB_TASKBAR_CLICK REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    SI x >= 98 && x < 286 && s[1] != 2 TUNC
+        SI s[1] == 1 TUNC s[1]=0. s[0]=1. REDDE 1. FIN-SI.
+        SI s[0] == 1 TUNC DECLARA m SICUT NUMERUS VALENS FB_MINIMIZA(s,1). REDDE 1. FIN-SI.
+        s[0]=1. REDDE 1.
+    FIN-SI.
+    SI x >= 292 && x < 430 && s[2] != 2 TUNC
+        SI s[2] == 1 TUNC s[2]=0. s[0]=2. REDDE 1. FIN-SI.
+        SI s[0] == 2 TUNC DECLARA m2 SICUT NUMERUS VALENS FB_MINIMIZA(s,2). REDDE 1. FIN-SI.
+        s[0]=2. REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_MOUSE_DOWN REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    DECLARA mx SICUT NUMERUS VALENS s[11].
+    DECLARA my SICUT NUMERUS VALENS s[12].
+    SI my >= CONTENTUM(50333736) - 28 TUNC REDDE FB_TASKBAR_CLICK(s, mx). FIN-SI.
+    DECLARA id SICUT NUMERUS VALENS FB_HIT(s, mx, my).
+    SI id == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA foc SICUT NUMERUS VALENS FB_FOCUS(s, id).
+    DECLARA x SICUT NUMERUS VALENS s[3].
+    DECLARA y SICUT NUMERUS VALENS s[4].
+    DECLARA w SICUT NUMERUS VALENS s[5].
+    DECLARA maximus SICUT NUMERUS VALENS s[17].
+    SI id == 2 TUNC x=s[7]. y=s[8]. w=s[9]. maximus=s[22]. FIN-SI.
+    DECLARA lx SICUT NUMERUS VALENS mx - x.
+    DECLARA ly SICUT NUMERUS VALENS my - y.
+    SI ly >= 4 && ly < 24 && lx >= w - 26 && lx < w - 6 TUNC
+        DECLARA c SICUT NUMERUS VALENS FB_CLAUDE(s,id). REDDE 1.
+    FIN-SI.
+    SI ly >= 4 && ly < 24 && lx >= w - 70 && lx < w - 52 TUNC
+        DECLARA m SICUT NUMERUS VALENS FB_MINIMIZA(s,id). REDDE 1.
+    FIN-SI.
+    SI ly >= 4 && ly < 24 && lx >= w - 48 && lx < w - 30 TUNC
+        DECLARA z SICUT NUMERUS VALENS FB_MAX_TOGGLE(s,id). REDDE 1.
+    FIN-SI.
+    SI ly >= 0 && ly < 28 && lx >= 0 && lx < w - 74 && maximus == 0 TUNC
+        s[14]=id. s[15]=mx-x. s[16]=my-y. REDDE 1.
+    FIN-SI.
+    REDDE foc.
+FIN-FUNCTIO.
+
+FUNCTIO FB_DRAG REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    DECLARA id SICUT NUMERUS VALENS s[14].
+    SI id == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(50333736) - 28.
+    DECLARA nx SICUT NUMERUS VALENS s[11] - s[15].
+    DECLARA ny SICUT NUMERUS VALENS s[12] - s[16].
+    DECLARA ww SICUT NUMERUS VALENS s[5].
+    DECLARA hh SICUT NUMERUS VALENS s[6].
+    SI id == 2 TUNC ww=s[9]. hh=s[10]. FIN-SI.
+    SI nx < 0 TUNC nx=0. FIN-SI. SI ny < 0 TUNC ny=0. FIN-SI.
+    SI nx + ww > sw TUNC nx=sw-ww. FIN-SI.
+    SI ny + hh > sh TUNC ny=sh-hh. FIN-SI.
+    SI id == 1 TUNC s[3]=nx. s[4]=ny. ALITER s[7]=nx. s[8]=ny. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FB_MOVE_ACTIVE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    DECLARA id SICUT NUMERUS VALENS s[0].
+    SI id == 0 TUNC REDDE 0. FIN-SI.
+    SI id == 1 && (s[1] != 0 || s[17] == 1) TUNC REDDE 0. FIN-SI.
+    SI id == 2 && (s[2] != 0 || s[22] == 1) TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS s[3]. DECLARA y SICUT NUMERUS VALENS s[4].
+    DECLARA ww SICUT NUMERUS VALENS s[5]. DECLARA hh SICUT NUMERUS VALENS s[6].
+    SI id == 2 TUNC x=s[7]. y=s[8]. ww=s[9]. hh=s[10]. FIN-SI.
+    x=x+dx. y=y+dy.
+    SI x < 0 TUNC x=0. FIN-SI. SI y < 0 TUNC y=0. FIN-SI.
+    SI x+ww > CONTENTUM(50333728) TUNC x=CONTENTUM(50333728)-ww. FIN-SI.
+    SI y+hh > CONTENTUM(50333736)-28 TUNC y=CONTENTUM(50333736)-28-hh. FIN-SI.
+    SI id == 1 TUNC s[3]=x. s[4]=y. ALITER s[7]=x. s[8]=y. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FB_TAB_ALTERNA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI s[0] == 1 && s[2] == 0 TUNC s[0]=2. REDDE 1. FIN-SI.
+    SI s[0] == 2 && s[1] == 0 TUNC s[0]=1. REDDE 1. FIN-SI.
+    SI s[1] == 0 TUNC s[0]=1. REDDE 1. FIN-SI.
+    SI s[2] == 0 TUNC s[0]=2. REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_CLAVIS_AGE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT q SICUT NUMERUS.
+    SI q == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA scan SICUT NUMERUS VALENS (q / 2) % 65536.
+    DECLARA unicode SICUT NUMERUS VALENS q / 131072.
+    SI scan == 23 || unicode == 27 TUNC REDDE 2. FIN-SI.
+    SI unicode == 9 TUNC DECLARA t SICUT NUMERUS VALENS FB_TAB_ALTERNA(s). REDDE 1. FIN-SI.
+    SI scan == 1 TUNC DECLARA a1 SICUT NUMERUS VALENS FB_MOVE_ACTIVE(s,0,0-12). REDDE 1. FIN-SI.
+    SI scan == 2 TUNC DECLARA a2 SICUT NUMERUS VALENS FB_MOVE_ACTIVE(s,0,12). REDDE 1. FIN-SI.
+    SI scan == 3 TUNC DECLARA a3 SICUT NUMERUS VALENS FB_MOVE_ACTIVE(s,12,0). REDDE 1. FIN-SI.
+    SI scan == 4 TUNC DECLARA a4 SICUT NUMERUS VALENS FB_MOVE_ACTIVE(s,0-12,0). REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FB_REDDE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    DECLARA f SICUT NUMERUS VALENS FV_FUNDUM().
+    DECLARA a SICUT NUMERUS VALENS FB_RELEGE_ACTIVUM(s).
+    SI s[0] == 1 TUNC
+        SI s[2] == 0 TUNC f = FV_TABULA(s[7],s[8],s[9],s[10],0). FIN-SI.
+        SI s[1] == 0 TUNC f = FV_PROGRAMMATA(s[3],s[4],s[5],s[6],1). FIN-SI.
+    ALITER
+        SI s[1] == 0 TUNC f = FV_PROGRAMMATA(s[3],s[4],s[5],s[6],0). FIN-SI.
+        SI s[2] == 0 TUNC f = FV_TABULA(s[7],s[8],s[9],s[10],1). FIN-SI.
+    FIN-SI.
+    f = FV_TASKBAR(s[1],s[2],s[0]).
+    f = FV_CURSOR(s[11],s[12]).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FV_AD_EST() == 0 TUNC REDDE 5. FIN-SI.
+    DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 32.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    s[0]=1. s[1]=0. s[2]=0.
+    s[5]=w*58/100. s[6]=(h-28)*66/100.
+    s[9]=w*42/100. s[10]=(h-28)*52/100.
+    SI s[5] < 640 TUNC s[5]=640. FIN-SI. SI s[6] < 420 TUNC s[6]=420. FIN-SI.
+    SI s[9] < 500 TUNC s[9]=500. FIN-SI. SI s[10] < 360 TUNC s[10]=360. FIN-SI.
+    SI s[5] > w TUNC s[5]=w. FIN-SI. SI s[6] > h-28 TUNC s[6]=h-28. FIN-SI.
+    SI s[9] > w TUNC s[9]=w. FIN-SI. SI s[10] > h-28 TUNC s[10]=h-28. FIN-SI.
+    s[3]=w*6/100. s[4]=h*7/100.
+    s[7]=w-s[9]-w*5/100. s[8]=h*21/100.
+    SI s[3]+s[5] > w TUNC s[3]=w-s[5]. FIN-SI.
+    SI s[4]+s[6] > h-28 TUNC s[4]=h-28-s[6]. FIN-SI.
+    SI s[7] < 0 TUNC s[7]=0. FIN-SI. SI s[8]+s[10] > h-28 TUNC s[8]=h-28-s[10]. FIN-SI.
+    s[11]=w/2. s[12]=h/2. s[13]=0. s[14]=0. s[17]=0. s[22]=0.
+    DECLARA pp SICUT NUMERUS VALENS FB_PROTOCOLA_PARA(s).
+    DECLARA f SICUT NUMERUS VALENS FB_REDDE(s).
+    DECLARA finis SICUT NUMERUS VALENS 0.
+    DUM finis == 0 PERFICE
+        DECLARA redde SICUT NUMERUS VALENS 0.
+        DECLARA q SICUT NUMERUS VALENS FB_CLAVIS_LEGE().
+        SI q != 0 TUNC
+            DECLARA qa SICUT NUMERUS VALENS FB_CLAVIS_AGE(s,q).
+            SI qa == 2 TUNC finis=1. ALITER SI qa == 1 TUNC redde=1. FIN-SI. FIN-SI.
+        FIN-SI.
+        DECLARA muris SICUT NUMERUS VALENS FB_MURUS_ABSOLUTUS(s[29],s).
+        SI muris == 0 TUNC muris = FB_MURUS_RELATIVUS(s[28],s). FIN-SI.
+        SI muris != 0 TUNC
+            DECLARA bullae SICUT NUMERUS VALENS muris - 1.
+            SI (bullae & 1) != 0 && (s[13] & 1) == 0 TUNC DECLARA md SICUT NUMERUS VALENS FB_MOUSE_DOWN(s). FIN-SI.
+            SI (bullae & 1) != 0 && s[14] != 0 TUNC DECLARA dr SICUT NUMERUS VALENS FB_DRAG(s). FIN-SI.
+            SI (bullae & 1) == 0 && (s[13] & 1) != 0 TUNC s[14]=0. FIN-SI.
+            s[13]=bullae. redde=1.
+        FIN-SI.
+        SI redde == 1 TUNC f = FB_REDDE(s). FIN-SI.
+        DECLARA pausa SICUT NUMERUS VALENS FB_STALL().
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
