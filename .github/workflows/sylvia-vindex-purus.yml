@@ -33,12 +33,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          test -s 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          grep -q 'FUNCTIO COMPONE_VOCA_UEFI6' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          grep -q 'UEFI_VOCA6' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          ! grep -q '50333704' 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          FONS='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          BINARIUM='Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          test -s "$FONS"
+          test -s "$BINARIUM"
+          chmod +x "$BINARIUM"
+          grep -q 'FUNCTIO COMPONE_VOCA_UEFI6' "$FONS"
+          grep -q 'UEFI_VOCA6' "$FONS"
+          if grep -n '50333704' "$FONS"; then
+            printf '%s\n' 'ERRATUM: vestigium callback POLLE historicum in compilatore canonico inventum est.' >&2
+            exit 1
+          fi
+          printf '%s\n' 'RECTE: compilator canonicus UEFI_VOCA6 continet et callback POLLE historicum non continet.'
 
       - name: Fontes runtime hereditatos ex exemplari CI remove
         shell: bash
