@@ -1,0 +1,46 @@
+name: Auto-hospitium R2 R4 temporarium
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-r2-r4-fons-win64
+    paths:
+      - '.github/workflows/auto-hospitium-r2-r4-temporarium.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  renova:
+    name: G2 et G3 compara atque bootstrap renova
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+        with:
+          ref: chatgpt/vindex-r2-r4-fons-win64
+      - name: Punctum fixum proba
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          chmod +x compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_g2
+          chmod +x /tmp/compilator_g2
+          /tmp/compilator_g2 src/compilator_vindex.vindex /tmp/compilator_g3
+          cmp /tmp/compilator_g2 /tmp/compilator_g3
+          cp /tmp/compilator_g2 compilator_vindex
+          chmod +x compilator_vindex
+      - name: Compilatorem bootstrap committe
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'; then
+            echo 'RECTE: compilator bootstrap iam ad punctum fixum est.'
+            exit 0
+          fi
+          git config user.name 'VINDEX Custos'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          git commit -m 'R1: compilatorem bootstrap ad punctum fixum renova'
+          git push origin HEAD:chatgpt/vindex-r2-r4-fons-win64
