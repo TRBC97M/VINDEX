@@ -92,7 +92,10 @@ internal static class Probationes
             IReadOnlyList<DiagnosticumVindex> diagnostica = DiagnosticumVindex.Extrahe(relatio);
             DiagnosticumVindex? diagnosticum = diagnostica.FirstOrDefault(d =>
                 d.Linea == 2 && d.Columna == 5 && d.Nuntius.Contains("instructio ignota", StringComparison.OrdinalIgnoreCase));
-            Exige(diagnosticum is not null, "Diagnosticum reale R2 ab Officina non lectum est.\n" + relatio);
+            if (diagnosticum is null)
+            {
+                throw new InvalidOperationException("Diagnosticum reale R2 ab Officina non lectum est.\n" + relatio);
+            }
             Exige(Path.GetFileName(diagnosticum.Via).Equals("principalis.vindex", StringComparison.OrdinalIgnoreCase),
                 "Fons diagnostici realis falsus est.");
             File.WriteAllText(ViaRelationis, "RECTE: diagnosticum reale compilatoris per Officinam lectum est.\n");
