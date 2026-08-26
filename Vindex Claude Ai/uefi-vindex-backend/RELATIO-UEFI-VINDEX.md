@@ -265,3 +265,47 @@ dispositio memoriae (codex, acervus, regio systematis) contractum
 explicitum requirit, non conventiones implicitas in constantibus
 codice fixis dispersas. Solutio in backend ELF et in dispositione
 nuclei quaerenda est, non in ponticulo.
+
+
+## Addendum: diagnostica per watchpoint GDB (methodus decisiva)
+
+QEMU stub GDB adhibitus est (`-S -gdb tcp::1234`), quod investigationem
+per coniecturas in investigationem per observationem mutavit.
+
+### Quid observatum est
+
+1. **Watchpoint super `0x3001000`** (regio UMBRA): scriptio a
+   `RIP 0x4001cb`, `RAX = 0x3001000`. `PIXEL_SCRIBE` **recte
+   functionat**; `umbra` recta est.
+
+2. **Watchpoint super `0x3000850`** (metadatum UMBRA ipsum): **UNA
+   SOLA scriptio** in tota exsecutione, a ponticulo (`RIP 0x7e0d7c5b`),
+   valore recto `50335744`.
+
+   **Ergo metadatum NUMQUAM corrumpitur.** Deductio arithmetica prior
+   (Addendum de defectu paginae) **FALSA erat**: supponebat coordinatas
+   intra limites manere. Contrarium verum est.
+
+3. **Breakpoint super `0x400b62`** (instructio `mov [rax], bl`) cum
+   condicione `rax > 0x3100000`: capta vocatio cum `RAX = 0x80000000`
+   -- exacte 2^31, signum superfluxus integri signati XXXII bitorum.
+
+4. **Adressa reditus ex `[rbp+8]`**: `0x400ea8`. Desassemblatio
+   ostendit `call` ad `0x78` (= initium `PIXEL_SCRIBE`, post prologum
+   ELF de 120 octetis), praecedentibus `pop rdx; pop rsi; pop rdi`
+   (tres parametri). Vocator est `RECTANGULUM`, quae `PIXEL_SCRIBE(x +
+   px, y + py, color)` in duplici circulo vocat.
+
+### Quo pervenimus
+
+`RECTANGULUM` mensuras absurdas accipit (`latitudo`/`altitudo`),
+ergo circuli eius coordinatas extra omnem limitem producunt.
+
+Metadata omnia cum ponticulo C collata sunt: `meta[0..15]` **exacte
+congruunt** (verificatum contra lineas 244-259 `bootstrap_uefi.c`).
+`TEXTUS.BIN` et `FORMA.BIN` nunc onerantur, ut ille faciebat.
+
+Quaerendum ergo est **quis `RECTANGULUM` cum mensuris absurdis vocet**,
+et unde illae mensurae veniant. Instrumentum idoneum iam paratum est:
+breakpoint conditionalis super initium `RECTANGULUM` cum inspectione
+parametrorum et adressae reditus.
