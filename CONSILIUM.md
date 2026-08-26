@@ -127,10 +127,26 @@ Si res in hoc documento et status realis Git dissentiunt, **status realis Git pr
 
 ## P7 — Purificatio repositorii
 
-**Status:** `PARATUM`, sed mutationes activas aliorum agentium non turbet.  
+**Status:** `PERFECTUM`.  
 **Finis:** ramos experimentales veteres, duplicata, PR obsoletas et artefacta non canonica post verificationem ordinare vel claudere.
 
-**Criterium victoriae:** `main` et rami activi rationem praesentis architecturae clare repraesentant; historia servatur, sed via canonica non obscuratur.
+**Archivata / clausa:**  
+- PR #3 — monolithus historicus VINDEX 0.53, post reconciliationem selectivam R0–R5;
+- PR #38 et #40 — contractus atque excisio historica 0.53, hodie a linea canonica puriore superata;
+- PR #42 et #43 — excitatores CI temporarii;
+- PR #44 — via vetus `Sylvia Moderna A`, a Fenestrale II Purus superata;
+- PR #58 — excitator CI temporarius Officinae;
+- PR #66 — Laboratorium generale Sylviae, cuius probationem muris certam PR #71 succedit;
+- PR #67–#70 — tentamina intermedia muris, a probatione PS/2 #71 superata.
+
+**Aperta consulto servantur:**  
+- PR #32, #33 et #59–#65 — series Fenestrale II Purus A–I, fons canonizandus P4;
+- PR #57 — Officina VINDEX, fons canonizandus P6;
+- PR #71 — probatio PS/2 VINDEX nativa, fons canonizandus P5.
+
+Rami historici clausarum PR non delentur tantum ad speciem mundandam: Git historia manet memoria operis, dum PR apertae tantum vias futuras reales repraesentant.
+
+**Criterium victoriae:** `main` et PR apertae rationem praesentis architecturae clare repraesentant; historia servatur, sed via canonica non obscuratur. `PERFECTUM`.
 
 ---
 
@@ -254,7 +270,7 @@ Ordinem operum sic iudicamus:
 
 `P1 UEFI purus` → `P2 VINDEX 0.53 canonicus` → `P3 catena Sylvia pura` → `P4 Fenestrale II` + `P5 mus` → `P6 Officina` → deinde infrastructura linguae/systematis secundum dependentias.
 
-P7 purificatio repositorii inter hos gradus fieri potest cum non perturbat opus activum.
+P7 purificatio repositorii `PERFECTUM` est; ulterior purificatio tantum fit cum nova vetustas aut duplicatio realis apparebit.
 
 ---
 
