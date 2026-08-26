@@ -1,0 +1,31 @@
+name: VINDEX 0.53 — PROIECTUM R3
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/test_proiectum_053.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proiecta/**'
+      - '.github/workflows/vindex-053-proiectum-r3.yml'
+
+jobs:
+  proiectum:
+    name: Manifestum, viae relativae et destinationes probantur
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+      - name: Compilatorem para
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: chmod +x compilator_vindex
+      - name: PROIECTUM R3 exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 -m unittest tests/test_proiectum_053.py -v
+      - name: Diagnostica R2 non regrediantur
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 -m unittest tests/test_diagnostica_053.py -v
+      - name: Baseline R1 non regrediatur
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: python3 -m unittest tests/test_baseline_053.py -v
