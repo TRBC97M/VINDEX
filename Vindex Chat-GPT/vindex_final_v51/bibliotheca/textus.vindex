@@ -1,7 +1,75 @@
-// Bibliotheca TEXTUS VINDEX 0.52.
+// Bibliotheca TEXTUS VINDEX.
 // VINDEX Latine cogitat. Sylvia Latine loquitur.
 
 FUNCTIO LONGITUDO REDDENS NUMERUS.
     ACCIPIT textus SICUT TEXTUS.
+    SI textus == 0 TUNC REDDE 0. FIN-SI.
     REDDE CONTENTUM(textus).
+FIN-FUNCTIO.
+
+FUNCTIO TEXTUS_VACUUS REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    SI LONGITUDO(textus) == 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO TEXTUS_INDEX REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT fragmentum SICUT TEXTUS.
+    SI textus == 0 || fragmentum == 0 TUNC REDDE -1. FIN-SI.
+
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA m SICUT NUMERUS VALENS LONGITUDO(fragmentum).
+    SI m == 0 TUNC REDDE 0. FIN-SI.
+    SI m > n TUNC REDDE -1. FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i <= n - m PERFICE
+        DECLARA j SICUT NUMERUS VALENS 0.
+        DECLARA par SICUT NUMERUS VALENS 1.
+        DUM j < m && par == 1 PERFICE
+            SI OCTETUS_AB(textus + 16 + i + j) != OCTETUS_AB(fragmentum + 16 + j) TUNC
+                par = 0.
+            FIN-SI.
+            j = j + 1.
+        FIN-DUM.
+        SI par == 1 TUNC REDDE i. FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE -1.
+FIN-FUNCTIO.
+
+FUNCTIO TEXTUS_CONTINET REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT fragmentum SICUT TEXTUS.
+    SI TEXTUS_INDEX(textus, fragmentum) >= 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO TEXTUS_PRAEFIXUM REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT praefixum SICUT TEXTUS.
+    SI textus == 0 || praefixum == 0 TUNC REDDE 0. FIN-SI.
+    SI TEXTUS_INDEX(textus, praefixum) == 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO TEXTUS_SUFFIXUM REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT suffixum SICUT TEXTUS.
+    SI textus == 0 || suffixum == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA m SICUT NUMERUS VALENS LONGITUDO(suffixum).
+    SI m > n TUNC REDDE 0. FIN-SI.
+    SI m == 0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < m PERFICE
+        SI OCTETUS_AB(textus + 16 + n - m + i) != OCTETUS_AB(suffixum + 16 + i) TUNC
+            REDDE 0.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
 FIN-FUNCTIO.
