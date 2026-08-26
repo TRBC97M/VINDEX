@@ -5,8 +5,10 @@ set -u
 RADIX="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$RADIX" || exit 1
 
-TEMPORAIRE="$(mktemp -d)" || exit 1
-trap 'rm -rf -- "$TEMPORAIRE"' EXIT HUP INT TERM
+TEMPORARIUM="$(mktemp -d)" || exit 1
+trap 'rm -rf -- "$TEMPORARIUM"' EXIT HUP INT TERM
+
+chmod 755 ./vindexc ./compilator_vindex 2>/dev/null || true
 
 RECTA=0
 ERRATA=0
@@ -29,8 +31,8 @@ exsequere_casum() {
     local fons="$2"
     local exspectatum="$3"
     shift 3
-    local exsecutabile="$TEMPORAIRE/$nomen"
-    local relatio="$TEMPORAIRE/$nomen.compilatio"
+    local exsecutabile="$TEMPORARIUM/$nomen"
+    local relatio="$TEMPORARIUM/$nomen.compilatio"
 
     if ! ./vindexc "$fons" -o "$exsecutabile" >"$relatio" 2>&1; then
         erratum "$nomen" "compilatio reiecta: $(tr '\n' ' ' <"$relatio")"
@@ -53,8 +55,8 @@ respice_reiectionem() {
     local nomen="$1"
     local fons="$2"
     local fragmentum="$3"
-    local exsecutabile="$TEMPORAIRE/$nomen"
-    local relatio="$TEMPORAIRE/$nomen.erratum"
+    local exsecutabile="$TEMPORARIUM/$nomen"
+    local relatio="$TEMPORARIUM/$nomen.erratum"
 
     ./vindexc "$fons" -o "$exsecutabile" >"$relatio" 2>&1
     local status=$?
@@ -73,8 +75,8 @@ respice_reiectionem_nativam() {
     local nomen="$1"
     local fons="$2"
     local fragmentum="$3"
-    local exsecutabile="$TEMPORAIRE/$nomen"
-    local relatio="$TEMPORAIRE/$nomen.erratum"
+    local exsecutabile="$TEMPORARIUM/$nomen"
+    local relatio="$TEMPORARIUM/$nomen.erratum"
 
     ./compilator_vindex "$fons" "$exsecutabile" >"$relatio" 2>&1
     local status=$?
@@ -90,47 +92,100 @@ respice_reiectionem_nativam() {
 }
 
 respice_auto_hospitium() {
-    local gen2="$TEMPORAIRE/compilator_gen2"
-    local gen3="$TEMPORAIRE/compilator_gen3"
-    ./compilator_vindex src/compilator_vindex.vindex "$gen2" >"$TEMPORAIRE/gen2.log" 2>&1
+    local gen2="$TEMPORARIUM/compilator_gen2"
+    local gen3="$TEMPORARIUM/compilator_gen3"
+    local relatio2="$TEMPORARIUM/gen2.log"
+    local relatio3="$TEMPORARIUM/gen3.log"
+
+    ./compilator_vindex src/compilator_vindex.vindex "$gen2" >"$relatio2" 2>&1
     local status2=$?
-    chmod 755 "$gen2" 2>/dev/null
-    "$gen2" src/compilator_vindex.vindex "$gen3" >"$TEMPORAIRE/gen3.log" 2>&1
+    chmod 755 "$gen2" 2>/dev/null || true
+    "$gen2" src/compilator_vindex.vindex "$gen3" >"$relatio3" 2>&1
     local status3=$?
+    chmod 755 "$gen3" 2>/dev/null || true
+
     if [ "$status2" -ne 0 ] || [ "$status3" -ne 0 ]; then
         erratum "auto-hospitium" "generatio2=$status2 generatio3=$status3"
     elif ! cmp -s "$gen2" "$gen3"; then
-        erratum "auto-hospitium" "generationes non sunt identicae"
+        erratum "auto-hospitium" "generationes G2 et G3 non sunt identicae"
+    elif ! cmp -s ./compilator_vindex "$gen3"; then
+        erratum "auto-hospitium" "binarium canonicum fonti non respondet"
     else
         recte "auto-hospitium"
     fi
 }
 
-respice_amorsam() {
-    local relatio="$TEMPORAIRE/amorsa.log"
-    if ./bootstrap/reconstruit.sh >"$relatio" 2>&1; then
-        recte "amorsa-python"
+respice_logicam_brevem() {
+    local exsecutabile="$TEMPORARIUM/logica_brevis"
+    local relatio="$TEMPORARIUM/logica_brevis.log"
+    if ! ./compilator_vindex probationes/logica_brevis.vindex "$exsecutabile" >"$relatio" 2>&1; then
+        erratum "logica-brevis" "compilatio defecit: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+    chmod 755 "$exsecutabile" 2>/dev/null || true
+    timeout 10s "$exsecutabile" >"$relatio" 2>&1
+    local status=$?
+    if [ "$status" -ne 0 ]; then
+        erratum "logica-brevis" "status exitus $status: $(tr '\n' ' ' <"$relatio")"
     else
-        erratum "amorsa-python" "$(tr '\n' ' ' <"$relatio")"
+        recte "logica-brevis"
     fi
 }
 
-respice_officinam() {
-    local relatio="$TEMPORAIRE/officina.log"
-    if python3 -m unittest discover -s tests -p 'test_officina.py' -v >"$relatio" 2>&1; then
-        recte "officina"
+respice_pe() {
+    local exsecutabile="$TEMPORARIUM/salve.exe"
+    local relatio="$TEMPORARIUM/pe.log"
+    if ! ./compilator_vindex tests/casus/salve.vindex "$exsecutabile" pe >"$relatio" 2>&1; then
+        erratum "pe32-plus" "generatio PE defecit: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+    local magia
+    magia=$(od -An -tx1 -N2 "$exsecutabile" 2>/dev/null | tr -d ' \n')
+    if [ "$magia" != "4d5a" ]; then
+        erratum "pe32-plus" "signum MZ deest"
+    elif ! file "$exsecutabile" | grep -q 'PE32+'; then
+        erratum "pe32-plus" "structura PE32+ non agnoscitur"
     else
-        erratum "officina" "$(tr '\n' ' ' <"$relatio")"
+        recte "pe32-plus"
     fi
 }
 
-respice_systema() {
-    local relatio="$TEMPORAIRE/systema.log"
-    if python3 -m unittest discover -s tests -p 'test_systema.py' -v >"$relatio" 2>&1; then
-        recte "systema"
+respice_puritatem() {
+    local relatio="$TEMPORARIUM/puritas.log"
+    if python3 ../../instrumenta/verifica_puritatem_sylviae.py >"$relatio" 2>&1; then
+        recte "puritas-sylviae"
     else
-        erratum "systema" "$(tr '\n' ' ' <"$relatio")"
+        erratum "puritas-sylviae" "$(tr '\n' ' ' <"$relatio")"
     fi
+}
+
+respice_fenestrale() {
+    local probatio="$TEMPORARIUM/fenestrale_lxxx"
+    local systema="$TEMPORARIUM/fenestrale_i.elf"
+    local relatio="$TEMPORARIUM/fenestrale.log"
+
+    if ! ./compilator_vindex probationes/fenestrale_purus_i_fenestrae.vindex "$probatio" >"$relatio" 2>&1; then
+        erratum "fenestrale-lxxx" "compilatio probationis defecit: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+    chmod 755 "$probatio" 2>/dev/null || true
+    timeout 10s "$probatio" >>"$relatio" 2>&1
+    local status=$?
+    if [ "$status" -ne 0 ]; then
+        erratum "fenestrale-lxxx" "status exitus $status: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+
+    if ! ./compilator_vindex systema/fenestrale_ii_purus_i.vindex "$systema" >>"$relatio" 2>&1; then
+        erratum "fenestrale-i-integrum" "compilatio systematis defecit: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+    if ! file "$systema" | grep -q 'ELF 64-bit'; then
+        erratum "fenestrale-i-integrum" "ELF64 validum non generatum est"
+        return
+    fi
+    recte "fenestrale-lxxx"
+    recte "fenestrale-i-integrum"
 }
 
 exsequere_casum "salve" "tests/casus/salve.vindex" "Salve, VINDEX!"
@@ -154,9 +209,10 @@ respice_reiectionem_nativam "nativum-functio" "tests/casus/erratum_functio.vinde
 respice_reiectionem_nativam "nativum-importa" "tests/casus/erratum_importa.vindex" "fons importatus aperiri non potest"
 
 respice_auto_hospitium
-respice_amorsam
-respice_officinam
-respice_systema
+respice_logicam_brevem
+respice_pe
+respice_puritatem
+respice_fenestrale
 
 printf '\n%s probationes rectae; %s errata.\n' "$RECTA" "$ERRATA"
 if [ "$ERRATA" -ne 0 ]; then
