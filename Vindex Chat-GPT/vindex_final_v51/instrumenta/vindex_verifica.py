@@ -37,11 +37,13 @@ BUILTIN_CALLS = {
     "MITTE",
     "OCTETUS",
     "OCTETUS_AB",
+    "REDDE",
     "RESERVA",
     "SCRIBE_OCTETUM_AB",
     "SEDES",
     "SI",
     "TUBUS",
+    "UEFI_VOCA6",
     "VALENS",
 }
 
