@@ -1,158 +1,83 @@
-# VINDEX 0.51.0 — Bibliotheca duplex
+# VINDEX — Lingua universalis in constructione
 
-VINDEX est lingua programmationis humilis, vocabulario Latino et forma
-COBOL simili ornata. Fontes directe in exsecutabilia ELF x86-64 Linux
-convertit, sine NASM, GCC vel libc.
+> **VINDEX Latine cogitat. Sylvia Latine loquitur.**
 
-Compilator hodiernus ipse VINDEX scriptus est atque se ipsum byte pro byte
-reproducit. Sigillum puncti fixi SHA-256 est:
+VINDEX est lingua programmationis generalis, vocabulario Latino, quae a basimo gradu usque ad applicationes magnas crescere destinatur.
+
+Meta non est tantum C imitari aut C++ aequare. **Nullum genus programmatis extra fines VINDEX esse debet.** VINDEX tandem firmware, nucleos, gubernatores, applicationes graphicas, instrumenta evolutionis, ludos, servitores, rete, computationem scientificam et alia programmata exprimere debet.
+
+Haec destinatio tamen a statu praesentis implementationis distinguitur. Hoc documentum quid **hodie canonicum et probatum** sit describit.
+
+---
+
+# I. Ubi codex canonicus est
+
+Directorium principale huius lineae est:
 
 ```text
-153b57c82e32da4fb81ccf5de1dc0d3319418de5b7c02a5087fc8ba80ddb5f4e
+Vindex Chat-GPT/vindex_final_v51/
 ```
 
-## VINDEX Systema
+Nomen directorii est historicum. Non significat omnia quae ibi hodie canonica sunt ad facultates veteris 0.51 limitari.
 
-VINDEX nunc nucleum x86-64 graphicum sine systemate hospite experimentalem
-continet. Duae viae initii adsunt: BIOS/VGA ad machinas veteres et QEMU,
-atque UEFI/GOP ad computatra recentia sine CSM. Utraque idem ELF a compilatore
-VINDEX genitum exsequitur. Nucleus ambitum **VINDEX Fenestrale XCV** cum mensa
-operaria, fascia operum, menu `INITIUM`, imaginibus, fenestris mobilibus et
-cursore pingit. In via UEFI, pons firmware tenuis framebuffer, claviaturam et
-murem vel tabulam tactus praebet; mensa, fenestrae, Scriptor II et Serpens ipsa
-VINDEX manent. Tabula logica 320×200 in memoriam occultam pingitur, deinde
-integra ad framebuffer linearem monitoris transfertur; margines nigri et
-constructionis intermediae scintillatio sic tolluntur. Post initium nullus
-actus graphicae firmware ad imagines praesentandas adhibetur.
+Documenta totius repositorii:
 
-Forma litterarum UEFI ex fonte IBM/VGA 8×8 publici dominii venit. Bullae muris
-UEFI breviter stabiliuntur, ne tabulae tactiles menu `INITIUM` crebro aperiant
-atque claudant.
+- `ARCHITECTURA.md` — leges architectonicae VINDEX et Sylviae;
+- `CONSILIUM.md` — status operum et prioritates;
+- `documenta/vindex/` — contractus et relationes linguae;
+- `documenta/sylvia/` — Fenestrale et Sylvia;
+- `.github/workflows/` — certificationes canonicae.
 
-In Fedora QEMU institue atque Systema incipe:
+---
 
-```bash
-sudo dnf install qemu-system-x86-core
-./vindex-systema
+# II. Compilator
+
+Compilator canonicus est:
+
+```text
+compilator_vindex
 ```
 
-Imago BIOS `systema_vindex.img` et imago UEFI `systema_vindex_uefi.img` iam
-paratae sunt. Ex fontibus byte pro byte restitui possunt:
+Fons eius est:
 
-```bash
-make systema
+```text
+src/compilator_vindex.vindex
 ```
 
-Ad computatrum UEFI verum, `systema_vindex_uefi.img` in clavem USB vacuam
-restitue, Secure Boot inhibe et clavem UEFI elige. Imago est discus GPT cum
-partitione FAT32 ESP, partitione VINDEX separata et via normali
-`/EFI/BOOT/BOOTX64.EFI`; CSM non requirit. Ad institutionem novam imago 0.51
-integre restituenda est. Restitutio imaginis clavem destinatam totam delet.
-Si clavis iam VINDEX 0.50 vel prior et documenta servata continet, solum fasciculum
-`/EFI/BOOT/BOOTX64.EFI` substitue: partitio VINDEX et omnia documenta manent.
-Volumen secundae vel tertiae formae ad quartam formam primo initio automatice
-migratur. Programmata vetera in propriam partem transferuntur; `SALVE.VXNAT`
-et `TABULA.VXNAT`, si desunt et locus vacat, automatice instituuntur.
+Compilator ipse VINDEX scriptus est et auto-hospitium ad punctum fixum exercetur.
 
-`systema/nucleus.vindex` est logica nuclei et pictoris VINDEX.
-`systema/boot.S` est parvus sector BIOS necessarius antequam ullum programma
-x86-64 exsequi possit. `systema/uefi/firmamentum_uefi.c` est pons firmware
-UEFI tenuis. Linux, libc, GTK et Python intra Systema non adsunt.
-Haec versio volumen VINDEX permanens cum sex documentis et sex programmatis
-separatis praebet. `FASCICULI`
-documenta eligit, creat, nominat, renominat, delet atque in `SCRIPTOR` aperit.
-Nomina usque ad octo litteras vel numeros accipiunt et suffixum `.TXT`
-automatice accipiunt. `SCRIPTOR` documentum activum bullis `SERVA` et `APERI`
-in volumine interno 32 KiB scribit atque legit. Scriptor II cursoris motum per
-sagittas et murem, paginas verticales et documenta usque ad 4095 octeta
-praebet. Nomen documenti activi in fenestra ostenditur et deletio ante actum
-confirmationem petit.
-`PROGRAMMATA` sex fasciculos `.VXNAT`, a documentis omnino separatos, creat,
-nominat, in Scriptore II mutat, delet atque bulla `AGE` directe in nucleo
-VINDEX exsequitur. Primo initio exempla `SALVE.VXNAT` et `TABULA.VXNAT`
-adsunt. Exemplar novum `TABULA.VXNAT` mandata `PROGRAMMA`, `SCRIBE`, `COLOR`, `LOCUS`,
-`RECTANGULUM`, `MARGO` et `FINIS` demonstrat. Programmata nunc textum
-positionatum, areas coloratas et margines intra propriam fenestram pingunt.
-Linux neque processus hospes huic exsecutioni intervenit. Vitium 0.49 quo
-lineae `SCRIBE` ex memoria falsa legebantur correctum est; programmata 0.49
-iam servata sine conversione recte agunt.
-Pons UEFI partitionem binalem signo `VINDEXV0` invenit et volumen opacum per
-Block I/O persistit; via FAT `VINDEX.FS` subsidium tantum manet. Post quamque
-scripturam pons medium expurgat, 32 KiB relegit et signum octetorum comparat.
-`SERVATUM` igitur non apparet nisi lectio comprobatoria exacte congruit.
-Signum `VINDEXFS`, directorium duodecim ingressuum, nomina, longitudines et contenta
-a nucleo VINDEX ordinantur. Documenta post initium novum computatri manent. Via BIOS editor
-per sessionem operatur, sed persistentia disci adhuc viae UEFI propria est.
-
-## Officina graphica
-
-Fasciculo ZIP extracto, Officinam statim incipe:
+## ELF64
 
 ```bash
-./vindex-officina
-```
-
-**VINDEX Officina** est vera applicatio graphica declarativa. Structura eius in
-`formae/officina.forma` describitur: fenestra, dispositiones, tituli, bullae,
-editor, tabula exitus et reactiones. Logica ipsa VINDEX est: eventa accipit,
-fontem compilat, ELF exsequitur et responsa reddit. `vindex_graphica` est pons
-GTK generalis; neque structuram Officinae neque verba eius in C continet.
-HTML, navigatrum, minister localis, terminale et Python in tempore executionis
-omnino absunt. Fasciculi `.stilus` ad GTK pertinent, non ad interrete.
-
-Fons iam exsistens aperiri potest:
-
-```bash
-./vindex-officina via/ad/programma.vindex
-```
-
-In Fedora Officinam sine `sudo` in indice applicationum installa:
-
-```bash
-./installa_officinam.sh
-```
-
-Index applicationum fenestram directe aperit. Imago, genus `.vindex` et
-mandata `vindex-officina`/`vindexc` usori praesenti instituuntur. Versio prior
-in renovatione servatur.
-
-## Altera applicatio: Salutatio
-
-Eadem Graphica applicationem omnino aliam pingit:
-
-```bash
-./vindex-salutatio
-```
-
-`VINDEX Salutatio` campum textus et bullam ex `salutatio.forma` creat. Nomen
-ad processum VINDEX mittitur; `salutatio_vindex` responsum componit et forma
-illud in fenestra ostendit. Hoc demonstrat pontem GTK Officinae non esse
-alligatum.
-
-## Linea mandatorum
-
-```bash
-./vindexc programma.vindex programma
+./compilator_vindex programma.vindex programma
+chmod +x programma
 ./programma
 ```
 
-Forma `-o` quoque accipitur:
+Aut per interfaciem publicam:
 
 ```bash
 ./vindexc programma.vindex -o programma
+./programma
 ```
 
-`vindexc` fontem verificat, in archivum temporarium compilat, naturam ELF
-probat atque exitum atomice publicat. Compilatio defecta exsecutabile
-imperfectum non relinquit.
+`vindexc` verificat fontem, exitum temporarium construit, formam ELF inspicit et productum atomice publicat.
 
-Verificatio separata:
+## PE32+ Win64
 
 ```bash
-./vindexc --verifica programma.vindex
+./compilator_vindex programma.vindex programma.exe pe
 ```
 
-## Exemplum minimum
+Backend Win64 non solum structuram PE generat: probationes CI producta sub **Windows vero** exsequuntur.
+
+## UEFI
+
+Target UEFI VINDEX purus est nunc opus experimentale activum in PR #82. Facultates magnae iam sub QEMU/OVMF demonstratae sunt, sed target nondum eodem gradu canonico ac ELF et Win64 declaratur. Ne codicem experimenti UEFI quasi API stabilem praesentis versionis praesumas.
+
+---
+
+# III. Exemplum minimum
 
 ```vindex
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
@@ -161,86 +86,327 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 FIN-FUNCTIO.
 ```
 
-## Probationes
+VINDEX iam exercet, inter alia:
+
+- numeros integros;
+- fluitantia;
+- variabiles locales et globales;
+- functiones et recursionem;
+- argumenta functionum et ABI probata;
+- acus et memoriam directam;
+- `FORMA` et structuras memoriae;
+- ordines et textum;
+- importationes;
+- I/O fundamentalem;
+- `argc/argv`;
+- projecta `PROIECTUM`;
+- ELF64;
+- PE32+ Win64;
+- diagnostica cum fonte, linea, columna et nuntio;
+- `&&` et `||` cum aestimatione brevi vera;
+- `&` et `|` ut operationes bitariae separatae.
+
+Haec enumeratio non est promissio plenitudinis C aut C++; VINDEX adhuc lingua in constructione est.
+
+---
+
+# IV. Operatores logici
+
+`&&` et `||` sunt operatoria logica cum **aestimatione brevi**.
+
+Exempli gratia:
+
+```vindex
+SI acus != 0 && CONTENTUM(acus + 48) == 7 TUNC
+    PROCLAMA "RECTE".
+FIN-SI.
+```
+
+Si `acus == 0`, pars dextra non aestimatur.
+
+Prioritas canonica est:
+
+```text
+comparatio → && → ||
+```
+
+`&` et `|` operationes bitariae manent.
+
+Contractus plenior est in:
+
+```text
+documenta/vindex/LOGICA_BREVIS.md
+```
+
+---
+
+# V. Auto-hospitium
+
+Probatio puncti fixi:
 
 ```bash
-./tests/run_tests.sh
-# aut
+make auto-hospitium
+```
+
+Aut manualiter:
+
+```bash
+./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+chmod +x /tmp/g2
+/tmp/g2 src/compilator_vindex.vindex /tmp/g3
+cmp /tmp/g2 /tmp/g3
+```
+
+Catena canonica requirit `G2 = G3`. Probationes recentiores etiam binarium versionatum cum generatione canonica comparant.
+
+Bootstrap Python vetus manet historia et testimonium originis; non est via ordinaria qua VINDEX hodiernus evolvitur.
+
+---
+
+# VI. Probationes
+
+Suite localis canonica:
+
+```bash
 make probatio
 ```
 
-Inspectiones automaticae numeros, iterationes, functiones,
-fluitantia, importationes, formas, acus, memoriam, recursionem, `argc`/`argv`,
-diagnostica, auto-hospitium, duas applicationes VINDEX, pontem GTK declarativum
-et installationem Fedora probant. Sector BIOS, PE32+ UEFI, GPT, FAT32, modus
-VGA, GOP, forma litterarum, ELF nuclei, rectores PS/2, eventa firmware,
-fenestrae, Scriptorem, Programmatum gestorem, exsecutionem `.VXNAT`, Serpentem
-et reconstructiones identicas etiam probant;
-probatio QEMU automatica perficitur si QEMU adest.
-
-## Reconstructio integra
-
-Compilator sine fiducia binario tradito restitui potest:
+Aut:
 
 ```bash
-./bootstrap/reconstruit.sh
+./tests/run_tests.sh
 ```
 
-Catena integra:
+Status canonizatus post PR #99:
 
 ```text
-fontes Python → compilator amorsae → compilator VINDEX → punctum fixum
+XXIII probationes rectae; nulla errata.
 ```
 
-Python ad amorsam historicam et probationes tantum pertinet; Officina eo non
-utitur. Exitus reconstructus cum binario distributo comparatur. Explicatio in
-`bootstrap/AMORSA.md` invenitur.
+Suite exercet:
 
-## Ordinatio
+- `Salve`;
+- calculum;
+- fluitantia;
+- importationes;
+- formas et acus;
+- recursionem;
+- argumenta processūs;
+- diagnostica reiectionis;
+- auto-hospitium;
+- logicam brevem;
+- PE32+;
+- puritatem Sylviae;
+- LXXX fenestras Fenestralis;
+- compilationem Fenestralis II Purus I.
 
-- `src/compilator_vindex.vindex` — fons compilatoris auto-hospitis;
-- `src/officina_vindex.vindex` — fons Officinae VINDEX;
-- `src/salutatio_vindex.vindex` — altera applicatio Graphica VINDEX;
-- `systema/nucleus.vindex` — nucleus VINDEX sine systemate hospite;
-- `systema/boot.S` — sector BIOS et transitus ad modum x86-64;
-- `systema/uefi/` — pons, forma litterarum et constructor imaginis UEFI;
-- `systema_vindex.img` — imago BIOS statim initiabilis;
-- `systema_vindex_uefi.img` — imago GPT UEFI cum ESP et volumine VINDEX;
-- `BOOTX64.EFI` — applicatio UEFI removibilis;
-- `nucleus_systema.elf` — ELF VINDEX a BIOS oneratum;
-- `fenestrale_systema.bin` — inscriptiones Latinae ambitus Fenestralis;
-- `rectores_systema.bin` — rectores PS/2 claviaturae et muris;
-- `bibliotheca/graphica.vindex` — eventa bibliothecae graphicae Latina;
-- `formae/` — formae declarativae et stili GTK applicationum;
-- `runtime/vindex_graphica_gtk.c` — motor declarativus ad GTK systematis;
-- `compilator_vindex` — compilator nativus paratus;
-- `officina_vindex` — initiator VINDEX nativus;
-- `salutatio_vindex` — programma Salutationis nativum;
-- `vindex_graphica` — pons graphicus paratus;
-- `vindexc` — interfacies publica compilationis;
-- `vindex-officina` — initiator portabilis Officinae;
-- `vindex-salutatio` — initiator portabilis Salutationis;
-- `vindex-systema` — initiator QEMU Systematis;
-- `installa_officinam.sh` — installatio usoris Fedora/Linux;
-- `officina/` — imago et usus Officinae;
-- `instrumenta/vindex_verifica.py` — diagnostica provecta facultativa;
-- `tests/` — probationes regressionis;
-- `examples/` — programmata maiora;
-- `bootstrap/` — reconstructio ab Python;
-- `testimonia/` — generationes nativae identicae;
-- `archive/` — historia pristina;
-- `REFERENTIA.md` — grammatica et facultates linguae;
-- `COMMENTARIUM.md` — mutationes versionum.
+Probationes quae vetus BIOS/VGA, `rectores.S`, pontes C/GTK aut Officinam GTK examinant sunt testimonia architecturae historicae, non contractus praesentis systematis nisi iterum expresse canonizentur.
 
-## Integritas
+Windows, Officina et UEFI habent probationes CI dedicatas ubi machina vel firmware speciale requiritur.
 
-Compilator fontes absentes, nimis magnos aut invalidos reicit. Importationes,
-`FUNCTIO PRINCIPALIS`, functiones vocatas et scripturam exitus inspicit.
-Officina fontem usque ad 1048576 octeta continet et
-programmatum statum post executionem ostendit.
+---
 
-## Nomen
+# VII. PROIECTUM
 
-In iure Romano *vindex* erat qui alium defendebat vel libertati eius
-interveniebat. Ideo nomen linguae libertatem, tutelam atque dominium proprii
-instrumenti significat.
+VINDEX potest projecta per manifestum `PROIECTUM` tractare. Viae relativae et destinationes ELF/PE sunt pars lineae reconciliatae et probationibus muniuntur.
+
+Exempla projectuum probatorum sunt sub:
+
+```text
+tests/proiecta/
+```
+
+Officina eodem contractu utitur.
+
+---
+
+# VIII. Officina VINDEX
+
+Officina canonica hodierna est applicatio **Windows nativa**, portata in `main` per PR #83.
+
+Ea praebet:
+
+- arborem projecti;
+- tabulas editoris;
+- colorationem syntaxeos;
+- aperire et servare;
+- build;
+- run;
+- tabulam output;
+- diagnostica navigabilia;
+- creationem novi projecti VINDEX.
+
+Officina canonica non utitur HTML, CSS aut JavaScript. Workflow Windows aedificat Officinam, generat compilatorem Win64 VINDEX, projecta PE construit atque exsequitur et diagnostica realia probat.
+
+Fons est in radice repositorii:
+
+```text
+officina/
+```
+
+Officina GTK/C vetus servatur tantum ut historia in locis hereditatis; non est Officina canonica praesentis lineae.
+
+---
+
+# IX. Sylvia OS
+
+Sylvia et VINDEX sunt duo projecta primi ordinis:
+
+- VINDEX non dependet a Sylvia;
+- Sylvia VINDEX ut linguam principalem adhibet;
+- necessitates reales Sylviae saepe defectus generales VINDEX detegunt.
+
+Regula absoluta est:
+
+> **Post initium firmware, runtime Sylviae VINDEX purus esse debet.**
+
+Custodia CI hanc regulam tuetur.
+
+## Fenestrale II Purus
+
+Gradus A–I sunt iam canonice in `main` reconciliati.
+
+Fenestrale hodiernum habet:
+
+- superficies clientium;
+- codam eventuum;
+- registrum dynamicum clientium;
+- registrum dynamicum fenestrarum;
+- focus;
+- ordinem Z;
+- motum;
+- resize;
+- minimizationem;
+- maximizatio et restitutio;
+- clausuram;
+- taskbar dynamicam;
+- compositionem plurium fenestrarum.
+
+Probatio runtime **LXXX fenestras** creat et administrat. Sylvia igitur non amplius architectonice ad paucos “locos” fixos clauditur.
+
+## Forma visualis
+
+Aspectus hodiernus est fundamentum technicum, non destinatio finalis. Consilia visualia futura in widgeta, thema, typographiam, iconographiam, scaling, menus et interactiones reales Fenestralis convertenda sunt.
+
+---
+
+# X. UEFI et boot Sylviae
+
+Una exceptio minima C adhuc in linea canonica initii UEFI toleratur dum catena pura integratur. Ea exceptio non est licentia runtime C.
+
+PR #82 a Claudio exercita demonstrat viam UEFI VINDEX puram, inter alia:
+
+- initium EFI a VINDEX generatum;
+- vocationes firmware;
+- GOP;
+- framebuffer;
+- lectio nuclei;
+- translatio imperii.
+
+Sed catena cum **nucleo Sylviae reali** et memoria rite contracta adhuc perficienda est ante canonizationem finalem.
+
+---
+
+# XI. PS/2
+
+PR #71 est laboratorii probatio qua mus PS/2 VINDEX nativus sub QEMU/OVMF demonstratus est.
+
+Ea PR vetere basi nititur et non directe in `main` fundenda est. Mechanismus post stabilitatem catenae UEFI selective portandus et recertificandus est.
+
+---
+
+# XII. Quid nondum perfectum est
+
+VINDEX iam lingua systemica vera incipiens est, sed nondum plenitudinem linguae universalis habet.
+
+Inter futura fundamenta sunt:
+
+- typi numerici pleniores;
+- structurae et enumerationes maturiores;
+- functiones ut valores et callback;
+- compilationes separatae et moduli;
+- generica;
+- collectiones standardes;
+- Unicode maturus;
+- destructio determinata et disciplina memoriae;
+- concurrentia et atomica;
+- async;
+- SIMD;
+- optimizer;
+- debugger;
+- coniunctor/linker maturus;
+- package manager;
+- ARM64;
+- WebAssembly.
+
+Haec sunt **fines**, non facultates hodie falsas declarandae.
+
+---
+
+# XIII. Rete et Navigator
+
+Destinatio Sylviae includit rete VINDEX nativum:
+
+```text
+gubernator → IPv4/IPv6 → UDP/TCP → DHCP/DNS → TLS → HTTP(S)
+```
+
+Postea navigator VINDEX proprius a fundamentis construi potest:
+
+```text
+HTTP(S) → HTML → CSS → layout → Fenestrale
+```
+
+JavaScript, multimedia et APIs moderniores post fundamenta addenda sunt. Chromium non est necessarius ut radix architectonica.
+
+---
+
+# XIV. Disciplina contributionis
+
+Ante mutationem maiorem:
+
+1. lege `ARCHITECTURA.md`;
+2. lege `CONSILIUM.md`;
+3. inspice recentissimum `main` et PR apertas;
+4. noli opus `RESERVATUM` duplicare;
+5. mutationem in ramo proprio fac;
+6. adde probationem quae defectum vere deprehendit;
+7. serva auto-hospitium ubi compilator mutatur;
+8. per PR canoniza.
+
+**Omnia documenta canonica repositorii Lingua Latina scribenda sunt.**
+
+---
+
+# XV. Versiones
+
+Fasciculus `VERSION` et nonnulla nomina directoriorum historiam veteris distributionis adhuc servant. Facultates canonicae hodiernae iam ulterius progressae sunt per reconciliationes 0.52/0.53 et PR posteriores.
+
+Numerus release non mutandus est fortuito tantum ad documenta recentiora imitanda. Versionatio publica separato actu deliberato reconcilianda est.
+
+---
+
+# XVI. Via hodierna
+
+Dum opus UEFI P1 a Claudio reservatum est, opera independentia recta sunt:
+
+- documenta et probationes custodire;
+- fundamenta universalia VINDEX per incrementa parva maturare;
+- Officinam et ecosystema sine conflictu P1 evolvere;
+- post completionem Claudii recentissimos commits inspicere ante integrationem.
+
+Vide `CONSILIUM.md` pro statu exacto.
+
+---
+
+# XVII. Nomen
+
+In iure Romano *vindex* erat qui alium defendebat vel libertati eius interveniebat. Nomen igitur libertatem, tutelam et dominium proprii instrumenti significat.
+
+---
+
+# XVIII. Sententia
+
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
+
+**Nullum genus programmatis extra fines VINDEX esse debet.**
