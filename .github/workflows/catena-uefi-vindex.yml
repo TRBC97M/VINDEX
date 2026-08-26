@@ -1,0 +1,99 @@
+name: Catena UEFI VINDEX
+
+# Certificat catenam integram:
+#   OVMF -> BOOTX64.EFI [VINDEX] -> NUCLEUS [VINDEX] -> FRAMEBUFFER -> SYLVIA
+#
+# Probationes manuales in certificationem reproducibilem mutat: nullus
+# gradus manualis, nulla praeparatio extra imaginem ipsam.
+
+on:
+  push:
+    branches:
+      - claude/uefi-vindex-purus
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  catena-uefi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Instrumenta necessaria installa
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Auto-hospitium punctum fixum
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/gen1
+          chmod +x /tmp/gen1
+          /tmp/gen1 src/compilator_vindex.vindex /tmp/gen2
+          chmod +x /tmp/gen2
+          /tmp/gen2 src/compilator_vindex.vindex /tmp/gen3
+          SUMMA2="$(sha256sum /tmp/gen2 | cut -d' ' -f1)"
+          SUMMA3="$(sha256sum /tmp/gen3 | cut -d' ' -f1)"
+          if [ "$SUMMA2" != "$SUMMA3" ]; then
+            printf 'DEFECIT: punctum fixum non servatum (%s != %s)\n' "$SUMMA2" "$SUMMA3" >&2
+            exit 1
+          fi
+          printf 'RECTE: punctum fixum SHA-256 %s\n' "$SUMMA2"
+
+      - name: Modus ELF intactus
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          printf 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    PROCLAMA "ELF".\n    REDDE 5.\nFIN-FUNCTIO.\n' > /tmp/elf.vindex
+          ./compilator_vindex /tmp/elf.vindex /tmp/elf_probatio
+          chmod +x /tmp/elf_probatio
+          EXITUS=0
+          SORTIE="$(/tmp/elf_probatio)" || EXITUS=$?
+          if [ "$SORTIE" != "ELF" ] || [ "$EXITUS" != "5" ]; then
+            printf 'DEFECIT: modus ELF corruptus (%s / %s)\n' "$SORTIE" "$EXITUS" >&2
+            exit 1
+          fi
+          printf 'RECTE: modus ELF intactus.\n'
+
+      - name: Modus uefi exsecutabile validum generat
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          printf 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    REDDE 0.\nFIN-FUNCTIO.\n' > /tmp/u.vindex
+          ./compilator_vindex /tmp/u.vindex /tmp/u.efi uefi
+          file /tmp/u.efi | grep -q 'PE32+.*EFI application' \
+            || { printf 'DEFECIT: exsecutabile EFI invalidum\n' >&2; exit 1; }
+          printf 'RECTE: modus uefi PE32+ EFI application generat.\n'
+
+      - name: Puritas Sylviae (nullum runtime non-VINDEX)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: CATENA INTEGRA sub QEMU + OVMF
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          bash instrumenta/proba_catenam_uefi_053.sh
