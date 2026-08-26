@@ -1,0 +1,24 @@
+name: TEXTUS — sonda temporaria
+
+on:
+  push:
+    branches:
+      - chatgpt/textus-bibliotheca-i
+
+permissions:
+  contents: read
+
+jobs:
+  sonda:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: TEXTUS repraesentationem exhibe
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./compilator_vindex
+          ./compilator_vindex tests/casus/textus_sonda.vindex /tmp/textus_sonda
+          chmod +x /tmp/textus_sonda
+          /tmp/textus_sonda
