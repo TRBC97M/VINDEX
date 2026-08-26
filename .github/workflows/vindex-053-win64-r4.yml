@@ -1,0 +1,82 @@
+name: VINDEX 0.53 — Win64 R4
+
+on:
+  push:
+    branches:
+      - chatgpt/vindex-053-r4-win64
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/argumenta_win64.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/fluitans_win64.vindex'
+      - '.github/workflows/vindex-053-win64-r4.yml'
+
+jobs:
+  genera:
+    name: Exsecutabilia PE sub Linux generantur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+      - name: PE probationum et compilatoris genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          mkdir -p /tmp/vindex-r4
+          ./compilator_vindex tests/casus/argumenta_win64.vindex /tmp/vindex-r4/argumenta_win64.exe pe
+          ./compilator_vindex tests/casus/fluitans_win64.vindex /tmp/vindex-r4/fluitans_win64.exe pe
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/vindex-r4/compilator_win64.exe pe
+          cp tests/casus/argumenta_win64.vindex /tmp/vindex-r4/argumenta_win64.vindex
+      - name: PE ad probationem Windows conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: vindex-r4-win64
+          path: /tmp/vindex-r4
+          if-no-files-found: error
+          retention-days: 1
+
+  windows:
+    name: argc argv et runtime sub Windows vero probantur
+    needs: genera
+    runs-on: windows-latest
+    steps:
+      - name: PE accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: vindex-r4-win64
+          path: r4
+      - name: Argumenta cum quotatione proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exitus = @(& .\r4\argumenta_win64.exe alpha 'beta gamma' delta)
+          if ($LASTEXITCODE -ne 0) { throw "argumenta_win64.exe exitus $LASTEXITCODE" }
+          $expectata = @('4','97','98','32','103','100','0')
+          if (($exitus -join '|') -ne ($expectata -join '|')) {
+            throw "argumenta prava: $($exitus -join '|')"
+          }
+      - name: Fluitans et WriteFile proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exitus = @(& .\r4\fluitans_win64.exe)
+          if ($LASTEXITCODE -ne 0) { throw "fluitans_win64.exe exitus $LASTEXITCODE" }
+          if (($exitus -join '').Trim() -ne '-1.250000') {
+            throw "fluitans pravus: $($exitus -join '|')"
+          }
+      - name: Compilatorem Win64 se uti proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & .\r4\compilator_win64.exe .\r4\argumenta_win64.vindex .\r4\secundum.exe pe
+          if ($LASTEXITCODE -ne 0) { throw "compilator_win64.exe exitus $LASTEXITCODE" }
+          if (!(Test-Path .\r4\secundum.exe)) { throw 'secundum.exe non creatum est' }
+          $exitus = @(& .\r4\secundum.exe alpha 'beta gamma' delta)
+          if ($LASTEXITCODE -ne 0) { throw "secundum.exe exitus $LASTEXITCODE" }
+          $expectata = @('4','97','98','32','103','100','0')
+          if (($exitus -join '|') -ne ($expectata -join '|')) {
+            throw "argumenta secunda prava: $($exitus -join '|')"
+          }
