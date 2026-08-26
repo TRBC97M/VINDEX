@@ -17,32 +17,37 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI UTF8_SCALARE_CAPE(vacuum, 0) != -1 TUNC REDDE 22. FIN-SI.
 
     DECLARA superlongus SICUT TEXTUS VALENS "x" + "x".
-    SCRIBE_OCTETUM_AB(superlongus + 16, 192).
-    SCRIBE_OCTETUM_AB(superlongus + 17, 128).
+    DECLARA basis_superlongi SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(superlongus).
+    SCRIBE_OCTETUM_AB(basis_superlongi, 192).
+    SCRIBE_OCTETUM_AB(basis_superlongi + 1, 128).
     SI UTF8_VALIDUS(superlongus) != 0 TUNC REDDE 30. FIN-SI.
     SI LONGITUDO_SCALARUM(superlongus) != -1 TUNC REDDE 31. FIN-SI.
     SI UTF8_SCALARE_CAPE(superlongus, 0) != -1 TUNC REDDE 32. FIN-SI.
 
     DECLARA truncatus SICUT TEXTUS VALENS "x" + "x".
-    SCRIBE_OCTETUM_AB(truncatus + 16, 226).
-    SCRIBE_OCTETUM_AB(truncatus + 17, 130).
+    DECLARA basis_truncati SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(truncatus).
+    SCRIBE_OCTETUM_AB(basis_truncati, 226).
+    SCRIBE_OCTETUM_AB(basis_truncati + 1, 130).
     SI UTF8_VALIDUS(truncatus) != 0 TUNC REDDE 40. FIN-SI.
 
     DECLARA surrogatum SICUT TEXTUS VALENS "x" + "xx".
-    SCRIBE_OCTETUM_AB(surrogatum + 16, 237).
-    SCRIBE_OCTETUM_AB(surrogatum + 17, 160).
-    SCRIBE_OCTETUM_AB(surrogatum + 18, 128).
+    DECLARA basis_surrogati SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(surrogatum).
+    SCRIBE_OCTETUM_AB(basis_surrogati, 237).
+    SCRIBE_OCTETUM_AB(basis_surrogati + 1, 160).
+    SCRIBE_OCTETUM_AB(basis_surrogati + 2, 128).
     SI UTF8_VALIDUS(surrogatum) != 0 TUNC REDDE 50. FIN-SI.
 
     DECLARA supra_maximum SICUT TEXTUS VALENS "xx" + "xx".
-    SCRIBE_OCTETUM_AB(supra_maximum + 16, 244).
-    SCRIBE_OCTETUM_AB(supra_maximum + 17, 144).
-    SCRIBE_OCTETUM_AB(supra_maximum + 18, 128).
-    SCRIBE_OCTETUM_AB(supra_maximum + 19, 128).
+    DECLARA basis_supra_maximi SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(supra_maximum).
+    SCRIBE_OCTETUM_AB(basis_supra_maximi, 244).
+    SCRIBE_OCTETUM_AB(basis_supra_maximi + 1, 144).
+    SCRIBE_OCTETUM_AB(basis_supra_maximi + 2, 128).
+    SCRIBE_OCTETUM_AB(basis_supra_maximi + 3, 128).
     SI UTF8_VALIDUS(supra_maximum) != 0 TUNC REDDE 60. FIN-SI.
 
     DECLARA continuatio_sola SICUT TEXTUS VALENS "x" + "".
-    SCRIBE_OCTETUM_AB(continuatio_sola + 16, 128).
+    DECLARA basis_continuationis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(continuatio_sola).
+    SCRIBE_OCTETUM_AB(basis_continuationis, 128).
     SI UTF8_VALIDUS(continuatio_sola) != 0 TUNC REDDE 70. FIN-SI.
 
     PROCLAMA "UNICODE RECTE".
