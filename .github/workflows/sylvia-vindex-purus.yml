@@ -35,9 +35,9 @@ jobs:
           set -euo pipefail
           git fetch --depth=1 origin \
             refs/heads/chatgpt/vindex-053-compilator-dynamicus:refs/remotes/origin/vindex-053
-          git show refs/remotes/origin/vindex-053:'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
+          git show refs/remotes/origin/vindex-053:'src/compilator_vindex.vindex' \
             > 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
-          git show refs/remotes/origin/vindex-053:'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' \
+          git show refs/remotes/origin/vindex-053:'compilator_vindex' \
             > 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
           chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
           python3 instrumenta/custos_patch_vindex_053_uefi.py
