@@ -1,0 +1,39 @@
+// Sylvia OS — dispatchus clientium Fenestralis Purus H.
+// Status et superficies ex registro dynamico leguntur, non ex locis fixis vectoris systematis.
+
+FUNCTIO CH_EVENTA_AGE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    SI registrum == 0 || coda == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mutata SICUT NUMERUS VALENS 0.
+    DUM EG_NUMERUS(coda) > 0 PERFICE
+        DECLARA e SICUT ORDO DE NUMERUS CAPACITAS 5.
+        DECLARA captum SICUT NUMERUS VALENS EG_CAPE(coda,e).
+        SI captum == 0 TUNC REDDE mutata. FIN-SI.
+        DECLARA id SICUT NUMERUS VALENS e[1].
+        DECLARA nodus SICUT NUMERUS VALENS CH_QUAERE(registrum,id).
+        SI nodus != 0 TUNC
+            DECLARA genus SICUT NUMERUS VALENS CONTENTUM(nodus + 8).
+            DECLARA superficies SICUT NUMERUS VALENS CONTENTUM(nodus + 16).
+            DECLARA status SICUT NUMERUS VALENS CONTENTUM(nodus + 24).
+            SI e[0] == 1 && id == 1 && s[1] == 0 && genus == 1 TUNC
+                DECLARA novus_p SICUT NUMERUS VALENS PE_CLICK(superficies,status,e[2],e[3]).
+                SI novus_p != status TUNC
+                    CONTENTUM(nodus + 24) = novus_p.
+                    DECLARA rp SICUT NUMERUS VALENS PE_RENDE(superficies,novus_p).
+                    mutata = mutata + 1.
+                FIN-SI.
+            FIN-SI.
+            SI e[0] == 1 && id == 2 && s[2] == 0 && genus == 2 TUNC
+                DECLARA novus_t SICUT NUMERUS VALENS TF_CLICK(superficies,status,e[2],e[3]).
+                SI novus_t != status TUNC
+                    CONTENTUM(nodus + 24) = novus_t.
+                    DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies,novus_t).
+                    mutata = mutata + 1.
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-DUM.
+    REDDE mutata.
+FIN-FUNCTIO.
