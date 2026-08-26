@@ -1,0 +1,68 @@
+// VINDEX — Segmentum mutabile NUMERUS memoriae contiguae.
+// Descriptor: +0 basis mutuata, +8 numerus elementorum.
+// Segmentum memoriam elementorum non possidet neque liberat.
+// VINDEX Latine cogitat. Sylvia Latine loquitur.
+
+FUNCTIO SG_CREA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    SI numerus < 0 TUNC REDDE 0. FIN-SI.
+    SI numerus > 0 && basis == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA segmentum SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    SI segmentum <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(segmentum) = basis.
+    CONTENTUM(segmentum + 8) = numerus.
+    REDDE segmentum.
+FIN-FUNCTIO.
+
+FUNCTIO SG_NUMERUS REDDENS NUMERUS.
+    ACCIPIT segmentum SICUT NUMERUS.
+    SI segmentum == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(segmentum + 8).
+FIN-FUNCTIO.
+
+FUNCTIO SG_BASIS REDDENS NUMERUS.
+    ACCIPIT segmentum SICUT NUMERUS.
+    SI segmentum == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(segmentum).
+FIN-FUNCTIO.
+
+FUNCTIO SG_CAPE REDDENS NUMERUS.
+    ACCIPIT segmentum SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    SI segmentum == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    SI index >= CONTENTUM(segmentum + 8) TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(CONTENTUM(segmentum) + (index * 8)).
+FIN-FUNCTIO.
+
+FUNCTIO SG_PONE REDDENS NUMERUS.
+    ACCIPIT segmentum SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI segmentum == 0 || index < 0 TUNC REDDE 0. FIN-SI.
+    SI index >= CONTENTUM(segmentum + 8) TUNC REDDE 0. FIN-SI.
+    CONTENTUM(CONTENTUM(segmentum) + (index * 8)) = valor.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SG_SUBSEGMENTUM REDDENS NUMERUS.
+    ACCIPIT segmentum SICUT NUMERUS.
+    ACCIPIT initium SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    SI segmentum == 0 || initium < 0 || numerus < 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA longitudo SICUT NUMERUS VALENS CONTENTUM(segmentum + 8).
+    SI initium > longitudo TUNC REDDE 0. FIN-SI.
+    SI numerus > longitudo - initium TUNC REDDE 0. FIN-SI.
+
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(segmentum) + (initium * 8).
+    REDDE SG_CREA(basis, numerus).
+FIN-FUNCTIO.
+
+FUNCTIO SG_LIBERA REDDENS NUMERUS.
+    ACCIPIT segmentum SICUT NUMERUS.
+    SI segmentum == 0 TUNC REDDE 0. FIN-SI.
+    LIBERA(segmentum).
+    REDDE 1.
+FIN-FUNCTIO.
