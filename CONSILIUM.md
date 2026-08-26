@@ -2,314 +2,413 @@
 
 > **ARCHITECTURA est lex. CONSILIUM est via. Git historia est.**
 
-## Munus huius documenti
+## Munus
 
-`CONSILIUM.md` est tabula operativa canonica totius operis VINDEX et Sylvia OS. Non substituit `ARCHITECTURA.md`: illa principia fundamentalia et limites architectonicos statuit; hoc documentum ordinem operum, dependentias, curatores, statum praesentem, actionem proximam et criteria victoriae declarat.
+`CONSILIUM.md` est tabula operativa canonica VINDEX et Sylvia OS. `ARCHITECTURA.md` fines et principia statuit; hoc documentum statum praesentem, dependentias, curatores, prioritates et actiones proximas declarat.
 
-Omnis collaborator — homo, ChatGPT, Claude, Copilot, Gemini aut alius agens — ante opus novum debet:
+Omnis collaborator ante opus novum debet:
 
 1. `ARCHITECTURA.md` legere;
 2. `CONSILIUM.md` legere;
-3. statum recentem `main`, ramorum, Pull Request et probationum inspicere;
-4. cavere ne opus iam ab alio agente activum duplicetur;
-5. primum opus maximae prioritatis eligere quod `PARATUM` est et dependentiis non impeditur, nisi usor aliud expresse iubeat;
-6. post mutationem significantem statum huius tabulae renovare.
+3. recentissimum `main`, ramos, Pull Request et probationes inspicere;
+4. opus ab alio curatore activum non duplicare;
+5. mutationes maiores in ramo proprio facere et per Pull Request canonizare;
+6. post mutationem significantem hanc tabulam renovare.
 
-Si res in hoc documento et status realis Git dissentiunt, **status realis Git praevalet**, deinde `CONSILIUM.md` quam primum corrigendum est.
+Si documentum et Git dissentiunt, **Git praevalet**; documentum deinde corrigendum est.
 
-## Status operum
+## Status
 
-- `IDEA` — destinatio recepta est, sed nondum ad operandum parata.
-- `LONGINQUUM` — propositum canonicum diuturnum est; nondum prioritas praesentis temporis.
-- `PARATUM` — opus clare definitum est et incipi potest.
-- `ACTIVUM` — opus nunc a collaboratore exercetur.
-- `RESERVATUM` — alius collaborator hoc opus active tenet; ne duplicetur sine recognitione status.
-- `IMPEDITUM` — dependentia aut defectus impedit progressionem.
-- `PROBATUM` — functio demonstrata est, sed nondum canonica aut plene integrata.
-- `CANONIZANDUM` — experimentum probatum est et in lineam canonicam portandum.
-- `PERFECTUM` — criterium victoriae impletum et in linea canonica verificatum est.
-
-## Regula coordinationis agentium
-
-- Ramus alienus non est territorium hostium sed memoria operis communis.
-- Si alius agens opus `ACTIVUM` vel `RESERVATUM` facit, primum eius ramum et recentissimos commits inspice; noli idem opus ex nihilo duplicare.
-- Experimenta prospera non statim in `main` fundantur. Portentur in structuram canonicam per mutationes parvas et probatas.
-- Cum opus relinquitur propter tempus, tokena, errorem instrumentorum aut aliam causam, curator statum, ramum, ultimum commit, quod probatum est, quod incertum est et actionem proximam in hoc documento relinquat.
-- Usor potest ordinem quolibet momento mutare. Eius mandatum expressum prioritatem tabulae superat; postea tabula ad novam decisionem accommodetur.
+- `IDEA` — finis receptus, nondum definitus.
+- `LONGINQUUM` — finis canonicus diuturnus.
+- `PARATUM` — opus definiri satis potest ut incipiatur.
+- `ACTIVUM` — opus nunc exercetur.
+- `RESERVATUM` — alius curator opus active tenet; ne duplicetur.
+- `IMPEDITUM` — dependentia impedit.
+- `PROBATUM` — demonstratum, nondum canonice integratum.
+- `CANONIZANDUM` — probatum et in `main` portandum.
+- `PERFECTUM` — in `main` integratum et probationibus munitum.
 
 ---
 
-# I. PRIORITATES PRAESENTES
+# I. Prioritates praesentes
 
-## P1 — UEFI in VINDEX puro; ponticulus C tollendus
+## P1 — UEFI VINDEX purum
 
-**Status:** `RESERVATUM / PROBATUM`  
-**Curator praesens:** Claude  
-**Ramus notus:** `claude/uefi-vindex-purus`  
-**Ultima probatio nota:** ponticulus VINDEX purus `NUCLEUS.BIN` onerat, metadata tradit et ad nucleum probationis salit sub QEMU + OVMF; `PONTOK` et `NUCLEUS VIVIT` observata sunt.  
-**Causa:** Sylviae puritas postulabit ut etiam exceptio ultima C in initio UEFI tandem evanescat.  
-**Actio proxima:** postquam curator opus resumit vel terminat, recentissimos commits inspicere et statum denuo aestimare ante quam quidquam parallelum fiat.
+**Status:** `RESERVATUM / ACTIVUM / PROBATUM`  
+**Curator:** Claude  
+**Pull Request:** #82  
+**Ramus:** `claude/uefi-vindex-purus`
 
-**Canonizatio post probationem:**  
-- modum `uefi` in compilatore canonico separare a PE/Win64;
-- importationes Windows (`kernel32`, `.idata`) a target UEFI removere;
-- memoriam operariam, metadata et acervum per contractum UEFI rite allocare vel reservare, sine regionibus fortuitis non possessis;
-- magnitudinem `NUCLEUS.BIN` vere interrogare et paginas exactas allocare, sine limite arbitrario 2 MiB;
-- `SALI_AD` ad acervum legitime reservatum accommodare;
-- nucleum Sylviae realem, non tantum nucleum probationis, onerare;
-- probationem CI QEMU/OVMF instituere.
+### Iam demonstratum
 
-**Criterium victoriae:** firmware UEFI → applicatio EFI a VINDEX generata → nucleus Sylviae VINDEX realis, sine C et sine assembler externo in catena runtime, cum probatione repetibili.
+- target UEFI a compilatore VINDEX generatus;
+- PE32+ subsystem EFI sine importationibus Win32 in experimento;
+- vocationes firmware ex VINDEX;
+- GOP et framebuffer veri sub QEMU/OVMF;
+- pictura directa in framebuffer;
+- `SALI_AD` et translatio imperii;
+- lectio nuclei ex disco;
+- catena experimentalis `PONTOK` → `NUCLEUS VIVIT`;
+- correctio commentariorum `//` in experimento;
+- auto-hospitium experimentale servatum.
 
-## P2 — Reconciliatio VINDEX 0.53 cum linea canonica
+### Quod nondum declaratur perfectum
 
-**Status:** `IMPEDITUM a P1 post R5`; gradus R0–R5 `PERFECTUM`.  
-**Fontes principales:** ramus historicus VINDEX 0.53, probationes canonicae R1–R5 et opus UEFI reservatum P1.  
-**Causa:** facultates maturae 0.53 recuperandae erant selective, sine fusione monolithica neque regressione architecturae praesentis.
+Nucleus Sylviae realis adhuc contractum memoriae proprium requirit. Probatio experimentalis indicat imaginem nuclei memoriam magnam continuatam postulare quam firmware non necessario concedit. Itaque ponticulus C canonicus nondum tollitur solum quia experimentum VINDEX ulterius processit.
 
-**Perfectum:**  
+### Regula coordinationis
+
+**Nullum opus parallelum in P1 faciendum est donec usor dicat Claudium opus terminavisse aut relinquere.** Cum id acciderit, recentissimi commits et ipsa PR #82 denuo inspiciantur ante ullam integrationem.
+
+### Criterium victoriae
+
+Firmware UEFI → applicatio EFI a VINDEX canonico generata → nucleus Sylviae realis → metadata et memoria rite contracta → framebuffer et initium fundamentale, sine runtime C, sub CI QEMU/OVMF repetibili.
+
+---
+
+## P2 — Reconciliatio VINDEX 0.53 in lineam canonicam
+
+**Status:** `PERFECTUM R0–R5`; `R6 RESERVATUM a P1`.
+
+### Perfectum
+
 - R0 — inventarium et matrix migrationis;
-- R1 — baseline dynamicorum, septem argumenta SysV, magnae frames et punctum fixum;
-- R2 — diagnostica `FONS/LINEA/COLUMNA/NUNTIUS` et origo importorum;
-- R3 — `PROIECTUM`, viae relativae et destinationes ELF/PE;
-- R4 — `argc/argv` Win64 nativum et certificatio sub Windows vero;
-- R5 — verificator PE et comparator binarius in VINDEX, matrice ELF/PE et auto-hospitio.
+- R1 — allocationes dynamicae, functiones et frames amplae, septem argumenta SysV, punctum fixum;
+- R2 — diagnostica `FONS / LINEA / COLUMNA / NUNTIUS`;
+- R3 — `PROIECTUM`, viae relativae et targeta;
+- R4 — PE/Win64, `argc/argv` et exsecutio sub Windows vero;
+- R5 — instrumenta VINDEX ad PE et comparationem binariam;
+- semantica `&&` / `||` cum aestimatione brevi postea canonizata per PR #98;
+- suite regressionis hodierna canonizata per PR #99.
 
-**Actio proxima P2:** R6 — harmonizatio UEFI — manet `RESERVATUM P1`; nihil ibi agendum est donec Claude a usuario resumatur et ramus eius denuo inspectus sit. Interim aliud opus independens ex `CONSILIUM` eligendum est.
+### R6
 
-**Criterium victoriae:** compilator canonicus modernus omnes facultates probatas 0.53 retinet, structuram praesentem observat, auto-hospitium punctum fixum servat et targeta ELF, PE/Win64 atque UEFI non regreditur.
+Harmonizatio UEFI manet pars P1. Non duplicetur.
+
+### Criterium victoriae
+
+Linea canonica retinet facultates probatas 0.53 sine monolitho historico et sine regressione ELF, Win64, auto-hospitii aut Sylviae.
+
+---
 
 ## P3 — Catena Sylviae pura canonica
 
-**Status:** `IMPEDITUM` a P1/P2.  
-**Finis:** unum iter boot canonicum et comprehensibile, non collectionem prototyporum historicorum.
+**Status:** `IMPEDITUM a P1`, sed fundamenta interna iam valida.
 
-**Debet continere:**
-- boot UEFI VINDEX;
-- nucleus VINDEX;
-- memoria et initium hardware;
-- framebuffer et output textus;
-- input fundamentale;
-- Fenestrale II Purus;
-- launch programmatum VINDEX.
+### Iam canonicum
 
-**Criterium victoriae:** imago Sylvia canonica in QEMU/OVMF bootat et desktop realem VINDEX ostendit sine runtime C.
+- regula puritatis post initium firmware;
+- custodia CI `Sylvia VINDEX purum`;
+- nucleus et runtime novi in VINDEX;
+- Fenestrale II Purus A–I in `main`;
+- compositor, eventa, clientes et fenestrae VINDEX;
+- probationes Fenestralis canonicae.
 
-## P4 — Fenestrale II Purus canonizandum
+### Actio proxima
 
-**Status:** `CANONIZANDUM`.  
-**Fontes:** gradus Purus A–I in ramis/PR separatis.  
-**Causa:** fundamentum desktop moderni Sylviae est compositor, registrum fenestrarum dynamicum, focus, z-order, eventa, resize et clientes multiplices, omnia in VINDEX.
+Post P1, una catena boot canonica a firmware usque ad Fenestrale componenda et sub QEMU/OVMF certificanda est.
 
-**Actio proxima:** post stabilitatem catenae boot, gradus Purus ordine dependentiarum in lineam canonicam portare et probationes renovare.
+### Criterium victoriae
 
-**Criterium victoriae:** fenestrae dynamicae sine limite artificiali parvo; creare, movere, redimensionare, focalizare, componere et claudere; eventa recte tradere; multitudo fenestrarum probata.
+Una imago Sylviae canonica bootat, initium, framebuffer, input fundamentale et Fenestrale VINDEX reale ostendit sine runtime C residente.
+
+---
+
+## P4 — Fenestrale II Purus
+
+**Status:** `PERFECTUM` pro gradibus A–I.
+
+### Canonizatio perfecta
+
+Gradus reconciliati sunt per PR:
+
+- A — #87;
+- B — #88;
+- C — #90;
+- D — #92;
+- E — #93;
+- F — #94;
+- G — #95;
+- H — #96;
+- I — #97.
+
+### Facultates actuales
+
+- superficies clientium;
+- eventa per codam;
+- registrum dynamicum clientium;
+- registrum dynamicum fenestrarum;
+- focus et ordo Z;
+- motus et resize;
+- minimizatio, maximizatio, restitutio et clausura;
+- taskbar dynamica;
+- compositio ab ima ad summam;
+- probatio runtime **LXXX fenestrarum**.
+
+Vetus pila PR #32, #33 et #59–#65 clausa est et auctoritatem praesentem non habet.
+
+### Actio futura
+
+Post catenae boot stabilitatem: thema, widgeta, typographia, iconographia, input maturior et intentio visualis canonica.
+
+---
 
 ## P5 — Mus PS/2 VINDEX nativus
 
-**Status:** `PROBATUM / CANONIZANDUM`.  
-**Fons probationis:** laboratorium PS/2 sub QEMU/OVMF; desktop, textus et mus iam demonstrati sunt.  
-**Actio proxima:** mechanismum experimenti in catena P3/P4 portare, non ramum laboratorii integre miscere.
+**Status:** `PROBATUM / CANONIZANDUM`  
+**Pull Request laboratorii:** #71
 
-**Criterium victoriae:** cursor et eventa muris in Fenestrale II canonico sub QEMU/OVMF probantur, sine C runtime.
+PR #71 probat sub QEMU/OVMF desktop, textum et murem PS/2 VINDEX nativum. Basis eius historica est; **non wholesale mergeatur**.
+
+### Actio proxima
+
+Post P1/P3, mechanismus utilis selective in catena canonicam Fenestralis portetur et recertificetur.
+
+### Criterium victoriae
+
+Cursor et eventa muris in Sylvia canonica sub QEMU/OVMF moventur sine runtime C.
+
+---
 
 ## P6 — Officina VINDEX
 
-**Status:** `IMPEDITUM / CANONIZANDUM`.  
-**Finis:** IDE nativum VINDEX, simile instrumento moderno evolutionis sed identitate Sylviae/VINDEX propria.
+**Status:** `PERFECTUM` pro fundamento Windows nativo canonico.
 
-**Iam demonstratum:** applicatio Windows nativa cum arbore projectus, tabulis, coloratione syntaxeos, save/build/run, output et navigatione diagnosticorum.  
-**Defectus notus:** probatio functionalis non est adhuc certificata.
+PR #57 est historia. PR #83 Officinam selective in `main` portavit et sub Windows vero certificavit.
 
-**Actio proxima:** defectus probationum corrigere, deinde Officinam ad compilatorem canonicum 0.53+ conectere.
+### Iam canonicum
 
-**Criterium victoriae:** projectum VINDEX a creatione usque ad compilationem, executionem et diagnosticum in Officina tractari potest sine processu manuali disperso.
+- applicatio Windows nativa;
+- nulla technologia HTML/CSS/JavaScript;
+- projecta `PROIECTUM`;
+- arbor fasciculorum;
+- tabulae editoris;
+- coloratio syntaxeos;
+- save/build/run;
+- output integratum;
+- diagnostica navigabilia;
+- creatio novi projecti;
+- compilator VINDEX Win64 realiter adhibitus;
+- probationes functionales Windows CI.
 
-## P7 — Purificatio repositorii
+### Actio futura
 
-**Status:** `PERFECTUM`.  
-**Finis:** ramos experimentales veteres, duplicata, PR obsoletas et artefacta non canonica post verificationem ordinare vel claudere.
-
-**Archivata / clausa:**  
-- PR #3 — monolithus historicus VINDEX 0.53, post reconciliationem selectivam R0–R5;
-- PR #38 et #40 — contractus atque excisio historica 0.53, hodie a linea canonica puriore superata;
-- PR #42 et #43 — excitatores CI temporarii;
-- PR #44 — via vetus `Sylvia Moderna A`, a Fenestrale II Purus superata;
-- PR #58 — excitator CI temporarius Officinae;
-- PR #66 — Laboratorium generale Sylviae, cuius probationem muris certam PR #71 succedit;
-- PR #67–#70 — tentamina intermedia muris, a probatione PS/2 #71 superata.
-
-**Aperta consulto servantur:**  
-- PR #32, #33 et #59–#65 — series Fenestrale II Purus A–I, fons canonizandus P4;
-- PR #57 — Officina VINDEX, fons canonizandus P6;
-- PR #71 — probatio PS/2 VINDEX nativa, fons canonizandus P5.
-
-Rami historici clausarum PR non delentur tantum ad speciem mundandam: Git historia manet memoria operis, dum PR apertae tantum vias futuras reales repraesentant.
-
-**Criterium victoriae:** `main` et PR apertae rationem praesentis architecturae clare repraesentant; historia servatur, sed via canonica non obscuratur. `PERFECTUM`.
+Officina non est “finita”: amplianda est cum debugger, refactoring, exploratione symbolorum, package manager, build system maturiore et targetis pluribus.
 
 ---
 
-# II. VINDEX UT LINGUA UNIVERSALIS
+## P7 — Probationes canonicae
 
-## P8 — Fundamenta alti gradus VINDEX
+**Status:** `PERFECTUM`.
 
-**Status:** `LONGINQUUM / PARATUM per incrementa`.  
-**Lex:** facultas, non imitatio, norma est.
+PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit.
 
-VINDEX paulatim accipiat facultates quae programmata magna et moderna simpliciter scribi sinunt, sine libertate basimi gradus tollenda:
+`make probatio` / `tests/run_tests.sh` nunc **XXIII probationes, nulla errata** exercet, inter quas:
 
-- typi numerici pleni et conversiones bene definitae;
-- structurae, uniones, enumerationes et typi usoris;
+- casus fundamentales linguae;
+- diagnostica valida et invalida;
+- auto-hospitium `G2 = G3`;
+- identitas binarii canonici cum fonte;
+- `&&` / `||` brevia;
+- PE32+;
+- puritas Sylviae;
+- LXXX fenestrae;
+- compilatio Fenestralis II Purus I.
+
+Probationes Windows, Officina et UEFI proprias custodias CI habent.
+
+---
+
+## P8 — Purificatio repositorii
+
+**Status:** `PERFECTUM` pro magnis ramis historicis iam reconciliatis; custodia continua manet.
+
+### Regula
+
+Historia non deletur ad speciem mundandam, sed PR apertae non debent vias mortuas quasi futuras repraesentare.
+
+### PR apertae hodiernae relevantes
+
+- **#82** — P1, UEFI VINDEX purum, reservata Claudio;
+- **#71** — probatio laboratorii PS/2, fons selective canonizandus post P1/P3.
+
+Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizationem.
+
+---
+
+# II. VINDEX ut lingua universalis
+
+## P9 — Fundamenta typorum et structurae programmatis
+
+**Status:** `PARATUM per incrementa`, dum P1 alienum opus manet.
+
+**Finis:** VINDEX non solum lingua nuclei esse debet. Prima strata universalitatis debent programmata magna facilius et tutius exprimere sine libertate basimi gradus minuenda.
+
+### Facultates candidatae
+
+- numeri dimensionibus et signis clare definitis;
+- fluitantia maturiora;
+- arrays, slices et acus divitiores;
+- structurae / `FORMA` maturiores;
+- uniones et enumerationes;
+- functiones ut valores et callback;
 - moduli et compilationes separatae;
-- functiones ut valores, callback, closures et lambda ubi utiles;
-- generica nativa simplicia et potentia;
+- contractus ABI expliciti;
+- textus et Unicode maturior.
+
+### Disciplina
+
+Una facultas parva simul. Quaelibet mutatio linguae debet auto-hospitium, punctum fixum, regressionem propriam, ELF et Win64 ubi pertinens custodire.
+
+---
+
+## P10 — Abstractiones alti gradus
+
+**Status:** `LONGINQUUM`.
+
+Post P9:
+
+- generica;
+- interfaces / traits vel mechanismus VINDEX proprius;
 - collectiones standardes;
-- textus et Unicode maturus;
-- errores et mechanismus tractationis eorum congruus;
-- ownership vel alia disciplina memoriae optativa;
-- destructio determinata / RAII similis ubi utilis;
-- concurrentia, atomica, fila et async;
-- SIMD, fluitantia et computationes vectoriales;
-- introspectio vel metaprogrammatio moderata;
-- FFI ad bibliothecas externas;
-- optimizator, debugger et instrumenta analysi.
+- errores/resultata;
+- destructio determinata;
+- ownership aut alia disciplina memoriae optativa;
+- closures et lambda;
+- concurrentia, atomica et async;
+- SIMD;
+- introspectio et metaprogrammatio moderata.
 
-**Principium absolutum:** commoditates alti gradus runtime obligatoriam omnibus programmatibus imponere non debent.
+**Principium:** nulla facultas alti gradus runtime obligatoriam omnibus programmatibus imponat.
 
-## P9 — Ecosystema universale
+---
 
-**Status:** `LONGINQUUM`.  
-**Componentes destinati:**
-- compilator `vindex`;
+## P11 — Ecosystema universale
+
+**Status:** `LONGINQUUM`.
+
+Componentes destinati:
+
+- compilator officialis `vindex`;
 - coniunctor/linker;
-- debugger;
 - bibliotheca standardis;
-- praepositus fasciculorum/package manager;
-- systema projectuum et constructionis;
+- debugger;
+- profiler;
+- formatter et linter;
+- systema projectuum/build;
+- praepositus fasciculorum;
 - Officina;
-- formatter, linter et instrumenta analysi;
-- targeta multiplicia: Sylvia, Windows, ELF-systemata, UEFI, ARM64, WebAssembly et alia ubi ratio permittit.
+- targeta Sylvia, Windows, ELF-systemata, UEFI, ARM64, WebAssembly et alia ubi ratio permittit.
 
-**Criterium victoriae diuturnum:** idem projectum VINDEX, ubi API dependentes separantur, ad plura targeta a toolchain officiali construi potest.
-
----
-
-# III. SYLVIA UT SYSTEMA USUS COTIDIANI
-
-## P10 — Apparatus et infrastructura gubernatorum
-
-**Status:** `LONGINQUUM`, post stabilitatem nuclei.  
-**Finis:** vera architectura driver VINDEX.
-
-**Strata requisita:** PCI/PCIe, ACPI, USB, HID, I2C, interruptiones, MMIO/portus, DMA, firmware loading, registrum apparatus et contractus gubernatorum.
-
-**Criterium victoriae:** gubernator VINDEX potest apparatum detegere, initiare, eventa accipere et servitium systemati praebere sine logica privata in nucleo sparsa.
-
-## P11 — Machina referentiae physica: CHUWI HeroBook Air
-
-**Status:** `LONGINQUUM`.  
-**Propositum:** una machina realis eligatur ut prima tabula certificationis hardware Sylviae.
-
-**Mappa desiderata:** boot → display → keyboard → mouse/touchpad → SSD → USB → ACPI/battery → audio → Wi-Fi → Bluetooth → webcam → HDMI → acceleratio graphica ubi possibilis.
-
-**Nota:** exacta identificatio componentium hardware ante gubernatores reales facienda est; variantes eiusdem exemplaris non praesumantur identicae.
-
-**Criterium victoriae:** Sylvia in machina referentiae nativa quotidie adhiberi potest cum omnibus componentibus essentialibus functionantibus.
-
-## P12 — Rete Sylviae
-
-**Status:** `LONGINQUUM`, dependet a P10/P11.  
-**Strata:** driver NIC/Wi-Fi → Ethernet/802.11 ubi opus → ARP/NDP → IPv4/IPv6 → ICMP → UDP → TCP → DHCP → DNS → TLS.
-
-**Criterium victoriae:** programma VINDEX in Sylvia potest nomen interretiale resolvere et connexionem HTTPS verificatam aperire.
-
-## P13 — Navigator interretialis VINDEX
-
-**Status:** `LONGINQUUM`, dependet a P4, P8 et P12.  
-**Gradus I:** URL, HTTP(S), HTML, CSS fundamentalis, textus, nexus, scroll, input et Fenestrale.  
-**Gradus II:** imagines, formae, cookies, historia, downloads, cache.  
-**Gradus III:** layout modernior, fontes, flexbox/tabulae et CSS latius.  
-**Gradus IV:** engine JavaScript VINDEX proprius vel alius mechanismus VINDEX nativus, sine Chromium ut fundamento necessario.
-
-**Criterium victoriae initiale:** paginae HTML/CSS simplices per HTTPS in Sylvia native redduntur et navigari possunt.
-
-## P14 — Forma visualis Sylviae canonica
-
-**Status:** `LONGINQUUM / dependet a P4`.  
-**Finis:** implementationem realem ad consilia visualia canonica adducere; status rudis praesentis non est destinatio finalis.
-
-**Requisita:** typographia, proportiones, margines, icones, widgets, menu, taskbar, cursor, status hover/pressed/focus, scaling dynamicum, resolutiones modernae, compositiones et identitas visualis constans.
-
-**Regula:** designa approbata sunt referentia; Fenestrale debet ad ea convergere, non ea ad limitationes prototypi reducere.
-
-**Criterium victoriae:** screenshot systematis realis cum referentia canonica comparari potest et differentiae maiores non manent.
-
-## P15 — Programmata systematis Sylviae
-
-**Status:** `LONGINQUUM`, dependet a P4/P8.  
-**Minimum destinatum:** terminale, gestor fasciculorum, editor textus, Officina, configurationes systematis, monitor systematis, installer/updater, navigator et instrumenta retis.
-
-**Criterium victoriae:** usor potest Sylvia uti, configurare, programmare et conservare sine altero OS ad opera ordinaria.
+**Criterium diuturnum:** nullum genus programmatis rationabile extra fines VINDEX sit.
 
 ---
 
-# IV. PRINCIPIA PRIORITATIS
+# III. Sylvia ut systema usus cotidiani
 
-Ordinem operum sic iudicamus:
+## P12 — Infrastructura gubernatorum
 
-1. **Puritas et fundamenta ante ornamenta.**
-2. **Probatio realis ante canonizationem.**
-3. **Canonizatio ante novum experimentum eiusdem rei.**
-4. **Dependentiae communes ante applicationes quae eis egent.**
-5. **Nullus terminus artificialis propter commoditatem prototypi permanentem fiat.**
-6. **Quod hodie experimentum est, cras aut probetur et canonizetur, aut clare archivetur.**
-7. **Idea nova in tabula recipi potest sine eo quod statim prioritatem supremam accipiat.**
+**Status:** `LONGINQUUM`, post P3.
 
-## Ordo praesens summarius
+Strata requisita:
 
-`P1 UEFI purus` → `P2 VINDEX 0.53 canonicus` → `P3 catena Sylvia pura` → `P4 Fenestrale II` + `P5 mus` → `P6 Officina` → deinde infrastructura linguae/systematis secundum dependentias.
-
-P7 purificatio repositorii `PERFECTUM` est; ulterior purificatio tantum fit cum nova vetustas aut duplicatio realis apparebit.
-
----
-
-# V. FORMA NOVI OPERIS
-
-Cum novum propositum additur, hac forma describatur:
-
-```text
-## PX — Nomen operis
-
-Status: IDEA | LONGINQUUM | PARATUM | ACTIVUM | RESERVATUM | IMPEDITUM | PROBATUM | CANONIZANDUM | PERFECTUM
-Curator: liber | homo | ChatGPT | Claude | Copilot | Gemini | alius
-Ramus/PR: ...
-Causa: cur hoc opus necessarium est
-Finis: quid construendum est
-Dependentiae: quid antea existere debet
-Actio proxima: unus gradus concretus
-Criterium victoriae: probatio observabilis quae finem demonstrat
-Notae: decisiones, pericula, res incertae
-```
+- PCI/PCIe;
+- ACPI;
+- USB;
+- HID;
+- I2C;
+- interruptiones;
+- MMIO et portus;
+- DMA;
+- firmware loading;
+- registrum apparatus;
+- contractus gubernatorum.
 
 ---
 
-# VI. MODUS SUCCESSIONIS INTER SESSIONES ET AGENTES
+## P13 — Machina referentiae physica
 
-Antequam sessio aut curator opus relinquat, si mutationes adhuc imperfectae sunt, haec quinque relinquantur:
+**Status:** `LONGINQUUM`.
 
-1. **ubi sumus** — ramus, PR et commit;
-2. **quid vere probatum est** — non quod speratur;
-3. **quid adhuc deest**;
-4. **quid cavendum est** — regressiones, decisiones, rami alieni;
-5. **quid proximum faciendum est**.
+Prima candidata: **CHUWI HeroBook Air**. Exacta identificatio Hardware IDs ante implementationem necessaria est.
 
-Agens novus hoc documentum et Git legat antequam ab usuario repetat quae iam hic certa sunt. Quaestiones tantum fiant ubi electio humana vera est aut intentio mutata esse potest.
+Mappa desiderata:
+
+boot → display → keyboard → mouse/touchpad → SSD → USB → ACPI/battery → audio → Wi-Fi → Bluetooth → webcam → HDMI → acceleratio graphica.
 
 ---
 
-# VII. SENTENTIA MAGISTRA
+## P14 — Rete Sylviae
 
-**VINDEX Latine cogitat. Sylvia Latine loquitur.**  
-**Nullum genus programmatis extra fines VINDEX esse debet.**  
-**ARCHITECTURA est lex. CONSILIUM est via. Git historia est.**
+**Status:** `LONGINQUUM`, dependet a gubernatoribus.
+
+Strata:
+
+NIC/Wi-Fi → Ethernet/802.11 → ARP/NDP → IPv4/IPv6 → ICMP → UDP → TCP → DHCP → DNS → TLS.
+
+Criterium initiale: programma VINDEX in Sylvia nomen interretiale resolvit et HTTPS verificatum aperit.
+
+---
+
+## P15 — Navigator Sylviae
+
+**Status:** `LONGINQUUM`, dependet a Fenestrale, P9/P10 et P14.
+
+Gradus:
+
+1. URL + HTTP(S) + HTML + CSS fundamentalis + textus + nexus + scroll;
+2. imagines, formae, cookies, historia, downloads, cache;
+3. layout modernior, fontes, flexbox/tabulae;
+4. JavaScript VINDEX proprius vel mechanismus nativus congruus.
+
+Chromium non est fundamentum necessarium neque finis architectonicus.
+
+---
+
+## P16 — Forma visualis Sylviae
+
+**Status:** `PARATUM post catenae boot stabilitatem`.
+
+Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere:
+
+- widgeta;
+- thema;
+- typographiam;
+- margines et proportionem;
+- iconographiam;
+- cursorem et status interactionis;
+- taskbar et menus canonicos;
+- scaling et resolutiones modernas.
+
+**Sylvia hodierna est ossa constructionis, non facies finalis.**
+
+---
+
+# IV. Regula coordinationis agentium
+
+- Opus P1 a Claudio reservatum manet donec usor aliter dicat.
+- Alius agens potest interim P9, documenta, probationes aut alia opera vere independentia exercere.
+- Ramus experimentalis prosperus non wholesale mergeatur si structuram veterem secum trahit.
+- Mutationes in `main` fiant per PR parvas, probatas et reversibiles.
+- Documenta repositorii tantum Lingua Latina utantur.
+- Status realis Git semper ante opinionem veterem praevalet.
+
+---
+
+# V. Actio proxima dum P1 reservatum est
+
+Dum Claude P1 exercet, via recta independentis progressionis est:
+
+1. documenta canonica ad statum hodiernum reconciliare;
+2. probationes 23/23 custodire;
+3. deinde **P9 per incrementum parvum et generalem** incipere, non per magnam mutationem simul;
+4. ubi Claude terminaverit, opus P1 denuo inspicere ante integrationem.
+
+---
+
+# VI. Sententia
+
+**VINDEX Latine cogitat. Sylvia Latine loquitur.**
+
+**Nullum genus programmatis extra fines VINDEX esse debet.**
