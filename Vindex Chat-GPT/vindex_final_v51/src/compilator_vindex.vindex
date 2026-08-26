@@ -145,7 +145,20 @@ FUNCTIO CONSTRUE_CAPUT_ELF REDDENS NUMERUS.
     ignoratum = SCRIBE_U64(codex, 88, basis).
     DECLARA mensura_totalis SICUT NUMERUS VALENS 120 + mensura_codicis.
     ignoratum = SCRIBE_U64(codex, 96, mensura_totalis).
-    ignoratum = SCRIBE_U64(codex, 104, 46137344).
+    // Contractus memoriae ELF, explicitus:
+    //   basis          = 0x400000  (initium imaginis)
+    //   ACERVUS_SEDES  = 0x2000000 (acervus dynamicus, positio fixa)
+    //   ACERVUS_SPATIUM= 0x1000000 (16 MiB pro acervo)
+    // p_memsz acervum tegere DEBET, quia prologus eum ad sedem fixam
+    // initiat. Valor ergo non fortuitus est sed ex his tribus sequitur.
+    // NOTA: haec dispositio quaestionem architectonicam manifestat --
+    // acervus ad adressam fixam positus cogit omne binarium, etiam
+    // minimum, spatium magnum declarare. Solutio vera esset acervum
+    // post codicem ponere, vel plura segmenta PT_LOAD emittere.
+    DECLARA acervus_sedes SICUT NUMERUS VALENS 33554432.
+    DECLARA acervus_spatium SICUT NUMERUS VALENS 16777216.
+    DECLARA mensura_memoriae SICUT NUMERUS VALENS (acervus_sedes - basis) + acervus_spatium.
+    ignoratum = SCRIBE_U64(codex, 104, mensura_memoriae).
     ignoratum = SCRIBE_U64(codex, 112, 4096).
 
     REDDE 120.
