@@ -1,4 +1,4 @@
-name: P3 — Descriptor allocator minima probatio
+name: P3 — Watchpoint descriptoris temporarius
 
 on:
   push:
@@ -6,12 +6,14 @@ on:
       - chatgpt/p3-fenestrale-uefi-purum
 
 jobs:
-  proba:
+  watch:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
-      - name: Compilatorem G2 nativo emissore construe et microprobationem exerce
+      - name: GDB institue
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends gdb
+      - name: G3 construe et campum capacitatis custodi
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
@@ -46,34 +48,32 @@ jobs:
           FIN-FUNCTIO.
           '''
           p.write_text(t[:a]+n+t[b:],encoding='utf-8')
-          Path('/tmp/proba.vindex').write_text('''FUNCTIO INITIA REDDENS NUMERUS.
-              ACCIPIT descriptor SICUT ACUS<NUMERUS>.
-              DECLARA limen SICUT NUMERUS VALENS 64.
-              DECLARA basis SICUT NUMERUS VALENS RESERVA_OCTETA(limen * 48).
-              CONTENTUM(descriptor) = basis.
-              CONTENTUM(descriptor + 8) = limen.
-              CONTENTUM(descriptor + 16) = 0.
-              REDDE 0.
-          FIN-FUNCTIO.
-
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA descriptor SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(24).
-              PROCLAMA descriptor.
-              DECLARA s SICUT NUMERUS VALENS INITIA(descriptor).
-              PROCLAMA CONTENTUM(descriptor).
-              PROCLAMA CONTENTUM(descriptor + 8).
-              PROCLAMA CONTENTUM(descriptor + 16).
-              DECLARA aliud SICUT NUMERUS VALENS RESERVA_OCTETA(80).
-              PROCLAMA aliud.
-              PROCLAMA CONTENTUM(descriptor + 8).
-              REDDE 0.
-          FIN-FUNCTIO.
-          ''',encoding='utf-8')
           PY
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
-          /tmp/g2 /tmp/proba.vindex /tmp/proba
-          chmod +x /tmp/proba
-          echo '=== MICROPROBATIO ==='
-          timeout 5s /tmp/proba
-          echo '=== FINIS ==='
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          chmod +x /tmp/g3
+          cat >/tmp/watch.gdb <<'GDB'
+          set pagination off
+          set confirm off
+          set args src/compilator_vindex.vindex /tmp/g4
+          starti
+          watch *(long long*)0x02200698
+          continue
+          printf "=== HIT1 ===\n"
+          x/gx 0x02200698
+          info registers rip rax rbx rcx rdx rsi rdi rsp rbp
+          x/16i $rip-24
+          continue
+          printf "=== HIT2 ===\n"
+          x/gx 0x02200698
+          info registers rip rax rbx rcx rdx rsi rdi rsp rbp
+          x/16i $rip-24
+          continue
+          printf "=== HIT3 ===\n"
+          x/gx 0x02200698
+          info registers rip rax rbx rcx rdx rsi rdi rsp rbp
+          x/16i $rip-24
+          quit
+          GDB
+          timeout 20s gdb -q -batch -x /tmp/watch.gdb /tmp/g3 || true
