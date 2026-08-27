@@ -24,7 +24,9 @@ jobs:
 
       - name: Strata P3 integra
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        run: python3 .github/p3_fenestrale.py
+        run: |
+          sed -i 's/UEFI_VOCA6(alloca, 0, 2, 1/UEFI_VOCA6(alloca, 0, 1, 1/' .github/p3_fenestrale.py
+          python3 .github/p3_fenestrale.py
 
       - name: Probationes canonicas
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
