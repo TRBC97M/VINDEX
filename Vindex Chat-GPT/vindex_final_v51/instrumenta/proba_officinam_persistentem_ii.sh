@@ -53,6 +53,7 @@ boot() {
     local numerus="$1"
     local modus="$2"
     local monitor="$TEMPORARIUM/monitor-${numerus}.sock"
+    local qmp="$TEMPORARIUM/qmp-${numerus}.sock"
     local vars="$TEMPORARIUM/OVMF_VARS-${numerus}.fd"
     cp -f "$OVMF_VARS" "$vars"
     chmod +w "$vars"
@@ -63,12 +64,13 @@ boot() {
         -drive "if=ide,format=raw,file=$TEMPORARIUM/systema.img" \
         -display none \
         -monitor "unix:$monitor,server=on,wait=off" \
+        -qmp "unix:$qmp,server=on,wait=off" \
         -net none >"$TEMPORARIUM/qemu-${numerus}.log" 2>&1 &
     local pid=$!
 
     # Capturae directe in TEMPORARIUM ponuntur ut etiam defectus praecox eas servet.
     if ! python3 "$RADIX/instrumenta/proba_officinam_persistentem_ii.py" \
-        "$monitor" "$TEMPORARIUM" "$MORA" "$modus"; then
+        "$monitor" "$qmp" "$TEMPORARIUM" "$MORA" "$modus"; then
         kill "$pid" 2>/dev/null || true
         wait "$pid" 2>/dev/null || true
         tail -80 "$TEMPORARIUM/qemu-${numerus}.log" >&2 || true
