@@ -5,6 +5,9 @@ on:
     branches:
       - chatgpt/p3-fenestrale-uefi-purum
 
+permissions:
+  contents: write
+
 jobs:
   proba:
     runs-on: ubuntu-24.04
@@ -113,3 +116,24 @@ jobs:
         run: |
           set -euo pipefail
           bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Statum probatum in ramo serva
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git diff --check
+          git status --short
+          git add \
+            "$RADIX/src/compilator_vindex.vindex" \
+            "$RADIX/compilator_vindex" \
+            "$RADIX/systema/rectores/murus_ps2.vindex" \
+            "$RADIX/bibliotheca/fenestrale_input_i.vindex" \
+            "$RADIX/systema/fenestrale_ii_purus_i.vindex" \
+            "$RADIX/systema/uefi/construe_uefi_purum.sh" \
+            "$RADIX/instrumenta/proba_fenestrale_uefi_purum.py"
+          git diff --cached --quiet && { printf '%s\n' 'RECTE: nihil novum servandum.'; exit 0; }
+          git config user.name 'TRBC97M'
+          git config user.email 'trbc97m@protonmail.com'
+          git commit -m 'P3: Fenestrale II cum PS/2 UEFI puro coniunge [skip ci]'
+          git push origin HEAD:chatgpt/p3-fenestrale-uefi-purum
