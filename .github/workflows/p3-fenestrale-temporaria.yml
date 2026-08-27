@@ -19,6 +19,12 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
 
+      - name: P3 Fenestrale additive applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/p3_fenestrale.py
+
       - name: Descriptores corrige et compilatorem converge
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
@@ -86,7 +92,6 @@ jobs:
           cmp /tmp/g3 /tmp/g4
           printf '%s\n' 'RECTE: G3 = G4; compilator ad punctum fixum convergit.'
 
-          # Seed canonicum in hoc solo cursore ad novum punctum fixum promove.
           cp /tmp/g4 ./compilator_vindex
           chmod +x ./compilator_vindex
           bash ./tests/run_tests.sh
