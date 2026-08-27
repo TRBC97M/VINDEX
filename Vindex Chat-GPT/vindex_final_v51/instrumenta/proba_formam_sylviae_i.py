@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-I: metra visualia Sylviae sub UEFI/QEMU per screendump comprobat."""
+"""P16-VI: metra et identitas visualis Sylviae sub UEFI/QEMU comprobantur."""
 from __future__ import annotations
 
 import socket
@@ -90,56 +90,55 @@ def principale() -> int:
     try:
         lege_usque(monitor, b"(qemu) ", 2.0)
         time.sleep(mora)
-        via = out / "forma-sylviae-i.ppm"
+        via = out / "forma-sylviae-vi.ppm"
         captura(monitor, via)
         w, h, pix = ppm(via)
         if (w, h) != (1280, 800):
             print(f"DEFECIT: resolutio {w}x{h}", file=sys.stderr)
             return 4
 
-        aqua = (98, 215, 242)
-        profundum = (8, 35, 61)
-        vitrum = (14, 66, 111)
+        nox = (28, 31, 32)
+        lapis = (49, 55, 55)
         ebur = (241, 238, 228)
-        lux = (234, 248, 255)
+        bronzeum = (185, 138, 82)
 
         taskbar_top = h - 40
-        linea_aqua = numerus_coloris_in_linea(pix, w, taskbar_top, aqua)
-        linea_profunda = numerus_coloris_in_linea(pix, w, taskbar_top + 3, profundum)
-        if linea_aqua < w * 95 // 100:
-            print(f"DEFECIT: limes superior taskbar non est XL px: aqua={linea_aqua}", file=sys.stderr)
+        linea_bronzea = numerus_coloris_in_linea(pix, w, taskbar_top, bronzeum)
+        linea_nocturna = numerus_coloris_in_linea(pix, w, taskbar_top + 3, nox)
+        if linea_bronzea < w * 95 // 100:
+            print(f"DEFECIT: limes aeneus taskbar non continuus est: bronzeum={linea_bronzea}", file=sys.stderr)
             return 5
-        if linea_profunda < w * 95 // 100:
-            print(f"DEFECIT: corpus taskbar non est profundum: prof={linea_profunda}", file=sys.stderr)
+        if linea_nocturna < w * 95 // 100:
+            print(f"DEFECIT: corpus taskbar non est nox graphitica: nox={linea_nocturna}", file=sys.stderr)
             return 6
 
-        if pixel(pix, w, 8, taskbar_top + 8) != vitrum:
-            print("DEFECIT: tessera INITIUM nova deest", file=sys.stderr)
+        if pixel(pix, w, 10, taskbar_top + 8) != lapis:
+            print("DEFECIT: tessera INITIUM lapidea deest", file=sys.stderr)
             return 7
         tray_x = w - 126
-        if pixel(pix, w, tray_x + 2, taskbar_top + 8) != vitrum:
-            print("DEFECIT: regio systematis dextra deest", file=sys.stderr)
+        if pixel(pix, w, tray_x + 4, taskbar_top + 8) != lapis:
+            print("DEFECIT: regio systematis dextra lapidea deest", file=sys.stderr)
             return 8
 
-        # P16-III bootat in bureau mundo; duae tesserae applicationum debent adesse.
-        if pixel(pix, w, 20, 74) != vitrum:
-            print(f"DEFECIT: tessera PROGRAMMATA bureau deest: {pixel(pix,w,20,74)}", file=sys.stderr)
+        # Hitbox bureau manet P16-III, sed tesserae iam nocturnae sunt.
+        if pixel(pix, w, 20, 74) != nox:
+            print(f"DEFECIT: tessera PROGRAMMATA bureau nova deest: {pixel(pix,w,20,74)}", file=sys.stderr)
             return 9
-        if pixel(pix, w, 20, 178) != vitrum:
-            print(f"DEFECIT: tessera TABULA bureau deest: {pixel(pix,w,20,178)}", file=sys.stderr)
+        if pixel(pix, w, 20, 178) != nox:
+            print(f"DEFECIT: tessera TABULA bureau nova deest: {pixel(pix,w,20,178)}", file=sys.stderr)
             return 10
 
-        # Textus 2× manet contractus P16-I; nunc marca SYLVIA in bureau eum exercet.
-        lux_tituli = numerus_coloris_in_recto(pix, w, 16, 16, 150, 48, lux)
-        if lux_tituli < 250:
-            print(f"DEFECIT: marca SYLVIA 2x non videtur: lux={lux_tituli}", file=sys.stderr)
+        # Marca SYLVIA 2× manet contractus typographicus, nunc eburnea.
+        ebur_tituli = numerus_coloris_in_recto(pix, w, 16, 16, 150, 48, ebur)
+        if ebur_tituli < 250:
+            print(f"DEFECIT: marca SYLVIA 2x non videtur: ebur={ebur_tituli}", file=sys.stderr)
             return 11
 
         colores = Counter(tuple(pix[i:i+3]) for i in range(0, len(pix)-2, 3))
-        print(f"FORMA: resolutio={w}x{h} taskbar=40 titulus=36")
-        print(f"FORMA: linea_aqua={linea_aqua} linea_profunda={linea_profunda} lux_bureau_2x={lux_tituli}")
-        print(f"FORMA: colores_distincti={sum(1 for _,n in colores.items() if n>30)}")
-        print("RECTE: P16-I metra visualia Sylviae sub UEFI vere pinguntur.")
+        print(f"FORMA-VI: resolutio={w}x{h} taskbar=40 titulus=36")
+        print(f"FORMA-VI: linea_bronzea={linea_bronzea} linea_nocturna={linea_nocturna} ebur_bureau_2x={ebur_tituli}")
+        print(f"FORMA-VI: colores_distincti={sum(1 for _,n in colores.items() if n>30)}")
+        print("RECTE: P16-VI identitas nox-ebur-aes sub UEFI vere pingitur.")
         return 0
     finally:
         try:
