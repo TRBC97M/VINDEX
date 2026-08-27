@@ -121,24 +121,23 @@ def principale() -> int:
             print("DEFECIT: regio systematis dextra deest", file=sys.stderr)
             return 8
 
-        # Fenestra PROGRAMMATA initialiter focus habet: x≈76, y≈56.
-        # Ad x=300 titulus novus usque ad y+35 manet; corpus incipit ad y+36.
-        if pixel(pix, w, 300, 88) != vitrum:
-            print(f"DEFECIT: titulus fenestrae XXXVI px non detectus: {pixel(pix,w,300,88)}", file=sys.stderr)
+        # P16-III bootat in bureau mundo; duae tesserae applicationum debent adesse.
+        if pixel(pix, w, 20, 74) != vitrum:
+            print(f"DEFECIT: tessera PROGRAMMATA bureau deest: {pixel(pix,w,20,74)}", file=sys.stderr)
             return 9
-        if pixel(pix, w, 300, 96) != ebur:
-            print(f"DEFECIT: regio sub titulo non detecta: {pixel(pix,w,300,96)}", file=sys.stderr)
+        if pixel(pix, w, 20, 178) != vitrum:
+            print(f"DEFECIT: tessera TABULA bureau deest: {pixel(pix,w,20,178)}", file=sys.stderr)
             return 10
 
-        # Titulus 2× debet multo plures pixeles lucidos quam vetus 8×8 simplex.
-        lux_tituli = numerus_coloris_in_recto(pix, w, 86, 62, 260, 92, lux)
-        if lux_tituli < 300:
-            print(f"DEFECIT: titulus 2x non videtur: lux={lux_tituli}", file=sys.stderr)
+        # Textus 2× manet contractus P16-I; nunc marca SYLVIA in bureau eum exercet.
+        lux_tituli = numerus_coloris_in_recto(pix, w, 16, 16, 150, 48, lux)
+        if lux_tituli < 250:
+            print(f"DEFECIT: marca SYLVIA 2x non videtur: lux={lux_tituli}", file=sys.stderr)
             return 11
 
         colores = Counter(tuple(pix[i:i+3]) for i in range(0, len(pix)-2, 3))
         print(f"FORMA: resolutio={w}x{h} taskbar=40 titulus=36")
-        print(f"FORMA: linea_aqua={linea_aqua} linea_profunda={linea_profunda} lux_tituli={lux_tituli}")
+        print(f"FORMA: linea_aqua={linea_aqua} linea_profunda={linea_profunda} lux_bureau_2x={lux_tituli}")
         print(f"FORMA: colores_distincti={sum(1 for _,n in colores.items() if n>30)}")
         print("RECTE: P16-I metra visualia Sylviae sub UEFI vere pinguntur.")
         return 0
