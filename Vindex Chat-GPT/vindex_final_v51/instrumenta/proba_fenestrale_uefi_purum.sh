@@ -7,7 +7,16 @@ UEFI="$RADIX/systema/uefi"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-fenestrale-uefi.XXXXXX")"
 MORA_INITII="${MORA_INITII:-28}"
 PROBATOR_FENESTRALIS="${PROBATOR_FENESTRALIS:-$RADIX/instrumenta/proba_fenestrale_uefi_purum.py}"
-trap 'rm -rf "$TEMPORARIUM" 2>/dev/null || true' EXIT HUP INT TERM
+SERVA_CAPTURAS="${SERVA_CAPTURAS:-}"
+
+serva_et_purga() {
+    if [ -n "$SERVA_CAPTURAS" ]; then
+        mkdir -p "$SERVA_CAPTURAS" 2>/dev/null || true
+        cp -f "$TEMPORARIUM"/*.ppm "$SERVA_CAPTURAS"/ 2>/dev/null || true
+    fi
+    rm -rf "$TEMPORARIUM" 2>/dev/null || true
+}
+trap serva_et_purga EXIT HUP INT TERM
 
 OVMF_CODE=""
 for via in /usr/share/OVMF/OVMF_CODE_4M.fd /usr/share/OVMF/OVMF_CODE.fd /usr/share/ovmf/OVMF.fd /usr/share/qemu/OVMF.fd; do
