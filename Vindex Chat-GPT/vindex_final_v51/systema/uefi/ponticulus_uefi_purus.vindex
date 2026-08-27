@@ -14,7 +14,7 @@
 //   GOP: QueryMode=0, SetMode=8, Mode=24
 //   GOP.Mode: MaxMode=0, Info=8, FrameBufferBase=24
 //   Info: HorizontalResolution=4, VerticalResolution=8, PixelFormat=12,
-//         PixelsPerScanLine=36
+//         PixelsPerScanLine=32
 
 FUNCTIO LEGE_U32 REDDENS NUMERUS.
     ACCIPIT adressa SICUT NUMERUS.
