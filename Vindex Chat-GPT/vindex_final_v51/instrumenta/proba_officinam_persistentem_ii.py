@@ -36,6 +36,49 @@ def scribe_maiusculas(aux: object, monitor: socket.socket, textus: str) -> None:
             raise ValueError(f'littera probationis non sustenta: {c!r}')
 
 
+def cursorem_excita(
+    aux: object,
+    ps2: object,
+    monitor: socket.socket,
+    q: socket.socket,
+    out: Path,
+    modus: int,
+    w: int,
+    h: int,
+    pix_initialis: bytes,
+) -> tuple[int, int] | None:
+    """Primum fasciculum PS/2 mittit donec cursor in framebuffer vere appareat."""
+    positio = aux.cursor_quaere(pix_initialis, w, h)
+    if positio is not None:
+        return positio
+
+    motus = ((4, 3), (8, 5), (-3, 7), (12, -4))
+    for tentamen, (dx, dy) in enumerate(motus):
+        responsum = ps2.qmp(
+            q,
+            'input-send-event',
+            {
+                'events': [
+                    {'type': 'rel', 'data': {'axis': 'x', 'value': dx}},
+                    {'type': 'rel', 'data': {'axis': 'y', 'value': dy}},
+                ]
+            },
+        )
+        if 'error' in responsum:
+            raise RuntimeError(f'QMP motum PS/2 recusavit: {responsum}')
+        # HMP eundem murem selectum quoque pulsat; hoc viam historicam custodit.
+        aux.hmp(monitor, f'mouse_move {dx} {dy}')
+        time.sleep(0.45)
+        via = out / f'officina-p19-ii-{modus}-cursor-primum-{tentamen}.ppm'
+        aux.captura(monitor, via)
+        _, _, pix = aux.ppm(via)
+        positio = aux.cursor_quaere(pix, w, h)
+        if positio is not None:
+            print(f'OFFICINA-P19-II: cursor_primus={positio} tentamen={tentamen + 1}')
+            return positio
+    return None
+
+
 def principale() -> int:
     if len(sys.argv) != 6:
         print('USUS: proba_officinam_persistentem_ii.py MONITOR QMP EXITUS MORA MODUS', file=sys.stderr)
@@ -87,10 +130,15 @@ def principale() -> int:
         aperta = out / f'officina-p19-ii-{modus}-aperta.ppm'
         servata = out / f'officina-p19-ii-{modus}-servata.ppm'
         aux.captura(monitor, ante)
-        w, h, _pix = aux.ppm(ante)
+        w, h, pix_ante = aux.ppm(ante)
         if (w, h) != (1280, 800):
             print(f'DEFECIT: resolutio {w}x{h}', file=sys.stderr)
             return 6
+
+        primus = cursorem_excita(aux, ps2, monitor, q, out, modus, w, h, pix_ante)
+        if primus is None:
+            print('DEFECIT: cursor PS/2 post motus primos in framebuffer non apparuit', file=sys.stderr)
+            return 7
 
         # OFFICINA est quarta applicatio bureau P16-IV.
         pos = aux.move_ad(monitor, out, f'officina-p19-ii-{modus}', 70, 422, w, h)
@@ -101,7 +149,7 @@ def principale() -> int:
         bronzeum = (185, 138, 82)
         if aux.pixel(pix_open, w, 500, 64) != bronzeum:
             print('DEFECIT: OFFICINA focus non accepit', file=sys.stderr)
-            return 7
+            return 8
 
         if modus == 1:
             scribe_maiusculas(aux, monitor, 'ZEPHYR72941')
@@ -122,7 +170,7 @@ def principale() -> int:
         _, _, pix_saved = aux.ppm(servata)
         if aux.pixel(pix_saved, w, 500, 64) != bronzeum:
             print('DEFECIT: F2 focum OFFICINAE amisit', file=sys.stderr)
-            return 8
+            return 9
 
         print(f'OFFICINA-P19-II: initium={modus} cursor_bureau={pos} F2=missum')
         return 0
