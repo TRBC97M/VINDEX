@@ -1,4 +1,4 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-IV / P17-I.
+// Sylvia OS — Fenestrale II Purus I, facies P16-IV / P17-II.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
@@ -93,7 +93,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         DECLARA muris SICUT NUMERUS VALENS IN_MURUS(s).
         DECLARA q SICUT NUMERUS VALENS IN_CLAVIS().
         SI q!=0 TUNC
-            DECLARA qa SICUT NUMERUS VALENS GI_CLAVIS(s,s[37],s[34],q).
+            DECLARA qa SICUT NUMERUS VALENS GI_CLAVIS(s,s[37],s[36],s[34],q).
             SI qa==2 TUNC finis=1. ALITER SI qa==1 TUNC redde=1. FIN-SI. FIN-SI.
         FIN-SI.
         SI muris!=0 TUNC
