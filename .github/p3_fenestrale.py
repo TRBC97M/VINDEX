@@ -194,18 +194,20 @@ if old not in b:
 b = b.replace(old, new, 1)
 BUILD.write_text(b, encoding='utf-8')
 
-# V. Probatio Fenestralis eandem sedem PS/2 historice probatam observat.
+# V. Probatio Fenestralis sedem PS/2 historice probatam observat.
 t = TESTF.read_text(encoding='utf-8')
 old = '''def basis_ps2(monitor: socket.socket) -> int:
     v = hexa_hmp(hmp(monitor, "xp /1gx 0x03000b30"))
     return v[0] if v else 0
 '''
 new = '''def basis_ps2(monitor: socket.socket) -> int:
+    # Sedes rectoris historice probata; initium fit post migrationem voluminis.
     return 0x03018800
 '''
-if old not in t:
-    raise SystemExit('probatio Fenestralis: basis metadata non inventa')
-t = t.replace(old, new, 1)
+if old in t:
+    t = t.replace(old, new, 1)
+elif 'return 0x03018800' not in t:
+    raise SystemExit('probatio Fenestralis: basis PS2 neque vetus neque canonica inventa')
 TESTF.write_text(t, encoding='utf-8')
 
 print('RECTE: P3 additive cum sede PS2 historice probata praeparatum est.')
