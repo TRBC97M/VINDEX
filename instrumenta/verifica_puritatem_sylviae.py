@@ -1,49 +1,49 @@
 #!/usr/bin/env python3
-"""Verificat Sylviam post bootstrap solum codice VINDEX constare."""
+"""Verificat catenam canonicam Sylviae omnino VINDEX puram esse."""
 from pathlib import Path
 import re
 import sys
 
 RADIX = Path(__file__).resolve().parents[1]
 SYSTEMA = RADIX / "Vindex Chat-GPT/vindex_final_v51/systema"
-BOOTSTRAP = SYSTEMA / "uefi/bootstrap_uefi.c"
+UEFI = SYSTEMA / "uefi"
+PONTICULUS = UEFI / "ponticulus_uefi_purus.vindex"
+CONSTRUCTOR = UEFI / "construe_uefi_purum.sh"
 NUCLEUS = SYSTEMA / "nucleus.vindex"
 
 EXTENSIONES_VETITAE = {".c", ".h", ".cc", ".cpp", ".cxx", ".s", ".S", ".asm", ".rs"}
 POLLE_HEREDITATUM = re.compile(r"(?<![A-Z0-9_])POLLE\(\)")
 errata: list[str] = []
 
+# Nulla exceptio linguae post canonizationem P1 manet in arbore systematis.
 for via in SYSTEMA.rglob("*"):
-    if not via.is_file():
-        continue
-    if via == BOOTSTRAP:
-        continue
-    if via.suffix in EXTENSIONES_VETITAE:
-        errata.append(f"codex runtime non-VINDEX vetitus: {via.relative_to(RADIX)}")
+    if via.is_file() and via.suffix in EXTENSIONES_VETITAE:
+        errata.append(f"codex systematis non-VINDEX vetitus: {via.relative_to(RADIX)}")
 
-if not BOOTSTRAP.exists():
-    errata.append("bootstrap UEFI minimus deest")
+if not PONTICULUS.exists():
+    errata.append("ponticulus UEFI VINDEX purus deest")
 else:
-    textus = BOOTSTRAP.read_text(encoding="utf-8")
-    # Haec verba opera runtime indicant quae bootstrap numquam gerere debet.
-    vetita = [
-        "ReadKeyStroke", "GetState", "EFI_FILE_PROTOCOL", "BLOCK_IO",
-        "firmamentum_polle", "clientem_voca", "compone(", "z_order",
-        "taskbar", "focus", "fenestra_native", "murus_relativus",
-        "murus_absolutus", "VINDEX.FS",
+    textus = PONTICULUS.read_text(encoding="utf-8")
+    requisita = [
+        "UEFI_VOCA6",
+        "SALI_AD(",
+        "CONTENTUM(info_buf + 8)",
+        "LEGE_U32(info + 32)",
+        "NUCLEUS.BIN",
     ]
-    for verbum in vetita:
-        if verbum in textus:
-            errata.append(f"bootstrap officium runtime vetitum continet: {verbum}")
-    for fragmentum in [
-        "#define UEFI_STATUS (COMMUNIS + 0xB00ULL)",
-        "meta[7] = scala;",
-        "meta[8] = (latitudo - 320 * scala) / 2;",
-        "meta[9] = (altitudo - 200 * scala) / 2;",
-        "((volatile U64 *)UEFI_STATUS)[0] = (U64)(UINTN)imago;",
-    ]:
+    for fragmentum in requisita:
         if fragmentum not in textus:
-            errata.append(f"contractus metadatae UEFI deest: {fragmentum}")
+            errata.append(f"contractus ponticuli UEFI deest: {fragmentum}")
+
+if not CONSTRUCTOR.exists():
+    errata.append("constructor UEFI VINDEX purus deest")
+else:
+    constructio = CONSTRUCTOR.read_text(encoding="utf-8")
+    for instrumentum in ["gcc ", "clang ", " objcopy", " ld "]:
+        if instrumentum in constructio:
+            errata.append(f"constructor UEFI instrumentum non-VINDEX ad codicem generandum adhibet: {instrumentum.strip()}")
+    if "ponticulus_uefi_purus.vindex" not in constructio:
+        errata.append("constructor UEFI ponticulum canonicum non adhibet")
 
 if NUCLEUS.exists():
     nucleus = NUCLEUS.read_text(encoding="utf-8")
@@ -65,9 +65,9 @@ for via in SYSTEMA.rglob("*.vindex"):
         errata.append(f"callback C historicus POLLE adhuc adhibetur: {via.relative_to(RADIX)}")
 
 if errata:
-    print("ERRATUM: puritas VINDEX Sylviae violata est.", file=sys.stderr)
+    print("ERRATUM: puritas absoluta VINDEX Sylviae violata est.", file=sys.stderr)
     for erratum in errata:
         print(f"  - {erratum}", file=sys.stderr)
     raise SystemExit(1)
 
-print("RECTE: praeter bootstrap UEFI minimum, runtime Sylviae VINDEX purum est.")
+print("RECTE: catena canonica Sylviae nullam exceptionem C aut runtime non-VINDEX continet.")
