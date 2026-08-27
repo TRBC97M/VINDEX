@@ -356,21 +356,56 @@ Componentes destinati:
 
 ## P12 — Infrastructura gubernatorum
 
-**Status:** `PARATUM ad primum fundamentum`.
+**Status:** `ACTIVUM` — incrementum I `PROBATUM`, curator Claude, ramus `claude/p12-pci-fundamentum`.
 
-Strata requisita:
+**Ratio prioritatis:** sine hoc strato, nec USB nec HID nec ullus gubernator machinae verae possibilis est. Sylvia hodie solum sub QEMU cum PS/2 emulato vivit; machinae recentes PS/2 non habent. P13 (machina physica) hoc fundamentum praesupponit.
 
-- PCI/PCIe;
+### Incrementum I — portus I/O et enumeratio PCI (`PROBATUM`)
+
+Primitivae portuum in compilatore, quae omnino deerant:
+
+- `PORTUS_LEGE(portus)` — `in al, dx`;
+- `PORTUS_LEGE32(portus)` — `in eax, dx`;
+- `PORTUS_SCRIBE(portus, valor)` — `out dx, al`;
+- `PORTUS_SCRIBE32(portus, valor)` — `out dx, eax`.
+
+Rector PS/2 (`murus_ps2.vindex`) particulas codicis machinalis manu scriptas adhuc adhibet, cum commentario explicito *donec VINDEX intrinseca publica I/O portuum propria habeat*. Nunc habet; migratio illius rectoris opus proximum candidatum est.
+
+Enumeratio PCI (`systema/rectores/pci.vindex`), tota in VINDEX:
+
+- mechanismus canonicus #1 (portus `0xCF8` / `0xCFC`);
+- `PCI_LEGE` / `PCI_SCRIBE` ad quodvis registrum configurationis;
+- `PCI_VENDITOR`, `PCI_APPARATUS_ID`, `PCI_CLASSIS`, `PCI_SUBCLASSIS`, `PCI_GENUS_CAPITIS`, `PCI_ADEST`;
+- `PCI_ENUMERA` per omnes bus et apparatus, cum functionibus multiplicibus;
+- registrum apparatuum inventorum.
+
+Probatio sub QEMU/OVMF, apparatus veri:
+
+```text
+PCI=0005
+8086:1237 classis 06   (Intel 440FX Host Bridge)
+8086:7000 classis 06   (PIIX3 ISA Bridge)
+8086:7010 classis 01   (PIIX3 IDE)
+8086:7113 classis 06   (PIIX4 ACPI)
+```
+
+Nulla regressio: punctum fixum `G2 = G3`, ELF, PE/Win64, custos puritatis, XXX/XXX probationes canonicae.
+
+### Strata reliqua
+
+- BAR, interruptiones et MMIO per apparatum;
+- migratio rectoris PS/2 ad primitivas novas;
 - ACPI;
 - USB;
 - HID;
 - I2C;
-- interruptiones;
-- MMIO et portus;
 - DMA;
 - firmware loading;
-- registrum apparatus;
 - contractus gubernatorum.
+
+### Criterium victoriae
+
+**Perfectum:** Sylvia apparatus veros enumerat, describit et per contractum gubernatorum canonicum tractat, sine codice machinali manu scripto et sine runtime non-VINDEX.
 
 ---
 

@@ -1,0 +1,155 @@
+// Sylvia OS — enumeratio PCI/PCIe, tota in VINDEX puro.
+//
+// P12, fundamentum primum: sine hoc strato, nec USB nec HID nec ullus
+// gubernator machinae verae possibilis est. Sylvia hodie solum sub QEMU
+// cum PS/2 emulato vivit; machinae recentes PS/2 non habent.
+//
+// Nulla particula codicis machinalis manu scripta: primitivae
+// PORTUS_LEGE32 / PORTUS_SCRIBE32 a compilatore ipso praebentur.
+//
+// Mechanismus canonicus (configuration space access mechanism #1):
+//   portus 0xCF8 (3320) = adressa: bit 31 activus, bus:8, apparatus:5,
+//                          functio:3, registrum:8 (duo bit infimi nulli)
+//   portus 0xCFC (3324) = datum XXXII bitorum
+//
+// Registrum 0: identificator venditoris (bits 0-15) et apparatus (16-31).
+// Venditor 0xFFFF significat apparatum abesse.
+// Registrum 8: classis (bits 24-31), subclassis (16-23), interfacies (8-15),
+//              revisio (0-7).
+// Registrum 12: genus capitis (bits 16-23); bit 7 significat plures functiones.
+
+FUNCTIO PCI_ADRESSA REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS 2147483648.
+    adr = adr + (bus * 65536).
+    adr = adr + (apparatus * 2048).
+    adr = adr + (functio * 256).
+    adr = adr + (registrum & 252).
+    REDDE adr.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_LEGE REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    PORTUS_SCRIBE32(3320, PCI_ADRESSA(bus, apparatus, functio, registrum)).
+    REDDE PORTUS_LEGE32(3324).
+FIN-FUNCTIO.
+
+FUNCTIO PCI_SCRIBE REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    PORTUS_SCRIBE32(3320, PCI_ADRESSA(bus, apparatus, functio, registrum)).
+    PORTUS_SCRIBE32(3324, valor).
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_VENDITOR REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE PCI_LEGE(bus, apparatus, functio, 0) & 65535.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_APPARATUS_ID REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE (PCI_LEGE(bus, apparatus, functio, 0) / 65536) & 65535.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_CLASSIS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE (PCI_LEGE(bus, apparatus, functio, 8) / 16777216) & 255.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_SUBCLASSIS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE (PCI_LEGE(bus, apparatus, functio, 8) / 65536) & 255.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_GENUS_CAPITIS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE (PCI_LEGE(bus, apparatus, functio, 12) / 65536) & 255.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_ADEST REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    DECLARA vend SICUT NUMERUS VALENS PCI_VENDITOR(bus, apparatus, functio).
+    SI vend == 65535 TUNC REDDE 0. FIN-SI.
+    SI vend == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Registrum apparatuum inventorum. Quisque ingressus octo verba occupat:
+//   +0 bus, +8 apparatus, +16 functio, +24 venditor, +32 id apparatus,
+//   +40 classis, +48 subclassis, +56 reservatum.
+FUNCTIO PCI_INGRESSUM_SCRIBE REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    DECLARA sedes SICUT NUMERUS VALENS registrum + (index * 64).
+    CONTENTUM(sedes) = bus.
+    CONTENTUM(sedes + 8) = apparatus.
+    CONTENTUM(sedes + 16) = functio.
+    CONTENTUM(sedes + 24) = PCI_VENDITOR(bus, apparatus, functio).
+    CONTENTUM(sedes + 32) = PCI_APPARATUS_ID(bus, apparatus, functio).
+    CONTENTUM(sedes + 40) = PCI_CLASSIS(bus, apparatus, functio).
+    CONTENTUM(sedes + 48) = PCI_SUBCLASSIS(bus, apparatus, functio).
+    CONTENTUM(sedes + 56) = 0.
+    REDDE 0.
+FIN-FUNCTIO.
+
+// Enumeratio omnium bus/apparatuum/functionum.
+// Reddit numerum apparatuum inventorum; registrum implet usque ad limen.
+FUNCTIO PCI_ENUMERA REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    DECLARA numerus SICUT NUMERUS VALENS 0.
+    DECLARA bus SICUT NUMERUS VALENS 0.
+    DUM bus < 256 PERFICE
+        DECLARA app SICUT NUMERUS VALENS 0.
+        DUM app < 32 PERFICE
+            SI PCI_ADEST(bus, app, 0) == 1 TUNC
+                SI numerus < limen TUNC
+                    DECLARA ig0 SICUT NUMERUS VALENS PCI_INGRESSUM_SCRIBE(registrum, numerus, bus, app, 0).
+                FIN-SI.
+                numerus = numerus + 1.
+                // Si apparatus plures functiones habet, eas quoque quaere.
+                DECLARA caput SICUT NUMERUS VALENS PCI_GENUS_CAPITIS(bus, app, 0).
+                SI (caput & 128) == 128 TUNC
+                    DECLARA fn SICUT NUMERUS VALENS 1.
+                    DUM fn < 8 PERFICE
+                        SI PCI_ADEST(bus, app, fn) == 1 TUNC
+                            SI numerus < limen TUNC
+                                DECLARA ig1 SICUT NUMERUS VALENS PCI_INGRESSUM_SCRIBE(registrum, numerus, bus, app, fn).
+                            FIN-SI.
+                            numerus = numerus + 1.
+                        FIN-SI.
+                        fn = fn + 1.
+                    FIN-DUM.
+                FIN-SI.
+            FIN-SI.
+            app = app + 1.
+        FIN-DUM.
+        bus = bus + 1.
+    FIN-DUM.
+    REDDE numerus.
+FIN-FUNCTIO.
