@@ -40,7 +40,7 @@ def telemetria_ps2(ps2: object, monitor: socket.socket, nomen: str) -> list[int]
     basis = ps2.basis_ps2(monitor)
     status = ps2.status_ps2(monitor, basis)
     raw = ps2.hexa_hmp(ps2.hmp(monitor, f'xp /3gx 0x{basis + 72:x}'))[:3]
-    vita = ps2.hexa_hmp(ps2.hmp(monitor, f'xp /4gx 0x{basis + 96:x}'))[:4]
+    vita = ps2.hexa_hmp(ps2.hmp(monitor, f'xp /5gx 0x{basis + 96:x}'))[:5]
     print(f'OFFICINA-P19-II: ps2_{nomen}={status} raw={raw} vita={vita}')
     return status
 
