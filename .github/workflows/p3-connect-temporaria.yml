@@ -34,18 +34,18 @@ jobs:
           MORA_INITII: '28'
         run: bash ./instrumenta/proba_catenam_uefi_053.sh
 
-      - name: Mutationes probatas persiste et scaffolding remove
+      - name: Mutationes probatas persiste
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'ChatGPT'
           git config user.email 'chatgpt@openai.local'
-          git rm .github/p3_connect.py .github/workflows/p3-connect-temporaria.yml
+          git rm .github/p3_connect.py
+          git checkout -- .github/workflows/catena-uefi-vindex.yml
           git add 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh' \
-                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py' \
-                  '.github/workflows/catena-uefi-vindex.yml'
+                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
           git commit -m 'P3: rectorem muris PS2 VINDEX nativum canoniza'
           git push origin HEAD:chatgpt/p3-connect-controller-purus
