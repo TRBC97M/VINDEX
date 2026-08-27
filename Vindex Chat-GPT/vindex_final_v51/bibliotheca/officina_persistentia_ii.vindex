@@ -123,7 +123,9 @@ FUNCTIO OP_EDITOR_EX_TEXTU REDDENS NUMERUS.
 
     DUM i<=n PERFICE
         DECLARA finis_lineae SICUT NUMERUS VALENS 0.
-        SI i==n TUNC finis_lineae=1. ALITER
+        SI i==n TUNC
+            finis_lineae=1.
+        ALITER
             SI OCTETUS_AB(basis+i)==10 TUNC finis_lineae=1. FIN-SI.
         FIN-SI.
         SI finis_lineae==1 TUNC
