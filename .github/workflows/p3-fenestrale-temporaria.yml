@@ -1,0 +1,64 @@
+name: P3 — Fenestrale UEFI integratio temporaria
+
+on:
+  push:
+    branches:
+      - chatgpt/p3-fenestrale-uefi-purum
+
+permissions:
+  contents: write
+
+jobs:
+  integra:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta institue
+        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Strata P3 integra
+        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+        run: python3 .github/p3_fenestrale.py
+
+      - name: Probationes canonicas
+        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: bash ./tests/run_tests.sh
+
+      - name: Nucleum historicum cum rectore refacto proba
+        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+        run: bash ./instrumenta/proba_catenam_uefi_053.sh
+
+      - name: Fenestrale II UEFI cum PS2 proba
+        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+        run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Mutationes probatas persiste
+        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'ChatGPT'
+          git config user.email 'chatgpt@openai.local'
+          git rm .github/p3_fenestrale.py
+          git add 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_input_i.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh' \
+                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
+          git commit -m 'P3: Fenestrale II cum PS2 nativo in UEFI coniunge'
+          git push origin HEAD:chatgpt/p3-fenestrale-uefi-purum
