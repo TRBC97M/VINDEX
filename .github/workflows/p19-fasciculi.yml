@@ -1,0 +1,76 @@
+name: Sylvia — Fasciculi P19-I
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_fasciculos_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.sh'
+      - 'documenta/sylvia/FASCICULI_I.md'
+      - '.github/workflows/p19-fasciculi.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_fasciculos_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.sh'
+      - 'documenta/sylvia/FASCICULI_I.md'
+      - '.github/workflows/p19-fasciculi.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contractus:
+    name: Contractus fasciculorum VINDEX probatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Contractum purum compila et exsequere
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/fasciculi_sylviae_i.vindex /tmp/fasciculi-p19
+          chmod +x /tmp/fasciculi-p19
+          timeout 10s /tmp/fasciculi-p19
+          printf '%s\n' 'RECTE: P19-I viae Unicode et contractus fasciculorum puri probantur.'
+
+  persistentia:
+    name: Duo initia QEMU persistentiam probant
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta necessaria institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Duo initia eiusdem imaginis exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_P19: '45'
+        run: bash ./instrumenta/proba_fasciculos_persistentes_i.sh
