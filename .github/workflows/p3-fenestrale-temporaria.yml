@@ -1,4 +1,4 @@
-name: P3 — Liberatio acervi dissectio temporaria
+name: P3 — Allocator raw bump solum temporarius
 
 on:
   push:
@@ -9,22 +9,64 @@ permissions:
   contents: write
 
 jobs:
-  disseca:
+  proba:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
-      - name: Liberationem et usum acervi monstra
+      - name: Bump allocator compone et generationes nota
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
-          set -u
-          echo '=== OMNES 33554440 ==='
-          grep -n -A35 -B25 '33554440' src/compilator_vindex.vindex || true
-          echo '=== OMNES syscall 11 (munmap) ==='
-          grep -n -A15 -B20 'COMPONE_ONERA(codex, .*0, 11)' src/compilator_vindex.vindex || true
-          echo '=== verba LIBERA in fonte ==='
-          grep -n -i -A30 -B20 'libera' src/compilator_vindex.vindex || true
-          echo '=== RESERVA_OCTETA in fonte compilatoris ==='
-          grep -n 'RESERVA_OCTETA' src/compilator_vindex.vindex | head -n 120 || true
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/compilator_vindex.vindex')
+          t=p.read_text(encoding='utf-8')
+          a=t.index('FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS.')
+          b=t.index('\nFUNCTIO COMPONE_RESERVA_OCTETA_DYNAMICA REDDENS NUMERUS.',a)
+          n='''FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS.
+              ACCIPIT codex SICUT ACUS<NUMERUS>.
+              ACCIPIT pos SICUT NUMERUS.
+              DECLARA p_mem SICUT NUMERUS VALENS pos.
+              // Probatio minima: allocator raw e solo cursore acervi.
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 6, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554432).
+              p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 0, 1).
+              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 0, 6).
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 3, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 2, 8).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 2).
+              p_mem = COMPONE_IMPONE(codex, p_mem, 0).
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 0, 3).
+              p_mem = COMPONE_ONERA(codex, p_mem, 2, 8).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 2).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 6).
+              p_mem = COMPONE_VERIFICA_TAS(codex, p_mem).
+              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554432).
+              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 1, 0).
+              p_mem = COMPONE_AUFER(codex, p_mem, 0).
+              REDDE p_mem.
+          FIN-FUNCTIO.
+          '''
+          p.write_text(t[:a]+n+t[b:],encoding='utf-8')
+          PY
+          echo G2
+          timeout 10s ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+          chmod +x /tmp/g2
+          echo G3
+          timeout 10s /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          chmod +x /tmp/g3
+          echo G4
+          set +e
+          timeout 10s /tmp/g3 src/compilator_vindex.vindex /tmp/g4
+          s=$?
+          set -e
+          echo "STATUS_G4=$s"
+          if [ "$s" -eq 0 ]; then
+            chmod +x /tmp/g4
+            cmp /tmp/g3 /tmp/g4 && echo 'RECTE: G3=G4'
+          else
+            exit "$s"
+          fi
