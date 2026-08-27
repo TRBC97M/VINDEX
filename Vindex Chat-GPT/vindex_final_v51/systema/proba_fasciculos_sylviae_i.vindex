@@ -27,6 +27,18 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA pars_b SICUT TEXTUS VALENS "ISTET — VINDEX 0.53".
     DECLARA datum SICUT TEXTUS VALENS pars_a+pars_b.
 
+    // 256 × 16 octeta adduntur: totalis fit 4128 octeta. Hoc vetus limen
+    // 4095 octetorum generationis historicae 0.48 consulto superat.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<256 PERFICE
+        datum=datum+"0123456789ABCDEF".
+        i=i+1.
+    FIN-DUM.
+    SI LONGITUDO(datum)!=4128 TUNC
+        CONTENTUM(status_locus)=75.
+        DUM 1==1 PERFICE FIN-DUM.
+    FIN-SI.
+
     SI FS_EXISTIT(via)==0 TUNC
         DECLARA scriptum SICUT NUMERUS VALENS FS_SCRIBE_TEXTUM(via,datum).
         SI scriptum==0 TUNC
