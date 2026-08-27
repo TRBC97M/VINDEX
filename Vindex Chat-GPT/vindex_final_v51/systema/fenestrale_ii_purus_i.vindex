@@ -103,13 +103,20 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     // Incrementum diagnosticum: input et PS/2 parantur, sed lectio initialis
     // OFFICINAE omittitur ut causa regressionis cursoris separetur.
     DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
+    CONTENTUM(50432096)=0.
+    CONTENTUM(50432104)=0.
+    CONTENTUM(50432112)=0.
+    CONTENTUM(50432120)=0.
     DECLARA f SICUT NUMERUS VALENS IV_REDDE(s,s[37],s[36],s[39]).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
+        CONTENTUM(50432096)=CONTENTUM(50432096)+1.
         DECLARA redde SICUT NUMERUS VALENS 0.
         // AUX/PS2 ante claviaturam firmware pollitur.
         DECLARA muris SICUT NUMERUS VALENS IN_MURUS(s).
+        CONTENTUM(50432104)=CONTENTUM(50432104)+1.
         DECLARA q SICUT NUMERUS VALENS IN_CLAVIS().
+        CONTENTUM(50432112)=CONTENTUM(50432112)+1.
         SI q!=0 TUNC
             DECLARA qa SICUT NUMERUS VALENS GI_CLAVIS(s,s[37],s[36],s[34],q).
             SI qa==2 TUNC finis=1. ALITER SI qa==1 TUNC redde=1. FIN-SI. FIN-SI.
@@ -125,6 +132,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         SI acta>0 TUNC redde=1. FIN-SI.
         SI redde==1 TUNC f=IV_REDDE(s,s[37],s[36],s[39]). FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
+        CONTENTUM(50432120)=CONTENTUM(50432120)+1.
     FIN-DUM.
     REDDE 0.
 FIN-FUNCTIO.
