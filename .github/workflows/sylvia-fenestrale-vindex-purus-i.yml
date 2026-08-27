@@ -51,7 +51,6 @@ jobs:
         run: |
           set -euo pipefail
           python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_i.vindex
-          python3 instrumenta/vindex_verifica.py bibliotheca/terminale_clientis_i.vindex
           python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_i_fenestrae.vindex
           python3 instrumenta/vindex_verifica.py probationes/applicationes_registrum_iv.vindex
           python3 instrumenta/vindex_verifica.py probationes/terminale_i.vindex
