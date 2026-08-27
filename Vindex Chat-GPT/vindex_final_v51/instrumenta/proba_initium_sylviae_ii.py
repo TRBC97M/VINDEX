@@ -262,8 +262,9 @@ def principale() -> int:
         click(monitor)
         captura(monitor, post)
         _, _, pix_post = ppm(post)
-        if pixel(pix_post, w, 20, menu_top + 10) == vitrum:
-            print("DEFECIT: INITIUM post electionem non clausum est", file=sys.stderr)
+        menu_post = initium_top_quaere(pix_post, w, h, vitrum, aqua, ebur)
+        if menu_post is not None:
+            print(f"DEFECIT: INITIUM post electionem adhuc repertum est ad y={menu_post}", file=sys.stderr)
             return 14
 
         # TABULA initialiter x≈679 y=168. Post electionem debet focus et marginem bronzeum accipere.
