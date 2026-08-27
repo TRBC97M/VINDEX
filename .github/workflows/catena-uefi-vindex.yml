@@ -19,6 +19,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/applicationes_registrum_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_applicationes_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_clientis_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
@@ -30,9 +31,12 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_fenestrae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/applicationes_registrum_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/terminale_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/terminale_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/officina_sylvia_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
       - 'instrumenta/verifica_puritatem_sylviae.py'
       - '.github/workflows/catena-uefi-vindex.yml'
@@ -53,6 +57,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/applicationes_registrum_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_applicationes_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_clientis_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
@@ -64,9 +69,12 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_fenestrae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/applicationes_registrum_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/terminale_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/terminale_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/officina_sylvia_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
       - 'instrumenta/verifica_puritatem_sylviae.py'
       - '.github/workflows/catena-uefi-vindex.yml'
@@ -198,3 +206,23 @@ jobs:
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_terminale_sylviae_i.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: OFFICINA cum editore sub QEMU et OVMF
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-officina'
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_officinam_sylviae_i.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Capturas OFFICINAE conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-officina-${{ github.sha }}
+          path: qemu-captura-officina/*.ppm
+          if-no-files-found: warn
+          retention-days: 7
