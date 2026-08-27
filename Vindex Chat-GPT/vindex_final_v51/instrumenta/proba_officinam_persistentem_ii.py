@@ -36,6 +36,14 @@ def scribe_maiusculas(aux: object, monitor: socket.socket, textus: str) -> None:
             raise ValueError(f'littera probationis non sustenta: {c!r}')
 
 
+def telemetria_ps2(ps2: object, monitor: socket.socket, nomen: str) -> list[int]:
+    basis = ps2.basis_ps2(monitor)
+    status = ps2.status_ps2(monitor, basis)
+    raw = ps2.hexa_hmp(ps2.hmp(monitor, f'xp /3gx 0x{basis + 72:x}'))[:3]
+    print(f'OFFICINA-P19-II: ps2_{nomen}={status} raw={raw}')
+    return status
+
+
 def cursorem_excita(
     aux: object,
     ps2: object,
@@ -52,6 +60,7 @@ def cursorem_excita(
     if positio is not None:
         return positio
 
+    telemetria_ps2(ps2, monitor, 'ante_motus')
     motus = ((4, 3), (8, 5), (-3, 7), (12, -4))
     for tentamen, (dx, dy) in enumerate(motus):
         responsum = ps2.qmp(
@@ -69,6 +78,7 @@ def cursorem_excita(
         # HMP eundem murem selectum quoque pulsat; hoc viam historicam custodit.
         aux.hmp(monitor, f'mouse_move {dx} {dy}')
         time.sleep(0.45)
+        telemetria_ps2(ps2, monitor, f'post_motum_{tentamen + 1}')
         via = out / f'officina-p19-ii-{modus}-cursor-primum-{tentamen}.ppm'
         aux.captura(monitor, via)
         _, _, pix = aux.ppm(via)
