@@ -27,6 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 .github/p16_metra.py
+          python3 .github/p16_fix1.py
 
       - name: Probationes canonicas
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
@@ -66,6 +67,7 @@ jobs:
             "$RADIX/bibliotheca/fenestrale_gestor_i.vindex" \
             "$RADIX/bibliotheca/fenestrae_registrum_i.vindex" \
             "$RADIX/systema/fenestrale_ii_purus_i.vindex" \
+            "$RADIX/probationes/fenestrale_purus_i_fenestrae.vindex" \
             "$RADIX/instrumenta/proba_fenestrale_uefi_purum.sh" \
             "$RADIX/instrumenta/proba_formam_sylviae_i.py"
           git diff --cached --quiet && { printf '%s\n' 'RECTE: nihil novum servandum.'; exit 0; }
