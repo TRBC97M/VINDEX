@@ -46,3 +46,29 @@ jobs:
           chmod +x /tmp/fasciculi-p19
           timeout 10s /tmp/fasciculi-p19
           printf '%s\n' 'RECTE: P19-I viae Unicode et contractus fasciculorum puri probantur.'
+
+  persistentia:
+    name: Duo initia QEMU persistentiam probant
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta necessaria institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Duo initia eiusdem imaginis exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_P19: '45'
+        run: bash ./instrumenta/proba_fasciculos_persistentes_i.sh
