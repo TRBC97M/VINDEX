@@ -1,4 +1,4 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-IV / P17-II.
+// Sylvia OS — Fenestrale II Purus I, facies P16-IV / P17-II / P18-I.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
@@ -7,6 +7,7 @@ IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 IMPORTA "bibliotheca/programmata_clientis_e.vindex".
 IMPORTA "bibliotheca/tabula_clientis_f.vindex".
 IMPORTA "bibliotheca/terminale_clientis_i.vindex".
+IMPORTA "bibliotheca/officina_clientis_i.vindex".
 IMPORTA "bibliotheca/fenestrale_eventa_g.vindex".
 IMPORTA "bibliotheca/clientia_registrum_h.vindex".
 IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
@@ -46,43 +47,55 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA superficies_p SICUT NUMERUS VALENS FS_CREA(496,260).
     DECLARA superficies_t SICUT NUMERUS VALENS FS_CREA(396,226).
     DECLARA superficies_e SICUT NUMERUS VALENS FS_CREA(680,320).
+    DECLARA superficies_o SICUT NUMERUS VALENS FS_CREA(820,430).
     DECLARA status_e SICUT NUMERUS VALENS TE_CREA().
-    SI superficies_p==0 || superficies_t==0 || superficies_e==0 || status_e==0 TUNC REDDE 71. FIN-SI.
+    DECLARA status_o SICUT NUMERUS VALENS OE_CREA().
+    SI superficies_p==0 || superficies_t==0 || superficies_e==0 || superficies_o==0 || status_e==0 || status_o==0 TUNC REDDE 71. FIN-SI.
     DECLARA cp SICUT NUMERUS VALENS CH_ADDE(s[36],1,1,superficies_p,0).
     DECLARA ct SICUT NUMERUS VALENS CH_ADDE(s[36],2,2,superficies_t,0).
     DECLARA ce SICUT NUMERUS VALENS CH_ADDE(s[36],3,3,superficies_e,status_e).
-    SI cp==0 || ct==0 || ce==0 || CH_NUMERUS(s[36])!=3 TUNC REDDE 71. FIN-SI.
+    DECLARA co SICUT NUMERUS VALENS CH_ADDE(s[36],4,4,superficies_o,status_o).
+    SI cp==0 || ct==0 || ce==0 || co==0 || CH_NUMERUS(s[36])!=4 TUNC REDDE 71. FIN-SI.
     DECLARA ap SICUT NUMERUS VALENS AI_ADDE(s[39],1,1,"PROGRAMMATA",1).
     DECLARA at SICUT NUMERUS VALENS AI_ADDE(s[39],2,2,"TABULA",1).
     DECLARA ae SICUT NUMERUS VALENS AI_ADDE(s[39],3,3,"TERMINALE",1).
-    SI ap==0 || at==0 || ae==0 || AI_NUMERUS(s[39])!=3 TUNC REDDE 71. FIN-SI.
+    DECLARA ao SICUT NUMERUS VALENS AI_ADDE(s[39],4,4,"OFFICINA",1).
+    SI ap==0 || at==0 || ae==0 || ao==0 || AI_NUMERUS(s[39])!=4 TUNC REDDE 71. FIN-SI.
     DECLARA rp SICUT NUMERUS VALENS PE_RENDE(superficies_p,0).
     DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
     DECLARA re SICUT NUMERUS VALENS TE_RENDE(superficies_e,status_e).
+    DECLARA ro SICUT NUMERUS VALENS OE_RENDE(superficies_o,status_o).
 
     DECLARA pw SICUT NUMERUS VALENS w*58/100. DECLARA ph SICUT NUMERUS VALENS utilis_h*66/100.
     DECLARA tw SICUT NUMERUS VALENS w*42/100. DECLARA th SICUT NUMERUS VALENS utilis_h*52/100.
     DECLARA ew SICUT NUMERUS VALENS w*62/100. DECLARA eh SICUT NUMERUS VALENS utilis_h*58/100.
+    DECLARA ow SICUT NUMERUS VALENS w*72/100. DECLARA oh SICUT NUMERUS VALENS utilis_h*74/100.
     SI pw<640 TUNC pw=640. FIN-SI. SI ph<420 TUNC ph=420. FIN-SI.
     SI tw<500 TUNC tw=500. FIN-SI. SI th<360 TUNC th=360. FIN-SI.
     SI ew<700 TUNC ew=700. FIN-SI. SI eh<420 TUNC eh=420. FIN-SI.
+    SI ow<860 TUNC ow=860. FIN-SI. SI oh<520 TUNC oh=520. FIN-SI.
     SI pw>w TUNC pw=w. FIN-SI. SI ph>utilis_h TUNC ph=utilis_h. FIN-SI.
     SI tw>w TUNC tw=w. FIN-SI. SI th>utilis_h TUNC th=utilis_h. FIN-SI.
     SI ew>w TUNC ew=w. FIN-SI. SI eh>utilis_h TUNC eh=utilis_h. FIN-SI.
+    SI ow>w TUNC ow=w. FIN-SI. SI oh>utilis_h TUNC oh=utilis_h. FIN-SI.
     DECLARA px SICUT NUMERUS VALENS w*6/100. DECLARA py SICUT NUMERUS VALENS h*7/100.
     DECLARA tx SICUT NUMERUS VALENS w-tw-w*5/100. DECLARA ty SICUT NUMERUS VALENS h*21/100.
     DECLARA ex SICUT NUMERUS VALENS w*18/100. DECLARA ey SICUT NUMERUS VALENS h*12/100.
+    DECLARA ox SICUT NUMERUS VALENS w*12/100. DECLARA oy SICUT NUMERUS VALENS h*8/100.
     SI px+pw>w TUNC px=w-pw. FIN-SI. SI py+ph>utilis_h TUNC py=utilis_h-ph. FIN-SI.
     SI tx<0 TUNC tx=0. FIN-SI. SI ty+th>utilis_h TUNC ty=utilis_h-th. FIN-SI.
     SI ex+ew>w TUNC ex=w-ew. FIN-SI. SI ey+eh>utilis_h TUNC ey=utilis_h-eh. FIN-SI.
+    SI ox+ow>w TUNC ox=w-ow. FIN-SI. SI oy+oh>utilis_h TUNC oy=utilis_h-oh. FIN-SI.
     DECLARA fp SICUT NUMERUS VALENS FI_ADDE(s[37],1,px,py,pw,ph).
     DECLARA ft SICUT NUMERUS VALENS FI_ADDE(s[37],2,tx,ty,tw,th).
     DECLARA fe SICUT NUMERUS VALENS FI_ADDE(s[37],3,ex,ey,ew,eh).
-    SI fp==0 || ft==0 || fe==0 || FI_NUMERUS(s[37])!=3 TUNC REDDE 71. FIN-SI.
+    DECLARA fo SICUT NUMERUS VALENS FI_ADDE(s[37],4,ox,oy,ow,oh).
+    SI fp==0 || ft==0 || fe==0 || fo==0 || FI_NUMERUS(s[37])!=4 TUNC REDDE 71. FIN-SI.
     DECLARA sp SICUT NUMERUS VALENS FI_STATUS_PONE(s[37],fp,2).
     DECLARA st SICUT NUMERUS VALENS FI_STATUS_PONE(s[37],ft,2).
     DECLARA se SICUT NUMERUS VALENS FI_STATUS_PONE(s[37],fe,2).
-    SI sp==0 || st==0 || se==0 TUNC REDDE 71. FIN-SI.
+    DECLARA so SICUT NUMERUS VALENS FI_STATUS_PONE(s[37],fo,2).
+    SI sp==0 || st==0 || se==0 || so==0 TUNC REDDE 71. FIN-SI.
 
     DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
     DECLARA f SICUT NUMERUS VALENS IV_REDDE(s,s[37],s[36],s[39]).
