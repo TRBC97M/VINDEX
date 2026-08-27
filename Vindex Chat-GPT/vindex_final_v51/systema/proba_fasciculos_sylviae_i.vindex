@@ -1,0 +1,56 @@
+// P19-I — nucleus minimalis ad persistentiam fasciculi inter duo initia probandam.
+// Status ad 0x03000B38:
+//   1 = primum initium: fasciculus creatus, flush et relectio recta;
+//   2 = secundum initium: fasciculus ex disco iam aderat et contentum rectum est;
+//  70+ = defectus.
+//
+// Importationes ordine canonico: TEXTUS ante bibliothecam quae eo utitur.
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA status_locus SICUT NUMERUS VALENS 50334520.
+    CONTENTUM(status_locus)=0.
+    CONTENTUM(status_locus+8)=0.
+    CONTENTUM(status_locus+16)=0.
+
+    SI FS_DISPONIBILIS()==0 TUNC
+        CONTENTUM(status_locus)=70.
+        DUM 1==1 PERFICE FIN-DUM.
+    FIN-SI.
+    CONTENTUM(status_locus+16)=1.
+
+    DECLARA via SICUT TEXTUS VALENS "P19TEST.TXT".
+    DECLARA datum SICUT TEXTUS VALENS "SYLVIA PERSISTET — VINDEX 0.53".
+
+    SI FS_EXISTIT(via)==0 TUNC
+        DECLARA scriptum SICUT NUMERUS VALENS FS_SCRIBE_TEXTUM(via,datum).
+        SI scriptum==0 TUNC
+            CONTENTUM(status_locus)=71.
+            DUM 1==1 PERFICE FIN-DUM.
+        FIN-SI.
+        DECLARA relatum SICUT TEXTUS VALENS FS_LEGE_TEXTUM(via).
+        SI TEXTUS_SEDES(relatum)==0 || FS_TEXTUS_AEQUALIS(relatum,datum)==0 TUNC
+            CONTENTUM(status_locus)=72.
+            DUM 1==1 PERFICE FIN-DUM.
+        FIN-SI.
+        CONTENTUM(status_locus+8)=LONGITUDO(relatum).
+        CONTENTUM(status_locus)=1.
+        DUM 1==1 PERFICE FIN-DUM.
+    FIN-SI.
+
+    DECLARA vetus SICUT TEXTUS VALENS FS_LEGE_TEXTUM(via).
+    SI TEXTUS_SEDES(vetus)==0 TUNC
+        CONTENTUM(status_locus)=73.
+        DUM 1==1 PERFICE FIN-DUM.
+    FIN-SI.
+    SI FS_TEXTUS_AEQUALIS(vetus,datum)==0 TUNC
+        CONTENTUM(status_locus)=74.
+        DUM 1==1 PERFICE FIN-DUM.
+    FIN-SI.
+
+    CONTENTUM(status_locus+8)=LONGITUDO(vetus).
+    CONTENTUM(status_locus)=2.
+    DUM 1==1 PERFICE FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
