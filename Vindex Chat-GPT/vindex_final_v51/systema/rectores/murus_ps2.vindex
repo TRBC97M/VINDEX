@@ -160,10 +160,10 @@ FUNCTIO PS2_POLLE REDDENS NUMERUS.
     DECLARA status SICUT NUMERUS VALENS PS2_IN(100).
     SCRIBE_OCTETUM_AB(50432068, status & 255).
     SI (status & 1) == 0 TUNC REDDE 0. FIN-SI.
-
-    DECLARA octetum SICUT NUMERUS VALENS PS2_IN(96).
-    // Bit 5 status 8042 = data canalis auxiliaris / muris.
+    // Non legimus 0x60 nisi status simul declarat octetum canalis auxiliaris.
+    // Sic rector muris octetum claviaturae pendentem numquam consumit.
     SI (status & 32) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA octetum SICUT NUMERUS VALENS PS2_IN(96).
 
     DECLARA positio SICUT NUMERUS VALENS OCTETUS_AB(50432069).
     SI positio == 0 TUNC
