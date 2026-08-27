@@ -414,7 +414,7 @@ Chromium non est fundamentum necessarium neque finis architectonicus.
 
 ## P16 — Forma visualis Sylviae
 
-**Status:** `PROBATUM / CANONIZANDUM — incrementum I`.
+**Status:** `PERFECTUM per PR #113 — incrementum I; ACTIVUM — incrementum II`.
 
 Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere widgeta, thema, typographiam, margines et proportionem, iconographiam, cursorem et status interactionis, taskbar et menus canonicos, scaling et resolutiones modernas.
 
@@ -433,9 +433,9 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 
 Contractus plenus in `documenta/sylvia/FORMA_VISUALIS_I.md` describitur.
 
-### Incrementa sequentia
+### Incrementum II activum
 
-P16-II et posteriora iconographiam, fontem maturiorem, menu INITIUM functionale, widgeta communia, status interactionis et thema paulatim tractabunt. Unaquaeque mutatio visualis pictura vera sub UEFI et geometria input congrua muniri debet.
+P16-II menu **INITIUM** functionale construit: pannus systematis, applicationes PROGRAMMATA/TABULA, hover, apertio/clausura et focus/restauratio ex eodem contractu input. Incrementa posteriora iconographiam, fontem maturiorem, widgeta communia, status interactionis et thema paulatim tractabunt. Unaquaeque mutatio visualis pictura vera sub UEFI et geometria input congrua muniri debet.
 
 **Sylvia hodierna est ossa constructionis quae iam faciem canonicam accipere incipit, non facies finalis.**
 
@@ -457,7 +457,7 @@ P16-II et posteriora iconographiam, fontem maturiorem, menu INITIUM functionale,
 
 Via recta progressionis nunc est:
 
-1. P16-I canonizare et P16-II per iconographiam, fontem vel menu INITIUM parvum continuare;
+1. P16-II menu INITIUM functionale sub QEMU/OVMF probare et canonizare;
 2. P12 incipere per fundamenta gubernatorum quae hardware reale et input maturius aperiunt;
 3. P9 per incrementa parva et generalia continuare;
 4. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum;
