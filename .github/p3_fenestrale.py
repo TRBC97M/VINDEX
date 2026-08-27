@@ -6,73 +6,56 @@ MUS = R / 'systema/rectores/murus_ps2.vindex'
 INPUT = R / 'bibliotheca/fenestrale_input_i.vindex'
 FEN = R / 'systema/fenestrale_ii_purus_i.vindex'
 BUILD = R / 'systema/uefi/construe_uefi_purum.sh'
-TESTM = R / 'instrumenta/proba_murem_uefi_053.py'
 TESTF = R / 'instrumenta/proba_fenestrale_uefi_purum.py'
 
-# I. Rector PS/2: mores nuclei historici servantur; telemetria cruda additur.
-# Pagina 0x03019000 est prima pagina post volumen 32 KiB
-# (0x03011000..0x03018fff) intra COMMUNIS iam reservatum.
+# I. Rector PS/2: sedem historicam iam QEMU/OVMF probatam intactam serva.
+# Telemetria cruda tantum additur; nucleus historicus eosdem mores retinet.
 m = MUS.read_text(encoding='utf-8')
-mutationes = [
-    ('50432071', '50434119'),
-    ('50432070', '50434118'),
-    ('50432069', '50434117'),
-    ('50432068', '50434116'),
-    ('50432067', '50434115'),
-    ('50432066', '50434114'),
-    ('50432065', '50434113'),
-    ('50432064', '50434112'),
-    ('50432016', '50434064'),
-    ('50432000', '50434048'),
-]
-for vetus, novus in mutationes:
-    m = m.replace(vetus, novus)
-
 initium = m.index('// Telemetria rectoris:')
 finis = m.index('\n\nFUNCTIO PS2_STUBS_PARA', initium)
-commentarium = '''// Pagina rectoris canonica: 0x03019000, statim post volumen COMMUNIS.
-// Offsets intra paginam:
+commentarium = '''// Regio historica rectoris 0x03018800 manet donec contractus COMMUNIS
+// latius reficitur. Initium fit post omnem migrationem/purgationem voluminis.
+// Offsets:
 //   +64 status initializationis (9 = paratus); +65 ACK F6; +66 ACK F4;
 //   +67 numerus fasciculorum; +68 status 8042; +69 positio fasciculi;
 //   +70 flags; +71 dx octetum; +72 dx signatum; +80 dy signatum; +88 bullae.
-//
-// Publicatio historica UEFI_MURIS_PUBLICA manet intacta. Telemetria cruda
-// additiva Fenestrali II datur, ut nucleus vetus nullam mutationem morum patiatur.'''
+// Publicatio historica UEFI_MURIS_PUBLICA manet intacta; telemetria cruda
+// additiva Fenestrali II praebetur.'''
 m = m[:initium] + commentarium + m[finis:]
 
-old = '''    SCRIBE_OCTETUM_AB(50434117, 0).
-    SCRIBE_OCTETUM_AB(50434118, 0).
-    SCRIBE_OCTETUM_AB(50434119, 0).
-    SCRIBE_OCTETUM_AB(50434112, 9).
+old = '''    SCRIBE_OCTETUM_AB(50432069, 0).
+    SCRIBE_OCTETUM_AB(50432070, 0).
+    SCRIBE_OCTETUM_AB(50432071, 0).
+    SCRIBE_OCTETUM_AB(50432064, 9).
 '''
-new = '''    SCRIBE_OCTETUM_AB(50434117, 0).
-    SCRIBE_OCTETUM_AB(50434118, 0).
-    SCRIBE_OCTETUM_AB(50434119, 0).
-    CONTENTUM(50434120) = 0.
-    CONTENTUM(50434128) = 0.
-    CONTENTUM(50434136) = 0.
-    SCRIBE_OCTETUM_AB(50434112, 9).
+new = '''    SCRIBE_OCTETUM_AB(50432069, 0).
+    SCRIBE_OCTETUM_AB(50432070, 0).
+    SCRIBE_OCTETUM_AB(50432071, 0).
+    CONTENTUM(50432072) = 0.
+    CONTENTUM(50432080) = 0.
+    CONTENTUM(50432088) = 0.
+    SCRIBE_OCTETUM_AB(50432064, 9).
 '''
 if old not in m:
     raise SystemExit('murus: initium telemetriae non inventum')
 m = m.replace(old, new, 1)
 
 anchor = '''FUNCTIO PS2_PARATUS_EST REDDENS NUMERUS.
-    SI OCTETUS_AB(50434112) == 9 TUNC REDDE 1. FIN-SI.
+    SI OCTETUS_AB(50432064) == 9 TUNC REDDE 1. FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
 '''
 extra = anchor + '''FUNCTIO PS2_DX REDDENS NUMERUS.
-    REDDE CONTENTUM(50434120).
+    REDDE CONTENTUM(50432072).
 FIN-FUNCTIO.
 
 FUNCTIO PS2_DY REDDENS NUMERUS.
-    REDDE CONTENTUM(50434128).
+    REDDE CONTENTUM(50432080).
 FIN-FUNCTIO.
 
 FUNCTIO PS2_BULLAE REDDENS NUMERUS.
-    REDDE CONTENTUM(50434136).
+    REDDE CONTENTUM(50432088).
 FIN-FUNCTIO.
 
 '''
@@ -86,9 +69,9 @@ old = '''    DECLARA x SICUT NUMERUS VALENS CONTENTUM(50331648) + dx.
     DECLARA mutatum SICUT NUMERUS VALENS UEFI_MURIS_PUBLICA(x, y, bullae).
 '''
 new = '''    DECLARA bullae SICUT NUMERUS VALENS flags & 7.
-    CONTENTUM(50434120) = dx.
-    CONTENTUM(50434128) = dy.
-    CONTENTUM(50434136) = bullae.
+    CONTENTUM(50432072) = dx.
+    CONTENTUM(50432080) = dy.
+    CONTENTUM(50432088) = bullae.
     DECLARA x SICUT NUMERUS VALENS CONTENTUM(50331648) + dx.
     DECLARA y SICUT NUMERUS VALENS CONTENTUM(50331656) - dy.
     DECLARA mutatum SICUT NUMERUS VALENS UEFI_MURIS_PUBLICA(x, y, bullae).
@@ -211,25 +194,18 @@ if old not in b:
 b = b.replace(old, new, 1)
 BUILD.write_text(b, encoding='utf-8')
 
-# V. Probationes: nova pagina fixa rectoris.
-t = TESTM.read_text(encoding='utf-8')
-if '0x03018840' not in t:
-    raise SystemExit('probatio nuclei: vetus basis PS2 deest')
-t = t.replace('0x03018840', '0x03019040')
-TESTM.write_text(t, encoding='utf-8')
-
+# V. Probatio Fenestralis eandem sedem PS/2 historice probatam observat.
 t = TESTF.read_text(encoding='utf-8')
 old = '''def basis_ps2(monitor: socket.socket) -> int:
     v = hexa_hmp(hmp(monitor, "xp /1gx 0x03000b30"))
     return v[0] if v else 0
 '''
 new = '''def basis_ps2(monitor: socket.socket) -> int:
-    # Contractus COMMUNIS: pagina rectoris PS/2 est 0x03019000.
-    return 0x03019000
+    return 0x03018800
 '''
 if old not in t:
     raise SystemExit('probatio Fenestralis: basis metadata non inventa')
 t = t.replace(old, new, 1)
 TESTF.write_text(t, encoding='utf-8')
 
-print('RECTE: P3 additive praeparatum est; nucleus historicus intactus manet.')
+print('RECTE: P3 additive cum sede PS2 historice probata praeparatum est.')
