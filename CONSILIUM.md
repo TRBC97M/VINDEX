@@ -98,9 +98,9 @@ Linea canonica retinet facultates probatas 0.53 sine monolitho historico et sine
 
 ## P3 — Catena Sylviae pura canonica
 
-**Status:** `PROBATUM / CANONIZANDUM per PR #111`.
+**Status:** `PERFECTUM per PR #111`.
 
-### Probatum in #111
+### Canonice probatum per #111
 
 - boot UEFI VINDEX purus usque ad Fenestrale II Purus;
 - `NUCLEUS_FONS` sinit Fenestrale II ut payload canonicum eiusdem ponticuli construi;
@@ -116,7 +116,7 @@ Linea canonica retinet facultates probatas 0.53 sine monolitho historico et sine
 - nulla exceptio CPU, nullus defectus paginae, nullum C in runtime;
 - custodia UEFI permanens utramque catenam exercet.
 
-Catena P3 probata:
+Catena P3 canonica:
 
 ```text
 OVMF → BOOTX64.EFI [VINDEX] → FENESTRALE II [VINDEX] → PS/2 [VINDEX] → FRAMEBUFFER
@@ -130,7 +130,7 @@ Structurae internae quibus campi in octetis definiuntur (`codex`, `contextus_par
 
 ### Criterium victoriae
 
-Una imago Sylviae canonica bootat, Fenestrale VINDEX reale ostendit et input fundamentale exercet sine runtime non-VINDEX residente. Criterium technice probatum est; sola canonizatio #111 in `main` restat.
+**Perfectum:** una imago Sylviae canonica bootat, Fenestrale VINDEX reale ostendit et input fundamentale exercet sine runtime non-VINDEX residente. #111 in `main` canonizatum est.
 
 ---
 
@@ -226,7 +226,7 @@ Officina amplianda est cum debugger, refactoring, exploratione symbolorum, packa
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #102, #104, #105, #106, #107 et #108 collectiones, series, segmenta et `TEXTUS` maturaverunt. PR #109 addidit custodiam UEFI completam; #110 addidit probationem PS/2 nativam; #111 custodiam duplicem nuclei historici et Fenestralis II addit.
+PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #102, #104, #105, #106, #107 et #108 collectiones, series, segmenta et `TEXTUS` maturaverunt. PR #109 addidit custodiam UEFI completam; #110 addidit probationem PS/2 nativam; #111 custodiam duplicem nuclei historici et Fenestralis II addidit.
 
 `make probatio` / `tests/run_tests.sh` nunc **XXIX probationes, nulla errata** exercet, inter quas:
 
@@ -264,7 +264,7 @@ Historia non deletur ad speciem mundandam, sed PR apertae non debent vias mortua
 - **#82** — origo experimentalis UEFI, post #109 historia/supersessa;
 - **#110** — canonizatio selectiva rectoris PS/2 nativi;
 - **#71** — laboratorium PS/2, post #110 historia/supersessum et clausum;
-- **#111** — coniunctio Fenestralis II cum catena UEFI et PS/2 canonico.
+- **#111** — coniunctio canonica Fenestralis II cum catena UEFI et PS/2.
 
 Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizationem.
 
@@ -355,7 +355,7 @@ Componentes destinati:
 
 ## P12 — Infrastructura gubernatorum
 
-**Status:** `LONGINQUUM`, post P3.
+**Status:** `PARATUM ad primum fundamentum`.
 
 Strata requisita:
 
@@ -414,7 +414,7 @@ Chromium non est fundamentum necessarium neque finis architectonicus.
 
 ## P16 — Forma visualis Sylviae
 
-**Status:** `PARATUM post P3`.
+**Status:** `PARATUM`.
 
 Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere:
 
@@ -434,8 +434,8 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 # IV. Regula coordinationis agentium
 
 - P1 non amplius reservatum est; eius origo #82 post #109 historia experimentalis est.
-- P5 per #110 perfectum est; #71 historia tantum est.
-- Opera independentia P3/#111 et P9 procedere possunt, sed mutationes compilatoris eundem punctum fixum et targeta canonica custodire debent.
+- P3 per #111 perfectum est; P5 per #110 perfectum est; #71 historia tantum est.
+- Opera independentia P9, P12 et P16 procedere possunt, sed mutationes compilatoris eundem punctum fixum et targeta canonica custodire debent.
 - Ramus experimentalis prosperus non wholesale mergeatur si structuram veterem secum trahit.
 - Mutationes in `main` fiant per PR parvas, probatas et reversibiles.
 - Documenta repositorii tantum Lingua Latina utantur.
@@ -447,11 +447,11 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 
 Via recta progressionis nunc est:
 
-1. PR #111 per omnes custodias canonicas perficere et in `main` canonizare;
-2. post P3, P16 ad formam visualem modernam et P12 ad infrastructuram gubernatorum paulatim aperire;
+1. P16 incipere: Fenestrale technicum ad formam visualem Sylviae modernam paulatim movere;
+2. P12 incipere per fundamenta gubernatorum quae hardware reale et input maturius aperiunt;
 3. P9 per incrementa parva et generalia continuare;
 4. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum;
-5. Fenestrale II input maturiorem, widgeta et contractus applicationum paulatim accipere.
+5. contractus applicationum, widgeta et input Fenestralis maturare.
 
 ---
 
