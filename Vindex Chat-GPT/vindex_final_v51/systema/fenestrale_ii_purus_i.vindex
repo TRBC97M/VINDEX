@@ -100,41 +100,19 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA so SICUT NUMERUS VALENS FI_STATUS_PONE(s[37],fo,2).
     SI sp==0 || st==0 || se==0 || so==0 TUNC REDDE 71. FIN-SI.
 
-    // Incrementum diagnosticum: input et PS/2 parantur, sed lectio initialis
-    // OFFICINAE omittitur ut causa regressionis cursoris separetur.
+    // Omnes allocationes Fenestrales iam perfectae sunt: input et PS/2
+    // ante primam operationem fasciculorum persistentium parantur.
     DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
-    CONTENTUM(50432096)=0.
-    CONTENTUM(50432104)=0.
-    CONTENTUM(50432112)=0.
-    CONTENTUM(50432120)=0.
-    CONTENTUM(50432128)=0.
-
-    // Primum IV_REDDE per gradus explicatur ut locus suspensionis cognoscatur.
-    DECLARA f SICUT NUMERUS VALENS FV_FUNDUM().
-    CONTENTUM(50432128)=1.
-    f=IV_BUREAU_REDDE(s,s[39]).
-    CONTENTUM(50432128)=2.
-    DECLARA focus_d SICUT NUMERUS VALENS FI_RELEGE_FOCUS(s[37]).
-    DECLARA n_d SICUT NUMERUS VALENS FI_PRIMUS(s[37]).
-    DUM n_d!=0 PERFICE
-        SI CONTENTUM(n_d+48)==0 TUNC f=IV_FENESTRA(s[37],s[36],s[39],n_d). FIN-SI.
-        n_d=FI_PROXIMUS(n_d).
-    FIN-DUM.
-    SI s[38]==1 TUNC f=IV_INITIUM_REDDE(s,s[39]). FIN-SI.
-    CONTENTUM(50432128)=3.
-    f=IV_TASKBAR_REDDE(s[37],s[36],s[39]).
-    CONTENTUM(50432128)=4.
-    f=FV_CURSOR(s[11],s[12]).
-    CONTENTUM(50432128)=5.
-
+    // OFFICINA manet utilis etiam si backend non adest aut lectio errat.
+    DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
+    ro=OP_RENDE(superficies_o,status_o).
+    DECLARA f SICUT NUMERUS VALENS IV_REDDE(s,s[37],s[36],s[39]).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
-        CONTENTUM(50432096)=CONTENTUM(50432096)+1.
         DECLARA redde SICUT NUMERUS VALENS 0.
+        // AUX/PS2 ante claviaturam firmware pollitur.
         DECLARA muris SICUT NUMERUS VALENS IN_MURUS(s).
-        CONTENTUM(50432104)=CONTENTUM(50432104)+1.
         DECLARA q SICUT NUMERUS VALENS IN_CLAVIS().
-        CONTENTUM(50432112)=CONTENTUM(50432112)+1.
         SI q!=0 TUNC
             DECLARA qa SICUT NUMERUS VALENS GI_CLAVIS(s,s[37],s[36],s[34],q).
             SI qa==2 TUNC finis=1. ALITER SI qa==1 TUNC redde=1. FIN-SI. FIN-SI.
@@ -150,7 +128,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         SI acta>0 TUNC redde=1. FIN-SI.
         SI redde==1 TUNC f=IV_REDDE(s,s[37],s[36],s[39]). FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
-        CONTENTUM(50432120)=CONTENTUM(50432120)+1.
     FIN-DUM.
     REDDE 0.
 FIN-FUNCTIO.
