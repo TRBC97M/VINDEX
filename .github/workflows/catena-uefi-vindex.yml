@@ -22,6 +22,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_fenestrae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
       - 'instrumenta/verifica_puritatem_sylviae.py'
@@ -46,6 +47,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_fenestrae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
       - 'instrumenta/verifica_puritatem_sylviae.py'
@@ -137,4 +139,14 @@ jobs:
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_i.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: INITIUM functionale sub QEMU et OVMF
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_ii.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh

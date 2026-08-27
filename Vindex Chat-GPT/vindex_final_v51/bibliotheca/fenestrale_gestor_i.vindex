@@ -1,11 +1,41 @@
 // Sylvia OS — gestor fenestrarum Fenestralis Purus I.
 // Omnis geometria et ordo Z per registrum dynamicum FI administrantur.
 
+FUNCTIO GI_INITIUM_FENESTRA REDDENS NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT cliens SICUT NUMERUS.
+    SI registrum==0 || cliens<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(registrum).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+8)==cliens TUNC REDDE CONTENTUM(n). FIN-SI.
+        n=FI_PROXIMUS(n).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO GI_INITIUM_ELIGE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT cliens SICUT NUMERUS.
+    DECLARA id SICUT NUMERUS VALENS GI_INITIUM_FENESTRA(registrum,cliens).
+    SI id==0 TUNC s[38]=0. REDDE 0. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS FI_STATUS_PONE(registrum,id,0).
+    DECLARA f SICUT NUMERUS VALENS FI_FOCUS(registrum,id).
+    s[38]=0.
+    REDDE f.
+FIN-FUNCTIO.
+
 FUNCTIO GI_TASKBAR REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     ACCIPIT registrum SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS.
-    SI registrum==0 || x<118 TUNC REDDE 0. FIN-SI.
+    SI registrum==0 TUNC REDDE 0. FIN-SI.
+    SI x>=6 && x<110 TUNC
+        SI s[38]==0 TUNC s[38]=1. ALITER s[38]=0. FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    s[38]=0.
+    SI x<118 TUNC REDDE 0. FIN-SI.
     DECLARA numerus SICUT NUMERUS VALENS FI_APERTA_NUM(registrum).
     SI numerus<=0 TUNC REDDE 0. FIN-SI.
     DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
@@ -34,7 +64,24 @@ FUNCTIO GI_MOUSE_DOWN REDDENS NUMERUS.
     DECLARA taskbar_h SICUT NUMERUS VALENS FV_METRUM_TASKBAR().
     DECLARA tituli_h SICUT NUMERUS VALENS FV_METRUM_TITULUS().
     DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
-    SI my>=CONTENTUM(50333736)-taskbar_h TUNC REDDE GI_TASKBAR(s,registrum,mx). FIN-SI.
+    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA taskbar_top SICUT NUMERUS VALENS screen_h-taskbar_h.
+    SI s[38]==1 TUNC
+        DECLARA menu_x SICUT NUMERUS VALENS 6.
+        DECLARA menu_w SICUT NUMERUS VALENS FV_METRUM_INITIUM_LATITUDO().
+        DECLARA menu_h SICUT NUMERUS VALENS FV_METRUM_INITIUM_ALTITUDO().
+        DECLARA menu_y SICUT NUMERUS VALENS taskbar_top-menu_h.
+        SI mx>=menu_x && mx<menu_x+menu_w && my>=menu_y && my<taskbar_top TUNC
+            DECLARA item1_y SICUT NUMERUS VALENS menu_y+92.
+            DECLARA item2_y SICUT NUMERUS VALENS menu_y+146.
+            DECLARA item_h SICUT NUMERUS VALENS FV_METRUM_INITIUM_ITEM().
+            SI my>=item1_y && my<item1_y+item_h TUNC REDDE GI_INITIUM_ELIGE(s,registrum,1). FIN-SI.
+            SI my>=item2_y && my<item2_y+item_h TUNC REDDE GI_INITIUM_ELIGE(s,registrum,2). FIN-SI.
+            REDDE 1.
+        FIN-SI.
+        SI my<taskbar_top || mx<6 || mx>=110 TUNC s[38]=0. FIN-SI.
+    FIN-SI.
+    SI my>=taskbar_top TUNC REDDE GI_TASKBAR(s,registrum,mx). FIN-SI.
     DECLARA id SICUT NUMERUS VALENS FI_HIT(registrum,mx,my).
     SI id==0 TUNC REDDE 0. FIN-SI.
     DECLARA foc SICUT NUMERUS VALENS FI_FOCUS(registrum,id).
