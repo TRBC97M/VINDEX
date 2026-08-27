@@ -28,6 +28,7 @@ jobs:
           set -euo pipefail
           python3 .github/p16_metra.py
           python3 .github/p16_fix1.py
+          python3 .github/p16_fix2.py
 
       - name: Probationes canonicas
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
