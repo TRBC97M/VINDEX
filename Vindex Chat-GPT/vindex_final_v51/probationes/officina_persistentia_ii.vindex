@@ -1,0 +1,66 @@
+// Probatio P19-II — documentum OFFICINAE inter catenam linearum et TEXTUS persistens.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
+IMPORTA "bibliotheca/officina_clientis_i.vindex".
+IMPORTA "bibliotheca/officina_persistentia_ii.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA op SICUT NUMERUS VALENS OP_CREA().
+    SI op==0 TUNC REDDE 71. FIN-SI.
+    DECLARA editor SICUT NUMERUS VALENS OP_EDITOR(op).
+    SI editor==0 TUNC REDDE 71. FIN-SI.
+    DECLARA via SICUT TEXTUS VALENS OP_VIA(op).
+    SI FS_TEXTUS_AEQUALIS(via,"OFFICINA.VIX")==0 TUNC REDDE 65. FIN-SI.
+
+    // Linea maior quam vetus limes 4095 octetorum.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<4200 PERFICE
+        DECLARA a SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,65+(i%26)).
+        SI a==0 TUNC REDDE 65. FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    DECLARA nova SICUT NUMERUS VALENS OE_NOVA_LINEA(editor).
+    SI nova==0 TUNC REDDE 65. FIN-SI.
+    DECLARA s1 SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,83).
+    DECLARA s2 SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,89).
+    DECLARA s3 SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,76).
+    DECLARA s4 SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,86).
+    DECLARA s5 SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,73).
+    DECLARA s6 SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,65).
+    DECLARA em SICUT NUMERUS VALENS OE_INSERE_SCALARE(editor,128512).
+    SI s1==0 || s2==0 || s3==0 || s4==0 || s5==0 || s6==0 || em==0 TUNC REDDE 65. FIN-SI.
+
+    DECLARA datum SICUT TEXTUS VALENS OP_DOCUMENTUM_TEXTUS(editor).
+    SI TEXTUS_SEDES(datum)==0 || UTF8_VALIDUS(datum)==0 TUNC REDDE 65. FIN-SI.
+    SI LONGITUDO(datum)!=4211 TUNC REDDE 65. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(datum).
+    SI OCTETUS_AB(basis+4200)!=10 TUNC REDDE 65. FIN-SI.
+    SI OCTETUS_AB(basis+4207)!=240 || OCTETUS_AB(basis+4208)!=159 || OCTETUS_AB(basis+4209)!=152 || OCTETUS_AB(basis+4210)!=128 TUNC REDDE 65. FIN-SI.
+
+    // Nova structura editoris ex TEXTUS restituitur et modificatum mundatur.
+    DECLARA op2 SICUT NUMERUS VALENS OP_CREA().
+    SI op2==0 TUNC REDDE 71. FIN-SI.
+    DECLARA editor2 SICUT NUMERUS VALENS OP_EDITOR(op2).
+    SI OP_EDITOR_EX_TEXTU(editor2,datum)==0 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(editor2+32)!=2 || CONTENTUM(editor2+40)!=0 || CONTENTUM(editor2+24)!=0 TUNC REDDE 65. FIN-SI.
+    DECLARA prima SICUT NUMERUS VALENS CONTENTUM(editor2).
+    DECLARA secunda SICUT NUMERUS VALENS CONTENTUM(prima+16).
+    SI prima==0 || secunda==0 || CONTENTUM(secunda+16)!=0 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(CONTENTUM(prima))!=4200 || CONTENTUM(CONTENTUM(secunda))!=10 TUNC REDDE 65. FIN-SI.
+
+    DECLARA iterum SICUT TEXTUS VALENS OP_DOCUMENTUM_TEXTUS(editor2).
+    SI FS_TEXTUS_AEQUALIS(datum,iterum)==0 TUNC REDDE 65. FIN-SI.
+
+    // UTF-8 invalidum structuram iam bonam mutare non licet.
+    DECLARA malum_d SICUT NUMERUS VALENS RESERVA_OCTETA(18).
+    SI malum_d<=0 TUNC REDDE 71. FIN-SI.
+    CONTENTUM(malum_d)=1. CONTENTUM(malum_d+8)=1.
+    SCRIBE_OCTETUM_AB(malum_d+16,255). SCRIBE_OCTETUM_AB(malum_d+17,0).
+    DECLARA ante SICUT NUMERUS VALENS CONTENTUM(editor2).
+    SI OP_EDITOR_EX_TEXTU(editor2,TEXTUS_EX_SEDE(malum_d))!=0 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(editor2)!=ante || CONTENTUM(editor2+32)!=2 TUNC REDDE 65. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
