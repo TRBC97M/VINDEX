@@ -1,0 +1,121 @@
+name: P1 — Integratio temporaria
+
+on:
+  push:
+    branches:
+      - chatgpt/canoniza-p1-uefi
+
+permissions:
+  contents: write
+
+jobs:
+  integra:
+    if: ${{ !contains(github.event.head_commit.message, '[integra-p1]') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium plene accipe
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Instrumenta UEFI institue
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-system-x86 ovmf
+
+      - name: Opus Claudii selective porta
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'ChatGPT'
+          git config user.email 'chatgpt@openai.local'
+          git fetch origin claude/uefi-vindex-purus:refs/remotes/origin/claude/uefi-vindex-purus
+
+          COMP='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          BASE="$(git merge-base HEAD origin/claude/uefi-vindex-purus)"
+          TMP="$(mktemp -d)"
+          trap 'rm -rf "$TMP"' EXIT
+
+          git show "HEAD:$COMP" > "$TMP/noster.vindex"
+          git show "$BASE:$COMP" > "$TMP/basis.vindex"
+          git show "origin/claude/uefi-vindex-purus:$COMP" > "$TMP/claude.vindex"
+
+          set +e
+          git merge-file -p "$TMP/noster.vindex" "$TMP/basis.vindex" "$TMP/claude.vindex" > "$TMP/mixtus.vindex"
+          STATUS=$?
+          set -e
+          if [ "$STATUS" -gt 1 ]; then
+            echo 'ERRATUM: merge-file ipsum defecit.' >&2
+            exit "$STATUS"
+          fi
+          if [ "$STATUS" -eq 1 ]; then
+            echo 'CONFLICTUS COMPILATORIS:' >&2
+            grep -n -B 18 -A 38 '^<<<<<<<' "$TMP/mixtus.vindex" >&2 || true
+            exit 1
+          fi
+          cp "$TMP/mixtus.vindex" "$COMP"
+
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          mkdir -p "$RADIX/systema/uefi" "$RADIX/instrumenta"
+          git show 'origin/claude/uefi-vindex-purus:Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh' > "$RADIX/instrumenta/proba_catenam_uefi_053.sh"
+          git show 'origin/claude/uefi-vindex-purus:Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh' > "$RADIX/systema/uefi/construe_uefi_purum.sh"
+          git show 'origin/claude/uefi-vindex-purus:Vindex Chat-GPT/vindex_final_v51/systema/uefi/fac_imaginem_uefi.py' > "$RADIX/systema/uefi/fac_imaginem_uefi.py"
+          git show 'origin/claude/uefi-vindex-purus:Vindex Claude Ai/uefi-vindex-backend/bootstrap_nucleus_realis.vindex' > "$RADIX/systema/uefi/ponticulus_uefi_purus.vindex"
+
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh')
+          s = p.read_text()
+          s = s.replace('$RADIX/../../Vindex Claude Ai/uefi-vindex-backend/bootstrap_nucleus_realis.vindex', '$RADIX/systema/uefi/ponticulus_uefi_purus.vindex')
+          p.write_text(s)
+
+          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex')
+          s = p.read_text()
+          s = s.replace('PixelsPerScanLine @ 36', 'PixelsPerScanLine @ 32')
+          s = s.replace('PixelsPerScanLine a +36', 'PixelsPerScanLine a +32')
+          p.write_text(s)
+          PY
+
+          chmod +x "$RADIX/instrumenta/proba_catenam_uefi_053.sh" "$RADIX/systema/uefi/construe_uefi_purum.sh"
+
+      - name: Compilatorem auto-hospitio reconstrue
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          TMP="$(mktemp -d)"
+          trap 'rm -rf "$TMP"' EXIT
+          chmod +x ./compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex "$TMP/gen2"
+          chmod +x "$TMP/gen2"
+          "$TMP/gen2" src/compilator_vindex.vindex "$TMP/gen3"
+          chmod +x "$TMP/gen3"
+          cmp "$TMP/gen2" "$TMP/gen3"
+          cp "$TMP/gen3" ./compilator_vindex
+
+      - name: Probationes canonicas exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: bash ./tests/run_tests.sh
+
+      - name: Catenam UEFI integram exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        env:
+          MORA_INITII: '28'
+        run: bash ./instrumenta/proba_catenam_uefi_053.sh
+
+      - name: Mutationes integrae committe
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/uefi/fac_imaginem_uefi.py' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex'
+          if git diff --cached --quiet; then
+            echo 'Nulla mutatio ad commit.'
+            exit 0
+          fi
+          git commit -m 'P1: UEFI VINDEX purum selective canoniza [integra-p1]'
+          git push origin HEAD:chatgpt/canoniza-p1-uefi
