@@ -40,7 +40,8 @@ def telemetria_ps2(ps2: object, monitor: socket.socket, nomen: str) -> list[int]
     basis = ps2.basis_ps2(monitor)
     status = ps2.status_ps2(monitor, basis)
     raw = ps2.hexa_hmp(ps2.hmp(monitor, f'xp /3gx 0x{basis + 72:x}'))[:3]
-    print(f'OFFICINA-P19-II: ps2_{nomen}={status} raw={raw}')
+    vita = ps2.hexa_hmp(ps2.hmp(monitor, f'xp /4gx 0x{basis + 96:x}'))[:4]
+    print(f'OFFICINA-P19-II: ps2_{nomen}={status} raw={raw} vita={vita}')
     return status
 
 
@@ -75,7 +76,6 @@ def cursorem_excita(
         )
         if 'error' in responsum:
             raise RuntimeError(f'QMP motum PS/2 recusavit: {responsum}')
-        # HMP eundem murem selectum quoque pulsat; hoc viam historicam custodit.
         aux.hmp(monitor, f'mouse_move {dx} {dy}')
         time.sleep(0.45)
         telemetria_ps2(ps2, monitor, f'post_motum_{tentamen + 1}')
@@ -150,7 +150,6 @@ def principale() -> int:
             print('DEFECIT: cursor PS/2 post motus primos in framebuffer non apparuit', file=sys.stderr)
             return 7
 
-        # OFFICINA est quarta applicatio bureau P16-IV.
         pos = aux.move_ad(monitor, out, f'officina-p19-ii-{modus}', 70, 422, w, h)
         aux.click(monitor)
         time.sleep(0.45)
@@ -166,15 +165,11 @@ def principale() -> int:
             mitte(aux, monitor, 'ret')
             scribe_maiusculas(aux, monitor, 'NOVAPERSISTET')
         else:
-            # OP_INIT cursor ad initium primae lineae ponit. Deorsum ad secundam,
-            # deinde XIII dextrae ad finem NOVAPERSISTET; si fasciculus non
-            # relectus esset, hae claves nihil utile moverent et solum X servaretur.
             mitte(aux, monitor, 'down')
             for _ in range(13):
                 mitte(aux, monitor, 'right', 0.08)
             scribe_maiusculas(aux, monitor, 'X')
 
-        # EFI scan XII = F2, a P19-II OFFICINAE ut SERVA routatur.
         mitte(aux, monitor, 'f2', 0.8)
         aux.captura(monitor, servata)
         _, _, pix_saved = aux.ppm(servata)
