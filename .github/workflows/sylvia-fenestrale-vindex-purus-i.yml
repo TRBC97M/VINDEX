@@ -16,14 +16,18 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_input_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_gestor_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/applicationes_registrum_iv.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_applicationes_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/applicationes_registrum_iv.vindex'
       - 'documenta/sylvia/FENESTRALE_II_PVRVS_I.md'
+      - 'documenta/sylvia/APPLICATIONES_IV.md'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-i.yml'
 
 jobs:
   vindex-purus-i:
-    name: Registrum dynamicum fenestrarum Fenestralis I VINDEX certificatur
+    name: Registrum dynamicum fenestrarum et applicationum Fenestralis VINDEX certificatur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -42,8 +46,9 @@ jobs:
           set -euo pipefail
           python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_i.vindex
           python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_i_fenestrae.vindex
+          python3 instrumenta/vindex_verifica.py probationes/applicationes_registrum_iv.vindex
 
-      - name: Registrum fenestrarum dynamicum verifica
+      - name: Registra fenestrarum et applicationum dynamica verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -52,8 +57,11 @@ jobs:
           g='bibliotheca/fenestrale_gestor_i.vindex'
           i='bibliotheca/fenestrale_input_i.vindex'
           c='bibliotheca/clientes_eventa_i.vindex'
+          a='bibliotheca/applicationes_registrum_iv.vindex'
+          u='bibliotheca/fenestrale_applicationes_iv.vindex'
           s='systema/fenestrale_ii_purus_i.vindex'
           t='probationes/fenestrale_purus_i_fenestrae.vindex'
+          ta='probationes/applicationes_registrum_iv.vindex'
           for signum in \
             'FUNCTIO FI_CREA REDDENS NUMERUS' \
             'FUNCTIO FI_ADDE REDDENS NUMERUS' \
@@ -66,22 +74,39 @@ jobs:
           do
             grep -Fq "$signum" "$r" || { echo "ERRATUM: $signum deest"; exit 1; }
           done
+          for signum in \
+            'FUNCTIO AI_CREA REDDENS NUMERUS' \
+            'FUNCTIO AI_ADDE REDDENS NUMERUS' \
+            'FUNCTIO AI_CLIENTIS REDDENS NUMERUS' \
+            'FUNCTIO AI_PROXIMUS REDDENS NUMERUS'
+          do
+            grep -Fq "$signum" "$a" || { echo "ERRATUM: $signum deest"; exit 1; }
+          done
           grep -Fq 'RESERVA_OCTETA(112)' "$r"
           grep -Fq 'DUM i<80 PERFICE' "$t"
           grep -Fq 'FI_NUMERUS(r)!=80' "$t"
+          grep -Fq 'DUM i<96 PERFICE' "$ta"
+          grep -Fq 'AI_NUMERUS(r)!=96' "$ta"
           grep -Fq 's[37]=FI_CREA()' "$s"
+          grep -Fq 's[39]=AI_CREA()' "$s"
+          grep -Fq 'AI_ADDE(s[39],1,1,"PROGRAMMATA",1)' "$s"
+          grep -Fq 'AI_ADDE(s[39],2,2,"TABULA",1)' "$s"
           grep -Fq 'CI_EVENTA_AGE(s[36],s[37],s[34])' "$s"
-          grep -Fq 'GI_MOUSE_DOWN(s,s[37],s[34])' "$s"
+          grep -Fq 'IV_MOUSE_DOWN(s,s[37],s[34],s[39])' "$s"
+          grep -Fq 'IV_REDDE(s,s[37],s[36],s[39])' "$s"
+          grep -Fq 'FUNCTIO IV_INITIUM_REDDE REDDENS NUMERUS' "$u"
+          grep -Fq 'FUNCTIO IV_BUREAU_REDDE REDDENS NUMERUS' "$u"
+          grep -Fq 'FUNCTIO IV_APPLICATIO_ELIGE REDDENS NUMERUS' "$u"
           ! grep -Eq 's\[(0|1|2|3|4|5|6|7|8|9|10|17|18|19|20|21|22|23|24|25|26)\][[:space:]]*=' "$s"
           ! grep -Eq 'PE_CLICK|TF_CLICK|PE_RENDE|TF_RENDE' "$g"
           ! grep -Eq 'FI_(MOVE|RESIZE|FOCUS|HIT|MINIMIZA|CLAUDE)' "$i"
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
           ! grep -Eq 'n==0[[:space:]]*\|\|[[:space:]]*CONTENTUM\(n\+' "$r"
           ! grep -Eq 'n!=0[[:space:]]*&&[[:space:]]*CONTENTUM\(n\+' "$r"
-          for f in "$r" "$g" "$i" "$c" "$s"; do
+          for f in "$r" "$g" "$i" "$c" "$a" "$u" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
-          printf '%s\n' 'RECTE: fenestrae, geometria, focus et ordo Z ex registro dynamico VINDEX veniunt.'
+          printf '%s\n' 'RECTE: fenestrae et applicationes ex registris dynamicis VINDEX veniunt.'
 
       - name: Octoginta fenestras compila et exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -94,6 +119,16 @@ jobs:
           chmod +x /tmp/fenestrale_purus_i_fenestrae.elf
           timeout 10s /tmp/fenestrale_purus_i_fenestrae.elf
 
+      - name: Nonaginta sex applicationes compila et exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/applicationes_registrum_iv.vindex /tmp/applicationes_registrum_iv.elf
+          file /tmp/applicationes_registrum_iv.elf | grep -q 'ELF 64-bit'
+          chmod +x /tmp/applicationes_registrum_iv.elf
+          timeout 10s /tmp/applicationes_registrum_iv.elf
+
       - name: Fenestrale I totum compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
@@ -102,4 +137,4 @@ jobs:
           ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
           test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 786432
-          printf '%s\n' 'RECTE: Fenestrale II Purus I fenestras sine capacitate fixa per registrum VINDEX administrat.'
+          printf '%s\n' 'RECTE: Fenestrale II Purus I fenestras et applicationes sine capacitate fixa parva per registra VINDEX administrat.'
