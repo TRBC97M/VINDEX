@@ -1,5 +1,5 @@
 // Sylvia OS — OFFICINA SYLVIAE P18-I.
-// Editor VINDEX nativus intra Fenestrale: documentum in memoria volatilI,
+// Editor VINDEX nativus intra Fenestrale: documentum in memoria volatili,
 // lineae UTF-8 dynamicae et cursor sine capacitate parva fixa.
 //
 // Status editoris:
@@ -143,7 +143,7 @@ FUNCTIO OE_INSERE_SCALARE REDDENS NUMERUS.
     ACCIPIT scalare SICUT NUMERUS.
     SI status==0 || scalare<32 TUNC REDDE 0. FIN-SI.
     SI scalare>=55296 && scalare<=57343 TUNC REDDE 0. FIN-SI.
-    SI scalare>65535 TUNC REDDE 0. FIN-SI.
+    SI scalare>1114111 TUNC REDDE 0. FIN-SI.
     DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
     SI nodus==0 TUNC REDDE 0. FIN-SI.
     DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
@@ -153,6 +153,7 @@ FUNCTIO OE_INSERE_SCALARE REDDENS NUMERUS.
     DECLARA m SICUT NUMERUS VALENS 1.
     SI scalare>127 TUNC m=2. FIN-SI.
     SI scalare>2047 TUNC m=3. FIN-SI.
+    SI scalare>65535 TUNC m=4. FIN-SI.
     SI OE_LINEA_REDIMENSIONA(nodus,n+m+1)==0 TUNC REDDE 0. FIN-SI.
     d=CONTENTUM(nodus).
     DECLARA i SICUT NUMERUS VALENS n.
@@ -169,6 +170,12 @@ FUNCTIO OE_INSERE_SCALARE REDDENS NUMERUS.
         SCRIBE_OCTETUM_AB(d+16+pos,224|(scalare>>12)).
         SCRIBE_OCTETUM_AB(d+16+pos+1,128|((scalare>>6)&63)).
         SCRIBE_OCTETUM_AB(d+16+pos+2,128|(scalare&63)).
+    FIN-SI.
+    SI m==4 TUNC
+        SCRIBE_OCTETUM_AB(d+16+pos,240|(scalare>>18)).
+        SCRIBE_OCTETUM_AB(d+16+pos+1,128|((scalare>>12)&63)).
+        SCRIBE_OCTETUM_AB(d+16+pos+2,128|((scalare>>6)&63)).
+        SCRIBE_OCTETUM_AB(d+16+pos+3,128|(scalare&63)).
     FIN-SI.
     CONTENTUM(d)=n+m.
     SCRIBE_OCTETUM_AB(d+16+n+m,0).
