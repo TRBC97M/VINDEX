@@ -356,7 +356,7 @@ Componentes destinati:
 
 ## P12 — Infrastructura gubernatorum
 
-**Status:** `ACTIVUM` — incrementum I `PROBATUM`, curator Claude, ramus `claude/p12-pci-fundamentum`.
+**Status:** `ACTIVUM` — incrementa I et II `PROBATA`, curator Claude, ramus `claude/p12-pci-fundamentum`.
 
 **Ratio prioritatis:** sine hoc strato, nec USB nec HID nec ullus gubernator machinae verae possibilis est. Sylvia hodie solum sub QEMU cum PS/2 emulato vivit; machinae recentes PS/2 non habent. P13 (machina physica) hoc fundamentum praesupponit.
 
@@ -369,7 +369,7 @@ Primitivae portuum in compilatore, quae omnino deerant:
 - `PORTUS_SCRIBE(portus, valor)` — `out dx, al`;
 - `PORTUS_SCRIBE32(portus, valor)` — `out dx, eax`.
 
-Rector PS/2 (`murus_ps2.vindex`) particulas codicis machinalis manu scriptas adhuc adhibet, cum commentario explicito *donec VINDEX intrinseca publica I/O portuum propria habeat*. Nunc habet; migratio illius rectoris opus proximum candidatum est.
+Rector PS/2 (`murus_ps2.vindex`) particulas codicis machinalis manu scriptas adhibebat, cum commentario explicito *donec VINDEX intrinseca publica I/O portuum propria habeat*. Migratio facta est in incremento II.
 
 Enumeratio PCI (`systema/rectores/pci.vindex`), tota in VINDEX:
 
@@ -391,10 +391,16 @@ PCI=0005
 
 Nulla regressio: punctum fixum `G2 = G3`, ELF, PE/Win64, custos puritatis, XXX/XXX probationes canonicae.
 
+### Incrementum II — rector PS/2 ad primitivas nativas (`PROBATUM`)
+
+Ultimae particulae codicis machinalis manu scriptae ex catena canonica Sylviae sublatae: `PS2_IN`/`PS2_OUT` nunc `PORTUS_LEGE`/`PORTUS_SCRIBE` directe adhibent. `PS2_STUBS_PARA` vacua manet ne vocatores frangantur.
+
+Probatio sub QEMU/OVMF: initium PS/2 `[9, 250, 250]`, sex fasciculi, 1280×800 cum XXXV coloribus distinctis, CLXXVI pixeli post motum mutati.
+
 ### Strata reliqua
 
+- enumeratio recursiva per pontes (bus secundarius);
 - BAR, interruptiones et MMIO per apparatum;
-- migratio rectoris PS/2 ad primitivas novas;
 - ACPI;
 - USB;
 - HID;
