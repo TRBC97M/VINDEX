@@ -6,6 +6,7 @@ RADIX="$(cd "$(dirname "$0")/.." && pwd)"
 UEFI="$RADIX/systema/uefi"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-fenestrale-uefi.XXXXXX")"
 MORA_INITII="${MORA_INITII:-28}"
+PROBATOR_FENESTRALIS="${PROBATOR_FENESTRALIS:-$RADIX/instrumenta/proba_fenestrale_uefi_purum.py}"
 trap 'rm -rf "$TEMPORARIUM" 2>/dev/null || true' EXIT HUP INT TERM
 
 OVMF_CODE=""
@@ -50,7 +51,7 @@ qemu-system-x86_64 -machine q35 -m 256 -vga std \
     -net none >"$TEMPORARIUM/qemu.log" 2>&1 &
 PID=$!
 
-if ! python3 "$RADIX/instrumenta/proba_fenestrale_uefi_purum.py" "$MONITOR" "$QMP" "$TEMPORARIUM" "$MORA_INITII"; then
+if ! python3 "$PROBATOR_FENESTRALIS" "$MONITOR" "$QMP" "$TEMPORARIUM" "$MORA_INITII"; then
     kill "$PID" 2>/dev/null || true
     wait "$PID" 2>/dev/null || true
     tail -60 "$TEMPORARIUM/qemu.log" >&2 || true

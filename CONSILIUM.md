@@ -246,7 +246,7 @@ PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #10
 - LXXX fenestrae;
 - compilatio Fenestralis II Purus I.
 
-Custodia UEFI separata exsequitur QEMU/OVMF, screendump, PS/2 nuclei historici et Fenestrale II cum PS/2 nativo. Probationes Win64 et Officina sub Windows vero manent separatae.
+Custodia UEFI separata exsequitur QEMU/OVMF, screendump, PS/2 nuclei historici, Fenestrale II cum PS/2 nativo et contractum formae visualis P16-I. Probationes Win64 et Officina sub Windows vero manent separatae.
 
 ---
 
@@ -414,20 +414,30 @@ Chromium non est fundamentum necessarium neque finis architectonicus.
 
 ## P16 — Forma visualis Sylviae
 
-**Status:** `PARATUM`.
+**Status:** `PROBATUM / CANONIZANDUM — incrementum I`.
 
-Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere:
+Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere widgeta, thema, typographiam, margines et proportionem, iconographiam, cursorem et status interactionis, taskbar et menus canonicos, scaling et resolutiones modernas.
 
-- widgeta;
-- thema;
-- typographiam;
-- margines et proportionem;
-- iconographiam;
-- cursorem et status interactionis;
-- taskbar et menus canonicos;
-- scaling et resolutiones modernas.
+### Incrementum I probatum
 
-**Sylvia hodierna est ossa constructionis, non facies finalis.**
+- taskbar a XXVIII ad **XL px** modernizata;
+- titulus fenestrae ad **XXXVI px**;
+- regio clientis ad offset **LX px**;
+- bullae minimizationis, maximizatonis et clausurae maiores cum hit-testing congruo;
+- regiones **INITIUM** et **SYLVIA** in taskbar;
+- tituli fenestrarum per formam VIII×VIII ad scalam II× pinguntur;
+- renderer Fenestralis et superficies clientium ad ABI canonicum `TEXTUS` (`+16` octeta UTF-8) corriguntur;
+- descriptor `TEXTUS` ante arithmeticam memoriae ad `NUMERUS` convertitur, ne operator `+` concatenationem accidentalem efficiat;
+- probatio screendump realis QEMU/OVMF metra et textum comprobat;
+- XXIX/XXIX probationes, Fenestrale II et PS/2 sine regressione manent.
+
+Contractus plenus in `documenta/sylvia/FORMA_VISUALIS_I.md` describitur.
+
+### Incrementa sequentia
+
+P16-II et posteriora iconographiam, fontem maturiorem, menu INITIUM functionale, widgeta communia, status interactionis et thema paulatim tractabunt. Unaquaeque mutatio visualis pictura vera sub UEFI et geometria input congrua muniri debet.
+
+**Sylvia hodierna est ossa constructionis quae iam faciem canonicam accipere incipit, non facies finalis.**
 
 ---
 
@@ -447,7 +457,7 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 
 Via recta progressionis nunc est:
 
-1. P16 incipere: Fenestrale technicum ad formam visualem Sylviae modernam paulatim movere;
+1. P16-I canonizare et P16-II per iconographiam, fontem vel menu INITIUM parvum continuare;
 2. P12 incipere per fundamenta gubernatorum quae hardware reale et input maturius aperiunt;
 3. P9 per incrementa parva et generalia continuare;
 4. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum;

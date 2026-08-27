@@ -45,8 +45,9 @@ FUNCTIO II_FENESTRA REDDENS NUMERUS.
     SI genus==2 TUNC f=FV_FENESTRA(x,y,w,h,"TABULA",activa). FIN-SI.
     SI genus!=1 && genus!=2 TUNC f=FV_FENESTRA(x,y,w,h,"APPLICATIO",activa). FIN-SI.
     SI superficies!=0 TUNC
-        DECLARA maxw SICUT NUMERUS VALENS w-20. DECLARA maxh SICUT NUMERUS VALENS h-74.
-        SI maxw>0 && maxh>0 TUNC f=FS_BLIT(superficies,x+10,y+52,maxw,maxh). FIN-SI.
+        DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
+        DECLARA maxw SICUT NUMERUS VALENS w-20. DECLARA maxh SICUT NUMERUS VALENS h-clientis_y-22.
+        SI maxw>0 && maxh>0 TUNC f=FS_BLIT(superficies,x+10,y+clientis_y,maxw,maxh). FIN-SI.
     FIN-SI.
     REDDE 1.
 FIN-FUNCTIO.
@@ -55,38 +56,48 @@ FUNCTIO II_TASKBAR REDDENS NUMERUS.
     ACCIPIT fenestrae SICUT NUMERUS.
     ACCIPIT clientes SICUT NUMERUS.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA th SICUT NUMERUS VALENS FV_METRUM_TASKBAR().
+    DECLARA top SICUT NUMERUS VALENS h-th.
     DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
     DECLARA vitrum SICUT NUMERUS VALENS FV_COLOR(14,66,111).
     DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
     DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
     DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
-    DECLARA f SICUT NUMERUS VALENS FV_RECT(0,h-28,w,28,profundum).
-    f=FV_RECT(0,h-28,w,1,aqua).
-    f=FV_RECT(4,h-24,86,20,vitrum).
-    f=FV_TEXTUM(14,h-18,"INITIUM",lux).
+    DECLARA f SICUT NUMERUS VALENS FV_RECT(0,top,w,th,profundum).
+    f=FV_RECT(0,top,w,1,aqua).
+    f=FV_RECT(6,top+6,104,th-12,vitrum).
+    f=FV_RECT(12,top+11,16,16,medium).
+    f=FV_RECT(15,top+14,10,10,aqua).
+    f=FV_TEXTUM(36,top+16,"INITIUM",lux).
+    DECLARA tray SICUT NUMERUS VALENS w-126.
+    f=FV_RECT(tray,top+6,120,th-12,vitrum).
+    f=FV_RECT(tray+8,top+11,16,16,medium).
+    f=FV_RECT(tray+11,top+14,10,10,aqua).
+    f=FV_TEXTUM(tray+32,top+16,"SYLVIA",lux).
     DECLARA numerus SICUT NUMERUS VALENS FI_APERTA_NUM(fenestrae).
     SI numerus<=0 TUNC REDDE 1. FIN-SI.
-    DECLARA spatium SICUT NUMERUS VALENS w-108.
+    DECLARA basis SICUT NUMERUS VALENS 118.
+    DECLARA spatium SICUT NUMERUS VALENS tray-basis-6.
     SI spatium<=0 TUNC REDDE 1. FIN-SI.
     DECLARA bw SICUT NUMERUS VALENS spatium/numerus.
-    SI bw>180 TUNC bw=180. FIN-SI. SI bw<1 TUNC bw=1. FIN-SI.
+    SI bw>196 TUNC bw=196. FIN-SI. SI bw<1 TUNC bw=1. FIN-SI.
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i<numerus PERFICE
-        DECLARA bx SICUT NUMERUS VALENS 98+i*bw.
-        SI bx>=w-4 TUNC DESINE. FIN-SI.
+        DECLARA bx SICUT NUMERUS VALENS basis+i*bw.
+        SI bx>=tray-6 TUNC DESINE. FIN-SI.
         DECLARA id SICUT NUMERUS VALENS FI_APERTA_N(fenestrae,i).
         DECLARA n SICUT NUMERUS VALENS FI_QUAERE(fenestrae,id).
         SI n!=0 TUNC
             DECLARA color SICUT NUMERUS VALENS vitrum.
             SI FI_FOCUS_ID(fenestrae)==id && CONTENTUM(n+48)==0 TUNC color=medium. FIN-SI.
-            DECLARA lat SICUT NUMERUS VALENS bw-6. SI lat<1 TUNC lat=1. FIN-SI.
-            f=FV_RECT(bx,h-24,lat,20,color).
+            DECLARA lat SICUT NUMERUS VALENS bw-8. SI lat<1 TUNC lat=1. FIN-SI.
+            f=FV_RECT(bx,top+6,lat,th-12,color).
             DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(n+8).
             DECLARA genus SICUT NUMERUS VALENS CH_GENUS(clientes,cliens).
-            SI bw>=96 && genus==1 TUNC f=FV_TEXTUM(bx+8,h-18,"PROGRAMMATA",lux). FIN-SI.
-            SI bw>=72 && genus==2 TUNC f=FV_TEXTUM(bx+8,h-18,"TABULA",lux). FIN-SI.
-            SI bw<96 && bw>=24 && genus==1 TUNC f=FV_TEXTUM(bx+8,h-18,"P",lux). FIN-SI.
-            SI bw<72 && bw>=24 && genus==2 TUNC f=FV_TEXTUM(bx+8,h-18,"T",lux). FIN-SI.
+            SI bw>=104 && genus==1 TUNC f=FV_TEXTUM(bx+10,top+16,"PROGRAMMATA",lux). FIN-SI.
+            SI bw>=80 && genus==2 TUNC f=FV_TEXTUM(bx+10,top+16,"TABULA",lux). FIN-SI.
+            SI bw<104 && bw>=28 && genus==1 TUNC f=FV_TEXTUM(bx+10,top+16,"P",lux). FIN-SI.
+            SI bw<80 && bw>=28 && genus==2 TUNC f=FV_TEXTUM(bx+10,top+16,"T",lux). FIN-SI.
         FIN-SI.
         i=i+1.
     FIN-DUM.
@@ -113,6 +124,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
     DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 48.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA utilis_h SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
     s[11]=w/2. s[12]=h/2. s[13]=0. s[14]=0. s[15]=0. s[16]=0. s[27]=0.
     s[28]=0. s[29]=0. s[35]=0.
     s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
@@ -128,16 +140,16 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA rp SICUT NUMERUS VALENS PE_RENDE(superficies_p,0).
     DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
 
-    DECLARA pw SICUT NUMERUS VALENS w*58/100. DECLARA ph SICUT NUMERUS VALENS (h-28)*66/100.
-    DECLARA tw SICUT NUMERUS VALENS w*42/100. DECLARA th SICUT NUMERUS VALENS (h-28)*52/100.
+    DECLARA pw SICUT NUMERUS VALENS w*58/100. DECLARA ph SICUT NUMERUS VALENS utilis_h*66/100.
+    DECLARA tw SICUT NUMERUS VALENS w*42/100. DECLARA th SICUT NUMERUS VALENS utilis_h*52/100.
     SI pw<640 TUNC pw=640. FIN-SI. SI ph<420 TUNC ph=420. FIN-SI.
     SI tw<500 TUNC tw=500. FIN-SI. SI th<360 TUNC th=360. FIN-SI.
-    SI pw>w TUNC pw=w. FIN-SI. SI ph>h-28 TUNC ph=h-28. FIN-SI.
-    SI tw>w TUNC tw=w. FIN-SI. SI th>h-28 TUNC th=h-28. FIN-SI.
+    SI pw>w TUNC pw=w. FIN-SI. SI ph>utilis_h TUNC ph=utilis_h. FIN-SI.
+    SI tw>w TUNC tw=w. FIN-SI. SI th>utilis_h TUNC th=utilis_h. FIN-SI.
     DECLARA px SICUT NUMERUS VALENS w*6/100. DECLARA py SICUT NUMERUS VALENS h*7/100.
     DECLARA tx SICUT NUMERUS VALENS w-tw-w*5/100. DECLARA ty SICUT NUMERUS VALENS h*21/100.
-    SI px+pw>w TUNC px=w-pw. FIN-SI. SI py+ph>h-28 TUNC py=h-28-ph. FIN-SI.
-    SI tx<0 TUNC tx=0. FIN-SI. SI ty+th>h-28 TUNC ty=h-28-th. FIN-SI.
+    SI px+pw>w TUNC px=w-pw. FIN-SI. SI py+ph>utilis_h TUNC py=utilis_h-ph. FIN-SI.
+    SI tx<0 TUNC tx=0. FIN-SI. SI ty+th>utilis_h TUNC ty=utilis_h-th. FIN-SI.
     DECLARA fp SICUT NUMERUS VALENS FI_ADDE(s[37],1,px,py,pw,ph).
     DECLARA ft SICUT NUMERUS VALENS FI_ADDE(s[37],2,tx,ty,tw,th).
     SI fp==0 || ft==0 || FI_NUMERUS(s[37])!=2 TUNC REDDE 71. FIN-SI.

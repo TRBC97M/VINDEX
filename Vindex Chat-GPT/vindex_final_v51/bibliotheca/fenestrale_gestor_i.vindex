@@ -5,15 +5,17 @@ FUNCTIO GI_TASKBAR REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     ACCIPIT registrum SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS.
-    SI registrum==0 || x<98 TUNC REDDE 0. FIN-SI.
+    SI registrum==0 || x<118 TUNC REDDE 0. FIN-SI.
     DECLARA numerus SICUT NUMERUS VALENS FI_APERTA_NUM(registrum).
     SI numerus<=0 TUNC REDDE 0. FIN-SI.
     DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
-    DECLARA spatium SICUT NUMERUS VALENS sw-108.
+    DECLARA finis SICUT NUMERUS VALENS sw-132.
+    SI x>=finis TUNC REDDE 0. FIN-SI.
+    DECLARA spatium SICUT NUMERUS VALENS finis-118.
     SI spatium<=0 TUNC REDDE 0. FIN-SI.
     DECLARA bw SICUT NUMERUS VALENS spatium/numerus.
-    SI bw>180 TUNC bw=180. FIN-SI. SI bw<1 TUNC bw=1. FIN-SI.
-    DECLARA index SICUT NUMERUS VALENS (x-98)/bw.
+    SI bw>196 TUNC bw=196. FIN-SI. SI bw<1 TUNC bw=1. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS (x-118)/bw.
     SI index<0 || index>=numerus TUNC REDDE 0. FIN-SI.
     DECLARA id SICUT NUMERUS VALENS FI_APERTA_N(registrum,index).
     SI id==0 TUNC REDDE 0. FIN-SI.
@@ -29,7 +31,10 @@ FUNCTIO GI_MOUSE_DOWN REDDENS NUMERUS.
     ACCIPIT registrum SICUT NUMERUS.
     ACCIPIT coda SICUT NUMERUS.
     DECLARA mx SICUT NUMERUS VALENS s[11]. DECLARA my SICUT NUMERUS VALENS s[12].
-    SI my>=CONTENTUM(50333736)-28 TUNC REDDE GI_TASKBAR(s,registrum,mx). FIN-SI.
+    DECLARA taskbar_h SICUT NUMERUS VALENS FV_METRUM_TASKBAR().
+    DECLARA tituli_h SICUT NUMERUS VALENS FV_METRUM_TITULUS().
+    DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
+    SI my>=CONTENTUM(50333736)-taskbar_h TUNC REDDE GI_TASKBAR(s,registrum,mx). FIN-SI.
     DECLARA id SICUT NUMERUS VALENS FI_HIT(registrum,mx,my).
     SI id==0 TUNC REDDE 0. FIN-SI.
     DECLARA foc SICUT NUMERUS VALENS FI_FOCUS(registrum,id).
@@ -39,9 +44,9 @@ FUNCTIO GI_MOUSE_DOWN REDDENS NUMERUS.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(n+32). DECLARA h SICUT NUMERUS VALENS CONTENTUM(n+40).
     DECLARA maximus SICUT NUMERUS VALENS CONTENTUM(n+56).
     DECLARA lx SICUT NUMERUS VALENS mx-x. DECLARA ly SICUT NUMERUS VALENS my-y.
-    SI ly>=4 && ly<24 && lx>=w-26 && lx<w-6 TUNC DECLARA c SICUT NUMERUS VALENS FI_CLAUDE(registrum,id). REDDE 1. FIN-SI.
-    SI ly>=4 && ly<24 && lx>=w-70 && lx<w-52 TUNC DECLARA m SICUT NUMERUS VALENS FI_MINIMIZA(registrum,id). REDDE 1. FIN-SI.
-    SI ly>=4 && ly<24 && lx>=w-48 && lx<w-30 TUNC
+    SI ly>=6 && ly<30 && lx>=w-32 && lx<w-8 TUNC DECLARA c SICUT NUMERUS VALENS FI_CLAUDE(registrum,id). REDDE 1. FIN-SI.
+    SI ly>=6 && ly<30 && lx>=w-92 && lx<w-68 TUNC DECLARA m SICUT NUMERUS VALENS FI_MINIMIZA(registrum,id). REDDE 1. FIN-SI.
+    SI ly>=6 && ly<30 && lx>=w-62 && lx<w-38 TUNC
         DECLARA z SICUT NUMERUS VALENS FI_MAX_TOGGLE(registrum,id,CONTENTUM(50333728),CONTENTUM(50333736)).
         REDDE 1.
     FIN-SI.
@@ -51,12 +56,12 @@ FUNCTIO GI_MOUSE_DOWN REDDENS NUMERUS.
         SI ly>=0 && ly<6 TUNC margines=margines|4. FIN-SI. SI ly>=h-6 && ly<h TUNC margines=margines|8. FIN-SI.
         SI margines!=0 TUNC s[14]=id. s[27]=margines. s[15]=mx. s[16]=my. REDDE 1. FIN-SI.
     FIN-SI.
-    SI ly>=0 && ly<28 && lx>=0 && lx<w-74 && maximus==0 TUNC
+    SI ly>=0 && ly<tituli_h && lx>=0 && lx<w-100 && maximus==0 TUNC
         s[14]=id. s[27]=0. s[15]=mx-x. s[16]=my-y. REDDE 1.
     FIN-SI.
-    SI lx>=10 && ly>=52 && lx<w-10 && ly<h-22 TUNC
+    SI lx>=10 && ly>=clientis_y && lx<w-10 && ly<h-22 TUNC
         DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(n+8).
-        DECLARA positum SICUT NUMERUS VALENS EG_PONE(coda,1,cliens,lx-10,ly-52,0).
+        DECLARA positum SICUT NUMERUS VALENS EG_PONE(coda,1,cliens,lx-10,ly-clientis_y,0).
         SI positum==0 TUNC s[35]=s[35]+1. FIN-SI.
         REDDE 1.
     FIN-SI.
