@@ -14,6 +14,7 @@ set -eu
 RADIX="$(cd "$(dirname "$0")/../.." && pwd)"
 UEFI="$RADIX/systema/uefi"
 PONTICULUS="${PONTICULUS_FONS:-$RADIX/systema/uefi/ponticulus_uefi_purus.vindex}"
+NUCLEUS_FONS="${NUCLEUS_FONS:-$RADIX/systema/nucleus.vindex}"
 IMAGO="${1:-$RADIX/systema_vindex_uefi_purum.img}"
 APPLICATIO="${2:-$RADIX/BOOTX64_PURUM.EFI}"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-uefi-purum.XXXXXX")"
@@ -55,7 +56,7 @@ fi
 
 # II. Nucleum VINDEX compila (ut fasciculum separatum, non insertum).
 printf '%s\n' 'II. Nucleus VINDEX -> NUCLEUS.BIN...'
-"$RADIX/compilator_vindex" "$RADIX/systema/nucleus.vindex" "$TEMPORARIUM/NUCLEUS.BIN"
+"$RADIX/compilator_vindex" "$NUCLEUS_FONS" "$TEMPORARIUM/NUCLEUS.BIN"
 MAGNITUDO="$(stat -c '%s' "$TEMPORARIUM/NUCLEUS.BIN")"
 printf 'Nucleus: %s octeta\n' "$MAGNITUDO"
 

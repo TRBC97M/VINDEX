@@ -1,6 +1,7 @@
 // Sylvia OS — Fenestrale II Purus I.
 // Fenestrae, focus et ordo Z in registro dynamico VINDEX vivunt.
 
+IMPORTA "systema/rectores/murus_ps2.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 IMPORTA "bibliotheca/programmata_clientis_e.vindex".
@@ -11,6 +12,15 @@ IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
 IMPORTA "bibliotheca/clientes_eventa_i.vindex".
 IMPORTA "bibliotheca/fenestrale_input_i.vindex".
 IMPORTA "bibliotheca/fenestrale_gestor_i.vindex".
+
+// Rector PS/2 historice hanc functionem vocat. Fenestrale coordinatas suas
+// ex dx/dy crudis legit; hic adaptor tantum contractum rectoris implet.
+FUNCTIO UEFI_MURIS_PUBLICA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT bullae SICUT NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
 
 // Vector systematis nullam geometriam neque statum fenestrae continet.
 // 11/12 murus x/y; 13 bullae; 14 fenestra tractata; 15/16 offset vel murus prior.
@@ -138,13 +148,13 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
         DECLARA redde SICUT NUMERUS VALENS 0.
+        // AUX/PS2 ante claviaturam firmware pollitur.
+        DECLARA muris SICUT NUMERUS VALENS IN_MURUS(s).
         DECLARA q SICUT NUMERUS VALENS IN_CLAVIS().
         SI q!=0 TUNC
             DECLARA qa SICUT NUMERUS VALENS GI_CLAVIS(s,s[37],q).
             SI qa==2 TUNC finis=1. ALITER SI qa==1 TUNC redde=1. FIN-SI. FIN-SI.
         FIN-SI.
-        DECLARA muris SICUT NUMERUS VALENS IN_MURUS_ABS(s[29],s).
-        SI muris==0 TUNC muris=IN_MURUS_REL(s[28],s). FIN-SI.
         SI muris!=0 TUNC
             DECLARA bullae SICUT NUMERUS VALENS muris-1.
             SI (bullae&1)!=0 && (s[13]&1)==0 TUNC DECLARA md SICUT NUMERUS VALENS GI_MOUSE_DOWN(s,s[37],s[34]). FIN-SI.
