@@ -116,9 +116,13 @@ def principale() -> int:
         ante_ps2 = status_ps2(monitor, basis)
         metadata = hexa_hmp(hmp(monitor, "xp /12gx 0x03000800"))[:12]
         g = hexa_hmp(hmp(monitor, "xp /1gx 0x03000b38")); gradus = g[0] if g else 0
+        acervus = hexa_hmp(hmp(monitor, "xp /8gx 0x02000000"))[:8]
+        acervus_octeta = hexa_hmp(hmp(monitor, "xp /32bx 0x02000000"))[:32]
         captura(monitor, ante); w1, h1, pix1 = ppm(ante)
         distincti, communes, dominans = pictura_structura(pix1)
         print(f"FENESTRALE: gradus_initii={gradus} metadata={metadata}")
+        print(f"FENESTRALE: acervus_qword={acervus}")
+        print(f"FENESTRALE: acervus_octeta={acervus_octeta}")
         print(f"FENESTRALE: ps2_ante={ante_ps2} colores_communes={communes}")
         if gradus != 11:
             print(f"DEFECIT: Fenestrale ante primum render cessavit: gradus={gradus}", file=sys.stderr); return 14
