@@ -1,4 +1,4 @@
-name: P3 — Allocator UEFI dissectio temporaria
+name: P3 — Allocator nativus dissectio temporaria
 
 on:
   push:
@@ -15,17 +15,16 @@ jobs:
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
-
-      - name: Emissionem allocatoris monstra
-        shell: bash
+      - name: Allocatoris nativi partes monstra
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
         run: |
-          set -euo pipefail
-          echo '=== COMPONE_RESERVA_OCTETA ==='
-          grep -n -A45 -B5 'FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS' src/compilator_vindex.vindex
-          echo '=== COMPONE_RESERVA_OCTETA_DYNAMICA ==='
-          grep -n -A35 -B5 'FUNCTIO COMPONE_RESERVA_OCTETA_DYNAMICA REDDENS NUMERUS' src/compilator_vindex.vindex
-          echo '=== RESERVA_OCTETA parser ==='
-          grep -n -A25 -B8 'fons\[CONTENTUM(pos_fontis)\] == 82.*RESERVA_OCTETA' src/compilator_vindex.vindex || true
-          echo '=== MODUS_PE ==='
-          grep -n -A10 -B5 'MODUS_PE_LEGE(contextus_parseris)' src/compilator_vindex.vindex | head -n 180
+          set -u
+          echo '=== VERIFICA_TAS ==='
+          grep -n -A35 -B5 'FUNCTIO COMPONE_VERIFICA_TAS REDDENS NUMERUS' src/compilator_vindex.vindex || true
+          echo '=== RESERVA typata ==='
+          grep -n -A85 -B20 'numerus_campi_reserva SICUT NUMERUS' src/compilator_vindex.vindex || true
+          echo '=== LIBERA parser ==='
+          grep -n -A90 -B20 'LIBERA' src/compilator_vindex.vindex | grep -A90 -B20 '33554440' | head -n 180 || true
+          echo '=== BITWISE helpers ==='
+          grep -n 'FUNCTIO COMPONE_.*AND\|FUNCTIO COMPONE_.*ET\|FUNCTIO COMPONE_.*DIV\|FUNCTIO COMPONE_.*MUL' src/compilator_vindex.vindex | head -n 80 || true
