@@ -21,13 +21,15 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_*.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/applicationes_registrum_iv.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'documenta/sylvia/FENESTRALE_II_PVRVS_I.md'
       - 'documenta/sylvia/APPLICATIONES_IV.md'
+      - 'documenta/sylvia/FENESTRAE_V.md'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-i.yml'
 
 jobs:
   vindex-purus-i:
-    name: Registrum dynamicum fenestrarum et applicationum Fenestralis VINDEX certificatur
+    name: Registra et chrome Fenestralis VINDEX certificantur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -48,7 +50,7 @@ jobs:
           python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_i_fenestrae.vindex
           python3 instrumenta/vindex_verifica.py probationes/applicationes_registrum_iv.vindex
 
-      - name: Registra fenestrarum et applicationum dynamica verifica
+      - name: Registra fenestrarum, applicationum et chrome verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -59,6 +61,7 @@ jobs:
           c='bibliotheca/clientes_eventa_i.vindex'
           a='bibliotheca/applicationes_registrum_iv.vindex'
           u='bibliotheca/fenestrale_applicationes_iv.vindex'
+          v='bibliotheca/fenestrale_ii_purus.vindex'
           s='systema/fenestrale_ii_purus_i.vindex'
           t='probationes/fenestrale_purus_i_fenestrae.vindex'
           ta='probationes/applicationes_registrum_iv.vindex'
@@ -97,16 +100,20 @@ jobs:
           grep -Fq 'FUNCTIO IV_INITIUM_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'FUNCTIO IV_BUREAU_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'FUNCTIO IV_APPLICATIO_ELIGE REDDENS NUMERUS' "$u"
+          grep -Fq 'DECLARA umbra_profunda SICUT NUMERUS VALENS FV_COLOR(3, 14, 25)' "$v"
+          grep -Fq 'DECLARA titulus_inactivus SICUT NUMERUS' "$v" || grep -Fq 'titulus_superior = FV_COLOR(73, 95, 111)' "$v"
+          grep -Fq 'margo = argentum' "$v"
+          grep -Fq 'f = FV_RECT(x + w - 32, y + 6, 24, 24, clausura)' "$v"
           ! grep -Eq 's\[(0|1|2|3|4|5|6|7|8|9|10|17|18|19|20|21|22|23|24|25|26)\][[:space:]]*=' "$s"
           ! grep -Eq 'PE_CLICK|TF_CLICK|PE_RENDE|TF_RENDE' "$g"
           ! grep -Eq 'FI_(MOVE|RESIZE|FOCUS|HIT|MINIMIZA|CLAUDE)' "$i"
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
           ! grep -Eq 'n==0[[:space:]]*\|\|[[:space:]]*CONTENTUM\(n\+' "$r"
           ! grep -Eq 'n!=0[[:space:]]*&&[[:space:]]*CONTENTUM\(n\+' "$r"
-          for f in "$r" "$g" "$i" "$c" "$a" "$u" "$s"; do
+          for f in "$r" "$g" "$i" "$c" "$a" "$u" "$v" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
-          printf '%s\n' 'RECTE: fenestrae et applicationes ex registris dynamicis VINDEX veniunt.'
+          printf '%s\n' 'RECTE: registra dynamica et chrome P16-V a contractibus Fenestralis reguntur.'
 
       - name: Octoginta fenestras compila et exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -137,4 +144,4 @@ jobs:
           ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
           test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 786432
-          printf '%s\n' 'RECTE: Fenestrale II Purus I fenestras et applicationes sine capacitate fixa parva per registra VINDEX administrat.'
+          printf '%s\n' 'RECTE: Fenestrale II Purus I registra dynamica et chrome P16-V integra compilat.'

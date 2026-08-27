@@ -203,6 +203,7 @@ FUNCTIO FV_TEXTUM_SCALA REDDENS NUMERUS.
     FIN-DUM.
     REDDE 1.
 FIN-FUNCTIO.
+
 FUNCTIO FV_FUNDUM REDDENS NUMERUS.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
     DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
@@ -252,33 +253,64 @@ FUNCTIO FV_FENESTRA REDDENS NUMERUS.
     DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234, 248, 255).
     DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185, 138, 82).
     DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(168, 58, 58).
+    DECLARA ferrum SICUT NUMERUS VALENS FV_COLOR(78, 92, 104).
+    DECLARA umbra_mollis SICUT NUMERUS VALENS FV_COLOR(6, 25, 43).
+    DECLARA umbra_profunda SICUT NUMERUS VALENS FV_COLOR(3, 14, 25).
+    DECLARA bulla SICUT NUMERUS VALENS FV_COLOR(207, 216, 220).
+    DECLARA titulus_superior SICUT NUMERUS VALENS vitrum.
+    DECLARA titulus_inferior SICUT NUMERUS VALENS medium.
+    DECLARA accentus SICUT NUMERUS VALENS aqua.
+    DECLARA clausura SICUT NUMERUS VALENS rubrum.
+    DECLARA margo SICUT NUMERUS VALENS bronzeum.
+    SI activa == 0 TUNC
+        margo = argentum.
+        titulus_superior = FV_COLOR(73, 95, 111).
+        titulus_inferior = FV_COLOR(91, 111, 124).
+        accentus = argentum.
+        clausura = FV_COLOR(132, 90, 90).
+    FIN-SI.
     DECLARA tituli_h SICUT NUMERUS VALENS FV_METRUM_TITULUS().
     DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
-    DECLARA margo SICUT NUMERUS VALENS argentum.
-    SI activa == 1 TUNC margo = bronzeum. FIN-SI.
-    DECLARA f SICUT NUMERUS VALENS FV_RECT(x + 7, y + 8, w, h, FV_COLOR(4, 18, 31)).
+
+    // P16-V: umbra duplex, levis et determinata, extra geometriam interactive.
+    DECLARA f SICUT NUMERUS VALENS FV_RECT(x + 6, y + 7, w + 3, h + 3, umbra_profunda).
+    f = FV_RECT(x + 3, y + 4, w + 3, h + 3, umbra_mollis).
+
+    // Corpus et duplex margo: accentus focus supra, ferrum extra, argentum intra.
     f = FV_RECT(x, y, w, h, ebur).
-    f = FV_RECT(x, y, w, 2, margo).
-    f = FV_RECT(x, y, 2, h, argentum).
-    f = FV_RECT(x + w - 2, y, 2, h, profundum).
-    f = FV_RECT(x, y + h - 2, w, 2, profundum).
-    f = FV_RECT(x + 2, y + 2, w - 4, tituli_h - 3, vitrum).
-    f = FV_RECT(x + 2, y + 2, w - 4, 2, aqua).
-    SI activa == 0 TUNC f = FV_RECT(x + 2, y + 4, w - 4, tituli_h - 5, medium). FIN-SI.
+    f = FV_RECT(x, y, w, 3, margo).
+    f = FV_RECT(x, y, 1, h, ferrum).
+    f = FV_RECT(x + w - 1, y, 1, h, profundum).
+    f = FV_RECT(x, y + h - 1, w, 1, profundum).
+    f = FV_RECT(x + 1, y + 3, 1, h - 4, argentum).
+    f = FV_RECT(x + w - 2, y + 3, 1, h - 4, ferrum).
+
+    // Titulus duobus tonis, cum linea accentus et separatione inferiore.
+    f = FV_RECT(x + 2, y + 3, w - 4, tituli_h - 4, titulus_superior).
+    f = FV_RECT(x + 2, y + tituli_h - 9, w - 4, 6, titulus_inferior).
+    f = FV_RECT(x + 2, y + 3, w - 4, 1, accentus).
+    f = FV_RECT(x + 2, y + tituli_h - 2, w - 4, 1, ferrum).
     f = FV_TEXTUM_SCALA(x + 12, y + 10, titulus, lux, 2).
-    f = FV_RECT(x + w - 92, y + 6, 24, 24, argentum).
-    f = FV_RECT(x + w - 62, y + 6, 24, 24, argentum).
-    f = FV_RECT(x + w - 32, y + 6, 24, 24, rubrum).
-    f = FV_RECT(x + w - 86, y + 23, 12, 2, profundum).
+
+    // Bullae planae P16-V; hit-testing historice easdem sedes retinet.
+    f = FV_RECT(x + w - 92, y + 6, 24, 24, bulla).
+    f = FV_RECT(x + w - 62, y + 6, 24, 24, bulla).
+    f = FV_RECT(x + w - 32, y + 6, 24, 24, clausura).
+    f = FV_RECT(x + w - 92, y + 6, 24, 1, lux).
+    f = FV_RECT(x + w - 62, y + 6, 24, 1, lux).
+    f = FV_RECT(x + w - 86, y + 22, 12, 2, profundum).
     f = FV_RECT(x + w - 56, y + 11, 12, 2, profundum).
     f = FV_RECT(x + w - 56, y + 11, 2, 12, profundum).
     f = FV_RECT(x + w - 46, y + 11, 2, 12, profundum).
     f = FV_RECT(x + w - 56, y + 21, 12, 2, profundum).
     f = FV_RECT(x + w - 26, y + 12, 12, 2, lux).
     f = FV_RECT(x + w - 21, y + 7, 2, 12, lux).
+
+    // Regio instrumentorum et status minus gravis quam vetus fascia argentata.
     f = FV_RECT(x + 2, y + tituli_h, w - 4, clientis_y - tituli_h, ebur).
     f = FV_RECT(x + 2, y + clientis_y - 1, w - 4, 1, argentum).
-    f = FV_RECT(x + 2, y + h - 20, w - 4, 18, argentum).
+    f = FV_RECT(x + 2, y + h - 20, w - 4, 18, FV_COLOR(218, 223, 224)).
+    f = FV_RECT(x + 2, y + h - 20, w - 4, 1, argentum).
     REDDE 1.
 FIN-FUNCTIO.
 
