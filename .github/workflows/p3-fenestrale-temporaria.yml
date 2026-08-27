@@ -34,8 +34,7 @@ jobs:
           a='''    DECLARA ingressus SICUT NUMERUS VALENS CONTENTUM(sedes_nuclei + 24).
               SALI_AD(ingressus).
           '''
-          b='''    // Probatio causalis: ELF BSS debet vacua esse; caput liberae catenae
-              // allocatoris est primus locus quem Fenestrale dynamicum legit.
+          b='''    // Probatio causalis allocatoris ELF.
               CONTENTUM(33554440) = 0.
               DECLARA ingressus SICUT NUMERUS VALENS CONTENTUM(sedes_nuclei + 24).
               SALI_AD(ingressus).
@@ -95,7 +94,24 @@ jobs:
               CONTENTUM(50334520)=11.
           ''','input-render')
           p.write_text(t,encoding='utf-8')
-          print('RECTE: telemetria initii Fenestralis inserta est.')
+
+          e=Path('Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_eventa_g.vindex')
+          q=e.read_text(encoding='utf-8')
+          a='''    DECLARA coda SICUT NUMERUS VALENS RESERVA_OCTETA(32 + capacitas * 40).
+              SI coda < 0 TUNC REDDE 0. FIN-SI.
+              CONTENTUM(coda) = capacitas.
+          '''
+          b='''    CONTENTUM(50334528)=201.
+              DECLARA coda SICUT NUMERUS VALENS RESERVA_OCTETA(32 + capacitas * 40).
+              CONTENTUM(50334528)=202.
+              SI coda < 0 TUNC CONTENTUM(50334528)=299. REDDE 0. FIN-SI.
+              CONTENTUM(50334528)=203.
+              CONTENTUM(coda) = capacitas.
+              CONTENTUM(50334528)=204.
+          '''
+          if a not in q: raise SystemExit('ERRATUM: ancora EG_CREA deest')
+          e.write_text(q.replace(a,b,1),encoding='utf-8')
+          print('RECTE: telemetria initii et EG_CREA inserta est.')
           PY
 
       - name: Probationes canonicas
@@ -107,5 +123,5 @@ jobs:
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
-          MORA_INITII: '16'
+          MORA_INITII: '12'
         run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh
