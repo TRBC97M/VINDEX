@@ -35,41 +35,48 @@ Si documentum et Git dissentiunt, **Git praevalet**; documentum deinde corrigend
 
 ## P1 — UEFI VINDEX purum
 
-**Status:** `RESERVATUM / ACTIVUM / PROBATUM`  
-**Curator:** Claude  
-**Pull Request:** #82  
-**Ramus:** `claude/uefi-vindex-purus`
+**Status:** `PERFECTUM per PR #109`  
+**Origo experimentalis:** PR #82, ramus `claude/uefi-vindex-purus`  
+**Canonizatio:** portus selectivus super `main` hodiernum
 
-### Iam demonstratum
+### Canonice probatum
 
-- target UEFI a compilatore VINDEX generatus;
-- PE32+ subsystem EFI sine importationibus Win32 in experimento;
-- vocationes firmware ex VINDEX;
-- GOP et framebuffer veri sub QEMU/OVMF;
-- pictura directa in framebuffer;
+- target `uefi` a compilatore VINDEX generatus;
+- PE32+ subsystem EFI sine importationibus Win32;
+- vocationes firmware UEFI directe ex VINDEX;
+- commentaria `//` intra functiones canonice tractata;
 - `SALI_AD` et translatio imperii;
-- lectio nuclei ex disco;
-- catena experimentalis `PONTOK` → `NUCLEUS VIVIT`;
-- correctio commentariorum `//` in experimento;
-- auto-hospitium experimentale servatum.
+- lectio nuclei ex disco per `GetInfo`, sine limite II MiB;
+- `NUCLEUS.BIN`, `TEXTUS.BIN` et `FORMA.BIN` vere in volumine FAT;
+- contractus memoriae nuclei explicitus et a ponticulo impletus;
+- GOP et framebuffer veri sub QEMU/OVMF;
+- `PixelsPerScanLine` ex offset canonico +32;
+- nulla exceptio, nullus defectus paginae post saltum;
+- screendump 1280×800 cum IX coloribus distinctis;
+- Sylvia vere in framebuffer pingit;
+- auto-hospitium `compilator canonicus = G2 = G3`;
+- XXIX/XXIX probationes canonicae cum mutationibus UEFI integratis;
+- catena repetibilis:
 
-### Quod nondum declaratur perfectum
+```text
+OVMF → BOOTX64.EFI [VINDEX] → NUCLEUS [VINDEX] → FRAMEBUFFER → SYLVIA
+```
 
-Nucleus Sylviae realis adhuc contractum memoriae proprium requirit. Probatio experimentalis indicat imaginem nuclei memoriam magnam continuatam postulare quam firmware non necessario concedit. Itaque ponticulus C canonicus nondum tollitur solum quia experimentum VINDEX ulterius processit.
+Vetus `bootstrap_uefi.c` et constructor C e linea canonica removentur. Custos puritatis nullam exceptionem C amplius admittit.
 
-### Regula coordinationis
+### Debitum separatum
 
-**Nullum opus parallelum in P1 faciendum est donec usor dicat Claudium opus terminavisse aut relinquere.** Cum id acciderit, recentissimi commits et ipsa PR #82 denuo inspiciantur ante ullam integrationem.
+ELF adhuc acervum ad sedem fixam collocat; id `p_memsz` circiter XLVI MiB etiam pro binariis parvis efficere potest. Ponticulus UEFI hunc contractum recte implet per reservationes frustatim, ergo P1 non impeditur. Reformatio multi-`PT_LOAD` vel relocatio acervi opus architectonicum separatum est.
 
 ### Criterium victoriae
 
-Firmware UEFI → applicatio EFI a VINDEX canonico generata → nucleus Sylviae realis → metadata et memoria rite contracta → framebuffer et initium fundamentale, sine runtime C, sub CI QEMU/OVMF repetibili.
+**Perfectum:** firmware UEFI → applicatio EFI VINDEX → nucleus Sylviae realis → metadata et memoria rite contracta → framebuffer → pictura Sylviae, sine C, sub CI QEMU/OVMF repetibili.
 
 ---
 
 ## P2 — Reconciliatio VINDEX 0.53 in lineam canonicam
 
-**Status:** `PERFECTUM R0–R5`; `R6 RESERVATUM a P1`.
+**Status:** `PERFECTUM R0–R6`.
 
 ### Perfectum
 
@@ -79,39 +86,37 @@ Firmware UEFI → applicatio EFI a VINDEX canonico generata → nucleus Sylviae 
 - R3 — `PROIECTUM`, viae relativae et targeta;
 - R4 — PE/Win64, `argc/argv` et exsecutio sub Windows vero;
 - R5 — instrumenta VINDEX ad PE et comparationem binariam;
-- semantica `&&` / `||` cum aestimatione brevi postea canonizata per PR #98;
-- suite regressionis hodierna canonizata per PR #99.
-
-### R6
-
-Harmonizatio UEFI manet pars P1. Non duplicetur.
+- R6 — target UEFI purus, vocationes firmware, `SALI_AD` et catena QEMU/OVMF canonizata per P1/#109;
+- semantica `&&` / `||` cum aestimatione brevi per PR #98;
+- suite regressionis praesentis per PR #99 et incrementa posteriora.
 
 ### Criterium victoriae
 
-Linea canonica retinet facultates probatas 0.53 sine monolitho historico et sine regressione ELF, Win64, auto-hospitii aut Sylviae.
+Linea canonica retinet facultates probatas 0.53 sine monolitho historico et sine regressione ELF, Win64, UEFI, auto-hospitii aut Sylviae.
 
 ---
 
 ## P3 — Catena Sylviae pura canonica
 
-**Status:** `IMPEDITUM a P1`, sed fundamenta interna iam valida.
+**Status:** `PARATUM`; P1 non amplius impedit.
 
 ### Iam canonicum
 
-- regula puritatis post initium firmware;
-- custodia CI `Sylvia VINDEX purum`;
+- boot UEFI VINDEX purus usque ad nucleum realem et framebuffer;
+- regula puritatis absoluta, sine exceptione C;
 - nucleus et runtime novi in VINDEX;
 - Fenestrale II Purus A–I in `main`;
 - compositor, eventa, clientes et fenestrae VINDEX;
-- probationes Fenestralis canonicae.
+- probationes Fenestralis canonicae;
+- CI UEFI quae Sylviam vere pingere comprobat.
 
 ### Actio proxima
 
-Post P1, una catena boot canonica a firmware usque ad Fenestrale componenda et sub QEMU/OVMF certificanda est.
+Unam catenam canonicam componere quae boot UEFI iam probatum cum Fenestrale II Purus et input fundamento coniungit. Mechanismus PS/2 ex #71 selective portetur, non wholesale mergeatur.
 
 ### Criterium victoriae
 
-Una imago Sylviae canonica bootat, initium, framebuffer, input fundamentale et Fenestrale VINDEX reale ostendit sine runtime C residente.
+Una imago Sylviae canonica bootat, Fenestrale VINDEX reale ostendit et input fundamentale exercet sine runtime non-VINDEX residente.
 
 ---
 
@@ -120,8 +125,6 @@ Una imago Sylviae canonica bootat, initium, framebuffer, input fundamentale et F
 **Status:** `PERFECTUM` pro gradibus A–I.
 
 ### Canonizatio perfecta
-
-Gradus reconciliati sunt per PR:
 
 - A — #87;
 - B — #88;
@@ -150,7 +153,7 @@ Vetus pila PR #32, #33 et #59–#65 clausa est et auctoritatem praesentem non ha
 
 ### Actio futura
 
-Post catenae boot stabilitatem: thema, widgeta, typographia, iconographia, input maturior et intentio visualis canonica.
+Post P3: thema, widgeta, typographia, iconographia, input maturior et intentio visualis canonica.
 
 ---
 
@@ -163,11 +166,11 @@ PR #71 probat sub QEMU/OVMF desktop, textum et murem PS/2 VINDEX nativum. Basis 
 
 ### Actio proxima
 
-Post P1/P3, mechanismus utilis selective in catena canonicam Fenestralis portetur et recertificetur.
+Nunc P1 perfectum est, mechanismus utilis ex #71 selective in P3 portetur et cum boot UEFI canonico recertificetur.
 
 ### Criterium victoriae
 
-Cursor et eventa muris in Sylvia canonica sub QEMU/OVMF moventur sine runtime C.
+Cursor et eventa muris in imagine Sylviae canonica sub QEMU/OVMF moventur sine runtime C.
 
 ---
 
@@ -194,7 +197,7 @@ PR #57 est historia. PR #83 Officinam selective in `main` portavit et sub Window
 
 ### Actio futura
 
-Officina non est “finita”: amplianda est cum debugger, refactoring, exploratione symbolorum, package manager, build system maturiore et targetis pluribus.
+Officina amplianda est cum debugger, refactoring, exploratione symbolorum, package manager, build system maturiore et targetis pluribus.
 
 ---
 
@@ -202,7 +205,7 @@ Officina non est “finita”: amplianda est cum debugger, refactoring, explorat
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praesentis systematis separavit. PR #102 collectionem dynamicam `NUMERUS` ad eundem contractum regressionis addidit; PR #104 seriem dynamicam contiguam `NUMERUS` addidit; PR #105 segmenta mutuata zero-copy addidit; PR #106 `TEXTUS` validatione UTF-8 et scalaribus Unicode munit; PR #107 reditum `TEXTUS` a functionibus canonice probat; PR #108 subtextum Unicode per scalaria addit.
+PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #102, #104, #105, #106, #107 et #108 collectiones, series, segmenta et `TEXTUS` maturaverunt. PR #109 addit custodiam UEFI completam.
 
 `make probatio` / `tests/run_tests.sh` nunc **XXIX probationes, nulla errata** exercet, inter quas:
 
@@ -215,30 +218,30 @@ PR #99 vetus harnais, qui BIOS/VGA/C/GTK historica requirebat, a contractu praes
 - series dynamica contigua `NUMERUS`;
 - segmenta mutuata `NUMERUS`;
 - `TEXTUS` cum validatione stricta UTF-8 et scalaribus Unicode;
-- reditus `TEXTUS` a functionibus, etiam post concatenationem dynamicam;
-- subtextus Unicode per limites scalarum, cum vacuo et erroribus distinctis;
+- reditus `TEXTUS` a functionibus;
+- subtextus Unicode per limites scalarum;
 - PE32+;
-- puritas Sylviae;
+- puritas absoluta Sylviae;
 - LXXX fenestrae;
 - compilatio Fenestralis II Purus I.
 
-Probationes Windows, Officina et UEFI proprias custodias CI habent.
+Custodia UEFI separata exsequitur QEMU/OVMF et screendump; probationes Win64 et Officina sub Windows vero manent separatae.
 
 ---
 
 ## P8 — Purificatio repositorii
 
-**Status:** `PERFECTUM` pro magnis ramis historicis iam reconciliatis; custodia continua manet.
+**Status:** `PERFECTUM` pro magnis ramis historicis reconciliatis; custodia continua manet.
 
 ### Regula
 
 Historia non deletur ad speciem mundandam, sed PR apertae non debent vias mortuas quasi futuras repraesentare.
 
-### PR apertae hodiernae relevantes
+### PR pertinentes
 
-- **#82** — P1, UEFI VINDEX purum, reservata Claudio;
-- **#71** — probatio laboratorii PS/2, fons selective canonizandus post P1/P3;
-- **#108** — P9, subtextus Unicode per scalaria, probatus XXIX/XXIX et canonizandus.
+- **#109** — canonizatio P1 ex opere #82, ad `main` hodiernum portata;
+- **#82** — origo experimentalis UEFI, post #109 historia/supersessa;
+- **#71** — laboratorium PS/2, selective in P3 portandum.
 
 Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizationem.
 
@@ -248,20 +251,20 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 
 ## P9 — Fundamenta typorum et structurae programmatis
 
-**Status:** `ACTIVUM per incrementa`, dum P1 alienum opus manet.
+**Status:** `ACTIVUM per incrementa`.
 
 **Finis:** VINDEX non solum lingua nuclei esse debet. Prima strata universalitatis debent programmata magna facilius et tutius exprimere sine libertate basimi gradus minuenda.
 
 ### Iam canonicum
 
-- PR #102 — prima collectio dynamica generalis `NUMERUS`, tota VINDEX scripta, cum creatione, additione, lectione, mutatione, deletione, purgatione et liberatione;
-- PR #104 — series dynamica contigua `NUMERUS`, cum longitudine et capacitate separatis, relocatione automatica, insertione, deletione et basi contigua ad futuras series/slices praeparanda;
-- PR #105 — segmenta mutuata `NUMERUS`, cum basi et longitudine, accessu mutabili zero-copy et subsegmentis sine copia; relationes vitae memoriae et invalidatio post relocationem explicite documentantur;
-- PR #106 — `TEXTUS` validationem UTF-8 strictam, numerationem scalarum Unicode et accessum ad scalare indice accipit sine mutatione ABI; arithmetica descriptoris a semantica concatenationis `TEXTUS + TEXTUS` explicite separatur;
-- PR #107 — functiones `TEXTUS` redire canonice possunt, etiam si valor redditus concatenatione dynamica creatus est;
-- PR #108 — `SUBTEXTUS_SCALARUM` novum `TEXTUS` per limites scalarum Unicode creat, sine UTF-8 incidere; vacuum legitimum a `TEXTUS` nullo erroris distinguitur;
-- regressiones collectionum, segmentorum et Unicode inclusae in probationibus canonicis XXIX/XXIX;
-- nulla generica ficta ante facultatem linguae: abstractiones concretae `NUMERUS` fundamentum migrationis futurae praebent.
+- PR #102 — collectio dynamica `NUMERUS`;
+- PR #104 — series dynamica contigua `NUMERUS`;
+- PR #105 — segmenta mutuata `NUMERUS` zero-copy;
+- PR #106 — validatione UTF-8 stricta, numeratione scalarum Unicode et accessu ad scalare;
+- PR #107 — functiones `TEXTUS` redire possunt, etiam post concatenationem dynamicam;
+- PR #108 — `SUBTEXTUS_SCALARUM` cum vacuo legitimo ab errore distincto;
+- regressiones collectionum, segmentorum et Unicode inclusae in XXIX/XXIX;
+- nulla generica ficta ante facultatem linguae.
 
 ### Facultates candidatae
 
@@ -273,11 +276,12 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 - functiones ut valores et callback;
 - moduli et compilationes separatae;
 - contractus ABI expliciti;
-- textus et Unicode maturior: graphemata, normalizatio et transformationes superiores.
+- formatio ELF multi-`PT_LOAD` / relocatio acervi;
+- textus et Unicode maturior: quaestio, graphemata, normalizatio et transformationes superiores.
 
 ### Disciplina
 
-Una facultas parva simul. Quaelibet mutatio linguae debet auto-hospitium, punctum fixum, regressionem propriam, ELF et Win64 ubi pertinens custodire.
+Una facultas parva simul. Quaelibet mutatio linguae debet auto-hospitium, punctum fixum, regressionem propriam, ELF, Win64 et UEFI ubi pertinent custodire.
 
 ---
 
@@ -386,7 +390,7 @@ Chromium non est fundamentum necessarium neque finis architectonicus.
 
 ## P16 — Forma visualis Sylviae
 
-**Status:** `PARATUM post catenae boot stabilitatem`.
+**Status:** `PARATUM post P3`.
 
 Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere:
 
@@ -405,8 +409,8 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 
 # IV. Regula coordinationis agentium
 
-- Opus P1 a Claudio reservatum manet donec usor aliter dicat.
-- Alius agens potest interim P9, documenta, probationes aut alia opera vere independentia exercere.
+- P1 non amplius reservatum est; eius origo #82 post #109 historia experimentalis est.
+- Opera independentia P3 et P9 procedere possunt, sed mutationes compilatoris eundem punctum fixum et targeta canonica custodire debent.
 - Ramus experimentalis prosperus non wholesale mergeatur si structuram veterem secum trahit.
 - Mutationes in `main` fiant per PR parvas, probatas et reversibiles.
 - Documenta repositorii tantum Lingua Latina utantur.
@@ -414,15 +418,15 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 
 ---
 
-# V. Actio proxima dum P1 reservatum est
+# V. Actio proxima
 
-Dum Claude P1 exercet, via recta independentis progressionis est:
+Via recta progressionis nunc est:
 
-1. documenta canonica statui hodierno congruentia servare;
-2. probationes 29/29 custodire;
-3. **P9 per incrementa parva et generalia continuare**, non per magnam mutationem simul;
-4. textum post fundamenta scalarum ad graphemata/normalizationem aut alias necessitates generales mature extendere, non ante probationes;
-5. ubi Claude terminaverit, opus P1 denuo inspicere ante integrationem.
+1. PR #109 per omnes custodias canonicas, praesertim Win64 et UEFI, perficere et in `main` canonizare;
+2. P3 incipere: boot UEFI canonicum cum Fenestrale II Purus coniungere;
+3. mechanismum PS/2 ex #71 selective portare et in eadem imagine recertificare;
+4. P9 per incrementa parva et generalia continuare;
+5. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum.
 
 ---
 
