@@ -21,7 +21,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     CONTENTUM(status_locus+16)=1.
 
     DECLARA via SICUT TEXTUS VALENS "P19TEST.TXT".
-    DECLARA datum SICUT TEXTUS VALENS "SYLVIA PERSISTET — VINDEX 0.53".
+    // Duo litteralia consulto runtime concatenantur: signum integrum ante
+    // primum initium in imagine non est, post scripturam autem in disco est.
+    DECLARA pars_a SICUT TEXTUS VALENS "SYLVIA PERS".
+    DECLARA pars_b SICUT TEXTUS VALENS "ISTET — VINDEX 0.53".
+    DECLARA datum SICUT TEXTUS VALENS pars_a+pars_b.
 
     SI FS_EXISTIT(via)==0 TUNC
         DECLARA scriptum SICUT NUMERUS VALENS FS_SCRIBE_TEXTUM(via,datum).
