@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P17-I: TERMINALE ut clientem realem, cum claviatura et mandato SALVE, sub QEMU probat."""
+"""P17-II: TERMINALE, claviatura, mandata et historia sub QEMU probantur."""
 from __future__ import annotations
 
 import importlib.util
@@ -61,6 +61,9 @@ def principale() -> int:
         apertum = out / 'terminale-apertum.ppm'
         scriptum = out / 'terminale-scriptum.ppm'
         post = out / 'terminale-post.ppm'
+        versio = out / 'terminale-versio.ppm'
+        memoria = out / 'terminale-memoria.ppm'
+        memoria_post = out / 'terminale-memoria-post.ppm'
         aux.captura(monitor, ante)
         w, h, pix_ante = aux.ppm(ante)
         if (w, h) != (1280, 800):
@@ -112,8 +115,47 @@ def principale() -> int:
             print(f'DEFECIT: linea post ENTER non purgata est: {prompt_clear}', file=sys.stderr)
             return 10
 
+        # Secundum mandatum transcriptum auget; deinde ↑↑ SALVE ex historia revocat.
+        for clavis in ('shift-v', 'shift-e', 'shift-r', 'shift-s', 'shift-i', 'shift-o'):
+            mitte_clavem(aux, monitor, clavis)
+        mitte_clavem(aux, monitor, 'ret')
+        time.sleep(0.7)
+        aux.captura(monitor, versio)
+        _, _, pix_versio = aux.ppm(versio)
+        versio_mut = diff_regio(pix_post, pix_versio, w, 248, 224, 560, 254)
+        if versio_mut < 40:
+            print(f'DEFECIT: responsum VERSIO non mutavit: {versio_mut}', file=sys.stderr)
+            return 11
+
+        mitte_clavem(aux, monitor, 'up')
+        mitte_clavem(aux, monitor, 'up')
+        time.sleep(0.5)
+        aux.captura(monitor, memoria)
+        _, _, pix_memoria = aux.ppm(memoria)
+        historia_mut = diff_regio(pix_versio, pix_memoria, w, 270, 424, 380, 454)
+        if historia_mut < 40:
+            print(f'DEFECIT: historia ↑↑ lineam non revocavit: {historia_mut}', file=sys.stderr)
+            return 12
+        if aux.pixel(pix_memoria, w, 500, 96) != bronzeum:
+            print('DEFECIT: sagitta historiae fenestram TERMINALE movit', file=sys.stderr)
+            return 13
+
+        mitte_clavem(aux, monitor, 'ret')
+        time.sleep(0.7)
+        aux.captura(monitor, memoria_post)
+        _, _, pix_memoria_post = aux.ppm(memoria_post)
+        historia_responsum = diff_regio(pix_versio, pix_memoria_post, w, 248, 224, 560, 254)
+        historia_purgata = diff_regio(pix_memoria, pix_memoria_post, w, 270, 424, 380, 454)
+        if historia_responsum < 40:
+            print(f'DEFECIT: SALVE revocatum non exsecutum est: {historia_responsum}', file=sys.stderr)
+            return 14
+        if historia_purgata < 40:
+            print(f'DEFECIT: linea revocata post ENTER non purgata est: {historia_purgata}', file=sys.stderr)
+            return 15
+
         print(f'TERMINALE: cursor={pos} prompt_pixeli={prompt_mut} responsum_pixeli={responsum_mut}')
-        print('RECTE: P17-I TERMINALE e bureau aperitur, claves recipit et mandatum SALVE exsequitur.')
+        print(f'TERMINALE-II: versio_pixeli={versio_mut} historia_pixeli={historia_mut} responsum_historiae={historia_responsum}')
+        print('RECTE: P17-II TERMINALE historiam per scans UEFI revocat et mandata ex transcriptis exsequitur.')
         return 0
     finally:
         try:

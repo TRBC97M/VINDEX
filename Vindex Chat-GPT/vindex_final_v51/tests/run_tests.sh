@@ -193,6 +193,23 @@ respice_terminale() {
     fi
 }
 
+respice_terminale_ii() {
+    local exsecutabile="$TEMPORARIUM/terminale_ii"
+    local relatio="$TEMPORARIUM/terminale_ii.log"
+    if ! ./compilator_vindex probationes/terminale_ii.vindex "$exsecutabile" >"$relatio" 2>&1; then
+        erratum "terminale-ii" "compilatio probationis defecit: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+    chmod 755 "$exsecutabile" 2>/dev/null || true
+    timeout 10s "$exsecutabile" >>"$relatio" 2>&1
+    local status=$?
+    if [ "$status" -ne 0 ]; then
+        erratum "terminale-ii" "status exitus $status: $(tr '\n' ' ' <"$relatio")"
+    else
+        recte "terminale-ii"
+    fi
+}
+
 respice_fenestrale() {
     local probatio="$TEMPORARIUM/fenestrale_lxxx"
     local systema="$TEMPORARIUM/fenestrale_i.elf"
@@ -254,6 +271,7 @@ respice_pe
 respice_puritatem
 respice_applicationes
 respice_terminale
+respice_terminale_ii
 respice_fenestrale
 
 printf '\n%s probationes rectae; %s errata.\n' "$RECTA" "$ERRATA"
