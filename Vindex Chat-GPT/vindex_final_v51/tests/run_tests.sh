@@ -212,7 +212,7 @@ exsequere_casum "importa" "tests/casus/importa.vindex" "49"
 exsequere_casum "structura-acus" "tests/casus/structura_acus.vindex" $'150\n99'
 exsequere_casum "recursio" "tests/casus/recursio.vindex" "720"
 exsequere_casum "argumenta" "tests/casus/argumenta.vindex" $'2\n90' "Zeta"
-exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n69'
+exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n86\n69'
 exsequere_casum "collectiones-numerorum" "tests/casus/collectiones_numerorum.vindex" "COLLECTIONES RECTE"
 exsequere_casum "series-numerorum" "tests/casus/series_numerorum.vindex" "SERIES RECTE"
 exsequere_casum "segmenta-numerorum" "tests/casus/segmenta_numerorum.vindex" "SEGMENTA RECTE"
