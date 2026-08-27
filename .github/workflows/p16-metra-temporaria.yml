@@ -30,6 +30,7 @@ jobs:
           python3 .github/p16_fix1.py
           python3 .github/p16_fix2.py
           python3 .github/p16_fix3.py
+          python3 .github/p16_fix4.py
 
       - name: Probationes canonicas
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
