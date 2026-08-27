@@ -1,4 +1,4 @@
-name: P3 — Allocator nativus dissectio temporaria
+name: P3 — Fenestrale UEFI integratio temporaria
 
 on:
   push:
@@ -9,22 +9,174 @@ permissions:
   contents: write
 
 jobs:
-  disseca:
+  integra:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
-      - name: Allocatoris nativi partes monstra
+
+      - name: Instrumenta institue
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Allocatorem ELF nativum compone
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
-          set -u
-          echo '=== VERIFICA_TAS ==='
-          grep -n -A35 -B5 'FUNCTIO COMPONE_VERIFICA_TAS REDDENS NUMERUS' src/compilator_vindex.vindex || true
-          echo '=== RESERVA typata ==='
-          grep -n -A85 -B20 'numerus_campi_reserva SICUT NUMERUS' src/compilator_vindex.vindex || true
-          echo '=== LIBERA parser ==='
-          grep -n -A90 -B20 'LIBERA' src/compilator_vindex.vindex | grep -A90 -B20 '33554440' | head -n 180 || true
-          echo '=== BITWISE helpers ==='
-          grep -n 'FUNCTIO COMPONE_.*AND\|FUNCTIO COMPONE_.*ET\|FUNCTIO COMPONE_.*DIV\|FUNCTIO COMPONE_.*MUL' src/compilator_vindex.vindex | head -n 80 || true
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('src/compilator_vindex.vindex')
+          t=p.read_text(encoding='utf-8')
+          old='''FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS.
+              ACCIPIT codex SICUT ACUS<NUMERUS>.
+              ACCIPIT pos SICUT NUMERUS.
+              DECLARA p_mem SICUT NUMERUS VALENS pos.
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 6, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 7, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 2, 3).
+              p_mem = COMPONE_ONERA(codex, p_mem, 10, 34).
+              p_mem = COMPONE_ONERA(codex, p_mem, 8, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 9, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 0, 9).
+              p_mem = COMPONE_VOCA_NUCLEUM(codex, p_mem).
+              REDDE p_mem.
+          FIN-FUNCTIO.
+          '''
+          new='''FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS.
+              ACCIPIT codex SICUT ACUS<NUMERUS>.
+              ACCIPIT pos SICUT NUMERUS.
+              DECLARA p_mem SICUT NUMERUS VALENS pos.
+              // RESERVA_OCTETA in ELF iam nullo syscall Linux mmap eget.
+              // Eundem acervum VINDEX nativum ac RESERVA typata adhibet:
+              // 0x02000000 cursor acervi; 0x02000008 caput catenae liberae.
+              // R6 magnitudinem petitam servat; octo octeta ante payload
+              // magnitudinem servant, ut LIBERA idem contractum retineat.
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 6, 0).
+
+              // I. Si caput catenae liberae eandem magnitudinem habet, reuse.
+              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554440).
+              p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 2, 1).
+              p_mem = COMPONE_ONERA(codex, p_mem, 3, 0).
+              p_mem = COMPONE_CMP(codex, p_mem, 2, 3).
+              DECLARA loci_bump_oct1 SICUT NUMERUS VALENS 0.
+              p_mem = COMPONE_JE_FUTURUM(codex, p_mem, SEDES(loci_bump_oct1)).
+
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 0, 2).
+              p_mem = COMPONE_ONERA(codex, p_mem, 3, 8).
+              p_mem = COMPONE_SUB(codex, p_mem, 0, 3).
+              p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 1, 0).
+              p_mem = COMPONE_CMP(codex, p_mem, 1, 6).
+              DECLARA loci_bump_oct2 SICUT NUMERUS VALENS 0.
+              p_mem = COMPONE_JNE_FUTURUM(codex, p_mem, SEDES(loci_bump_oct2)).
+
+              p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 0, 2).
+              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554440).
+              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 1, 0).
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 0, 2).
+              DECLARA loci_fin_oct SICUT NUMERUS VALENS 0.
+              p_mem = COMPONE_JMP_FUTURUM(codex, p_mem, SEDES(loci_fin_oct)).
+
+              // II. Aliter e cursore acervi novum blocum da.
+              DECLARA pos_bump_oct SICUT NUMERUS VALENS p_mem.
+              DECLARA ig_bo1 SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_bump_oct1, pos_bump_oct).
+              DECLARA ig_bo2 SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_bump_oct2, pos_bump_oct).
+              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554432).
+              p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 0, 1).
+              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 0, 6).
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 3, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 2, 8).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 2).
+              p_mem = COMPONE_IMPONE(codex, p_mem, 0).
+              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 0, 3).
+              p_mem = COMPONE_ONERA(codex, p_mem, 2, 8).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 2).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 6).
+              p_mem = COMPONE_VERIFICA_TAS(codex, p_mem).
+              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554432).
+              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 1, 0).
+              p_mem = COMPONE_AUFER(codex, p_mem, 0).
+
+              DECLARA pos_fin_oct SICUT NUMERUS VALENS p_mem.
+              DECLARA ig_fo SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_fin_oct, pos_fin_oct).
+              REDDE p_mem.
+          FIN-FUNCTIO.
+          '''
+          if old not in t:
+              raise SystemExit('ERRATUM: COMPONE_RESERVA_OCTETA vetus non inventa')
+          p.write_text(t.replace(old,new,1),encoding='utf-8')
+          print('RECTE: RESERVA_OCTETA ELF ad acervum nativum translata est.')
+          PY
+
+          chmod +x ./compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/compilator_gen2
+          chmod +x /tmp/compilator_gen2
+          /tmp/compilator_gen2 src/compilator_vindex.vindex /tmp/compilator_gen3
+          chmod +x /tmp/compilator_gen3
+          cmp /tmp/compilator_gen2 /tmp/compilator_gen3
+          cp /tmp/compilator_gen3 ./compilator_vindex
+          chmod +x ./compilator_vindex
+          echo 'RECTE: compilator G2=G3 et binarium canonicum renovatum est.'
+
+      - name: Strata P3 integra
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/p3_fenestrale.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py')
+          t=p.read_text(encoding='utf-8')
+          t=t.replace('''        g = hexa_hmp(hmp(monitor, "xp /1gx 0x03000b38")); gradus = g[0] if g else 0
+              ge = hexa_hmp(hmp(monitor, "xp /1gx 0x03000b40")); gradus_eg = ge[0] if ge else 0
+              acervus = hexa_hmp(hmp(monitor, "xp /8gx 0x02000000"))[:8]
+              acervus_octeta = hexa_hmp(hmp(monitor, "xp /32bx 0x02000000"))[:32]
+          ''','')
+          t=t.replace('''        print(f"FENESTRALE: gradus_initii={gradus} gradus_EG={gradus_eg} metadata={metadata}")
+              print(f"FENESTRALE: acervus_qword={acervus}")
+              print(f"FENESTRALE: acervus_octeta={acervus_octeta}")
+          ''','''        print(f"FENESTRALE: metadata={metadata}")
+          ''')
+          t=t.replace('''        if gradus != 11:
+              print(f"DEFECIT: Fenestrale ante primum render cessavit: gradus={gradus} EG={gradus_eg}", file=sys.stderr); return 14
+          ''','')
+          p.write_text(t,encoding='utf-8')
+          print('RECTE: telemetria temporaria ex probatione Fenestrali remota est.')
+          PY
+
+      - name: Probationes canonicas
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: bash ./tests/run_tests.sh
+
+      - name: Nucleum historicum cum PS2 proba
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '18'
+        run: |
+          sed -i 's/timeout 90 /timeout 45 /' ./instrumenta/proba_catenam_uefi_053.sh
+          bash ./instrumenta/proba_catenam_uefi_053.sh
+
+      - name: Fenestrale II UEFI cum PS2 proba
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '20'
+        run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Mutationes probatas persiste
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'ChatGPT'
+          git config user.email 'chatgpt@openai.local'
+          git rm .github/p3_fenestrale.py .github/workflows/p3-fenestrale-temporaria.yml
+          git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_input_i.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh' \
+                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
+          git commit -m 'P3: Fenestrale II cum allocatore et PS2 nativis coniunge'
+          git push origin HEAD:chatgpt/p3-fenestrale-uefi-purum
