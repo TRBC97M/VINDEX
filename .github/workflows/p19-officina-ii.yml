@@ -1,0 +1,98 @@
+name: Sylvia — OFFICINA persistens P19-II
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_clientis_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_persistentia_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_gestor_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/officina_persistentia_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_persistentem_ii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_persistentem_ii.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/run_tests.sh'
+      - 'documenta/sylvia/OFFICINA_II.md'
+      - 'CONSILIUM.md'
+      - '.github/workflows/p19-officina-ii.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_clientis_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_persistentia_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_gestor_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/officina_persistentia_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_persistentem_ii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_persistentem_ii.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/run_tests.sh'
+      - 'documenta/sylvia/OFFICINA_II.md'
+      - 'CONSILIUM.md'
+      - '.github/workflows/p19-officina-ii.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contractus:
+    name: Contractus persistentiae OFFICINAE probatur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Serializationem et restitutionem compila et exsequere
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/officina_persistentia_ii.vindex /tmp/officina-p19-ii
+          chmod +x /tmp/officina-p19-ii
+          timeout 15s /tmp/officina-p19-ii
+          printf '%s\n' 'RECTE: P19-II documentum OFFICINAE dynamicum serialize et restituit.'
+
+  persistentia:
+    name: Duo initia OFFICINAM persistentem probant
+    runs-on: ubuntu-24.04
+    timeout-minutes: 14
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta necessaria institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: OFFICINAM in eadem imagine duobus initiis exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_P19_II: '45'
+          SERVA_CAPTURAS: '${{ runner.temp }}/officina-p19-ii'
+        run: bash ./instrumenta/proba_officinam_persistentem_ii.sh
+
+      - name: Capturas QEMU conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: officina-p19-ii-qemu
+          path: '${{ runner.temp }}/officina-p19-ii/*.ppm'
+          if-no-files-found: ignore
+          retention-days: 7
