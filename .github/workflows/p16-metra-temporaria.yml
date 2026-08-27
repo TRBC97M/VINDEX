@@ -29,6 +29,7 @@ jobs:
           python3 .github/p16_metra.py
           python3 .github/p16_fix1.py
           python3 .github/p16_fix2.py
+          python3 .github/p16_fix3.py
 
       - name: Probationes canonicas
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
@@ -65,6 +66,7 @@ jobs:
           git diff --check
           git add \
             "$RADIX/bibliotheca/fenestrale_ii_purus.vindex" \
+            "$RADIX/bibliotheca/fenestrale_ii_superficies.vindex" \
             "$RADIX/bibliotheca/fenestrale_gestor_i.vindex" \
             "$RADIX/bibliotheca/fenestrae_registrum_i.vindex" \
             "$RADIX/systema/fenestrale_ii_purus_i.vindex" \
@@ -74,5 +76,5 @@ jobs:
           git diff --cached --quiet && { printf '%s\n' 'RECTE: nihil novum servandum.'; exit 0; }
           git config user.name 'TRBC97M'
           git config user.email 'trbc97m@protonmail.com'
-          git commit -m 'P16-I: metra visualia Sylviae moderniza [skip ci]'
+          git commit -m 'P16-I: metra visualia et textum Sylviae moderniza [skip ci]'
           git push origin HEAD:chatgpt/p16-metra-visualia-i
