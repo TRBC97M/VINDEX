@@ -1,0 +1,75 @@
+name: P16 — Metra Visualia I
+
+on:
+  push:
+    branches:
+      - chatgpt/p16-metra-visualia-i
+
+permissions:
+  contents: write
+
+jobs:
+  proba:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Instrumenta UEFI institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Metra P16 applica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/p16_metra.py
+
+      - name: Probationes canonicas
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./compilator_vindex
+          bash ./tests/run_tests.sh
+
+      - name: Fenestrale II et PS2 non regrediuntur
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '28'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Forma visualis vera sub UEFI
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '28'
+          PROBATOR_FENESTRALIS: '/home/runner/work/VINDEX/VINDEX/Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_i.py'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Statum probatum in ramo serva
+        shell: bash
+        run: |
+          set -euo pipefail
+          RADIX='Vindex Chat-GPT/vindex_final_v51'
+          git diff --check
+          git add \
+            "$RADIX/bibliotheca/fenestrale_ii_purus.vindex" \
+            "$RADIX/bibliotheca/fenestrale_gestor_i.vindex" \
+            "$RADIX/bibliotheca/fenestrae_registrum_i.vindex" \
+            "$RADIX/systema/fenestrale_ii_purus_i.vindex" \
+            "$RADIX/instrumenta/proba_fenestrale_uefi_purum.sh" \
+            "$RADIX/instrumenta/proba_formam_sylviae_i.py"
+          git diff --cached --quiet && { printf '%s\n' 'RECTE: nihil novum servandum.'; exit 0; }
+          git config user.name 'TRBC97M'
+          git config user.email 'trbc97m@protonmail.com'
+          git commit -m 'P16-I: metra visualia Sylviae moderniza [skip ci]'
+          git push origin HEAD:chatgpt/p16-metra-visualia-i
