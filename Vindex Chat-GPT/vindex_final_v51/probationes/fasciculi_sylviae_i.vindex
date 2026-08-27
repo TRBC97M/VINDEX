@@ -1,4 +1,6 @@
 // Probatio P19-I — contractus puri viarum ante backend firmware.
+// VINDEX importationes ordine canonico tractat: dependentia TEXTUS primo venit.
+IMPORTA "bibliotheca/textus.vindex".
 IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
