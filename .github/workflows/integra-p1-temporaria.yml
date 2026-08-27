@@ -49,58 +49,7 @@ jobs:
             exit "$STATUS"
           fi
 
-          python3 - "$TMP/mixtus.vindex" <<'PY'
-          from pathlib import Path
-          import re, sys
-          p = Path(sys.argv[1])
-          s = p.read_text()
-
-          # Unicus conflictus textus est nuntius usus: servamus et PROIECTUM et UEFI.
-          pattern = re.compile(
-              r'<<<<<<<[^\n]*\n'
-              r'\s*PROCLAMA \\"USUS: compilator_vindex <fons\\.vindex> <exsecutabile> \\[pe\\]\\"\\.\n'
-              r'\s*PROCLAMA \\"USUS: compilator_vindex PROIECTUM <proiectum\\.vindex>\\"\\.\n'
-              r'=======\n'
-              r'\s*PROCLAMA \\"USUS: compilator_vindex <fons\\.vindex> <exsecutabile> \\[pe\\|uefi\\]\\"\\.\n'
-              r'>>>>>>>[^\n]*\n'
-          )
-          repl = (
-              '        PROCLAMA \\"USUS: compilator_vindex <fons.vindex> <exsecutabile> [pe|uefi]\\".\n'
-              '        PROCLAMA \\"USUS: compilator_vindex PROIECTUM <proiectum.vindex>\\".\n'
-          )
-          s, n = pattern.subn(repl, s)
-          if n != 1:
-              print(f'ERRATUM: conflictus usus inventi={n}', file=sys.stderr)
-              raise SystemExit(1)
-
-          # Merge textualis UEFI recognitionem extra custodiam argc>=4 eiecerat.
-          old = '''            SI arg3[0] == 112 && arg3[1] == 101 && arg3[2] == 0 TUNC
-                modus_pe = 1.
-            FIN-SI.
-        FIN-SI.
-        SI arg3[0] == 117 && arg3[1] == 101 && arg3[2] == 102 && arg3[3] == 105 && arg3[4] == 0 TUNC
-            modus_pe = 2.
-        FIN-SI.
-    FIN-SI.'''
-          new = '''            SI arg3[0] == 112 && arg3[1] == 101 && arg3[2] == 0 TUNC
-                modus_pe = 1.
-            FIN-SI.
-            SI arg3[0] == 117 && arg3[1] == 101 && arg3[2] == 102 && arg3[3] == 105 && arg3[4] == 0 TUNC
-                modus_pe = 2.
-            FIN-SI.
-        FIN-SI.
-    FIN-SI.'''
-          if old not in s:
-              print('ERRATUM: forma argc/uefi exspectata non inventa est', file=sys.stderr)
-              raise SystemExit(1)
-          s = s.replace(old, new, 1)
-
-          if '<<<<<<<' in s or '=======' in s or '>>>>>>>' in s:
-              print('ERRATUM: conflictus residuus in compilatore', file=sys.stderr)
-              raise SystemExit(1)
-          p.write_text(s)
-          PY
-
+          python3 .github/integra_p1.py "$TMP/mixtus.vindex"
           cp "$TMP/mixtus.vindex" "$COMP"
 
           RADIX='Vindex Chat-GPT/vindex_final_v51'
@@ -110,19 +59,8 @@ jobs:
           git show 'origin/claude/uefi-vindex-purus:Vindex Chat-GPT/vindex_final_v51/systema/uefi/fac_imaginem_uefi.py' > "$RADIX/systema/uefi/fac_imaginem_uefi.py"
           git show 'origin/claude/uefi-vindex-purus:Vindex Claude Ai/uefi-vindex-backend/bootstrap_nucleus_realis.vindex' > "$RADIX/systema/uefi/ponticulus_uefi_purus.vindex"
 
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh')
-          s = p.read_text()
-          s = s.replace('$RADIX/../../Vindex Claude Ai/uefi-vindex-backend/bootstrap_nucleus_realis.vindex', '$RADIX/systema/uefi/ponticulus_uefi_purus.vindex')
-          p.write_text(s)
-
-          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex')
-          s = p.read_text()
-          s = s.replace('PixelsPerScanLine @ 36', 'PixelsPerScanLine @ 32')
-          s = s.replace('PixelsPerScanLine a +36', 'PixelsPerScanLine a +32')
-          p.write_text(s)
-          PY
+          sed -i 's#$RADIX/../../Vindex Claude Ai/uefi-vindex-backend/bootstrap_nucleus_realis.vindex#$RADIX/systema/uefi/ponticulus_uefi_purus.vindex#g' "$RADIX/systema/uefi/construe_uefi_purum.sh"
+          sed -i 's/PixelsPerScanLine @ 36/PixelsPerScanLine @ 32/g; s/PixelsPerScanLine a +36/PixelsPerScanLine a +32/g' "$RADIX/systema/uefi/ponticulus_uefi_purus.vindex"
 
           chmod +x "$RADIX/instrumenta/proba_catenam_uefi_053.sh" "$RADIX/systema/uefi/construe_uefi_purum.sh"
 
