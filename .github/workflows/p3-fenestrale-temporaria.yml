@@ -1,4 +1,4 @@
-name: P3 — Fenestrale UEFI integratio temporaria
+name: P3 — Allocator UEFI dissectio temporaria
 
 on:
   push:
@@ -9,119 +9,23 @@ permissions:
   contents: write
 
 jobs:
-  integra:
+  disseca:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 5
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
 
-      - name: Instrumenta institue
-        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
-
-      - name: Strata P3 integra
-        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+      - name: Emissionem allocatoris monstra
         shell: bash
-        run: |
-          python3 .github/p3_fenestrale.py
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex')
-          t=p.read_text(encoding='utf-8')
-          a='''    DECLARA ingressus SICUT NUMERUS VALENS CONTENTUM(sedes_nuclei + 24).
-              SALI_AD(ingressus).
-          '''
-          b='''    // Probatio causalis allocatoris ELF.
-              CONTENTUM(33554440) = 0.
-              DECLARA ingressus SICUT NUMERUS VALENS CONTENTUM(sedes_nuclei + 24).
-              SALI_AD(ingressus).
-          '''
-          if a not in t: raise SystemExit('ERRATUM: ancora saltus deest')
-          p.write_text(t.replace(a,b,1),encoding='utf-8')
-          print('RECTE: caput catenae liberae ad zero positum est.')
-          PY
-
-      - name: Gradus initii Fenestralis nota
-        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex')
-          t = p.read_text(encoding='utf-8')
-          def r(a,b,n):
-              global t
-              if a not in t: raise SystemExit('ERRATUM: ancora deest: '+n)
-              t=t.replace(a,b,1)
-          r('''FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
-          ''','''FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              CONTENTUM(50334520)=1.
-              SI FV_AD_EST()==0 TUNC CONTENTUM(50334520)=101. REDDE 5. FIN-SI.
-              CONTENTUM(50334520)=2.
-          ''','principalis')
-          r('''    s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
-              s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
-              s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
-          ''','''    s[34]=EG_CREA(32). SI s[34]==0 TUNC CONTENTUM(50334520)=103. REDDE 71. FIN-SI. CONTENTUM(50334520)=3.
-              s[36]=CH_CREA(). SI s[36]==0 TUNC CONTENTUM(50334520)=104. REDDE 71. FIN-SI. CONTENTUM(50334520)=4.
-              s[37]=FI_CREA(). SI s[37]==0 TUNC CONTENTUM(50334520)=105. REDDE 71. FIN-SI. CONTENTUM(50334520)=5.
-          ''','registra')
-          r('''    SI superficies_p==0 || superficies_t==0 TUNC REDDE 71. FIN-SI.
-          ''','''    SI superficies_p==0 || superficies_t==0 TUNC CONTENTUM(50334520)=106. REDDE 71. FIN-SI.
-              CONTENTUM(50334520)=6.
-          ''','superficies')
-          r('''    SI cp==0 || ct==0 TUNC REDDE 71. FIN-SI.
-          ''','''    SI cp==0 || ct==0 TUNC CONTENTUM(50334520)=107. REDDE 71. FIN-SI.
-              CONTENTUM(50334520)=7.
-          ''','clientes')
-          r('''    DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
-          ''','''    DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
-              CONTENTUM(50334520)=8.
-          ''','rendae')
-          r('''    SI fp==0 || ft==0 || FI_NUMERUS(s[37])!=2 TUNC REDDE 71. FIN-SI.
-          ''','''    SI fp==0 || ft==0 || FI_NUMERUS(s[37])!=2 TUNC CONTENTUM(50334520)=109. REDDE 71. FIN-SI.
-              CONTENTUM(50334520)=9.
-          ''','fenestrae')
-          r('''    DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
-              DECLARA f SICUT NUMERUS VALENS II_REDDE(s,s[37],s[36]).
-          ''','''    DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
-              CONTENTUM(50334520)=10.
-              DECLARA f SICUT NUMERUS VALENS II_REDDE(s,s[37],s[36]).
-              CONTENTUM(50334520)=11.
-          ''','input-render')
-          p.write_text(t,encoding='utf-8')
-
-          e=Path('Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_eventa_g.vindex')
-          q=e.read_text(encoding='utf-8')
-          a='''    DECLARA coda SICUT NUMERUS VALENS RESERVA_OCTETA(32 + capacitas * 40).
-              SI coda < 0 TUNC REDDE 0. FIN-SI.
-              CONTENTUM(coda) = capacitas.
-          '''
-          b='''    CONTENTUM(50334528)=201.
-              DECLARA coda SICUT NUMERUS VALENS RESERVA_OCTETA(32 + capacitas * 40).
-              CONTENTUM(50334528)=202.
-              SI coda < 0 TUNC CONTENTUM(50334528)=299. REDDE 0. FIN-SI.
-              CONTENTUM(50334528)=203.
-              CONTENTUM(coda) = capacitas.
-              CONTENTUM(50334528)=204.
-          '''
-          if a not in q: raise SystemExit('ERRATUM: ancora EG_CREA deest')
-          e.write_text(q.replace(a,b,1),encoding='utf-8')
-          print('RECTE: telemetria initii et EG_CREA inserta est.')
-          PY
-
-      - name: Probationes canonicas
-        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
-        run: bash ./tests/run_tests.sh
-
-      - name: Fenestrale II UEFI diagnostica
-        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
-        env:
-          MORA_INITII: '12'
-        run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+        run: |
+          set -euo pipefail
+          echo '=== COMPONE_RESERVA_OCTETA ==='
+          grep -n -A45 -B5 'FUNCTIO COMPONE_RESERVA_OCTETA REDDENS NUMERUS' src/compilator_vindex.vindex
+          echo '=== COMPONE_RESERVA_OCTETA_DYNAMICA ==='
+          grep -n -A35 -B5 'FUNCTIO COMPONE_RESERVA_OCTETA_DYNAMICA REDDENS NUMERUS' src/compilator_vindex.vindex
+          echo '=== RESERVA_OCTETA parser ==='
+          grep -n -A25 -B8 'fons\[CONTENTUM(pos_fontis)\] == 82.*RESERVA_OCTETA' src/compilator_vindex.vindex || true
+          echo '=== MODUS_PE ==='
+          grep -n -A10 -B5 'MODUS_PE_LEGE(contextus_parseris)' src/compilator_vindex.vindex | head -n 180
