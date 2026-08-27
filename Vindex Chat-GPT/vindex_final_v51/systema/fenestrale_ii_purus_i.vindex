@@ -100,12 +100,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA so SICUT NUMERUS VALENS FI_STATUS_PONE(s[37],fo,2).
     SI sp==0 || st==0 || se==0 || so==0 TUNC REDDE 71. FIN-SI.
 
-    // Omnes allocationes Fenestrales iam perfectae sunt: input et PS/2
-    // ante primam operationem fasciculorum persistentium parantur.
+    // Incrementum diagnosticum: input et PS/2 parantur, sed lectio initialis
+    // OFFICINAE omittitur ut causa regressionis cursoris separetur.
     DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
-    // OFFICINA manet utilis etiam si backend non adest aut lectio errat.
-    DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
-    ro=OP_RENDE(superficies_o,status_o).
     DECLARA f SICUT NUMERUS VALENS IV_REDDE(s,s[37],s[36],s[39]).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
