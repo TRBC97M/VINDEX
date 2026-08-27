@@ -1,0 +1,198 @@
+// Sylvia OS — rector muris PS/2 per moderatorem 8042, totus VINDEX.
+//
+// Origo selectiva: laboratorium PR #71, bibliotheca/input_ps2.vindex.
+// Hic rector nullum bootstrap C requirit. Portus I/O x86 per duas particulas
+// codicis minimas, a VINDEX ipso in memoria scriptas, vocantur donec VINDEX
+// intrinseca publica I/O portuum propria habeat.
+//
+// Telemetria rectoris:
+//   50432064  status initializationis (9 = paratus)
+//   50432065  responsum RESET
+//   50432066  responsum ENABLE
+//   50432067  numerus fasciculorum validorum modulo 256
+//   50432068  ultimus status 8042
+//   50432069  positio intra fasciculum PS/2
+//   50432070  octetum flagorum
+//   50432071  octetum dx
+
+FUNCTIO PS2_STUBS_PARA REDDENS NUMERUS.
+    // mov edx,ecx ; xor eax,eax ; in al,dx ; ret
+    SCRIBE_OCTETUM_AB(50432000,137).
+    SCRIBE_OCTETUM_AB(50432001,202).
+    SCRIBE_OCTETUM_AB(50432002,49).
+    SCRIBE_OCTETUM_AB(50432003,192).
+    SCRIBE_OCTETUM_AB(50432004,236).
+    SCRIBE_OCTETUM_AB(50432005,195).
+
+    // mov eax,edx ; mov edx,ecx ; out dx,al ; xor eax,eax ; ret
+    SCRIBE_OCTETUM_AB(50432016,137).
+    SCRIBE_OCTETUM_AB(50432017,208).
+    SCRIBE_OCTETUM_AB(50432018,137).
+    SCRIBE_OCTETUM_AB(50432019,202).
+    SCRIBE_OCTETUM_AB(50432020,238).
+    SCRIBE_OCTETUM_AB(50432021,49).
+    SCRIBE_OCTETUM_AB(50432022,192).
+    SCRIBE_OCTETUM_AB(50432023,195).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_IN REDDENS NUMERUS.
+    ACCIPIT portus SICUT NUMERUS.
+    REDDE UEFI_VOCA6(50432000, portus, 0, 0, 0, 0, 0).
+FIN-FUNCTIO.
+
+FUNCTIO PS2_OUT REDDENS NUMERUS.
+    ACCIPIT portus SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    REDDE UEFI_VOCA6(50432016, portus, valor, 0, 0, 0, 0).
+FIN-FUNCTIO.
+
+FUNCTIO PS2_ATTENDE_SCRIBE REDDENS NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 10000 PERFICE
+        DECLARA status SICUT NUMERUS VALENS PS2_IN(100).
+        SI (status & 2) == 0 TUNC REDDE 1. FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_LEGE_DATA REDDENS NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 10000 PERFICE
+        DECLARA status SICUT NUMERUS VALENS PS2_IN(100).
+        SI (status & 1) != 0 TUNC REDDE PS2_IN(96). FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 256.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_LEGE_AUX REDDENS NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 20000 PERFICE
+        DECLARA status SICUT NUMERUS VALENS PS2_IN(100).
+        SI (status & 1) != 0 TUNC
+            DECLARA data SICUT NUMERUS VALENS PS2_IN(96).
+            SI (status & 32) != 0 TUNC REDDE data. FIN-SI.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 256.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_CMD REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI PS2_ATTENDE_SCRIBE() == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA ign SICUT NUMERUS VALENS PS2_OUT(100, valor).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_DATA REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI PS2_ATTENDE_SCRIBE() == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA ign SICUT NUMERUS VALENS PS2_OUT(96, valor).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_AUX_CMD REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    // 0xD4: proximum octetum ad secundum canalem / murem mitte.
+    SI PS2_CMD(212) == 0 TUNC REDDE 256. FIN-SI.
+    SI PS2_DATA(valor) == 0 TUNC REDDE 256. FIN-SI.
+    REDDE PS2_LEGE_AUX().
+FIN-FUNCTIO.
+
+FUNCTIO PS2_FLUSH REDDENS NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 64 PERFICE
+        DECLARA status SICUT NUMERUS VALENS PS2_IN(100).
+        SI (status & 1) == 0 TUNC REDDE 1. FIN-SI.
+        DECLARA ign SICUT NUMERUS VALENS PS2_IN(96).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_8042_PARA REDDENS NUMERUS.
+    SCRIBE_OCTETUM_AB(50432064, 1).
+    DECLARA ign_flush SICUT NUMERUS VALENS PS2_FLUSH().
+
+    // 0xA8: secundum canalem activa.
+    SI PS2_CMD(168) == 0 TUNC SCRIBE_OCTETUM_AB(50432064, 2). REDDE 0. FIN-SI.
+    // 0x20: configurationem lege.
+    SI PS2_CMD(32) == 0 TUNC SCRIBE_OCTETUM_AB(50432064, 3). REDDE 0. FIN-SI.
+    DECLARA cfg SICUT NUMERUS VALENS PS2_LEGE_DATA().
+    SI cfg > 255 TUNC SCRIBE_OCTETUM_AB(50432064, 4). REDDE 0. FIN-SI.
+
+    // IRQ muris et translationem firmware non requirimus: polling nativum.
+    cfg = cfg & 221.
+    SI PS2_CMD(96) == 0 TUNC SCRIBE_OCTETUM_AB(50432064, 5). REDDE 0. FIN-SI.
+    SI PS2_DATA(cfg) == 0 TUNC SCRIBE_OCTETUM_AB(50432064, 6). REDDE 0. FIN-SI.
+
+    // F6 = valores ordinarios; F4 = data reporting activa.
+    DECLARA reset SICUT NUMERUS VALENS PS2_AUX_CMD(246).
+    SCRIBE_OCTETUM_AB(50432065, reset & 255).
+    SI reset != 250 TUNC SCRIBE_OCTETUM_AB(50432064, 7). REDDE 0. FIN-SI.
+    DECLARA enable SICUT NUMERUS VALENS PS2_AUX_CMD(244).
+    SCRIBE_OCTETUM_AB(50432066, enable & 255).
+    SI enable != 250 TUNC SCRIBE_OCTETUM_AB(50432064, 8). REDDE 0. FIN-SI.
+
+    SCRIBE_OCTETUM_AB(50432067, 0).
+    SCRIBE_OCTETUM_AB(50432068, 0).
+    SCRIBE_OCTETUM_AB(50432069, 0).
+    SCRIBE_OCTETUM_AB(50432070, 0).
+    SCRIBE_OCTETUM_AB(50432071, 0).
+    SCRIBE_OCTETUM_AB(50432064, 9).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_PARA REDDENS NUMERUS.
+    DECLARA stubs SICUT NUMERUS VALENS PS2_STUBS_PARA().
+    REDDE PS2_8042_PARA().
+FIN-FUNCTIO.
+
+FUNCTIO PS2_PARATUS_EST REDDENS NUMERUS.
+    SI OCTETUS_AB(50432064) == 9 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PS2_POLLE REDDENS NUMERUS.
+    DECLARA status SICUT NUMERUS VALENS PS2_IN(100).
+    SCRIBE_OCTETUM_AB(50432068, status & 255).
+    SI (status & 1) == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA octetum SICUT NUMERUS VALENS PS2_IN(96).
+    // Bit 5 status 8042 = data canalis auxiliaris / muris.
+    SI (status & 32) == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA positio SICUT NUMERUS VALENS OCTETUS_AB(50432069).
+    SI positio == 0 TUNC
+        // Bit 3 primi octeti semper 1 est; eo ad limites fasciculi resynchronizamur.
+        SI (octetum & 8) == 0 TUNC REDDE 0. FIN-SI.
+        SCRIBE_OCTETUM_AB(50432070, octetum).
+        SCRIBE_OCTETUM_AB(50432069, 1).
+        REDDE 0.
+    FIN-SI.
+    SI positio == 1 TUNC
+        SCRIBE_OCTETUM_AB(50432071, octetum).
+        SCRIBE_OCTETUM_AB(50432069, 2).
+        REDDE 0.
+    FIN-SI.
+
+    SCRIBE_OCTETUM_AB(50432069, 0).
+    DECLARA flags SICUT NUMERUS VALENS OCTETUS_AB(50432070).
+    SI (flags & 192) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA dx SICUT NUMERUS VALENS OCTETUS_AB(50432071).
+    DECLARA dy SICUT NUMERUS VALENS octetum.
+    SI (flags & 16) != 0 TUNC dx = dx - 256. FIN-SI.
+    SI (flags & 32) != 0 TUNC dy = dy - 256. FIN-SI.
+
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(50331648) + dx.
+    DECLARA y SICUT NUMERUS VALENS CONTENTUM(50331656) - dy.
+    DECLARA bullae SICUT NUMERUS VALENS flags & 7.
+    DECLARA mutatum SICUT NUMERUS VALENS UEFI_MURIS_PUBLICA(x, y, bullae).
+    SI mutatum != 0 TUNC
+        SCRIBE_OCTETUM_AB(50432067, (OCTETUS_AB(50432067) + 1) & 255).
+    FIN-SI.
+    REDDE mutatum.
+FIN-FUNCTIO.
