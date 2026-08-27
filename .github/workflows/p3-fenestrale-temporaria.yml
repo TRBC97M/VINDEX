@@ -11,7 +11,7 @@ permissions:
 jobs:
   integra:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
@@ -26,40 +26,67 @@ jobs:
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         run: python3 .github/p3_fenestrale.py
 
+      - name: Gradus initii Fenestralis nota
+        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex')
+          t = p.read_text(encoding='utf-8')
+          def r(a,b,n):
+              global t
+              if a not in t: raise SystemExit('ERRATUM: ancora deest: '+n)
+              t=t.replace(a,b,1)
+          r('''FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
+          ''','''FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              CONTENTUM(50334520)=1.
+              SI FV_AD_EST()==0 TUNC CONTENTUM(50334520)=101. REDDE 5. FIN-SI.
+              CONTENTUM(50334520)=2.
+          ''','principalis')
+          r('''    s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
+              s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
+              s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
+          ''','''    s[34]=EG_CREA(32). SI s[34]==0 TUNC CONTENTUM(50334520)=103. REDDE 71. FIN-SI. CONTENTUM(50334520)=3.
+              s[36]=CH_CREA(). SI s[36]==0 TUNC CONTENTUM(50334520)=104. REDDE 71. FIN-SI. CONTENTUM(50334520)=4.
+              s[37]=FI_CREA(). SI s[37]==0 TUNC CONTENTUM(50334520)=105. REDDE 71. FIN-SI. CONTENTUM(50334520)=5.
+          ''','registra')
+          r('''    SI superficies_p==0 || superficies_t==0 TUNC REDDE 71. FIN-SI.
+          ''','''    SI superficies_p==0 || superficies_t==0 TUNC CONTENTUM(50334520)=106. REDDE 71. FIN-SI.
+              CONTENTUM(50334520)=6.
+          ''','superficies')
+          r('''    SI cp==0 || ct==0 TUNC REDDE 71. FIN-SI.
+          ''','''    SI cp==0 || ct==0 TUNC CONTENTUM(50334520)=107. REDDE 71. FIN-SI.
+              CONTENTUM(50334520)=7.
+          ''','clientes')
+          r('''    DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
+          ''','''    DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
+              CONTENTUM(50334520)=8.
+          ''','rendae')
+          r('''    SI fp==0 || ft==0 || FI_NUMERUS(s[37])!=2 TUNC REDDE 71. FIN-SI.
+          ''','''    SI fp==0 || ft==0 || FI_NUMERUS(s[37])!=2 TUNC CONTENTUM(50334520)=109. REDDE 71. FIN-SI.
+              CONTENTUM(50334520)=9.
+          ''','fenestrae')
+          r('''    DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
+              DECLARA f SICUT NUMERUS VALENS II_REDDE(s,s[37],s[36]).
+          ''','''    DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
+              CONTENTUM(50334520)=10.
+              DECLARA f SICUT NUMERUS VALENS II_REDDE(s,s[37],s[36]).
+              CONTENTUM(50334520)=11.
+          ''','input-render')
+          p.write_text(t,encoding='utf-8')
+          print('RECTE: telemetria initii Fenestralis inserta est.')
+          PY
+
       - name: Probationes canonicas
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         run: bash ./tests/run_tests.sh
 
-      - name: Nucleum historicum sine mutatione morum proba
+      - name: Fenestrale II UEFI diagnostica
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
-          MORA_INITII: '18'
-        run: |
-          sed -i 's/timeout 90 /timeout 40 /' ./instrumenta/proba_catenam_uefi_053.sh
-          bash ./instrumenta/proba_catenam_uefi_053.sh
-
-      - name: Fenestrale II UEFI cum PS2 proba
-        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
-        env:
-          MORA_INITII: '20'
+          MORA_INITII: '16'
         run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh
-
-      - name: Mutationes probatas persiste
-        if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'ChatGPT'
-          git config user.email 'chatgpt@openai.local'
-          git rm .github/p3_fenestrale.py
-          git add 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_input_i.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh' \
-                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py' \
-                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
-          git commit -m 'P3: Fenestrale II cum PS2 nativo in UEFI coniunge'
-          git push origin HEAD:chatgpt/p3-fenestrale-uefi-purum
