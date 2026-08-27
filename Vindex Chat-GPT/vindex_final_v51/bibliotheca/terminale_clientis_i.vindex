@@ -1,0 +1,193 @@
+// Sylvia OS — TERMINALE P17-I.
+// Clientis Fenestralis verus: linea UTF-8 dynamica, eventa claviaturae et mandata interna.
+// Status clientis est sedes structurae: +0 descriptor lineae, +8 responsum, +16 mandata acta.
+
+FUNCTIO TE_TEXTUS_EX_SEDE REDDENS TEXTUS.
+    ACCIPIT sedes SICUT NUMERUS.
+    REDDE sedes.
+FIN-FUNCTIO.
+
+FUNCTIO TE_LINEA_CREA REDDENS NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    SI capacitas<16 TUNC capacitas=16. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS RESERVA_OCTETA(17+capacitas).
+    SI d<=0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(d)=0.
+    CONTENTUM(d+8)=capacitas.
+    SCRIBE_OCTETUM_AB(d+16,0).
+    REDDE d.
+FIN-FUNCTIO.
+
+FUNCTIO TE_CREA REDDENS NUMERUS.
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI status<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA linea SICUT NUMERUS VALENS TE_LINEA_CREA(64).
+    SI linea==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status)=linea.
+    CONTENTUM(status+8)=0.
+    CONTENTUM(status+16)=0.
+    REDDE status.
+FIN-FUNCTIO.
+
+FUNCTIO TE_LINEA_REDIMENSIONA REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT opus SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA vetus SICUT NUMERUS VALENS CONTENTUM(status).
+    SI vetus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA capacitas SICUT NUMERUS VALENS CONTENTUM(vetus+8).
+    SI opus<=capacitas TUNC REDDE 1. FIN-SI.
+    DECLARA nova_cap SICUT NUMERUS VALENS capacitas.
+    DUM nova_cap<opus PERFICE nova_cap=nova_cap*2. FIN-DUM.
+    DECLARA novus SICUT NUMERUS VALENS TE_LINEA_CREA(nova_cap).
+    SI novus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(vetus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        SCRIBE_OCTETUM_AB(novus+16+i,OCTETUS_AB(vetus+16+i)).
+        i=i+1.
+    FIN-DUM.
+    CONTENTUM(novus)=n.
+    SCRIBE_OCTETUM_AB(novus+16+n,0).
+    CONTENTUM(status)=novus.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TE_APPENDE_SCALARE REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT scalare SICUT NUMERUS.
+    SI status==0 || scalare<32 TUNC REDDE 0. FIN-SI.
+    SI scalare>=55296 && scalare<=57343 TUNC REDDE 0. FIN-SI.
+    SI scalare>65535 TUNC REDDE 0. FIN-SI.
+    DECLARA mensura SICUT NUMERUS VALENS 1.
+    SI scalare>127 TUNC mensura=2. FIN-SI.
+    SI scalare>2047 TUNC mensura=3. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(status).
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    SI TE_LINEA_REDIMENSIONA(status,n+mensura+1)==0 TUNC REDDE 0. FIN-SI.
+    d=CONTENTUM(status).
+    SI mensura==1 TUNC
+        SCRIBE_OCTETUM_AB(d+16+n,scalare).
+    FIN-SI.
+    SI mensura==2 TUNC
+        SCRIBE_OCTETUM_AB(d+16+n,192|(scalare>>6)).
+        SCRIBE_OCTETUM_AB(d+16+n+1,128|(scalare&63)).
+    FIN-SI.
+    SI mensura==3 TUNC
+        SCRIBE_OCTETUM_AB(d+16+n,224|(scalare>>12)).
+        SCRIBE_OCTETUM_AB(d+16+n+1,128|((scalare>>6)&63)).
+        SCRIBE_OCTETUM_AB(d+16+n+2,128|(scalare&63)).
+    FIN-SI.
+    CONTENTUM(d)=n+mensura.
+    SCRIBE_OCTETUM_AB(d+16+n+mensura,0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TE_RETROCEDE REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(status).
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    SI n<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS n-1.
+    DUM p>0 && (OCTETUS_AB(d+16+p)&192)==128 PERFICE p=p-1. FIN-DUM.
+    CONTENTUM(d)=p.
+    SCRIBE_OCTETUM_AB(d+16+p,0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TE_AEQUATUR REDDENS NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    ACCIPIT exemplum SICUT TEXTUS.
+    SI d==0 TUNC REDDE 0. FIN-SI.
+    DECLARA e SICUT NUMERUS VALENS exemplum.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    SI n!=CONTENTUM(e) TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        SI OCTETUS_AB(d+16+i)!=OCTETUS_AB(e+16+i) TUNC REDDE 0. FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TE_EXSEQUERE REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(status).
+    DECLARA responsum SICUT NUMERUS VALENS 5.
+    SI CONTENTUM(d)==0 TUNC responsum=0. FIN-SI.
+    SI TE_AEQUATUR(d,"SALVE")!=0 TUNC responsum=1. FIN-SI.
+    SI TE_AEQUATUR(d,"VERSIO")!=0 TUNC responsum=2. FIN-SI.
+    SI TE_AEQUATUR(d,"AUXILIUM")!=0 TUNC responsum=3. FIN-SI.
+    SI TE_AEQUATUR(d,"PURGA")!=0 TUNC responsum=4. FIN-SI.
+    CONTENTUM(status+8)=responsum.
+    CONTENTUM(status+16)=CONTENTUM(status+16)+1.
+    CONTENTUM(d)=0.
+    SCRIBE_OCTETUM_AB(d+16,0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TE_CLAVIS REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT unicode SICUT NUMERUS.
+    SI status==0 || unicode==0 TUNC REDDE 0. FIN-SI.
+    SI unicode==8 || unicode==127 TUNC REDDE TE_RETROCEDE(status). FIN-SI.
+    SI unicode==10 || unicode==13 TUNC REDDE TE_EXSEQUERE(status). FIN-SI.
+    REDDE TE_APPENDE_SCALARE(status,unicode).
+FIN-FUNCTIO.
+
+FUNCTIO TE_SCALAE REDDENS NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    SI d==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA scalae SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        DECLARA b SICUT NUMERUS VALENS OCTETUS_AB(d+16+i).
+        DECLARA m SICUT NUMERUS VALENS 1.
+        SI b>=194 && b<=223 TUNC m=2. FIN-SI.
+        SI b>=224 && b<=239 TUNC m=3. FIN-SI.
+        SI i+m>n TUNC REDDE scalae. FIN-SI.
+        i=i+m.
+        scalae=scalae+1.
+    FIN-DUM.
+    REDDE scalae.
+FIN-FUNCTIO.
+
+FUNCTIO TE_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI superficies==0 || status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA fundum SICUT NUMERUS VALENS FV_COLOR(5,18,30).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
+    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
+    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
+    DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(168,58,58).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,fundum).
+    f=FS_RECT(superficies,0,0,w,28,profundum).
+    f=FS_RECT(superficies,0,27,w,1,medium).
+    f=FS_TEXTUM(superficies,12,10,"SYLVIA TERMINALE",aqua).
+    f=FS_TEXTUM(superficies,w-116,10,"P17-I",argentum).
+    f=FS_TEXTUM(superficies,14,48,"VINDEX 0.53 / SYLVIA",argentum).
+    DECLARA responsum SICUT NUMERUS VALENS CONTENTUM(status+8).
+    SI responsum==0 TUNC f=FS_TEXTUM(superficies,14,78,"PARATUS. SCRIBE AUXILIUM.",lux). FIN-SI.
+    SI responsum==1 TUNC f=FS_TEXTUM(superficies,14,78,"SALVE EX SYLVIA.",lux). FIN-SI.
+    SI responsum==2 TUNC f=FS_TEXTUM(superficies,14,78,"SYLVIA / VINDEX 0.53",lux). FIN-SI.
+    SI responsum==3 TUNC f=FS_TEXTUM(superficies,14,78,"MANDATA: AUXILIUM SALVE VERSIO PURGA",lux). FIN-SI.
+    SI responsum==4 TUNC f=FS_TEXTUM(superficies,14,78," ",lux). FIN-SI.
+    SI responsum==5 TUNC f=FS_TEXTUM(superficies,14,78,"MANDATUM NON INVENTUM.",rubrum). FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS h-42.
+    f=FS_RECT(superficies,10,y-8,w-20,30,profundum).
+    f=FS_TEXTUM(superficies,16,y,">",aqua).
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(status).
+    SI CONTENTUM(d)>0 TUNC f=FS_TEXTUM(superficies,32,y,TE_TEXTUS_EX_SEDE(d),lux). FIN-SI.
+    DECLARA cx SICUT NUMERUS VALENS 32+TE_SCALAE(d)*8.
+    SI cx>w-18 TUNC cx=w-18. FIN-SI.
+    f=FS_RECT(superficies,cx,y+10,7,2,aqua).
+    REDDE 1.
+FIN-FUNCTIO.
