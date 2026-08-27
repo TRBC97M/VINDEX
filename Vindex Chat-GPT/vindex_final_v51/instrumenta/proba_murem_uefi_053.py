@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Murem PS/2 Sylviae per QEMU/QMP et framebuffer probat."""
+"""Murem PS/2 Sylviae per QEMU et framebuffer probat."""
 
 from __future__ import annotations
 
 import json
+import re
 import socket
 import sys
 import time
@@ -36,8 +37,7 @@ def qmp_linea(sock: socket.socket) -> dict:
         if not pars:
             raise RuntimeError("QMP clausum est")
         data.extend(pars)
-    linea, _, residuum = data.partition(b"\n")
-    # QMP huic probationi responsa singulis lineis mittit; residuum hic non opus est.
+    linea, _, _ = data.partition(b"\n")
     return json.loads(linea.decode())
 
 
@@ -70,6 +70,26 @@ def differentiae(a: bytes, b: bytes) -> int:
         if a[p:p + 3] != b[p:p + 3]:
             mutata += 1
     return mutata
+
+
+def hexa_hmp(textus: str) -> list[int]:
+    # QEMU monitor per readline echo mandati continere potest; tantum valores
+    # 16-digit post ':' vel in lineis memoriae capimus.
+    valores: list[int] = []
+    for linea in textus.splitlines():
+        if ":" not in linea:
+            continue
+        dextra = linea.split(":", 1)[1]
+        for verbum in re.findall(r"0x[0-9a-fA-F]{1,16}", dextra):
+            valores.append(int(verbum, 16))
+    return valores
+
+
+def status_muris(monitor: socket.socket) -> tuple[int, int, int, int] | None:
+    valores = hexa_hmp(hmp(monitor, "xp /4gx 0x03000000"))
+    if len(valores) < 4:
+        return None
+    return valores[0], valores[1], valores[2], valores[3]
 
 
 def principale() -> int:
@@ -119,7 +139,7 @@ def principale() -> int:
 
         mus = candidati[0]
         index = int(mus["index"])
-        hmp(monitor, f"mouse_set {index}")
+        selectio = hmp(monitor, f"mouse_set {index}")
         time.sleep(mora)
 
         mures_post = qmp(q, "query-mice")
@@ -139,12 +159,16 @@ def principale() -> int:
             print("DEFECIT: captura initialis deest", file=sys.stderr)
             return 6
 
-        # Nucleus canonicus post UEFI_PARA protocollum relativum hic publicat.
         metadata = hmp(monitor, "xp /3gx 0x03000b18")
-        verba_hex = [v for v in metadata.replace(":", " ").split() if v.startswith("0x")]
-        si_nonnullum = any(v not in {"0x0000000000000000", "0x0"} for v in verba_hex[1:])
+        meta_valores = hexa_hmp(metadata)
+        protocollum_rel = meta_valores[0] if len(meta_valores) >= 1 else 0
+        protocollum_abs = meta_valores[1] if len(meta_valores) >= 2 else 0
+        moderatores = meta_valores[2] if len(meta_valores) >= 3 else 0
+        ante_status = status_muris(monitor)
 
+        # Primo API QMP modernam exercemus.
         responsa = []
+        status_qmp: list[tuple[int, int, int, int] | None] = []
         for dx, dy in ((96, -64), (64, 48), (-24, 16)):
             responsa.append(qmp(q, "input-send-event", {
                 "events": [
@@ -152,14 +176,25 @@ def principale() -> int:
                     {"type": "rel", "data": {"axis": "y", "value": dy}},
                 ]
             }))
-            time.sleep(0.15)
+            time.sleep(0.20)
+            status_qmp.append(status_muris(monitor))
 
         if not all("return" in r and "error" not in r for r in responsa):
             print("DEFECIT: motus QMP recusatus est", file=sys.stderr)
             print(json.dumps(responsa, ensure_ascii=False), file=sys.stderr)
             return 7
 
+        # `mouse_set` et `mouse_move` sunt idem iter historicum HMP. Haec secunda
+        # via certo ad murem selectum dirigitur et distinguit defectum injectionis
+        # QMP a defectu protocollo UEFI/Sylviae.
+        status_hmp: list[tuple[int, int, int, int] | None] = []
+        for dx, dy in ((80, -40), (40, 56), (-32, 24)):
+            hmp(monitor, f"mouse_move {dx} {dy}")
+            time.sleep(0.20)
+            status_hmp.append(status_muris(monitor))
+
         time.sleep(1.0)
+        post_status = status_muris(monitor)
         hmp(monitor, f"screendump {post}")
         finis = time.time() + 4.0
         while not post.exists() and time.time() < finis:
@@ -175,15 +210,33 @@ def principale() -> int:
             return 9
         mutata = differentiae(pix1, pix2)
 
+        print("MURUS: QMP_MURES " + json.dumps(mures_post, ensure_ascii=False, separators=(",", ":")))
         print(f"MURUS: QEMU PS/2 index={index}")
-        print(f"MURUS: metadata {metadata.strip()}")
-        print(f"MURUS: pixeli mutati={mutata}")
-        if not si_nonnullum:
-            print("DEFECIT: protocollum muris in metadata nucleo non apparet", file=sys.stderr)
+        print(f"MURUS: SELECTIO {selectio.strip()}")
+        print(f"MURUS: protocol_rel=0x{protocollum_rel:x} protocol_abs=0x{protocollum_abs:x} moderatores={moderatores}")
+        print(f"MURUS: status_ante={ante_status}")
+        for i, status in enumerate(status_qmp, 1):
+            print(f"MURUS: status_qmp_{i}={status}")
+        for i, status in enumerate(status_hmp, 1):
+            print(f"MURUS: status_hmp_{i}={status}")
+        print(f"MURUS: status_post={post_status}")
+        print(f"MURUS: pixeli_mutati={mutata}")
+
+        if protocollum_rel == 0:
+            print("DEFECIT: protocollum muris relativi in metadata nucleo non apparet", file=sys.stderr)
             return 10
-        if mutata < 20:
-            print("DEFECIT: framebuffer motum muris non demonstrat", file=sys.stderr)
+        if moderatores <= 0:
+            print("DEFECIT: nullus moderator firmware coniunctus est", file=sys.stderr)
             return 11
+        if ante_status is None or post_status is None:
+            print("DEFECIT: telemetria muris legi non potest", file=sys.stderr)
+            return 12
+        if post_status[3] == ante_status[3]:
+            print("DEFECIT: nucleus nullum eventum muris publicavit", file=sys.stderr)
+            return 13
+        if mutata < 20:
+            print("DEFECIT: eventus receptus est sed framebuffer motum non demonstrat", file=sys.stderr)
+            return 14
 
         print("RECTE: murus PS/2 per UEFI VINDEX purum Sylviam movet.")
         return 0
