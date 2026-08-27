@@ -24,7 +24,26 @@ jobs:
 
       - name: Strata P3 integra
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        run: python3 .github/p3_fenestrale.py
+        shell: bash
+        run: |
+          python3 .github/p3_fenestrale.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex')
+          t=p.read_text(encoding='utf-8')
+          a='''    DECLARA ingressus SICUT NUMERUS VALENS CONTENTUM(sedes_nuclei + 24).
+              SALI_AD(ingressus).
+          '''
+          b='''    // Probatio causalis: ELF BSS debet vacua esse; caput liberae catenae
+              // allocatoris est primus locus quem Fenestrale dynamicum legit.
+              CONTENTUM(33554440) = 0.
+              DECLARA ingressus SICUT NUMERUS VALENS CONTENTUM(sedes_nuclei + 24).
+              SALI_AD(ingressus).
+          '''
+          if a not in t: raise SystemExit('ERRATUM: ancora saltus deest')
+          p.write_text(t.replace(a,b,1),encoding='utf-8')
+          print('RECTE: caput catenae liberae ad zero positum est.')
+          PY
 
       - name: Gradus initii Fenestralis nota
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
