@@ -25,8 +25,27 @@ jobs:
       - name: Strata P3 integra
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         run: |
-          sed -i 's/UEFI_VOCA6(alloca, 0, 2, 1/UEFI_VOCA6(alloca, 0, 1, 1/' .github/p3_fenestrale.py
           python3 .github/p3_fenestrale.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex')
+          t = p.read_text(encoding='utf-8')
+          old = '''    // Rectoribus nativis pagina propria extra COMMUNIS/acervum datur. Sic
+              // stubs I/O PS/2 neque a volumine neque ab allocationibus dynamicis delentur.
+              CONTENTUM(locus_mem) = 0.
+              DECLARA sr_rect SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 0, 2, 1, locus_mem, 0, 0).
+              SI sr_rect != 0 || CONTENTUM(locus_mem) == 0 TUNC REDDE 19. FIN-SI.
+              DECLARA sedes_rectorum SICUT NUMERUS VALENS CONTENTUM(locus_mem).
+          '''
+          new = '''    // Ultima pagina regionis COMMUNIS rectoribus nativis reservatur.
+              // COMMUNIS = 0x03000000..0x0303ffff; 0x0303f000 rectorum est.
+              // Pagina iam per AllocateAddress reservata et identice mappata est.
+              DECLARA sedes_rectorum SICUT NUMERUS VALENS meta + 258048.
+          '''
+          if old not in t:
+              raise SystemExit('ERRATUM: allocatio rectorum temporaria non inventa')
+          p.write_text(t.replace(old, new, 1), encoding='utf-8')
+          PY
 
       - name: Probationes canonicas
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
