@@ -10,6 +10,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_superficies.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_eventa_g.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientia_registrum_h.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrae_registrum_i.vindex'
@@ -21,15 +22,18 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fenestrale_purus_i_*.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/applicationes_registrum_iv.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/terminale_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
       - 'documenta/sylvia/FENESTRALE_II_PVRVS_I.md'
       - 'documenta/sylvia/APPLICATIONES_IV.md'
       - 'documenta/sylvia/FENESTRAE_V.md'
+      - 'documenta/sylvia/TERMINALE_I.md'
       - '.github/workflows/sylvia-fenestrale-vindex-purus-i.yml'
 
 jobs:
   vindex-purus-i:
-    name: Registra et chrome Fenestralis VINDEX certificantur
+    name: Registra, chrome et TERMINALE Fenestralis VINDEX certificantur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -47,10 +51,12 @@ jobs:
         run: |
           set -euo pipefail
           python3 instrumenta/vindex_verifica.py systema/fenestrale_ii_purus_i.vindex
+          python3 instrumenta/vindex_verifica.py bibliotheca/terminale_clientis_i.vindex
           python3 instrumenta/vindex_verifica.py probationes/fenestrale_purus_i_fenestrae.vindex
           python3 instrumenta/vindex_verifica.py probationes/applicationes_registrum_iv.vindex
+          python3 instrumenta/vindex_verifica.py probationes/terminale_i.vindex
 
-      - name: Registra fenestrarum, applicationum et chrome verifica
+      - name: Registra fenestrarum, applicationum, chrome et TERMINALE verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -62,9 +68,11 @@ jobs:
           a='bibliotheca/applicationes_registrum_iv.vindex'
           u='bibliotheca/fenestrale_applicationes_iv.vindex'
           v='bibliotheca/fenestrale_ii_purus.vindex'
+          e='bibliotheca/terminale_clientis_i.vindex'
           s='systema/fenestrale_ii_purus_i.vindex'
           t='probationes/fenestrale_purus_i_fenestrae.vindex'
           ta='probationes/applicationes_registrum_iv.vindex'
+          te='probationes/terminale_i.vindex'
           for signum in \
             'FUNCTIO FI_CREA REDDENS NUMERUS' \
             'FUNCTIO FI_ADDE REDDENS NUMERUS' \
@@ -85,15 +93,35 @@ jobs:
           do
             grep -Fq "$signum" "$a" || { echo "ERRATUM: $signum deest"; exit 1; }
           done
+          for signum in \
+            'FUNCTIO TE_CREA REDDENS NUMERUS' \
+            'FUNCTIO TE_LINEA_REDIMENSIONA REDDENS NUMERUS' \
+            'FUNCTIO TE_APPENDE_SCALARE REDDENS NUMERUS' \
+            'FUNCTIO TE_RETROCEDE REDDENS NUMERUS' \
+            'FUNCTIO TE_CLAVIS REDDENS NUMERUS' \
+            'FUNCTIO TE_EXSEQUERE REDDENS NUMERUS' \
+            'FUNCTIO TE_RENDE REDDENS NUMERUS'
+          do
+            grep -Fq "$signum" "$e" || { echo "ERRATUM: $signum deest"; exit 1; }
+          done
           grep -Fq 'RESERVA_OCTETA(112)' "$r"
           grep -Fq 'DUM i<80 PERFICE' "$t"
           grep -Fq 'FI_NUMERUS(r)!=80' "$t"
           grep -Fq 'DUM i<96 PERFICE' "$ta"
           grep -Fq 'AI_NUMERUS(r)!=96' "$ta"
+          grep -Fq 'DUM i<200 PERFICE' "$te"
+          grep -Fq 'CONTENTUM(d)!=200' "$te"
           grep -Fq 's[37]=FI_CREA()' "$s"
           grep -Fq 's[39]=AI_CREA()' "$s"
           grep -Fq 'AI_ADDE(s[39],1,1,"PROGRAMMATA",1)' "$s"
           grep -Fq 'AI_ADDE(s[39],2,2,"TABULA",1)' "$s"
+          grep -Fq 'AI_ADDE(s[39],3,3,"TERMINALE",1)' "$s"
+          grep -Fq 'CH_ADDE(s[36],3,3,superficies_e,status_e)' "$s"
+          grep -Fq 'GI_CLAVIS(s,s[37],s[34],q)' "$s"
+          grep -Fq 'EG_PONE(coda,2,cliens,scan,0,unicode)' "$g"
+          grep -Fq 'e[0]==2 && genus==3' "$c"
+          grep -Fq 'TE_CLAVIS(status,e[4])' "$c"
+          grep -Fq 'TE_RENDE(superficies,status)' "$c"
           grep -Fq 'CI_EVENTA_AGE(s[36],s[37],s[34])' "$s"
           grep -Fq 'IV_MOUSE_DOWN(s,s[37],s[34],s[39])' "$s"
           grep -Fq 'IV_REDDE(s,s[37],s[36],s[39])' "$s"
@@ -105,15 +133,15 @@ jobs:
           grep -Fq 'margo = argentum' "$v"
           grep -Fq 'f = FV_RECT(x + w - 32, y + 6, 24, 24, clausura)' "$v"
           ! grep -Eq 's\[(0|1|2|3|4|5|6|7|8|9|10|17|18|19|20|21|22|23|24|25|26)\][[:space:]]*=' "$s"
-          ! grep -Eq 'PE_CLICK|TF_CLICK|PE_RENDE|TF_RENDE' "$g"
+          ! grep -Eq 'PE_CLICK|TF_CLICK|TE_' "$g"
           ! grep -Eq 'FI_(MOVE|RESIZE|FOCUS|HIT|MINIMIZA|CLAUDE)' "$i"
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
           ! grep -Eq 'n==0[[:space:]]*\|\|[[:space:]]*CONTENTUM\(n\+' "$r"
           ! grep -Eq 'n!=0[[:space:]]*&&[[:space:]]*CONTENTUM\(n\+' "$r"
-          for f in "$r" "$g" "$i" "$c" "$a" "$u" "$v" "$s"; do
+          for f in "$r" "$g" "$i" "$c" "$a" "$u" "$v" "$e" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
-          printf '%s\n' 'RECTE: registra dynamica et chrome P16-V a contractibus Fenestralis reguntur.'
+          printf '%s\n' 'RECTE: P17-I TERMINALE claviaturam per codam Fenestralis accipit et catalogo dynamico utitur.'
 
       - name: Octoginta fenestras compila et exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -136,6 +164,17 @@ jobs:
           chmod +x /tmp/applicationes_registrum_iv.elf
           timeout 10s /tmp/applicationes_registrum_iv.elf
 
+      - name: TERMINALE lineam dynamicam et mandata exsequere
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/terminale_i.vindex /tmp/terminale_i.elf
+          file /tmp/terminale_i.elf | grep -q 'ELF 64-bit'
+          chmod +x /tmp/terminale_i.elf
+          timeout 10s /tmp/terminale_i.elf
+          printf '%s\n' 'RECTE: TERMINALE P17-I lineam UTF-8 dynamicam et mandata interna probat.'
+
       - name: Fenestrale I totum compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
@@ -143,5 +182,5 @@ jobs:
           set -euo pipefail
           ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
-          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 786432
-          printf '%s\n' 'RECTE: Fenestrale II Purus I registra dynamica et chrome P16-V integra compilat.'
+          test "$(stat -c '%s' /tmp/fenestrale_ii_purus_i.elf)" -lt 1048576
+          printf '%s\n' 'RECTE: Fenestrale II Purus I cum TERMINALE P17-I integra compilat.'
