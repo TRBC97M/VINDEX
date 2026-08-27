@@ -39,7 +39,6 @@ NUCLEUS_FONS="$RADIX/systema/fenestrale_ii_purus_i.vindex" \
         cat "$TEMPORARIUM/constructio.log" >&2
         exit 1
     }
-grep -E '^Nucleus:' "$TEMPORARIUM/constructio.log" || true
 
 python3 - "$TEMPORARIUM/systema.img" <<'PY'
 from pathlib import Path
