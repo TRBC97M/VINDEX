@@ -1,4 +1,4 @@
-name: P3 — Allocator raw bump solum temporarius
+name: P3 — Allocator G3 debug temporarius
 
 on:
   push:
@@ -9,13 +9,15 @@ permissions:
   contents: write
 
 jobs:
-  proba:
+  debug:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
-      - name: Bump allocator compone et generationes nota
+      - name: GDB institue
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends gdb binutils
+      - name: G3 construe et congelatum inspice
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
@@ -30,7 +32,6 @@ jobs:
               ACCIPIT codex SICUT ACUS<NUMERUS>.
               ACCIPIT pos SICUT NUMERUS.
               DECLARA p_mem SICUT NUMERUS VALENS pos.
-              // Probatio minima: allocator raw e solo cursore acervi.
               p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 6, 0).
               p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554432).
               p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 0, 1).
@@ -52,21 +53,32 @@ jobs:
           '''
           p.write_text(t[:a]+n+t[b:],encoding='utf-8')
           PY
-          echo G2
-          timeout 10s ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
-          echo G3
-          timeout 10s /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
           chmod +x /tmp/g3
-          echo G4
-          set +e
-          timeout 10s /tmp/g3 src/compilator_vindex.vindex /tmp/g4
-          s=$?
-          set -e
-          echo "STATUS_G4=$s"
-          if [ "$s" -eq 0 ]; then
-            chmod +x /tmp/g4
-            cmp /tmp/g3 /tmp/g4 && echo 'RECTE: G3=G4'
-          else
-            exit "$s"
-          fi
+          sudo sysctl -w kernel.yama.ptrace_scope=0 || true
+          /tmp/g3 src/compilator_vindex.vindex /tmp/g4 &
+          pid=$!
+          echo "PID=$pid"
+          sleep 1
+          ps -o pid,stat,etime,time,rss,vsz,pcpu,comm -p "$pid" || true
+          echo '=== MAPPA ==='
+          cat "/proc/$pid/maps" | head -n 40 || true
+          echo '=== STATUS ==='
+          grep -E 'State|VmRSS|VmSize|voluntary|nonvoluntary' "/proc/$pid/status" || true
+          echo '=== GDB ==='
+          gdb -q -batch \
+            -ex "attach $pid" \
+            -ex 'set pagination off' \
+            -ex 'x/8gx 0x02000000' \
+            -ex 'info registers rip rax rbx rcx rdx rsi rdi r8 r9 r10 r11 r12 rsp rbp' \
+            -ex 'x/24i $rip-32' \
+            -ex 'x/24gx $rsp' \
+            -ex 'bt' \
+            -ex 'detach' || true
+          echo '=== OBJDUMP circa RIP (textus totus grep postea) ==='
+          objdump -d -Mintel /tmp/g3 > /tmp/g3.asm
+          wc -l /tmp/g3.asm
+          kill -9 "$pid" 2>/dev/null || true
+          wait "$pid" 2>/dev/null || true
