@@ -73,4 +73,4 @@ jobs:
           chmod +x /tmp/g4
           cmp /tmp/g3 /tmp/g4
           echo 'CONVERGENTIA_G3_G4=PERFECTA'
-          ./tests/run_tests.sh
+          bash ./tests/run_tests.sh
