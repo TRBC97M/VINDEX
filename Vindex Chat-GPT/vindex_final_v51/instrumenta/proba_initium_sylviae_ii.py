@@ -85,16 +85,27 @@ def cursor_quaere(pix: bytes, w: int, h: int) -> tuple[int, int] | None:
             return x, y
 
 
-def initium_top_quaere(pix: bytes, w: int, h: int, vitrum: tuple[int, int, int]) -> int | None:
-    """Initium panni e colore capitis x=20 invenit, capacitate catalogi neglecta."""
-    prior_non = True
-    for y in range(120, h - 40):
-        est = pixel(pix, w, 20, y) == vitrum
-        if est and prior_non:
-            # Caput INITIUM saltem XL px verticales servat.
-            if y + 40 < h and pixel(pix, w, 20, y + 30) == vitrum:
-                return y
-        prior_non = not est
+def initium_top_quaere(
+    pix: bytes,
+    w: int,
+    h: int,
+    vitrum: tuple[int, int, int],
+    aqua: tuple[int, int, int],
+    ebur: tuple[int, int, int],
+) -> int | None:
+    """Pannum INITIUM ex linea aqua, capite vitreo et corpore eburneo reperit."""
+    for y in range(120, h - 120):
+        if pixel(pix, w, 20, y) != aqua:
+            continue
+        if y + 70 >= h:
+            continue
+        if pixel(pix, w, 20, y + 4) != vitrum:
+            continue
+        if pixel(pix, w, 300, y + 4) != vitrum:
+            continue
+        if pixel(pix, w, 300, y + 70) != ebur:
+            continue
+        return y
     return None
 
 
@@ -209,12 +220,13 @@ def principale() -> int:
             return 6
 
         vitrum = (14, 66, 111)
+        aqua = (98, 215, 242)
         ebur = (241, 238, 228)
         lux = (234, 248, 255)
         argentum = (185, 196, 207)
         bronzeum = (185, 138, 82)
         profundum = (8, 35, 61)
-        menu_top = initium_top_quaere(pix_open, w, h, vitrum)
+        menu_top = initium_top_quaere(pix_open, w, h, vitrum, aqua, ebur)
         if menu_top is None:
             print("DEFECIT: caput INITIUM non inventum", file=sys.stderr)
             return 7
