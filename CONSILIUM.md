@@ -123,9 +123,24 @@ Destinatio continet compilatorem, linker, bibliothecam standardem, debugger, pro
 
 ## P12 — Infrastructura gubernatorum
 
-**Status:** `RESERVATUM CLAUDE`; incrementa I et II in `main`; incrementum III in #122 nondum canonicum.
+**Status:** `RESERVATUM CLAUDE`; incrementa I et II in `main`; incrementum III in #122 **synchronizatum et recertificatum**, canonizationem exspectans.
 
-ChatGPT hoc opus non duplicat dum reservatio valet. #122 ante canonizationem cum `main` recente synchronizandum et integraliter recertificandum est. Postea directio probabilis: BAR/MMIO → interruptiones → ACPI/USB/HID.
+ChatGPT hoc opus non duplicat dum reservatio valet. Postea directio probabilis: BAR/MMIO → interruptiones → ACPI/USB/HID.
+
+### P12-III — pontes PCI (in #122)
+
+Enumeratio pontes PCI-ad-PCI agnoscit (classis 06, subclassis 04) et bus secundarios percurrit. Registrum vere dynamicum: capacitas duplicatur cum impletur, nulla limitatio artificialis. Custodia contra circulos duplex: tabula bus visitatorum (CCLVI octeta — ipsa architectura PCI) et reiectio pontium ad bus suum ipsum vel ad bus zero mittentium. Profunditas vera arboris servatur (cauda paria `(bus, profunditas)` continet), non index codae.
+
+Probatio `instrumenta/proba_pci_pontes_053.sh` (septem gradus, in CI), topologia nidificata:
+
+```text
+00:02.00 1B36:000C 06/04 P=00 PONS>00/01/03
+01:00.00 104C:8232 06/04 P=01 PONS>01/02/03
+02:00.00 104C:8233 06/04 P=02 PONS>02/03/03
+03:00.00 8086:10D3 02/00 P=03
+```
+
+Topologia per configurationem QEMU construitur (q35, `x3130-upstream`, `xio3130-downstream`): nihil in runtime fingitur.
 
 ## P13 — Machina referentiae physica
 
