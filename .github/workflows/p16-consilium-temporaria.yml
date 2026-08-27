@@ -1,0 +1,29 @@
+name: P16 — Consilium Temporarium
+
+on:
+  push:
+    branches:
+      - chatgpt/p16-metra-visualia-i
+    paths:
+      - '.github/p16_consilium.py'
+      - '.github/workflows/p16-consilium-temporaria.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcilia:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: CONSILIUM reconcilia
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/p16_consilium.py
+          git diff --check
+          git add CONSILIUM.md
+          git config user.name 'TRBC97M'
+          git config user.email 'trbc97m@protonmail.com'
+          git commit -m 'P16-I: statum formae visualis in CONSILIUM nota [skip ci]'
+          git push origin HEAD:chatgpt/p16-metra-visualia-i
