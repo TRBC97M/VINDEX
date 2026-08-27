@@ -1,9 +1,9 @@
 // Sylvia OS — rector muris PS/2 per moderatorem 8042, totus VINDEX.
 //
 // Origo selectiva: laboratorium PR #71, bibliotheca/input_ps2.vindex.
-// Hic rector nullum bootstrap C requirit. Portus I/O x86 per duas particulas
-// codicis minimas, a VINDEX ipso in memoria scriptas, vocantur donec VINDEX
-// intrinseca publica I/O portuum propria habeat.
+// Hic rector nullum bootstrap C requirit. Portus I/O x86 per primitivas
+// VINDEX nativas (PORTUS_LEGE / PORTUS_SCRIBE, P12 incrementum I) directe
+// tanguntur: nulla particula codicis machinalis manu scripta amplius manet.
 //
 // Regio historica rectoris 0x03018800 manet donec contractus COMMUNIS
 // latius reficitur. Initium fit post omnem migrationem/purgationem voluminis.
@@ -15,35 +15,22 @@
 // additiva Fenestrali II praebetur.
 
 FUNCTIO PS2_STUBS_PARA REDDENS NUMERUS.
-    // mov edx,ecx ; xor eax,eax ; in al,dx ; ret
-    SCRIBE_OCTETUM_AB(50432000,137).
-    SCRIBE_OCTETUM_AB(50432001,202).
-    SCRIBE_OCTETUM_AB(50432002,49).
-    SCRIBE_OCTETUM_AB(50432003,192).
-    SCRIBE_OCTETUM_AB(50432004,236).
-    SCRIBE_OCTETUM_AB(50432005,195).
-
-    // mov eax,edx ; mov edx,ecx ; out dx,al ; xor eax,eax ; ret
-    SCRIBE_OCTETUM_AB(50432016,137).
-    SCRIBE_OCTETUM_AB(50432017,208).
-    SCRIBE_OCTETUM_AB(50432018,137).
-    SCRIBE_OCTETUM_AB(50432019,202).
-    SCRIBE_OCTETUM_AB(50432020,238).
-    SCRIBE_OCTETUM_AB(50432021,49).
-    SCRIBE_OCTETUM_AB(50432022,192).
-    SCRIBE_OCTETUM_AB(50432023,195).
+    // Particulae codicis machinalis manu scriptae non amplius necessariae
+    // sunt: compilator VINDEX primitivas PORTUS_LEGE / PORTUS_SCRIBE nunc
+    // praebet (P12 incrementum I). Functio manet ne vocatores frangantur.
     REDDE 1.
 FIN-FUNCTIO.
 
 FUNCTIO PS2_IN REDDENS NUMERUS.
     ACCIPIT portus SICUT NUMERUS.
-    REDDE UEFI_VOCA6(50432000, portus, 0, 0, 0, 0, 0).
+    REDDE PORTUS_LEGE(portus).
 FIN-FUNCTIO.
 
 FUNCTIO PS2_OUT REDDENS NUMERUS.
     ACCIPIT portus SICUT NUMERUS.
     ACCIPIT valor SICUT NUMERUS.
-    REDDE UEFI_VOCA6(50432016, portus, valor, 0, 0, 0, 0).
+    PORTUS_SCRIBE(portus, valor).
+    REDDE 0.
 FIN-FUNCTIO.
 
 FUNCTIO PS2_ATTENDE_SCRIBE REDDENS NUMERUS.
