@@ -415,7 +415,7 @@ Chromium non est fundamentum necessarium neque finis architectonicus.
 
 ## P16 — Forma visualis Sylviae
 
-**Status:** `PERFECTUM per PR #113 — incrementum I; PERFECTUM per PR #114 — incrementum II; PERFECTUM per PR #115 — incrementum III; PROBATUM / CANONIZANDUM per PR #116 — incrementum IV`.
+**Status:** `PERFECTUM per PR #113 — incrementum I; PERFECTUM per PR #114 — incrementum II; PERFECTUM per PR #115 — incrementum III; PERFECTUM per PR #116 — incrementum IV; ACTIVUM per PR #117 — incrementum V`.
 
 Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere widgeta, thema, typographiam, margines et proportionem, iconographiam, cursorem et status interactionis, taskbar et menus canonicos, scaling et resolutiones modernas.
 
@@ -462,7 +462,7 @@ P16-III **bureau functionale** addit:
 
 Contractus plenus in `documenta/sylvia/BUREAU_III.md` describitur.
 
-### Incrementum IV probatum / canonizandum per #116
+### Incrementum IV perfectum per #116
 
 P16-IV **catalogum applicationum communem** introducit:
 
@@ -479,7 +479,21 @@ P16-IV **catalogum applicationum communem** introducit:
 
 Contractus plenus in `documenta/sylvia/APPLICATIONES_IV.md` describitur.
 
-**Sylvia iam bureau, INITIUM et catalogum applicationum sessionis generalem possidet; processuum manager verus adhuc ad strata futura pertinet.**
+### Incrementum V activum per #117
+
+P16-V **fenestras modernas** construit sine contractibus interactionis mutandis:
+
+- umbra duplex extra geometriam hit-testing;
+- duplex margo cum accentu bronzeo pro focus activo;
+- titulus duobus tonis;
+- status inactivus desaturatus et distinctus;
+- bullae planae minimizationis, maximizatonis et clausurae sedibus historicis servatis;
+- fascia status levior;
+- probatio QEMU quae PROGRAMMATA aperit, deinde TABULA, atque activum/inactivum per pixeles framebuffer reales comprobat.
+
+Contractus plenus in `documenta/sylvia/FENESTRAE_V.md` describitur.
+
+**Post P16-V prioritas visualis cessat esse finis in se: bureau et Fenestrale ad applicationes reales Sylviae serviunt.**
 
 ---
 
@@ -499,11 +513,11 @@ Contractus plenus in `documenta/sylvia/APPLICATIONES_IV.md` describitur.
 
 Via recta progressionis nunc est:
 
-1. P16-IV catalogum applicationum communem per #116 canonizare;
-2. P12 incipere per fundamenta gubernatorum quae hardware reale et input maturius aperiunt;
-3. P9 per incrementa parva et generalia continuare;
-4. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum;
-5. post fundamenta processuum et filesystematis, lifecycle applicationum a catalogo sessionis ad applicationes vere independentes promovere.
+1. P16-V fenestras modernas per #117 probare et canonizare;
+2. **TERMINALE** ut primam applicationem fundamentalem Sylviae construere;
+3. **OFFICINA** / editor VINDEX in ipsa Sylvia parare, ut codex VINDEX scribi, compilari et exsequi possit;
+4. gestorem fasciculorum realem construere;
+5. P12 gubernatores et P9 facultates linguae paralleliter continuare ubi hae applicationes vel hardware eas postulant.
 
 ---
 
