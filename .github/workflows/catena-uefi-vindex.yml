@@ -9,10 +9,14 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_input_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
       - 'instrumenta/verifica_puritatem_sylviae.py'
       - '.github/workflows/catena-uefi-vindex.yml'
@@ -23,10 +27,14 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_input_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
       - 'instrumenta/verifica_puritatem_sylviae.py'
       - '.github/workflows/catena-uefi-vindex.yml'
@@ -95,9 +103,16 @@ jobs:
         shell: bash
         run: python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Catena integra sub QEMU et OVMF
+      - name: Catena historica sub QEMU et OVMF
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
         run: bash ./instrumenta/proba_catenam_uefi_053.sh
+
+      - name: Fenestrale II cum PS/2 sub QEMU et OVMF
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+        run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh

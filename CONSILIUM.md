@@ -98,25 +98,39 @@ Linea canonica retinet facultates probatas 0.53 sine monolitho historico et sine
 
 ## P3 — Catena Sylviae pura canonica
 
-**Status:** `PARATUM`; P1 non amplius impedit.
+**Status:** `PROBATUM / CANONIZANDUM per PR #111`.
 
-### Iam canonicum
+### Probatum in #111
 
-- boot UEFI VINDEX purus usque ad nucleum realem et framebuffer;
-- regula puritatis absoluta, sine exceptione C;
-- nucleus et runtime novi in VINDEX;
-- Fenestrale II Purus A–I in `main`;
-- compositor, eventa, clientes et fenestrae VINDEX;
-- probationes Fenestralis canonicae;
-- CI UEFI quae Sylviam vere pingere comprobat.
+- boot UEFI VINDEX purus usque ad Fenestrale II Purus;
+- `NUCLEUS_FONS` sinit Fenestrale II ut payload canonicum eiusdem ponticuli construi;
+- Fenestrale II rectorem PS/2 VINDEX nativum directe consumit;
+- input PS/2 ante claviaturam firmware pollitur, protocollis UEFI ut fallback retentis;
+- initium PS/2 `09 FA FA` sub QEMU/OVMF confirmatum;
+- VI fasciculi muris in Fenestrale recepti;
+- framebuffer Fenestralis post motum muris re-pingitur;
+- resolutio 1280×800 et signa colorum Fenestralis realia probantur;
+- XXXIX colores significativi in captura Fenestralis;
+- CXII pixeli post motum PS/2 mutati;
+- catena historica nuclei simul sine regressione custoditur;
+- nulla exceptio CPU, nullus defectus paginae, nullum C in runtime;
+- custodia UEFI permanens utramque catenam exercet.
 
-### Actio proxima
+Catena P3 probata:
 
-Unam catenam canonicam componere quae boot UEFI iam probatum cum Fenestrale II Purus et input fundamento coniungit. Mechanismus PS/2 ex #71 selective portetur, non wholesale mergeatur.
+```text
+OVMF → BOOTX64.EFI [VINDEX] → FENESTRALE II [VINDEX] → PS/2 [VINDEX] → FRAMEBUFFER
+```
+
+### Correctio compilatoris inventa per P3
+
+Structurae internae quibus campi in octetis definiuntur (`codex`, `contextus_parseris`, `descriptor*`) olim `ACUS<NUMERUS>` erant. Cum arithmetica acus typata recte per magnitudinem elementi multiplicet, offset `+8` in +64 octeta vertebatur. Allocationes `mmap` separatae vitium occultaverant.
+
+#111 addressa harum structurarum ad `NUMERUS` cruda convertit, semanticam verarum `ACUS<NUMERUS>` intactam servat, ac `RESERVA_OCTETA` ELF ad acervum VINDEX nativum transfert. Auto-hospitium ad punctum fixum `G3 = G4` et XXIX/XXIX probationes hoc contractum muniunt.
 
 ### Criterium victoriae
 
-Una imago Sylviae canonica bootat, Fenestrale VINDEX reale ostendit et input fundamentale exercet sine runtime non-VINDEX residente.
+Una imago Sylviae canonica bootat, Fenestrale VINDEX reale ostendit et input fundamentale exercet sine runtime non-VINDEX residente. Criterium technice probatum est; sola canonizatio #111 in `main` restat.
 
 ---
 
@@ -159,18 +173,25 @@ Post P3: thema, widgeta, typographia, iconographia, input maturior et intentio v
 
 ## P5 — Mus PS/2 VINDEX nativus
 
-**Status:** `PROBATUM / CANONIZANDUM`  
-**Pull Request laboratorii:** #71
+**Status:** `PERFECTUM per PR #110`  
+**Origo laboratorii:** PR #71, nunc historia clausa
 
-PR #71 probat sub QEMU/OVMF desktop, textum et murem PS/2 VINDEX nativum. Basis eius historica est; **non wholesale mergeatur**.
+### Canonice probatum
 
-### Actio proxima
+- rector 8042 / PS/2 totus in VINDEX;
+- mandata F6 et F4 cum ACK `FA`;
+- fasciculi trium octetorum;
+- AUX ante claviaturam firmware hauritur;
+- cursor in catena UEFI canonica vere movetur;
+- probatio QEMU: VI fasciculi, cursor `(160,100) → (274,140)`;
+- MMMCLII pixeli mutati;
+- nulla exceptio C in runtime.
 
-Nunc P1 perfectum est, mechanismus utilis ex #71 selective in P3 portetur et cum boot UEFI canonico recertificetur.
+#71 non mergitur wholesale; mechanismus utilis selective per #110 canonizatus est et per #111 Fenestrali II coniungitur.
 
 ### Criterium victoriae
 
-Cursor et eventa muris in imagine Sylviae canonica sub QEMU/OVMF moventur sine runtime C.
+**Perfectum:** cursor et eventa muris in imagine Sylviae canonica sub QEMU/OVMF moventur sine runtime C.
 
 ---
 
@@ -205,7 +226,7 @@ Officina amplianda est cum debugger, refactoring, exploratione symbolorum, packa
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #102, #104, #105, #106, #107 et #108 collectiones, series, segmenta et `TEXTUS` maturaverunt. PR #109 addit custodiam UEFI completam.
+PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #102, #104, #105, #106, #107 et #108 collectiones, series, segmenta et `TEXTUS` maturaverunt. PR #109 addidit custodiam UEFI completam; #110 addidit probationem PS/2 nativam; #111 custodiam duplicem nuclei historici et Fenestralis II addit.
 
 `make probatio` / `tests/run_tests.sh` nunc **XXIX probationes, nulla errata** exercet, inter quas:
 
@@ -225,7 +246,7 @@ PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #10
 - LXXX fenestrae;
 - compilatio Fenestralis II Purus I.
 
-Custodia UEFI separata exsequitur QEMU/OVMF et screendump; probationes Win64 et Officina sub Windows vero manent separatae.
+Custodia UEFI separata exsequitur QEMU/OVMF, screendump, PS/2 nuclei historici et Fenestrale II cum PS/2 nativo. Probationes Win64 et Officina sub Windows vero manent separatae.
 
 ---
 
@@ -241,7 +262,9 @@ Historia non deletur ad speciem mundandam, sed PR apertae non debent vias mortua
 
 - **#109** — canonizatio P1 ex opere #82, ad `main` hodiernum portata;
 - **#82** — origo experimentalis UEFI, post #109 historia/supersessa;
-- **#71** — laboratorium PS/2, selective in P3 portandum.
+- **#110** — canonizatio selectiva rectoris PS/2 nativi;
+- **#71** — laboratorium PS/2, post #110 historia/supersessum et clausum;
+- **#111** — coniunctio Fenestralis II cum catena UEFI et PS/2 canonico.
 
 Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizationem.
 
@@ -264,6 +287,7 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 - PR #107 — functiones `TEXTUS` redire possunt, etiam post concatenationem dynamicam;
 - PR #108 — `SUBTEXTUS_SCALARUM` cum vacuo legitimo ab errore distincto;
 - regressiones collectionum, segmentorum et Unicode inclusae in XXIX/XXIX;
+- #111 — structurae internae byte-addressatae a semanticis `ACUS` separatae et acervus ELF VINDEX nativus adhibitus;
 - nulla generica ficta ante facultatem linguae.
 
 ### Facultates candidatae
@@ -410,7 +434,8 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 # IV. Regula coordinationis agentium
 
 - P1 non amplius reservatum est; eius origo #82 post #109 historia experimentalis est.
-- Opera independentia P3 et P9 procedere possunt, sed mutationes compilatoris eundem punctum fixum et targeta canonica custodire debent.
+- P5 per #110 perfectum est; #71 historia tantum est.
+- Opera independentia P3/#111 et P9 procedere possunt, sed mutationes compilatoris eundem punctum fixum et targeta canonica custodire debent.
 - Ramus experimentalis prosperus non wholesale mergeatur si structuram veterem secum trahit.
 - Mutationes in `main` fiant per PR parvas, probatas et reversibiles.
 - Documenta repositorii tantum Lingua Latina utantur.
@@ -422,11 +447,11 @@ Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale t
 
 Via recta progressionis nunc est:
 
-1. PR #109 per omnes custodias canonicas, praesertim Win64 et UEFI, perficere et in `main` canonizare;
-2. P3 incipere: boot UEFI canonicum cum Fenestrale II Purus coniungere;
-3. mechanismum PS/2 ex #71 selective portare et in eadem imagine recertificare;
-4. P9 per incrementa parva et generalia continuare;
-5. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum.
+1. PR #111 per omnes custodias canonicas perficere et in `main` canonizare;
+2. post P3, P16 ad formam visualem modernam et P12 ad infrastructuram gubernatorum paulatim aperire;
+3. P9 per incrementa parva et generalia continuare;
+4. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum;
+5. Fenestrale II input maturiorem, widgeta et contractus applicationum paulatim accipere.
 
 ---
 

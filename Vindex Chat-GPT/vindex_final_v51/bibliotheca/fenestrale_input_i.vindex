@@ -58,6 +58,8 @@ FUNCTIO IN_PARA REDDENS NUMERUS.
         DECLARA a SICUT NUMERUS VALENS CONTENTUM(s[29]).
         SI a!=0 TUNC DECLARA ra SICUT NUMERUS VALENS UEFI_VOCA6(a,s[29],0,0,0,0,0). FIN-SI.
     FIN-SI.
+    // Allocationes Fenestralis iam perfectae sunt; nunc 8042 parari potest.
+    s[30]=PS2_PARA().
     REDDE 1.
 FIN-FUNCTIO.
 
@@ -123,6 +125,31 @@ FUNCTIO IN_MURUS_REL REDDENS NUMERUS.
     SI OCTETUS_AB(SEDES(status_muris)+12)!=0 TUNC bullae=bullae|1. FIN-SI.
     SI OCTETUS_AB(SEDES(status_muris)+13)!=0 TUNC bullae=bullae|2. FIN-SI.
     REDDE bullae+1.
+FIN-FUNCTIO.
+
+FUNCTIO IN_MURUS REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI PS2_PARATUS_EST()==1 TUNC
+        DECLARA eventus SICUT NUMERUS VALENS 0.
+        DECLARA i SICUT NUMERUS VALENS 0.
+        // AUX ante claviaturam firmware hauritur; PS2_POLLE byte non-AUX non legit.
+        DUM i<8 PERFICE
+            DECLARA p SICUT NUMERUS VALENS PS2_POLLE().
+            SI p!=0 TUNC eventus=1. FIN-SI.
+            i=i+1.
+        FIN-DUM.
+        SI eventus==0 TUNC REDDE 0. FIN-SI.
+        s[11]=s[11]+PS2_DX().
+        s[12]=s[12]-PS2_DY().
+        SI s[11]<0 TUNC s[11]=0. FIN-SI.
+        SI s[12]<0 TUNC s[12]=0. FIN-SI.
+        SI s[11]>=CONTENTUM(50333728) TUNC s[11]=CONTENTUM(50333728)-1. FIN-SI.
+        SI s[12]>=CONTENTUM(50333736) TUNC s[12]=CONTENTUM(50333736)-1. FIN-SI.
+        REDDE (PS2_BULLAE()&3)+1.
+    FIN-SI.
+    DECLARA muris SICUT NUMERUS VALENS IN_MURUS_ABS(s[29],s).
+    SI muris==0 TUNC muris=IN_MURUS_REL(s[28],s). FIN-SI.
+    REDDE muris.
 FIN-FUNCTIO.
 
 FUNCTIO IN_STALL REDDENS NUMERUS.
