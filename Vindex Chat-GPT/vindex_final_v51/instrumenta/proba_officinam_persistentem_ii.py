@@ -9,11 +9,11 @@ import time
 from pathlib import Path
 
 
-def importa_auxilia() -> object:
-    via = Path(__file__).resolve().with_name('proba_initium_sylviae_ii.py')
-    spec = importlib.util.spec_from_file_location('proba_initium_ii', via)
+def importa_modulum(nomen: str, fasciculus: str) -> object:
+    via = Path(__file__).resolve().with_name(fasciculus)
+    spec = importlib.util.spec_from_file_location(nomen, via)
     if spec is None or spec.loader is None:
-        raise RuntimeError('probator INITIUM importari non potest')
+        raise RuntimeError(f'probator importari non potest: {fasciculus}')
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -37,32 +37,50 @@ def scribe_maiusculas(aux: object, monitor: socket.socket, textus: str) -> None:
 
 
 def principale() -> int:
-    if len(sys.argv) != 5:
-        print('USUS: proba_officinam_persistentem_ii.py MONITOR EXITUS MORA MODUS', file=sys.stderr)
+    if len(sys.argv) != 6:
+        print('USUS: proba_officinam_persistentem_ii.py MONITOR QMP EXITUS MORA MODUS', file=sys.stderr)
         return 2
 
-    aux = importa_auxilia()
+    aux = importa_modulum('proba_initium_ii', 'proba_initium_sylviae_ii.py')
+    ps2 = importa_modulum('proba_fenestrale_ps2', 'proba_fenestrale_uefi_purum.py')
     mon_via = Path(sys.argv[1])
-    out = Path(sys.argv[2])
-    mora = float(sys.argv[3])
-    modus = int(sys.argv[4])
+    qmp_via = Path(sys.argv[2])
+    out = Path(sys.argv[3])
+    mora = float(sys.argv[4])
+    modus = int(sys.argv[5])
     if modus not in (1, 2):
         print('DEFECIT: modus debet esse 1 aut 2', file=sys.stderr)
         return 2
 
     finis = time.time() + 15.0
-    while not mon_via.exists() and time.time() < finis:
+    while (not mon_via.exists() or not qmp_via.exists()) and time.time() < finis:
         time.sleep(0.1)
-    if not mon_via.exists():
-        print('DEFECIT: monitor QEMU deest', file=sys.stderr)
+    if not mon_via.exists() or not qmp_via.exists():
+        print('DEFECIT: monitor vel QMP QEMU deest', file=sys.stderr)
         return 3
 
     out.mkdir(parents=True, exist_ok=True)
     monitor = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     monitor.settimeout(0.7)
     monitor.connect(str(mon_via))
+    q = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    q.settimeout(2.0)
+    q.connect(str(qmp_via))
     try:
         aux.lege_usque(monitor, b'(qemu) ', 2.0)
+        salutatio = ps2.qmp_linea(q)
+        if 'QMP' not in salutatio:
+            print('DEFECIT: salutatio QMP invalida', file=sys.stderr)
+            return 4
+        ps2.qmp(q, 'qmp_capabilities')
+        mures = ps2.qmp(q, 'query-mice').get('return', [])
+        candidati = [m for m in mures if 'PS/2 Mouse' in str(m.get('name', ''))]
+        if not candidati:
+            print('DEFECIT: QEMU PS/2 Mouse deest', file=sys.stderr)
+            return 5
+        index = int(candidati[0]['index'])
+        aux.hmp(monitor, f'mouse_set {index}')
+        print(f'OFFICINA-P19-II: mus_ps2_index={index}')
         time.sleep(mora)
 
         ante = out / f'officina-p19-ii-{modus}-ante.ppm'
@@ -72,7 +90,7 @@ def principale() -> int:
         w, h, _pix = aux.ppm(ante)
         if (w, h) != (1280, 800):
             print(f'DEFECIT: resolutio {w}x{h}', file=sys.stderr)
-            return 4
+            return 6
 
         # OFFICINA est quarta applicatio bureau P16-IV.
         pos = aux.move_ad(monitor, out, f'officina-p19-ii-{modus}', 70, 422, w, h)
@@ -83,7 +101,7 @@ def principale() -> int:
         bronzeum = (185, 138, 82)
         if aux.pixel(pix_open, w, 500, 64) != bronzeum:
             print('DEFECIT: OFFICINA focus non accepit', file=sys.stderr)
-            return 5
+            return 7
 
         if modus == 1:
             scribe_maiusculas(aux, monitor, 'ZEPHYR72941')
@@ -104,7 +122,7 @@ def principale() -> int:
         _, _, pix_saved = aux.ppm(servata)
         if aux.pixel(pix_saved, w, 500, 64) != bronzeum:
             print('DEFECIT: F2 focum OFFICINAE amisit', file=sys.stderr)
-            return 6
+            return 8
 
         print(f'OFFICINA-P19-II: initium={modus} cursor_bureau={pos} F2=missum')
         return 0
@@ -114,6 +132,7 @@ def principale() -> int:
         except Exception:
             pass
         monitor.close()
+        q.close()
 
 
 if __name__ == '__main__':
