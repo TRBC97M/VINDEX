@@ -115,10 +115,12 @@ jobs:
           chmod +x /tmp/compilator_gen2
           /tmp/compilator_gen2 src/compilator_vindex.vindex /tmp/compilator_gen3
           chmod +x /tmp/compilator_gen3
-          cmp /tmp/compilator_gen2 /tmp/compilator_gen3
-          cp /tmp/compilator_gen3 ./compilator_vindex
+          /tmp/compilator_gen3 src/compilator_vindex.vindex /tmp/compilator_gen4
+          chmod +x /tmp/compilator_gen4
+          cmp /tmp/compilator_gen3 /tmp/compilator_gen4
+          cp /tmp/compilator_gen4 ./compilator_vindex
           chmod +x ./compilator_vindex
-          echo 'RECTE: compilator G2=G3 et binarium canonicum renovatum est.'
+          echo 'RECTE: compilator G3=G4 et binarium canonicum ad punctum fixum renovatum est.'
 
       - name: Strata P3 integra
         shell: bash
