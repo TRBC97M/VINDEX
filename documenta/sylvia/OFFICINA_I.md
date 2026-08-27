@@ -32,13 +32,15 @@ Probatio nativa CCC octeta in unam lineam inserit et deinde LXXX lineas novas ad
 P18-I iam praebet:
 
 - insertionem scalaris Unicode ad cursorem, non tantum in fine lineae;
+- totum spatium scalarum canonicarum usque ad `U+10FFFF`, cum formis UTF-8 quattuor octetorum;
+- rejectionem surrogatorum `U+D800`–`U+DFFF` et valorum supra maximum Unicode;
 - backspace per fines scalaris UTF-8;
 - `ENTER` ad lineam in cursore dividendam;
 - backspace in initio lineae ad duas lineas coniungendas;
 - cursorem sinistrum et dextrum per limites UTF-8;
 - cursorem sursum et deorsum cum columna quantum fieri potest servata;
 - viewport verticalem qui cursorem sequitur;
-- PageUp et PageDown ad viewport movendum;
+- PageUp et PageDown ad cursorem octo lineis simul movendum;
 - signum `MODIFICATUM` post mutationem documenti.
 
 ## Claviatura
@@ -75,7 +77,7 @@ Hae facultates tantum super strata systematis vera addendae sunt. Officina Windo
 
 ## Probationes
 
-Probatio nativa `probationes/officina_sylvia_i.vindex` custodit structuram documenti, crescentiam dynamicam, UTF-8, divisionem linearum et cursorem.
+Probatio nativa `probationes/officina_sylvia_i.vindex` custodit structuram documenti, crescentiam dynamicam, UTF-8 duorum et quattuor octetorum, divisionem linearum, cursorem et navigationem per paginas.
 
 Probatio QEMU `instrumenta/proba_officinam_sylviae_i.py` aperit OFFICINAM e bureau, scribit `VINDEX`, creat secundam lineam `SYLVIA`, mittit sagittas UEFI et verificat per framebuffer quod editor mutatur dum fenestra in sede sua manet.
 
