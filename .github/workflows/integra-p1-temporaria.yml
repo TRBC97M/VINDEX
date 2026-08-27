@@ -72,7 +72,8 @@ jobs:
           TMP="$(mktemp -d)"
           trap 'rm -rf "$TMP"' EXIT
           chmod +x ./compilator_vindex
-          ./compilator_vindex src/compilator_vindex.vindex "$TMP/gen2"
+          sed '/^[[:space:]]*\/\//d' src/compilator_vindex.vindex > "$TMP/fons_sine_commentariis.vindex"
+          ./compilator_vindex "$TMP/fons_sine_commentariis.vindex" "$TMP/gen2"
           chmod +x "$TMP/gen2"
           "$TMP/gen2" src/compilator_vindex.vindex "$TMP/gen3"
           chmod +x "$TMP/gen3"
