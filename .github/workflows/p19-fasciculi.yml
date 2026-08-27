@@ -10,6 +10,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_fasciculos_sylviae_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.sh'
+      - 'documenta/sylvia/FASCICULI_I.md'
       - '.github/workflows/p19-fasciculi.yml'
   push:
     branches:
@@ -20,6 +21,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_fasciculos_sylviae_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fasciculos_persistentes_i.sh'
+      - 'documenta/sylvia/FASCICULI_I.md'
       - '.github/workflows/p19-fasciculi.yml'
 
 permissions:
