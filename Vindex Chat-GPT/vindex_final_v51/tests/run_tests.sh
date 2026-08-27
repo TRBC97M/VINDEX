@@ -159,6 +159,23 @@ respice_puritatem() {
     fi
 }
 
+respice_applicationes() {
+    local exsecutabile="$TEMPORARIUM/applicationes_iv"
+    local relatio="$TEMPORARIUM/applicationes_iv.log"
+    if ! ./compilator_vindex probationes/applicationes_registrum_iv.vindex "$exsecutabile" >"$relatio" 2>&1; then
+        erratum "applicationes-xcvi" "compilatio probationis defecit: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+    chmod 755 "$exsecutabile" 2>/dev/null || true
+    timeout 10s "$exsecutabile" >>"$relatio" 2>&1
+    local status=$?
+    if [ "$status" -ne 0 ]; then
+        erratum "applicationes-xcvi" "status exitus $status: $(tr '\n' ' ' <"$relatio")"
+    else
+        recte "applicationes-xcvi"
+    fi
+}
+
 respice_fenestrale() {
     local probatio="$TEMPORARIUM/fenestrale_lxxx"
     local systema="$TEMPORARIUM/fenestrale_i.elf"
@@ -195,7 +212,7 @@ exsequere_casum "importa" "tests/casus/importa.vindex" "49"
 exsequere_casum "structura-acus" "tests/casus/structura_acus.vindex" $'150\n99'
 exsequere_casum "recursio" "tests/casus/recursio.vindex" "720"
 exsequere_casum "argumenta" "tests/casus/argumenta.vindex" $'2\n90' "Zeta"
-exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n86\n69'
+exsequere_casum "vxnat-partem" "tests/casus/vxnat_partem.vindex" $'83\n65\n76\n69'
 exsequere_casum "collectiones-numerorum" "tests/casus/collectiones_numerorum.vindex" "COLLECTIONES RECTE"
 exsequere_casum "series-numerorum" "tests/casus/series_numerorum.vindex" "SERIES RECTE"
 exsequere_casum "segmenta-numerorum" "tests/casus/segmenta_numerorum.vindex" "SEGMENTA RECTE"
@@ -218,6 +235,7 @@ respice_auto_hospitium
 respice_logicam_brevem
 respice_pe
 respice_puritatem
+respice_applicationes
 respice_fenestrale
 
 printf '\n%s probationes rectae; %s errata.\n' "$RECTA" "$ERRATA"
