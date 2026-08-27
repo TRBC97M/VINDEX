@@ -37,10 +37,10 @@ jobs:
               SI sr_rect != 0 || CONTENTUM(locus_mem) == 0 TUNC REDDE 19. FIN-SI.
               DECLARA sedes_rectorum SICUT NUMERUS VALENS CONTENTUM(locus_mem).
           '''
-          new = '''    // Ultima pagina regionis COMMUNIS rectoribus nativis reservatur.
-              // COMMUNIS = 0x03000000..0x0303ffff; 0x0303f000 rectorum est.
-              // Pagina iam per AllocateAddress reservata et identice mappata est.
-              DECLARA sedes_rectorum SICUT NUMERUS VALENS meta + 258048.
+          new = '''    // Pagina statim post spatium voluminis rectoribus nativis dedicatur.
+              // COMMUNIS: 0x03000000..0x0303ffff; volumen finit ad 0x03018fff.
+              // 0x03019000 igitur nec umbram, nec volumen, nec acervum tangit.
+              DECLARA sedes_rectorum SICUT NUMERUS VALENS meta + 102400.
           '''
           if old not in t:
               raise SystemExit('ERRATUM: allocatio rectorum temporaria non inventa')
