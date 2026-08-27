@@ -1,13 +1,16 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-IV / P17-II / P18-I.
+// Sylvia OS — Fenestrale II Purus I, facies P16-IV / P17-II / P19-II.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
 IMPORTA "bibliotheca/programmata_clientis_e.vindex".
 IMPORTA "bibliotheca/tabula_clientis_f.vindex".
 IMPORTA "bibliotheca/terminale_clientis_i.vindex".
 IMPORTA "bibliotheca/officina_clientis_i.vindex".
+IMPORTA "bibliotheca/officina_persistentia_ii.vindex".
 IMPORTA "bibliotheca/fenestrale_eventa_g.vindex".
 IMPORTA "bibliotheca/clientia_registrum_h.vindex".
 IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
@@ -49,8 +52,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA superficies_e SICUT NUMERUS VALENS FS_CREA(680,320).
     DECLARA superficies_o SICUT NUMERUS VALENS FS_CREA(820,430).
     DECLARA status_e SICUT NUMERUS VALENS TE_CREA().
-    DECLARA status_o SICUT NUMERUS VALENS OE_CREA().
+    DECLARA status_o SICUT NUMERUS VALENS OP_CREA().
     SI superficies_p==0 || superficies_t==0 || superficies_e==0 || superficies_o==0 || status_e==0 || status_o==0 TUNC REDDE 71. FIN-SI.
+    // OFFICINA manet utilis etiam si backend non adest aut lectio errat.
+    DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
     DECLARA cp SICUT NUMERUS VALENS CH_ADDE(s[36],1,1,superficies_p,0).
     DECLARA ct SICUT NUMERUS VALENS CH_ADDE(s[36],2,2,superficies_t,0).
     DECLARA ce SICUT NUMERUS VALENS CH_ADDE(s[36],3,3,superficies_e,status_e).
@@ -64,7 +69,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA rp SICUT NUMERUS VALENS PE_RENDE(superficies_p,0).
     DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
     DECLARA re SICUT NUMERUS VALENS TE_RENDE(superficies_e,status_e).
-    DECLARA ro SICUT NUMERUS VALENS OE_RENDE(superficies_o,status_o).
+    DECLARA ro SICUT NUMERUS VALENS OP_RENDE(superficies_o,status_o).
 
     DECLARA pw SICUT NUMERUS VALENS w*58/100. DECLARA ph SICUT NUMERUS VALENS utilis_h*66/100.
     DECLARA tw SICUT NUMERUS VALENS w*42/100. DECLARA th SICUT NUMERUS VALENS utilis_h*52/100.
