@@ -54,8 +54,6 @@ boot() {
     local modus="$2"
     local monitor="$TEMPORARIUM/monitor-${numerus}.sock"
     local vars="$TEMPORARIUM/OVMF_VARS-${numerus}.fd"
-    local capturas="$TEMPORARIUM/capturae-${numerus}"
-    mkdir -p "$capturas"
     cp -f "$OVMF_VARS" "$vars"
     chmod +w "$vars"
 
@@ -68,15 +66,15 @@ boot() {
         -net none >"$TEMPORARIUM/qemu-${numerus}.log" 2>&1 &
     local pid=$!
 
+    # Capturae directe in TEMPORARIUM ponuntur ut etiam defectus praecox eas servet.
     if ! python3 "$RADIX/instrumenta/proba_officinam_persistentem_ii.py" \
-        "$monitor" "$capturas" "$MORA" "$modus"; then
+        "$monitor" "$TEMPORARIUM" "$MORA" "$modus"; then
         kill "$pid" 2>/dev/null || true
         wait "$pid" 2>/dev/null || true
         tail -80 "$TEMPORARIUM/qemu-${numerus}.log" >&2 || true
         return 1
     fi
     wait "$pid" 2>/dev/null || true
-    cp -f "$capturas"/*.ppm "$TEMPORARIUM"/ 2>/dev/null || true
 }
 
 printf '%s\n' 'II. Primum initium: OFFICINA documentum scribit et F2 servat...'
