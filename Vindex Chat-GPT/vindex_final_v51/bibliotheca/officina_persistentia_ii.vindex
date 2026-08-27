@@ -1,0 +1,274 @@
+// Sylvia OS — P19-II: persistentia OFFICINAE super contractum FS_*.
+// Editor P18-I manet nucleus memoriae; hoc stratum fasciculum realem ei coniungit.
+//
+// Status persistentiae:
+// +0 editor OE_*; +8 via activa TEXTUS; +16 status I/O; +24 FS disponibilis;
+// +32 mensura ultima; +40 numerus conservationum.
+// Status I/O: 0 initium; 1 novum; 2 apertum; 3 servatum;
+//             4 lectio erravit; 5 scriptura erravit; 6 fasciculi absunt.
+
+FUNCTIO OP_CREA REDDENS NUMERUS.
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(48).
+    SI status<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA editor SICUT NUMERUS VALENS OE_CREA().
+    SI editor==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status)=editor.
+    CONTENTUM(status+8)=TEXTUS_SEDES("OFFICINA.VIX").
+    CONTENTUM(status+16)=0.
+    CONTENTUM(status+24)=0.
+    CONTENTUM(status+32)=0.
+    CONTENTUM(status+40)=0.
+    REDDE status.
+FIN-FUNCTIO.
+
+FUNCTIO OP_EDITOR REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(status).
+FIN-FUNCTIO.
+
+FUNCTIO OP_VIA REDDENS TEXTUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 || CONTENTUM(status+8)==0 TUNC REDDE 0. FIN-SI.
+    REDDE TEXTUS_EX_SEDE(CONTENTUM(status+8)).
+FIN-FUNCTIO.
+
+FUNCTIO OP_VIAM_PONE REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT via SICUT TEXTUS.
+    SI status==0 || TEXTUS_SEDES(via)==0 || UTF8_VALIDUS(via)==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status+8)=TEXTUS_SEDES(via).
+    CONTENTUM(status+16)=0.
+    CONTENTUM(status+32)=0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OP_DOCUMENTUM_MENSURA REDDENS NUMERUS.
+    ACCIPIT editor SICUT NUMERUS.
+    SI editor==0 TUNC REDDE -1. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(editor).
+    DECLARA totalis SICUT NUMERUS VALENS 0.
+    DUM nodus!=0 PERFICE
+        DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+        SI d==0 || CONTENTUM(d)<0 TUNC REDDE -1. FIN-SI.
+        totalis=totalis+CONTENTUM(d).
+        SI CONTENTUM(nodus+16)!=0 TUNC totalis=totalis+1. FIN-SI.
+        nodus=CONTENTUM(nodus+16).
+    FIN-DUM.
+    REDDE totalis.
+FIN-FUNCTIO.
+
+// Lineas editoris in unum TEXTUS UTF-8 componit; inter lineas LF canonicum ponit.
+FUNCTIO OP_DOCUMENTUM_TEXTUS REDDENS TEXTUS.
+    ACCIPIT editor SICUT NUMERUS.
+    DECLARA totalis SICUT NUMERUS VALENS OP_DOCUMENTUM_MENSURA(editor).
+    SI editor==0 || totalis<0 TUNC REDDE 0. FIN-SI.
+    DECLARA d_out SICUT NUMERUS VALENS RESERVA_OCTETA(17+totalis).
+    SI d_out<=0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(d_out)=totalis.
+    CONTENTUM(d_out+8)=totalis.
+    DECLARA p SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(editor).
+    DUM nodus!=0 PERFICE
+        DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+        DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+        DECLARA i SICUT NUMERUS VALENS 0.
+        DUM i<n PERFICE
+            SCRIBE_OCTETUM_AB(d_out+16+p,OCTETUS_AB(d+16+i)).
+            p=p+1.
+            i=i+1.
+        FIN-DUM.
+        nodus=CONTENTUM(nodus+16).
+        SI nodus!=0 TUNC
+            SCRIBE_OCTETUM_AB(d_out+16+p,10).
+            p=p+1.
+        FIN-SI.
+    FIN-DUM.
+    SCRIBE_OCTETUM_AB(d_out+16+totalis,0).
+    REDDE TEXTUS_EX_SEDE(d_out).
+FIN-FUNCTIO.
+
+FUNCTIO OP_NODUS_EX_OCTETIS REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT initium SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI basis==0 || initium<0 || mensura<0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS OE_NODUS_CREA(mensura+32).
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<mensura PERFICE
+        SCRIBE_OCTETUM_AB(d+16+i,OCTETUS_AB(basis+initium+i)).
+        i=i+1.
+    FIN-DUM.
+    CONTENTUM(d)=mensura.
+    SCRIBE_OCTETUM_AB(d+16+mensura,0).
+    REDDE nodus.
+FIN-FUNCTIO.
+
+// TEXTUS integrum in catenam linearum novam transfert.
+// CR ante LF tollitur; LF terminalis lineam vacuam finalem servat.
+// Structura vetus editoris non mutatur nisi nova catena tota constructa est.
+FUNCTIO OP_EDITOR_EX_TEXTU REDDENS NUMERUS.
+    ACCIPIT editor SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    SI editor==0 || TEXTUS_SEDES(textus)==0 || UTF8_VALIDUS(textus)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA basis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(textus).
+    DECLARA primus SICUT NUMERUS VALENS 0.
+    DECLARA ultimus SICUT NUMERUS VALENS 0.
+    DECLARA numerus SICUT NUMERUS VALENS 0.
+    DECLARA initium SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+
+    DUM i<=n PERFICE
+        DECLARA finis_lineae SICUT NUMERUS VALENS 0.
+        SI i==n TUNC
+            finis_lineae=1.
+        ALITER
+            SI OCTETUS_AB(basis+i)==10 TUNC finis_lineae=1. FIN-SI.
+        FIN-SI.
+        SI finis_lineae==1 TUNC
+            DECLARA mensura SICUT NUMERUS VALENS i-initium.
+            SI mensura>0 && OCTETUS_AB(basis+i-1)==13 TUNC mensura=mensura-1. FIN-SI.
+            DECLARA nodus SICUT NUMERUS VALENS OP_NODUS_EX_OCTETIS(basis,initium,mensura).
+            SI nodus==0 TUNC REDDE 0. FIN-SI.
+            SI primus==0 TUNC
+                primus=nodus.
+            ALITER
+                CONTENTUM(ultimus+16)=nodus.
+                CONTENTUM(nodus+8)=ultimus.
+            FIN-SI.
+            ultimus=nodus.
+            numerus=numerus+1.
+            initium=i+1.
+        FIN-SI.
+        i=i+1.
+    FIN-DUM.
+
+    SI primus==0 || ultimus==0 || numerus<1 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(editor)=primus.
+    CONTENTUM(editor+8)=ultimus.
+    CONTENTUM(editor+16)=primus.
+    CONTENTUM(editor+24)=0.
+    CONTENTUM(editor+32)=numerus.
+    CONTENTUM(editor+40)=0.
+    CONTENTUM(editor+48)=0.
+    CONTENTUM(editor+56)=0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OP_INIT REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA editor SICUT NUMERUS VALENS OP_EDITOR(status).
+    DECLARA via SICUT TEXTUS VALENS OP_VIA(status).
+    SI editor==0 || TEXTUS_SEDES(via)==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA fs SICUT NUMERUS VALENS FS_DISPONIBILIS().
+    CONTENTUM(status+24)=fs.
+    SI fs==0 TUNC
+        CONTENTUM(status+16)=6.
+        REDDE 1.
+    FIN-SI.
+
+    SI FS_EXISTIT(via)==0 TUNC
+        CONTENTUM(status+16)=1.
+        CONTENTUM(status+32)=0.
+        REDDE 1.
+    FIN-SI.
+
+    DECLARA lectum SICUT TEXTUS VALENS FS_LEGE_TEXTUM(via).
+    SI TEXTUS_SEDES(lectum)==0 TUNC
+        CONTENTUM(status+16)=4.
+        REDDE 0.
+    FIN-SI.
+    SI OP_EDITOR_EX_TEXTU(editor,lectum)==0 TUNC
+        CONTENTUM(status+16)=4.
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(status+16)=2.
+    CONTENTUM(status+32)=LONGITUDO(lectum).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OP_SERVA REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA editor SICUT NUMERUS VALENS OP_EDITOR(status).
+    DECLARA via SICUT TEXTUS VALENS OP_VIA(status).
+    SI editor==0 || TEXTUS_SEDES(via)==0 TUNC REDDE 0. FIN-SI.
+
+    SI CONTENTUM(status+24)==0 TUNC
+        CONTENTUM(status+24)=FS_DISPONIBILIS().
+    FIN-SI.
+    SI CONTENTUM(status+24)==0 TUNC
+        CONTENTUM(status+16)=6.
+        REDDE 0.
+    FIN-SI.
+
+    DECLARA datum SICUT TEXTUS VALENS OP_DOCUMENTUM_TEXTUS(editor).
+    SI TEXTUS_SEDES(datum)==0 TUNC
+        CONTENTUM(status+16)=5.
+        REDDE 0.
+    FIN-SI.
+    SI FS_SCRIBE_TEXTUM(via,datum)==0 TUNC
+        CONTENTUM(status+16)=5.
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(editor+40)=0.
+    CONTENTUM(status+16)=3.
+    CONTENTUM(status+32)=LONGITUDO(datum).
+    CONTENTUM(status+40)=CONTENTUM(status+40)+1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OP_CLAVIS_EVENTUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT scan SICUT NUMERUS.
+    ACCIPIT unicode SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    // EFI scan XII = F2: conservatio explicita. Etiam defectus UI renovat.
+    SI scan==12 && unicode==0 TUNC
+        DECLARA servatum SICUT NUMERUS VALENS OP_SERVA(status).
+        REDDE 1.
+    FIN-SI.
+    REDDE OE_CLAVIS_EVENTUM(OP_EDITOR(status),scan,unicode).
+FIN-FUNCTIO.
+
+FUNCTIO OP_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI superficies==0 || status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA editor SICUT NUMERUS VALENS OP_EDITOR(status).
+    SI editor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA base SICUT NUMERUS VALENS OE_RENDE(superficies,editor).
+    SI base==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
+    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,w-96,0,96,34,profundum).
+    f=FS_TEXTUM(superficies,w-84,11,"P19-II",argentum).
+
+    // Vetus titulus memoriae volatilis P18 hic a contractu persistente tegitur.
+    f=FS_RECT(superficies,w-220,34,220,28,argentum).
+    f=FS_TEXTUM(superficies,w-204,44,"F2 SERVA",profundum).
+    DECLARA via SICUT TEXTUS VALENS OP_VIA(status).
+    SI TEXTUS_SEDES(via)!=0 TUNC f=FS_TEXTUM(superficies,124,44,via,medium). FIN-SI.
+
+    // Vetus FASCICULI: NONDUM tegitur et status I/O verus ostenditur.
+    f=FS_RECT(superficies,w-244,h-32,244,32,profundum).
+    DECLARA io SICUT NUMERUS VALENS CONTENTUM(status+16).
+    SI io==0 TUNC f=FS_TEXTUM(superficies,w-116,h-20,"INITIUM",argentum). FIN-SI.
+    SI io==1 TUNC f=FS_TEXTUM(superficies,w-100,h-20,"NOVUM",argentum). FIN-SI.
+    SI io==2 TUNC f=FS_TEXTUM(superficies,w-116,h-20,"APERTUM",medium). FIN-SI.
+    SI io==3 TUNC f=FS_TEXTUM(superficies,w-124,h-20,"SERVATUM",medium). FIN-SI.
+    SI io==4 TUNC f=FS_TEXTUM(superficies,w-156,h-20,"LECTIO ERRAT",bronzeum). FIN-SI.
+    SI io==5 TUNC f=FS_TEXTUM(superficies,w-180,h-20,"SCRIPTURA ERRAT",bronzeum). FIN-SI.
+    SI io==6 TUNC f=FS_TEXTUM(superficies,w-188,h-20,"FASCICULI ABSUNT",bronzeum). FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.

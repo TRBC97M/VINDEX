@@ -247,9 +247,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA claude SICUT NUMERUS VALENS CONTENTUM(fasc + 16).
     DECLARA ig_c SICUT NUMERUS VALENS UEFI_VOCA6(claude, fasc, 0, 0, 0, 0, 0).
 
-    // TEXTUS.BIN ad 0x430000 (TEXTUS_BASE) onera. Ponticulus C hoc
-    // faciebat (linea 239); sine eo nucleus data non initiata legit et
-    // ut indices adhibet -- causa vera defectus paginae.
+    // TEXTUS.BIN: nucleus historicus parvus adhuc 0x430000 novit. Si nucleus
+    // hanc sedem attingit, assetum AnyPages accipit ne codicem machinalem
+    // superponat. Sedes semper in metadata +2144 publicatur.
+    DECLARA sedes_textus SICUT NUMERUS VALENS 0.
     DECLARA nomen_t SICUT NUMERUS VALENS RESERVA_OCTETA(32).
     DECLARA ig_nt SICUT NUMERUS VALENS MEMORIA_VACUA(nomen_t, 32).
     SCRIBE_OCTETUM_AB(nomen_t, 84).
@@ -274,9 +275,22 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             DECLARA sti SICUT NUMERUS VALENS UEFI_VOCA6(info_t, fasc_t, guid, locus_info_mens, info_buf, 0, 0).
             SI sti == 0 TUNC
                 DECLARA mens_t SICUT NUMERUS VALENS CONTENTUM(info_buf + 8).
-                CONTENTUM(locus_mensura) = mens_t.
-                DECLARA lege_t SICUT NUMERUS VALENS CONTENTUM(fasc_t + 32).
-                DECLARA stl SICUT NUMERUS VALENS UEFI_VOCA6(lege_t, fasc_t, locus_mensura, 4390912, 0, 0, 0).
+                SI sedes_nuclei + lecta <= 4390912 TUNC
+                    sedes_textus = 4390912.
+                ALITER
+                    DECLARA paginae_t SICUT NUMERUS VALENS (mens_t + 4095) / 4096.
+                    SI paginae_t > 0 TUNC
+                        CONTENTUM(locus_mem) = 0.
+                        DECLARA sta_t SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 0, 2, paginae_t, locus_mem, 0, 0).
+                        SI sta_t == 0 TUNC sedes_textus = CONTENTUM(locus_mem). FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+                SI sedes_textus != 0 TUNC
+                    CONTENTUM(locus_mensura) = mens_t.
+                    DECLARA lege_t SICUT NUMERUS VALENS CONTENTUM(fasc_t + 32).
+                    DECLARA stl SICUT NUMERUS VALENS UEFI_VOCA6(lege_t, fasc_t, locus_mensura, sedes_textus, 0, 0, 0).
+                    SI stl != 0 TUNC sedes_textus = 0. FIN-SI.
+                FIN-SI.
             FIN-SI.
             DECLARA cl_t SICUT NUMERUS VALENS CONTENTUM(fasc_t + 16).
             DECLARA ig_ct SICUT NUMERUS VALENS UEFI_VOCA6(cl_t, fasc_t, 0, 0, 0, 0, 0).
@@ -305,10 +319,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI scala_y < scala_x TUNC scala = scala_y. FIN-SI.
     SI scala == 0 TUNC scala = 1. FIN-SI.
 
-    // FORMA.BIN (forma litterarum) onera; ponticulus C eius adressam in
-    // meta[11] ponebat (linea 255). Sine hoc, nucleus indicem nullum
-    // legit et coordinatas absurdas computat -- causa vera defectus.
-    DECLARA sedes_formae SICUT NUMERUS VALENS 4587520.
+    // FORMA.BIN quoque AnyPages accipit: metadata +2136 iam eius sedem
+    // publicat, ergo nulla causa superest ut ad 0x460000 codici haereat.
+    DECLARA sedes_formae SICUT NUMERUS VALENS 0.
     DECLARA nomen_f SICUT NUMERUS VALENS RESERVA_OCTETA(32).
     DECLARA ig_nf SICUT NUMERUS VALENS MEMORIA_VACUA(nomen_f, 32).
     SCRIBE_OCTETUM_AB(nomen_f, 70).
@@ -330,9 +343,19 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             DECLARA info_f SICUT NUMERUS VALENS CONTENTUM(fasc_f + 64).
             DECLARA stif SICUT NUMERUS VALENS UEFI_VOCA6(info_f, fasc_f, guid, locus_info_mens, info_buf, 0, 0).
             SI stif == 0 TUNC
-                CONTENTUM(locus_mensura) = CONTENTUM(info_buf + 8).
-                DECLARA lege_f SICUT NUMERUS VALENS CONTENTUM(fasc_f + 32).
-                DECLARA stlf SICUT NUMERUS VALENS UEFI_VOCA6(lege_f, fasc_f, locus_mensura, sedes_formae, 0, 0, 0).
+                DECLARA mens_f SICUT NUMERUS VALENS CONTENTUM(info_buf + 8).
+                DECLARA paginae_f SICUT NUMERUS VALENS (mens_f + 4095) / 4096.
+                SI paginae_f > 0 TUNC
+                    CONTENTUM(locus_mem) = 0.
+                    DECLARA sta_f SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 0, 2, paginae_f, locus_mem, 0, 0).
+                    SI sta_f == 0 TUNC sedes_formae = CONTENTUM(locus_mem). FIN-SI.
+                FIN-SI.
+                SI sedes_formae != 0 TUNC
+                    CONTENTUM(locus_mensura) = mens_f.
+                    DECLARA lege_f SICUT NUMERUS VALENS CONTENTUM(fasc_f + 32).
+                    DECLARA stlf SICUT NUMERUS VALENS UEFI_VOCA6(lege_f, fasc_f, locus_mensura, sedes_formae, 0, 0, 0).
+                    SI stlf != 0 TUNC sedes_formae = 0. FIN-SI.
+                FIN-SI.
             FIN-SI.
             DECLARA cl_f SICUT NUMERUS VALENS CONTENTUM(fasc_f + 16).
             DECLARA ig_cf SICUT NUMERUS VALENS UEFI_VOCA6(cl_f, fasc_f, 0, 0, 0, 0, 0).
@@ -359,6 +382,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     CONTENTUM(50333768) = (altitudo - (200 * scala)) / 2.
     CONTENTUM(50333776) = 50335744.
     CONTENTUM(50333784) = sedes_formae.
+    CONTENTUM(50333792) = sedes_textus.
     CONTENTUM(50334464) = imago.
     CONTENTUM(50334504) = moderatores_n.
 

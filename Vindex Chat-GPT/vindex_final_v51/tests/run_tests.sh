@@ -227,6 +227,23 @@ respice_officinam() {
     fi
 }
 
+respice_officinam_persistentem() {
+    local exsecutabile="$TEMPORARIUM/officina_persistentia_ii"
+    local relatio="$TEMPORARIUM/officina_persistentia_ii.log"
+    if ! ./compilator_vindex probationes/officina_persistentia_ii.vindex "$exsecutabile" >"$relatio" 2>&1; then
+        erratum "officina-persistens-ii" "compilatio probationis defecit: $(tr '\n' ' ' <"$relatio")"
+        return
+    fi
+    chmod 755 "$exsecutabile" 2>/dev/null || true
+    timeout 10s "$exsecutabile" >>"$relatio" 2>&1
+    local status=$?
+    if [ "$status" -ne 0 ]; then
+        erratum "officina-persistens-ii" "status exitus $status: $(tr '\n' ' ' <"$relatio")"
+    else
+        recte "officina-persistens-ii"
+    fi
+}
+
 respice_fenestrale() {
     local probatio="$TEMPORARIUM/fenestrale_lxxx"
     local systema="$TEMPORARIUM/fenestrale_i.elf"
@@ -290,6 +307,7 @@ respice_applicationes
 respice_terminale
 respice_terminale_ii
 respice_officinam
+respice_officinam_persistentem
 respice_fenestrale
 
 printf '\n%s probationes rectae; %s errata.\n' "$RECTA" "$ERRATA"

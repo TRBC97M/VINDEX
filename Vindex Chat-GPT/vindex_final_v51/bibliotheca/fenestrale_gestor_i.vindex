@@ -1,4 +1,4 @@
-// Sylvia OS — gestio communis Fenestralis Purus I post P16-IV / P17-II / P18-I.
+// Sylvia OS — gestio communis Fenestralis Purus I post P16-IV / P17-II / P19-II.
 // Navigatio applicationum ex catalogo venit; hic operationes genericae
 // fenestrarum, taskbar, tractus et distributio claviaturae servantur.
 
@@ -88,8 +88,8 @@ FUNCTIO GI_CLAVIS REDDENS NUMERUS.
         REDDE 1.
     FIN-SI.
 
-    // OFFICINA possidet quattuor sagittas et scrollback editoris cum focum habet.
-    SI genus==4 && coda!=0 && (unicode!=0 || scan==1 || scan==2 || scan==3 || scan==4 || scan==9 || scan==10) TUNC
+    // OFFICINA possidet sagittas, paginas et F2 conservationis cum focum habet.
+    SI genus==4 && coda!=0 && (unicode!=0 || scan==1 || scan==2 || scan==3 || scan==4 || scan==9 || scan==10 || scan==12) TUNC
         DECLARA positum_o SICUT NUMERUS VALENS EG_PONE(coda,2,cliens,scan,0,unicode).
         SI positum_o==0 TUNC s[35]=s[35]+1. REDDE 0. FIN-SI.
         REDDE 1.
