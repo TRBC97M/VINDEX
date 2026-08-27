@@ -1,0 +1,46 @@
+// Probatio P17-I — TERMINALE: linea UTF-8 dynamica et mandata interna.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/terminale_clientis_i.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA s SICUT NUMERUS VALENS TE_CREA().
+    SI s==0 TUNC REDDE 71. FIN-SI.
+
+    DECLARA r SICUT NUMERUS VALENS TE_CLAVIS(s,83).
+    r=TE_CLAVIS(s,65). r=TE_CLAVIS(s,76). r=TE_CLAVIS(s,86). r=TE_CLAVIS(s,69).
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(s).
+    SI CONTENTUM(d)!=5 TUNC REDDE 65. FIN-SI.
+    SI TE_AEQUATUR(d,"SALVE")==0 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS(s,13).
+    SI CONTENTUM(s+8)!=1 || CONTENTUM(d)!=0 TUNC REDDE 65. FIN-SI.
+
+    // U+00E9 = C3 A9; backspace totum scalare removet, non unum octetum.
+    r=TE_CLAVIS(s,233).
+    d=CONTENTUM(s).
+    SI CONTENTUM(d)!=2 TUNC REDDE 65. FIN-SI.
+    SI OCTETUS_AB(d+16)!=195 || OCTETUS_AB(d+17)!=169 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS(s,8).
+    SI CONTENTUM(d)!=0 TUNC REDDE 65. FIN-SI.
+
+    // Capacitas initialis LXIV transcenditur sine limite fixo parvo.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<200 PERFICE
+        r=TE_CLAVIS(s,65+(i%26)).
+        i=i+1.
+    FIN-DUM.
+    d=CONTENTUM(s).
+    SI CONTENTUM(d)!=200 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(d+8)<200 TUNC REDDE 65. FIN-SI.
+
+    // PURGA et mandatum ignotum.
+    CONTENTUM(d)=0. SCRIBE_OCTETUM_AB(d+16,0).
+    r=TE_CLAVIS(s,80). r=TE_CLAVIS(s,85). r=TE_CLAVIS(s,82). r=TE_CLAVIS(s,71). r=TE_CLAVIS(s,65). r=TE_CLAVIS(s,13).
+    SI CONTENTUM(s+8)!=4 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS(s,88). r=TE_CLAVIS(s,13).
+    SI CONTENTUM(s+8)!=5 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(s+16)!=3 TUNC REDDE 65. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
