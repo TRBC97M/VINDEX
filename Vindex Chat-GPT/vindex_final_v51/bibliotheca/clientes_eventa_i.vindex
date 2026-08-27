@@ -1,5 +1,6 @@
-// Sylvia OS — dispatchus clientium Fenestralis Purus I.
+// Sylvia OS — dispatchus clientium Fenestralis Purus I / P17-I.
 // Eventa ad clientes per registrum clientium et registrum fenestrarum traduntur.
+// Genus eventus: 1 = clic; 2 = clavis Unicode ad clientem focalem.
 
 FUNCTIO CI_EVENTA_AGE REDDENS NUMERUS.
     ACCIPIT clientes SICUT NUMERUS.
@@ -31,6 +32,13 @@ FUNCTIO CI_EVENTA_AGE REDDENS NUMERUS.
                 SI novus_t!=status TUNC
                     CONTENTUM(nodus+24)=novus_t.
                     DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies,novus_t).
+                    mutata=mutata+1.
+                FIN-SI.
+            FIN-SI.
+            SI e[0]==2 && genus==3 TUNC
+                DECLARA mutatum_e SICUT NUMERUS VALENS TE_CLAVIS(status,e[4]).
+                SI mutatum_e!=0 TUNC
+                    DECLARA re SICUT NUMERUS VALENS TE_RENDE(superficies,status).
                     mutata=mutata+1.
                 FIN-SI.
             FIN-SI.
