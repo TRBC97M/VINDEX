@@ -1,23 +1,17 @@
-name: P3 — Allocator G3 debug temporarius
+name: P3 — Mappa functionum G3 temporaria
 
 on:
   push:
     branches:
       - chatgpt/p3-fenestrale-uefi-purum
 
-permissions:
-  contents: write
-
 jobs:
-  debug:
+  mappa:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Repositorium accipe
-        uses: actions/checkout@v5
-      - name: GDB institue
-        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends gdb binutils
-      - name: G3 construe et congelatum inspice
+      - uses: actions/checkout@v5
+      - name: G3 construe et prologos cum fontibus compara
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
@@ -57,28 +51,27 @@ jobs:
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
           chmod +x /tmp/g3
-          sudo sysctl -w kernel.yama.ptrace_scope=0 || true
-          /tmp/g3 src/compilator_vindex.vindex /tmp/g4 &
-          pid=$!
-          echo "PID=$pid"
-          sleep 1
-          ps -o pid,stat,etime,time,rss,vsz,pcpu,comm -p "$pid" || true
-          echo '=== MAPPA ==='
-          cat "/proc/$pid/maps" | head -n 40 || true
-          echo '=== STATUS ==='
-          grep -E 'State|VmRSS|VmSize|voluntary|nonvoluntary' "/proc/$pid/status" || true
-          echo '=== GDB ==='
-          gdb -q -batch \
-            -ex "attach $pid" \
-            -ex 'set pagination off' \
-            -ex 'x/8gx 0x02000000' \
-            -ex 'info registers rip rax rbx rcx rdx rsi rdi r8 r9 r10 r11 r12 rsp rbp' \
-            -ex 'x/24i $rip-32' \
-            -ex 'x/24gx $rsp' \
-            -ex 'bt' \
-            -ex 'detach' || true
-          echo '=== OBJDUMP circa RIP (textus totus grep postea) ==='
-          objdump -d -Mintel /tmp/g3 > /tmp/g3.asm
-          wc -l /tmp/g3.asm
-          kill -9 "$pid" 2>/dev/null || true
-          wait "$pid" 2>/dev/null || true
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          src=Path('src/compilator_vindex.vindex').read_text(encoding='utf-8')
+          names=re.findall(r'(?m)^FUNCTIO\s+([A-Z0-9_]+)\s+REDDENS',src)
+          data=Path('/tmp/g3').read_bytes()
+          pats=[b'\x55\x48\x89\xe5', b'\x55\x48\x89\xe5\x48\x81\xec']
+          hits=[]
+          i=0
+          while True:
+              i=data.find(pats[0],i)
+              if i<0: break
+              hits.append(i); i+=1
+          target=0x432c34-0x400000
+          print('FUNCT_NUM',len(names),'PROLOG_NUM',len(hits),'TARGET_FILE',hex(target))
+          near=[(idx,off) for idx,off in enumerate(hits) if abs(off-target)<0x4000]
+          for idx,off in near:
+              nm=names[idx] if idx<len(names) else '?'
+              print('PROLOG',idx,hex(0x400000+off),nm,'delta',hex(target-off))
+          # etiam omnes nomina cum ASSECURA/BUFFER/LIMEN ordine monstrantur
+          for idx,n in enumerate(names):
+              if any(k in n for k in ('ASSECURA','BUFFER','CODEX','FORMAS','PARES','LOCA')):
+                  print('NOMEN',idx,n)
+          PY
