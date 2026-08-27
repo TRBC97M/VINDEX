@@ -21,7 +21,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
 
-      - name: Moderatores in ponticulum purum porta
+      - name: Moderatores et rectorem PS2 pure porta
         run: python3 .github/p3_connect.py
 
       - name: Probationes canonicas exsequere
@@ -42,8 +42,10 @@ jobs:
           git config user.email 'chatgpt@openai.local'
           git rm .github/p3_connect.py .github/workflows/p3-connect-temporaria.yml
           git add 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh' \
                   'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py' \
                   '.github/workflows/catena-uefi-vindex.yml'
-          git commit -m 'P3: moderatores UEFI pure coniunge et murem PS2 proba'
+          git commit -m 'P3: rectorem muris PS2 VINDEX nativum canoniza'
           git push origin HEAD:chatgpt/p3-connect-controller-purus
