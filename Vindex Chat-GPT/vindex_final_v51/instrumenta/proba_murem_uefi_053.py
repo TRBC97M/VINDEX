@@ -73,8 +73,6 @@ def differentiae(a: bytes, b: bytes) -> int:
 
 
 def hexa_hmp(textus: str) -> list[int]:
-    # QEMU monitor per readline echo mandati continere potest; tantum valores
-    # 16-digit post ':' vel in lineis memoriae capimus.
     valores: list[int] = []
     for linea in textus.splitlines():
         if ":" not in linea:
@@ -90,6 +88,10 @@ def status_muris(monitor: socket.socket) -> tuple[int, int, int, int] | None:
     if len(valores) < 4:
         return None
     return valores[0], valores[1], valores[2], valores[3]
+
+
+def status_ps2(monitor: socket.socket) -> list[int]:
+    return hexa_hmp(hmp(monitor, "xp /9bx 0x03018840"))[:9]
 
 
 def principale() -> int:
@@ -128,10 +130,7 @@ def principale() -> int:
             raise RuntimeError(f"qmp_capabilities: {cap}")
 
         mures = qmp(q, "query-mice")
-        candidati = [
-            m for m in mures.get("return", [])
-            if "PS/2 Mouse" in str(m.get("name", ""))
-        ]
+        candidati = [m for m in mures.get("return", []) if "PS/2 Mouse" in str(m.get("name", ""))]
         if not candidati:
             print("DEFECIT: QEMU PS/2 Mouse non invenitur", file=sys.stderr)
             print(json.dumps(mures, ensure_ascii=False), file=sys.stderr)
@@ -143,10 +142,7 @@ def principale() -> int:
         time.sleep(mora)
 
         mures_post = qmp(q, "query-mice")
-        currens = any(
-            int(m.get("index", -1)) == index and bool(m.get("current"))
-            for m in mures_post.get("return", [])
-        )
+        currens = any(int(m.get("index", -1)) == index and bool(m.get("current")) for m in mures_post.get("return", []))
         if not currens:
             print("DEFECIT: PS/2 Mouse selectus non est", file=sys.stderr)
             return 5
@@ -165,36 +161,36 @@ def principale() -> int:
         protocollum_abs = meta_valores[1] if len(meta_valores) >= 2 else 0
         moderatores = meta_valores[2] if len(meta_valores) >= 3 else 0
         ante_status = status_muris(monitor)
+        ps2_ante = status_ps2(monitor)
 
-        # Primo API QMP modernam exercemus.
         responsa = []
         status_qmp: list[tuple[int, int, int, int] | None] = []
+        ps2_qmp: list[list[int]] = []
         for dx, dy in ((96, -64), (64, 48), (-24, 16)):
-            responsa.append(qmp(q, "input-send-event", {
-                "events": [
-                    {"type": "rel", "data": {"axis": "x", "value": dx}},
-                    {"type": "rel", "data": {"axis": "y", "value": dy}},
-                ]
-            }))
+            responsa.append(qmp(q, "input-send-event", {"events": [
+                {"type": "rel", "data": {"axis": "x", "value": dx}},
+                {"type": "rel", "data": {"axis": "y", "value": dy}},
+            ]}))
             time.sleep(0.20)
             status_qmp.append(status_muris(monitor))
+            ps2_qmp.append(status_ps2(monitor))
 
         if not all("return" in r and "error" not in r for r in responsa):
             print("DEFECIT: motus QMP recusatus est", file=sys.stderr)
             print(json.dumps(responsa, ensure_ascii=False), file=sys.stderr)
             return 7
 
-        # `mouse_set` et `mouse_move` sunt idem iter historicum HMP. Haec secunda
-        # via certo ad murem selectum dirigitur et distinguit defectum injectionis
-        # QMP a defectu protocollo UEFI/Sylviae.
         status_hmp: list[tuple[int, int, int, int] | None] = []
+        ps2_hmp: list[list[int]] = []
         for dx, dy in ((80, -40), (40, 56), (-32, 24)):
             hmp(monitor, f"mouse_move {dx} {dy}")
             time.sleep(0.20)
             status_hmp.append(status_muris(monitor))
+            ps2_hmp.append(status_ps2(monitor))
 
         time.sleep(1.0)
         post_status = status_muris(monitor)
+        ps2_post = status_ps2(monitor)
         hmp(monitor, f"screendump {post}")
         finis = time.time() + 4.0
         while not post.exists() and time.time() < finis:
@@ -214,19 +210,19 @@ def principale() -> int:
         print(f"MURUS: QEMU PS/2 index={index}")
         print(f"MURUS: SELECTIO {selectio.strip()}")
         print(f"MURUS: protocol_rel=0x{protocollum_rel:x} protocol_abs=0x{protocollum_abs:x} moderatores={moderatores}")
-        print(f"MURUS: status_ante={ante_status}")
+        print(f"MURUS: status_ante={ante_status} ps2_ante={ps2_ante}")
         for i, status in enumerate(status_qmp, 1):
-            print(f"MURUS: status_qmp_{i}={status}")
+            print(f"MURUS: status_qmp_{i}={status} ps2={ps2_qmp[i-1]}")
         for i, status in enumerate(status_hmp, 1):
-            print(f"MURUS: status_hmp_{i}={status}")
-        print(f"MURUS: status_post={post_status}")
+            print(f"MURUS: status_hmp_{i}={status} ps2={ps2_hmp[i-1]}")
+        print(f"MURUS: status_post={post_status} ps2_post={ps2_post}")
         print(f"MURUS: pixeli_mutati={mutata}")
 
-        if protocollum_rel == 0:
-            print("DEFECIT: protocollum muris relativi in metadata nucleo non apparet", file=sys.stderr)
+        if not ps2_ante or ps2_ante[0] != 9:
+            print("DEFECIT: rector PS/2 ad statum IX non pervenit", file=sys.stderr)
             return 10
-        if moderatores <= 0:
-            print("DEFECIT: nullus moderator firmware coniunctus est", file=sys.stderr)
+        if len(ps2_ante) >= 3 and (ps2_ante[1] != 250 or ps2_ante[2] != 250):
+            print("DEFECIT: ACK PS/2 F6/F4 non sunt FA/FA", file=sys.stderr)
             return 11
         if ante_status is None or post_status is None:
             print("DEFECIT: telemetria muris legi non potest", file=sys.stderr)
