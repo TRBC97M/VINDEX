@@ -11,7 +11,7 @@ permissions:
 jobs:
   integra:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 20
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
@@ -24,46 +24,27 @@ jobs:
 
       - name: Strata P3 integra
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
-        run: |
-          python3 .github/p3_fenestrale.py
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex')
-          t = p.read_text(encoding='utf-8')
-          old = '''    // Rectoribus nativis pagina propria extra COMMUNIS/acervum datur. Sic
-              // stubs I/O PS/2 neque a volumine neque ab allocationibus dynamicis delentur.
-              CONTENTUM(locus_mem) = 0.
-              DECLARA sr_rect SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 0, 2, 1, locus_mem, 0, 0).
-              SI sr_rect != 0 || CONTENTUM(locus_mem) == 0 TUNC REDDE 19. FIN-SI.
-              DECLARA sedes_rectorum SICUT NUMERUS VALENS CONTENTUM(locus_mem).
-          '''
-          new = '''    // Pagina statim post spatium voluminis rectoribus nativis dedicatur.
-              // COMMUNIS: 0x03000000..0x0303ffff; volumen finit ad 0x03018fff.
-              // 0x03019000 igitur nec umbram, nec volumen, nec acervum tangit.
-              DECLARA sedes_rectorum SICUT NUMERUS VALENS meta + 102400.
-          '''
-          if old not in t:
-              raise SystemExit('ERRATUM: allocatio rectorum temporaria non inventa')
-          p.write_text(t.replace(old, new, 1), encoding='utf-8')
-          PY
+        run: python3 .github/p3_fenestrale.py
 
       - name: Probationes canonicas
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         run: bash ./tests/run_tests.sh
 
-      - name: Nucleum historicum cum rectore refacto proba
+      - name: Nucleum historicum sine mutatione morum proba
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
-          MORA_INITII: '28'
-        run: bash ./instrumenta/proba_catenam_uefi_053.sh
+          MORA_INITII: '18'
+        run: |
+          sed -i 's/timeout 90 /timeout 40 /' ./instrumenta/proba_catenam_uefi_053.sh
+          bash ./instrumenta/proba_catenam_uefi_053.sh
 
       - name: Fenestrale II UEFI cum PS2 proba
         if: ${{ hashFiles('.github/p3_fenestrale.py') != '' }}
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
-          MORA_INITII: '28'
+          MORA_INITII: '20'
         run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
       - name: Mutationes probatas persiste
@@ -74,12 +55,11 @@ jobs:
           git config user.name 'ChatGPT'
           git config user.email 'chatgpt@openai.local'
           git rm .github/p3_fenestrale.py
-          git add 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/ponticulus_uefi_purus.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex' \
+          git add 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_input_i.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh' \
-                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
+                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py' \
+                  'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
           git commit -m 'P3: Fenestrale II cum PS2 nativo in UEFI coniunge'
           git push origin HEAD:chatgpt/p3-fenestrale-uefi-purum
