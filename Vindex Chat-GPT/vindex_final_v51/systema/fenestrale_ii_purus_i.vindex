@@ -1,5 +1,5 @@
-// Sylvia OS — Fenestrale II Purus I.
-// Fenestrae, focus et ordo Z in registro dynamico VINDEX vivunt.
+// Sylvia OS — Fenestrale II Purus I, facies P16-IV.
+// Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
@@ -11,7 +11,9 @@ IMPORTA "bibliotheca/clientia_registrum_h.vindex".
 IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
 IMPORTA "bibliotheca/clientes_eventa_i.vindex".
 IMPORTA "bibliotheca/fenestrale_input_i.vindex".
+IMPORTA "bibliotheca/applicationes_registrum_iv.vindex".
 IMPORTA "bibliotheca/fenestrale_gestor_i.vindex".
+IMPORTA "bibliotheca/fenestrale_applicationes_iv.vindex".
 
 // Rector PS/2 historice hanc functionem vocat. Fenestrale coordinatas suas
 // ex dx/dy crudis legit; hic adaptor tantum contractum rectoris implet.
@@ -25,183 +27,8 @@ FIN-FUNCTIO.
 // Vector systematis nullam geometriam neque statum fenestrae continet.
 // 11/12 murus x/y; 13 bullae; 14 fenestra tractata; 15/16 offset vel murus prior.
 // 27 margines resize; 28 murus relativus; 29 murus absolutus.
-// 34 coda eventuum; 35 eventa perdita; 36 registrum clientium; 37 registrum fenestrarum; 38 INITIUM apertum.
-
-FUNCTIO II_FENESTRA REDDENS NUMERUS.
-    ACCIPIT fenestrae SICUT NUMERUS.
-    ACCIPIT clientes SICUT NUMERUS.
-    ACCIPIT nodus SICUT NUMERUS.
-    SI nodus==0 || CONTENTUM(nodus+48)!=0 TUNC REDDE 0. FIN-SI.
-    DECLARA id SICUT NUMERUS VALENS CONTENTUM(nodus).
-    DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(nodus+8).
-    DECLARA genus SICUT NUMERUS VALENS CH_GENUS(clientes,cliens).
-    DECLARA superficies SICUT NUMERUS VALENS CH_SUPERFICIES(clientes,cliens).
-    DECLARA x SICUT NUMERUS VALENS CONTENTUM(nodus+16). DECLARA y SICUT NUMERUS VALENS CONTENTUM(nodus+24).
-    DECLARA w SICUT NUMERUS VALENS CONTENTUM(nodus+32). DECLARA h SICUT NUMERUS VALENS CONTENTUM(nodus+40).
-    DECLARA activa SICUT NUMERUS VALENS 0.
-    SI FI_FOCUS_ID(fenestrae)==id TUNC activa=1. FIN-SI.
-    DECLARA f SICUT NUMERUS VALENS 0.
-    SI genus==1 TUNC f=FV_FENESTRA(x,y,w,h,"PROGRAMMATA",activa). FIN-SI.
-    SI genus==2 TUNC f=FV_FENESTRA(x,y,w,h,"TABULA",activa). FIN-SI.
-    SI genus!=1 && genus!=2 TUNC f=FV_FENESTRA(x,y,w,h,"APPLICATIO",activa). FIN-SI.
-    SI superficies!=0 TUNC
-        DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
-        DECLARA maxw SICUT NUMERUS VALENS w-20. DECLARA maxh SICUT NUMERUS VALENS h-clientis_y-22.
-        SI maxw>0 && maxh>0 TUNC f=FS_BLIT(superficies,x+10,y+clientis_y,maxw,maxh). FIN-SI.
-    FIN-SI.
-    REDDE 1.
-FIN-FUNCTIO.
-
-FUNCTIO II_BUREAU REDDENS NUMERUS.
-    ACCIPIT s SICUT ORDO DE NUMERUS.
-    DECLARA bx SICUT NUMERUS VALENS FV_METRUM_BUREAU_X().
-    DECLARA bw SICUT NUMERUS VALENS FV_METRUM_BUREAU_LATITUDO().
-    DECLARA bh SICUT NUMERUS VALENS FV_METRUM_BUREAU_ALTITUDO().
-    DECLARA py SICUT NUMERUS VALENS FV_METRUM_BUREAU_PROGRAMMATA_Y().
-    DECLARA ty SICUT NUMERUS VALENS FV_METRUM_BUREAU_TABULA_Y().
-    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
-    DECLARA vitrum SICUT NUMERUS VALENS FV_COLOR(14,66,111).
-    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
-    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
-    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
-    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
-    DECLARA f SICUT NUMERUS VALENS FV_TEXTUM_SCALA(18,18,"SYLVIA",lux,2).
-    f=FV_TEXTUM(20,48,"SYSTEMA VINDEX",aqua).
-    DECLARA cp SICUT NUMERUS VALENS vitrum.
-    DECLARA ct SICUT NUMERUS VALENS vitrum.
-    SI s[11]>=bx && s[11]<bx+bw && s[12]>=py && s[12]<py+bh TUNC cp=argentum. FIN-SI.
-    SI s[11]>=bx && s[11]<bx+bw && s[12]>=ty && s[12]<ty+bh TUNC ct=argentum. FIN-SI.
-    f=FV_RECT(bx,py,bw,bh,cp).
-    f=FV_RECT(bx+30,py+10,48,38,profundum).
-    f=FV_RECT(bx+34,py+14,40,30,aqua).
-    f=FV_RECT(bx+40,py+20,10,8,medium).
-    f=FV_RECT(bx+56,py+20,12,8,medium).
-    f=FV_RECT(bx+40,py+32,28,8,medium).
-    f=FV_TEXTUM(bx+10,py+66,"PROGRAMMATA",lux).
-    f=FV_RECT(bx,ty,bw,bh,ct).
-    f=FV_RECT(bx+30,ty+10,48,38,profundum).
-    f=FV_RECT(bx+35,ty+15,14,12,aqua).
-    f=FV_RECT(bx+55,ty+15,18,12,medium).
-    f=FV_RECT(bx+35,ty+33,38,10,aqua).
-    f=FV_TEXTUM(bx+26,ty+66,"TABULA",lux).
-    REDDE 1.
-FIN-FUNCTIO.
-
-FUNCTIO II_INITIUM REDDENS NUMERUS.
-    ACCIPIT s SICUT ORDO DE NUMERUS.
-    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
-    DECLARA x SICUT NUMERUS VALENS 6.
-    DECLARA w SICUT NUMERUS VALENS FV_METRUM_INITIUM_LATITUDO().
-    DECLARA h SICUT NUMERUS VALENS FV_METRUM_INITIUM_ALTITUDO().
-    DECLARA y SICUT NUMERUS VALENS screen_h-FV_METRUM_TASKBAR()-h.
-    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
-    DECLARA vitrum SICUT NUMERUS VALENS FV_COLOR(14,66,111).
-    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
-    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
-    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
-    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
-    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
-    DECLARA umbra SICUT NUMERUS VALENS FV_COLOR(4,18,31).
-    DECLARA f SICUT NUMERUS VALENS FV_RECT(x+7,y+7,w,h,umbra).
-    f=FV_RECT(x,y,w,h,ebur).
-    f=FV_RECT(x,y,w,2,aqua).
-    f=FV_RECT(x,y,w,FV_METRUM_INITIUM_CAPUT(),vitrum).
-    f=FV_RECT(x,y,w,2,aqua).
-    f=FV_TEXTUM_SCALA(x+18,y+14,"SYLVIA",lux,2).
-    f=FV_TEXTUM(x+20,y+45,"SYSTEMA VINDEX",aqua).
-    f=FV_TEXTUM(x+18,y+74,"APPLICATIONES",profundum).
-    DECLARA item_h SICUT NUMERUS VALENS FV_METRUM_INITIUM_ITEM().
-    DECLARA i1y SICUT NUMERUS VALENS y+92.
-    DECLARA i2y SICUT NUMERUS VALENS y+146.
-    DECLARA c1 SICUT NUMERUS VALENS lux.
-    DECLARA c2 SICUT NUMERUS VALENS lux.
-    SI s[11]>=x+10 && s[11]<x+w-10 && s[12]>=i1y && s[12]<i1y+item_h TUNC c1=argentum. FIN-SI.
-    SI s[11]>=x+10 && s[11]<x+w-10 && s[12]>=i2y && s[12]<i2y+item_h TUNC c2=argentum. FIN-SI.
-    f=FV_RECT(x+10,i1y,w-20,item_h,c1).
-    f=FV_RECT(x+18,i1y+6,32,32,profundum).
-    f=FV_RECT(x+23,i1y+11,22,22,aqua).
-    f=FV_TEXTUM(x+64,i1y+18,"PROGRAMMATA",profundum).
-    f=FV_RECT(x+10,i2y,w-20,item_h,c2).
-    f=FV_RECT(x+18,i2y+6,32,32,profundum).
-    f=FV_RECT(x+23,i2y+11,8,8,aqua).
-    f=FV_RECT(x+35,i2y+11,10,8,medium).
-    f=FV_RECT(x+23,i2y+23,22,10,aqua).
-    f=FV_TEXTUM(x+64,i2y+18,"TABULA",profundum).
-    f=FV_RECT(x+10,y+h-48,w-20,1,argentum).
-    f=FV_TEXTUM(x+18,y+h-30,"VINDEX 0.53",medium).
-    f=FV_TEXTUM(x+w-86,y+h-30,"P16-II",medium).
-    REDDE 1.
-FIN-FUNCTIO.
-
-FUNCTIO II_TASKBAR REDDENS NUMERUS.
-    ACCIPIT fenestrae SICUT NUMERUS.
-    ACCIPIT clientes SICUT NUMERUS.
-    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
-    DECLARA th SICUT NUMERUS VALENS FV_METRUM_TASKBAR().
-    DECLARA top SICUT NUMERUS VALENS h-th.
-    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
-    DECLARA vitrum SICUT NUMERUS VALENS FV_COLOR(14,66,111).
-    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
-    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
-    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
-    DECLARA f SICUT NUMERUS VALENS FV_RECT(0,top,w,th,profundum).
-    f=FV_RECT(0,top,w,1,aqua).
-    f=FV_RECT(6,top+6,104,th-12,vitrum).
-    f=FV_RECT(12,top+11,16,16,medium).
-    f=FV_RECT(15,top+14,10,10,aqua).
-    f=FV_TEXTUM(36,top+16,"INITIUM",lux).
-    DECLARA tray SICUT NUMERUS VALENS w-126.
-    f=FV_RECT(tray,top+6,120,th-12,vitrum).
-    f=FV_RECT(tray+8,top+11,16,16,medium).
-    f=FV_RECT(tray+11,top+14,10,10,aqua).
-    f=FV_TEXTUM(tray+32,top+16,"SYLVIA",lux).
-    DECLARA numerus SICUT NUMERUS VALENS FI_APERTA_NUM(fenestrae).
-    SI numerus<=0 TUNC REDDE 1. FIN-SI.
-    DECLARA basis SICUT NUMERUS VALENS 118.
-    DECLARA spatium SICUT NUMERUS VALENS tray-basis-6.
-    SI spatium<=0 TUNC REDDE 1. FIN-SI.
-    DECLARA bw SICUT NUMERUS VALENS spatium/numerus.
-    SI bw>196 TUNC bw=196. FIN-SI. SI bw<1 TUNC bw=1. FIN-SI.
-    DECLARA i SICUT NUMERUS VALENS 0.
-    DUM i<numerus PERFICE
-        DECLARA bx SICUT NUMERUS VALENS basis+i*bw.
-        SI bx>=tray-6 TUNC DESINE. FIN-SI.
-        DECLARA id SICUT NUMERUS VALENS FI_APERTA_N(fenestrae,i).
-        DECLARA n SICUT NUMERUS VALENS FI_QUAERE(fenestrae,id).
-        SI n!=0 TUNC
-            DECLARA color SICUT NUMERUS VALENS vitrum.
-            SI FI_FOCUS_ID(fenestrae)==id && CONTENTUM(n+48)==0 TUNC color=medium. FIN-SI.
-            DECLARA lat SICUT NUMERUS VALENS bw-8. SI lat<1 TUNC lat=1. FIN-SI.
-            f=FV_RECT(bx,top+6,lat,th-12,color).
-            DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(n+8).
-            DECLARA genus SICUT NUMERUS VALENS CH_GENUS(clientes,cliens).
-            SI bw>=104 && genus==1 TUNC f=FV_TEXTUM(bx+10,top+16,"PROGRAMMATA",lux). FIN-SI.
-            SI bw>=80 && genus==2 TUNC f=FV_TEXTUM(bx+10,top+16,"TABULA",lux). FIN-SI.
-            SI bw<104 && bw>=28 && genus==1 TUNC f=FV_TEXTUM(bx+10,top+16,"P",lux). FIN-SI.
-            SI bw<80 && bw>=28 && genus==2 TUNC f=FV_TEXTUM(bx+10,top+16,"T",lux). FIN-SI.
-        FIN-SI.
-        i=i+1.
-    FIN-DUM.
-    REDDE 1.
-FIN-FUNCTIO.
-
-FUNCTIO II_REDDE REDDENS NUMERUS.
-    ACCIPIT s SICUT ORDO DE NUMERUS.
-    ACCIPIT fenestrae SICUT NUMERUS.
-    ACCIPIT clientes SICUT NUMERUS.
-    DECLARA f SICUT NUMERUS VALENS FV_FUNDUM().
-    f=II_BUREAU(s).
-    DECLARA focus SICUT NUMERUS VALENS FI_RELEGE_FOCUS(fenestrae).
-    DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
-    DUM n!=0 PERFICE
-        SI CONTENTUM(n+48)==0 TUNC f=II_FENESTRA(fenestrae,clientes,n). FIN-SI.
-        n=FI_PROXIMUS(n).
-    FIN-DUM.
-    SI s[38]==1 TUNC f=II_INITIUM(s). FIN-SI.
-    f=II_TASKBAR(fenestrae,clientes).
-    f=FV_CURSOR(s[11],s[12]).
-    REDDE 1.
-FIN-FUNCTIO.
+// 34 coda eventuum; 35 eventa perdita; 36 clientes; 37 fenestrae;
+// 38 INITIUM apertum; 39 catalogus applicationum.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
@@ -213,6 +40,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
     s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
     s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
+    s[39]=AI_CREA(). SI s[39]==0 TUNC REDDE 71. FIN-SI.
 
     DECLARA superficies_p SICUT NUMERUS VALENS FS_CREA(496,260).
     DECLARA superficies_t SICUT NUMERUS VALENS FS_CREA(396,226).
@@ -220,6 +48,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA cp SICUT NUMERUS VALENS CH_ADDE(s[36],1,1,superficies_p,0).
     DECLARA ct SICUT NUMERUS VALENS CH_ADDE(s[36],2,2,superficies_t,0).
     SI cp==0 || ct==0 TUNC REDDE 71. FIN-SI.
+    DECLARA ap SICUT NUMERUS VALENS AI_ADDE(s[39],1,1,"PROGRAMMATA",1).
+    DECLARA at SICUT NUMERUS VALENS AI_ADDE(s[39],2,2,"TABULA",1).
+    SI ap==0 || at==0 || AI_NUMERUS(s[39])!=2 TUNC REDDE 71. FIN-SI.
     DECLARA rp SICUT NUMERUS VALENS PE_RENDE(superficies_p,0).
     DECLARA rt SICUT NUMERUS VALENS TF_RENDE(superficies_t,0).
 
@@ -241,7 +72,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI sp==0 || st==0 TUNC REDDE 71. FIN-SI.
 
     DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
-    DECLARA f SICUT NUMERUS VALENS II_REDDE(s,s[37],s[36]).
+    DECLARA f SICUT NUMERUS VALENS IV_REDDE(s,s[37],s[36],s[39]).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
         DECLARA redde SICUT NUMERUS VALENS 0.
@@ -254,14 +85,14 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         FIN-SI.
         SI muris!=0 TUNC
             DECLARA bullae SICUT NUMERUS VALENS muris-1.
-            SI (bullae&1)!=0 && (s[13]&1)==0 TUNC DECLARA md SICUT NUMERUS VALENS GI_MOUSE_DOWN(s,s[37],s[34]). FIN-SI.
+            SI (bullae&1)!=0 && (s[13]&1)==0 TUNC DECLARA md SICUT NUMERUS VALENS IV_MOUSE_DOWN(s,s[37],s[34],s[39]). FIN-SI.
             SI (bullae&1)!=0 && s[14]!=0 TUNC DECLARA dr SICUT NUMERUS VALENS GI_DRAG(s,s[37]). FIN-SI.
             SI (bullae&1)==0 && (s[13]&1)!=0 TUNC s[14]=0. s[27]=0. FIN-SI.
             s[13]=bullae. redde=1.
         FIN-SI.
         DECLARA acta SICUT NUMERUS VALENS CI_EVENTA_AGE(s[36],s[37],s[34]).
         SI acta>0 TUNC redde=1. FIN-SI.
-        SI redde==1 TUNC f=II_REDDE(s,s[37],s[36]). FIN-SI.
+        SI redde==1 TUNC f=IV_REDDE(s,s[37],s[36],s[39]). FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
     FIN-DUM.
     REDDE 0.
