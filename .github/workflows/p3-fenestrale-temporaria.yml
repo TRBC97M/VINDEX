@@ -1,4 +1,4 @@
-name: P3 — Contextus descriptorum identitates
+name: P3 — Allocator nativus sine clobber
 
 on:
   push:
@@ -8,10 +8,10 @@ on:
 jobs:
   proba:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
-      - name: G2 et G3 descriptorum contextum exponunt
+      - name: Allocator nativus et convergentia
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
@@ -26,54 +26,40 @@ jobs:
               ACCIPIT codex SICUT ACUS<NUMERUS>.
               ACCIPIT pos SICUT NUMERUS.
               DECLARA p_mem SICUT NUMERUS VALENS pos.
-              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 6, 0).
-              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554432).
-              p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 0, 1).
-              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 0, 6).
-              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 3, 0).
-              p_mem = COMPONE_ONERA(codex, p_mem, 2, 8).
-              p_mem = COMPONE_ADD(codex, p_mem, 0, 2).
+              // R10 solum registrum temporarium est et integrum servatur.
+              // Argumenta functionis vocantis (RDI, RSI, RDX, RCX, R8, R9)
+              // igitur post RESERVA_OCTETA immutata manent.
+              p_mem = COMPONE_IMPONE(codex, p_mem, 10).
               p_mem = COMPONE_IMPONE(codex, p_mem, 0).
-              p_mem = COMPONE_TRANSCRIBE(codex, p_mem, 0, 3).
-              p_mem = COMPONE_ONERA(codex, p_mem, 2, 8).
-              p_mem = COMPONE_ADD(codex, p_mem, 0, 2).
-              p_mem = COMPONE_ADD(codex, p_mem, 0, 6).
-              p_mem = COMPONE_VERIFICA_TAS(codex, p_mem).
-              p_mem = COMPONE_ONERA(codex, p_mem, 1, 33554432).
-              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 1, 0).
+              p_mem = COMPONE_ONERA(codex, p_mem, 10, 33554432).
+              p_mem = COMPONE_SUME_INDIRECTUM(codex, p_mem, 0, 10).
+              p_mem = COMPONE_AUFER(codex, p_mem, 10).
+              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 0, 10).
+              p_mem = COMPONE_IMPONE(codex, p_mem, 10).
+              p_mem = COMPONE_ONERA(codex, p_mem, 10, 8).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 10).
+              p_mem = COMPONE_AUFER(codex, p_mem, 10).
+              p_mem = COMPONE_IMPONE(codex, p_mem, 0).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 10).
+              p_mem = COMPONE_ONERA(codex, p_mem, 10, 7).
+              p_mem = COMPONE_ADD(codex, p_mem, 0, 10).
+              p_mem = COMPONE_ONERA(codex, p_mem, 10, -8).
+              p_mem = COMPONE_AND(codex, p_mem, 0, 10).
+              p_mem = COMPONE_ONERA(codex, p_mem, 10, 33554432).
+              p_mem = COMPONE_SERVA_INDIRECTUM(codex, p_mem, 10, 0).
               p_mem = COMPONE_AUFER(codex, p_mem, 0).
+              p_mem = COMPONE_AUFER(codex, p_mem, 10).
               REDDE p_mem.
           FIN-FUNCTIO.
           '''
-          t=t[:a]+n+t[b:]
-          old='''    DESCRIPTOR_FORMARUM_SCRIBE(contextus_parseris, descriptor_formarum_contextus).
-              CONTENTUM(contextus_parseris + 8) = 0.
-              DECLARA status_locorum_dynam SICUT NUMERUS VALENS INITIA_LOCA_DYNAMICA(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris)).
-          '''
-          new='''    DESCRIPTOR_FORMARUM_SCRIBE(contextus_parseris, descriptor_formarum_contextus).
-              PROCLAMA contextus_parseris.
-              PROCLAMA descriptor_functionum_contextus.
-              PROCLAMA descriptor_pendentium_contextus.
-              PROCLAMA descriptor_pos_pend_contextus.
-              PROCLAMA descriptor_localium_contextus.
-              PROCLAMA descriptor_formarum_contextus.
-              PROCLAMA DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris).
-              PROCLAMA DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris).
-              PROCLAMA POSITIONES_PENDENTES_LEGE(contextus_parseris).
-              PROCLAMA DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris).
-              PROCLAMA DESCRIPTOR_FORMARUM_LEGE(contextus_parseris).
-              CONTENTUM(contextus_parseris + 8) = 0.
-              DECLARA status_locorum_dynam SICUT NUMERUS VALENS INITIA_LOCA_DYNAMICA(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris)).
-          '''
-          if old not in t: raise SystemExit('ERRATUM: ancora contextus deest')
-          p.write_text(t.replace(old,new,1),encoding='utf-8')
+          p.write_text(t[:a]+n+t[b:],encoding='utf-8')
           PY
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
-          echo '=== G2 ==='
-          /tmp/g2 src/compilator_vindex.vindex /tmp/g3 > /tmp/g2.out 2>&1
-          cat /tmp/g2.out
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
           chmod +x /tmp/g3
-          echo '=== G3 ==='
-          timeout 1s /tmp/g3 src/compilator_vindex.vindex /tmp/g4 > /tmp/g3.out 2>&1 || true
-          cat /tmp/g3.out
+          timeout 20s /tmp/g3 src/compilator_vindex.vindex /tmp/g4
+          chmod +x /tmp/g4
+          cmp /tmp/g3 /tmp/g4
+          echo 'CONVERGENTIA_G3_G4=PERFECTA'
+          ./tests/run_tests.sh
