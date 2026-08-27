@@ -1,0 +1,80 @@
+// Probatio P17-II — historia et transcriptum TERMINALIS dynamica.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/terminale_clientis_i.vindex".
+
+FUNCTIO TI_SCRIBE REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA d SICUT NUMERUS VALENS textus.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        DECLARA r SICUT NUMERUS VALENS TE_CLAVIS(s,OCTETUS_AB(d+16+i)).
+        SI r==0 TUNC REDDE 0. FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA s SICUT NUMERUS VALENS TE_CREA().
+    SI s==0 TUNC REDDE 71. FIN-SI.
+
+    // Dua mandata historiam et quattuor lineas transcripti generant.
+    SI TI_SCRIBE(s,"SALVE")==0 TUNC REDDE 65. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS TE_CLAVIS(s,13).
+    SI CONTENTUM(s+8)!=1 || CONTENTUM(s+56)!=2 TUNC REDDE 65. FIN-SI.
+    SI TI_SCRIBE(s,"VERSIO")==0 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS(s,13).
+    SI CONTENTUM(s+8)!=2 || CONTENTUM(s+56)!=4 TUNC REDDE 65. FIN-SI.
+
+    // Sagitta sursum: VERSIO, deinde SALVE. Deorsum redit ad VERSIO et vacuum.
+    r=TE_CLAVIS_EVENTUM(s,1,0).
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(s).
+    SI TE_AEQUATUR(d,"VERSIO")==0 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS_EVENTUM(s,1,0).
+    d=CONTENTUM(s).
+    SI TE_AEQUATUR(d,"SALVE")==0 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS_EVENTUM(s,2,0).
+    d=CONTENTUM(s).
+    SI TE_AEQUATUR(d,"VERSIO")==0 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS_EVENTUM(s,2,0).
+    d=CONTENTUM(s).
+    SI CONTENTUM(d)!=0 || CONTENTUM(s+32)!=0 TUNC REDDE 65. FIN-SI.
+
+    // XL mandata addita probant historiam/transcriptum ultra capacitatem parvam.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<40 PERFICE
+        SI TI_SCRIBE(s,"X")==0 TUNC REDDE 65. FIN-SI.
+        r=TE_CLAVIS(s,13).
+        i=i+1.
+    FIN-DUM.
+    SI CONTENTUM(s+56)!=84 TUNC REDDE 65. FIN-SI.
+
+    // PageUp/PageDown scrollback dynamicum intra fines movent.
+    r=TE_CLAVIS_EVENTUM(s,9,0).
+    SI CONTENTUM(s+64)!=5 TUNC REDDE 65. FIN-SI.
+    i=0.
+    DUM i<30 PERFICE r=TE_CLAVIS_EVENTUM(s,9,0). i=i+1. FIN-DUM.
+    SI CONTENTUM(s+64)!=83 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS_EVENTUM(s,10,0).
+    SI CONTENTUM(s+64)!=78 TUNC REDDE 65. FIN-SI.
+
+    // PURGA transcriptum delet, sed mandatum ipsum in historia manet.
+    CONTENTUM(d)=0. SCRIBE_OCTETUM_AB(d+16,0).
+    SI TI_SCRIBE(s,"PURGA")==0 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS(s,13).
+    SI CONTENTUM(s+8)!=4 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(s+56)!=0 || CONTENTUM(s+64)!=0 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(s+24)==0 TUNC REDDE 65. FIN-SI.
+    r=TE_CLAVIS_EVENTUM(s,1,0).
+    d=CONTENTUM(s).
+    SI TE_AEQUATUR(d,"PURGA")==0 TUNC REDDE 65. FIN-SI.
+
+    // P17-I numerus mandatorum adhuc crescit: II + XL + I = XLIII.
+    SI CONTENTUM(s+16)!=43 TUNC REDDE 65. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
