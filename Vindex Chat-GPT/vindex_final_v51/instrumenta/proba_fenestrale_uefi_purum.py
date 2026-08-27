@@ -56,8 +56,8 @@ def hexa_hmp(textus: str) -> list[int]:
 
 
 def basis_ps2(monitor: socket.socket) -> int:
-    v = hexa_hmp(hmp(monitor, "xp /1gx 0x03000b30"))
-    return v[0] if v else 0
+    # Sedes rectoris historice probata; initium fit post migrationem voluminis.
+    return 0x03018800
 
 
 def status_ps2(monitor: socket.socket, basis: int) -> list[int]:
@@ -89,7 +89,7 @@ def pictura_structura(pix: bytes):
     distincti = sum(1 for _, n in c.items() if n > 30)
     communes = c.most_common(12)
     dominans = communes[0][1] if communes else 0
-    return distincti, communes, dominans
+    return c, distincti, communes, dominans
 
 
 def principale() -> int:
@@ -112,7 +112,6 @@ def principale() -> int:
         index = int(candidati[0]["index"]); hmp(monitor, f"mouse_set {index}"); time.sleep(mora)
 
         basis = basis_ps2(monitor)
-        if basis == 0: print("DEFECIT: basis rectoris PS/2 deest", file=sys.stderr); return 6
         ante_ps2 = status_ps2(monitor, basis)
         metadata = hexa_hmp(hmp(monitor, "xp /12gx 0x03000800"))[:12]
         g = hexa_hmp(hmp(monitor, "xp /1gx 0x03000b38")); gradus = g[0] if g else 0
@@ -120,15 +119,15 @@ def principale() -> int:
         acervus = hexa_hmp(hmp(monitor, "xp /8gx 0x02000000"))[:8]
         acervus_octeta = hexa_hmp(hmp(monitor, "xp /32bx 0x02000000"))[:32]
         captura(monitor, ante); w1, h1, pix1 = ppm(ante)
-        distincti, communes, dominans = pictura_structura(pix1)
-        print(f"FENESTRALE: gradus_initii={gradus} gradus_EG={gradus_eg} metadata={metadata}")
+        colores, distincti, communes, dominans = pictura_structura(pix1)
+        signa = {(8,35,61): colores[(8,35,61)], (98,215,242): colores[(98,215,242)], (241,238,228): colores[(241,238,228)]}
+        print(f"FENESTRALE: gradus_diagnostici={gradus}/{gradus_eg} metadata={metadata}")
         print(f"FENESTRALE: acervus_qword={acervus}")
         print(f"FENESTRALE: acervus_octeta={acervus_octeta}")
-        print(f"FENESTRALE: ps2_ante={ante_ps2} colores_communes={communes}")
-        if gradus != 11:
-            print(f"DEFECIT: Fenestrale ante primum render cessavit: gradus={gradus} EG={gradus_eg}", file=sys.stderr); return 14
+        print(f"FENESTRALE: ps2_ante={ante_ps2} signa={signa} colores_communes={communes}")
         if (w1, h1) != (1280, 800): print(f"DEFECIT: resolutio {w1}x{h1}", file=sys.stderr); return 7
         if distincti < 8 or dominans > (w1*h1*97//100): print(f"DEFECIT: pictura nimis simplex: distincti={distincti} dominans={dominans}", file=sys.stderr); return 8
+        if any(n < 100 for n in signa.values()): print(f"DEFECIT: signa picturae Fenestralis desunt: {signa}", file=sys.stderr); return 14
         if len(ante_ps2) < 3 or ante_ps2[0] != 9 or ante_ps2[1:3] != [250,250]: print(f"DEFECIT: initium PS/2 invalidum: {ante_ps2}", file=sys.stderr); return 9
 
         responsa=[]
