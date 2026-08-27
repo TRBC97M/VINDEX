@@ -85,6 +85,19 @@ def cursor_quaere(pix: bytes, w: int, h: int) -> tuple[int, int] | None:
             return x, y
 
 
+def initium_top_quaere(pix: bytes, w: int, h: int, vitrum: tuple[int, int, int]) -> int | None:
+    """Initium panni e colore capitis x=20 invenit, capacitate catalogi neglecta."""
+    prior_non = True
+    for y in range(120, h - 40):
+        est = pixel(pix, w, 20, y) == vitrum
+        if est and prior_non:
+            # Caput INITIUM saltem XL px verticales servat.
+            if y + 40 < h and pixel(pix, w, 20, y + 30) == vitrum:
+                return y
+        prior_non = not est
+    return None
+
+
 def limita(v: int, minimum: int, maximum: int) -> int:
     if v < minimum:
         return minimum
@@ -201,54 +214,61 @@ def principale() -> int:
         argentum = (185, 196, 207)
         bronzeum = (185, 138, 82)
         profundum = (8, 35, 61)
-
-        # Menu: x=6, y=500, w=320, h=260.
-        if pixel(pix_open, w, 20, 510) != vitrum:
-            print(f"DEFECIT: caput INITIUM non apertum: {pixel(pix_open,w,20,510)} cursor={pos_initium}", file=sys.stderr)
+        menu_top = initium_top_quaere(pix_open, w, h, vitrum)
+        if menu_top is None:
+            print("DEFECIT: caput INITIUM non inventum", file=sys.stderr)
             return 7
-        if pixel(pix_open, w, 300, 570) != ebur:
-            print(f"DEFECIT: corpus INITIUM deest: {pixel(pix_open,w,300,570)}", file=sys.stderr)
+        programmata_y = menu_top + 92
+        tabula_y = programmata_y + 54
+        programmata_scopus = programmata_y + 22
+        tabula_scopus = tabula_y + 22
+
+        if pixel(pix_open, w, 20, menu_top + 10) != vitrum:
+            print(f"DEFECIT: caput INITIUM non apertum: {pixel(pix_open,w,20,menu_top+10)} cursor={pos_initium}", file=sys.stderr)
             return 8
-        if pixel(pix_open, w, 300, 600) != lux or pixel(pix_open, w, 300, 650) != lux:
-            print("DEFECIT: tesserae applicationum INITIUM desunt", file=sys.stderr)
+        if pixel(pix_open, w, 300, menu_top + 70) != ebur:
+            print(f"DEFECIT: corpus INITIUM deest: {pixel(pix_open,w,300,menu_top+70)}", file=sys.stderr)
             return 9
+        if pixel(pix_open, w, 300, programmata_scopus) != lux or pixel(pix_open, w, 300, tabula_scopus) != lux:
+            print("DEFECIT: tesserae applicationum INITIUM desunt", file=sys.stderr)
+            return 10
         mutata_open = differentiae(pix_ante, pix_open)
         if mutata_open < 12000:
             print(f"DEFECIT: pannus INITIUM nimis parum mutavit: {mutata_open}", file=sys.stderr)
-            return 10
+            return 11
 
-        pos_tabula = move_ad(monitor, out, "tabula", 150, 650, w, h)
+        pos_tabula = move_ad(monitor, out, "tabula", 150, tabula_scopus, w, h)
         captura(monitor, hover)
         _, _, pix_hover = ppm(hover)
-        if pixel(pix_hover, w, 300, 650) != argentum:
-            print(f"DEFECIT: hover TABULA non detectus: {pixel(pix_hover,w,300,650)} cursor={pos_tabula}", file=sys.stderr)
-            return 11
-        if pixel(pix_hover, w, 300, 600) != lux:
-            print("DEFECIT: hover TABULA tesseram PROGRAMMATA mutavit", file=sys.stderr)
+        if pixel(pix_hover, w, 300, tabula_scopus) != argentum:
+            print(f"DEFECIT: hover TABULA non detectus: {pixel(pix_hover,w,300,tabula_scopus)} cursor={pos_tabula}", file=sys.stderr)
             return 12
+        if pixel(pix_hover, w, 300, programmata_scopus) != lux:
+            print("DEFECIT: hover TABULA tesseram PROGRAMMATA mutavit", file=sys.stderr)
+            return 13
 
         click(monitor)
         captura(monitor, post)
         _, _, pix_post = ppm(post)
-        if pixel(pix_post, w, 20, 510) == vitrum:
+        if pixel(pix_post, w, 20, menu_top + 10) == vitrum:
             print("DEFECIT: INITIUM post electionem non clausum est", file=sys.stderr)
-            return 13
+            return 14
 
         # TABULA initialiter x≈679 y=168. Post electionem debet focus et marginem bronzeum accipere.
         focus_pixel = pixel(pix_post, w, 700, 168)
         if focus_pixel != bronzeum:
             print(f"DEFECIT: TABULA focus non accepit: {focus_pixel}", file=sys.stderr)
-            return 14
-
-        if pixel(pix_open, w, 24, 604) != profundum:
-            print("DEFECIT: signum PROGRAMMATA in INITIUM deest", file=sys.stderr)
             return 15
 
+        if pixel(pix_open, w, 24, programmata_y + 12) != profundum:
+            print("DEFECIT: signum PROGRAMMATA in INITIUM deest", file=sys.stderr)
+            return 16
+
         mutata_post = differentiae(pix_open, pix_post)
-        print(f"INITIUM: cursor_init={init_pos} cursor_tessera={pos_initium} cursor_tabula={pos_tabula}")
+        print(f"INITIUM: top={menu_top} cursor_init={init_pos} cursor_tessera={pos_initium} cursor_tabula={pos_tabula}")
         print(f"INITIUM: apertio_pixeli={mutata_open} clausura_focus_pixeli={mutata_post}")
-        print(f"INITIUM: caput={pixel(pix_open,w,20,510)} hover_tabula={pixel(pix_hover,w,300,650)} focus_tabula={focus_pixel}")
-        print("RECTE: P16-II INITIUM aperitur, hover respondet et TABULA vere focalizat.")
+        print(f"INITIUM: caput={pixel(pix_open,w,20,menu_top+10)} hover_tabula={pixel(pix_hover,w,300,tabula_scopus)} focus_tabula={focus_pixel}")
+        print("RECTE: P16-II INITIUM capacitatem dynamicam tolerat et TABULA vere focalizat.")
         return 0
     finally:
         try:
