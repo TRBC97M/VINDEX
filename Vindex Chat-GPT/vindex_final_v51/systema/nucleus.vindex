@@ -1,6 +1,8 @@
 // VINDEX Systema Fenestrale 0.51 — Bibliotheca duplex VXNAT.
 // Omnis pictura et administratio fenestrarum ipsa VINDEX perficitur.
 
+IMPORTA "systema/rectores/murus_ps2.vindex".
+
 FUNCTIO PIXEL_SCRIBE REDDENS NUMERUS.
     ACCIPIT x SICUT NUMERUS.
     ACCIPIT y SICUT NUMERUS.
@@ -1187,9 +1189,17 @@ FUNCTIO UEFI_PARA REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO UEFI_POLLE REDDENS NUMERUS.
+    DECLARA ma SICUT NUMERUS VALENS 0.
+    SI PS2_PARATUS_EST() == 1 TUNC
+        // PS/2 primum pollitur: si octetum AUX pendet, rector nativus eum
+        // consumit antequam ministerium claviaturae firmware 8042 tangat.
+        ma = PS2_POLLE().
+    FIN-SI.
     DECLARA cl SICUT NUMERUS VALENS UEFI_CLAVES_POLLE().
-    DECLARA ma SICUT NUMERUS VALENS UEFI_MURIS_ABS_POLLE().
-    SI ma == 0 TUNC ma = UEFI_MURIS_REL_POLLE(). FIN-SI.
+    SI PS2_PARATUS_EST() == 0 TUNC
+        ma = UEFI_MURIS_ABS_POLLE().
+        SI ma == 0 TUNC ma = UEFI_MURIS_REL_POLLE(). FIN-SI.
+    FIN-SI.
     DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
     SI systema != 0 TUNC
         DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema + 96).
@@ -1439,6 +1449,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         cursor_editoris = longitudo_editoris.
         status_archivi = 2.
     FIN-SI.
+
+    // Rector PS/2 post omnem purgationem/migrationem voluminis initur, ne
+    // stubs et status eius intra regionem 50401280..50434047 deleantur.
+    DECLARA ps2_paratus SICUT NUMERUS VALENS PS2_PARA().
 
     DUM 1 == 1 PERFICE
         SI CONTENTUM(50333696) == 1 TUNC
