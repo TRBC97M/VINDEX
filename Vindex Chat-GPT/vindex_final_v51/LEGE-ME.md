@@ -73,7 +73,13 @@ Backend Win64 non solum structuram PE generat: probationes CI producta sub **Win
 
 ## UEFI
 
-Target UEFI VINDEX purus est nunc opus experimentale activum in PR #82. Facultates magnae iam sub QEMU/OVMF demonstratae sunt, sed target nondum eodem gradu canonico ac ELF et Win64 declaratur. Ne codicem experimenti UEFI quasi API stabilem praesentis versionis praesumas.
+```bash
+./compilator_vindex programma.vindex programma.efi uefi
+```
+
+Target UEFI VINDEX purus est canonicus per PR #109. Compilator generat PE32+ EFI application sine importationibus Win32. Catena dedicata QEMU/OVMF probat non solum structuram fasciculi, sed boot realem usque ad framebuffer Sylviae.
+
+Primitiva basimi gradus `SALI_AD(expressio)` imperium sine reditu ad sedem datam transfert. Vocationes firmware UEFI per contractum VINDEX proprium exercentur.
 
 ---
 
@@ -88,23 +94,27 @@ FIN-FUNCTIO.
 
 VINDEX iam exercet, inter alia:
 
-- numeros integros;
-- fluitantia;
+- numeros integros et fluitantia;
 - variabiles locales et globales;
-- functiones et recursionem;
+- functiones, recursionem et reditum `TEXTUS`;
 - argumenta functionum et ABI probata;
 - acus et memoriam directam;
 - `FORMA` et structuras memoriae;
-- ordines et textum;
+- ordines, collectiones, series et segmenta;
+- `TEXTUS` dynamicum UTF-8;
+- validationem UTF-8 strictam et scalaria Unicode;
+- subtextum Unicode per limites scalarum;
 - importationes;
 - I/O fundamentalem;
 - `argc/argv`;
 - projecta `PROIECTUM`;
 - ELF64;
 - PE32+ Win64;
+- PE32+ UEFI;
 - diagnostica cum fonte, linea, columna et nuntio;
 - `&&` et `||` cum aestimatione brevi vera;
-- `&` et `|` ut operationes bitariae separatae.
+- `&` et `|` ut operationes bitariae separatae;
+- commentaria `//` etiam intra corpora functionum.
 
 Haec enumeratio non est promissio plenitudinis C aut C++; VINDEX adhuc lingua in constructione est.
 
@@ -113,8 +123,6 @@ Haec enumeratio non est promissio plenitudinis C aut C++; VINDEX adhuc lingua in
 # IV. Operatores logici
 
 `&&` et `||` sunt operatoria logica cum **aestimatione brevi**.
-
-Exempli gratia:
 
 ```vindex
 SI acus != 0 && CONTENTUM(acus + 48) == 7 TUNC
@@ -132,11 +140,7 @@ comparatio → && → ||
 
 `&` et `|` operationes bitariae manent.
 
-Contractus plenior est in:
-
-```text
-documenta/vindex/LOGICA_BREVIS.md
-```
+Contractus plenior est in `documenta/vindex/LOGICA_BREVIS.md`.
 
 ---
 
@@ -157,7 +161,11 @@ chmod +x /tmp/g2
 cmp /tmp/g2 /tmp/g3
 ```
 
-Catena canonica requirit `G2 = G3`. Probationes recentiores etiam binarium versionatum cum generatione canonica comparant.
+Catena canonica requirit:
+
+```text
+compilator versionatus = G2 = G3
+```
 
 Bootstrap Python vetus manet historia et testimonium originis; non est via ordinaria qua VINDEX hodiernus evolvitur.
 
@@ -177,17 +185,16 @@ Aut:
 ./tests/run_tests.sh
 ```
 
-Status canonizatus post PR #99:
+Status hodiernus:
 
 ```text
-XXIII probationes rectae; nulla errata.
+XXIX probationes rectae; nulla errata.
 ```
 
 Suite exercet:
 
 - `Salve`;
-- calculum;
-- fluitantia;
+- calculum et fluitantia;
 - importationes;
 - formas et acus;
 - recursionem;
@@ -195,8 +202,10 @@ Suite exercet:
 - diagnostica reiectionis;
 - auto-hospitium;
 - logicam brevem;
+- collectiones, series et segmenta `NUMERUS`;
+- UTF-8, scalaria Unicode, reditum `TEXTUS` et subtextum Unicode;
 - PE32+;
-- puritatem Sylviae;
+- puritatem absolutam Sylviae;
 - LXXX fenestras Fenestralis;
 - compilationem Fenestralis II Purus I.
 
@@ -238,11 +247,7 @@ Ea praebet:
 
 Officina canonica non utitur HTML, CSS aut JavaScript. Workflow Windows aedificat Officinam, generat compilatorem Win64 VINDEX, projecta PE construit atque exsequitur et diagnostica realia probat.
 
-Fons est in radice repositorii:
-
-```text
-officina/
-```
+Fons est in radice repositorii: `officina/`.
 
 Officina GTK/C vetus servatur tantum ut historia in locis hereditatis; non est Officina canonica praesentis lineae.
 
@@ -258,31 +263,17 @@ Sylvia et VINDEX sunt duo projecta primi ordinis:
 
 Regula absoluta est:
 
-> **Post initium firmware, runtime Sylviae VINDEX purus esse debet.**
+> **Catena canonica Sylviae, etiam initium UEFI, VINDEX pura esse debet.**
 
-Custodia CI hanc regulam tuetur.
+Custodia CI hanc regulam sine exceptione C tuetur.
 
 ## Fenestrale II Purus
 
 Gradus A–I sunt iam canonice in `main` reconciliati.
 
-Fenestrale hodiernum habet:
+Fenestrale hodiernum habet superficies clientium, codam eventuum, registra dynamica clientium et fenestrarum, focus, ordinem Z, motum, resize, minimizationem, maximizatio/restitutionem, clausuram, taskbar dynamicam et compositionem plurium fenestrarum.
 
-- superficies clientium;
-- codam eventuum;
-- registrum dynamicum clientium;
-- registrum dynamicum fenestrarum;
-- focus;
-- ordinem Z;
-- motum;
-- resize;
-- minimizationem;
-- maximizatio et restitutio;
-- clausuram;
-- taskbar dynamicam;
-- compositionem plurium fenestrarum.
-
-Probatio runtime **LXXX fenestras** creat et administrat. Sylvia igitur non amplius architectonice ad paucos “locos” fixos clauditur.
+Probatio runtime **LXXX fenestras** creat et administrat. Sylvia igitur non amplius architectonice ad paucos locos fixos clauditur.
 
 ## Forma visualis
 
@@ -292,18 +283,24 @@ Aspectus hodiernus est fundamentum technicum, non destinatio finalis. Consilia v
 
 # X. UEFI et boot Sylviae
 
-Una exceptio minima C adhuc in linea canonica initii UEFI toleratur dum catena pura integratur. Ea exceptio non est licentia runtime C.
+PR #109 canonizat opus experimentale ex #82 selective supra `main` hodiernum. Catena probata est:
 
-PR #82 a Claudio exercita demonstrat viam UEFI VINDEX puram, inter alia:
+```text
+OVMF → BOOTX64.EFI [VINDEX] → NUCLEUS [VINDEX] → FRAMEBUFFER → SYLVIA
+```
 
-- initium EFI a VINDEX generatum;
-- vocationes firmware;
-- GOP;
-- framebuffer;
-- lectio nuclei;
-- translatio imperii.
+Probatio automatica verificat:
 
-Sed catena cum **nucleo Sylviae reali** et memoria rite contracta adhuc perficienda est ante canonizationem finalem.
+- constructionem sine gcc, ld aut objcopy ad codicem UEFI;
+- `NUCLEUS.BIN`, `TEXTUS.BIN` et `FORMA.BIN` in volumine FAT;
+- mensuram nuclei per `GetInfo` sine limite II MiB;
+- `PONTOK` post `SALI_AD`;
+- absentiam exceptionis et defectus paginae;
+- screendump 1280×800 non uniforme cum IX coloribus distinctis.
+
+Vetus `bootstrap_uefi.c` et constructor C historicus e linea canonica remoti sunt.
+
+ELF adhuc `p_memsz` magnum propter acervum fixum declarare potest. Ponticulus contractum hunc implementat; reformatio multi-`PT_LOAD` est debitum separatum.
 
 ---
 
@@ -311,7 +308,7 @@ Sed catena cum **nucleo Sylviae reali** et memoria rite contracta adhuc perficie
 
 PR #71 est laboratorii probatio qua mus PS/2 VINDEX nativus sub QEMU/OVMF demonstratus est.
 
-Ea PR vetere basi nititur et non directe in `main` fundenda est. Mechanismus post stabilitatem catenae UEFI selective portandus et recertificandus est.
+Ea PR vetere basi nititur et non directe in `main` fundenda est. Nunc P1 perfectum est, mechanismus selective in catenam P3 portandus et recertificandus est.
 
 ---
 
@@ -322,12 +319,12 @@ VINDEX iam lingua systemica vera incipiens est, sed nondum plenitudinem linguae 
 Inter futura fundamenta sunt:
 
 - typi numerici pleniores;
-- structurae et enumerationes maturiores;
+- structurae, enumerationes et uniones maturiores;
 - functiones ut valores et callback;
 - compilationes separatae et moduli;
 - generica;
-- collectiones standardes;
-- Unicode maturus;
+- collectiones standardes generales;
+- Unicode altius: graphemata et normalizatio;
 - destructio determinata et disciplina memoriae;
 - concurrentia et atomica;
 - async;
@@ -336,6 +333,7 @@ Inter futura fundamenta sunt:
 - debugger;
 - coniunctor/linker maturus;
 - package manager;
+- formatio ELF multi-`PT_LOAD` maturior;
 - ARM64;
 - WebAssembly.
 
@@ -388,12 +386,11 @@ Numerus release non mutandus est fortuito tantum ad documenta recentiora imitand
 
 # XVI. Via hodierna
 
-Dum opus UEFI P1 a Claudio reservatum est, opera independentia recta sunt:
+P1 non amplius reservatum est. Via principalis nunc bifurcatur sine contradictione:
 
-- documenta et probationes custodire;
-- fundamenta universalia VINDEX per incrementa parva maturare;
-- Officinam et ecosystema sine conflictu P1 evolvere;
-- post completionem Claudii recentissimos commits inspicere ante integrationem.
+- **P3:** boot UEFI purum cum Fenestrale II et input canonico coniungere, PS/2 ex #71 selective portando;
+- **P9:** fundamenta universalia VINDEX per incrementa parva continuare;
+- debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum.
 
 Vide `CONSILIUM.md` pro statu exacto.
 

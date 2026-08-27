@@ -2,7 +2,7 @@
 
 Haec referentia facultates **canonicas et re vera probatas** describit. Fines futuros vide in `ARCHITECTURA.md` et `CONSILIUM.md`.
 
-VINDEX est lingua generalis in constructione. Compilator canonicus ipse VINDEX scriptus est, ELF64 x86-64 et PE32+ Win64 generat atque punctum fixum auto-hospitii servat.
+VINDEX est lingua generalis in constructione. Compilator canonicus ipse VINDEX scriptus est, ELF64 x86-64, PE32+ Win64 et PE32+ UEFI generat atque punctum fixum auto-hospitii servat.
 
 ---
 
@@ -18,6 +18,8 @@ FIN-FUNCTIO.
 ```
 
 Praecepta puncto terminantur. Bloci verbis propriis aperiuntur et `FIN-...` congruente clauduntur.
+
+Commentaria `//` usque ad finem lineae etiam intra corpora functionum sustinentur.
 
 ---
 
@@ -47,9 +49,21 @@ Forma publica commendata:
 
 Backend Win64 in CI sub Windows vero probatur, non solum per inspectionem structuram PE.
 
-## UEFI
+## PE32+ UEFI
 
-Target UEFI VINDEX purus est opus experimentale activum et nondum pars huius contractus stabilis. Ne facultates rami experimentalis quasi syntaxin canonicam huius referentiae praesumas.
+```bash
+./compilator_vindex programa.vindex programa.efi uefi
+```
+
+Target `uefi` per PR #109 canonicus est. Generat PE32+ subsystem EFI application sine importationibus Win32. Vocationes firmware UEFI et `SALI_AD(expressio)` ad opera basimi gradus praebentur.
+
+Custodia dedicata non solum structuram EFI inspicit. Imaginem FAT construit et sub QEMU/OVMF probat catenam:
+
+```text
+OVMF → BOOTX64.EFI [VINDEX] → NUCLEUS [VINDEX] → FRAMEBUFFER → SYLVIA
+```
+
+Vetus ponticulus C non est pars huius contractus.
 
 ---
 
@@ -470,10 +484,10 @@ Suite localis canonica post PR #108 **viginti novem probationes** exercet sine e
 - auto-hospitium;
 - logicam brevem;
 - PE32+;
-- puritatem Sylviae;
+- puritatem absolutam Sylviae;
 - Fenestrale II Purus.
 
-Workflow separati Win64 et Officina sub Windows vero probant.
+Workflow separati Win64 et Officina sub Windows vero probant. Workflow UEFI dedicatus QEMU/OVMF exsequitur, imaginem FAT inspicit et screendump Sylviae verificat.
 
 ---
 
@@ -489,7 +503,7 @@ Syntax linguae non dependet ab Officina; compilator lineae mandatorum auctoritas
 
 # XXI. Sylvia OS et lingua
 
-Sylvia VINDEX adhibet sed non definit. Codex Sylviae post initium firmware VINDEX purus esse debet.
+Sylvia VINDEX adhibet sed non definit. Catena canonica Sylviae, **etiam initium UEFI**, VINDEX pura est.
 
 Facultates Fenestralis, UEFI aut gubernatorum quae generaliter utiles sunt, ubi possibile est in linguam, ABI aut bibliothecam VINDEX generalem evolvantur potius quam exceptiones privatae fiant.
 
@@ -511,6 +525,7 @@ VINDEX nondum habet plenitudinem destinatam. Inter facultates futuras nondum in 
 - SIMD publicum maturum;
 - reflection / metaprogrammatio;
 - graphemata, normalizatio et transformationes Unicode superiores;
+- formatio ELF multi-`PT_LOAD` maturior et relocatio acervi;
 - debugger et optimizer maturi;
 - package manager;
 - targeta ARM64 et WebAssembly canonica.

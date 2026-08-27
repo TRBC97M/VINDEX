@@ -1,0 +1,99 @@
+name: VINDEX — Catena UEFI pura
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
+      - 'instrumenta/verifica_puritatem_sylviae.py'
+      - '.github/workflows/catena-uefi-vindex.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/nucleus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/fenestrale_systema.bin'
+      - 'instrumenta/verifica_puritatem_sylviae.py'
+      - '.github/workflows/catena-uefi-vindex.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  catena-uefi:
+    name: OVMF ad Sylviam sine C
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta necessaria institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Auto-hospitium punctum fixum
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/gen2
+          chmod +x /tmp/gen2
+          /tmp/gen2 src/compilator_vindex.vindex /tmp/gen3
+          chmod +x /tmp/gen3
+          cmp -s /tmp/gen2 /tmp/gen3 || {
+            printf '%s\n' 'DEFECIT: generationes G2 et G3 non sunt identicae.' >&2
+            exit 1
+          }
+          cmp -s ./compilator_vindex /tmp/gen3 || {
+            printf '%s\n' 'DEFECIT: compilator canonicus fonti non respondet.' >&2
+            exit 1
+          }
+          printf '%s\n' 'RECTE: compilator canonicus = G2 = G3.'
+
+      - name: Probationes canonicas linguae et Sylviae
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: bash ./tests/run_tests.sh
+
+      - name: Target UEFI structuram validam generat
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          printf 'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    REDDE 0.\nFIN-FUNCTIO.\n' > /tmp/uefi.vindex
+          ./compilator_vindex /tmp/uefi.vindex /tmp/uefi.efi uefi
+          file /tmp/uefi.efi | grep -q 'PE32+.*EFI application' || {
+            printf '%s\n' 'DEFECIT: target UEFI PE32+ EFI application non generavit.' >&2
+            exit 1
+          }
+          printf '%s\n' 'RECTE: target UEFI PE32+ EFI application generat.'
+
+      - name: Puritas Sylviae absoluta
+        shell: bash
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Catena integra sub QEMU et OVMF
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+        run: bash ./instrumenta/proba_catenam_uefi_053.sh
