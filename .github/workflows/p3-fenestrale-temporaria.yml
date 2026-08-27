@@ -1,4 +1,4 @@
-name: P3 — Mappa functionum G3 temporaria
+name: P3 — Descriptor allocator minima probatio
 
 on:
   push:
@@ -6,12 +6,12 @@ on:
       - chatgpt/p3-fenestrale-uefi-purum
 
 jobs:
-  mappa:
+  proba:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
-      - name: G3 construe et prologos cum fontibus compara
+      - name: Compilatorem G2 nativo emissore construe et microprobationem exerce
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
@@ -46,32 +46,34 @@ jobs:
           FIN-FUNCTIO.
           '''
           p.write_text(t[:a]+n+t[b:],encoding='utf-8')
+          Path('/tmp/proba.vindex').write_text('''FUNCTIO INITIA REDDENS NUMERUS.
+              ACCIPIT descriptor SICUT ACUS<NUMERUS>.
+              DECLARA limen SICUT NUMERUS VALENS 64.
+              DECLARA basis SICUT NUMERUS VALENS RESERVA_OCTETA(limen * 48).
+              CONTENTUM(descriptor) = basis.
+              CONTENTUM(descriptor + 8) = limen.
+              CONTENTUM(descriptor + 16) = 0.
+              REDDE 0.
+          FIN-FUNCTIO.
+
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              DECLARA descriptor SICUT ACUS<NUMERUS> VALENS RESERVA_OCTETA(24).
+              PROCLAMA descriptor.
+              DECLARA s SICUT NUMERUS VALENS INITIA(descriptor).
+              PROCLAMA CONTENTUM(descriptor).
+              PROCLAMA CONTENTUM(descriptor + 8).
+              PROCLAMA CONTENTUM(descriptor + 16).
+              DECLARA aliud SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+              PROCLAMA aliud.
+              PROCLAMA CONTENTUM(descriptor + 8).
+              REDDE 0.
+          FIN-FUNCTIO.
+          ''',encoding='utf-8')
           PY
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
-          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
-          chmod +x /tmp/g3
-          python3 - <<'PY'
-          import re
-          from pathlib import Path
-          src=Path('src/compilator_vindex.vindex').read_text(encoding='utf-8')
-          names=re.findall(r'(?m)^FUNCTIO\s+([A-Z0-9_]+)\s+REDDENS',src)
-          data=Path('/tmp/g3').read_bytes()
-          pats=[b'\x55\x48\x89\xe5', b'\x55\x48\x89\xe5\x48\x81\xec']
-          hits=[]
-          i=0
-          while True:
-              i=data.find(pats[0],i)
-              if i<0: break
-              hits.append(i); i+=1
-          target=0x432c34-0x400000
-          print('FUNCT_NUM',len(names),'PROLOG_NUM',len(hits),'TARGET_FILE',hex(target))
-          near=[(idx,off) for idx,off in enumerate(hits) if abs(off-target)<0x4000]
-          for idx,off in near:
-              nm=names[idx] if idx<len(names) else '?'
-              print('PROLOG',idx,hex(0x400000+off),nm,'delta',hex(target-off))
-          # etiam omnes nomina cum ASSECURA/BUFFER/LIMEN ordine monstrantur
-          for idx,n in enumerate(names):
-              if any(k in n for k in ('ASSECURA','BUFFER','CODEX','FORMAS','PARES','LOCA')):
-                  print('NOMEN',idx,n)
-          PY
+          /tmp/g2 /tmp/proba.vindex /tmp/proba
+          chmod +x /tmp/proba
+          echo '=== MICROPROBATIO ==='
+          timeout 5s /tmp/proba
+          echo '=== FINIS ==='
