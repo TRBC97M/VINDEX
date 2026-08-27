@@ -6,8 +6,8 @@
 //
 // Offsets UEFI:
 //   SystemTable: ConIn=48, ConOut=64, BootServices=96
-//   BootServices: AllocatePages=40, HandleProtocol=152, LocateProtocol=320,
-//                 SetWatchdogTimer=256
+//   BootServices: AllocatePages=40, HandleProtocol=152, ConnectController=264,
+//                 LocateHandleBuffer=312, LocateProtocol=320, SetWatchdogTimer=256
 //   LoadedImage: DeviceHandle=24
 //   SimpleFileSystem: OpenVolume=8
 //   FileProtocol: Open=8, Close=16, Read=32, SetPosition=56, GetInfo=64
@@ -41,6 +41,36 @@ FUNCTIO SCRIBE_CATENAM REDDENS NUMERUS.
     ACCIPIT catena SICUT NUMERUS.
     DECLARA sc SICUT NUMERUS VALENS CONTENTUM(conout + 8).
     REDDE UEFI_VOCA6(sc, conout, catena, 0, 0, 0, 0).
+FIN-FUNCTIO.
+
+FUNCTIO CONTROLLATORES_CONIUNGE REDDENS NUMERUS.
+    ACCIPIT bs SICUT NUMERUS.
+    SI bs == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA loca_handles SICUT NUMERUS VALENS CONTENTUM(bs + 312).
+    DECLARA coniunge SICUT NUMERUS VALENS CONTENTUM(bs + 264).
+    SI loca_handles == 0 || coniunge == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA numerus SICUT NUMERUS VALENS 0.
+    DECLARA handles SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(loca_handles, 0, 0, 0, SEDES(numerus), SEDES(handles), 0).
+    SI status != 0 || handles == 0 || numerus <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA coniuncta SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        DECLARA h SICUT NUMERUS VALENS CONTENTUM(handles + i * 8).
+        SI h != 0 TUNC
+            DECLARA s SICUT NUMERUS VALENS UEFI_VOCA6(coniunge, h, 0, 0, 1, 0, 0).
+            SI s == 0 TUNC coniuncta = coniuncta + 1. FIN-SI.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+
+    DECLARA libera SICUT NUMERUS VALENS CONTENTUM(bs + 72).
+    SI libera != 0 TUNC
+        DECLARA ig_l SICUT NUMERUS VALENS UEFI_VOCA6(libera, handles, 0, 0, 0, 0, 0).
+    FIN-SI.
+    REDDE coniuncta.
 FIN-FUNCTIO.
 
 FUNCTIO GUID_PONE REDDENS NUMERUS.
@@ -309,6 +339,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         FIN-SI.
     FIN-SI.
 
+    // VI-B. Moderatores firmware recursive coniunge. Hoc gradum laboratorii #71
+    // e C in ponticulum VINDEX purum transfert.
+    DECLARA moderatores_n SICUT NUMERUS VALENS CONTROLLATORES_CONIUNGE(bs).
+
     // VII. Metadata pro nucleo.
     DECLARA ig_vac SICUT NUMERUS VALENS MEMORIA_VACUA(50331648, 4096).
     CONTENTUM(50331648) = 160.
@@ -326,6 +360,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     CONTENTUM(50333776) = 50335744.
     CONTENTUM(50333784) = sedes_formae.
     CONTENTUM(50334464) = imago.
+    CONTENTUM(50334504) = moderatores_n.
 
     // VIII. Nuntium ante saltum, ut successum videas.
     DECLARA nuntius SICUT NUMERUS VALENS RESERVA_OCTETA(32).

@@ -7,6 +7,7 @@
 #   III. ponticulus VINDEX omnes gradus perficit (nuntius PONTOK);
 #   IV.  NULLA exceptio nec defectus paginae accidit;
 #   V.   Sylvia in schermo vere pingit (screendump inspectus).
+#   VI.  rector PS/2 VINDEX nativus murem vere movet.
 #
 # Hoc scriptum probationem manualem in certificationem reproducibilem mutat.
 # Exitus 0 si omnia recta; aliter numerus gradus qui defecit.
@@ -145,7 +146,32 @@ if dominans == b'\x00\x00\x00' and quantum > totum * 0.9:
 PYTHON
 
 nuntia '   RECTE: Sylvia in schermo vere pingit.'
+
+# --- VI. Murus PS/2 vere movetur ---
+nuntia 'VI. Rector muris PS/2 VINDEX nativus...'
+cp -f "$OVMF_VARS" "$TEMPORARIUM/OVMF_VARS3.fd"
+chmod +w "$TEMPORARIUM/OVMF_VARS3.fd"
+MONITOR_MUS="$TEMPORARIUM/monitor-mus.sock"
+QMP_MUS="$TEMPORARIUM/qmp-mus.sock"
+qemu-system-x86_64 -machine q35 -m 256 -vga std \
+    -drive "if=pflash,format=raw,unit=0,readonly=on,file=$OVMF_CODE" \
+    -drive "if=pflash,format=raw,unit=1,file=$TEMPORARIUM/OVMF_VARS3.fd" \
+    -drive "if=ide,format=raw,file=$TEMPORARIUM/systema.img" \
+    -display none \
+    -monitor "unix:$MONITOR_MUS,server=on,wait=off" \
+    -qmp "unix:$QMP_MUS,server=on,wait=off" \
+    -net none >"$TEMPORARIUM/murus-qemu.log" 2>&1 &
+PID_MUS=$!
+if ! python3 "$RADIX/instrumenta/proba_murem_uefi_053.py" \
+        "$MONITOR_MUS" "$QMP_MUS" "$TEMPORARIUM" "$MORA_INITII"; then
+    kill "$PID_MUS" 2>/dev/null || true
+    wait "$PID_MUS" 2>/dev/null || true
+    tail -50 "$TEMPORARIUM/murus-qemu.log" >&2 || true
+    defecit 'rector PS/2 Sylviam non movit' 6
+fi
+wait "$PID_MUS" 2>/dev/null || true
+nuntia '   RECTE: rector PS/2 VINDEX nativus in catena canonica movetur.'
 nuntia ''
 nuntia '=== CATENA UEFI INTEGRA PROBATA ==='
-nuntia 'OVMF -> BOOTX64.EFI [VINDEX] -> NUCLEUS [VINDEX] -> FRAMEBUFFER -> SYLVIA'
+nuntia 'OVMF -> BOOTX64.EFI [VINDEX] -> NUCLEUS [VINDEX] -> FRAMEBUFFER -> PS/2 VINDEX -> SYLVIA'
 nuntia 'Nullum C in tota via.'
