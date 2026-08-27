@@ -115,18 +115,32 @@ if polle_vetus not in nuc:
     raise SystemExit('ERRATUM: initium UEFI_POLLE non inventum')
 nuc = nuc.replace(polle_vetus, polle_novum, 1)
 
-init_vetus = """    DECLARA uefi_paratus SICUT NUMERUS VALENS UEFI_PARA().
-    DECLARA volumen_lectum SICUT NUMERUS VALENS UEFI_VOLUMEN_RELEGE().
+# VOLUMEN_PARA potest regionem 50401280..50434047 purgare. Stubs PS/2 ad
+# 50432000 et telemetria ad 50432064 igitur tantum POST migrationem voluminis
+# creari debent. Hoc idem momentum structurale laboratorium #71 adhibebat.
+loop_vetus = """    SI fasciculus_activus < 12 TUNC
+        longitudo_editoris = FASCICULUM_LEGE(fasciculus_activus, editor).
+        cursor_editoris = longitudo_editoris.
+        status_archivi = 2.
+    FIN-SI.
+
+    DUM 1 == 1 PERFICE
 """
-init_novum = """    DECLARA uefi_paratus SICUT NUMERUS VALENS UEFI_PARA().
-    // PS/2 8042 nativum post initium firmware paramus. Si apparatus non adest,
-    // UEFI Simple/Absolute Pointer infra fallback manent.
+loop_novum = """    SI fasciculus_activus < 12 TUNC
+        longitudo_editoris = FASCICULUM_LEGE(fasciculus_activus, editor).
+        cursor_editoris = longitudo_editoris.
+        status_archivi = 2.
+    FIN-SI.
+
+    // Rector PS/2 post omnem purgationem/migrationem voluminis initur, ne
+    // stubs et status eius intra regionem 50401280..50434047 deleantur.
     DECLARA ps2_paratus SICUT NUMERUS VALENS PS2_PARA().
-    DECLARA volumen_lectum SICUT NUMERUS VALENS UEFI_VOLUMEN_RELEGE().
+
+    DUM 1 == 1 PERFICE
 """
-if init_vetus not in nuc:
-    raise SystemExit('ERRATUM: initium PRINCIPALIS UEFI non inventum')
-nuc = nuc.replace(init_vetus, init_novum, 1)
+if loop_vetus not in nuc:
+    raise SystemExit('ERRATUM: initium ansae PRINCIPALIS non inventum')
+nuc = nuc.replace(loop_vetus, loop_novum, 1)
 NUCLEUS.write_text(nuc, encoding='utf-8')
 
 # --- Probatio: eadem catena + QEMU q35 + PS/2 realis et framebuffer mutatus. ---
