@@ -1,6 +1,7 @@
 // Sylvia OS — P19-I: fasciculi persistentes, backend UEFI.
 // API FS_* a protocollo concreto separatur quantum incrementum primum sinit.
 // Ponticulus non residet: Sylvia ipsa SystemTable iam traditam adhibet.
+// Dependens bibliotheca TEXTUS a fonte superiore ante hunc fasciculum importetur.
 //
 // Offsets UEFI x86-64:
 // BootServices.HandleProtocol = +152
@@ -9,8 +10,6 @@
 // FileProtocol.Open = +8, Close = +16, Delete = +24,
 // Read = +32, Write = +40, GetPosition = +48, SetPosition = +56,
 // Flush = +80.
-
-IMPORTA "bibliotheca/textus.vindex".
 
 FUNCTIO FU_GUID_PONE REDDENS NUMERUS.
     ACCIPIT guid SICUT ACUS<LITTERA>.
