@@ -1,0 +1,456 @@
+// Sylvia OS — OFFICINA SYLVIAE P18-I.
+// Editor VINDEX nativus intra Fenestrale: documentum in memoria volatilI,
+// lineae UTF-8 dynamicae et cursor sine capacitate parva fixa.
+//
+// Status editoris:
+// +0 prima linea; +8 ultima linea; +16 linea cursoris; +24 cursor octetorum;
+// +32 numerus linearum; +40 modificatum; +48 prima linea visa; +56 mutationes.
+// Nodus lineae: +0 descriptor textus; +8 prior; +16 proximus.
+// Descriptor textus: +0 mensura octetorum; +8 capacitas; +16 data UTF-8.
+
+FUNCTIO OE_TEXTUS_EX_SEDE REDDENS TEXTUS.
+    ACCIPIT sedes SICUT NUMERUS.
+    REDDE sedes.
+FIN-FUNCTIO.
+
+FUNCTIO OE_LINEA_CREA REDDENS NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    SI capacitas<32 TUNC capacitas=32. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS RESERVA_OCTETA(17+capacitas).
+    SI d<=0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(d)=0.
+    CONTENTUM(d+8)=capacitas.
+    SCRIBE_OCTETUM_AB(d+16,0).
+    REDDE d.
+FIN-FUNCTIO.
+
+FUNCTIO OE_NODUS_CREA REDDENS NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    DECLARA nodus SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI nodus<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS OE_LINEA_CREA(capacitas).
+    SI d==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(nodus)=d.
+    CONTENTUM(nodus+8)=0.
+    CONTENTUM(nodus+16)=0.
+    REDDE nodus.
+FIN-FUNCTIO.
+
+FUNCTIO OE_CREA REDDENS NUMERUS.
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI status<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA prima SICUT NUMERUS VALENS OE_NODUS_CREA(64).
+    SI prima==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status)=prima.
+    CONTENTUM(status+8)=prima.
+    CONTENTUM(status+16)=prima.
+    CONTENTUM(status+24)=0.
+    CONTENTUM(status+32)=1.
+    CONTENTUM(status+40)=0.
+    CONTENTUM(status+48)=0.
+    CONTENTUM(status+56)=0.
+    REDDE status.
+FIN-FUNCTIO.
+
+FUNCTIO OE_LINEA_REDIMENSIONA REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    ACCIPIT opus SICUT NUMERUS.
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA vetus SICUT NUMERUS VALENS CONTENTUM(nodus).
+    SI vetus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA capacitas SICUT NUMERUS VALENS CONTENTUM(vetus+8).
+    SI opus<=capacitas TUNC REDDE 1. FIN-SI.
+    DECLARA nova_cap SICUT NUMERUS VALENS capacitas.
+    DUM nova_cap<opus PERFICE nova_cap=nova_cap*2. FIN-DUM.
+    DECLARA novus SICUT NUMERUS VALENS OE_LINEA_CREA(nova_cap).
+    SI novus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(vetus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        SCRIBE_OCTETUM_AB(novus+16+i,OCTETUS_AB(vetus+16+i)).
+        i=i+1.
+    FIN-DUM.
+    CONTENTUM(novus)=n.
+    SCRIBE_OCTETUM_AB(novus+16+n,0).
+    CONTENTUM(nodus)=novus.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_SCALARIS_MENSURA REDDENS NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    SI d==0 || positio<0 || positio>=CONTENTUM(d) TUNC REDDE 0. FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS OCTETUS_AB(d+16+positio).
+    SI b<128 TUNC REDDE 1. FIN-SI.
+    SI b>=194 && b<=223 TUNC REDDE 2. FIN-SI.
+    SI b>=224 && b<=239 TUNC REDDE 3. FIN-SI.
+    SI b>=240 && b<=244 TUNC REDDE 4. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_POS_PRIOR REDDENS NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    SI d==0 || positio<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS positio-1.
+    DUM p>0 && (OCTETUS_AB(d+16+p)&192)==128 PERFICE p=p-1. FIN-DUM.
+    REDDE p.
+FIN-FUNCTIO.
+
+FUNCTIO OE_COLUMNA REDDENS NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    SI d==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    SI positio>n TUNC positio=n. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA columna SICUT NUMERUS VALENS 0.
+    DUM i<positio PERFICE
+        DECLARA m SICUT NUMERUS VALENS OE_SCALARIS_MENSURA(d,i).
+        SI m<=0 TUNC m=1. FIN-SI.
+        i=i+m.
+        columna=columna+1.
+    FIN-DUM.
+    REDDE columna.
+FIN-FUNCTIO.
+
+FUNCTIO OE_POS_EX_COLUMNA REDDENS NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    ACCIPIT columna SICUT NUMERUS.
+    SI d==0 || columna<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA c SICUT NUMERUS VALENS 0.
+    DUM i<n && c<columna PERFICE
+        DECLARA m SICUT NUMERUS VALENS OE_SCALARIS_MENSURA(d,i).
+        SI m<=0 TUNC m=1. FIN-SI.
+        i=i+m.
+        c=c+1.
+    FIN-DUM.
+    REDDE i.
+FIN-FUNCTIO.
+
+FUNCTIO OE_NOTA_MUTATIONEM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status+40)=1.
+    CONTENTUM(status+56)=CONTENTUM(status+56)+1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_INSERE_SCALARE REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT scalare SICUT NUMERUS.
+    SI status==0 || scalare<32 TUNC REDDE 0. FIN-SI.
+    SI scalare>=55296 && scalare<=57343 TUNC REDDE 0. FIN-SI.
+    SI scalare>65535 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    DECLARA pos SICUT NUMERUS VALENS CONTENTUM(status+24).
+    SI pos>n TUNC pos=n. FIN-SI.
+    DECLARA m SICUT NUMERUS VALENS 1.
+    SI scalare>127 TUNC m=2. FIN-SI.
+    SI scalare>2047 TUNC m=3. FIN-SI.
+    SI OE_LINEA_REDIMENSIONA(nodus,n+m+1)==0 TUNC REDDE 0. FIN-SI.
+    d=CONTENTUM(nodus).
+    DECLARA i SICUT NUMERUS VALENS n.
+    DUM i>pos PERFICE
+        i=i-1.
+        SCRIBE_OCTETUM_AB(d+16+i+m,OCTETUS_AB(d+16+i)).
+    FIN-DUM.
+    SI m==1 TUNC SCRIBE_OCTETUM_AB(d+16+pos,scalare). FIN-SI.
+    SI m==2 TUNC
+        SCRIBE_OCTETUM_AB(d+16+pos,192|(scalare>>6)).
+        SCRIBE_OCTETUM_AB(d+16+pos+1,128|(scalare&63)).
+    FIN-SI.
+    SI m==3 TUNC
+        SCRIBE_OCTETUM_AB(d+16+pos,224|(scalare>>12)).
+        SCRIBE_OCTETUM_AB(d+16+pos+1,128|((scalare>>6)&63)).
+        SCRIBE_OCTETUM_AB(d+16+pos+2,128|(scalare&63)).
+    FIN-SI.
+    CONTENTUM(d)=n+m.
+    SCRIBE_OCTETUM_AB(d+16+n+m,0).
+    CONTENTUM(status+24)=pos+m.
+    DECLARA nota SICUT NUMERUS VALENS OE_NOTA_MUTATIONEM(status).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_NOVA_LINEA REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA vetus_nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    SI vetus_nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA vetus SICUT NUMERUS VALENS CONTENTUM(vetus_nodus).
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(vetus).
+    DECLARA pos SICUT NUMERUS VALENS CONTENTUM(status+24).
+    SI pos>n TUNC pos=n. FIN-SI.
+    DECLARA nova SICUT NUMERUS VALENS OE_NODUS_CREA(n-pos+32).
+    SI nova==0 TUNC REDDE 0. FIN-SI.
+    DECLARA dnova SICUT NUMERUS VALENS CONTENTUM(nova).
+    DECLARA i SICUT NUMERUS VALENS pos.
+    DECLARA j SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        SCRIBE_OCTETUM_AB(dnova+16+j,OCTETUS_AB(vetus+16+i)).
+        i=i+1.
+        j=j+1.
+    FIN-DUM.
+    CONTENTUM(dnova)=j.
+    SCRIBE_OCTETUM_AB(dnova+16+j,0).
+    CONTENTUM(vetus)=pos.
+    SCRIBE_OCTETUM_AB(vetus+16+pos,0).
+    DECLARA proximus SICUT NUMERUS VALENS CONTENTUM(vetus_nodus+16).
+    CONTENTUM(nova+8)=vetus_nodus.
+    CONTENTUM(nova+16)=proximus.
+    CONTENTUM(vetus_nodus+16)=nova.
+    SI proximus!=0 TUNC CONTENTUM(proximus+8)=nova. ALITER CONTENTUM(status+8)=nova. FIN-SI.
+    CONTENTUM(status+16)=nova.
+    CONTENTUM(status+24)=0.
+    CONTENTUM(status+32)=CONTENTUM(status+32)+1.
+    DECLARA nota SICUT NUMERUS VALENS OE_NOTA_MUTATIONEM(status).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_RETROCEDE REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    DECLARA pos SICUT NUMERUS VALENS CONTENTUM(status+24).
+    SI pos>0 TUNC
+        DECLARA prior SICUT NUMERUS VALENS OE_POS_PRIOR(d,pos).
+        DECLARA dele SICUT NUMERUS VALENS pos-prior.
+        DECLARA i SICUT NUMERUS VALENS pos.
+        DUM i<n PERFICE
+            SCRIBE_OCTETUM_AB(d+16+i-dele,OCTETUS_AB(d+16+i)).
+            i=i+1.
+        FIN-DUM.
+        CONTENTUM(d)=n-dele.
+        SCRIBE_OCTETUM_AB(d+16+n-dele,0).
+        CONTENTUM(status+24)=prior.
+        DECLARA nota SICUT NUMERUS VALENS OE_NOTA_MUTATIONEM(status).
+        REDDE 1.
+    FIN-SI.
+    DECLARA prior_nodus SICUT NUMERUS VALENS CONTENTUM(nodus+8).
+    SI prior_nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA prior_d SICUT NUMERUS VALENS CONTENTUM(prior_nodus).
+    DECLARA pn SICUT NUMERUS VALENS CONTENTUM(prior_d).
+    SI OE_LINEA_REDIMENSIONA(prior_nodus,pn+n+1)==0 TUNC REDDE 0. FIN-SI.
+    prior_d=CONTENTUM(prior_nodus).
+    DECLARA k SICUT NUMERUS VALENS 0.
+    DUM k<n PERFICE
+        SCRIBE_OCTETUM_AB(prior_d+16+pn+k,OCTETUS_AB(d+16+k)).
+        k=k+1.
+    FIN-DUM.
+    CONTENTUM(prior_d)=pn+n.
+    SCRIBE_OCTETUM_AB(prior_d+16+pn+n,0).
+    DECLARA proximus SICUT NUMERUS VALENS CONTENTUM(nodus+16).
+    CONTENTUM(prior_nodus+16)=proximus.
+    SI proximus!=0 TUNC CONTENTUM(proximus+8)=prior_nodus. ALITER CONTENTUM(status+8)=prior_nodus. FIN-SI.
+    CONTENTUM(status+16)=prior_nodus.
+    CONTENTUM(status+24)=pn.
+    CONTENTUM(status+32)=CONTENTUM(status+32)-1.
+    DECLARA nota2 SICUT NUMERUS VALENS OE_NOTA_MUTATIONEM(status).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_CURSOR_SINISTRUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    DECLARA pos SICUT NUMERUS VALENS CONTENTUM(status+24).
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    SI pos>0 TUNC
+        CONTENTUM(status+24)=OE_POS_PRIOR(CONTENTUM(nodus),pos).
+        REDDE 1.
+    FIN-SI.
+    DECLARA prior SICUT NUMERUS VALENS CONTENTUM(nodus+8).
+    SI prior==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status+16)=prior.
+    CONTENTUM(status+24)=CONTENTUM(CONTENTUM(prior)).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_CURSOR_DEXTRUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+    DECLARA pos SICUT NUMERUS VALENS CONTENTUM(status+24).
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(d).
+    SI pos<n TUNC
+        DECLARA m SICUT NUMERUS VALENS OE_SCALARIS_MENSURA(d,pos).
+        SI m<=0 TUNC m=1. FIN-SI.
+        CONTENTUM(status+24)=pos+m.
+        REDDE 1.
+    FIN-SI.
+    DECLARA proximus SICUT NUMERUS VALENS CONTENTUM(nodus+16).
+    SI proximus==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status+16)=proximus.
+    CONTENTUM(status+24)=0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_CURSOR_SURSUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA prior SICUT NUMERUS VALENS CONTENTUM(nodus+8).
+    SI prior==0 TUNC REDDE 0. FIN-SI.
+    DECLARA columna SICUT NUMERUS VALENS OE_COLUMNA(CONTENTUM(nodus),CONTENTUM(status+24)).
+    CONTENTUM(status+16)=prior.
+    CONTENTUM(status+24)=OE_POS_EX_COLUMNA(CONTENTUM(prior),columna).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_CURSOR_DEORSUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    SI nodus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA proximus SICUT NUMERUS VALENS CONTENTUM(nodus+16).
+    SI proximus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA columna SICUT NUMERUS VALENS OE_COLUMNA(CONTENTUM(nodus),CONTENTUM(status+24)).
+    CONTENTUM(status+16)=proximus.
+    CONTENTUM(status+24)=OE_POS_EX_COLUMNA(CONTENTUM(proximus),columna).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_CURSOR_INDEX REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA petita SICUT NUMERUS VALENS CONTENTUM(status+16).
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status).
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DUM nodus!=0 PERFICE
+        SI nodus==petita TUNC REDDE index. FIN-SI.
+        nodus=CONTENTUM(nodus+16).
+        index=index+1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO OE_VISUM_ADAPTA REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT visibiles SICUT NUMERUS.
+    SI status==0 || visibiles<1 TUNC REDDE 0. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS OE_CURSOR_INDEX(status).
+    DECLARA initium SICUT NUMERUS VALENS CONTENTUM(status+48).
+    SI index<initium TUNC initium=index. FIN-SI.
+    SI index>=initium+visibiles TUNC initium=index-visibiles+1. FIN-SI.
+    SI initium<0 TUNC initium=0. FIN-SI.
+    CONTENTUM(status+48)=initium.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_SCROLL_SURSUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA initium SICUT NUMERUS VALENS CONTENTUM(status+48)-8.
+    SI initium<0 TUNC initium=0. FIN-SI.
+    SI initium==CONTENTUM(status+48) TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status+48)=initium.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_SCROLL_DEORSUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA maximus SICUT NUMERUS VALENS CONTENTUM(status+32)-1.
+    DECLARA initium SICUT NUMERUS VALENS CONTENTUM(status+48)+8.
+    SI initium>maximus TUNC initium=maximus. FIN-SI.
+    SI initium==CONTENTUM(status+48) TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status+48)=initium.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_CLAVIS_EVENTUM REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT scan SICUT NUMERUS.
+    ACCIPIT unicode SICUT NUMERUS.
+    SI status==0 TUNC REDDE 0. FIN-SI.
+    SI unicode==8 || unicode==127 TUNC REDDE OE_RETROCEDE(status). FIN-SI.
+    SI unicode==10 || unicode==13 TUNC REDDE OE_NOVA_LINEA(status). FIN-SI.
+    SI unicode>=32 TUNC REDDE OE_INSERE_SCALARE(status,unicode). FIN-SI.
+    SI scan==1 TUNC REDDE OE_CURSOR_SURSUM(status). FIN-SI.
+    SI scan==2 TUNC REDDE OE_CURSOR_DEORSUM(status). FIN-SI.
+    SI scan==3 TUNC REDDE OE_CURSOR_DEXTRUM(status). FIN-SI.
+    SI scan==4 TUNC REDDE OE_CURSOR_SINISTRUM(status). FIN-SI.
+    SI scan==9 TUNC REDDE OE_SCROLL_SURSUM(status). FIN-SI.
+    SI scan==10 TUNC REDDE OE_SCROLL_DEORSUM(status). FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO OE_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI superficies==0 || status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
+    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
+    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA charta SICUT NUMERUS VALENS FV_COLOR(250,249,245).
+    DECLARA selectum SICUT NUMERUS VALENS FV_COLOR(226,236,242).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,ebur).
+    f=FS_RECT(superficies,0,0,w,34,profundum).
+    f=FS_RECT(superficies,0,33,w,1,aqua).
+    f=FS_TEXTUM(superficies,12,11,"OFFICINA SYLVIAE",lux).
+    f=FS_TEXTUM(superficies,w-92,11,"P18-I",argentum).
+    f=FS_RECT(superficies,0,34,w,28,argentum).
+    f=FS_TEXTUM(superficies,12,44,"EDITOR VINDEX",profundum).
+    f=FS_TEXTUM(superficies,w-190,44,"MEMORIA VOLATILIS",medium).
+    DECLARA y0 SICUT NUMERUS VALENS 68.
+    DECLARA y_fin SICUT NUMERUS VALENS h-32.
+    DECLARA line_h SICUT NUMERUS VALENS 14.
+    DECLARA visibiles SICUT NUMERUS VALENS (y_fin-y0)/line_h.
+    SI visibiles<1 TUNC visibiles=1. FIN-SI.
+    DECLARA adapta SICUT NUMERUS VALENS OE_VISUM_ADAPTA(status,visibiles).
+    f=FS_RECT(superficies,0,y0,48,y_fin-y0,charta).
+    f=FS_RECT(superficies,48,y0,w-48,y_fin-y0,charta).
+    f=FS_RECT(superficies,47,y0,1,y_fin-y0,argentum).
+    DECLARA initium SICUT NUMERUS VALENS CONTENTUM(status+48).
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status).
+    DUM nodus!=0 && index<initium PERFICE
+        nodus=CONTENTUM(nodus+16).
+        index=index+1.
+    FIN-DUM.
+    DECLARA y SICUT NUMERUS VALENS y0.
+    DECLARA cursor_nodus SICUT NUMERUS VALENS CONTENTUM(status+16).
+    DUM nodus!=0 && y+line_h<=y_fin PERFICE
+        SI nodus==cursor_nodus TUNC
+            f=FS_RECT(superficies,48,y,w-48,line_h,selectum).
+            f=FS_RECT(superficies,4,y+2,36,line_h-4,bronzeum).
+            f=FS_TEXTUM(superficies,16,y+3,">",profundum).
+        FIN-SI.
+        DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+        SI d!=0 && CONTENTUM(d)>0 TUNC f=FS_TEXTUM(superficies,56,y+3,OE_TEXTUS_EX_SEDE(d),profundum). FIN-SI.
+        SI nodus==cursor_nodus TUNC
+            DECLARA col SICUT NUMERUS VALENS OE_COLUMNA(d,CONTENTUM(status+24)).
+            DECLARA cx SICUT NUMERUS VALENS 56+col*8.
+            SI cx>w-8 TUNC cx=w-8. FIN-SI.
+            f=FS_RECT(superficies,cx,y+2,2,line_h-2,medium).
+        FIN-SI.
+        nodus=CONTENTUM(nodus+16).
+        y=y+line_h.
+        index=index+1.
+    FIN-DUM.
+    f=FS_RECT(superficies,0,h-32,w,32,profundum).
+    SI CONTENTUM(status+40)!=0 TUNC
+        f=FS_TEXTUM(superficies,12,h-20,"MODIFICATUM",bronzeum).
+    ALITER
+        f=FS_TEXTUM(superficies,12,h-20,"IMMUTATUM",argentum).
+    FIN-SI.
+    f=FS_TEXTUM(superficies,w-176,h-20,"FASCICULI: NONDUM",argentum).
+    REDDE 1.
+FIN-FUNCTIO.
