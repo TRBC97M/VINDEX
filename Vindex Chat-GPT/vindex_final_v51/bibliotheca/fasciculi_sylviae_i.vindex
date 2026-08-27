@@ -1,0 +1,294 @@
+// Sylvia OS — P19-I: fasciculi persistentes, backend UEFI.
+// API FS_* a protocollo concreto separatur quantum incrementum primum sinit.
+// Ponticulus non residet: Sylvia ipsa SystemTable iam traditam adhibet.
+//
+// Offsets UEFI x86-64:
+// BootServices.HandleProtocol = +152
+// LoadedImage.DeviceHandle = +24
+// SimpleFileSystem.OpenVolume = +8
+// FileProtocol.Open = +8, Close = +16, Delete = +24,
+// Read = +32, Write = +40, GetPosition = +48, SetPosition = +56,
+// Flush = +80.
+
+IMPORTA "bibliotheca/textus.vindex".
+
+FUNCTIO FU_GUID_PONE REDDENS NUMERUS.
+    ACCIPIT guid SICUT ACUS<LITTERA>.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<16 PERFICE guid[i]=0. i=i+1. FIN-DUM.
+
+    // LoadedImage: 5b1b31a1-9562-11d2-8e3f-00a0c969723b
+    SI genus==1 TUNC
+        guid[0]=161. guid[1]=49. guid[2]=27. guid[3]=91.
+        guid[4]=98. guid[5]=149. guid[6]=210. guid[7]=17.
+        guid[8]=142. guid[9]=63. guid[10]=0. guid[11]=160.
+        guid[12]=201. guid[13]=105. guid[14]=114. guid[15]=59.
+        REDDE 1.
+    FIN-SI.
+
+    // SimpleFileSystem: 964e5b22-6459-11d2-8e39-00a0c969723b
+    SI genus==2 TUNC
+        guid[0]=34. guid[1]=91. guid[2]=78. guid[3]=150.
+        guid[4]=89. guid[5]=100. guid[6]=210. guid[7]=17.
+        guid[8]=142. guid[9]=57. guid[10]=0. guid[11]=160.
+        guid[12]=201. guid[13]=105. guid[14]=114. guid[15]=59.
+        REDDE 1.
+    FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FU_U16_SCRIBE REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(locus,valor&255).
+    SCRIBE_OCTETUM_AB(locus+1,(valor>>8)&255).
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Viam UTF-8 Sylviae in catenam UTF-16LE firmware convertit.
+// '/' canonice admittitur et ad '\' UEFI vertitur.
+// Scalaria supra BMP in paria surrogate UTF-16 convertuntur.
+FUNCTIO FU_VIA_UTF16 REDDENS NUMERUS.
+    ACCIPIT via SICUT TEXTUS.
+    SI TEXTUS_SEDES(via)==0 || UTF8_VALIDUS(via)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA scalaria SICUT NUMERUS VALENS LONGITUDO_SCALARUM(via).
+    SI scalaria<0 TUNC REDDE 0. FIN-SI.
+
+    // Quodque scalare maximum IV octeta UTF-16LE postulat, deinde NUL.
+    DECLARA exitus SICUT NUMERUS VALENS RESERVA_OCTETA(scalaria*4+2).
+    SI exitus<=0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA p SICUT NUMERUS VALENS 0.
+    DUM i<scalaria PERFICE
+        DECLARA s SICUT NUMERUS VALENS UTF8_SCALARE_CAPE(via,i).
+        SI s<0 || s>1114111 || (s>=55296 && s<=57343) TUNC REDDE 0. FIN-SI.
+        SI s==47 TUNC s=92. FIN-SI.
+
+        SI s<=65535 TUNC
+            DECLARA a SICUT NUMERUS VALENS FU_U16_SCRIBE(exitus+p,s).
+            p=p+2.
+        ALITER
+            DECLARA x SICUT NUMERUS VALENS s-65536.
+            DECLARA altum SICUT NUMERUS VALENS 55296+(x>>10).
+            DECLARA humile SICUT NUMERUS VALENS 56320+(x&1023).
+            DECLARA a2 SICUT NUMERUS VALENS FU_U16_SCRIBE(exitus+p,altum).
+            DECLARA b2 SICUT NUMERUS VALENS FU_U16_SCRIBE(exitus+p+2,humile).
+            p=p+4.
+        FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    DECLARA finis SICUT NUMERUS VALENS FU_U16_SCRIBE(exitus+p,0).
+    REDDE exitus.
+FIN-FUNCTIO.
+
+FUNCTIO FU_MODUS_CREANDI REDDENS NUMERUS.
+    // EFI_FILE_MODE_CREATE est bitum LXIII; READ|WRITE sunt bita 0 et 1.
+    DECLARA modus SICUT NUMERUS VALENS 1.
+    modus=modus<<63.
+    REDDE modus|3.
+FIN-FUNCTIO.
+
+FUNCTIO FU_RADIX_APERI REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+    DECLARA imago SICUT NUMERUS VALENS CONTENTUM(50334464).
+    SI systema==0 || imago==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA boot SICUT NUMERUS VALENS CONTENTUM(systema+96).
+    SI boot==0 TUNC REDDE 0. FIN-SI.
+    DECLARA handle_protocol SICUT NUMERUS VALENS CONTENTUM(boot+152).
+    SI handle_protocol==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA guid SICUT ORDO DE LITTERA CAPACITAS 16.
+    DECLARA onusta SICUT NUMERUS VALENS 0.
+    DECLARA g1 SICUT NUMERUS VALENS FU_GUID_PONE(guid,1).
+    DECLARA st SICUT NUMERUS VALENS UEFI_VOCA6(handle_protocol,imago,SEDES(guid),SEDES(onusta),0,0,0).
+    SI st!=0 || onusta==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA fabrica SICUT NUMERUS VALENS CONTENTUM(onusta+24).
+    SI fabrica==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA fs SICUT NUMERUS VALENS 0.
+    DECLARA g2 SICUT NUMERUS VALENS FU_GUID_PONE(guid,2).
+    st=UEFI_VOCA6(handle_protocol,fabrica,SEDES(guid),SEDES(fs),0,0,0).
+    SI st!=0 || fs==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA open_volume SICUT NUMERUS VALENS CONTENTUM(fs+8).
+    SI open_volume==0 TUNC REDDE 0. FIN-SI.
+    DECLARA radix SICUT NUMERUS VALENS 0.
+    st=UEFI_VOCA6(open_volume,fs,SEDES(radix),0,0,0,0).
+    SI st!=0 TUNC REDDE 0. FIN-SI.
+    REDDE radix.
+FIN-FUNCTIO.
+
+FUNCTIO FU_CLAUDE REDDENS NUMERUS.
+    ACCIPIT fasc SICUT NUMERUS.
+    SI fasc==0 TUNC REDDE 0. FIN-SI.
+    DECLARA claude SICUT NUMERUS VALENS CONTENTUM(fasc+16).
+    SI claude==0 TUNC REDDE 0. FIN-SI.
+    DECLARA st SICUT NUMERUS VALENS UEFI_VOCA6(claude,fasc,0,0,0,0,0).
+    SI st==0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+// Modus: 1 lectio; 3 lectio+scriptura; FU_MODUS_CREANDI() creat.
+FUNCTIO FU_APERI REDDENS NUMERUS.
+    ACCIPIT via SICUT TEXTUS.
+    ACCIPIT modus SICUT NUMERUS.
+    DECLARA radix SICUT NUMERUS VALENS FU_RADIX_APERI().
+    SI radix==0 TUNC REDDE 0. FIN-SI.
+    DECLARA nomen SICUT NUMERUS VALENS FU_VIA_UTF16(via).
+    SI nomen==0 TUNC
+        DECLARA cr0 SICUT NUMERUS VALENS FU_CLAUDE(radix).
+        REDDE 0.
+    FIN-SI.
+    DECLARA aperi SICUT NUMERUS VALENS CONTENTUM(radix+8).
+    SI aperi==0 TUNC
+        DECLARA cr1 SICUT NUMERUS VALENS FU_CLAUDE(radix).
+        REDDE 0.
+    FIN-SI.
+    DECLARA fasc SICUT NUMERUS VALENS 0.
+    DECLARA st SICUT NUMERUS VALENS UEFI_VOCA6(aperi,radix,SEDES(fasc),nomen,modus,0,0).
+    DECLARA cr2 SICUT NUMERUS VALENS FU_CLAUDE(radix).
+    SI st!=0 TUNC REDDE 0. FIN-SI.
+    REDDE fasc.
+FIN-FUNCTIO.
+
+FUNCTIO FS_DISPONIBILIS REDDENS NUMERUS.
+    DECLARA radix SICUT NUMERUS VALENS FU_RADIX_APERI().
+    SI radix==0 TUNC REDDE 0. FIN-SI.
+    DECLARA c SICUT NUMERUS VALENS FU_CLAUDE(radix).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS_EXISTIT REDDENS NUMERUS.
+    ACCIPIT via SICUT TEXTUS.
+    DECLARA fasc SICUT NUMERUS VALENS FU_APERI(via,1).
+    SI fasc==0 TUNC REDDE 0. FIN-SI.
+    DECLARA c SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS_DELE_SI_ADEST REDDENS NUMERUS.
+    ACCIPIT via SICUT TEXTUS.
+    DECLARA fasc SICUT NUMERUS VALENS FU_APERI(via,3).
+    SI fasc==0 TUNC REDDE 1. FIN-SI.
+    DECLARA dele SICUT NUMERUS VALENS CONTENTUM(fasc+24).
+    SI dele==0 TUNC
+        DECLARA c SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+    // Delete claudit handle secundum contractum UEFI.
+    DECLARA st SICUT NUMERUS VALENS UEFI_VOCA6(dele,fasc,0,0,0,0,0).
+    SI st==0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO FS_LEGE_TEXTUM REDDENS TEXTUS.
+    ACCIPIT via SICUT TEXTUS.
+    DECLARA fasc SICUT NUMERUS VALENS FU_APERI(via,1).
+    SI fasc==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA pone SICUT NUMERUS VALENS CONTENTUM(fasc+56).
+    DECLARA cape SICUT NUMERUS VALENS CONTENTUM(fasc+48).
+    DECLARA lege SICUT NUMERUS VALENS CONTENTUM(fasc+32).
+    SI pone==0 || cape==0 || lege==0 TUNC
+        DECLARA c0 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+
+    // 0xFFFFFFFFFFFFFFFF = finis fasciculi secundum EFI_FILE_PROTOCOL.
+    DECLARA st SICUT NUMERUS VALENS UEFI_VOCA6(pone,fasc,0-1,0,0,0,0).
+    SI st!=0 TUNC
+        DECLARA c1 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+    DECLARA mensura SICUT NUMERUS VALENS 0.
+    st=UEFI_VOCA6(cape,fasc,SEDES(mensura),0,0,0,0).
+    SI st!=0 || mensura<0 TUNC
+        DECLARA c2 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+    st=UEFI_VOCA6(pone,fasc,0,0,0,0,0).
+    SI st!=0 TUNC
+        DECLARA c3 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+
+    DECLARA d SICUT NUMERUS VALENS RESERVA_OCTETA(17+mensura).
+    SI d<=0 TUNC
+        DECLARA c4 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(d)=mensura.
+    CONTENTUM(d+8)=mensura.
+
+    DECLARA lecta SICUT NUMERUS VALENS mensura.
+    SI mensura>0 TUNC
+        st=UEFI_VOCA6(lege,fasc,SEDES(lecta),d+16,0,0,0).
+    ALITER
+        st=0.
+    FIN-SI.
+    DECLARA c5 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+    SI st!=0 || lecta!=mensura TUNC REDDE 0. FIN-SI.
+    SCRIBE_OCTETUM_AB(d+16+mensura,0).
+    REDDE TEXTUS_EX_SEDE(d).
+FIN-FUNCTIO.
+
+FUNCTIO FS_TEXTUS_AEQUALIS REDDENS NUMERUS.
+    ACCIPIT a SICUT TEXTUS.
+    ACCIPIT b SICUT TEXTUS.
+    SI TEXTUS_SEDES(a)==0 || TEXTUS_SEDES(b)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(a).
+    SI n!=LONGITUDO(b) TUNC REDDE 0. FIN-SI.
+    DECLARA ba SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(a).
+    DECLARA bb SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(b).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        SI OCTETUS_AB(ba+i)!=OCTETUS_AB(bb+i) TUNC REDDE 0. FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Scriptura P19-I: vetus fasciculum delet, novum creat, flush facit,
+// claudit, deinde e disco reaperit atque contentum exacte comparat.
+// Substitutio atomica per nomen temporarium incrementum futurum manet.
+FUNCTIO FS_SCRIBE_TEXTUM REDDENS NUMERUS.
+    ACCIPIT via SICUT TEXTUS.
+    ACCIPIT textus SICUT TEXTUS.
+    SI TEXTUS_SEDES(via)==0 || TEXTUS_SEDES(textus)==0 TUNC REDDE 0. FIN-SI.
+    SI UTF8_VALIDUS(via)==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA del SICUT NUMERUS VALENS FS_DELE_SI_ADEST(via).
+    SI del==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA fasc SICUT NUMERUS VALENS FU_APERI(via,FU_MODUS_CREANDI()).
+    SI fasc==0 TUNC REDDE 0. FIN-SI.
+    DECLARA scribe SICUT NUMERUS VALENS CONTENTUM(fasc+40).
+    DECLARA flush SICUT NUMERUS VALENS CONTENTUM(fasc+80).
+    SI scribe==0 || flush==0 TUNC
+        DECLARA c0 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+
+    DECLARA mensura SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA scripta SICUT NUMERUS VALENS mensura.
+    DECLARA st SICUT NUMERUS VALENS 0.
+    SI mensura>0 TUNC
+        st=UEFI_VOCA6(scribe,fasc,SEDES(scripta),TEXTUS_BASIS_OCTETORUM(textus),0,0,0).
+    FIN-SI.
+    SI st!=0 || scripta!=mensura TUNC
+        DECLARA c1 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+        REDDE 0.
+    FIN-SI.
+    st=UEFI_VOCA6(flush,fasc,0,0,0,0,0).
+    DECLARA c2 SICUT NUMERUS VALENS FU_CLAUDE(fasc).
+    SI st!=0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA relatus SICUT TEXTUS VALENS FS_LEGE_TEXTUM(via).
+    SI TEXTUS_SEDES(relatus)==0 TUNC REDDE 0. FIN-SI.
+    REDDE FS_TEXTUS_AEQUALIS(textus,relatus).
+FIN-FUNCTIO.
