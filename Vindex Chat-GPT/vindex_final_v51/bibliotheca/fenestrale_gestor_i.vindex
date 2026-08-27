@@ -1,6 +1,6 @@
-// Sylvia OS — gestio communis Fenestralis Purus I post P16-IV.
-// Navigatio applicationum ex catalogo P16-IV venit; hic tantum operationes
-// genericae fenestrarum, taskbar, tractus et claviaturae servantur.
+// Sylvia OS — gestio communis Fenestralis Purus I post P16-IV / P17-I.
+// Navigatio applicationum ex catalogo venit; hic operationes genericae
+// fenestrarum, taskbar, tractus et distributio claviaturae servantur.
 
 FUNCTIO GI_INITIUM_FENESTRA REDDENS NUMERUS.
     ACCIPIT registrum SICUT NUMERUS.
@@ -65,6 +65,7 @@ FIN-FUNCTIO.
 FUNCTIO GI_CLAVIS REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     ACCIPIT registrum SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
     ACCIPIT q SICUT NUMERUS.
     SI q==0 TUNC REDDE 0. FIN-SI.
     DECLARA scan SICUT NUMERUS VALENS (q/2)%65536.
@@ -77,5 +78,13 @@ FUNCTIO GI_CLAVIS REDDENS NUMERUS.
     SI scan==2 TUNC DECLARA a2 SICUT NUMERUS VALENS FI_MOVE(registrum,id,0,12). REDDE 1. FIN-SI.
     SI scan==3 TUNC DECLARA a3 SICUT NUMERUS VALENS FI_MOVE(registrum,id,12,0). REDDE 1. FIN-SI.
     SI scan==4 TUNC DECLARA a4 SICUT NUMERUS VALENS FI_MOVE(registrum,id,0-12,0). REDDE 1. FIN-SI.
+    SI unicode!=0 && coda!=0 TUNC
+        DECLARA nodus SICUT NUMERUS VALENS FI_QUAERE(registrum,id).
+        SI nodus==0 TUNC REDDE 0. FIN-SI.
+        DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(nodus+8).
+        DECLARA positum SICUT NUMERUS VALENS EG_PONE(coda,2,cliens,scan,0,unicode).
+        SI positum==0 TUNC s[35]=s[35]+1. REDDE 0. FIN-SI.
+        REDDE 1.
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
