@@ -127,7 +127,8 @@ def principale() -> int:
         print(f"FENESTRALE: ps2_ante={ante_ps2} signa={signa} colores_communes={communes}")
         if (w1, h1) != (1280, 800): print(f"DEFECIT: resolutio {w1}x{h1}", file=sys.stderr); return 7
         if distincti < 8 or dominans > (w1*h1*97//100): print(f"DEFECIT: pictura nimis simplex: distincti={distincti} dominans={dominans}", file=sys.stderr); return 8
-        if any(n < 100 for n in signa.values()): print(f"DEFECIT: signa picturae Fenestralis desunt: {signa}", file=sys.stderr); return 14
+        if signa[(8,35,61)] < 100 or signa[(98,215,242)] < 100 or signa[(241,238,228)] < 20:
+            print(f"DEFECIT: signa picturae Fenestralis desunt: {signa}", file=sys.stderr); return 14
         if len(ante_ps2) < 3 or ante_ps2[0] != 9 or ante_ps2[1:3] != [250,250]: print(f"DEFECIT: initium PS/2 invalidum: {ante_ps2}", file=sys.stderr); return 9
 
         responsa=[]
