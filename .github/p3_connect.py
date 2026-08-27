@@ -99,11 +99,14 @@ polle_vetus = """FUNCTIO UEFI_POLLE REDDENS NUMERUS.
     SI ma == 0 TUNC ma = UEFI_MURIS_REL_POLLE(). FIN-SI.
 """
 polle_novum = """FUNCTIO UEFI_POLLE REDDENS NUMERUS.
-    DECLARA cl SICUT NUMERUS VALENS UEFI_CLAVES_POLLE().
     DECLARA ma SICUT NUMERUS VALENS 0.
     SI PS2_PARATUS_EST() == 1 TUNC
+        // PS/2 primum pollitur: si octetum AUX pendet, rector nativus eum
+        // consumit antequam ministerium claviaturae firmware 8042 tangat.
         ma = PS2_POLLE().
-    ALITER
+    FIN-SI.
+    DECLARA cl SICUT NUMERUS VALENS UEFI_CLAVES_POLLE().
+    SI PS2_PARATUS_EST() == 0 TUNC
         ma = UEFI_MURIS_ABS_POLLE().
         SI ma == 0 TUNC ma = UEFI_MURIS_REL_POLLE(). FIN-SI.
     FIN-SI.
