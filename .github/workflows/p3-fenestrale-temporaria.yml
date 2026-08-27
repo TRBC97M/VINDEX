@@ -1,4 +1,4 @@
-name: P3 — Descriptoris scripturae machinales
+name: P3 — Scriptor descriptoris nominatur
 
 on:
   push:
@@ -6,14 +6,12 @@ on:
       - chatgpt/p3-fenestrale-uefi-purum
 
 jobs:
-  watch:
+  mappa:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5
-      - name: GDB institue
-        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends gdb
-      - name: G3 construe, sedem detege, scripturas observa
+      - name: G3 construe et RIP ad functiones refer
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: |
@@ -53,48 +51,26 @@ jobs:
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
           chmod +x /tmp/g3
-          sudo sysctl -w kernel.yama.ptrace_scope=0 || true
-
-          /tmp/g3 src/compilator_vindex.vindex /tmp/g4probe &
-          pid=$!
-          sleep 0.35
-          gdb -q -batch -ex "attach $pid" -ex 'printf "DESC %lld\n", $rdi' -ex detach > /tmp/desc.txt 2>&1 || true
-          cat /tmp/desc.txt
-          desc=$(grep '^DESC ' /tmp/desc.txt | awk '{print $2}')
-          test -n "$desc"
-          kill -9 "$pid" 2>/dev/null || true
-          wait "$pid" 2>/dev/null || true
-          c0=$desc
-          c1=$((desc+8))
-          c2=$((desc+16))
-          printf 'WATCH descriptor=0x%x fields=0x%x,0x%x,0x%x\n' "$desc" "$c0" "$c1" "$c2"
-
-          cat >/tmp/watch.gdb <<GDB
-          set pagination off
-          set confirm off
-          set args src/compilator_vindex.vindex /tmp/g4watch
-          starti
-          watch *(long long*)$c0
-          commands 1
-            silent
-            printf "W0 rip=0x%llx value=%lld\\n", \$rip, *(long long*)$c0
-            x/8i \$rip-12
-            continue
-          end
-          watch *(long long*)$c1
-          commands 2
-            silent
-            printf "W1 rip=0x%llx value=%lld\\n", \$rip, *(long long*)$c1
-            x/8i \$rip-12
-            continue
-          end
-          watch *(long long*)$c2
-          commands 3
-            silent
-            printf "W2 rip=0x%llx value=%lld\\n", \$rip, *(long long*)$c2
-            x/8i \$rip-12
-            continue
-          end
-          continue
-          GDB
-          timeout 8s gdb -q -batch -x /tmp/watch.gdb /tmp/g3 || true
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          src=Path('src/compilator_vindex.vindex').read_text(encoding='utf-8')
+          names=re.findall(r'(?m)^FUNCTIO\s+([A-Z0-9_]+)\s+REDDENS',src)
+          data=Path('/tmp/g3').read_bytes()
+          hits=[]; i=0
+          while True:
+              i=data.find(b'\x55\x48\x89\xe5',i)
+              if i<0: break
+              hits.append(i); i+=4
+          for target in (0x431dfe,0x432abd,0x432c40):
+              off=target-0x400000
+              prev=[(j,h) for j,h in enumerate(hits) if h<=off]
+              j,h=prev[-1]
+              print(f'TARGET 0x{target:x} FUNCTION_INDEX={j} START=0x{0x400000+h:x} DELTA=0x{off-h:x} NAME={names[j] if j<len(names) else "?"}')
+          print('--- circum scriptor ---')
+          target=0x431dfe-0x400000
+          prev=[(j,h) for j,h in enumerate(hits) if h<=target]
+          j,_=prev[-1]
+          for k in range(max(0,j-3),min(len(names),j+4)):
+              print(k,names[k],hex(0x400000+hits[k]) if k<len(hits) else '?')
+          PY
