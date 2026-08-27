@@ -54,36 +54,47 @@ Exemplum huius regulae iam canonice apparuit: defectus aestimationis brevis `&&`
 
 # III. Puritas VINDEX in Sylvia OS
 
-**Sylvia OS post initium firmware tota lingua VINDEX scribenda est.**
+**Catena canonica Sylviae tota lingua VINDEX scribenda est, etiam ponticulus UEFI.**
 
-Haec regula architectonica absoluta est.
+Haec regula architectonica absoluta est. Nulla exceptio C, assembleris externi aut alterius linguae in via canonica initii manet.
 
-Alius sermo, ut C aut codex machinalis manualis, tantum in ponticulo initiali tolerari potest dum firmware directe aliter vocari nondum potest. Ponticulus ille nihil ultra officium initii faciat:
+Ponticulus initialis VINDEX officium strictum habet:
 
-- modum graphicum et framebuffer a firmware obtineat;
-- memoriam necessariam initialem reservet;
-- imaginem primi programmatis VINDEX oneret;
-- metadata minima initii VINDEX tradat;
-- imperium semel ad primum ingressum VINDEX transferat.
+- firmware UEFI directe vocare;
+- modum graphicum et framebuffer obtinere;
+- memoriam necessariam initialem reservare;
+- imaginem nuclei VINDEX ex volumine legere;
+- metadata minima initii tradere;
+- imperium semel per `SALI_AD` ad nucleum transferre.
 
-Post translationem imperii, ponticulus non debet fieri minister residentis. Non licet ei:
+Post translationem imperii ponticulus non fit minister residentis. Non debet:
 
 - ansam eventuum tenere;
 - clavierem, murem aut alia input continuatim tractare;
-- framebuffer pingere vel componere;
+- framebuffer componere ut runtime systematis;
 - fenestras, focus, ordinem Z, taskbar aut superficies administrare;
-- systema fasciculorum interpretari vel I/O applicationum praestare;
+- systema fasciculorum applicationum praestare;
 - applicationes VINDEX ut clientes intra runtime alienae linguae regere.
 
 Si VINDEX facultate necessaria caret — vocatione indirecta firmware, accessu memoriae mappatae, interruptione, disco aut alio mechanismo — lingua, compilator, ABI aut bibliotheca VINDEX extendenda sunt.
 
-Codex non-VINDEX qui historice ultra hunc terminum processit est **hereditas experimentalis**, non exemplar architectonicum.
+Codex non-VINDEX qui historice initium aut runtime Sylviae implevit est **hereditas experimentalis**, non pars lineae canonicae.
 
 ## Status praesentis initii UEFI
 
-Ponticulus UEFI omnino VINDEX purus iam in ramo experimentali demonstratus est, sed eius integratio canonica nondum perfecta est. Donec catena firmware → nucleus Sylviae realis → framebuffer → input sub probatione repetibili perfecta est, exceptio minima ponticuli veteris non declaratur abolita.
+PR #109 canonizat portum selectivum operis experimentalis #82 supra `main` hodiernum. Catena dedicata sub QEMU/OVMF probat:
 
-Experimentum prosperum non statim lex fit; facultates probatae in structuram canonicam portandae et recertificandae sunt.
+```text
+OVMF → BOOTX64.EFI [VINDEX] → NUCLEUS [VINDEX] → FRAMEBUFFER → SYLVIA
+```
+
+Probatio requirit `PONTOK`, absentiam exceptionis et defectus paginae, screendump non vacuum atque imaginem 1280×800 cum coloribus distinctis. `NUCLEUS.BIN`, `TEXTUS.BIN` et `FORMA.BIN` vere intra volumen FAT includuntur. Constructor canonicus nullo gcc, ld aut objcopy ad codicem UEFI generandum eget.
+
+Vetus `bootstrap_uefi.c` et constructor C e linea canonica removentur; custos puritatis nullam exceptionem C amplius admittit.
+
+### Debitum ELF separatum
+
+Formatio ELF hodierna acervum ad sedem fixam ita collocat ut `p_memsz` etiam pro binario minimo magnum, circiter XLVI MiB, declarari possit. Ponticulus UEFI contractum hunc nunc recte implet per reservationes memoriae frustatim; catena igitur probata est. Nihilominus dispositio multi-`PT_LOAD` vel relocatio acervi est debitum architectonicum separatum, non causa ad P1 iterum aperiendum.
 
 ---
 
@@ -108,14 +119,17 @@ Compilator hodiernus:
 - ipse VINDEX scriptus est et punctum fixum auto-hospitii servat;
 - ELF64 x86-64 generat;
 - PE32+ Win64 generat et sub Windows vero probatur;
+- PE32+ UEFI EFI applicationes sine importationibus Win32 generat;
+- vocationes firmware UEFI et `SALI_AD` ad usum basimi gradus sustinet;
 - argumenta `argc/argv` et vocationes Win64 probatas sustinet;
 - memoriam directam, acus, formas, fluitantia, importationes, recursionem et I/O iam exercet;
 - `PROIECTUM` et vias projectuum probatas habet;
 - diagnostica cum fonte, linea, columna et nuntio probata habet;
 - `&&` et `||` aestimationem brevem veram cum prioritate `&&` ante `||` habent;
-- `&` et `|` operationes bitarias separatas servant.
+- `&` et `|` operationes bitarias separatas servant;
+- commentaria `//` intra corpora functionum canonice tractat.
 
-Target UEFI est pars evolutionis praesentis, sed nondum eodem gradu canonico ac ELF et PE/Win64 declaratur.
+ELF, PE/Win64 et UEFI sunt targeta canonica x86-64, quamquam singula custodias ambitus proprias habent.
 
 ## 2. Ecosystema VINDEX
 
@@ -195,7 +209,7 @@ Mutationes linguae debent, ubi possibile est:
 - `G2 = G3` probare;
 - binarium canonicum fonti respondere probare;
 - regressionem minimam quae defectum ante mutationem demonstraret addere;
-- probationes ELF, PE/Win64 et dependentias Sylviae relevantes exercere.
+- probationes ELF, PE/Win64, UEFI et dependentias Sylviae relevantes exercere.
 
 ---
 
@@ -203,11 +217,11 @@ Mutationes linguae debent, ubi possibile est:
 
 Probationes canonicae statum praesentem systematis custodire debent, non architecturam repudiatam.
 
-`make probatio` / `tests/run_tests.sh` nunc contractum localem hodiernum exercet: linguam, diagnostica, auto-hospitium, logicam brevem, PE32+, puritatem Sylviae et Fenestrale II Purus I.
+`make probatio` / `tests/run_tests.sh` contractum localem hodiernum exercet: linguam, diagnostica, auto-hospitium, logicam brevem, PE32+, puritatem Sylviae et Fenestrale II Purus I.
 
 Probationes quae BIOS/VGA, pontes C veteres, `rectores.S` aut Officinam GTK historicam examinant ad historiam pertinent nisi iterum expresse canonizentur.
 
-Ambitus qui machinam propriam requirunt — Windows verum, UEFI/QEMU, Officina Windows — custodias CI dedicatas habent.
+Ambitus qui machinam propriam requirunt — Windows verum, UEFI/QEMU, Officina Windows — custodias CI dedicatas habent. Custodia UEFI canonica non solum structuram EFI inspicit: imaginem FAT construit, OVMF exsequitur et screendump Sylviae verificat.
 
 ---
 
@@ -224,15 +238,17 @@ Regulae:
 - PR obsoletae claudantur cum earum facultates canonice substitutae sunt;
 - historia Git servatur etiam cum via activa mutatur.
 
+Canonizatio #109 est exemplum huius disciplinae: #82 109 commits a `main` distabat, itaque facultates eius probatae selective super lineam hodiernam portatae et denuo certificatae sunt.
+
 ---
 
 # IX. Proximi fines architectonici
 
 Ordo operativus exactus in `CONSILIUM.md` statuitur. Architectonice autem fines proximi sunt:
 
-1. catena UEFI VINDEX pura cum nucleo Sylviae reali et contractu memoriae recto perficere;
-2. unam imaginem boot canonicam QEMU/OVMF certificare;
-3. input et gubernatores probatos, inter quos PS/2, in catena canonica integrare;
+1. catenam iam puram a firmware/nucleo usque ad Fenestrale II canonicum et input fundamentale componere;
+2. mechanismum PS/2 probatum ex laboratorio #71 selective portare et in eadem imagine recertificare;
+3. debitum ELF circa acervum fixum et `PT_LOAD` magnum sine regressione targetorum solvere;
 4. fundamenta VINDEX alti gradus per incrementa maturare dum libertas basimi gradus servatur;
 5. infrastructuram gubernatorum ad machinam physicam referentiae construere;
 6. postea rete, TLS et navigatorem VINDEX nativum a fundamentis suis construere.
