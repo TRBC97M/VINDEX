@@ -75,4 +75,4 @@ jobs:
           systema/uefi/construe_uefi_purum.sh /tmp/systema_vindex_uefi.img /tmp/BOOTX64.EFI
           file /tmp/BOOTX64.EFI | grep -q 'PE32+.*EFI application'
           test -s /tmp/systema_vindex_uefi.img
-          python3 ../../../instrumenta/verifica_puritatem_sylviae.py
+          python3 ../../instrumenta/verifica_puritatem_sylviae.py
