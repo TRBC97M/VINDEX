@@ -13,6 +13,7 @@ NUCLEUS = SYSTEMA / "nucleus.vindex"
 
 EXTENSIONES_VETITAE = {".c", ".h", ".cc", ".cpp", ".cxx", ".s", ".S", ".asm", ".rs"}
 POLLE_HEREDITATUM = re.compile(r"(?<![A-Z0-9_])POLLE\(\)")
+MANDATUM_HOST_VETITUM = re.compile(r"(?m)^[ \t]*(gcc|clang|ld|objcopy)(?:[ \t]|$)")
 errata: list[str] = []
 
 # Nulla exceptio linguae post canonizationem P1 manet in arbore systematis.
@@ -39,9 +40,9 @@ if not CONSTRUCTOR.exists():
     errata.append("constructor UEFI VINDEX purus deest")
 else:
     constructio = CONSTRUCTOR.read_text(encoding="utf-8")
-    for instrumentum in ["gcc ", "clang ", " objcopy", " ld "]:
-        if instrumentum in constructio:
-            errata.append(f"constructor UEFI instrumentum non-VINDEX ad codicem generandum adhibet: {instrumentum.strip()}")
+    mandatum = MANDATUM_HOST_VETITUM.search(constructio)
+    if mandatum:
+        errata.append(f"constructor UEFI instrumentum non-VINDEX ad codicem generandum adhibet: {mandatum.group(1)}")
     if "ponticulus_uefi_purus.vindex" not in constructio:
         errata.append("constructor UEFI ponticulum canonicum non adhibet")
 
