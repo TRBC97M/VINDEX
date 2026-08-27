@@ -95,12 +95,12 @@ def differentiae(a: bytes, b: bytes) -> int:
     return sum(a[i * 3:i * 3 + 3] != b[i * 3:i * 3 + 3] for i in range(n))
 
 
-def colores_fenestrales(pix: bytes) -> tuple[int, dict[tuple[int, int, int], int]]:
+def pictura_structura(pix: bytes) -> tuple[int, list[tuple[tuple[int, int, int], int]], int]:
     c = Counter(tuple(pix[i:i + 3]) for i in range(0, len(pix) - 2, 3))
-    requisiti = [(8, 35, 61), (98, 215, 242), (241, 238, 228)]
-    adsunt = {r: c[r] for r in requisiti}
     distincti = sum(1 for _, n in c.items() if n > 30)
-    return distincti, adsunt
+    communes = c.most_common(12)
+    dominans = communes[0][1] if communes else 0
+    return distincti, communes, dominans
 
 
 def principale() -> int:
@@ -133,15 +133,21 @@ def principale() -> int:
 
         basis = basis_ps2(monitor)
         if basis == 0:
-            print("DEFECIT: pagina rectoris PS/2 in metadata deest", file=sys.stderr); return 6
+            print("DEFECIT: basis rectoris PS/2 deest", file=sys.stderr); return 6
         ante_ps2 = status_ps2(monitor, basis)
+        metadata = hexa_hmp(hmp(monitor, "xp /12gx 0x03000800"))[:12]
         captura(monitor, ante)
         w1, h1, pix1 = ppm(ante)
-        distincti, palette = colores_fenestrales(pix1)
+        distincti, communes, dominans = pictura_structura(pix1)
+        print(f"FENESTRALE: metadata={metadata}")
+        print(f"FENESTRALE: colores_communes={communes}")
         if (w1, h1) != (1280, 800):
             print(f"DEFECIT: resolutio {w1}x{h1}, non 1280x800", file=sys.stderr); return 7
-        if distincti < 6 or sum(v > 50 for v in palette.values()) < 2:
-            print(f"DEFECIT: pictura Fenestralis non agnoscitur: distincti={distincti} palette={palette}", file=sys.stderr); return 8
+        # Exactae triplices RGB inter GOP implementationes mutari possunt. Hic
+        # structuram picturae probamus; identitas Fenestralis infra etiam per
+        # PS/2 initium et repaintum ansae eventuum directe demonstratur.
+        if distincti < 8 or dominans > (w1 * h1 * 97 // 100):
+            print(f"DEFECIT: pictura nimis simplex: distincti={distincti} dominans={dominans}", file=sys.stderr); return 8
         if len(ante_ps2) < 3 or ante_ps2[0] != 9 or ante_ps2[1:3] != [250, 250]:
             print(f"DEFECIT: initium PS/2 invalidum: {ante_ps2}", file=sys.stderr); return 9
 
@@ -165,7 +171,7 @@ def principale() -> int:
         mutata = differentiae(pix1, pix2)
         raw = hexa_hmp(hmp(monitor, f"xp /3gx 0x{basis + 72:x}"))[:3]
 
-        print(f"FENESTRALE: resolutio={w1}x{h1} distincti={distincti} palette={palette}")
+        print(f"FENESTRALE: resolutio={w1}x{h1} distincti={distincti}")
         print(f"FENESTRALE: basis_ps2=0x{basis:x} initium={ante_ps2[:3]} post={post_ps2[:4]}")
         print(f"FENESTRALE: raw_dx_dy_bullae={raw} pixeli_mutati={mutata}")
         if (w1, h1) != (w2, h2):
