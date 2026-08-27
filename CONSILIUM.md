@@ -226,9 +226,9 @@ Officina amplianda est cum debugger, refactoring, exploratione symbolorum, packa
 
 **Status:** `PERFECTUM`.
 
-PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #102, #104, #105, #106, #107 et #108 collectiones, series, segmenta et `TEXTUS` maturaverunt. PR #109 addidit custodiam UEFI completam; #110 addidit probationem PS/2 nativam; #111 custodiam duplicem nuclei historici et Fenestralis II addidit.
+PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #102, #104, #105, #106, #107 et #108 collectiones, series, segmenta et `TEXTUS` maturaverunt. PR #109 addidit custodiam UEFI completam; #110 addidit probationem PS/2 nativam; #111 custodiam duplicem nuclei historici et Fenestralis II addidit. P16-IV/#116 addit probationem catalogi applicationum sine capacitate parva fixa.
 
-`make probatio` / `tests/run_tests.sh` nunc **XXIX probationes, nulla errata** exercet, inter quas:
+`make probatio` / `tests/run_tests.sh` nunc **XXX probationes, nulla errata** exercet, inter quas:
 
 - casus fundamentales linguae;
 - diagnostica valida et invalida;
@@ -244,9 +244,10 @@ PR #99 vetus harnais a contractu praesentis systematis separavit. Incrementa #10
 - PE32+;
 - puritas absoluta Sylviae;
 - LXXX fenestrae;
+- XCVI applicationes in registro dynamico;
 - compilatio Fenestralis II Purus I.
 
-Custodia UEFI separata exsequitur QEMU/OVMF, screendump, PS/2 nuclei historici, Fenestrale II cum PS/2 nativo et contractum formae visualis P16-I. Probationes Win64 et Officina sub Windows vero manent separatae.
+Custodia UEFI separata exsequitur QEMU/OVMF, screendump, PS/2 nuclei historici, Fenestrale II cum PS/2 nativo et contractus visuales P16. Probationes Win64 et Officina sub Windows vero manent separatae.
 
 ---
 
@@ -286,7 +287,7 @@ Ceterae veteres pilae Fenestrales et Officinae iam clausae sunt post canonizatio
 - PR #106 — validatione UTF-8 stricta, numeratione scalarum Unicode et accessu ad scalare;
 - PR #107 — functiones `TEXTUS` redire possunt, etiam post concatenationem dynamicam;
 - PR #108 — `SUBTEXTUS_SCALARUM` cum vacuo legitimo ab errore distincto;
-- regressiones collectionum, segmentorum et Unicode inclusae in XXIX/XXIX;
+- regressiones collectionum, segmentorum et Unicode inclusae in XXX/XXX;
 - #111 — structurae internae byte-addressatae a semanticis `ACUS` separatae et acervus ELF VINDEX nativus adhibitus;
 - nulla generica ficta ante facultatem linguae.
 
@@ -414,7 +415,7 @@ Chromium non est fundamentum necessarium neque finis architectonicus.
 
 ## P16 — Forma visualis Sylviae
 
-**Status:** `PERFECTUM per PR #113 — incrementum I; PERFECTUM per PR #114 — incrementum II; PROBATUM / CANONIZANDUM — incrementum III`.
+**Status:** `PERFECTUM per PR #113 — incrementum I; PERFECTUM per PR #114 — incrementum II; PERFECTUM per PR #115 — incrementum III; PROBATUM / CANONIZANDUM per PR #116 — incrementum IV`.
 
 Consilia visualia sunt destinatio realis, non picturae decorativae. Fenestrale technicum debet paulatim accipere widgeta, thema, typographiam, margines et proportionem, iconographiam, cursorem et status interactionis, taskbar et menus canonicos, scaling et resolutiones modernas.
 
@@ -446,7 +447,7 @@ Contractus plenus in `documenta/sylvia/FORMA_VISUALIS_I.md` describitur.
 
 Contractus plenus in `documenta/sylvia/INITIUM_II.md` describitur.
 
-### Incrementum III probatum / canonizandum
+### Incrementum III perfectum per #115
 
 P16-III **bureau functionale** addit:
 
@@ -461,9 +462,24 @@ P16-III **bureau functionale** addit:
 
 Contractus plenus in `documenta/sylvia/BUREAU_III.md` describitur.
 
-P16-IV debet a duobus clientibus fixis ad registrum/catalogum applicationum progredi, ut INITIUM et bureau applicationes ex uno fonte canonico cognoscant.
+### Incrementum IV probatum / canonizandum per #116
 
-**Sylvia hodierna iam bureau et menu systematis functionalia possidet; nondum tamen processuum manager aut catalogum applicationum generalem.**
+P16-IV **catalogum applicationum communem** introducit:
+
+- registrum dynamicum applicationum per nodos VINDEX, sine capacitate parva fixa;
+- metadata communia: id, cliens, genus, nomen `TEXTUS`, praesentia in bureau;
+- INITIUM et bureau eodem registro applicationes enumerant;
+- fenestrarum tituli et taskbar nomina ex eodem catalogo veniunt;
+- clic in bureau vel INITIUM id applicationis ad clientem Fenestralis convertit sine duobus ramis navigationis fixis;
+- dispositio bureau in ordines et columnas crescit;
+- INITIUM ad plures applicationes per ordines et columnas dilatatur;
+- probatio regressiva **XCVI applicationum** catalogum integrum percurrit;
+- PROGRAMMATA et TABULA sunt primae registrationes hodiernae, non duo sloti architectonici;
+- processuum manager, installationes persistentes et isolationes processuum consulto non simulantur.
+
+Contractus plenus in `documenta/sylvia/APPLICATIONES_IV.md` describitur.
+
+**Sylvia iam bureau, INITIUM et catalogum applicationum sessionis generalem possidet; processuum manager verus adhuc ad strata futura pertinet.**
 
 ---
 
@@ -483,11 +499,11 @@ P16-IV debet a duobus clientibus fixis ad registrum/catalogum applicationum prog
 
 Via recta progressionis nunc est:
 
-1. P16-III bureau functionale canonizare;
-2. P16-IV registrum/catalogum applicationum commune INITIUM et bureau construere;
-3. P12 incipere per fundamenta gubernatorum quae hardware reale et input maturius aperiunt;
-4. P9 per incrementa parva et generalia continuare;
-5. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum.
+1. P16-IV catalogum applicationum communem per #116 canonizare;
+2. P12 incipere per fundamenta gubernatorum quae hardware reale et input maturius aperiunt;
+3. P9 per incrementa parva et generalia continuare;
+4. debitum ELF `PT_LOAD`/acervi fixi separatim solvere sine regressione targetorum;
+5. post fundamenta processuum et filesystematis, lifecycle applicationum a catalogo sessionis ad applicationes vere independentes promovere.
 
 ---
 
