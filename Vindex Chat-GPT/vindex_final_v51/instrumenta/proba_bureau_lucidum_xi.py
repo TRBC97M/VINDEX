@@ -52,6 +52,10 @@ def pixeli_lucidi(pix: bytes, w: int, x0: int, y0: int, x1: int, y1: int, limen:
     return n
 
 
+def color_proximus(visum: tuple[int, int, int], exspectatum: tuple[int, int, int], tolerantia: int = 3) -> bool:
+    return all(abs(a - b) <= tolerantia for a, b in zip(visum, exspectatum))
+
+
 def principale() -> int:
     if len(sys.argv) != 5:
         print('USUS: proba_bureau_lucidum_xi.py MONITOR QMP EXITUS MORA', file=sys.stderr)
@@ -161,7 +165,8 @@ def principale() -> int:
             print(f'DEFECIT: capsula tituli Graphite deest: {aux.pixel(pix,w,30,140)}', file=sys.stderr)
             return 17
 
-        # Iconae rasterae P16-VII servant centra/hitbox historica.
+        # Centra iconarum servant identitatem rasteram. Quia atlas RGBA super
+        # Vitrum Minerale componitur, subpixelus alpha unum vel duo gradus mutare potest.
         centra = (
             ('PROGRAMMATA', 72, 104, (236, 194, 113)),
             ('TABULA', 72, 208, (201, 154, 82)),
@@ -170,8 +175,8 @@ def principale() -> int:
         )
         for nomen, x, y, exspectatum in centra:
             visum = aux.pixel(pix, w, x, y)
-            if visum != exspectatum:
-                print(f'DEFECIT: centrum iconis {nomen}: {visum} loco {exspectatum}', file=sys.stderr)
+            if not color_proximus(visum, exspectatum):
+                print(f'DEFECIT: centrum iconis {nomen}: {visum} longe a {exspectatum}', file=sys.stderr)
                 return 18
 
         # Taskbar XI est rail fluitans: Silver exterior, Aqua lumen, Graphite corpus.
