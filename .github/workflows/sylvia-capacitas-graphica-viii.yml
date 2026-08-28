@@ -12,6 +12,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
@@ -27,6 +28,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
       - 'documenta/sylvia/GRAPHICA_VIII.md'
       - '.github/workflows/sylvia-capacitas-graphica-viii.yml'
 
@@ -52,6 +54,13 @@ jobs:
           set -euo pipefail
           python3 instrumenta/verifica_puritatem_sylviae.py
 
+      - name: ABI Graphica VIII verifica
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_abi_graphica_viii.py
+
       - name: Contractus Graphica VIII custodi
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
@@ -62,6 +71,7 @@ jobs:
           d='bibliotheca/fenestrale_damage_viii.vindex'
           t='bibliotheca/fenestrale_typographia_viii.vindex'
           for signum in \
+            'FUNCTIO GVIII_RECT_CREA REDDENS NUMERUS' \
             'FUNCTIO GVIII_RECT_SECA REDDENS NUMERUS' \
             'FUNCTIO GVIII_RECT_ROTUNDUS_FB REDDENS NUMERUS' \
             'FUNCTIO GVIII_RECT_ROTUNDUS_S REDDENS NUMERUS' \
@@ -72,11 +82,12 @@ jobs:
           grep -Fq 'FUNCTIO GVIII_SUPERFICIES_COPIA_RECT REDDENS NUMERUS' "$s"
           grep -Fq 'FUNCTIO GVIII_SIMG_NOVEM_PARTES_S REDDENS NUMERUS' "$s"
           grep -Fq 'FUNCTIO DVIII_ADDE REDDENS NUMERUS' "$d"
-          grep -Fq 'FUNCTIO DVIII_COLLAPSA REDDENS NUMERUS' "$d"
+          grep -Fq 'FUNCTIO DVIII_ADDE_FB REDDENS NUMERUS' "$d"
+          grep -Fq 'FUNCTIO TVIII_FONS_CREA REDDENS NUMERUS' "$t"
           grep -Fq 'FUNCTIO TVIII_GLYPHUM_FB REDDENS NUMERUS' "$t"
           grep -Fq 'FUNCTIO TVIII_TEXTUM_S REDDENS NUMERUS' "$t"
           for f in "$g" "$s" "$d" "$t"; do ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"; done
-          printf '%s\n' 'RECTE: contractus Graphica VIII adsunt et nullum POLLE occultum continetur.'
+          printf '%s\n' 'RECTE: contractus Graphica VIII compacti adsunt et nullum POLLE occultum continetur.'
 
       - name: Primitivas Graphica VIII compila et exerce
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
@@ -86,7 +97,7 @@ jobs:
           ./compilator_vindex probationes/capacitas_graphica_viii.vindex /tmp/graphica-viii
           chmod +x /tmp/graphica-viii
           timeout 15s /tmp/graphica-viii
-          printf '%s\n' 'RECTE: clipping, damage, scaling math et typographiae contractus transeunt.'
+          printf '%s\n' 'RECTE: recta compacta, clipping, damage et typographiae descriptoria transeunt.'
 
       - name: Superficies Graphica VIII compila et exerce
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
