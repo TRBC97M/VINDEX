@@ -1,0 +1,18 @@
+// P16-XI-A — radix importuum completa pro showroom UEFI assetorum realium.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/raster_rle_vii.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
+IMPORTA "bibliotheca/simg_ii.vindex".
+IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
+IMPORTA "bibliotheca/simg_ii_assetum.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
+IMPORTA "bibliotheca/fons_ui_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_ix_superficies.vindex".
+IMPORTA "systema/showroom_asseta_premium_i.vindex".
