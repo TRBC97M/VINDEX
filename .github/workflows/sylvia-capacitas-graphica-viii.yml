@@ -11,9 +11,15 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_damage_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_commandos_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/coda_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/assets_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii_uefi.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
@@ -29,9 +35,15 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_damage_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_commandos_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/coda_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/assets_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii_uefi.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
       - 'documenta/sylvia/GRAPHICA_VIII.md'
       - '.github/workflows/sylvia-capacitas-graphica-viii.yml'
@@ -41,12 +53,19 @@ permissions:
 
 jobs:
   graphica-viii:
-    name: Clipping, damage, scaling, 9-slice, typographia et coda
+    name: Motor 2D, typographia, coda et showroom QEMU
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 15
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
+
+      - name: Instrumenta QEMU institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
 
       - name: Compilator exsecutabilis sit
         shell: bash
@@ -126,6 +145,16 @@ jobs:
           timeout 15s /tmp/coda-graphica-viii
           printf '%s\n' 'RECTE: coda backend-neutra mandata compacta servat et saturatio detectatur.'
 
+      - name: Asseta Graphica VIII compila et exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/assets_graphica_viii.vindex /tmp/assets-graphica-viii
+          chmod +x /tmp/assets-graphica-viii
+          timeout 20s /tmp/assets-graphica-viii
+          printf '%s\n' 'RECTE: atlas Inter alpha-gradatus et materia 9-slice SIMG valida sunt.'
+
       - name: Regressio Graphica VII compila et exerce
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
@@ -135,3 +164,22 @@ jobs:
           chmod +x /tmp/graphica-vii
           timeout 15s /tmp/graphica-vii
           printf '%s\n' 'RECTE: fundamentum P16-VII non regressum est.'
+
+      - name: Showroom Graphica VIII sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '20'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-graphica-viii'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_showroom_graphica_viii_uefi.sh
+
+      - name: Capturam showroom conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-graphica-viii-${{ github.sha }}
+          path: qemu-graphica-viii/*
+          if-no-files-found: warn
+          retention-days: 7
