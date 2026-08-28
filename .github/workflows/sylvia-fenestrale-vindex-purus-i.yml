@@ -17,6 +17,8 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_chrome_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_ix.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
@@ -39,6 +41,8 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/terminale_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/officina_sylvia_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/officina_persistentia_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ix.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_sylviae_i.py'
@@ -102,6 +106,8 @@ jobs:
           uvii='bibliotheca/fenestrale_iconographia_vii.vindex'
           cviii='bibliotheca/fenestrale_chrome_viii.vindex'
           uviii='bibliotheca/fenestrale_compositor_viii.vindex'
+          cix='bibliotheca/fenestrale_shell_ix.vindex'
+          uix='bibliotheca/fenestrale_compositor_ix.vindex'
           v='bibliotheca/fenestrale_ii_purus.vindex'
           e='bibliotheca/terminale_clientis_i.vindex'
           o='bibliotheca/officina_clientis_i.vindex'
@@ -201,26 +207,36 @@ jobs:
           grep -Fq 'EG_PONE(coda,2,cliens,scan,0,unicode)' "$g"
           grep -Fq 'CI_EVENTA_AGE(s[36],s[37],s[34])' "$s"
           grep -Fq 'IV_MOUSE_DOWN(s,s[37],s[34],s[39])' "$s"
-          grep -Fq 'IVVIII_REDDE(s,s[37],s[36],s[39]' "$s"
+          grep -Fq 'IVIX_REDDE(s,s[37],s[36],s[39]' "$s"
+
           grep -Fq 'FUNCTIO IVVII_REDDE REDDENS NUMERUS' "$uvii"
           grep -Fq 'FUNCTIO CVIII_CHROME REDDENS NUMERUS' "$cviii"
           grep -Fq 'FUNCTIO CVIII_FENESTRA REDDENS NUMERUS' "$cviii"
           grep -Fq 'FUNCTIO IVVIII_REDDE REDDENS NUMERUS' "$uviii"
+          grep -Fq 'FUNCTIO CIX_INITIUM_REDDE REDDENS NUMERUS' "$cix"
+          grep -Fq 'FUNCTIO CIX_TASKBAR_REDDE REDDENS NUMERUS' "$cix"
+          grep -Fq 'FUNCTIO IVIX_REDDE REDDENS NUMERUS' "$uix"
+          grep -Fq 'CVIII_FENESTRA(fenestrae,clientes,applicationes,n)' "$uix"
+          grep -Fq 'CIX_INITIUM_REDDE(s,applicationes)' "$uix"
+          grep -Fq 'CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes)' "$uix"
+
           grep -Fq 'FUNCTIO IV_INITIUM_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'FUNCTIO IV_BUREAU_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'GVII_UMBRA_GRADATA' "$cviii"
           grep -Fq 'GVII_GRADUS_VERTICALIS' "$cviii"
           grep -Fq 'GVII_RECT_ALPHA' "$cviii"
+          grep -Fq 'GVII_UMBRA_GRADATA' "$cix"
+          grep -Fq 'GVII_GRADUS_VERTICALIS' "$cix"
 
           ! grep -Eq 's\[(0|1|2|3|4|5|6|7|8|9|10|17|18|19|20|21|22|23|24|25|26)\][[:space:]]*=' "$s"
           ! grep -Eq 'PE_CLICK|TF_CLICK|TE_|OE_' "$g"
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
           ! grep -Fq 'OE_CLAVIS_EVENTUM(status,e[2],e[4])' "$c"
 
-          for f in "$r" "$g" "$c" "$a" "$u" "$uvii" "$cviii" "$uviii" "$v" "$e" "$o" "$op" "$fs" "$s"; do
+          for f in "$r" "$g" "$c" "$a" "$u" "$uvii" "$cviii" "$uviii" "$cix" "$uix" "$v" "$e" "$o" "$op" "$fs" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
-          printf '%s\n' 'RECTE: Fenestrale P16-VIII, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
+          printf '%s\n' 'RECTE: Fenestrale P16-IX super P16-VIII, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
 
       - name: Regressiones Fenestralis exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -251,4 +267,4 @@ jobs:
           set -euo pipefail
           ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
-          printf '%s\n' 'RECTE: Fenestrale II Purus I P16-VIII cum OFFICINA persistente compilatum est.'
+          printf '%s\n' 'RECTE: Fenestrale II Purus I P16-IX super P16-VIII cum OFFICINA persistente compilatum est.'
