@@ -162,6 +162,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-forma'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_i.py" \
@@ -172,6 +173,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-initium'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_ii.py" \
@@ -182,6 +184,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-bureau'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_sylviae_iii.py" \
@@ -192,6 +195,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-fenestrae'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_fenestras_sylviae_v.py" \
@@ -217,6 +221,19 @@ jobs:
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_officinam_sylviae_i.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Capturas P16-VI conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-p16-vi-${{ github.sha }}
+          path: |
+            qemu-captura-p16-vi-forma/*.ppm
+            qemu-captura-p16-vi-initium/*.ppm
+            qemu-captura-p16-vi-bureau/*.ppm
+            qemu-captura-p16-vi-fenestrae/*.ppm
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Capturas OFFICINAE conserva
         if: always()
