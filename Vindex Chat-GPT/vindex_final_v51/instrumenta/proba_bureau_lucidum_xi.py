@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-XI II: Bureau Lucidum super Graphica VIII in framebuffer vero QEMU/OVMF probatur."""
+"""P16-XI: Bureau Lucidum et testa JL-UX in framebuffer vero QEMU/OVMF probantur."""
 from __future__ import annotations
 
 import importlib.util
@@ -72,7 +72,7 @@ def principale() -> int:
     try:
         aux.lege_usque(monitor, b'(qemu) ', 2.0)
         time.sleep(mora)
-        via = out / 'bureau-lucidum-xi-ii.ppm'
+        via = out / 'bureau-lucidum-xi-shell.ppm'
         aux.captura(monitor, via)
         w, h, pix = aux.ppm(via)
         if (w, h) != (1280, 800):
@@ -81,12 +81,15 @@ def principale() -> int:
 
         utilis = h - 40
         limen = utilis * 57 // 100
+        graphite = (26, 29, 32)
+        cool = (74, 96, 114)
+        ebur = (242, 244, 247)
         aqua = (189, 239, 242)
         cyan = (0, 198, 255)
         argentum = (191, 199, 207)
         bronzeum = (181, 138, 84)
 
-        # Wallpaper cached debet profunditatem lucidam habere.
+        # Civitas Aquae manet scaena, sed non ipsa refectio tota est.
         caelum_altum = aux.pixel(pix, w, 500, 36)
         caelum_limen = aux.pixel(pix, w, 500, limen - 24)
         aqua_supera = aux.pixel(pix, w, 500, limen + 18)
@@ -101,7 +104,6 @@ def principale() -> int:
             print(f'DEFECIT: linea horizon Aqua Light deest: {aux.pixel(pix,w,620,limen-2)}', file=sys.stderr)
             return 7
 
-        # Arcus et civitas dextra colores canonicos JL-UX ostendere debent.
         regio_arcus = (w * 31 // 100, 12, w - 6, limen - 8)
         aq_arc = copia_coloris(pix, w, *regio_arcus, aqua)
         cy_arc = copia_coloris(pix, w, *regio_arcus, cyan)
@@ -118,18 +120,48 @@ def principale() -> int:
             print(f'DEFECIT: civitas P16-XI non satis picta bronze/aqua/silver={civ_bronze}/{civ_aqua}/{civ_silver}', file=sys.stderr)
             return 9
 
-        # Ebur Enamelatum est materia derivata, non obligatio pixelis #F2F4F7 literalis.
-        # Probamus ergo claritatem, metallum Silver, accentum Bronze et varietatem gradientiae.
+        # Marca top-left nunc est modulus Vitrum Minerale, non titulus nudus.
+        ident = (14, 12, 244, 62)
+        id_graphite = copia_coloris(pix, w, *ident, graphite)
+        id_silver = copia_coloris(pix, w, *ident, argentum)
+        id_aqua = copia_coloris(pix, w, *ident, aqua)
+        id_bronze = copia_coloris(pix, w, *ident, bronzeum)
+        if id_graphite < 700 or id_silver < 100 or id_aqua < 100 or id_bronze < 90:
+            print(f'DEFECIT: identitas mineralis incompleta graphite/silver/aqua/bronze={id_graphite}/{id_silver}/{id_aqua}/{id_bronze}', file=sys.stderr)
+            return 10
+        if aux.pixel(pix, w, 100, 18) != aqua or aux.pixel(pix, w, 22, 30) != bronzeum:
+            print('DEFECIT: lineae canonicae identitatis XI desunt', file=sys.stderr)
+            return 11
+
+        # Vetus tessera eburnea 108x88 disparuit. Restat objectum compactum:
+        # podium iconis + capsula tituli; hitbox tamen eadem est.
         card = (18, 72, 126, 160)
         card_lucidi = pixeli_lucidi(pix, w, *card, 600)
+        card_graphite = copia_coloris(pix, w, *card, graphite)
         card_silver = copia_coloris(pix, w, *card, argentum)
+        card_aqua = copia_coloris(pix, w, *card, aqua)
         card_bronze = copia_coloris(pix, w, *card, bronzeum)
         card_colores = colores_recti(pix, w, *card)
-        if card_lucidi < 4000 or card_silver < 180 or card_bronze < 20 or len(card_colores) < 35:
-            print(f'DEFECIT: tessera Graphica VIII incompleta lucidi/silver/bronze/colores={card_lucidi}/{card_silver}/{card_bronze}/{len(card_colores)}', file=sys.stderr)
-            return 10
+        if card_lucidi >= 3200:
+            print(f'DEFECIT: vetus tessera clara adhuc dominatur: lucidi={card_lucidi}', file=sys.stderr)
+            return 12
+        if card_graphite < 500 or card_silver < 100 or card_aqua < 30 or card_bronze < 30 or len(card_colores) < 30:
+            print(f'DEFECIT: objectum desktop XI incompletum graphite/silver/aqua/bronze/colores={card_graphite}/{card_silver}/{card_aqua}/{card_bronze}/{len(card_colores)}', file=sys.stderr)
+            return 13
+        if aux.pixel(pix, w, 72, 73) != argentum:
+            print(f'DEFECIT: podium argentum PROGRAMMATUM deest: {aux.pixel(pix,w,72,73)}', file=sys.stderr)
+            return 14
+        if aux.pixel(pix, w, 72, 77) != aqua:
+            print(f'DEFECIT: lumen Aqua podii PROGRAMMATUM deest: {aux.pixel(pix,w,72,77)}', file=sys.stderr)
+            return 15
+        if aux.pixel(pix, w, 72, 131) != bronzeum:
+            print(f'DEFECIT: clavis Bronze podii PROGRAMMATUM deest: {aux.pixel(pix,w,72,131)}', file=sys.stderr)
+            return 16
+        if aux.pixel(pix, w, 30, 140) != graphite:
+            print(f'DEFECIT: capsula tituli Graphite deest: {aux.pixel(pix,w,30,140)}', file=sys.stderr)
+            return 17
 
-        # Iconae rasterae P16-VII manent in eodem centro/hitbox.
+        # Iconae rasterae P16-VII servant centra/hitbox historica.
         centra = (
             ('PROGRAMMATA', 72, 104, (236, 194, 113)),
             ('TABULA', 72, 208, (201, 154, 82)),
@@ -140,21 +172,23 @@ def principale() -> int:
             visum = aux.pixel(pix, w, x, y)
             if visum != exspectatum:
                 print(f'DEFECIT: centrum iconis {nomen}: {visum} loco {exspectatum}', file=sys.stderr)
-                return 11
+                return 18
 
-        # Taskbar IX manet distincta et non obtegitur wallpaper.
+        # Taskbar XI est rail fluitans: Silver exterior, Aqua lumen, Graphite corpus.
         taskbar_top = h - 40
-        tb_top = aux.pixel(pix, w, 400, taskbar_top + 4)
-        tb_bottom = aux.pixel(pix, w, 400, taskbar_top + 35)
-        if tb_top == tb_bottom or tb_top == (0, 0, 0):
-            print(f'DEFECIT: taskbar IX gradientiam amisit: {tb_top}->{tb_bottom}', file=sys.stderr)
-            return 12
+        rail_silver = aux.pixel(pix, w, 400, taskbar_top + 4)
+        rail_aqua = aux.pixel(pix, w, 400, taskbar_top + 7)
+        rail_graphite = aux.pixel(pix, w, 400, taskbar_top + 20)
+        rail_cool = aux.pixel(pix, w, 400, taskbar_top + 34)
+        if rail_silver != argentum or rail_aqua != aqua or rail_graphite != graphite or rail_cool != cool:
+            print(f'DEFECIT: rail XI materia errat: {rail_silver}/{rail_aqua}/{rail_graphite}/{rail_cool}', file=sys.stderr)
+            return 19
 
-        print(f'BUREAU-LUCIDUM-XI-II: caelum={caelum_altum}->{caelum_limen} aqua={aqua_supera}->{aqua_infera} limen={limen}')
-        print(f'BUREAU-LUCIDUM-XI-II: arcus aqua/cyan/bronze={aq_arc}/{cy_arc}/{br_arc}')
-        print(f'BUREAU-LUCIDUM-XI-II: civitas bronze/aqua/silver={civ_bronze}/{civ_aqua}/{civ_silver}')
-        print(f'BUREAU-LUCIDUM-XI-II: tessera lucidi/silver/bronze/colores={card_lucidi}/{card_silver}/{card_bronze}/{len(card_colores)}')
-        print('RECTE: P16-XI II in framebuffer vero: wallpaper cached, civitas, 9-slice, atlas et iconographia apparent.')
+        print(f'BUREAU-XI-SHELL: caelum={caelum_altum}->{caelum_limen} aqua={aqua_supera}->{aqua_infera} limen={limen}')
+        print(f'BUREAU-XI-SHELL: arcus aqua/cyan/bronze={aq_arc}/{cy_arc}/{br_arc}')
+        print(f'BUREAU-XI-SHELL: identitas graphite/silver/aqua/bronze={id_graphite}/{id_silver}/{id_aqua}/{id_bronze}')
+        print(f'BUREAU-XI-SHELL: objectum lucidi/graphite/silver/aqua/bronze={card_lucidi}/{card_graphite}/{card_silver}/{card_aqua}/{card_bronze}')
+        print('RECTE: P16-XI in framebuffer vero: objecta desktop, identitas mineralis et rail JL-UX apparent.')
         return 0
     finally:
         try:
