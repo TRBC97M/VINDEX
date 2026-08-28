@@ -14,6 +14,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/simg_ii_importa_png.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_importatorem_simg_ii.py'
       - 'documenta/sylvia/SIMG_II.md'
+      - 'documenta/sylvia/SIMG_II_IMPORTATIO.md'
       - '.github/workflows/sylvia-simg-ii.yml'
   push:
     branches:
@@ -27,6 +28,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/simg_ii_importa_png.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_importatorem_simg_ii.py'
       - 'documenta/sylvia/SIMG_II.md'
+      - 'documenta/sylvia/SIMG_II_IMPORTATIO.md'
       - '.github/workflows/sylvia-simg-ii.yml'
 
 permissions:
