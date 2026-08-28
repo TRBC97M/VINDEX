@@ -79,7 +79,7 @@ def principale() -> int:
             print(f"DEFECIT: bilinearis non interpolat satis: nearest={len(nearest)} linear={len(linear)}", file=sys.stderr)
             return 8
 
-        # Titulus Inter-atlas: interior plene eburneus et margines alpha graduati.
+        # Titulus atlas VINDEX: interior plene eburneus et margines alpha graduati.
         ebur = (241, 238, 228)
         ebur_n = aux.numerus_coloris_in_recto(pix, w, 82, 62, 300, 84, ebur)
         tituli_colores = colores_recti(aux, pix, w, 82, 62, 300, 84)
