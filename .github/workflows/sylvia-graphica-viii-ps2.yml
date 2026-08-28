@@ -13,6 +13,9 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/*viii*.vindex'
+      - 'documenta/sylvia/GRAPHICA_VIII.md'
+      - '.github/workflows/sylvia-capacitas-graphica-viii.yml'
       - '.github/workflows/sylvia-graphica-viii-ps2.yml'
   push:
     branches:
@@ -25,6 +28,9 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/*viii*.vindex'
+      - 'documenta/sylvia/GRAPHICA_VIII.md'
+      - '.github/workflows/sylvia-capacitas-graphica-viii.yml'
       - '.github/workflows/sylvia-graphica-viii-ps2.yml'
 
 permissions:
