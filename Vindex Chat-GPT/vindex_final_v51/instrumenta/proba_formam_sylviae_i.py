@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-VI: metra et identitas visualis Sylviae sub UEFI/QEMU comprobantur."""
+"""P16-VII: metra, identitas et emblema rasterum Sylviae sub UEFI/QEMU comprobantur."""
 from __future__ import annotations
 
 import socket
@@ -90,7 +90,7 @@ def principale() -> int:
     try:
         lege_usque(monitor, b"(qemu) ", 2.0)
         time.sleep(mora)
-        via = out / "forma-sylviae-vi.ppm"
+        via = out / "forma-sylviae-vii.ppm"
         captura(monitor, via)
         w, h, pix = ppm(via)
         if (w, h) != (1280, 800):
@@ -134,11 +134,29 @@ def principale() -> int:
             print(f"DEFECIT: marca SYLVIA 2x non videtur: ebur={ebur_tituli}", file=sys.stderr)
             return 11
 
+        # P16-VII: emblema XXXII×XXXII est SIMG rasterum verum ad (164,18).
+        # Duo pixela opaca exacta et copia colorum propria probant asset + blit,
+        # non solam mutationem genericam regionis.
+        gemma = (234, 255, 255)
+        centrum = (75, 81, 73)
+        aes_iconis = (198, 147, 73)
+        if pixel(pix, w, 180, 23) != gemma:
+            print(f"DEFECIT: gemma rastera SIMG deest: {pixel(pix,w,180,23)}", file=sys.stderr)
+            return 12
+        if pixel(pix, w, 180, 34) != centrum:
+            print(f"DEFECIT: centrum emblematis SIMG deest: {pixel(pix,w,180,34)}", file=sys.stderr)
+            return 13
+        gemmae = numerus_coloris_in_recto(pix, w, 164, 18, 196, 50, gemma)
+        aera = numerus_coloris_in_recto(pix, w, 164, 18, 196, 50, aes_iconis)
+        if gemmae < 40 or aera < 40:
+            print(f"DEFECIT: copia pixelorum emblematis nimis parva: gemma={gemmae} aes={aera}", file=sys.stderr)
+            return 14
+
         colores = Counter(tuple(pix[i:i+3]) for i in range(0, len(pix)-2, 3))
-        print(f"FORMA-VI: resolutio={w}x{h} taskbar=40 titulus=36")
-        print(f"FORMA-VI: linea_bronzea={linea_bronzea} linea_nocturna={linea_nocturna} ebur_bureau_2x={ebur_tituli}")
-        print(f"FORMA-VI: colores_distincti={sum(1 for _,n in colores.items() if n>30)}")
-        print("RECTE: P16-VI identitas nox-ebur-aes sub UEFI vere pingitur.")
+        print(f"FORMA-VII: resolutio={w}x{h} taskbar=40 titulus=36")
+        print(f"FORMA-VII: linea_bronzea={linea_bronzea} linea_nocturna={linea_nocturna} ebur_bureau_2x={ebur_tituli}")
+        print(f"FORMA-VII: emblema_gemma={gemmae} emblema_aes={aera} colores_distincti={sum(1 for _,n in colores.items() if n>30)}")
+        print("RECTE: P16-VII identitas et emblema SIMG rasterum sub UEFI vere pinguntur.")
         return 0
     finally:
         try:
