@@ -8,6 +8,13 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_purus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_ii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
@@ -90,6 +97,7 @@ jobs:
           c='bibliotheca/clientes_eventa_i.vindex'
           a='bibliotheca/applicationes_registrum_iv.vindex'
           u='bibliotheca/fenestrale_applicationes_iv.vindex'
+          uvii='bibliotheca/fenestrale_iconographia_vii.vindex'
           v='bibliotheca/fenestrale_ii_purus.vindex'
           e='bibliotheca/terminale_clientis_i.vindex'
           o='bibliotheca/officina_clientis_i.vindex'
@@ -189,7 +197,8 @@ jobs:
           grep -Fq 'EG_PONE(coda,2,cliens,scan,0,unicode)' "$g"
           grep -Fq 'CI_EVENTA_AGE(s[36],s[37],s[34])' "$s"
           grep -Fq 'IV_MOUSE_DOWN(s,s[37],s[34],s[39])' "$s"
-          grep -Fq 'IV_REDDE(s,s[37],s[36],s[39])' "$s"
+          grep -Fq 'IVVII_REDDE(s,s[37],s[36],s[39]' "$s"
+          grep -Fq 'FUNCTIO IVVII_REDDE REDDENS NUMERUS' "$uvii"
           grep -Fq 'FUNCTIO IV_INITIUM_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'FUNCTIO IV_BUREAU_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'DECLARA umbra_profunda SICUT NUMERUS VALENS FV_COLOR(12, 14, 14)' "$v"
@@ -201,10 +210,10 @@ jobs:
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
           ! grep -Fq 'OE_CLAVIS_EVENTUM(status,e[2],e[4])' "$c"
 
-          for f in "$r" "$g" "$c" "$a" "$u" "$v" "$e" "$o" "$op" "$fs" "$s"; do
+          for f in "$r" "$g" "$c" "$a" "$u" "$uvii" "$v" "$e" "$o" "$op" "$fs" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
-          printf '%s\n' 'RECTE: Fenestrale P16-VI, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
+          printf '%s\n' 'RECTE: Fenestrale P16-VII, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
 
       - name: Regressiones Fenestralis exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -235,4 +244,4 @@ jobs:
           set -euo pipefail
           ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
-          printf '%s\n' 'RECTE: Fenestrale II Purus I cum OFFICINA persistente compilatum est.'
+          printf '%s\n' 'RECTE: Fenestrale II Purus I P16-VII cum OFFICINA persistente compilatum est.'
