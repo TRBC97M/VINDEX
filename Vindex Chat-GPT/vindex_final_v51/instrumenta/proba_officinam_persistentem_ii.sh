@@ -100,7 +100,7 @@ from pathlib import Path
 import sys
 p = Path(sys.argv[1])
 data = p.read_bytes()
-expectatum = b"ZEPHYR72941\nNOVAPERSISTETX"
+expectatum = b"XZEPHYR72941\nNOVAPERSISTET"
 if expectatum not in data:
     raise SystemExit("DEFECIT: secundum initium documentum re-apertum et mutatum non servavit")
 print(f"OFFICINA-P19-II: secundum_documentum_octeta={len(expectatum)}")
