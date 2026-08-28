@@ -1,61 +1,168 @@
 // Sylvia OS — P16-XI: compositor Bureau Lucidum I, implementatio II.
-// Wallpaper cache + Bureau Graphica VIII; fenestrae P16-VIII et testa P16-IX servantur.
+// Fundum directum leve pingitur; Bureau Graphica VIII, fenestrae VIII et testa IX servantur.
 
-// Prima pictura wallpaperis quietem sinistram per campum opacum tentabat.
-// Cache historicum huius rami non reficitur ad omnem redraw: hic tantum LVII
-// lineae originariae exacte restituuntur, operatione exigua et deterministica.
-FUNCTIO IVXI_FUNDUM_SINISTRUM_RESTITUE REDDENS NUMERUS.
-    ACCIPIT w SICUT NUMERUS.
-    ACCIPIT utilis SICUT NUMERUS.
+FUNCTIO IVXI_ARCUS REDDENS NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS. ACCIPIT x1 SICUT NUMERUS. ACCIPIT basis_y SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS. ACCIPIT color SICUT NUMERUS. ACCIPIT spissitudo SICUT NUMERUS.
+    DECLARA partes SICUT NUMERUS VALENS 64.
+    DECLARA ante_x SICUT NUMERUS VALENS x0. DECLARA ante_y SICUT NUMERUS VALENS basis_y.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<partes PERFICE
+        DECLARA x SICUT NUMERUS VALENS x0+(x1-x0)*i/(partes-1).
+        DECLARA d SICUT NUMERUS VALENS i*2-(partes-1). SI d<0 TUNC d=0-d. FIN-SI.
+        DECLARA y SICUT NUMERUS VALENS basis_y-altitudo+(d*d*altitudo)/((partes-1)*(partes-1)).
+        DECLARA f SICUT NUMERUS VALENS FV_RECT(x,y,spissitudo,spissitudo,color).
+        SI i>0 TUNC
+            DECLARA span SICUT NUMERUS VALENS x-ante_x+1. SI span<1 TUNC span=1. FIN-SI.
+            f=FV_RECT(ante_x,ante_y,span,spissitudo,color).
+            SI y>ante_y TUNC f=FV_RECT(x,ante_y,spissitudo,y-ante_y+1,color). FIN-SI.
+            SI y<ante_y TUNC f=FV_RECT(x,y,spissitudo,ante_y-y+1,color). FIN-SI.
+        FIN-SI.
+        ante_x=x. ante_y=y. i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IVXI_DISCUM REDDENS NUMERUS.
+    ACCIPIT cx SICUT NUMERUS. ACCIPIT cy SICUT NUMERUS. ACCIPIT radius SICUT NUMERUS. ACCIPIT color SICUT NUMERUS.
+    DECLARA dy SICUT NUMERUS VALENS 0-radius.
+    DUM dy<=radius PERFICE
+        DECLARA half SICUT NUMERUS VALENS radius-(dy*dy)/radius. SI half<1 TUNC half=1. FIN-SI.
+        DECLARA f SICUT NUMERUS VALENS FV_RECT(cx-half,cy+dy,half*2+1,1,color).
+        dy=dy+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IVXI_TURRIS REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS. ACCIPIT basis SICUT NUMERUS. ACCIPIT lat SICUT NUMERUS.
+    ACCIPIT alt SICUT NUMERUS. ACCIPIT accentus SICUT NUMERUS. ACCIPIT lumen SICUT NUMERUS.
+    DECLARA cool SICUT NUMERUS VALENS FV_COLOR(74,96,114).
+    DECLARA umbra SICUT NUMERUS VALENS FV_COLOR(29,47,55).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA graphite SICUT NUMERUS VALENS FV_COLOR(26,29,32).
+    DECLARA y SICUT NUMERUS VALENS basis-alt.
+    DECLARA f SICUT NUMERUS VALENS FV_RECT(x,y,lat,alt,umbra).
+    SI lat>6 TUNC f=FV_RECT(x+1,y+1,lat/3,alt-2,cool). FIN-SI.
+    f=FV_RECT(x,y,lat,1,accentus). f=FV_RECT(x,y,1,alt,argentum). f=FV_RECT(x+lat-1,y,1,alt,graphite).
+    DECLARA wy SICUT NUMERUS VALENS y+11.
+    DUM wy<basis-7 PERFICE
+        SI lat>=14 TUNC
+            f=FV_RECT(x+4,wy,2,3,lumen). f=FV_RECT(x+lat-6,wy,2,3,lumen).
+        FIN-SI.
+        wy=wy+14.
+    FIN-DUM.
+    SI alt>=120 TUNC
+        DECLARA tx SICUT NUMERUS VALENS x+lat/2.
+        f=FV_RECT(tx-1,y-26,2,26,accentus). f=FV_RECT(tx,y-35,1,9,lumen).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IVXI_REFLEXUM REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS. ACCIPIT basis SICUT NUMERUS. ACCIPIT lat SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS. ACCIPIT color SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<7 PERFICE
+        DECLARA y SICUT NUMERUS VALENS basis+8+i*longitudo/7.
+        DECLARA rw SICUT NUMERUS VALENS lat+(6-i)*2.
+        DECLARA rx SICUT NUMERUS VALENS x+lat/2-rw/2.
+        DECLARA f SICUT NUMERUS VALENS FV_RECT(rx,y,rw,1,color).
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IVXI_FUNDUM REDDENS NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA utilis SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
     DECLARA limen SICUT NUMERUS VALENS utilis*57/100.
-    DECLARA tertia SICUT NUMERUS VALENS limen*42/100.
+    DECLARA cool SICUT NUMERUS VALENS FV_COLOR(74,96,114).
     DECLARA caelum_medium SICUT NUMERUS VALENS FV_COLOR(106,143,157).
     DECLARA caelum_limen SICUT NUMERUS VALENS FV_COLOR(202,226,230).
     DECLARA aqua_supera SICUT NUMERUS VALENS FV_COLOR(89,145,157).
     DECLARA aqua_infera SICUT NUMERUS VALENS FV_COLOR(27,48,57).
-    DECLARA lat SICUT NUMERUS VALENS w*38/100.
-    DECLARA y SICUT NUMERUS VALENS limen-28.
-    DUM y<limen PERFICE
-        DECLARA numerus SICUT NUMERUS VALENS y-tertia.
-        DECLARA denominator SICUT NUMERUS VALENS limen-tertia-1.
-        DECLARA c SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(caelum_medium,caelum_limen,numerus,denominator).
-        DECLARA f SICUT NUMERUS VALENS FV_RECT(0,y,lat,1,c).
-        y=y+1.
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA cyan SICUT NUMERUS VALENS FV_COLOR(0,198,255).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA laurus SICUT NUMERUS VALENS FV_COLOR(104,177,123).
+    DECLARA tertia SICUT NUMERUS VALENS limen*42/100.
+
+    DECLARA f SICUT NUMERUS VALENS GVII_GRADUS_VERTICALIS(0,0,w,tertia,cool,caelum_medium).
+    f=GVII_GRADUS_VERTICALIS(0,tertia,w,limen-tertia,caelum_medium,caelum_limen).
+    f=GVII_GRADUS_VERTICALIS(0,limen,w,utilis-limen,aqua_supera,aqua_infera).
+    f=FV_RECT(0,limen-3,w,1,FV_COLOR(148,190,199)).
+    f=FV_RECT(0,limen-2,w,1,aqua). f=FV_RECT(0,limen-1,w,1,FV_COLOR(220,239,240)).
+    f=FV_RECT(0,limen,w,1,FV_COLOR(115,176,185)).
+
+    // Puncta caeli rara: regio iconarum sinistra manet quieta.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<18 PERFICE
+        DECLARA sx SICUT NUMERUS VALENS w*43/100+(i*137)%((w*55/100)-12).
+        DECLARA sy SICUT NUMERUS VALENS 24+(i*83)%(limen*46/100).
+        DECLARA sc SICUT NUMERUS VALENS argentum. SI i%5==0 TUNC sc=aqua. FIN-SI.
+        f=FV_RECT(sx,sy,1,1,sc). SI i%9==0 TUNC f=FV_RECT(sx-1,sy,3,1,sc). FIN-SI.
+        i=i+1.
     FIN-DUM.
-    y=limen.
-    DUM y<limen+28 PERFICE
-        DECLARA numerus2 SICUT NUMERUS VALENS y-limen.
-        DECLARA denominator2 SICUT NUMERUS VALENS utilis-limen-1.
-        DECLARA c2 SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(aqua_supera,aqua_infera,numerus2,denominator2).
-        DECLARA f2 SICUT NUMERUS VALENS FV_RECT(0,y,lat,1,c2).
-        y=y+1.
+
+    f=IVXI_ARCUS(w*31/100,w*99/100,limen-15,limen*70/100,aqua,2).
+    f=IVXI_ARCUS(w*44/100,w,limen-38,limen*55/100,argentum,1).
+    f=IVXI_ARCUS(w*56/100,w*99/100,limen-70,limen*42/100,bronzeum,1).
+    f=IVXI_ARCUS(w*69/100,w,limen-91,limen*32/100,cyan,1).
+
+    DECLARA solx SICUT NUMERUS VALENS w*84/100. DECLARA soly SICUT NUMERUS VALENS limen-46.
+    f=IVXI_DISCUM(solx,soly,34,FV_COLOR(166,199,199)). f=IVXI_DISCUM(solx,soly,26,bronzeum).
+    f=IVXI_DISCUM(solx,soly,19,aqua). f=IVXI_DISCUM(solx,soly,11,ebur).
+    f=FV_RECT(solx-72,soly,144,1,aqua). f=FV_RECT(solx-48,soly+3,96,1,bronzeum).
+
+    DECLARA basis SICUT NUMERUS VALENS limen+30.
+    f=FV_RECT(w*52/100,basis-8,w*46/100,14,FV_COLOR(27,44,49)).
+    f=FV_RECT(w*55/100,basis-10,w*42/100,1,bronzeum).
+    f=IVXI_TURRIS(w*57/100,basis,25,74,aqua,ebur).
+    f=IVXI_TURRIS(w*61/100,basis,30,108,bronzeum,aqua).
+    f=IVXI_TURRIS(w*65/100,basis,23,62,laurus,ebur).
+    f=IVXI_TURRIS(w*69/100,basis,34,136,aqua,ebur).
+    f=IVXI_TURRIS(w*73/100,basis,27,90,bronzeum,aqua).
+    f=IVXI_TURRIS(w*77/100,basis,39,174,bronzeum,ebur).
+    f=IVXI_TURRIS(w*82/100,basis,29,120,aqua,aqua).
+    f=IVXI_TURRIS(w*86/100,basis,37,214,bronzeum,ebur).
+    f=IVXI_TURRIS(w*90/100,basis,29,146,aqua,ebur).
+    f=IVXI_TURRIS(w*94/100,basis,21,92,laurus,aqua).
+    f=IVXI_TURRIS(w*97/100,basis,16,66,bronzeum,ebur).
+    f=IVXI_REFLEXUM(w*57/100,basis,25,82,FV_COLOR(68,112,120)).
+    f=IVXI_REFLEXUM(w*61/100,basis,30,98,FV_COLOR(105,79,55)).
+    f=IVXI_REFLEXUM(w*69/100,basis,34,114,FV_COLOR(68,112,120)).
+    f=IVXI_REFLEXUM(w*77/100,basis,39,134,FV_COLOR(105,79,55)).
+    f=IVXI_REFLEXUM(w*86/100,basis,37,156,FV_COLOR(68,112,120)).
+    f=IVXI_REFLEXUM(w*90/100,basis,29,120,FV_COLOR(105,79,55)).
+    f=FV_RECT(w*51/100,limen-2,w*47/100,1,aqua).
+    f=FV_RECT(w*61/100,limen+2,w*36/100,1,bronzeum).
+    f=FV_RECT(w*68/100,limen+7,w*29/100,1,cyan).
+
+    i=0.
+    DUM i<18 PERFICE
+        DECLARA ry SICUT NUMERUS VALENS limen+22+i*(utilis-limen-32)/18.
+        DECLARA rx SICUT NUMERUS VALENS w*32/100+(i*97)%(w*51/100).
+        DECLARA rw SICUT NUMERUS VALENS 34+(i*31)%138.
+        DECLARA rc SICUT NUMERUS VALENS FV_COLOR(58,93,101). SI i%5==0 TUNC rc=FV_COLOR(91,126,130). FIN-SI.
+        f=FV_RECT(rx,ry,rw,1,rc). i=i+1.
     FIN-DUM.
-    // Horizonis lineae canonicae post restitutionem servantur.
-    DECLARA f3 SICUT NUMERUS VALENS FV_RECT(0,limen-3,lat,1,FV_COLOR(148,190,199)).
-    f3=FV_RECT(0,limen-2,lat,1,FV_COLOR(189,239,242)).
-    f3=FV_RECT(0,limen-1,lat,1,FV_COLOR(220,239,240)).
-    f3=FV_RECT(0,limen,lat,1,FV_COLOR(115,176,185)).
     REDDE 1.
 FIN-FUNCTIO.
 
-// P16-XI non est gradus iconographiae maioris. Via P16-VII, iam sub QEMU
-// certificata, rastera applicationum servat; Graphica VIII circa ea materiam
-// 9-slice, recta rotunda et typographiam praebet. P16-XII iconas iterum elevabit.
+// P16-XI servat blitter iconographicum P16-VII iam certum; P16-XII erit gradus iconarum maiorum.
 FUNCTIO IVXI_BUREAU_ICONAE REDDENS NUMERUS.
-    ACCIPIT s SICUT ORDO DE NUMERUS.
-    ACCIPIT applicationes SICUT NUMERUS.
-    ACCIPIT atlas SICUT TEXTUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS. ACCIPIT applicationes SICUT NUMERUS. ACCIPIT atlas SICUT TEXTUS.
     SI IR_VALIDUS(atlas)==0 TUNC REDDE 0. FIN-SI.
-    DECLARA index SICUT NUMERUS VALENS 0.
-    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DECLARA index SICUT NUMERUS VALENS 0. DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
     DUM nodus!=0 PERFICE
         SI AI_NODUS_IN_BUREAU(nodus)!=0 TUNC
-            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index).
-            DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
+            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index). DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
             DECLARA genus SICUT NUMERUS VALENS AI_NODUS_GENUS(nodus).
-            DECLARA sx SICUT NUMERUS VALENS IVVII_ICONA_FONS_X(genus).
-            DECLARA sy SICUT NUMERUS VALENS IVVII_ICONA_FONS_Y(genus).
-            DECLARA pars SICUT NUMERUS VALENS IRVII_RECT_CREA(sx,sy,48,48).
+            DECLARA pars SICUT NUMERUS VALENS IRVII_RECT_CREA(IVVII_ICONA_FONS_X(genus),IVVII_ICONA_FONS_Y(genus),48,48).
             DECLARA dst SICUT NUMERUS VALENS IRVII_RECT_CREA(x+30,y+8,48,48).
             DECLARA f SICUT NUMERUS VALENS IRVII_BLIT_FB(atlas,dst,pars).
             index=index+1.
@@ -66,22 +173,9 @@ FUNCTIO IVXI_BUREAU_ICONAE REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO IVXI_REDDE REDDENS NUMERUS.
-    ACCIPIT s SICUT ORDO DE NUMERUS.
-    ACCIPIT fenestrae SICUT NUMERUS.
-    ACCIPIT clientes SICUT NUMERUS.
-    ACCIPIT applicationes SICUT NUMERUS.
-    ACCIPIT emblema SICUT TEXTUS.
-    ACCIPIT atlas SICUT TEXTUS.
-    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
-    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
-    DECLARA utilis SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
-    DECLARA f SICUT NUMERUS VALENS 0.
-    SI s[42]!=0 TUNC
-        f=FS_BLIT(s[42],0,0,w,utilis).
-        f=IVXI_FUNDUM_SINISTRUM_RESTITUE(w,utilis).
-    ALITER
-        f=FV_FUNDUM().
-    FIN-SI.
+    ACCIPIT s SICUT ORDO DE NUMERUS. ACCIPIT fenestrae SICUT NUMERUS. ACCIPIT clientes SICUT NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS. ACCIPIT emblema SICUT TEXTUS. ACCIPIT atlas SICUT TEXTUS.
+    DECLARA f SICUT NUMERUS VALENS IVXI_FUNDUM().
     f=CXI_BUREAU_REDDE(s,applicationes).
     SI IR_VALIDUS(emblema)!=0 TUNC f=IR_BLIT_FRAMEBUFFER(164,18,emblema). FIN-SI.
     SI IR_VALIDUS(atlas)!=0 TUNC f=IVXI_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
