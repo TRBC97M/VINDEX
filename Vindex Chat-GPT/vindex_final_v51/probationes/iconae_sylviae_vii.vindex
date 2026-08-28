@@ -3,6 +3,7 @@ IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
 IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_partes_vii.vindex".
 IMPORTA "bibliotheca/raster_rle_vii.vindex".
 IMPORTA "bibliotheca/iconae_sylviae_vii.vindex".
 
@@ -22,5 +23,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI ICVII_FONS_X(2)!=48 || ICVII_FONS_Y(2)!=0 TUNC REDDE 86. FIN-SI.
     SI ICVII_FONS_X(3)!=0 || ICVII_FONS_Y(3)!=48 TUNC REDDE 87. FIN-SI.
     SI ICVII_FONS_X(4)!=48 || ICVII_FONS_Y(4)!=48 TUNC REDDE 88. FIN-SI.
+
+    DECLARA rectum SICUT NUMERUS VALENS IRVII_RECT_CREA(48,16,32,24).
+    SI rectum==0 TUNC REDDE 89. FIN-SI.
+    SI IRVII_RECT_X(rectum)!=48 || IRVII_RECT_Y(rectum)!=16 TUNC REDDE 90. FIN-SI.
+    SI IRVII_RECT_W(rectum)!=32 || IRVII_RECT_H(rectum)!=24 TUNC REDDE 91. FIN-SI.
+    SI IRVII_PIXEL_EX_FONTE(atlas,24,24)!=p1 TUNC REDDE 92. FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
