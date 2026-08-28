@@ -98,7 +98,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     f=SGVIII_TEXTUM(fons,104,422,13,17,"TYPOGRAPHIA ATLAS ANTI-ALIASED",graphite0).
     f=SGVIII_TEXTUM(fons,104,454,16,20,"SYLVIA OS",graphite1).
-    f=SGVIII_TEXTUM(fons,104,486,11,15,"Inter Display raster / alpha 256 graduum",graphite1).
+    f=SGVIII_TEXTUM(fons,104,486,11,15,"Atlas VINDEX nativus / alpha 256 graduum",graphite1).
     f=SGVIII_TEXTUM(fons,104,516,11,15,"Ivory  Aqua  Bronze  Graphite",graphite1).
 
     // Damage tracker: tres regiones, duae tangentes, in duas regiones coalescunt.
@@ -113,9 +113,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     f=SGVIII_TEXTUM(fons,104,h-96,10,14,"COMMAND QUEUE -> SOFTWARE BACKEND",aqua).
     f=SGVIII_TEXTUM(fons,104,h-68,9,12,"VirtIO-GPU backend paratus post BAR/MMIO canonicum",papyrus).
 
-    // Showroom manet stabilis dum QEMU framebuffer capturat.
+    // Showroom manet stabilis dum QEMU framebuffer capturat; nulla mora externa requiritur.
+    DECLARA pausa SICUT NUMERUS VALENS 0.
     DUM 1==1 PERFICE
-        DECLARA pausa SICUT NUMERUS VALENS FB_STALL().
+        pausa=pausa+1.
+        SI pausa>1000000 TUNC pausa=0. FIN-SI.
     FIN-DUM.
     REDDE 0.
 FIN-FUNCTIO.
