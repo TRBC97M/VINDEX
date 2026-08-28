@@ -1,0 +1,66 @@
+IMPORTA "bibliotheca/simg_ii.vindex".
+
+// Sylvia OS — SIMG II: compatibilitas migrationis e SIMG v1.
+// Decoder hic tantum structuram veterem legit; Graphica VII non requiritur.
+
+FUNCTIO SII_V1_VALIDUS REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    DECLARA d SICUT NUMERUS VALENS SII_TEXTUS_SEDES(imago).
+    SI d==0 || CONTENTUM(d)<24 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS d+16.
+    SI OCTETUS_AB(b)!=83 || OCTETUS_AB(b+1)!=73 || OCTETUS_AB(b+2)!=77 || OCTETUS_AB(b+3)!=71 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI OCTETUS_AB(b+4)!=1 || OCTETUS_AB(b+5)!=1 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS SII_U32_LE(b,8).
+    DECLARA h SICUT NUMERUS VALENS SII_U32_LE(b,12).
+    DECLARA stride SICUT NUMERUS VALENS SII_U32_LE(b,16).
+    SI w<=0 || h<=0 || w>4096 || h>4096 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI stride<w*4 || stride>16384 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI 24+stride*h>CONTENTUM(d) TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_EX_V1 REDDENS TEXTUS.
+    ACCIPIT vetus SICUT TEXTUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    ACCIPIT compressio SICUT NUMERUS.
+    SI SII_V1_VALIDUS(vetus)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA vb SICUT NUMERUS VALENS SII_CORPUS(vetus).
+    DECLARA w SICUT NUMERUS VALENS SII_U32_LE(vb,8).
+    DECLARA h SICUT NUMERUS VALENS SII_U32_LE(vb,12).
+    DECLARA stride SICUT NUMERUS VALENS SII_U32_LE(vb,16).
+    DECLARA pix SICUT TEXTUS VALENS SII_TEXTUS_CREA(w*h*4).
+    DECLARA pb SICUT NUMERUS VALENS SII_CORPUS(pix).
+    SI pb==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<w PERFICE
+            DECLARA src SICUT NUMERUS VALENS vb+24+y*stride+x*4.
+            DECLARA dst SICUT NUMERUS VALENS pb+(y*w+x)*4.
+            SCRIBE_OCTETUM_AB(dst,OCTETUS_AB(src)).
+            SCRIBE_OCTETUM_AB(dst+1,OCTETUS_AB(src+1)).
+            SCRIBE_OCTETUM_AB(dst+2,OCTETUS_AB(src+2)).
+            SCRIBE_OCTETUM_AB(dst+3,OCTETUS_AB(src+3)).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE SII_CREA_RGBA(w,h,pix,compressio,genus,scala).
+FIN-FUNCTIO.
