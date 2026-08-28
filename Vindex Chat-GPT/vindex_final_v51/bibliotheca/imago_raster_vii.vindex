@@ -102,9 +102,6 @@ FUNCTIO IR_BLIT_FRAMEBUFFER REDDENS NUMERUS.
     ACCIPIT dx SICUT NUMERUS.
     ACCIPIT dy SICUT NUMERUS.
     ACCIPIT imago SICUT TEXTUS.
-    // SONDA P16-XI TEMPORARIA: solum emblema ad (164,18) omittitur.
-    // Haec linea post diagnosticum delenda est; rastera cetera intacta manent.
-    SI dx==164 && dy==18 TUNC REDDE 1. FIN-SI.
     SI IR_VALIDUS(imago)==0 TUNC REDDE 0. FIN-SI.
     DECLARA w SICUT NUMERUS VALENS IR_LATITUDO(imago).
     DECLARA h SICUT NUMERUS VALENS IR_ALTITUDO(imago).
