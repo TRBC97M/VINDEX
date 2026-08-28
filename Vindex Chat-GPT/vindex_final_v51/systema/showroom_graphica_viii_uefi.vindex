@@ -1,0 +1,4 @@
+// Graphica VIII — radix importuum showroom UEFI.
+// RLE P16-VII ante emblema explicite praebetur; deinde payload showroom importatur.
+IMPORTA "bibliotheca/raster_rle_vii.vindex".
+IMPORTA "systema/showroom_graphica_viii.vindex".
