@@ -12,6 +12,7 @@ ARCHIVA = [
     RADIX / "bibliotheca/fenestrale_graphica_viii_superficies.vindex",
     RADIX / "bibliotheca/fenestrale_damage_viii.vindex",
     RADIX / "bibliotheca/fenestrale_typographia_viii.vindex",
+    RADIX / "bibliotheca/fenestrale_commandos_viii.vindex",
 ]
 LIMEN = 7
 FUNCTIO = re.compile(r"\bFUNCTIO\s+([A-Z0-9_]+)\b(.*?)\bFIN-FUNCTIO\.", re.S)
