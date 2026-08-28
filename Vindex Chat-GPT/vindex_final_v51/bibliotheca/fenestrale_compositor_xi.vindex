@@ -98,6 +98,7 @@ FUNCTIO IVXI_FUNDUM REDDENS NUMERUS.
     f=FV_RECT(0,limen-2,w,1,aqua). f=FV_RECT(0,limen-1,w,1,FV_COLOR(220,239,240)).
     f=FV_RECT(0,limen,w,1,FV_COLOR(115,176,185)).
 
+    // Puncta caeli rara: regio iconarum sinistra manet quieta.
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i<18 PERFICE
         DECLARA sx SICUT NUMERUS VALENS w*43/100+(i*137)%((w*55/100)-12).
@@ -152,12 +153,12 @@ FUNCTIO IVXI_FUNDUM REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
+// P16-XI ne duplicat viam iconographicam: exacta functio P16-VII certificata reutilizatur.
 FUNCTIO IVXI_BUREAU_ICONAE REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     ACCIPIT applicationes SICUT NUMERUS.
     ACCIPIT atlas SICUT TEXTUS.
-    // SONDA P16-XI TEMPORARIA: tota iconographia omittitur.
-    REDDE 1.
+    REDDE IVVII_BUREAU_ICONAE(s,applicationes,atlas).
 FIN-FUNCTIO.
 
 FUNCTIO IVXI_REDDE REDDENS NUMERUS.
@@ -167,36 +168,21 @@ FUNCTIO IVXI_REDDE REDDENS NUMERUS.
     ACCIPIT applicationes SICUT NUMERUS.
     ACCIPIT emblema SICUT TEXTUS.
     ACCIPIT atlas SICUT TEXTUS.
-
-    // SONDA P16-XI: metadata framebuffer ante Bureau servantur; marca post reditum
-    // directe per sedem et pitch veteres scribitur, sine FV_RECT neque metadata nova.
-    DECLARA basis_ante SICUT NUMERUS VALENS CONTENTUM(50333712).
-    DECLARA linea_ante SICUT NUMERUS VALENS CONTENTUM(50333720).
-    DECLARA color_marca SICUT NUMERUS VALENS FV_COLOR(255,0,255).
-    DECLARA par_marca SICUT NUMERUS VALENS color_marca+color_marca*4294967296.
-
     DECLARA f SICUT NUMERUS VALENS IVXI_FUNDUM().
     f=CXI_BUREAU_REDDE(s,applicationes).
-
-    DECLARA my SICUT NUMERUS VALENS 764.
-    DUM my<772 PERFICE
-        DECLARA mx SICUT NUMERUS VALENS 400.
-        DUM mx<480 PERFICE
-            CONTENTUM(basis_ante+(my*linea_ante+mx)*4)=par_marca.
-            mx=mx+2.
-        FIN-DUM.
-        my=my+1.
-    FIN-DUM.
-
     SI IR_VALIDUS(emblema)!=0 TUNC f=IR_BLIT_FRAMEBUFFER(164,18,emblema). FIN-SI.
     SI IR_VALIDUS(atlas)!=0 TUNC f=IVXI_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
-
-    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
-    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
-    DECLARA top SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
-    f=FV_RECT(0,top,w,FV_METRUM_TASKBAR(),FV_COLOR(42,62,63)).
-    f=FV_RECT(0,top,w,2,FV_COLOR(185,138,82)).
-    f=FV_RECT(0,top+2,w,1,FV_COLOR(103,164,160)).
+    DECLARA focus SICUT NUMERUS VALENS FI_RELEGE_FOCUS(fenestrae).
+    DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+48)==0 TUNC f=CVIII_FENESTRA(fenestrae,clientes,applicationes,n). FIN-SI.
+        n=FI_PROXIMUS(n).
+    FIN-DUM.
+    SI s[38]==1 TUNC
+        f=CIX_INITIUM_REDDE(s,applicationes).
+        SI IR_VALIDUS(atlas)!=0 TUNC f=IVVII_INITIUM_ICONAE(s,applicationes,atlas). FIN-SI.
+    FIN-SI.
+    f=CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes).
     f=FV_CURSOR(s[11],s[12]).
     REDDE 1.
 FIN-FUNCTIO.
