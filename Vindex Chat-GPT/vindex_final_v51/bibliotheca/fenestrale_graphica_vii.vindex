@@ -1,0 +1,236 @@
+// Sylvia OS — P16-VII: capacitas graphica software.
+// Folium bibliothecae: FV_* et FS_* a fonte principali ante hoc importentur.
+// Colores hic in ordine octetorum framebuffer tractantur; ideo formatum GOP
+// iam per FV_COLOR accommodatum sine duplici conversione servatur.
+
+FUNCTIO GVII_INTERPOLA_COMPONENTEM REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    ACCIPIT denominator SICUT NUMERUS.
+    SI denominator<=0 TUNC REDDE a. FIN-SI.
+    SI numerus<0 TUNC numerus=0. FIN-SI.
+    SI numerus>denominator TUNC numerus=denominator. FIN-SI.
+    REDDE (a*(denominator-numerus)+b*numerus)/denominator.
+FIN-FUNCTIO.
+
+FUNCTIO GVII_COLOR_INTERPOLA REDDENS NUMERUS.
+    ACCIPIT primus SICUT NUMERUS.
+    ACCIPIT secundus SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    ACCIPIT denominator SICUT NUMERUS.
+    DECLARA a0 SICUT NUMERUS VALENS primus&255.
+    DECLARA a1 SICUT NUMERUS VALENS (primus>>8)&255.
+    DECLARA a2 SICUT NUMERUS VALENS (primus>>16)&255.
+    DECLARA b0 SICUT NUMERUS VALENS secundus&255.
+    DECLARA b1 SICUT NUMERUS VALENS (secundus>>8)&255.
+    DECLARA b2 SICUT NUMERUS VALENS (secundus>>16)&255.
+    DECLARA c0 SICUT NUMERUS VALENS GVII_INTERPOLA_COMPONENTEM(a0,b0,numerus,denominator).
+    DECLARA c1 SICUT NUMERUS VALENS GVII_INTERPOLA_COMPONENTEM(a1,b1,numerus,denominator).
+    DECLARA c2 SICUT NUMERUS VALENS GVII_INTERPOLA_COMPONENTEM(a2,b2,numerus,denominator).
+    REDDE c0+c1*256+c2*65536.
+FIN-FUNCTIO.
+
+FUNCTIO GVII_COLOR_ALPHA REDDENS NUMERUS.
+    ACCIPIT superior SICUT NUMERUS.
+    ACCIPIT inferior SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI alpha<=0 TUNC REDDE inferior. FIN-SI.
+    SI alpha>=255 TUNC REDDE superior. FIN-SI.
+    REDDE GVII_COLOR_INTERPOLA(inferior,superior,alpha,255).
+FIN-FUNCTIO.
+
+FUNCTIO GVII_PIXEL_LEGE REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI x<0 || y<0 || x>=w || y>=h TUNC REDDE -1. FIN-SI.
+    DECLARA locus SICUT NUMERUS VALENS CONTENTUM(50333712)+(y*CONTENTUM(50333720)+x)*4.
+    REDDE OCTETUS_AB(locus)+OCTETUS_AB(locus+1)*256+OCTETUS_AB(locus+2)*65536.
+FIN-FUNCTIO.
+
+FUNCTIO GVII_PIXEL_ALPHA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI alpha<=0 TUNC REDDE 1. FIN-SI.
+    SI alpha>=255 TUNC REDDE FV_PIXEL_COLOR(x,y,color). FIN-SI.
+    DECLARA sub SICUT NUMERUS VALENS GVII_PIXEL_LEGE(x,y).
+    SI sub<0 TUNC REDDE 0. FIN-SI.
+    REDDE FV_PIXEL_COLOR(x,y,GVII_COLOR_ALPHA(color,sub,alpha)).
+FIN-FUNCTIO.
+
+FUNCTIO GVII_RECT_ALPHA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI latitudo<=0 || altitudo<=0 || alpha<=0 TUNC REDDE 0. FIN-SI.
+    SI alpha>=255 TUNC REDDE FV_RECT(x,y,latitudo,altitudo,color). FIN-SI.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<altitudo PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px<latitudo PERFICE
+            DECLARA f SICUT NUMERUS VALENS GVII_PIXEL_ALPHA(x+px,y+py,color,alpha).
+            px=px+1.
+        FIN-DUM.
+        py=py+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GVII_GRADUS_VERTICALIS REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color_summus SICUT NUMERUS.
+    ACCIPIT color_inferus SICUT NUMERUS.
+    SI latitudo<=0 || altitudo<=0 TUNC REDDE 0. FIN-SI.
+    SI altitudo==1 TUNC REDDE FV_RECT(x,y,latitudo,1,color_summus). FIN-SI.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<altitudo PERFICE
+        DECLARA color SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(color_summus,color_inferus,py,altitudo-1).
+        DECLARA f SICUT NUMERUS VALENS FV_RECT(x,y+py,latitudo,1,color).
+        py=py+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GVII_GRADUS_HORIZONTALIS REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color_sinister SICUT NUMERUS.
+    ACCIPIT color_dexter SICUT NUMERUS.
+    SI latitudo<=0 || altitudo<=0 TUNC REDDE 0. FIN-SI.
+    SI latitudo==1 TUNC REDDE FV_RECT(x,y,1,altitudo,color_sinister). FIN-SI.
+    DECLARA px SICUT NUMERUS VALENS 0.
+    DUM px<latitudo PERFICE
+        DECLARA color SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(color_sinister,color_dexter,px,latitudo-1).
+        DECLARA f SICUT NUMERUS VALENS FV_RECT(x+px,y,1,altitudo,color).
+        px=px+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Umbra software ad dextram et infra corpus, alpha paulatim evanescente.
+FUNCTIO GVII_UMBRA_GRADATA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT spissitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha_max SICUT NUMERUS.
+    SI latitudo<=0 || altitudo<=0 || spissitudo<=0 || alpha_max<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<spissitudo PERFICE
+        DECLARA alpha SICUT NUMERUS VALENS alpha_max*(spissitudo-i)/spissitudo.
+        DECLARA fr SICUT NUMERUS VALENS GVII_RECT_ALPHA(x+latitudo+i,y+i+1,1,altitudo,color,alpha).
+        DECLARA fb SICUT NUMERUS VALENS GVII_RECT_ALPHA(x+i+1,y+altitudo+i,latitudo,1,color,alpha).
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GSVII_PIXEL_LEGE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI superficies==0 TUNC REDDE -1. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    SI x<0 || y<0 || x>=w || y>=h TUNC REDDE -1. FIN-SI.
+    DECLARA locus SICUT NUMERUS VALENS CONTENTUM(superficies+24)+(y*CONTENTUM(superficies+16)+x)*4.
+    REDDE OCTETUS_AB(locus)+OCTETUS_AB(locus+1)*256+OCTETUS_AB(locus+2)*65536.
+FIN-FUNCTIO.
+
+FUNCTIO GSVII_NOTA REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI superficies==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(superficies+32)=0.
+    CONTENTUM(superficies+40)=0.
+    CONTENTUM(superficies+48)=CONTENTUM(superficies).
+    CONTENTUM(superficies+56)=CONTENTUM(superficies+8).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GSVII_PIXEL_ALPHA REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI superficies==0 || alpha<=0 TUNC REDDE 0. FIN-SI.
+    SI alpha>=255 TUNC REDDE FS_PIXEL(superficies,x,y,color). FIN-SI.
+    DECLARA sub SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x,y).
+    SI sub<0 TUNC REDDE 0. FIN-SI.
+    REDDE FS_PIXEL(superficies,x,y,GVII_COLOR_ALPHA(color,sub,alpha)).
+FIN-FUNCTIO.
+
+FUNCTIO GSVII_RECT_ALPHA REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI superficies==0 || latitudo<=0 || altitudo<=0 || alpha<=0 TUNC REDDE 0. FIN-SI.
+    SI alpha>=255 TUNC REDDE FS_RECT(superficies,x,y,latitudo,altitudo,color). FIN-SI.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<altitudo PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px<latitudo PERFICE
+            DECLARA f SICUT NUMERUS VALENS GSVII_PIXEL_ALPHA(superficies,x+px,y+py,color,alpha).
+            px=px+1.
+        FIN-DUM.
+        py=py+1.
+    FIN-DUM.
+    DECLARA nota SICUT NUMERUS VALENS GSVII_NOTA(superficies).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GSVII_GRADUS_VERTICALIS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color_summus SICUT NUMERUS.
+    ACCIPIT color_inferus SICUT NUMERUS.
+    SI superficies==0 || latitudo<=0 || altitudo<=0 TUNC REDDE 0. FIN-SI.
+    SI altitudo==1 TUNC REDDE FS_RECT(superficies,x,y,latitudo,1,color_summus). FIN-SI.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<altitudo PERFICE
+        DECLARA color SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(color_summus,color_inferus,py,altitudo-1).
+        DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,x,y+py,latitudo,1,color).
+        py=py+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GSVII_GRADUS_HORIZONTALIS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color_sinister SICUT NUMERUS.
+    ACCIPIT color_dexter SICUT NUMERUS.
+    SI superficies==0 || latitudo<=0 || altitudo<=0 TUNC REDDE 0. FIN-SI.
+    SI latitudo==1 TUNC REDDE FS_RECT(superficies,x,y,1,altitudo,color_sinister). FIN-SI.
+    DECLARA px SICUT NUMERUS VALENS 0.
+    DUM px<latitudo PERFICE
+        DECLARA color SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(color_sinister,color_dexter,px,latitudo-1).
+        DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,x+px,y,1,altitudo,color).
+        px=px+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
