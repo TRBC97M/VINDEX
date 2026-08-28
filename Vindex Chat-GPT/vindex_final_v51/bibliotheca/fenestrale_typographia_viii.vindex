@@ -1,0 +1,163 @@
+// Sylvia OS — Capacitas Graphica VIII: typographia atlas.
+// Fontes bitmap 8x8 historici manent fallback; haec bibliotheca atlas raster RGBA
+// anti-aliased accipit, glyphos cellulares decodit et colore canonico componit.
+// IR_* et GVII_* ante hoc importentur.
+
+FUNCTIO TVIII_GLYPHUM_INDEX REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT primus SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    SI numerus<=0 || codex<primus || codex>=primus+numerus TUNC REDDE -1. FIN-SI.
+    REDDE codex-primus.
+FIN-FUNCTIO.
+
+FUNCTIO TVIII_TEXTUM_MENSURA REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT glyph_w SICUT NUMERUS.
+    ACCIPIT spatium SICUT NUMERUS.
+    SI glyph_w<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(textus).
+    SI n<=0 TUNC REDDE 0. FIN-SI.
+    REDDE n*glyph_w+(n-1)*spatium.
+FIN-FUNCTIO.
+
+// Alpha glyphi ex atlas. RGB atlas ignoratur: atlas est larva anti-aliased,
+// ita idem font asset quolibet colore JL-UX tingi potest.
+FUNCTIO TVIII_GLYPHUM_FB REDDENS NUMERUS.
+    ACCIPIT atlas SICUT TEXTUS.
+    ACCIPIT columnae SICUT NUMERUS.
+    ACCIPIT cell_w SICUT NUMERUS.
+    ACCIPIT cell_h SICUT NUMERUS.
+    ACCIPIT primus SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT dw SICUT NUMERUS.
+    ACCIPIT dh SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI IR_VALIDUS(atlas)==0 || columnae<=0 || cell_w<=0 || cell_h<=0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS TVIII_GLYPHUM_INDEX(codex,primus,numerus).
+    SI index<0 TUNC REDDE 1. FIN-SI.
+    DECLARA sx0 SICUT NUMERUS VALENS (index%columnae)*cell_w.
+    DECLARA sy0 SICUT NUMERUS VALENS (index/columnae)*cell_h.
+    SI sx0+cell_w>IR_LATITUDO(atlas) || sy0+cell_h>IR_ALTITUDO(atlas) TUNC REDDE 0. FIN-SI.
+    DECLARA ag SICUT NUMERUS VALENS GVIII_CLAMPA(alpha_globalis,0,255).
+    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<dh PERFICE
+        DECLARA yy SICUT NUMERUS VALENS dy+py.
+        SI yy>=0 && yy<screen_h TUNC
+            DECLARA sy SICUT NUMERUS VALENS sy0+py*cell_h/dh.
+            DECLARA px SICUT NUMERUS VALENS 0.
+            DUM px<dw PERFICE
+                DECLARA xx SICUT NUMERUS VALENS dx+px.
+                SI xx>=0 && xx<screen_w TUNC
+                    DECLARA sx SICUT NUMERUS VALENS sx0+px*cell_w/dw.
+                    DECLARA rgba SICUT NUMERUS VALENS IR_PIXEL_RGBA(atlas,sx,sy).
+                    DECLARA a SICUT NUMERUS VALENS ((rgba>>24)&255)*ag/255.
+                    SI a>0 TUNC DECLARA f SICUT NUMERUS VALENS GVII_PIXEL_ALPHA(xx,yy,color,a). FIN-SI.
+                FIN-SI.
+                px=px+1.
+            FIN-DUM.
+        FIN-SI.
+        py=py+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TVIII_GLYPHUM_S REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT atlas SICUT TEXTUS.
+    ACCIPIT columnae SICUT NUMERUS.
+    ACCIPIT cell_w SICUT NUMERUS.
+    ACCIPIT cell_h SICUT NUMERUS.
+    ACCIPIT primus SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT dw SICUT NUMERUS.
+    ACCIPIT dh SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI superficies==0 || IR_VALIDUS(atlas)==0 || columnae<=0 || cell_w<=0 || cell_h<=0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS TVIII_GLYPHUM_INDEX(codex,primus,numerus).
+    SI index<0 TUNC REDDE 1. FIN-SI.
+    DECLARA sx0 SICUT NUMERUS VALENS (index%columnae)*cell_w.
+    DECLARA sy0 SICUT NUMERUS VALENS (index/columnae)*cell_h.
+    SI sx0+cell_w>IR_LATITUDO(atlas) || sy0+cell_h>IR_ALTITUDO(atlas) TUNC REDDE 0. FIN-SI.
+    DECLARA ag SICUT NUMERUS VALENS GVIII_CLAMPA(alpha_globalis,0,255).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<dh PERFICE
+        DECLARA sy SICUT NUMERUS VALENS sy0+py*cell_h/dh.
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px<dw PERFICE
+            DECLARA sx SICUT NUMERUS VALENS sx0+px*cell_w/dw.
+            DECLARA rgba SICUT NUMERUS VALENS IR_PIXEL_RGBA(atlas,sx,sy).
+            DECLARA a SICUT NUMERUS VALENS ((rgba>>24)&255)*ag/255.
+            SI a>0 TUNC DECLARA f SICUT NUMERUS VALENS GSVII_PIXEL_ALPHA(superficies,dx+px,dy+py,color,a). FIN-SI.
+            px=px+1.
+        FIN-DUM.
+        py=py+1.
+    FIN-DUM.
+    DECLARA nota SICUT NUMERUS VALENS GSVII_NOTA(superficies).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TVIII_TEXTUM_FB REDDENS NUMERUS.
+    ACCIPIT atlas SICUT TEXTUS.
+    ACCIPIT columnae SICUT NUMERUS.
+    ACCIPIT cell_w SICUT NUMERUS.
+    ACCIPIT cell_h SICUT NUMERUS.
+    ACCIPIT primus SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT glyph_w SICUT NUMERUS.
+    ACCIPIT glyph_h SICUT NUMERUS.
+    ACCIPIT spatium SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI IR_VALIDUS(atlas)==0 || glyph_w<=0 || glyph_h<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(textus).
+    DECLARA basis SICUT NUMERUS VALENS textus.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        DECLARA codex SICUT NUMERUS VALENS OCTETUS_AB(basis+16+i).
+        DECLARA f SICUT NUMERUS VALENS TVIII_GLYPHUM_FB(atlas,columnae,cell_w,cell_h,primus,numerus,codex,x+i*(glyph_w+spatium),y,glyph_w,glyph_h,color,alpha_globalis).
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO TVIII_TEXTUM_S REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT atlas SICUT TEXTUS.
+    ACCIPIT columnae SICUT NUMERUS.
+    ACCIPIT cell_w SICUT NUMERUS.
+    ACCIPIT cell_h SICUT NUMERUS.
+    ACCIPIT primus SICUT NUMERUS.
+    ACCIPIT numerus SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT glyph_w SICUT NUMERUS.
+    ACCIPIT glyph_h SICUT NUMERUS.
+    ACCIPIT spatium SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI superficies==0 || IR_VALIDUS(atlas)==0 || glyph_w<=0 || glyph_h<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(textus).
+    DECLARA basis SICUT NUMERUS VALENS textus.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        DECLARA codex SICUT NUMERUS VALENS OCTETUS_AB(basis+16+i).
+        DECLARA f SICUT NUMERUS VALENS TVIII_GLYPHUM_S(superficies,atlas,columnae,cell_w,cell_h,primus,numerus,codex,x+i*(glyph_w+spatium),y,glyph_w,glyph_h,color,alpha_globalis).
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
