@@ -51,7 +51,7 @@ FIN-FUNCTIO.
 // 27 margines resize; 28 murus relativus; 29 murus absolutus.
 // 34 coda eventuum; 35 eventa perdita; 36 clientes; 37 fenestrae;
 // 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG; 41 atlas iconarum SIMG;
-// 42 wallpaper cache; 43 materia 9-slice; 44 fons UI Graphica VIII.
+// 42 reservatum; 43 materia 9-slice; 44 fons UI Graphica VIII.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
@@ -71,8 +71,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI IR_VALIDUS(atlas)==0 TUNC REDDE 71. FIN-SI.
     s[41]=TEXTUS_SEDES(atlas).
 
-    // P16-XI II: asseta Graphica VIII semel creantur; redraw PS/2 ea tantum reutilizat.
-    s[42]=CXI_WALLPAPER_CREA(w,utilis_h). SI s[42]==0 TUNC REDDE 71. FIN-SI.
+    // P16-XI II: materia et fons Graphica VIII semel creantur.
+    // Wallpaper fullscreen non in acervo servatur: compositor eum directe et leve pingit.
     DECLARA materia_ui SICUT TEXTUS VALENS MUIVIII_CREA().
     SI IR_VALIDUS(materia_ui)==0 TUNC REDDE 71. FIN-SI.
     s[43]=TEXTUS_SEDES(materia_ui).
