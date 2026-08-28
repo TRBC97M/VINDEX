@@ -1,0 +1,115 @@
+name: Sylvia OS — SIMG II nativum
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_compat_v1.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_bridge_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_compat_v1.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_bridge_vii.vindex'
+      - 'documenta/sylvia/SIMG_II.md'
+      - '.github/workflows/sylvia-simg-ii.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_compat_v1.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_bridge_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_compat_v1.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_bridge_vii.vindex'
+      - 'documenta/sylvia/SIMG_II.md'
+      - '.github/workflows/sylvia-simg-ii.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  simg-ii:
+    name: Formatum, compressio, metadata et migratio probantur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Compilator exsecutabilis sit
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fontes SIMG II statice verifica
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          for f in \
+            bibliotheca/simg_ii.vindex \
+            bibliotheca/simg_ii_compat_v1.vindex \
+            bibliotheca/simg_ii_bridge_vii.vindex \
+            probationes/simg_ii.vindex \
+            probationes/simg_ii_compat_v1.vindex \
+            probationes/simg_ii_bridge_vii.vindex
+          do
+            python3 instrumenta/vindex_verifica.py "$f"
+          done
+
+      - name: SIMG II RAW RLE metadata et integritatem exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/simg_ii.vindex /tmp/simg-ii
+          file /tmp/simg-ii | grep -q 'ELF 64-bit'
+          chmod +x /tmp/simg-ii
+          timeout 20s /tmp/simg-ii
+          printf '%s\n' 'RECTE: SIMG II RAW/RLE32, metadata et Adler-32 probata sunt.'
+
+      - name: Migrationem SIMG I ad II exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/simg_ii_compat_v1.vindex /tmp/simg-ii-compat
+          chmod +x /tmp/simg-ii-compat
+          timeout 20s /tmp/simg-ii-compat
+          printf '%s\n' 'RECTE: assetum SIMG I ad II sine Graphica migratur.'
+
+      - name: Pontem II ad pipeline rasteram veterem exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/simg_ii_bridge_vii.vindex /tmp/simg-ii-bridge
+          chmod +x /tmp/simg-ii-bridge
+          timeout 20s /tmp/simg-ii-bridge
+          printf '%s\n' 'RECTE: SIMG II semel expanditur et descriptor SIMG I ad cache veterem paratur.'
+
+      - name: Contractum publicum custodi
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          g='bibliotheca/simg_ii.vindex'
+          c='bibliotheca/simg_ii_compat_v1.vindex'
+          b='bibliotheca/simg_ii_bridge_vii.vindex'
+          for signum in \
+            'FUNCTIO SII_VALIDUS REDDENS NUMERUS' \
+            'FUNCTIO SII_CREA_RGBA REDDENS TEXTUS' \
+            'FUNCTIO SII_EXPANDE_RGBA REDDENS TEXTUS' \
+            'FUNCTIO SII_META_NOVEM REDDENS NUMERUS' \
+            'FUNCTIO SII_META_CURSOR REDDENS NUMERUS'
+          do grep -Fq "$signum" "$g"; done
+          grep -Fq 'FUNCTIO SII_EX_V1 REDDENS TEXTUS' "$c"
+          grep -Fq 'FUNCTIO SII_AD_V1 REDDENS TEXTUS' "$b"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$g" "$c" "$b"
+          printf '%s\n' 'RECTE: contractus publicus SIMG II VINDEX manet.'
