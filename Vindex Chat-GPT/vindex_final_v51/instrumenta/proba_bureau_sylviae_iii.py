@@ -83,8 +83,10 @@ def principale() -> int:
             return 5
 
         taskbar_top = h - 40
-        vac_body = aux.pixel(pix_ante, w, 130, taskbar_top + 20)
-        vac_lumen = aux.pixel(pix_ante, w, 130, taskbar_top + 7)
+        # x=300 est in corpore vacuo/activo et longe a glyphis tituli.
+        corpus_x = 300
+        vac_body = aux.pixel(pix_ante, w, corpus_x, taskbar_top + 20)
+        vac_lumen = aux.pixel(pix_ante, w, corpus_x, taskbar_top + 7)
         if vac_body != graphite or vac_lumen != aqua_xi:
             print(f'DEFECIT: rail XI vacuus materiam amisit: body={vac_body} lumen={vac_lumen}', file=sys.stderr)
             return 6
@@ -110,9 +112,9 @@ def principale() -> int:
             print(f'DEFECIT: PROGRAMMATA non aperta/focalizata: {aux.pixel(pix_p,w,300,56)}', file=sys.stderr)
             return 9
 
-        prog_body = aux.pixel(pix_p, w, 130, taskbar_top + 20)
-        prog_aqua = aux.pixel(pix_p, w, 130, taskbar_top + 9)
-        prog_bronze = aux.pixel(pix_p, w, 130, taskbar_top + 30)
+        prog_body = aux.pixel(pix_p, w, corpus_x, taskbar_top + 20)
+        prog_aqua = aux.pixel(pix_p, w, corpus_x, taskbar_top + 9)
+        prog_bronze = aux.pixel(pix_p, w, corpus_x, taskbar_top + 30)
         if prog_body != activa or prog_aqua != aqua_xi or prog_bronze != bronzeum_xi:
             print(f'DEFECIT: PROGRAMMATA in rail XI non activa: {prog_body}/{prog_aqua}/{prog_bronze}', file=sys.stderr)
             return 10
@@ -124,7 +126,7 @@ def principale() -> int:
         aux.click(monitor)
         aux.captura(monitor, clausum_p)
         _, _, pix_clausum = aux.ppm(clausum_p)
-        clausum_body = aux.pixel(pix_clausum, w, 130, taskbar_top + 20)
+        clausum_body = aux.pixel(pix_clausum, w, corpus_x, taskbar_top + 20)
         if clausum_body != vac_body:
             print(f'DEFECIT: PROGRAMMATA post clausuram in rail manet: {clausum_body} loco {vac_body}', file=sys.stderr)
             return 12
@@ -140,9 +142,9 @@ def principale() -> int:
             print(f'DEFECIT: TABULA ex bureau non aperta/focalizata: {aux.pixel(pix_t,w,700,168)}', file=sys.stderr)
             return 14
 
-        tab_body = aux.pixel(pix_t, w, 130, taskbar_top + 20)
-        tab_aqua = aux.pixel(pix_t, w, 130, taskbar_top + 9)
-        tab_bronze = aux.pixel(pix_t, w, 130, taskbar_top + 30)
+        tab_body = aux.pixel(pix_t, w, corpus_x, taskbar_top + 20)
+        tab_aqua = aux.pixel(pix_t, w, corpus_x, taskbar_top + 9)
+        tab_bronze = aux.pixel(pix_t, w, corpus_x, taskbar_top + 30)
         if tab_body != activa or tab_aqua != aqua_xi or tab_bronze != bronzeum_xi:
             print(f'DEFECIT: TABULA in rail XI non activa: {tab_body}/{tab_aqua}/{tab_bronze}', file=sys.stderr)
             return 15
