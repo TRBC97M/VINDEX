@@ -1,5 +1,5 @@
-// Sylvia OS — P16-XI: compositor Bureau Lucidum I, implementatio II.
-// Fundum directum leve pingitur; Bureau Graphica VIII, fenestrae VIII et testa IX servantur.
+// Sylvia OS — P16-XI: compositor Bureau Lucidum et testae JL-UX.
+// Fundum directum leve pingitur; Bureau et testa XI, fenestrae VIII servantur.
 
 FUNCTIO IVXI_ARCUS REDDENS NUMERUS.
     ACCIPIT x0 SICUT NUMERUS. ACCIPIT x1 SICUT NUMERUS. ACCIPIT basis_y SICUT NUMERUS.
@@ -153,14 +153,6 @@ FUNCTIO IVXI_FUNDUM REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// P16-XI ne duplicat viam iconographicam: exacta functio P16-VII certificata reutilizatur.
-FUNCTIO IVXI_BUREAU_ICONAE REDDENS NUMERUS.
-    ACCIPIT s SICUT ORDO DE NUMERUS.
-    ACCIPIT applicationes SICUT NUMERUS.
-    ACCIPIT atlas SICUT TEXTUS.
-    REDDE IVVII_BUREAU_ICONAE(s,applicationes,atlas).
-FIN-FUNCTIO.
-
 FUNCTIO IVXI_REDDE REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     ACCIPIT fenestrae SICUT NUMERUS.
@@ -169,20 +161,18 @@ FUNCTIO IVXI_REDDE REDDENS NUMERUS.
     ACCIPIT emblema SICUT TEXTUS.
     ACCIPIT atlas SICUT TEXTUS.
     DECLARA f SICUT NUMERUS VALENS IVXI_FUNDUM().
-    f=CXI_BUREAU_REDDE(s,applicationes).
-    SI IR_VALIDUS(emblema)!=0 TUNC f=IR_BLIT_FRAMEBUFFER(164,18,emblema). FIN-SI.
-    SI IR_VALIDUS(atlas)!=0 TUNC f=IVXI_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
-    DECLARA focus SICUT NUMERUS VALENS FI_RELEGE_FOCUS(fenestrae).
+    f=SXI_BUREAU_REDDE(s,applicationes).
+    SI IR_VALIDUS(atlas)!=0 TUNC f=SXI_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
     DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
     DUM n!=0 PERFICE
         SI CONTENTUM(n+48)==0 TUNC f=CVIII_FENESTRA(fenestrae,clientes,applicationes,n). FIN-SI.
         n=FI_PROXIMUS(n).
     FIN-DUM.
     SI s[38]==1 TUNC
-        f=CIX_INITIUM_REDDE(s,applicationes).
+        f=SXI_INITIUM_REDDE(s,applicationes).
         SI IR_VALIDUS(atlas)!=0 TUNC f=IVVII_INITIUM_ICONAE(s,applicationes,atlas). FIN-SI.
     FIN-SI.
-    f=CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes).
+    f=SXI_TASKBAR_REDDE(s,fenestrae,clientes,applicationes).
     f=FV_CURSOR(s[11],s[12]).
     REDDE 1.
 FIN-FUNCTIO.
