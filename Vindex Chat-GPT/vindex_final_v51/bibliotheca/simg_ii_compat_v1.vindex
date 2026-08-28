@@ -1,7 +1,6 @@
-IMPORTA "bibliotheca/simg_ii.vindex".
-
 // Sylvia OS — SIMG II: compatibilitas migrationis e SIMG v1.
 // Decoder hic tantum structuram veterem legit; Graphica VII non requiritur.
+// Radix compilationis `bibliotheca/simg_ii.vindex` ante hunc fontem importet.
 
 FUNCTIO SII_V1_VALIDUS REDDENS NUMERUS.
     ACCIPIT imago SICUT TEXTUS.
