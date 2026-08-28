@@ -32,7 +32,9 @@ FUNCTIO IVVII_BUREAU_ICONAE REDDENS NUMERUS.
             DECLARA genus SICUT NUMERUS VALENS AI_NODUS_GENUS(nodus).
             DECLARA sx SICUT NUMERUS VALENS IVVII_ICONA_FONS_X(genus).
             DECLARA sy SICUT NUMERUS VALENS IVVII_ICONA_FONS_Y(genus).
-            f=IRVII_BLIT_FB_PARTEM(x+30,y+8,atlas,sx,sy,48,48).
+            DECLARA pars SICUT NUMERUS VALENS IRVII_RECT_CREA(sx,sy,48,48).
+            DECLARA dst SICUT NUMERUS VALENS IRVII_RECT_CREA(x+30,y+8,48,48).
+            f=IRVII_BLIT_FB(atlas,dst,pars).
             index=index+1.
         FIN-SI.
         nodus=AI_PROXIMUS(nodus).
@@ -56,7 +58,9 @@ FUNCTIO IVVII_INITIUM_ICONAE REDDENS NUMERUS.
         DECLARA genus SICUT NUMERUS VALENS AI_NODUS_GENUS(nodus).
         DECLARA sx SICUT NUMERUS VALENS IVVII_ICONA_FONS_X(genus).
         DECLARA sy SICUT NUMERUS VALENS IVVII_ICONA_FONS_Y(genus).
-        f=IRVII_BLIT_FB_SCALA(ix+8,iy+6,32,32,atlas,sx,sy,48,48).
+        DECLARA pars SICUT NUMERUS VALENS IRVII_RECT_CREA(sx,sy,48,48).
+        DECLARA dst SICUT NUMERUS VALENS IRVII_RECT_CREA(ix+8,iy+6,32,32).
+        f=IRVII_BLIT_FB(atlas,dst,pars).
         index=index+1.
         nodus=AI_PROXIMUS(nodus).
     FIN-DUM.
