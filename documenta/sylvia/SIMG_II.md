@@ -62,7 +62,7 @@ Prima taxonomia runtime:
 | 5 | atlas fontis |
 | 6 | testa / shell |
 
-Taxonomia est indicium rendereris et asset manageris, non prohibitio. Versiones futurae genera addere possunt sine mutando RGBA fundamentale.
+Taxonomia est indicium rendereris et gestor assetorum, non prohibitio. Versiones futurae genera addere possunt sine mutando RGBA fundamentale.
 
 ---
 
@@ -74,7 +74,13 @@ Scala est integer millesimalis:
 - `1500` = 1.5×;
 - `2000` = 2×.
 
-Hoc campo asset manager futurus optimam variantem secundum densitatem UI eligere poterit. Resolutio canonica JL-UX erit 1920×1080, sed formatum ipsum nulli resolutioni ligatur.
+Gestor assetorum potest plures variantes eiusdem identitatis servare. Electio canonica est:
+
+1. scala exacta, si adest;
+2. aliter minima scala maior quam petita;
+3. si nulla maior adest, maxima scala minor quam petita.
+
+Hoc consilium qualitatem potius quam inutilem upscaling eligit. Resolutio canonica JL-UX erit 1920×1080, sed formatum ipsum nulli resolutioni ligatur.
 
 ---
 
@@ -114,7 +120,7 @@ Metadatae futurae extensionibus headeris vel sectionibus additis introduci possu
 
 ## VII. Integritas
 
-SIMG II v1 differt etiam eo quod integritatem payload explicite servat. Adler-32 payload in offset LXXII scribitur et a `SII_VALIDUS` verificatur.
+SIMG II a versione I differt etiam eo quod integritatem payload explicite servat. Adler-32 payload in offset LXXII scribitur et a `SII_VALIDUS` verificatur.
 
 Hoc non est mechanismus cryptographicus. Propositum est corruptionem, truncationem et conversiones vitiosas mature deprehendere antequam renderer memoriae alienae credat.
 
@@ -134,11 +140,45 @@ Hoc non est mechanismus cryptographicus. Propositum est corruptionem, truncation
 
 `bibliotheca/simg_ii_compat_v1.vindex` formatum SIMG I legit et per `SII_EX_V1` in II convertit.
 
-`bibliotheca/simg_ii_bridge_vii.vindex` per `SII_AD_V1` descriptor temporarium v1 generat. Hic pons permittit asseta II statim cum blitteribus Graphica VII/VIII adhiberi dum asset manager nativus II construitur.
+`bibliotheca/simg_ii_bridge_vii.vindex` per `SII_AD_V1` descriptor temporarium v1 generat. Hic pons permittit asseta II statim cum blitteribus Graphica VII/VIII adhiberi dum compositio nativa II construitur.
 
 ---
 
-## IX. Pipeline artis
+## IX. Gestor assetorum
+
+`bibliotheca/simg_ii_assetum.vindex` est prima tabula runtime assetorum SIMG II. Id numericum unam familiam asseti repraesentat; eadem familia plures scalas continere potest.
+
+Gestor servat:
+
+- caput et caudam registri;
+- numerum variantium;
+- scalam UI petitam;
+- generationem mutationum.
+
+Nodus variantis servat:
+
+- id asseti;
+- genus;
+- scalam;
+- descriptor SIMG II;
+- latitudinem et altitudinem;
+- numerum usuum;
+- cache temporarium SIMG I ad pipeline rasteram praesentem.
+
+API principalis:
+
+- `AII_CREA` — gestorem creat;
+- `AII_ADDE` — variantem id+scala addit et duplicatum exactum recusat;
+- `AII_VARIANS_EXACTA` — variantem exactam invenit;
+- `AII_OPTIMUM` — optimam variantem secundum scalam petitam reddit;
+- `AII_SCALA_PONE` — scalam UI mutat et generationem auget;
+- `AII_V1_CACHE` — conversionem ad v1 semel facit et eundem descriptor postea reddit.
+
+Cache v1 est pons migrationis, non finis architecturae. Cum Graphica directe SIMG II consumet, nodus eandem notionem cache servare poterit pro superficie decodificata vel textura GPU.
+
+---
+
+## X. Pipeline artis
 
 Directio canonica:
 
@@ -149,7 +189,7 @@ importator / convertor
         ↓
 SIMG II + metadata intra unum assetum
         ↓
-asset manager VINDEX
+gestor assetorum VINDEX + selectio scalae + cache
         ↓
 Graphica / superficies / futurus backend GPU
 ```
@@ -158,22 +198,22 @@ Runtime Sylviae non debet imagines artificis singulis redraw denuo decodere. Ass
 
 ---
 
-## X. Limites huius gradus
+## XI. Limites huius gradus
 
 Fundamentum II nondum est finis pipeline:
 
 - PNG decoder/importator nondum pars huius gradus est;
 - atlas multiplex intra unum container nondum definitur;
-- mipmaps et variantes multiplices intra unum archivum nondum adsunt;
+- mipmaps et variantes multiplices intra unum archivum nondum adsunt; variantes nunc per gestorem eiusdem id ordinantur;
 - compressio photographica non tentatur;
-- asset manager cum cache et selectione scalae sequitur;
+- cache nativa superficierum SIMG II adhuc sequitur;
 - backend GPU futurus eodem formato uti poterit, sed SIMG II ab eo non dependet.
 
-Hoc deliberate servat primam versionem II parvam, verificabilem et utilem statim.
+Hoc deliberate servat versionem II parvam, verificabilem et utilem statim.
 
 ---
 
-## XI. Regula architectonica
+## XII. Regula architectonica
 
 SIMG II non creatur quia formatum proprium ornamentum est. Creatur quia Sylvia indiget contractu graphico nativo qui renderer, asseta JL-UX, scaling, 9-slice, cursores et cache eadem lingua coniungat.
 
