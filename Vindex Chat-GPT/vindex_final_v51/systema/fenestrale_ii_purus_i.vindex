@@ -1,4 +1,4 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-IX / P17-II / P19-II.
+// Sylvia OS — Fenestrale II Purus I, facies P16-XI / P17-II / P19-II.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
@@ -30,6 +30,8 @@ IMPORTA "bibliotheca/fenestrale_chrome_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_shell_ix.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_bureau_xi.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_xi.vindex".
 
 // Rector PS/2 historice hanc functionem vocat. Fenestrale coordinatas suas
 // ex dx/dy crudis legit; hic adaptor tantum contractum rectoris implet.
@@ -123,7 +125,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     // OFFICINA manet utilis etiam si backend non adest aut lectio errat.
     DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
     ro=OP_RENDE(superficies_o,status_o).
-    DECLARA f SICUT NUMERUS VALENS IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+    DECLARA f SICUT NUMERUS VALENS IVXI_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
         DECLARA redde SICUT NUMERUS VALENS 0.
@@ -144,7 +146,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         DECLARA acta SICUT NUMERUS VALENS CI_EVENTA_AGE(s[36],s[37],s[34]).
         SI acta>0 TUNC redde=1. FIN-SI.
         SI redde==1 TUNC
-            f=IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+            f=IVXI_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
         FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
     FIN-DUM.
