@@ -66,32 +66,8 @@ FUNCTIO IRVII_BLIT_FB REDDENS NUMERUS.
     ACCIPIT imago SICUT TEXTUS.
     ACCIPIT destinatio SICUT NUMERUS.
     ACCIPIT pars SICUT NUMERUS.
-    SI destinatio==0 || pars==0 TUNC REDDE 0. FIN-SI.
-    DECLARA dx SICUT NUMERUS VALENS IRVII_RECT_X(destinatio).
-    DECLARA dy SICUT NUMERUS VALENS IRVII_RECT_Y(destinatio).
-    DECLARA dw SICUT NUMERUS VALENS IRVII_RECT_W(destinatio).
-    DECLARA dh SICUT NUMERUS VALENS IRVII_RECT_H(destinatio).
-    DECLARA sx SICUT NUMERUS VALENS IRVII_RECT_X(pars).
-    DECLARA sy SICUT NUMERUS VALENS IRVII_RECT_Y(pars).
-    DECLARA sw SICUT NUMERUS VALENS IRVII_RECT_W(pars).
-    DECLARA sh SICUT NUMERUS VALENS IRVII_RECT_H(pars).
-    SI IRVII_PARTEM_VALIDAM(imago,sx,sy,sw,sh)==0 TUNC REDDE 0. FIN-SI.
-    DECLARA py SICUT NUMERUS VALENS 0.
-    DUM py<dh PERFICE
-        DECLARA fy SICUT NUMERUS VALENS sy+(py*sh)/dh.
-        DECLARA px SICUT NUMERUS VALENS 0.
-        DUM px<dw PERFICE
-            DECLARA fx SICUT NUMERUS VALENS sx+(px*sw)/dw.
-            DECLARA rgba SICUT NUMERUS VALENS IRVII_PIXEL_EX_FONTE(imago,fx,fy).
-            DECLARA a SICUT NUMERUS VALENS (rgba>>24)&255.
-            SI a>0 TUNC
-                DECLARA color SICUT NUMERUS VALENS IRVII_RGBA_AD_COLOR(rgba).
-                DECLARA f SICUT NUMERUS VALENS GVII_PIXEL_ALPHA(dx+px,dy+py,color,a).
-            FIN-SI.
-            px=px+1.
-        FIN-DUM.
-        py=py+1.
-    FIN-DUM.
+    // SONDA P16-XI TEMPORARIA: nullum pixelum iconis hic pingitur.
+    // Si taskbar et cursor redeunt, locus obstructionis definitive hic est.
     REDDE 1.
 FIN-FUNCTIO.
 
