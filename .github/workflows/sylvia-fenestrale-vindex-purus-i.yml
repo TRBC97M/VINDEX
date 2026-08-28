@@ -24,6 +24,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
@@ -49,6 +50,8 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/officina_persistentia_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_ix.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_sylviae_i.py'
@@ -70,7 +73,7 @@ permissions:
 
 jobs:
   vindex-purus-i:
-    name: Registra, TERMINALE et OFFICINA Fenestralis VINDEX certificantur
+    name: Registra, testa XI, TERMINALE et OFFICINA certificantur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -114,6 +117,7 @@ jobs:
           uviii='bibliotheca/fenestrale_compositor_viii.vindex'
           cix='bibliotheca/fenestrale_shell_ix.vindex'
           uix='bibliotheca/fenestrale_compositor_ix.vindex'
+          sxi='bibliotheca/fenestrale_shell_xi.vindex'
           uxi='bibliotheca/fenestrale_compositor_xi.vindex'
           v='bibliotheca/fenestrale_ii_purus.vindex'
           e='bibliotheca/terminale_clientis_i.vindex'
@@ -215,7 +219,9 @@ jobs:
           grep -Fq 'CI_EVENTA_AGE(s[36],s[37],s[34])' "$s"
           grep -Fq 'IV_MOUSE_DOWN(s,s[37],s[34],s[39])' "$s"
           grep -Fq 'IVXI_REDDE(s,s[37],s[36],s[39]' "$s"
+          grep -Fq 'IMPORTA "bibliotheca/fenestrale_shell_xi.vindex".' "$s"
 
+          # Strata VIII/IX historica servantur ut regressiones et reversibilitas maneant.
           grep -Fq 'FUNCTIO IVVII_REDDE REDDENS NUMERUS' "$uvii"
           grep -Fq 'FUNCTIO CVIII_CHROME REDDENS NUMERUS' "$cviii"
           grep -Fq 'FUNCTIO CVIII_FENESTRA REDDENS NUMERUS' "$cviii"
@@ -223,14 +229,23 @@ jobs:
           grep -Fq 'FUNCTIO CIX_INITIUM_REDDE REDDENS NUMERUS' "$cix"
           grep -Fq 'FUNCTIO CIX_TASKBAR_REDDE REDDENS NUMERUS' "$cix"
           grep -Fq 'FUNCTIO IVIX_REDDE REDDENS NUMERUS' "$uix"
-          grep -Fq 'CVIII_FENESTRA(fenestrae,clientes,applicationes,n)' "$uix"
           grep -Fq 'CIX_INITIUM_REDDE(s,applicationes)' "$uix"
           grep -Fq 'CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes)' "$uix"
+
+          # Facies activa P16-XI debet testam propriam, non testam IX, vocare.
+          grep -Fq 'FUNCTIO SXI_IDENTITAS_REDDE REDDENS NUMERUS' "$sxi"
+          grep -Fq 'FUNCTIO SXI_BUREAU_REDDE REDDENS NUMERUS' "$sxi"
+          grep -Fq 'FUNCTIO SXI_BUREAU_ICONAE REDDENS NUMERUS' "$sxi"
+          grep -Fq 'FUNCTIO SXI_INITIUM_REDDE REDDENS NUMERUS' "$sxi"
+          grep -Fq 'FUNCTIO SXI_TASKBAR_REDDE REDDENS NUMERUS' "$sxi"
           grep -Fq 'FUNCTIO IVXI_REDDE REDDENS NUMERUS' "$uxi"
-          grep -Fq 'CXI_BUREAU_REDDE(s,applicationes)' "$uxi"
+          grep -Fq 'SXI_BUREAU_REDDE(s,applicationes)' "$uxi"
+          grep -Fq 'SXI_BUREAU_ICONAE(s,applicationes,atlas)' "$uxi"
           grep -Fq 'CVIII_FENESTRA(fenestrae,clientes,applicationes,n)' "$uxi"
-          grep -Fq 'CIX_INITIUM_REDDE(s,applicationes)' "$uxi"
-          grep -Fq 'CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes)' "$uxi"
+          grep -Fq 'SXI_INITIUM_REDDE(s,applicationes)' "$uxi"
+          grep -Fq 'SXI_TASKBAR_REDDE(s,fenestrae,clientes,applicationes)' "$uxi"
+          ! grep -Fq 'CIX_INITIUM_REDDE(s,applicationes)' "$uxi"
+          ! grep -Fq 'CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes)' "$uxi"
 
           grep -Fq 'FUNCTIO IV_INITIUM_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'FUNCTIO IV_BUREAU_REDDE REDDENS NUMERUS' "$u"
@@ -238,17 +253,19 @@ jobs:
           grep -Fq 'GVII_GRADUS_VERTICALIS' "$cviii"
           grep -Fq 'GVII_RECT_ALPHA' "$cviii"
           grep -Fq 'GVII_UMBRA_GRADATA' "$cix"
-          grep -Fq 'GVII_GRADUS_VERTICALIS' "$cix"
+          grep -Fq 'GVIII_RECT_ROTUNDUS_FB' "$sxi"
+          grep -Fq 'FV_COLOR(181,138,84)' "$sxi"
+          grep -Fq 'FV_COLOR(189,239,242)' "$sxi"
 
           ! grep -Eq 's\[(0|1|2|3|4|5|6|7|8|9|10|17|18|19|20|21|22|23|24|25|26)\][[:space:]]*=' "$s"
           ! grep -Eq 'PE_CLICK|TF_CLICK|TE_|OE_' "$g"
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
           ! grep -Fq 'OE_CLAVIS_EVENTUM(status,e[2],e[4])' "$c"
 
-          for f in "$r" "$g" "$c" "$a" "$u" "$uvii" "$cviii" "$uviii" "$cix" "$uix" "$uxi" "$v" "$e" "$o" "$op" "$fs" "$s"; do
+          for f in "$r" "$g" "$c" "$a" "$u" "$uvii" "$cviii" "$uviii" "$cix" "$uix" "$sxi" "$uxi" "$v" "$e" "$o" "$op" "$fs" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
-          printf '%s\n' 'RECTE: Fenestrale P16-XI super P16-VIII et testa P16-IX, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
+          printf '%s\n' 'RECTE: Fenestrale P16-XI super P16-VIII cum testa XI, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
 
       - name: Regressiones Fenestralis exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -279,4 +296,4 @@ jobs:
           set -euo pipefail
           ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
-          printf '%s\n' 'RECTE: Fenestrale II Purus I P16-XI super P16-VIII cum testa P16-IX et OFFICINA persistente compilatum est.'
+          printf '%s\n' 'RECTE: Fenestrale II Purus I P16-XI super P16-VIII cum testa XI et OFFICINA persistente compilatum est.'
