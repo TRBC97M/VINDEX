@@ -287,6 +287,7 @@ exsequere_casum "segmenta-numerorum" "tests/casus/segmenta_numerorum.vindex" "SE
 exsequere_casum "textus-unicode" "tests/casus/textus_unicode.vindex" "UNICODE RECTE"
 exsequere_casum "textus-reditus" "tests/casus/textus_reditus.vindex" "TEXTUS REDITUS RECTE"
 exsequere_casum "subtextus-unicode" "tests/casus/subtextus_unicode.vindex" "SUBTEXTUS RECTE"
+exsequere_casum "iconae-sylviae-vii" "probationes/iconae_sylviae_vii.vindex" ""
 
 respice_reiectionem "erratum-principalis" "tests/casus/erratum_principalis.vindex" "FUNCTIO PRINCIPALIS deest"
 respice_reiectionem "erratum-functio" "tests/casus/erratum_functio.vindex" "functio 'FUNCTIO_IGNOTA' non definita"

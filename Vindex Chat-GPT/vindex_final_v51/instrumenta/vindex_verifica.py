@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-MAX_SOURCE_BYTES = 212_999
 MAX_IDENTIFIER_CHARS = 32
 
 IDENTIFIER_RE = re.compile(r"\b[A-Za-z_][A-Za-z_0-9]*\b")
@@ -148,30 +147,16 @@ class Verifier:
             self.error(location.path, location.line, location.column, "lectio impossibilis")
             return
 
-        if len(raw) > MAX_SOURCE_BYTES:
-            location = import_location or Location(path, 1)
-            self.error(
-                location.path,
-                location.line,
-                location.column,
-                f"fons {len(raw)} octeta continet; maximum {MAX_SOURCE_BYTES}",
-            )
-            return
         try:
             text = raw.decode("utf-8")
         except UnicodeDecodeError as exc:
             self.error(path, exc.start + 1, 1, "archivum textus UTF-8 validus non est")
             return
 
+        # VINDEX 0.53 fontes dynamicos habet; verificator nullum limitem
+        # historicum magnitudinis fontium imponere debet. Mensura tamen
+        # numeratur ut relatio finalis amplitudinem veram ostendat.
         self.total_bytes += len(raw) + (1 if import_location else 0)
-        if self.total_bytes > MAX_SOURCE_BYTES:
-            self.error(
-                path,
-                1,
-                1,
-                f"fontes coniuncti {self.total_bytes} octeta continent; maximum {MAX_SOURCE_BYTES}",
-            )
-            return
 
         unit = SourceUnit(path=path, text=text, lines=text.splitlines())
         self.units.append(unit)

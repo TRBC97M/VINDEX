@@ -1,0 +1,125 @@
+name: Sylvia OS — Capacitas Graphica VII
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - chatgpt/capacitas-graphica-sylviae-vii
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
+      - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
+      - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  graphica-vii:
+    name: Gradientia, alpha, rastera et QEMU
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta QEMU institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Primitiveas graphicas compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_vii.vindex /tmp/capacitas-graphica-vii
+          chmod +x /tmp/capacitas-graphica-vii
+          /tmp/capacitas-graphica-vii
+          printf '%s\n' 'RECTE: P16-VII interpolatio, alpha et contractus gradientiae probati sunt.'
+
+      - name: Formatum SIMG compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/imago_raster_vii.vindex /tmp/imago-raster-vii
+          chmod +x /tmp/imago-raster-vii
+          /tmp/imago-raster-vii
+          printf '%s\n' 'RECTE: P16-VII SIMG v1 RGBA8888 validatur et pixela leguntur.'
+
+      - name: Emblema Sylviae rasterum compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/emblema_sylviae_vii.vindex /tmp/emblema-sylviae-vii
+          chmod +x /tmp/emblema-sylviae-vii
+          /tmp/emblema-sylviae-vii
+          printf '%s\n' 'RECTE: P16-VII emblema XXXII per palette, RLE et SIMG restituitur.'
+
+      - name: Atlas iconarum rasterarum compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/iconae_sylviae_vii.vindex /tmp/iconae-sylviae-vii
+          chmod +x /tmp/iconae-sylviae-vii
+          /tmp/iconae-sylviae-vii
+          printf '%s\n' 'RECTE: P16-VII quattuor iconae XLVIII in atlas XCVI per SIMG servantur.'
+
+      - name: Forma rastera sub QEMU et OVMF
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vii'
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_i.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Capturam P16-VII conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-p16-vii-${{ github.sha }}
+          path: qemu-captura-p16-vii/*.ppm
+          if-no-files-found: warn
+          retention-days: 7

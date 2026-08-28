@@ -1,0 +1,19 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/emblema_sylviae_vii.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA imago SICUT TEXTUS VALENS EVII_CREA().
+    SI IR_VALIDUS(imago)==0 TUNC REDDE 1. FIN-SI.
+    SI IR_LATITUDO(imago)!=32 || IR_ALTITUDO(imago)!=32 || IR_STRIDE(imago)!=128 TUNC REDDE 2. FIN-SI.
+    DECLARA angulus SICUT NUMERUS VALENS IR_PIXEL_RGBA(imago,0,0).
+    SI ((angulus>>24)&255)!=0 TUNC REDDE 3. FIN-SI.
+    DECLARA centrum SICUT NUMERUS VALENS IR_PIXEL_RGBA(imago,16,16).
+    SI ((centrum>>24)&255)<200 TUNC REDDE 4. FIN-SI.
+    DECLARA gemma SICUT NUMERUS VALENS IR_PIXEL_RGBA(imago,16,5).
+    SI ((gemma>>24)&255)<200 TUNC REDDE 5. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

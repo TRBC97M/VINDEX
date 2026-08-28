@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-VI: INITIUM apertum, hover et focus TABULA sub UEFI/QEMU comprobat."""
+"""P16-VII: INITIUM apertum, iconae rasterae, hover et focus TABULA sub UEFI/QEMU comprobantur."""
 from __future__ import annotations
 
 import socket
@@ -49,6 +49,23 @@ def ppm(via: Path) -> tuple[int, int, bytes]:
 def pixel(pix: bytes, w: int, x: int, y: int) -> tuple[int, int, int]:
     i = (y * w + x) * 3
     return tuple(pix[i:i+3])  # type: ignore[return-value]
+
+
+def numerus_coloris_in_recto(
+    pix: bytes,
+    w: int,
+    x0: int,
+    y0: int,
+    x1: int,
+    y1: int,
+    color: tuple[int, int, int],
+) -> int:
+    n = 0
+    for y in range(y0, y1):
+        for x in range(x0, x1):
+            if pixel(pix, w, x, y) == color:
+                n += 1
+    return n
 
 
 def differentiae(a: bytes, b: bytes) -> int:
@@ -225,7 +242,7 @@ def principale() -> int:
         papyrus = (215, 205, 185)
         menu_top = initium_top_quaere(pix_open, w, h, nox, bronzeum, ebur)
         if menu_top is None:
-            print("DEFECIT: caput INITIUM P16-VI non inventum", file=sys.stderr)
+            print("DEFECIT: caput INITIUM P16-VII non inventum", file=sys.stderr)
             return 7
         programmata_y = menu_top + 92
         tabula_y = programmata_y + 54
@@ -246,15 +263,47 @@ def principale() -> int:
             print(f"DEFECIT: pannus INITIUM nimis parum mutavit: {mutata_open}", file=sys.stderr)
             return 11
 
+        # P16-VII: eadem atlas rastera ad XXXII×XXXII in INITIUM minuitur.
+        lumen_programmatum = (236, 194, 113)
+        cyan_programmatum = (90, 208, 209)
+        clarum_tabulae = (232, 232, 217)
+        aqua_tabulae = (145, 194, 191)
+        px0 = 24
+        px1 = 56
+        prog_lumen = numerus_coloris_in_recto(
+            pix_open, w, px0, programmata_y + 6, px1, programmata_y + 38, lumen_programmatum
+        )
+        prog_cyan = numerus_coloris_in_recto(
+            pix_open, w, px0, programmata_y + 6, px1, programmata_y + 38, cyan_programmatum
+        )
+        tab_clarum = numerus_coloris_in_recto(
+            pix_open, w, px0, tabula_y + 6, px1, tabula_y + 38, clarum_tabulae
+        )
+        tab_aqua = numerus_coloris_in_recto(
+            pix_open, w, px0, tabula_y + 6, px1, tabula_y + 38, aqua_tabulae
+        )
+        if prog_lumen < 40 or prog_cyan < 4:
+            print(
+                f"DEFECIT: icona rastera PROGRAMMATA in INITIUM deest: lumen={prog_lumen} cyan={prog_cyan}",
+                file=sys.stderr,
+            )
+            return 12
+        if tab_clarum < 100 or tab_aqua < 40:
+            print(
+                f"DEFECIT: icona rastera TABULA in INITIUM deest: clarum={tab_clarum} aqua={tab_aqua}",
+                file=sys.stderr,
+            )
+            return 13
+
         pos_tabula = move_ad(monitor, out, "tabula", 150, tabula_scopus, w, h)
         captura(monitor, hover)
         _, _, pix_hover = ppm(hover)
         if pixel(pix_hover, w, 300, tabula_scopus) != papyrus:
             print(f"DEFECIT: hover TABULA papyraceus non detectus: {pixel(pix_hover,w,300,tabula_scopus)} cursor={pos_tabula}", file=sys.stderr)
-            return 12
+            return 14
         if pixel(pix_hover, w, 300, programmata_scopus) != ebur:
             print("DEFECIT: hover TABULA tesseram PROGRAMMATA mutavit", file=sys.stderr)
-            return 13
+            return 15
 
         click(monitor)
         captura(monitor, post)
@@ -262,23 +311,20 @@ def principale() -> int:
         menu_post = initium_top_quaere(pix_post, w, h, nox, bronzeum, ebur)
         if menu_post is not None:
             print(f"DEFECIT: INITIUM post electionem adhuc repertum est ad y={menu_post}", file=sys.stderr)
-            return 14
+            return 16
 
         # TABULA initialiter x≈679 y=168. Focus bronzeus P16-V manet.
         focus_pixel = pixel(pix_post, w, 700, 168)
         if focus_pixel != bronzeum:
             print(f"DEFECIT: TABULA focus non accepit: {focus_pixel}", file=sys.stderr)
-            return 15
-
-        if pixel(pix_open, w, 24, programmata_y + 12) != nox:
-            print("DEFECIT: signum PROGRAMMATA in INITIUM deest", file=sys.stderr)
-            return 16
+            return 17
 
         mutata_post = differentiae(pix_open, pix_post)
-        print(f"INITIUM-VI: top={menu_top} cursor_init={init_pos} cursor_tessera={pos_initium} cursor_tabula={pos_tabula}")
-        print(f"INITIUM-VI: apertio_pixeli={mutata_open} clausura_focus_pixeli={mutata_post}")
-        print(f"INITIUM-VI: caput={pixel(pix_open,w,20,menu_top+10)} hover_tabula={pixel(pix_hover,w,300,tabula_scopus)} focus_tabula={focus_pixel}")
-        print("RECTE: P16-VI INITIUM nox-ebur-aes TABULA vere focalizat.")
+        print(f"INITIUM-VII: top={menu_top} cursor_init={init_pos} cursor_tessera={pos_initium} cursor_tabula={pos_tabula}")
+        print(f"INITIUM-VII: apertio_pixeli={mutata_open} clausura_focus_pixeli={mutata_post}")
+        print(f"INITIUM-VII: icona_programmata={prog_lumen}/{prog_cyan} icona_tabula={tab_clarum}/{tab_aqua}")
+        print(f"INITIUM-VII: caput={pixel(pix_open,w,20,menu_top+10)} hover_tabula={pixel(pix_hover,w,300,tabula_scopus)} focus_tabula={focus_pixel}")
+        print("RECTE: P16-VII INITIUM iconas rasteras pingit et TABULAM vere focalizat.")
         return 0
     finally:
         try:
