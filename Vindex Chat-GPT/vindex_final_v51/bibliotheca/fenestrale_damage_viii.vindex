@@ -1,0 +1,199 @@
+// Sylvia OS — Capacitas Graphica VIII: damnum / regiones invalidandae.
+// Status est ORDO DE NUMERUS: d[0]=numerus rectangulorum;
+// deinde quattuor numeri per rectangulum: x,y,w,h.
+// Caller capacitatem saltem 1 + 4*max_recta praebet.
+
+FUNCTIO DVIII_INIT REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    d[0]=0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_NUMERUS REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    REDDE d[0].
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_X REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    REDDE d[1+i*4].
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_Y REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    REDDE d[2+i*4].
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_W REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    REDDE d[3+i*4].
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_H REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    REDDE d[4+i*4].
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_PONE REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    d[1+i*4]=x.
+    d[2+i*4]=y.
+    d[3+i*4]=w.
+    d[4+i*4]=h.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_TANGUNT REDDENS NUMERUS.
+    ACCIPIT ax SICUT NUMERUS.
+    ACCIPIT ay SICUT NUMERUS.
+    ACCIPIT aw SICUT NUMERUS.
+    ACCIPIT ah SICUT NUMERUS.
+    ACCIPIT bx SICUT NUMERUS.
+    ACCIPIT by SICUT NUMERUS.
+    ACCIPIT bw SICUT NUMERUS.
+    ACCIPIT bh SICUT NUMERUS.
+    SI aw<=0 || ah<=0 || bw<=0 || bh<=0 TUNC REDDE 0. FIN-SI.
+    SI ax+aw<bx TUNC REDDE 0. FIN-SI.
+    SI bx+bw<ax TUNC REDDE 0. FIN-SI.
+    SI ay+ah<by TUNC REDDE 0. FIN-SI.
+    SI by+bh<ay TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_CONIUNGE_IN REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    DECLARA ax SICUT NUMERUS VALENS DVIII_X(d,i).
+    DECLARA ay SICUT NUMERUS VALENS DVIII_Y(d,i).
+    DECLARA aw SICUT NUMERUS VALENS DVIII_W(d,i).
+    DECLARA ah SICUT NUMERUS VALENS DVIII_H(d,i).
+    DECLARA x0 SICUT NUMERUS VALENS GVIII_MIN(ax,x).
+    DECLARA y0 SICUT NUMERUS VALENS GVIII_MIN(ay,y).
+    DECLARA x1 SICUT NUMERUS VALENS GVIII_MAX(ax+aw,x+w).
+    DECLARA y1 SICUT NUMERUS VALENS GVIII_MAX(ay+ah,y+h).
+    REDDE DVIII_PONE(d,i,x0,y0,x1-x0,y1-y0).
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_REMOVE REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS d[0].
+    SI i<0 || i>=n TUNC REDDE 0. FIN-SI.
+    DECLARA j SICUT NUMERUS VALENS i.
+    DUM j<n-1 PERFICE
+        DECLARA f SICUT NUMERUS VALENS DVIII_PONE(d,j,DVIII_X(d,j+1),DVIII_Y(d,j+1),DVIII_W(d,j+1),DVIII_H(d,j+1)).
+        j=j+1.
+    FIN-DUM.
+    d[0]=n-1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Si capacitas impletur, rectangula in unum bounding rect colliguntur.
+FUNCTIO DVIII_COLLAPSA REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    SI d[0]<=1 TUNC REDDE 1. FIN-SI.
+    DECLARA x0 SICUT NUMERUS VALENS DVIII_X(d,0).
+    DECLARA y0 SICUT NUMERUS VALENS DVIII_Y(d,0).
+    DECLARA x1 SICUT NUMERUS VALENS x0+DVIII_W(d,0).
+    DECLARA y1 SICUT NUMERUS VALENS y0+DVIII_H(d,0).
+    DECLARA i SICUT NUMERUS VALENS 1.
+    DUM i<d[0] PERFICE
+        x0=GVIII_MIN(x0,DVIII_X(d,i)).
+        y0=GVIII_MIN(y0,DVIII_Y(d,i)).
+        x1=GVIII_MAX(x1,DVIII_X(d,i)+DVIII_W(d,i)).
+        y1=GVIII_MAX(y1,DVIII_Y(d,i)+DVIII_H(d,i)).
+        i=i+1.
+    FIN-DUM.
+    d[0]=1.
+    REDDE DVIII_PONE(d,0,x0,y0,x1-x0,y1-y0).
+FIN-FUNCTIO.
+
+// Addit regionem post clipping ad framebuffer. Rectangula tangentia coalescuntur.
+FUNCTIO DVIII_ADDE REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    ACCIPIT max_recta SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT screen_w SICUT NUMERUS.
+    ACCIPIT screen_h SICUT NUMERUS.
+    SI max_recta<1 || w<=0 || h<=0 || screen_w<=0 || screen_h<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA r SICUT ORDO DE NUMERUS CAPACITAS 4.
+    SI GVIII_RECT_SECA(r,x,y,w,h,0,0,screen_w,screen_h)==0 TUNC REDDE 1. FIN-SI.
+    DECLARA nx SICUT NUMERUS VALENS r[0].
+    DECLARA ny SICUT NUMERUS VALENS r[1].
+    DECLARA nw SICUT NUMERUS VALENS r[2].
+    DECLARA nh SICUT NUMERUS VALENS r[3].
+
+    // Primo cum omnibus regionibus tangentibus coniunge; post unionem iteratur.
+    DECLARA mutatum SICUT NUMERUS VALENS 1.
+    DUM mutatum!=0 PERFICE
+        mutatum=0.
+        DECLARA i SICUT NUMERUS VALENS 0.
+        DUM i<d[0] PERFICE
+            DECLARA ax SICUT NUMERUS VALENS DVIII_X(d,i).
+            DECLARA ay SICUT NUMERUS VALENS DVIII_Y(d,i).
+            DECLARA aw SICUT NUMERUS VALENS DVIII_W(d,i).
+            DECLARA ah SICUT NUMERUS VALENS DVIII_H(d,i).
+            SI DVIII_TANGUNT(nx,ny,nw,nh,ax,ay,aw,ah)!=0 TUNC
+                DECLARA x0 SICUT NUMERUS VALENS GVIII_MIN(nx,ax).
+                DECLARA y0 SICUT NUMERUS VALENS GVIII_MIN(ny,ay).
+                DECLARA x1 SICUT NUMERUS VALENS GVIII_MAX(nx+nw,ax+aw).
+                DECLARA y1 SICUT NUMERUS VALENS GVIII_MAX(ny+nh,ay+ah).
+                nx=x0. ny=y0. nw=x1-x0. nh=y1-y0.
+                DECLARA rm SICUT NUMERUS VALENS DVIII_REMOVE(d,i).
+                mutatum=1.
+                i=d[0].
+            ALITER
+                i=i+1.
+            FIN-SI.
+        FIN-DUM.
+    FIN-DUM.
+
+    SI d[0]<max_recta TUNC
+        DECLARA f SICUT NUMERUS VALENS DVIII_PONE(d,d[0],nx,ny,nw,nh).
+        d[0]=d[0]+1.
+        REDDE 1.
+    FIN-SI.
+
+    // Saturatio: novam regionem adde deinde omnia in bounding rect coalesce.
+    DECLARA bx SICUT NUMERUS VALENS nx.
+    DECLARA by SICUT NUMERUS VALENS ny.
+    DECLARA bx1 SICUT NUMERUS VALENS nx+nw.
+    DECLARA by1 SICUT NUMERUS VALENS ny+nh.
+    DECLARA k SICUT NUMERUS VALENS 0.
+    DUM k<d[0] PERFICE
+        bx=GVIII_MIN(bx,DVIII_X(d,k)).
+        by=GVIII_MIN(by,DVIII_Y(d,k)).
+        bx1=GVIII_MAX(bx1,DVIII_X(d,k)+DVIII_W(d,k)).
+        by1=GVIII_MAX(by1,DVIII_Y(d,k)+DVIII_H(d,k)).
+        k=k+1.
+    FIN-DUM.
+    d[0]=1.
+    REDDE DVIII_PONE(d,0,bx,by,bx1-bx,by1-by).
+FIN-FUNCTIO.
+
+FUNCTIO DVIII_AREA REDDENS NUMERUS.
+    ACCIPIT d SICUT ORDO DE NUMERUS.
+    DECLARA area SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<d[0] PERFICE
+        area=area+DVIII_W(d,i)*DVIII_H(d,i).
+        i=i+1.
+    FIN-DUM.
+    REDDE area.
+FIN-FUNCTIO.
