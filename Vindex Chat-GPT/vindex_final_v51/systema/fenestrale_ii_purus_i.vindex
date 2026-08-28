@@ -1,4 +1,4 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-IX / P17-II / P19-II.
+// Sylvia OS — Fenestrale II Purus I, facies P16-XI / P17-II / P19-II.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
@@ -9,6 +9,10 @@ IMPORTA "bibliotheca/imago_raster_vii.vindex".
 IMPORTA "bibliotheca/imago_raster_partes_vii.vindex".
 IMPORTA "bibliotheca/raster_rle_vii.vindex".
 IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
+IMPORTA "bibliotheca/fons_ui_viii.vindex".
+IMPORTA "bibliotheca/materia_ui_viii.vindex".
 IMPORTA "bibliotheca/emblema_sylviae_vii.vindex".
 IMPORTA "bibliotheca/iconae_sylviae_vii.vindex".
 IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
@@ -30,6 +34,8 @@ IMPORTA "bibliotheca/fenestrale_chrome_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_shell_ix.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_bureau_xi.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_xi.vindex".
 
 // Rector PS/2 historice hanc functionem vocat. Fenestrale coordinatas suas
 // ex dx/dy crudis legit; hic adaptor tantum contractum rectoris implet.
@@ -44,7 +50,8 @@ FIN-FUNCTIO.
 // 11/12 murus x/y; 13 bullae; 14 fenestra tractata; 15/16 offset vel murus prior.
 // 27 margines resize; 28 murus relativus; 29 murus absolutus.
 // 34 coda eventuum; 35 eventa perdita; 36 clientes; 37 fenestrae;
-// 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG; 41 atlas iconarum SIMG.
+// 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG; 41 atlas iconarum SIMG;
+// 42 wallpaper cache; 43 materia 9-slice; 44 fons UI Graphica VIII.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
@@ -52,7 +59,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
     DECLARA utilis_h SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
     s[11]=w/2. s[12]=h/2. s[13]=0. s[14]=0. s[15]=0. s[16]=0. s[27]=0.
-    s[28]=0. s[29]=0. s[35]=0. s[38]=0. s[40]=0. s[41]=0.
+    s[28]=0. s[29]=0. s[35]=0. s[38]=0. s[40]=0. s[41]=0. s[42]=0. s[43]=0. s[44]=0.
     s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
     s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
     s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
@@ -63,6 +70,13 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA atlas SICUT TEXTUS VALENS ICVII_CREA().
     SI IR_VALIDUS(atlas)==0 TUNC REDDE 71. FIN-SI.
     s[41]=TEXTUS_SEDES(atlas).
+
+    // P16-XI II: asseta Graphica VIII semel creantur; redraw PS/2 ea tantum reutilizat.
+    s[42]=CXI_WALLPAPER_CREA(w,utilis_h). SI s[42]==0 TUNC REDDE 71. FIN-SI.
+    DECLARA materia_ui SICUT TEXTUS VALENS MUIVIII_CREA().
+    SI IR_VALIDUS(materia_ui)==0 TUNC REDDE 71. FIN-SI.
+    s[43]=TEXTUS_SEDES(materia_ui).
+    s[44]=FUIVIII_FONS_CREA(). SI s[44]==0 TUNC REDDE 71. FIN-SI.
 
     DECLARA superficies_p SICUT NUMERUS VALENS FS_CREA(496,260).
     DECLARA superficies_t SICUT NUMERUS VALENS FS_CREA(396,226).
@@ -123,7 +137,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     // OFFICINA manet utilis etiam si backend non adest aut lectio errat.
     DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
     ro=OP_RENDE(superficies_o,status_o).
-    DECLARA f SICUT NUMERUS VALENS IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+    DECLARA f SICUT NUMERUS VALENS IVXI_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
         DECLARA redde SICUT NUMERUS VALENS 0.
@@ -144,7 +158,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         DECLARA acta SICUT NUMERUS VALENS CI_EVENTA_AGE(s[36],s[37],s[34]).
         SI acta>0 TUNC redde=1. FIN-SI.
         SI redde==1 TUNC
-            f=IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+            f=IVXI_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
         FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
     FIN-DUM.
