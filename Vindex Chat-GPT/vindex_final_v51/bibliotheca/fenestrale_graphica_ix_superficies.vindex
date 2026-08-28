@@ -26,6 +26,7 @@ FUNCTIO GIX_RGBA_REGION_S REDDENS NUMERUS.
     SI ag==0 TUNC REDDE 1. FIN-SI.
     DECLARA surf_w SICUT NUMERUS VALENS CONTENTUM(superficies).
     DECLARA surf_h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA forma SICUT NUMERUS VALENS CONTENTUM(50333744).
     DECLARA py SICUT NUMERUS VALENS 0.
     DUM py<dh PERFICE
         DECLARA yy SICUT NUMERUS VALENS dy+py.
@@ -41,7 +42,11 @@ FUNCTIO GIX_RGBA_REGION_S REDDENS NUMERUS.
                     DECLARA q SICUT NUMERUS VALENS GIX_RGBA_LIN_BASIS(basis,iw,ih,ux,uy).
                     DECLARA a SICUT NUMERUS VALENS ((q>>24)&255)*ag/255.
                     SI a>0 TUNC
-                        DECLARA color SICUT NUMERUS VALENS FV_COLOR(q&255,(q>>8)&255,(q>>16)&255).
+                        DECLARA qr SICUT NUMERUS VALENS q&255.
+                        DECLARA qg SICUT NUMERUS VALENS (q>>8)&255.
+                        DECLARA qb SICUT NUMERUS VALENS (q>>16)&255.
+                        DECLARA color SICUT NUMERUS VALENS qr+qg*256+qb*65536.
+                        SI forma!=0 TUNC color=qb+qg*256+qr*65536. FIN-SI.
                         DECLARA f SICUT NUMERUS VALENS GSVII_PIXEL_ALPHA(superficies,xx,yy,color,a).
                     FIN-SI.
                 FIN-SI.
