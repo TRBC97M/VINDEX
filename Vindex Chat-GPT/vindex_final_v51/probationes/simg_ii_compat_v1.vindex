@@ -1,3 +1,4 @@
+IMPORTA "bibliotheca/simg_ii.vindex".
 IMPORTA "bibliotheca/simg_ii_compat_v1.vindex".
 
 FUNCTIO P_V1_CREA REDDENS TEXTUS.
