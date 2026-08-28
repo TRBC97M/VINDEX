@@ -1,5 +1,5 @@
 // Sylvia OS — Graphica IX: rastera premium in superficies privatas.
-// GIX_RGBA_LINEAR, GSVII_* et AII_* ante hoc folium importentur.
+// GIX_RGBA_LIN_BASIS, GSVII_* et AII_* ante hoc folium importentur.
 
 FUNCTIO GIX_RGBA_REGION_S REDDENS NUMERUS.
     ACCIPIT superficies SICUT NUMERUS.
@@ -9,7 +9,8 @@ FUNCTIO GIX_RGBA_REGION_S REDDENS NUMERUS.
     ACCIPIT fons SICUT NUMERUS.
     ACCIPIT destinatio SICUT NUMERUS.
     ACCIPIT alpha_globalis SICUT NUMERUS.
-    SI superficies==0 || SII_CORPUS(rgba)==0 || iw<=0 || ih<=0 || fons==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS SII_CORPUS(rgba).
+    SI superficies==0 || basis==0 || iw<=0 || ih<=0 || fons==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
     SI SII_LONGITUDO(rgba)<iw*ih*4 TUNC REDDE 0. FIN-SI.
     DECLARA sx SICUT NUMERUS VALENS GVIII_RECT_X(fons).
     DECLARA sy SICUT NUMERUS VALENS GVIII_RECT_Y(fons).
@@ -37,7 +38,7 @@ FUNCTIO GIX_RGBA_REGION_S REDDENS NUMERUS.
                 SI xx>=0 && xx<surf_w TUNC
                     DECLARA ux SICUT NUMERUS VALENS sx*65536.
                     SI dw>1 && sw>1 TUNC ux=ux+px*(sw-1)*65536/(dw-1). FIN-SI.
-                    DECLARA q SICUT NUMERUS VALENS GIX_RGBA_LINEAR(rgba,iw,ih,ux,uy).
+                    DECLARA q SICUT NUMERUS VALENS GIX_RGBA_LIN_BASIS(basis,iw,ih,ux,uy).
                     DECLARA a SICUT NUMERUS VALENS ((q>>24)&255)*ag/255.
                     SI a>0 TUNC
                         DECLARA color SICUT NUMERUS VALENS FV_COLOR(q&255,(q>>8)&255,(q>>16)&255).
