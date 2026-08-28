@@ -1,0 +1,52 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_damage_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI GVIII_MIN(4,9)!=4 TUNC REDDE 1. FIN-SI.
+    SI GVIII_MAX(4,9)!=9 TUNC REDDE 2. FIN-SI.
+    SI GVIII_CLAMPA(-3,0,10)!=0 TUNC REDDE 3. FIN-SI.
+    SI GVIII_CLAMPA(14,0,10)!=10 TUNC REDDE 4. FIN-SI.
+    SI GVIII_CLAMPA(7,0,10)!=7 TUNC REDDE 5. FIN-SI.
+
+    DECLARA r SICUT ORDO DE NUMERUS CAPACITAS 4.
+    SI GVIII_RECT_SECA(r,-10,5,30,20,0,0,100,100)!=1 TUNC REDDE 6. FIN-SI.
+    SI r[0]!=0 || r[1]!=5 || r[2]!=20 || r[3]!=20 TUNC REDDE 7. FIN-SI.
+    SI GVIII_RECT_SECA(r,120,120,5,5,0,0,100,100)!=0 TUNC REDDE 8. FIN-SI.
+    SI GVIII_COORD_SCALA(5,10,20,40)!=40 TUNC REDDE 9. FIN-SI.
+    SI GVIII_COVER_ROTUNDUM(0,0,8)!=0 TUNC REDDE 10. FIN-SI.
+    SI GVIII_COVER_ROTUNDUM(7,7,8)!=255 TUNC REDDE 11. FIN-SI.
+
+    DECLARA d SICUT ORDO DE NUMERUS CAPACITAS 17.
+    SI DVIII_INIT(d)!=1 || DVIII_NUMERUS(d)!=0 TUNC REDDE 12. FIN-SI.
+    SI DVIII_ADDE(d,4,10,10,20,20,300,200)!=1 TUNC REDDE 13. FIN-SI.
+    SI DVIII_NUMERUS(d)!=1 TUNC REDDE 14. FIN-SI.
+    // Intersectio coalescit.
+    SI DVIII_ADDE(d,4,25,25,20,20,300,200)!=1 TUNC REDDE 15. FIN-SI.
+    SI DVIII_NUMERUS(d)!=1 TUNC REDDE 16. FIN-SI.
+    SI DVIII_X(d,0)!=10 || DVIII_Y(d,0)!=10 || DVIII_W(d,0)!=35 || DVIII_H(d,0)!=35 TUNC REDDE 17. FIN-SI.
+    // Regio separata manet separata.
+    SI DVIII_ADDE(d,4,100,100,10,10,300,200)!=1 TUNC REDDE 18. FIN-SI.
+    SI DVIII_NUMERUS(d)!=2 TUNC REDDE 19. FIN-SI.
+    // Clipping ad limen framebuffer.
+    SI DVIII_ADDE(d,4,-10,-10,15,15,300,200)!=1 TUNC REDDE 20. FIN-SI.
+    SI DVIII_NUMERUS(d)!=3 TUNC REDDE 21. FIN-SI.
+    SI DVIII_X(d,2)!=0 || DVIII_Y(d,2)!=0 || DVIII_W(d,2)!=5 || DVIII_H(d,2)!=5 TUNC REDDE 22. FIN-SI.
+    SI DVIII_AREA(d)!=(35*35+10*10+5*5) TUNC REDDE 23. FIN-SI.
+    // Capacitas saturata: fallback tutus in bounding rect unum.
+    SI DVIII_ADDE(d,3,200,150,20,20,300,200)!=1 TUNC REDDE 24. FIN-SI.
+    SI DVIII_NUMERUS(d)!=1 TUNC REDDE 25. FIN-SI.
+    SI DVIII_X(d,0)!=0 || DVIII_Y(d,0)!=0 TUNC REDDE 26. FIN-SI.
+    SI DVIII_X(d,0)+DVIII_W(d,0)<220 || DVIII_Y(d,0)+DVIII_H(d,0)<170 TUNC REDDE 27. FIN-SI.
+
+    SI TVIII_GLYPHUM_INDEX(65,32,96)!=33 TUNC REDDE 28. FIN-SI.
+    SI TVIII_GLYPHUM_INDEX(31,32,96)!=-1 TUNC REDDE 29. FIN-SI.
+    SI TVIII_GLYPHUM_INDEX(128,32,96)!=-1 TUNC REDDE 30. FIN-SI.
+    SI TVIII_TEXTUM_MENSURA("ABCD",10,2)!=46 TUNC REDDE 31. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
