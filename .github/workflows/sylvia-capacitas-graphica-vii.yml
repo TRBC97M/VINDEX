@@ -7,14 +7,18 @@ on:
       - chatgpt/capacitas-graphica-sylviae-vii
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
 
 permissions:
@@ -22,7 +26,7 @@ permissions:
 
 jobs:
   graphica-vii:
-    name: Gradientia et alpha software
+    name: Gradientia, alpha et imagines rasterae
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -41,3 +45,13 @@ jobs:
           chmod +x /tmp/capacitas-graphica-vii
           /tmp/capacitas-graphica-vii
           printf '%s\n' 'RECTE: P16-VII interpolatio, alpha et contractus gradientiae probati sunt.'
+
+      - name: Formatum SIMG compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/imago_raster_vii.vindex /tmp/imago-raster-vii
+          chmod +x /tmp/imago-raster-vii
+          /tmp/imago-raster-vii
+          printf '%s\n' 'RECTE: P16-VII SIMG v1 RGBA8888 validatur et pixela leguntur.'
