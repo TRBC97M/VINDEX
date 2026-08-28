@@ -1,0 +1,600 @@
+// Sylvia OS — SIMG II: formatum graphicum nativum, versionatum et backend-neutrum.
+//
+// Header minimum LXXX octeta, omnia integra u32 sunt little-endian nisi aliter dicitur:
+//  0..3   'SIMG'
+//  4      versio = II
+//  5      formatum pixelorum = I (RGBA8888)
+//  6      compressio = 0 RAW, 1 RLE32
+//  7      vexilla generalia
+//  8..11  mensura headeris
+// 12..15  latitudo
+// 16..19  altitudo
+// 20..23  stride post expansionem
+// 24..27  offset payload
+// 28..31  mensura payload
+// 32..35  mensura post expansionem
+// 36..39  genus asseti: 0 genericum, 1 wallpaper, 2 icona, 3 novem-partes,
+//                         4 cursor, 5 atlas fontis, 6 testa/shell
+// 40..43  scala millesimalis: 1000 = 1x, 1500 = 1.5x, 2000 = 2x
+// 44..47  vexilla metadatae: bit 0 = novem-partes, bit 1 = cursor hotspot
+// 48..51  margo sinister novem-partes
+// 52..55  margo superior
+// 56..59  margo dexter
+// 60..63  margo inferior
+// 64..67  hotspot x
+// 68..71  hotspot y
+// 72..75  Adler-32 payload
+// 76..79  reservata
+// deinde payload.
+//
+// RLE32: cursus est V octeta: [mensura u8 1..255][R][G][B][A].
+// Intentio: PNG/SVG sunt fontes artis; SIMG II est forma distributionis/runtime Sylviae.
+
+FUNCTIO SII_TEXTUS_SEDES REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    REDDE textus.
+FIN-FUNCTIO.
+
+FUNCTIO SII_LONGITUDO REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA d SICUT NUMERUS VALENS SII_TEXTUS_SEDES(textus).
+    SI d==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(d).
+FIN-FUNCTIO.
+
+FUNCTIO SII_CORPUS REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA d SICUT NUMERUS VALENS SII_TEXTUS_SEDES(textus).
+    SI d==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE d+16.
+FIN-FUNCTIO.
+
+FUNCTIO SII_U32_LE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT offset SICUT NUMERUS.
+    REDDE OCTETUS_AB(basis+offset)+OCTETUS_AB(basis+offset+1)*256+OCTETUS_AB(basis+offset+2)*65536+OCTETUS_AB(basis+offset+3)*16777216.
+FIN-FUNCTIO.
+
+FUNCTIO SII_U32_PONE REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(locus,valor&255).
+    SCRIBE_OCTETUM_AB(locus+1,(valor>>8)&255).
+    SCRIBE_OCTETUM_AB(locus+2,(valor>>16)&255).
+    SCRIBE_OCTETUM_AB(locus+3,(valor>>24)&255).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_TEXTUS_CREA REDDENS TEXTUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI mensura<0 || mensura>268435456 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS RESERVA_OCTETA(17+mensura).
+    SI d<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(d)=mensura.
+    CONTENTUM(d+8)=mensura.
+    SCRIBE_OCTETUM_AB(d+16+mensura,0).
+    REDDE d.
+FIN-FUNCTIO.
+
+FUNCTIO SII_ADLER32 REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI basis<=0 || mensura<0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA a SICUT NUMERUS VALENS 1.
+    DECLARA b SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<mensura PERFICE
+        a=(a+OCTETUS_AB(basis+i))%65521.
+        b=(b+a)%65521.
+        i=i+1.
+    FIN-DUM.
+    REDDE (b<<16)+a.
+FIN-FUNCTIO.
+
+FUNCTIO SII_HEADER_VALIDUS REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    DECLARA d SICUT NUMERUS VALENS SII_TEXTUS_SEDES(imago).
+    SI d==0 || CONTENTUM(d)<80 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS d+16.
+    SI OCTETUS_AB(b)!=83 || OCTETUS_AB(b+1)!=73 || OCTETUS_AB(b+2)!=77 || OCTETUS_AB(b+3)!=71 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI OCTETUS_AB(b+4)!=2 || OCTETUS_AB(b+5)!=1 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA comp SICUT NUMERUS VALENS OCTETUS_AB(b+6).
+    SI comp!=0 && comp!=1 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA hs SICUT NUMERUS VALENS SII_U32_LE(b,8).
+    DECLARA w SICUT NUMERUS VALENS SII_U32_LE(b,12).
+    DECLARA h SICUT NUMERUS VALENS SII_U32_LE(b,16).
+    DECLARA stride SICUT NUMERUS VALENS SII_U32_LE(b,20).
+    DECLARA po SICUT NUMERUS VALENS SII_U32_LE(b,24).
+    DECLARA pl SICUT NUMERUS VALENS SII_U32_LE(b,28).
+    DECLARA dl SICUT NUMERUS VALENS SII_U32_LE(b,32).
+    DECLARA scala SICUT NUMERUS VALENS SII_U32_LE(b,40).
+    SI hs<80 || hs>CONTENTUM(d) TUNC
+        REDDE 0.
+    FIN-SI.
+    SI w<=0 || h<=0 || w>16384 || h>16384 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI stride!=w*4 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI dl!=stride*h || dl<=0 || dl>268435456 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI po<hs || pl<=0 || po+pl>CONTENTUM(d) TUNC
+        REDDE 0.
+    FIN-SI.
+    SI scala<250 || scala>8000 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI comp==0 && pl!=dl TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_RLE_VALIDUS REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_HEADER_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    SI OCTETUS_AB(b+6)!=1 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA po SICUT NUMERUS VALENS SII_U32_LE(b,24).
+    DECLARA pl SICUT NUMERUS VALENS SII_U32_LE(b,28).
+    DECLARA totalis SICUT NUMERUS VALENS SII_U32_LE(b,12)*SII_U32_LE(b,16).
+    DECLARA rp SICUT NUMERUS VALENS 0.
+    DECLARA pix SICUT NUMERUS VALENS 0.
+    DUM rp<pl PERFICE
+        SI rp+5>pl TUNC
+            REDDE 0.
+        FIN-SI.
+        DECLARA cursus SICUT NUMERUS VALENS OCTETUS_AB(b+po+rp).
+        SI cursus<=0 TUNC
+            REDDE 0.
+        FIN-SI.
+        pix=pix+cursus.
+        SI pix>totalis TUNC
+            REDDE 0.
+        FIN-SI.
+        rp=rp+5.
+    FIN-DUM.
+    SI rp!=pl || pix!=totalis TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_META_VALIDUS REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_HEADER_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    DECLARA vex SICUT NUMERUS VALENS SII_U32_LE(b,44).
+    DECLARA w SICUT NUMERUS VALENS SII_U32_LE(b,12).
+    DECLARA h SICUT NUMERUS VALENS SII_U32_LE(b,16).
+    SI (vex&1)!=0 TUNC
+        DECLARA l SICUT NUMERUS VALENS SII_U32_LE(b,48).
+        DECLARA t SICUT NUMERUS VALENS SII_U32_LE(b,52).
+        DECLARA r SICUT NUMERUS VALENS SII_U32_LE(b,56).
+        DECLARA q SICUT NUMERUS VALENS SII_U32_LE(b,60).
+        SI l<0 || t<0 || r<0 || q<0 || l+r>w || t+q>h TUNC
+            REDDE 0.
+        FIN-SI.
+    FIN-SI.
+    SI (vex&2)!=0 TUNC
+        DECLARA x SICUT NUMERUS VALENS SII_U32_LE(b,64).
+        DECLARA y SICUT NUMERUS VALENS SII_U32_LE(b,68).
+        SI x<0 || y<0 || x>=w || y>=h TUNC
+            REDDE 0.
+        FIN-SI.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_VALIDUS REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_HEADER_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    DECLARA comp SICUT NUMERUS VALENS OCTETUS_AB(b+6).
+    SI comp==1 && SII_RLE_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI SII_META_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA po SICUT NUMERUS VALENS SII_U32_LE(b,24).
+    DECLARA pl SICUT NUMERUS VALENS SII_U32_LE(b,28).
+    DECLARA scriptum SICUT NUMERUS VALENS SII_U32_LE(b,72).
+    DECLARA visum SICUT NUMERUS VALENS SII_ADLER32(b+po,pl).
+    SI scriptum!=visum TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_LATITUDO REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),12).
+FIN-FUNCTIO.
+
+FUNCTIO SII_ALTITUDO REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),16).
+FIN-FUNCTIO.
+
+FUNCTIO SII_STRIDE REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),20).
+FIN-FUNCTIO.
+
+FUNCTIO SII_COMPRESSIO REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE -1.
+    FIN-SI.
+    REDDE OCTETUS_AB(SII_CORPUS(imago)+6).
+FIN-FUNCTIO.
+
+FUNCTIO SII_GENUS REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE -1.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),36).
+FIN-FUNCTIO.
+
+FUNCTIO SII_SCALA REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),40).
+FIN-FUNCTIO.
+
+FUNCTIO SII_META_VEXILLA REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),44).
+FIN-FUNCTIO.
+
+FUNCTIO SII_MARGO REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    ACCIPIT pars SICUT NUMERUS.
+    SI SII_VALIDUS(imago)==0 || pars<0 || pars>3 TUNC
+        REDDE -1.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),48+pars*4).
+FIN-FUNCTIO.
+
+FUNCTIO SII_HOTSPOT_X REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE -1.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),64).
+FIN-FUNCTIO.
+
+FUNCTIO SII_HOTSPOT_Y REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE -1.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),68).
+FIN-FUNCTIO.
+
+FUNCTIO SII_PAYLOAD_MENSURA REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),28).
+FIN-FUNCTIO.
+
+FUNCTIO SII_CHECKSUM REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_HEADER_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE SII_U32_LE(SII_CORPUS(imago),72).
+FIN-FUNCTIO.
+
+FUNCTIO SII_PIXEL_RGBA REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE -1.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    DECLARA w SICUT NUMERUS VALENS SII_U32_LE(b,12).
+    DECLARA h SICUT NUMERUS VALENS SII_U32_LE(b,16).
+    SI x<0 || y<0 || x>=w || y>=h TUNC
+        REDDE -1.
+    FIN-SI.
+    DECLARA po SICUT NUMERUS VALENS SII_U32_LE(b,24).
+    DECLARA comp SICUT NUMERUS VALENS OCTETUS_AB(b+6).
+    DECLARA index SICUT NUMERUS VALENS y*w+x.
+    SI comp==0 TUNC
+        REDDE SII_U32_LE(b+po,index*4).
+    FIN-SI.
+    DECLARA pl SICUT NUMERUS VALENS SII_U32_LE(b,28).
+    DECLARA rp SICUT NUMERUS VALENS 0.
+    DECLARA initium SICUT NUMERUS VALENS 0.
+    DUM rp<pl PERFICE
+        DECLARA cursus SICUT NUMERUS VALENS OCTETUS_AB(b+po+rp).
+        SI index>=initium && index<initium+cursus TUNC
+            REDDE SII_U32_LE(b+po+rp+1,0).
+        FIN-SI.
+        initium=initium+cursus.
+        rp=rp+5.
+    FIN-DUM.
+    REDDE -1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_EXPANDE_RGBA REDDENS TEXTUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    DECLARA dl SICUT NUMERUS VALENS SII_U32_LE(b,32).
+    DECLARA out_t SICUT TEXTUS VALENS SII_TEXTUS_CREA(dl).
+    DECLARA out SICUT NUMERUS VALENS SII_CORPUS(out_t).
+    SI out==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA po SICUT NUMERUS VALENS SII_U32_LE(b,24).
+    DECLARA comp SICUT NUMERUS VALENS OCTETUS_AB(b+6).
+    SI comp==0 TUNC
+        DECLARA i SICUT NUMERUS VALENS 0.
+        DUM i<dl PERFICE
+            SCRIBE_OCTETUM_AB(out+i,OCTETUS_AB(b+po+i)).
+            i=i+1.
+        FIN-DUM.
+        REDDE out_t.
+    FIN-SI.
+    DECLARA pl SICUT NUMERUS VALENS SII_U32_LE(b,28).
+    DECLARA rp SICUT NUMERUS VALENS 0.
+    DECLARA pix SICUT NUMERUS VALENS 0.
+    DUM rp<pl PERFICE
+        DECLARA cursus SICUT NUMERUS VALENS OCTETUS_AB(b+po+rp).
+        DECLARA rgba SICUT NUMERUS VALENS SII_U32_LE(b+po+rp+1,0).
+        DECLARA j SICUT NUMERUS VALENS 0.
+        DUM j<cursus PERFICE
+            DECLARA locus SICUT NUMERUS VALENS out+pix*4.
+            SCRIBE_OCTETUM_AB(locus,rgba&255).
+            SCRIBE_OCTETUM_AB(locus+1,(rgba>>8)&255).
+            SCRIBE_OCTETUM_AB(locus+2,(rgba>>16)&255).
+            SCRIBE_OCTETUM_AB(locus+3,(rgba>>24)&255).
+            pix=pix+1.
+            j=j+1.
+        FIN-DUM.
+        rp=rp+5.
+    FIN-DUM.
+    REDDE out_t.
+FIN-FUNCTIO.
+
+FUNCTIO SII_CURSUS_NUMERA REDDENS NUMERUS.
+    ACCIPIT pixela SICUT TEXTUS.
+    ACCIPIT totalis SICUT NUMERUS.
+    DECLARA pb SICUT NUMERUS VALENS SII_CORPUS(pixela).
+    SI pb==0 || totalis<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS 0.
+    DECLARA cursus_num SICUT NUMERUS VALENS 0.
+    DUM p<totalis PERFICE
+        DECLARA rgba SICUT NUMERUS VALENS SII_U32_LE(pb,p*4).
+        DECLARA cursus SICUT NUMERUS VALENS 1.
+        DECLARA perge SICUT NUMERUS VALENS 1.
+        DUM perge==1 && p+cursus<totalis && cursus<255 PERFICE
+            DECLARA sequens SICUT NUMERUS VALENS SII_U32_LE(pb,(p+cursus)*4).
+            SI sequens==rgba TUNC
+                cursus=cursus+1.
+            ALITER
+                perge=0.
+            FIN-SI.
+        FIN-DUM.
+        cursus_num=cursus_num+1.
+        p=p+cursus.
+    FIN-DUM.
+    REDDE cursus_num.
+FIN-FUNCTIO.
+
+FUNCTIO SII_HEADER_SCRIBE REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT comp SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    ACCIPIT pl SICUT NUMERUS.
+    SI b<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    SCRIBE_OCTETUM_AB(b,83).
+    SCRIBE_OCTETUM_AB(b+1,73).
+    SCRIBE_OCTETUM_AB(b+2,77).
+    SCRIBE_OCTETUM_AB(b+3,71).
+    SCRIBE_OCTETUM_AB(b+4,2).
+    SCRIBE_OCTETUM_AB(b+5,1).
+    SCRIBE_OCTETUM_AB(b+6,comp).
+    SCRIBE_OCTETUM_AB(b+7,0).
+    DECLARA z SICUT NUMERUS VALENS SII_U32_PONE(b+8,80).
+    z=SII_U32_PONE(b+12,w).
+    z=SII_U32_PONE(b+16,h).
+    z=SII_U32_PONE(b+20,w*4).
+    z=SII_U32_PONE(b+24,80).
+    z=SII_U32_PONE(b+28,pl).
+    z=SII_U32_PONE(b+32,w*h*4).
+    z=SII_U32_PONE(b+36,genus).
+    z=SII_U32_PONE(b+40,scala).
+    z=SII_U32_PONE(b+44,0).
+    z=SII_U32_PONE(b+48,0).
+    z=SII_U32_PONE(b+52,0).
+    z=SII_U32_PONE(b+56,0).
+    z=SII_U32_PONE(b+60,0).
+    z=SII_U32_PONE(b+64,0).
+    z=SII_U32_PONE(b+68,0).
+    z=SII_U32_PONE(b+72,0).
+    z=SII_U32_PONE(b+76,0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO SII_CREA_RGBA REDDENS TEXTUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT pixela SICUT TEXTUS.
+    ACCIPIT compressio SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    SI latitudo<=0 || altitudo<=0 || latitudo>16384 || altitudo>16384 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI compressio!=0 && compressio!=1 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI genus<0 || genus>255 || scala<250 || scala>8000 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA dl SICUT NUMERUS VALENS latitudo*altitudo*4.
+    SI dl<=0 || dl>268435456 || SII_LONGITUDO(pixela)!=dl TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA totalis SICUT NUMERUS VALENS latitudo*altitudo.
+    DECLARA pl SICUT NUMERUS VALENS dl.
+    SI compressio==1 TUNC
+        DECLARA cursus_num SICUT NUMERUS VALENS SII_CURSUS_NUMERA(pixela,totalis).
+        SI cursus_num<=0 TUNC
+            REDDE 0.
+        FIN-SI.
+        pl=cursus_num*5.
+    FIN-SI.
+    DECLARA imago SICUT TEXTUS VALENS SII_TEXTUS_CREA(80+pl).
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    SI b==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS SII_HEADER_SCRIBE(b,latitudo,altitudo,compressio,genus,scala,pl).
+    DECLARA pb SICUT NUMERUS VALENS SII_CORPUS(pixela).
+    SI compressio==0 TUNC
+        DECLARA i SICUT NUMERUS VALENS 0.
+        DUM i<dl PERFICE
+            SCRIBE_OCTETUM_AB(b+80+i,OCTETUS_AB(pb+i)).
+            i=i+1.
+        FIN-DUM.
+    ALITER
+        DECLARA p SICUT NUMERUS VALENS 0.
+        DECLARA rp SICUT NUMERUS VALENS 0.
+        DUM p<totalis PERFICE
+            DECLARA rgba SICUT NUMERUS VALENS SII_U32_LE(pb,p*4).
+            DECLARA cursus SICUT NUMERUS VALENS 1.
+            DECLARA perge SICUT NUMERUS VALENS 1.
+            DUM perge==1 && p+cursus<totalis && cursus<255 PERFICE
+                DECLARA sequens SICUT NUMERUS VALENS SII_U32_LE(pb,(p+cursus)*4).
+                SI sequens==rgba TUNC
+                    cursus=cursus+1.
+                ALITER
+                    perge=0.
+                FIN-SI.
+            FIN-DUM.
+            SCRIBE_OCTETUM_AB(b+80+rp,cursus).
+            z=SII_U32_PONE(b+80+rp+1,rgba).
+            rp=rp+5.
+            p=p+cursus.
+        FIN-DUM.
+        SI rp!=pl TUNC
+            REDDE 0.
+        FIN-SI.
+    FIN-SI.
+    DECLARA checksum SICUT NUMERUS VALENS SII_ADLER32(b+80,pl).
+    z=SII_U32_PONE(b+72,checksum).
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE imago.
+FIN-FUNCTIO.
+
+FUNCTIO SII_META_NOVEM REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    ACCIPIT sinister SICUT NUMERUS.
+    ACCIPIT superior SICUT NUMERUS.
+    ACCIPIT dexter SICUT NUMERUS.
+    ACCIPIT inferior SICUT NUMERUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    DECLARA w SICUT NUMERUS VALENS SII_U32_LE(b,12).
+    DECLARA h SICUT NUMERUS VALENS SII_U32_LE(b,16).
+    SI sinister<0 || superior<0 || dexter<0 || inferior<0 || sinister+dexter>w || superior+inferior>h TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA vex SICUT NUMERUS VALENS SII_U32_LE(b,44).
+    SI (vex&1)==0 TUNC
+        vex=vex+1.
+    FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS SII_U32_PONE(b+44,vex).
+    z=SII_U32_PONE(b+48,sinister).
+    z=SII_U32_PONE(b+52,superior).
+    z=SII_U32_PONE(b+56,dexter).
+    z=SII_U32_PONE(b+60,inferior).
+    REDDE SII_META_VALIDUS(imago).
+FIN-FUNCTIO.
+
+FUNCTIO SII_META_CURSOR REDDENS NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(imago).
+    DECLARA w SICUT NUMERUS VALENS SII_U32_LE(b,12).
+    DECLARA h SICUT NUMERUS VALENS SII_U32_LE(b,16).
+    SI x<0 || y<0 || x>=w || y>=h TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA vex SICUT NUMERUS VALENS SII_U32_LE(b,44).
+    SI (vex&2)==0 TUNC
+        vex=vex+2.
+    FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS SII_U32_PONE(b+44,vex).
+    z=SII_U32_PONE(b+64,x).
+    z=SII_U32_PONE(b+68,y).
+    REDDE SII_META_VALIDUS(imago).
+FIN-FUNCTIO.
