@@ -1,0 +1,43 @@
+name: Sylvia OS — Capacitas Graphica VII
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - chatgpt/capacitas-graphica-sylviae-vii
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
+      - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
+      - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  graphica-vii:
+    name: Gradientia et alpha software
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Primitiveas graphicas compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_vii.vindex /tmp/capacitas-graphica-vii
+          chmod +x /tmp/capacitas-graphica-vii
+          /tmp/capacitas-graphica-vii
+          printf '%s\n' 'RECTE: P16-VII interpolatio, alpha et contractus gradientiae probati sunt.'
