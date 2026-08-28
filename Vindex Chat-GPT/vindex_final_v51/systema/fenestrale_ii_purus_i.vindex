@@ -4,6 +4,7 @@
 IMPORTA "systema/rectores/murus_ps2.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
 IMPORTA "bibliotheca/textus.vindex".
 IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
 IMPORTA "bibliotheca/programmata_clientis_e.vindex".
