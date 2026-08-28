@@ -1,106 +1,110 @@
 // Sylvia OS — Capacitas Graphica VIII / Fundamentum JL-UX.
-// Folium bibliothecae: FV_*, FS_*, GVII_* et IR_* ante hoc importentur.
-// Propositum: clipping, formas rotundas anti-aliased, scaling raster/superficierum,
-// interpolationem bilinearem et compositionem novem partium sine dialecto aliena.
+// ABI VINDEX hodierna usque ad VII argumenta recte transmittit.
+// Ideo recta et margines in NUMERUS LXIV-bit condensantur.
+// FV_*, FS_*, GVII_* et IR_* ante hoc importentur.
 
 FUNCTIO GVIII_MIN REDDENS NUMERUS.
-    ACCIPIT a SICUT NUMERUS.
-    ACCIPIT b SICUT NUMERUS.
-    SI a<b TUNC REDDE a. FIN-SI.
-    REDDE b.
+    ACCIPIT a SICUT NUMERUS. ACCIPIT b SICUT NUMERUS.
+    SI a<b TUNC REDDE a. FIN-SI. REDDE b.
 FIN-FUNCTIO.
 
 FUNCTIO GVIII_MAX REDDENS NUMERUS.
-    ACCIPIT a SICUT NUMERUS.
-    ACCIPIT b SICUT NUMERUS.
-    SI a>b TUNC REDDE a. FIN-SI.
-    REDDE b.
+    ACCIPIT a SICUT NUMERUS. ACCIPIT b SICUT NUMERUS.
+    SI a>b TUNC REDDE a. FIN-SI. REDDE b.
 FIN-FUNCTIO.
 
 FUNCTIO GVIII_CLAMPA REDDENS NUMERUS.
-    ACCIPIT v SICUT NUMERUS.
-    ACCIPIT minimum SICUT NUMERUS.
-    ACCIPIT maximum SICUT NUMERUS.
+    ACCIPIT v SICUT NUMERUS. ACCIPIT minimum SICUT NUMERUS. ACCIPIT maximum SICUT NUMERUS.
     SI v<minimum TUNC REDDE minimum. FIN-SI.
     SI v>maximum TUNC REDDE maximum. FIN-SI.
     REDDE v.
 FIN-FUNCTIO.
 
-// Scribit x,y,w,h sectae in r[0..3]. Reddit 1 si area manet.
-FUNCTIO GVIII_RECT_SECA REDDENS NUMERUS.
-    ACCIPIT r SICUT ORDO DE NUMERUS.
-    ACCIPIT x SICUT NUMERUS.
-    ACCIPIT y SICUT NUMERUS.
-    ACCIPIT w SICUT NUMERUS.
-    ACCIPIT h SICUT NUMERUS.
-    ACCIPIT cx SICUT NUMERUS.
-    ACCIPIT cy SICUT NUMERUS.
-    ACCIPIT cw SICUT NUMERUS.
-    ACCIPIT ch SICUT NUMERUS.
-    SI w<=0 || h<=0 || cw<=0 || ch<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA x0 SICUT NUMERUS VALENS GVIII_MAX(x,cx).
-    DECLARA y0 SICUT NUMERUS VALENS GVIII_MAX(y,cy).
-    DECLARA x1 SICUT NUMERUS VALENS GVIII_MIN(x+w,cx+cw).
-    DECLARA y1 SICUT NUMERUS VALENS GVIII_MIN(y+h,cy+ch).
-    SI x1<=x0 || y1<=y0 TUNC REDDE 0. FIN-SI.
-    r[0]=x0. r[1]=y0. r[2]=x1-x0. r[3]=y1-y0.
-    REDDE 1.
+// Rectum compactum: x,y signata XVI-bit; w,h positiva XVI-bit.
+FUNCTIO GVIII_RECT_CREA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS. ACCIPIT y SICUT NUMERUS. ACCIPIT w SICUT NUMERUS. ACCIPIT h SICUT NUMERUS.
+    SI x<0-32768 || x>32767 || y<0-32768 || y>32767 || w<=0 || h<=0 || w>65535 || h>65535 TUNC REDDE 0. FIN-SI.
+    REDDE (x&65535)|((y&65535)<<16)|((w&65535)<<32)|((h&65535)<<48).
 FIN-FUNCTIO.
 
+FUNCTIO GVIII_RECT_X REDDENS NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS r&65535.
+    SI v>=32768 TUNC v=v-65536. FIN-SI. REDDE v.
+FIN-FUNCTIO.
+FUNCTIO GVIII_RECT_Y REDDENS NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS (r>>16)&65535.
+    SI v>=32768 TUNC v=v-65536. FIN-SI. REDDE v.
+FIN-FUNCTIO.
+FUNCTIO GVIII_RECT_W REDDENS NUMERUS. ACCIPIT r SICUT NUMERUS. REDDE (r>>32)&65535. FIN-FUNCTIO.
+FUNCTIO GVIII_RECT_H REDDENS NUMERUS. ACCIPIT r SICUT NUMERUS. REDDE (r>>48)&65535. FIN-FUNCTIO.
+
+FUNCTIO GVIII_RECT_SECA REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS. ACCIPIT b SICUT NUMERUS.
+    SI a==0 || b==0 TUNC REDDE 0. FIN-SI.
+    DECLARA ax SICUT NUMERUS VALENS GVIII_RECT_X(a). DECLARA ay SICUT NUMERUS VALENS GVIII_RECT_Y(a).
+    DECLARA aw SICUT NUMERUS VALENS GVIII_RECT_W(a). DECLARA ah SICUT NUMERUS VALENS GVIII_RECT_H(a).
+    DECLARA bx SICUT NUMERUS VALENS GVIII_RECT_X(b). DECLARA by SICUT NUMERUS VALENS GVIII_RECT_Y(b).
+    DECLARA bw SICUT NUMERUS VALENS GVIII_RECT_W(b). DECLARA bh SICUT NUMERUS VALENS GVIII_RECT_H(b).
+    DECLARA x0 SICUT NUMERUS VALENS GVIII_MAX(ax,bx). DECLARA y0 SICUT NUMERUS VALENS GVIII_MAX(ay,by).
+    DECLARA x1 SICUT NUMERUS VALENS GVIII_MIN(ax+aw,bx+bw). DECLARA y1 SICUT NUMERUS VALENS GVIII_MIN(ay+ah,by+bh).
+    SI x1<=x0 || y1<=y0 TUNC REDDE 0. FIN-SI.
+    REDDE GVIII_RECT_CREA(x0,y0,x1-x0,y1-y0).
+FIN-FUNCTIO.
+
+FUNCTIO GVIII_RECT_FRAMEBUFFER REDDENS NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    DECLARA limen SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,CONTENTUM(50333728),CONTENTUM(50333736)).
+    REDDE GVIII_RECT_SECA(r,limen).
+FIN-FUNCTIO.
+
+FUNCTIO GVIII_MARGINES_CREA REDDENS NUMERUS.
+    ACCIPIT sin SICUT NUMERUS. ACCIPIT sup SICUT NUMERUS. ACCIPIT dex SICUT NUMERUS. ACCIPIT inf SICUT NUMERUS.
+    SI sin<0 || sup<0 || dex<0 || inf<0 || sin>65535 || sup>65535 || dex>65535 || inf>65535 TUNC REDDE 0. FIN-SI.
+    REDDE (sin&65535)|((sup&65535)<<16)|((dex&65535)<<32)|((inf&65535)<<48).
+FIN-FUNCTIO.
+FUNCTIO GVIII_MARGO_SIN REDDENS NUMERUS. ACCIPIT m SICUT NUMERUS. REDDE m&65535. FIN-FUNCTIO.
+FUNCTIO GVIII_MARGO_SUP REDDENS NUMERUS. ACCIPIT m SICUT NUMERUS. REDDE (m>>16)&65535. FIN-FUNCTIO.
+FUNCTIO GVIII_MARGO_DEX REDDENS NUMERUS. ACCIPIT m SICUT NUMERUS. REDDE (m>>32)&65535. FIN-FUNCTIO.
+FUNCTIO GVIII_MARGO_INF REDDENS NUMERUS. ACCIPIT m SICUT NUMERUS. REDDE (m>>48)&65535. FIN-FUNCTIO.
+
 FUNCTIO GVIII_COORD_SCALA REDDENS NUMERUS.
-    ACCIPIT destinatio SICUT NUMERUS.
-    ACCIPIT mensura_dest SICUT NUMERUS.
-    ACCIPIT initium_fons SICUT NUMERUS.
-    ACCIPIT mensura_fons SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS. ACCIPIT mensura_dest SICUT NUMERUS. ACCIPIT initium_fons SICUT NUMERUS. ACCIPIT mensura_fons SICUT NUMERUS.
     SI mensura_dest<=0 || mensura_fons<=0 TUNC REDDE initium_fons. FIN-SI.
     DECLARA p SICUT NUMERUS VALENS destinatio*mensura_fons/mensura_dest.
-    SI p>=mensura_fons TUNC p=mensura_fons-1. FIN-SI.
-    SI p<0 TUNC p=0. FIN-SI.
+    SI p>=mensura_fons TUNC p=mensura_fons-1. FIN-SI. SI p<0 TUNC p=0. FIN-SI.
     REDDE initium_fons+p.
 FIN-FUNCTIO.
 
-// Coverage 0..255 unius pixelis in quadrante circuli rotundi.
 FUNCTIO GVIII_COVER_ROTUNDUM REDDENS NUMERUS.
-    ACCIPIT px SICUT NUMERUS.
-    ACCIPIT py SICUT NUMERUS.
-    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT px SICUT NUMERUS. ACCIPIT py SICUT NUMERUS. ACCIPIT radius SICUT NUMERUS.
     SI radius<=1 TUNC REDDE 255. FIN-SI.
     DECLARA d SICUT NUMERUS VALENS radius-1.
-    DECLARA dx SICUT NUMERUS VALENS d-px.
-    DECLARA dy SICUT NUMERUS VALENS d-py.
+    DECLARA dx SICUT NUMERUS VALENS d-px. DECLARA dy SICUT NUMERUS VALENS d-py.
     DECLARA d2 SICUT NUMERUS VALENS dx*dx+dy*dy.
-    DECLARA intra SICUT NUMERUS VALENS d*d.
-    DECLARA extra SICUT NUMERUS VALENS radius*radius.
-    SI d2<=intra TUNC REDDE 255. FIN-SI.
-    SI d2>=extra TUNC REDDE 0. FIN-SI.
+    DECLARA intra SICUT NUMERUS VALENS d*d. DECLARA extra SICUT NUMERUS VALENS radius*radius.
+    SI d2<=intra TUNC REDDE 255. FIN-SI. SI d2>=extra TUNC REDDE 0. FIN-SI.
     REDDE (extra-d2)*255/(extra-intra).
 FIN-FUNCTIO.
 
 FUNCTIO GVIII_RECT_ROTUNDUS_FB REDDENS NUMERUS.
-    ACCIPIT x SICUT NUMERUS.
-    ACCIPIT y SICUT NUMERUS.
-    ACCIPIT w SICUT NUMERUS.
-    ACCIPIT h SICUT NUMERUS.
-    ACCIPIT radius SICUT NUMERUS.
-    ACCIPIT color SICUT NUMERUS.
-    SI w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA r SICUT NUMERUS VALENS radius.
-    SI r<1 TUNC REDDE FV_RECT(x,y,w,h,color). FIN-SI.
-    DECLARA dim SICUT NUMERUS VALENS GVIII_MIN(w,h)/2.
-    SI r>dim TUNC r=dim. FIN-SI.
+    ACCIPIT rectum SICUT NUMERUS. ACCIPIT radius SICUT NUMERUS. ACCIPIT color SICUT NUMERUS.
+    SI rectum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS GVIII_RECT_X(rectum). DECLARA y SICUT NUMERUS VALENS GVIII_RECT_Y(rectum).
+    DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(rectum). DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(rectum).
+    DECLARA r SICUT NUMERUS VALENS radius. SI r<1 TUNC REDDE FV_RECT(x,y,w,h,color). FIN-SI.
+    DECLARA dim SICUT NUMERUS VALENS GVIII_MIN(w,h)/2. SI r>dim TUNC r=dim. FIN-SI.
     DECLARA f SICUT NUMERUS VALENS FV_RECT(x+r,y,w-r*2,h,color).
-    f=FV_RECT(x,y+r,r,h-r*2,color).
-    f=FV_RECT(x+w-r,y+r,r,h-r*2,color).
+    f=FV_RECT(x,y+r,r,h-r*2,color). f=FV_RECT(x+w-r,y+r,r,h-r*2,color).
     DECLARA py SICUT NUMERUS VALENS 0.
     DUM py<r PERFICE
         DECLARA px SICUT NUMERUS VALENS 0.
         DUM px<r PERFICE
             DECLARA a SICUT NUMERUS VALENS GVIII_COVER_ROTUNDUM(px,py,r).
             SI a>0 TUNC
-                f=GVII_PIXEL_ALPHA(x+px,y+py,color,a).
-                f=GVII_PIXEL_ALPHA(x+w-1-px,y+py,color,a).
-                f=GVII_PIXEL_ALPHA(x+px,y+h-1-py,color,a).
-                f=GVII_PIXEL_ALPHA(x+w-1-px,y+h-1-py,color,a).
+                f=GVII_PIXEL_ALPHA(x+px,y+py,color,a). f=GVII_PIXEL_ALPHA(x+w-1-px,y+py,color,a).
+                f=GVII_PIXEL_ALPHA(x+px,y+h-1-py,color,a). f=GVII_PIXEL_ALPHA(x+w-1-px,y+h-1-py,color,a).
             FIN-SI.
             px=px+1.
         FIN-DUM.
@@ -110,72 +114,50 @@ FUNCTIO GVIII_RECT_ROTUNDUS_FB REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO GVIII_RECT_ROTUNDUS_S REDDENS NUMERUS.
-    ACCIPIT superficies SICUT NUMERUS.
-    ACCIPIT x SICUT NUMERUS.
-    ACCIPIT y SICUT NUMERUS.
-    ACCIPIT w SICUT NUMERUS.
-    ACCIPIT h SICUT NUMERUS.
-    ACCIPIT radius SICUT NUMERUS.
-    ACCIPIT color SICUT NUMERUS.
-    SI superficies==0 || w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA r SICUT NUMERUS VALENS radius.
-    SI r<1 TUNC REDDE FS_RECT(superficies,x,y,w,h,color). FIN-SI.
-    DECLARA dim SICUT NUMERUS VALENS GVIII_MIN(w,h)/2.
-    SI r>dim TUNC r=dim. FIN-SI.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT rectum SICUT NUMERUS. ACCIPIT radius SICUT NUMERUS. ACCIPIT color SICUT NUMERUS.
+    SI superficies==0 || rectum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS GVIII_RECT_X(rectum). DECLARA y SICUT NUMERUS VALENS GVIII_RECT_Y(rectum).
+    DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(rectum). DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(rectum).
+    DECLARA r SICUT NUMERUS VALENS radius. SI r<1 TUNC REDDE FS_RECT(superficies,x,y,w,h,color). FIN-SI.
+    DECLARA dim SICUT NUMERUS VALENS GVIII_MIN(w,h)/2. SI r>dim TUNC r=dim. FIN-SI.
     DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,x+r,y,w-r*2,h,color).
-    f=FS_RECT(superficies,x,y+r,r,h-r*2,color).
-    f=FS_RECT(superficies,x+w-r,y+r,r,h-r*2,color).
+    f=FS_RECT(superficies,x,y+r,r,h-r*2,color). f=FS_RECT(superficies,x+w-r,y+r,r,h-r*2,color).
     DECLARA py SICUT NUMERUS VALENS 0.
     DUM py<r PERFICE
         DECLARA px SICUT NUMERUS VALENS 0.
         DUM px<r PERFICE
             DECLARA a SICUT NUMERUS VALENS GVIII_COVER_ROTUNDUM(px,py,r).
             SI a>0 TUNC
-                f=GSVII_PIXEL_ALPHA(superficies,x+px,y+py,color,a).
-                f=GSVII_PIXEL_ALPHA(superficies,x+w-1-px,y+py,color,a).
-                f=GSVII_PIXEL_ALPHA(superficies,x+px,y+h-1-py,color,a).
-                f=GSVII_PIXEL_ALPHA(superficies,x+w-1-px,y+h-1-py,color,a).
+                f=GSVII_PIXEL_ALPHA(superficies,x+px,y+py,color,a). f=GSVII_PIXEL_ALPHA(superficies,x+w-1-px,y+py,color,a).
+                f=GSVII_PIXEL_ALPHA(superficies,x+px,y+h-1-py,color,a). f=GSVII_PIXEL_ALPHA(superficies,x+w-1-px,y+h-1-py,color,a).
             FIN-SI.
             px=px+1.
         FIN-DUM.
         py=py+1.
     FIN-DUM.
-    DECLARA nota SICUT NUMERUS VALENS GSVII_NOTA(superficies).
-    REDDE 1.
+    REDDE GSVII_NOTA(superficies).
 FIN-FUNCTIO.
 
-// Umbra localis rotunda. Ad pannos/componentes parvos destinatur; fenestrae magnae
-// umbram ad oras GVII_UMBRA_GRADATA servant donec cache compositoris adest.
 FUNCTIO GVIII_UMBRA_ROTUNDA_FB REDDENS NUMERUS.
-    ACCIPIT x SICUT NUMERUS.
-    ACCIPIT y SICUT NUMERUS.
-    ACCIPIT w SICUT NUMERUS.
-    ACCIPIT h SICUT NUMERUS.
-    ACCIPIT radius SICUT NUMERUS.
-    ACCIPIT expansio SICUT NUMERUS.
-    ACCIPIT color SICUT NUMERUS.
-    ACCIPIT alpha_max SICUT NUMERUS.
-    SI expansio<=0 || alpha_max<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA i SICUT NUMERUS VALENS expansio.
-    DECLARA f SICUT NUMERUS VALENS 0.
+    ACCIPIT rectum SICUT NUMERUS. ACCIPIT radius SICUT NUMERUS. ACCIPIT expansio SICUT NUMERUS. ACCIPIT color SICUT NUMERUS. ACCIPIT alpha_max SICUT NUMERUS.
+    SI rectum==0 || expansio<=0 || alpha_max<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS GVIII_RECT_X(rectum). DECLARA y SICUT NUMERUS VALENS GVIII_RECT_Y(rectum).
+    DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(rectum). DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(rectum).
+    DECLARA i SICUT NUMERUS VALENS expansio. DECLARA f SICUT NUMERUS VALENS 0.
     DUM i>0 PERFICE
-        DECLARA a SICUT NUMERUS VALENS alpha_max*(expansio-i+1)/expansio.
-        DECLARA py SICUT NUMERUS VALENS y-i+2.
-        DECLARA ph SICUT NUMERUS VALENS h+i*2.
-        DECLARA px SICUT NUMERUS VALENS x-i+2.
-        DECLARA pw SICUT NUMERUS VALENS w+i*2.
-        // Alpha per totum corpus hic voluntarie solum pro componentibus parvis.
+        DECLARA rr SICUT NUMERUS VALENS radius+i. DECLARA a SICUT NUMERUS VALENS alpha_max*(expansio-i+1)/expansio.
+        DECLARA px0 SICUT NUMERUS VALENS x-i+2. DECLARA py0 SICUT NUMERUS VALENS y-i+2.
+        DECLARA pw SICUT NUMERUS VALENS w+i*2. DECLARA ph SICUT NUMERUS VALENS h+i*2.
         DECLARA yy SICUT NUMERUS VALENS 0.
         DUM yy<ph PERFICE
             DECLARA xx SICUT NUMERUS VALENS 0.
             DUM xx<pw PERFICE
-                DECLARA rr SICUT NUMERUS VALENS radius+i.
                 DECLARA cov SICUT NUMERUS VALENS 255.
                 SI xx<rr && yy<rr TUNC cov=GVIII_COVER_ROTUNDUM(xx,yy,rr). FIN-SI.
                 SI xx>=pw-rr && yy<rr TUNC cov=GVIII_COVER_ROTUNDUM(pw-1-xx,yy,rr). FIN-SI.
                 SI xx<rr && yy>=ph-rr TUNC cov=GVIII_COVER_ROTUNDUM(xx,ph-1-yy,rr). FIN-SI.
                 SI xx>=pw-rr && yy>=ph-rr TUNC cov=GVIII_COVER_ROTUNDUM(pw-1-xx,ph-1-yy,rr). FIN-SI.
-                SI cov>0 TUNC f=GVII_PIXEL_ALPHA(px+xx,py+yy,color,a*cov/255). FIN-SI.
+                SI cov>0 TUNC f=GVII_PIXEL_ALPHA(px0+xx,py0+yy,color,a*cov/255). FIN-SI.
                 xx=xx+1.
             FIN-DUM.
             yy=yy+1.
@@ -185,45 +167,31 @@ FUNCTIO GVIII_UMBRA_ROTUNDA_FB REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Regionem SIMG RGBA8888 ad framebuffer nearest-neighbour scalat et alpha componit.
 FUNCTIO GVIII_SIMG_REGIONEM_SCALA_FB REDDENS NUMERUS.
-    ACCIPIT imago SICUT TEXTUS.
-    ACCIPIT sx SICUT NUMERUS.
-    ACCIPIT sy SICUT NUMERUS.
-    ACCIPIT sw SICUT NUMERUS.
-    ACCIPIT sh SICUT NUMERUS.
-    ACCIPIT dx SICUT NUMERUS.
-    ACCIPIT dy SICUT NUMERUS.
-    ACCIPIT dw SICUT NUMERUS.
-    ACCIPIT dh SICUT NUMERUS.
-    ACCIPIT alpha_globalis SICUT NUMERUS.
-    SI IR_VALIDUS(imago)==0 || sw<=0 || sh<=0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA iw SICUT NUMERUS VALENS IR_LATITUDO(imago).
-    DECLARA ih SICUT NUMERUS VALENS IR_ALTITUDO(imago).
-    SI sx<0 || sy<0 || sx+sw>iw || sy+sh>ih TUNC REDDE 0. FIN-SI.
-    DECLARA a_global SICUT NUMERUS VALENS GVIII_CLAMPA(alpha_globalis,0,255).
-    SI a_global==0 TUNC REDDE 1. FIN-SI.
-    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728).
-    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    ACCIPIT imago SICUT TEXTUS. ACCIPIT fons SICUT NUMERUS. ACCIPIT destinatio SICUT NUMERUS. ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI IR_VALIDUS(imago)==0 || fons==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sx SICUT NUMERUS VALENS GVIII_RECT_X(fons). DECLARA sy SICUT NUMERUS VALENS GVIII_RECT_Y(fons).
+    DECLARA sw SICUT NUMERUS VALENS GVIII_RECT_W(fons). DECLARA sh SICUT NUMERUS VALENS GVIII_RECT_H(fons).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI sx<0 || sy<0 || sx+sw>IR_LATITUDO(imago) || sy+sh>IR_ALTITUDO(imago) TUNC REDDE 0. FIN-SI.
+    DECLARA ag SICUT NUMERUS VALENS GVIII_CLAMPA(alpha_globalis,0,255). SI ag==0 TUNC REDDE 1. FIN-SI.
+    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA basis SICUT NUMERUS VALENS IR_TEXTUS_SEDES(imago)+16+24. DECLARA stride SICUT NUMERUS VALENS IR_STRIDE(imago).
     DECLARA py SICUT NUMERUS VALENS 0.
     DUM py<dh PERFICE
         DECLARA yy SICUT NUMERUS VALENS dy+py.
         SI yy>=0 && yy<screen_h TUNC
-            DECLARA iy SICUT NUMERUS VALENS sy+py*sh/dh.
-            SI iy>=sy+sh TUNC iy=sy+sh-1. FIN-SI.
+            DECLARA iy SICUT NUMERUS VALENS sy+py*sh/dh. SI iy>=sy+sh TUNC iy=sy+sh-1. FIN-SI.
             DECLARA px SICUT NUMERUS VALENS 0.
             DUM px<dw PERFICE
                 DECLARA xx SICUT NUMERUS VALENS dx+px.
                 SI xx>=0 && xx<screen_w TUNC
-                    DECLARA ix SICUT NUMERUS VALENS sx+px*sw/dw.
-                    SI ix>=sx+sw TUNC ix=sx+sw-1. FIN-SI.
-                    DECLARA rgba SICUT NUMERUS VALENS IR_PIXEL_RGBA(imago,ix,iy).
-                    DECLARA a SICUT NUMERUS VALENS ((rgba>>24)&255)*a_global/255.
+                    DECLARA ix SICUT NUMERUS VALENS sx+px*sw/dw. SI ix>=sx+sw TUNC ix=sx+sw-1. FIN-SI.
+                    DECLARA locus SICUT NUMERUS VALENS basis+iy*stride+ix*4.
+                    DECLARA a SICUT NUMERUS VALENS OCTETUS_AB(locus+3)*ag/255.
                     SI a>0 TUNC
-                        DECLARA r SICUT NUMERUS VALENS rgba&255.
-                        DECLARA g SICUT NUMERUS VALENS (rgba>>8)&255.
-                        DECLARA b SICUT NUMERUS VALENS (rgba>>16)&255.
-                        DECLARA c SICUT NUMERUS VALENS FV_COLOR(r,g,b).
+                        DECLARA c SICUT NUMERUS VALENS FV_COLOR(OCTETUS_AB(locus),OCTETUS_AB(locus+1),OCTETUS_AB(locus+2)).
                         DECLARA f SICUT NUMERUS VALENS GVII_PIXEL_ALPHA(xx,yy,c,a).
                     FIN-SI.
                 FIN-SI.
@@ -236,39 +204,28 @@ FUNCTIO GVIII_SIMG_REGIONEM_SCALA_FB REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 FUNCTIO GVIII_SIMG_SCALA_FB REDDENS NUMERUS.
-    ACCIPIT imago SICUT TEXTUS.
-    ACCIPIT dx SICUT NUMERUS.
-    ACCIPIT dy SICUT NUMERUS.
-    ACCIPIT dw SICUT NUMERUS.
-    ACCIPIT dh SICUT NUMERUS.
-    ACCIPIT alpha_globalis SICUT NUMERUS.
+    ACCIPIT imago SICUT TEXTUS. ACCIPIT destinatio SICUT NUMERUS. ACCIPIT alpha_globalis SICUT NUMERUS.
     SI IR_VALIDUS(imago)==0 TUNC REDDE 0. FIN-SI.
-    REDDE GVIII_SIMG_REGIONEM_SCALA_FB(imago,0,0,IR_LATITUDO(imago),IR_ALTITUDO(imago),dx,dy,dw,dh,alpha_globalis).
+    DECLARA fons SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,IR_LATITUDO(imago),IR_ALTITUDO(imago)).
+    REDDE GVIII_SIMG_REGIONEM_SCALA_FB(imago,fons,destinatio,alpha_globalis).
 FIN-FUNCTIO.
 
-// Surface privata opaca: nearest-neighbour ad framebuffer.
 FUNCTIO GVIII_SUPERFICIES_SCALA_FB REDDENS NUMERUS.
-    ACCIPIT superficies SICUT NUMERUS.
-    ACCIPIT dx SICUT NUMERUS.
-    ACCIPIT dy SICUT NUMERUS.
-    ACCIPIT dw SICUT NUMERUS.
-    ACCIPIT dh SICUT NUMERUS.
-    SI superficies==0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(superficies).
-    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(superficies+8).
-    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728).
-    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT destinatio SICUT NUMERUS.
+    SI superficies==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(superficies). DECLARA sh SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
     DECLARA py SICUT NUMERUS VALENS 0.
     DUM py<dh PERFICE
         DECLARA yy SICUT NUMERUS VALENS dy+py.
         SI yy>=0 && yy<screen_h TUNC
-            DECLARA sy SICUT NUMERUS VALENS py*sh/dh.
-            DECLARA px SICUT NUMERUS VALENS 0.
+            DECLARA sy SICUT NUMERUS VALENS py*sh/dh. DECLARA px SICUT NUMERUS VALENS 0.
             DUM px<dw PERFICE
                 DECLARA xx SICUT NUMERUS VALENS dx+px.
                 SI xx>=0 && xx<screen_w TUNC
-                    DECLARA sx SICUT NUMERUS VALENS px*sw/dw.
-                    DECLARA c SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,sx,sy).
+                    DECLARA sx SICUT NUMERUS VALENS px*sw/dw. DECLARA c SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,sx,sy).
                     SI c>=0 TUNC DECLARA f SICUT NUMERUS VALENS FV_PIXEL_COLOR(xx,yy,c). FIN-SI.
                 FIN-SI.
                 px=px+1.
@@ -279,48 +236,32 @@ FUNCTIO GVIII_SUPERFICIES_SCALA_FB REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Scaling bilinearis integer: ad resampling qualitatem ubi redraw frequentissimus non est.
 FUNCTIO GVIII_SUPERFICIES_SCALA_LINEARIS_FB REDDENS NUMERUS.
-    ACCIPIT superficies SICUT NUMERUS.
-    ACCIPIT dx SICUT NUMERUS.
-    ACCIPIT dy SICUT NUMERUS.
-    ACCIPIT dw SICUT NUMERUS.
-    ACCIPIT dh SICUT NUMERUS.
-    SI superficies==0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
-    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(superficies).
-    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(superficies+8).
-    SI sw<=0 || sh<=0 TUNC REDDE 0. FIN-SI.
-    SI sw==1 || sh==1 || dw==1 || dh==1 TUNC REDDE GVIII_SUPERFICIES_SCALA_FB(superficies,dx,dy,dw,dh). FIN-SI.
-    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728).
-    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
-    DECLARA denx SICUT NUMERUS VALENS dw-1.
-    DECLARA deny SICUT NUMERUS VALENS dh-1.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT destinatio SICUT NUMERUS.
+    SI superficies==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(superficies). DECLARA sh SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI sw<=0 || sh<=0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
+    SI sw==1 || sh==1 || dw==1 || dh==1 TUNC REDDE GVIII_SUPERFICIES_SCALA_FB(superficies,destinatio). FIN-SI.
+    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA denx SICUT NUMERUS VALENS dw-1. DECLARA deny SICUT NUMERUS VALENS dh-1.
     DECLARA py SICUT NUMERUS VALENS 0.
     DUM py<dh PERFICE
-        DECLARA yy SICUT NUMERUS VALENS dy+py.
-        DECLARA uy SICUT NUMERUS VALENS py*(sh-1).
-        DECLARA y0 SICUT NUMERUS VALENS uy/deny.
-        DECLARA fy SICUT NUMERUS VALENS uy%deny.
-        DECLARA y1 SICUT NUMERUS VALENS y0+1.
-        SI y1>=sh TUNC y1=sh-1. FIN-SI.
+        DECLARA yy SICUT NUMERUS VALENS dy+py. DECLARA uy SICUT NUMERUS VALENS py*(sh-1).
+        DECLARA y0 SICUT NUMERUS VALENS uy/deny. DECLARA fy SICUT NUMERUS VALENS uy%deny.
+        DECLARA y1 SICUT NUMERUS VALENS y0+1. SI y1>=sh TUNC y1=sh-1. FIN-SI.
         SI yy>=0 && yy<screen_h TUNC
             DECLARA px SICUT NUMERUS VALENS 0.
             DUM px<dw PERFICE
                 DECLARA xx SICUT NUMERUS VALENS dx+px.
                 SI xx>=0 && xx<screen_w TUNC
-                    DECLARA ux SICUT NUMERUS VALENS px*(sw-1).
-                    DECLARA x0 SICUT NUMERUS VALENS ux/denx.
-                    DECLARA fx SICUT NUMERUS VALENS ux%denx.
-                    DECLARA x1 SICUT NUMERUS VALENS x0+1.
-                    SI x1>=sw TUNC x1=sw-1. FIN-SI.
-                    DECLARA c00 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x0,y0).
-                    DECLARA c10 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x1,y0).
-                    DECLARA c01 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x0,y1).
-                    DECLARA c11 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x1,y1).
-                    DECLARA ca SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(c00,c10,fx,denx).
-                    DECLARA cb SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(c01,c11,fx,denx).
-                    DECLARA c SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(ca,cb,fy,deny).
-                    DECLARA f SICUT NUMERUS VALENS FV_PIXEL_COLOR(xx,yy,c).
+                    DECLARA ux SICUT NUMERUS VALENS px*(sw-1). DECLARA x0 SICUT NUMERUS VALENS ux/denx. DECLARA fx SICUT NUMERUS VALENS ux%denx.
+                    DECLARA x1 SICUT NUMERUS VALENS x0+1. SI x1>=sw TUNC x1=sw-1. FIN-SI.
+                    DECLARA c00 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x0,y0). DECLARA c10 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x1,y0).
+                    DECLARA c01 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x0,y1). DECLARA c11 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x1,y1).
+                    DECLARA ca SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(c00,c10,fx,denx). DECLARA cb SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(c01,c11,fx,denx).
+                    DECLARA c SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(ca,cb,fy,deny). DECLARA f SICUT NUMERUS VALENS FV_PIXEL_COLOR(xx,yy,c).
                 FIN-SI.
                 px=px+1.
             FIN-DUM.
@@ -330,40 +271,26 @@ FUNCTIO GVIII_SUPERFICIES_SCALA_LINEARIS_FB REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Novem-partes (9-slice): anguli servantur; margines et centrum scalantur.
 FUNCTIO GVIII_SIMG_NOVEM_PARTES_FB REDDENS NUMERUS.
-    ACCIPIT imago SICUT TEXTUS.
-    ACCIPIT m_sin SICUT NUMERUS.
-    ACCIPIT m_sup SICUT NUMERUS.
-    ACCIPIT m_dex SICUT NUMERUS.
-    ACCIPIT m_inf SICUT NUMERUS.
-    ACCIPIT dx SICUT NUMERUS.
-    ACCIPIT dy SICUT NUMERUS.
-    ACCIPIT dw SICUT NUMERUS.
-    ACCIPIT dh SICUT NUMERUS.
-    ACCIPIT alpha_globalis SICUT NUMERUS.
-    SI IR_VALIDUS(imago)==0 TUNC REDDE 0. FIN-SI.
-    DECLARA iw SICUT NUMERUS VALENS IR_LATITUDO(imago).
-    DECLARA ih SICUT NUMERUS VALENS IR_ALTITUDO(imago).
-    SI m_sin<0 || m_sup<0 || m_dex<0 || m_inf<0 TUNC REDDE 0. FIN-SI.
-    SI m_sin+m_dex>=iw || m_sup+m_inf>=ih TUNC REDDE 0. FIN-SI.
-    SI dw<m_sin+m_dex || dh<m_sup+m_inf TUNC REDDE 0. FIN-SI.
-    DECLARA smw SICUT NUMERUS VALENS iw-m_sin-m_dex.
-    DECLARA smh SICUT NUMERUS VALENS ih-m_sup-m_inf.
-    DECLARA dmw SICUT NUMERUS VALENS dw-m_sin-m_dex.
-    DECLARA dmh SICUT NUMERUS VALENS dh-m_sup-m_inf.
+    ACCIPIT imago SICUT TEXTUS. ACCIPIT margines SICUT NUMERUS. ACCIPIT destinatio SICUT NUMERUS. ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI IR_VALIDUS(imago)==0 || margines==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA ms SICUT NUMERUS VALENS GVIII_MARGO_SIN(margines). DECLARA mt SICUT NUMERUS VALENS GVIII_MARGO_SUP(margines).
+    DECLARA md SICUT NUMERUS VALENS GVIII_MARGO_DEX(margines). DECLARA mi SICUT NUMERUS VALENS GVIII_MARGO_INF(margines).
+    DECLARA iw SICUT NUMERUS VALENS IR_LATITUDO(imago). DECLARA ih SICUT NUMERUS VALENS IR_ALTITUDO(imago).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI ms+md>=iw || mt+mi>=ih || dw<ms+md || dh<mt+mi TUNC REDDE 0. FIN-SI.
+    DECLARA smw SICUT NUMERUS VALENS iw-ms-md. DECLARA smh SICUT NUMERUS VALENS ih-mt-mi.
+    DECLARA dmw SICUT NUMERUS VALENS dw-ms-md. DECLARA dmh SICUT NUMERUS VALENS dh-mt-mi.
     DECLARA f SICUT NUMERUS VALENS 0.
-    // linea superior
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,0,0,m_sin,m_sup,dx,dy,m_sin,m_sup,alpha_globalis).
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,m_sin,0,smw,m_sup,dx+m_sin,dy,dmw,m_sup,alpha_globalis).
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,iw-m_dex,0,m_dex,m_sup,dx+dw-m_dex,dy,m_dex,m_sup,alpha_globalis).
-    // linea media
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,0,m_sup,m_sin,smh,dx,dy+m_sup,m_sin,dmh,alpha_globalis).
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,m_sin,m_sup,smw,smh,dx+m_sin,dy+m_sup,dmw,dmh,alpha_globalis).
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,iw-m_dex,m_sup,m_dex,smh,dx+dw-m_dex,dy+m_sup,m_dex,dmh,alpha_globalis).
-    // linea inferior
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,0,ih-m_inf,m_sin,m_inf,dx,dy+dh-m_inf,m_sin,m_inf,alpha_globalis).
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,m_sin,ih-m_inf,smw,m_inf,dx+m_sin,dy+dh-m_inf,dmw,m_inf,alpha_globalis).
-    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,iw-m_dex,ih-m_inf,m_dex,m_inf,dx+dw-m_dex,dy+dh-m_inf,m_dex,m_inf,alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(0,0,ms,mt),GVIII_RECT_CREA(dx,dy,ms,mt),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(ms,0,smw,mt),GVIII_RECT_CREA(dx+ms,dy,dmw,mt),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(iw-md,0,md,mt),GVIII_RECT_CREA(dx+dw-md,dy,md,mt),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(0,mt,ms,smh),GVIII_RECT_CREA(dx,dy+mt,ms,dmh),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(ms,mt,smw,smh),GVIII_RECT_CREA(dx+ms,dy+mt,dmw,dmh),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(iw-md,mt,md,smh),GVIII_RECT_CREA(dx+dw-md,dy+mt,md,dmh),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(0,ih-mi,ms,mi),GVIII_RECT_CREA(dx,dy+dh-mi,ms,mi),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(ms,ih-mi,smw,mi),GVIII_RECT_CREA(dx+ms,dy+dh-mi,dmw,mi),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_FB(imago,GVIII_RECT_CREA(iw-md,ih-mi,md,mi),GVIII_RECT_CREA(dx+dw-md,dy+dh-mi,md,mi),alpha_globalis).
     REDDE 1.
 FIN-FUNCTIO.
