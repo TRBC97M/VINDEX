@@ -34,6 +34,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
@@ -52,6 +53,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
@@ -96,6 +98,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
@@ -114,6 +117,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
@@ -216,15 +220,15 @@ jobs:
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_lucidum_xi.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
-      - name: INITIUM P16-IX sub QEMU et OVMF
+      - name: INITIUM P16-XI sub QEMU et OVMF
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-ix-initium'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-xi-initium'
         run: |
           set -euo pipefail
-          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_ix.py" \
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_xi.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
       - name: Bureau functionale sub QEMU et OVMF
@@ -277,7 +281,7 @@ jobs:
           name: qemu-p16-xi-${{ github.sha }}
           path: |
             qemu-captura-p16-xi-forma/*.ppm
-            qemu-captura-p16-ix-initium/*.ppm
+            qemu-captura-p16-xi-initium/*.ppm
             qemu-captura-p16-xi-bureau/*.ppm
             qemu-captura-p16-viii-fenestrae/*.ppm
           if-no-files-found: warn
