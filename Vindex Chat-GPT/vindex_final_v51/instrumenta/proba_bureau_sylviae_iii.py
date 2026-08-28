@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-XI: bureau, hover, launch, clausura et relaunch cum taskbar IX sub UEFI/QEMU comprobantur."""
+"""P16-XI: bureau, hover, launch, clausura et relaunch cum rail XI sub UEFI/QEMU comprobantur."""
 from __future__ import annotations
 
 import importlib.util
@@ -17,10 +17,6 @@ def importa_auxilia() -> object:
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
-
-
-def lumen(color: tuple[int, int, int]) -> int:
-    return color[0] + color[1] + color[2]
 
 
 def differentiae_rect(p1: bytes, p2: bytes, w: int, x0: int, y0: int, x1: int, y1: int) -> int:
@@ -65,7 +61,10 @@ def principale() -> int:
         time.sleep(mora)
 
         bronzeum_viii = (185, 138, 82)
+        bronzeum_xi = (181, 138, 84)
         aqua_xi = (189, 239, 242)
+        graphite = (26, 29, 32)
+        activa = (62, 87, 99)
 
         ante = out / 'bureau-ante.ppm'
         hover_p = out / 'bureau-hover-programmata.ppm'
@@ -84,13 +83,13 @@ def principale() -> int:
             return 5
 
         taskbar_top = h - 40
-        vac_top = aux.pixel(pix_ante, w, 130, taskbar_top + 8)
-        vac_bottom = aux.pixel(pix_ante, w, 130, taskbar_top + 31)
-        if vac_top == vac_bottom or lumen(vac_top) <= lumen(vac_bottom):
-            print(f'DEFECIT: taskbar IX vacua gradientiam amisit: {vac_top}->{vac_bottom}', file=sys.stderr)
+        vac_body = aux.pixel(pix_ante, w, 130, taskbar_top + 20)
+        vac_lumen = aux.pixel(pix_ante, w, 130, taskbar_top + 7)
+        if vac_body != graphite or vac_lumen != aqua_xi:
+            print(f'DEFECIT: rail XI vacuus materiam amisit: body={vac_body} lumen={vac_lumen}', file=sys.stderr)
             return 6
 
-        # P16-XI: hitbox manet, sed tessera nunc materia Graphica VIII est.
+        # P16-XI: hitbox manet, sed objectum tantum localiter ad hover respondet.
         pos_p = aux.move_ad(monitor, out, 'bureau-programmata', 70, 110, w, h)
         aux.captura(monitor, hover_p)
         _, _, pix_hover_p = aux.ppm(hover_p)
@@ -100,34 +99,34 @@ def principale() -> int:
         if mut_hover < 80 or aqua_hover <= aqua_ante + 20:
             print(f'DEFECIT: hover PROGRAMMATA XI non mutat materiam satis: mut={mut_hover} aqua={aqua_ante}->{aqua_hover} cursor={pos_p}', file=sys.stderr)
             return 7
+        if aux.pixel(pix_hover_p, w, 20, 74) != aqua_xi:
+            print(f'DEFECIT: angulus Aqua hover PROGRAMMATUM deest: {aux.pixel(pix_hover_p,w,20,74)}', file=sys.stderr)
+            return 8
 
         aux.click(monitor)
         aux.captura(monitor, apertum_p)
         _, _, pix_p = aux.ppm(apertum_p)
         if aux.pixel(pix_p, w, 300, 56) != bronzeum_viii:
             print(f'DEFECIT: PROGRAMMATA non aperta/focalizata: {aux.pixel(pix_p,w,300,56)}', file=sys.stderr)
-            return 8
-
-        prog_top = aux.pixel(pix_p, w, 130, taskbar_top + 8)
-        prog_bottom = aux.pixel(pix_p, w, 130, taskbar_top + 31)
-        if prog_top == prog_bottom or lumen(prog_top) <= lumen(prog_bottom):
-            print(f'DEFECIT: PROGRAMMATA in taskbar IX non est graduata: {prog_top}->{prog_bottom}', file=sys.stderr)
             return 9
-        if (prog_top, prog_bottom) == (vac_top, vac_bottom):
-            print('DEFECIT: PROGRAMMATA in taskbar non apparuit', file=sys.stderr)
+
+        prog_body = aux.pixel(pix_p, w, 130, taskbar_top + 20)
+        prog_aqua = aux.pixel(pix_p, w, 130, taskbar_top + 9)
+        prog_bronze = aux.pixel(pix_p, w, 130, taskbar_top + 30)
+        if prog_body != activa or prog_aqua != aqua_xi or prog_bronze != bronzeum_xi:
+            print(f'DEFECIT: PROGRAMMATA in rail XI non activa: {prog_body}/{prog_aqua}/{prog_bronze}', file=sys.stderr)
             return 10
-        if aux.pixel(pix_p, w, 130, taskbar_top + 6) != bronzeum_viii:
-            print(f'DEFECIT: PROGRAMMATA taskbar activa limen aeneum amisit: {aux.pixel(pix_p,w,130,taskbar_top+6)}', file=sys.stderr)
+        if prog_body == vac_body:
+            print('DEFECIT: PROGRAMMATA in rail non apparuit', file=sys.stderr)
             return 11
 
         pos_close = aux.move_ad(monitor, out, 'bureau-clausura-programmata', 798, 74, w, h)
         aux.click(monitor)
         aux.captura(monitor, clausum_p)
         _, _, pix_clausum = aux.ppm(clausum_p)
-        clausum_top = aux.pixel(pix_clausum, w, 130, taskbar_top + 8)
-        clausum_bottom = aux.pixel(pix_clausum, w, 130, taskbar_top + 31)
-        if (clausum_top, clausum_bottom) != (vac_top, vac_bottom):
-            print(f'DEFECIT: PROGRAMMATA post clausuram in taskbar manet: {clausum_top}/{clausum_bottom}', file=sys.stderr)
+        clausum_body = aux.pixel(pix_clausum, w, 130, taskbar_top + 20)
+        if clausum_body != vac_body:
+            print(f'DEFECIT: PROGRAMMATA post clausuram in rail manet: {clausum_body} loco {vac_body}', file=sys.stderr)
             return 12
         if aux.pixel(pix_clausum, w, 300, 56) == bronzeum_viii:
             print('DEFECIT: PROGRAMMATA post clausuram adhuc pingitur', file=sys.stderr)
@@ -141,26 +140,24 @@ def principale() -> int:
             print(f'DEFECIT: TABULA ex bureau non aperta/focalizata: {aux.pixel(pix_t,w,700,168)}', file=sys.stderr)
             return 14
 
-        tab_top = aux.pixel(pix_t, w, 130, taskbar_top + 8)
-        tab_bottom = aux.pixel(pix_t, w, 130, taskbar_top + 31)
-        if tab_top == tab_bottom or lumen(tab_top) <= lumen(tab_bottom):
-            print(f'DEFECIT: TABULA in taskbar IX non est graduata: {tab_top}->{tab_bottom}', file=sys.stderr)
+        tab_body = aux.pixel(pix_t, w, 130, taskbar_top + 20)
+        tab_aqua = aux.pixel(pix_t, w, 130, taskbar_top + 9)
+        tab_bronze = aux.pixel(pix_t, w, 130, taskbar_top + 30)
+        if tab_body != activa or tab_aqua != aqua_xi or tab_bronze != bronzeum_xi:
+            print(f'DEFECIT: TABULA in rail XI non activa: {tab_body}/{tab_aqua}/{tab_bronze}', file=sys.stderr)
             return 15
-        if (tab_top, tab_bottom) == (vac_top, vac_bottom):
-            print('DEFECIT: TABULA in taskbar activa non apparuit', file=sys.stderr)
+        if tab_body == vac_body:
+            print('DEFECIT: TABULA in rail activa non apparuit', file=sys.stderr)
             return 16
-        if aux.pixel(pix_t, w, 130, taskbar_top + 6) != bronzeum_viii:
-            print(f'DEFECIT: TABULA taskbar activa limen aeneum amisit: {aux.pixel(pix_t,w,130,taskbar_top+6)}', file=sys.stderr)
-            return 17
 
         mut_p = aux.differentiae(pix_ante, pix_p)
         mut_close = aux.differentiae(pix_p, pix_clausum)
         mut_t = aux.differentiae(pix_clausum, pix_t)
         print(f'BUREAU-XI: cursor_init={init_pos} programmata={pos_p} clausura={pos_close} tabula={pos_t}')
         print(f'BUREAU-XI: hover_pixeli={mut_hover} aqua={aqua_ante}->{aqua_hover}')
-        print(f'BUREAU-XI: taskbar_vacua={vac_top}->{vac_bottom} programmata={prog_top}->{prog_bottom} tabula={tab_top}->{tab_bottom}')
+        print(f'BUREAU-XI: rail_vacuus={vac_body} programmata={prog_body} tabula={tab_body}')
         print(f'BUREAU-XI: launch_programmata_pixeli={mut_p} clausura_pixeli={mut_close} launch_tabula_pixeli={mut_t}')
-        print('RECTE: P16-XI Bureau Lucidum hover/launch/clausura/relaunch et taskbar IX servantur.')
+        print('RECTE: P16-XI objecta desktop hover/launch/clausura/relaunch et rail XI servantur.')
         return 0
     finally:
         try:
