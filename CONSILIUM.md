@@ -6,7 +6,7 @@
 
 `CONSILIUM.md` statum operativum canonicum servat: quid perfectum sit, quid activum vel reservatum sit, quibus rebus opera dependeant et quid proximum faciendum sit. Historia minuta in Git et documentis incrementorum manet.
 
-Omnis collaborator ante opus novum `ARCHITECTURA.md`, hoc documentum, `CONTRIBUTING.md` et statum Git recentem inspiciat. Si Git et haec tabula dissentiunt, Git praevalet et tabula corrigenda est.
+Omnis collaborator ante opus novum `ARCHITECTURA.md`, hoc documentum, `CONTRIBUTING.md` et statum Git recentem inspiciat. Si Git et haec tabula dissentiunt, **Git praevalet et tabula corrigenda est**.
 
 ## Status
 
@@ -28,119 +28,58 @@ Omnis collaborator ante opus novum `ARCHITECTURA.md`, hoc documentum, `CONTRIBUT
 
 **Status:** `PERFECTUM per #109`; contractus memoriae auxiliariae renovatus in #126.
 
-Catena canonica:
+Catena canonica manet:
 
 ```text
 OVMF → BOOTX64.EFI [VINDEX] → NUCLEUS [VINDEX] → SYLVIA [VINDEX]
 ```
 
-Canonice probatum:
-
-- target UEFI PE32+ a compilatore VINDEX;
-- ponticulus, nucleus et runtime Sylviae VINDEX puri;
-- GOP, framebuffer et metadata firmware;
-- `NUCLEUS.BIN`, `TEXTUS.BIN` et `FORMA.BIN` e volumine FAT leguntur;
-- nullum gcc, ld, objcopy, C aut assembler externus in catena canonica requiritur;
-- QEMU/OVMF totam catenam exercet.
-
-### Contractus memoriae auxiliariae
-
-P19-II defectum vetustum manifestavit: nucleus ad `0x400000` onerabatur, dum `TEXTUS.BIN` ad `0x430000` et `FORMA.BIN` ad `0x460000` sedibus historicis nimis propinquis ponebantur. Cum nucleus modernus 225092 octeta attigit, `TEXTUS.BIN` 28484 octeta codicis nuclei superposuit.
-
-Correctio #126:
-
-- nucleus magnitudine vera tractatur;
-- `TEXTUS.BIN` sedem historicam tantum recipit si revera extra nucleum iacet;
-- aliter paginae UEFI separatae sine concursu reservantur;
-- `FORMA.BIN` quoque in memoria separata reservatur;
-- sedes datae per metadata ad runtime traduntur;
-- catena historica et Sylvia moderna sub QEMU/OVMF servantur.
-
-**Debitum separatum:** ELF adhuc acervum ad sedem fixam collocat; multi-`PT_LOAD` vel relocatio acervi opus futurum P9 manet.
-
----
+Ponticulus, nucleus et runtime Sylviae VINDEX puri sunt; GOP, framebuffer, metadata firmware et onera `NUCLEUS.BIN` / `TEXTUS.BIN` / `FORMA.BIN` sub QEMU/OVMF probantur. Correctio #126 data auxiliaria extra nucleum magnitudine vera collocat. ELF multi-`PT_LOAD` / relocatio acervi manet debitum P9.
 
 ## P2 — Reconciliatio VINDEX 0.53
 
 **Status:** `PERFECTUM R0–R6`.
 
-Canonicum manet:
-
-- allocationes dynamicae et frames amplae;
-- diagnostica cum fonte, linea et columna;
-- `PROIECTUM` et targeta;
-- ELF, PE/Win64 et UEFI;
-- auto-hospitium cum puncto fixo;
-- semantica brevis `&&` / `||`;
-- instrumenta regressionis et puritatis.
-
-Monolitha historica non redeunt; facultates utiles selective portantur.
-
----
+Allocationes dynamicae, frames amplae, diagnostica, `PROIECTUM`, ELF/PE/UEFI, auto-hospitium `G2 = G3`, semantica brevis et instrumenta regressionis canonica manent. Monolitha historica non redeunt; facultates utiles selective portantur.
 
 ## P3 — Catena Sylviae pura
 
 **Status:** `PERFECTUM per #111`.
 
-Fenestrale II est payload canonicum eiusdem ponticuli UEFI. Post translationem imperii omnis logica runtime Sylviae in VINDEX manet.
-
----
+Fenestrale II est payload canonicum. Post translationem imperii omnis logica runtime Sylviae in VINDEX manet.
 
 ## P4 — Fenestrale II Purus
 
 **Status:** `PERFECTUM pro gradibus A–I`.
 
-Facultates canonicae:
-
-- superficies clientium;
-- coda eventuum;
-- registra dynamica clientium, fenestrarum et applicationum;
-- focus et ordo Z;
-- motus et resize;
-- minimizatio, maximizatio, restitutio et clausura;
-- taskbar dynamica;
-- compositio ab ima ad summam;
-- regressio LXXX fenestrarum.
-
----
+Superficies clientium, coda eventuum, registra dynamica, focus/Z, motus/resize, minimizatio/maximizatio/restitutio/clausura, taskbar dynamica et compositio ab ima ad summam canonica sunt. Regressio LXXX fenestrarum manet.
 
 ## P5 — Mus PS/2 VINDEX nativus
 
 **Status:** `PERFECTUM per #110 et #120`.
 
-Rector 8042/PS2 totus VINDEX est et primitivas canonicas `PORTUS_LEGE` / `PORTUS_SCRIBE` adhibet. Nulla particula codicis machinalis manu scripta in catena canonica manet.
-
----
+Rector 8042/PS2 totus VINDEX est et `PORTUS_LEGE` / `PORTUS_SCRIBE` adhibet. Nulla particula codicis machinalis manu scripta in catena canonica manet.
 
 ## P6 — Officina VINDEX pro Windows
 
 **Status:** `PERFECTUM pro fundamento nativo per #83`.
 
-Haec Officina ecosystematis VINDEX est, non eadem applicatio ac OFFICINA SYLVIAE. Projecta, arbor fasciculorum, editor, coloratio, save/build/run, output et diagnostica sub Windows vero iam existunt.
+Haec Officina ecosystematis VINDEX est, non eadem applicatio ac OFFICINA SYLVIAE.
 
----
-
-## P7 — Probationes canonicae
+## P7 — Probationes canonicae et custodiae graphicae
 
 **Status:** `PERFECTUM et crescens`.
 
-`tests/run_tests.sh` nunc **XXXV probationes rectas, nulla errata** refert.
+`tests/run_tests.sh` XXXV probationes canonicas servat. Praeterea workflow dedicata nunc separatim probant:
 
-Inter alia probantur:
+- Catena UEFI pura et PS/2;
+- P16-VII rastera historica;
+- Graphica VIII, showroom et responsivitatem PS/2;
+- SIMG II, gestorem assetorum et importationem PNG → SIMG II → VINDEX;
+- Graphica IX: cache RGBA, bilinearem alpha praemultiplicatam, 9-slice, framebuffer et superficies privatas;
+- P19-I/P19-II per duo initia eiusdem imaginis.
 
-- lingua, diagnostica et auto-hospitium `G2 = G3`;
-- collectiones, series, segmenta et Unicode;
-- PE32+ et puritas absoluta Sylviae;
-- XCVI applicationes et LXXX fenestrae;
-- TERMINALE P17-I/P17-II;
-- OFFICINA SYLVIAE P18-I;
-- P19-II: documentum 4200+ octetorum, Unicode, serializatio, restitutio et round-trip;
-- P16-VII: atlas SIMG XCVI×XCVI, quattuor iconae XLVIII×XLVIII, recta fontis/destinationis compacta et lectio rastera;
-- Fenestrale II integrum.
-
-Custodiae separatae QEMU/OVMF exercent catenam historicam, PS/2, P16, TERMINALE, OFFICINAM, P19-I et P19-II. P16-VII custodiam QEMU graphicam dedicatam habet quae emblema et quattuor regiones iconarum in framebuffer vero separat et metitur. P19-II duobus initiis eiusdem imaginis persistentiam applicationis comprobat.
-
----
+Captura framebuffer QEMU/OVMF vera est auctoritas executionis visualis. Imago conceptus vel generata probationem runtime numquam substituit.
 
 ## P8 — Purificatio repositorii
 
@@ -156,43 +95,23 @@ Historia servatur, sed `main`, `ARCHITECTURA.md` et haec tabula auctoritatem pra
 
 **Status:** `ACTIVUM per incrementa`, sine curatore exclusivissimo.
 
-Iam canonicum:
+Iam canonica sunt collectiones dynamicae, series contiguae, segmenta mutuata, UTF-8 strictum, scalaria Unicode, reditus `TEXTUS`, `SUBTEXTUS_SCALARUM` et structurae internae byte-addressatae.
 
-- collectiones dynamicae `NUMERUS` (#102);
-- series contiguae (#104);
-- segmenta mutuata zero-copy (#105);
-- UTF-8 strictum et scalaria Unicode (#106);
-- reditus `TEXTUS` (#107);
-- `SUBTEXTUS_SCALARUM` (#108);
-- structurae internae byte-addressatae separatae a semanticis `ACUS` (#111).
+**Debitum apertum #134:** `EXTRAHE_ET_SIGNA` tamponem historicum identificatorum XXXII octetorum habet. Graphica VIII/IX nomen publicum tutum adhibet; correctio compilatoris separatim fieri debet, cum regressione >XXXII litterarum, puncto fixo, ELF, Win64 et UEFI. Renderer visualis ad hoc debitum miscendum non est nisi vere impeditur.
 
-Candidata futura:
-
-- typi numerici maturiores;
-- structurae, uniones et enumerationes maturiores;
-- functiones ut valores et callback;
-- moduli et compilationes separatae;
-- ABI explicitius;
-- ELF multi-`PT_LOAD` / relocatio acervi;
-- graphemata et normalizatio Unicode.
-
-Quaelibet mutatio linguae punctum fixum, ELF, Win64 et UEFI ubi pertinent custodire debet.
-
----
+Candidata futura: typi maturiores, structurae/uniones/enumerationes, functiones ut valores, moduli, ABI explicitius, ELF multi-`PT_LOAD`, graphemata et normalizatio Unicode.
 
 ## P10 — Abstractiones alti gradus
 
 **Status:** `LONGINQUUM`.
 
-Generica, interfaces vel mechanismus VINDEX proprius, errores/resultata, destructio determinata, ownership optativa, closures, concurrentia, atomica, async, SIMD et metaprogrammatio moderata post fundamenta P9 veniunt.
-
----
+Generica, interfaces, errores/resultata, destructio determinata, ownership optativa, closures, concurrentia, atomica, async, SIMD et metaprogrammatio moderata post fundamenta P9 veniunt.
 
 ## P11 — Ecosystema universale
 
 **Status:** `LONGINQUUM`, incrementis iam incohatum.
 
-Destinatio continet compilatorem, linker, bibliothecam standardem, debugger, profiler, formatter/linter, systema projectuum/build, praepositum fasciculorum et Officinam, cum pluribus targetis.
+Destinatio continet compilatorem, linker, bibliothecam standardem, debugger, profiler, formatter/linter, systema projectuum/build, praepositum fasciculorum et Officinam cum pluribus targetis.
 
 **Criterium:** nullum genus programmatis rationabile extra fines VINDEX sit.
 
@@ -204,107 +123,74 @@ Destinatio continet compilatorem, linker, bibliothecam standardem, debugger, pro
 
 **Status:** `RESERVATUM CLAUDE`; incrementa I et II in `main`; incrementum III in #122 nondum canonicum.
 
-**Curator:** Claude. ChatGPT hoc opus non duplicat dum reservatio valet.
-
-### P12-I — portus I/O et PCI
-
-**Status:** `PERFECTUM per #118`.
-
-Primitivae canonicae `PORTUS_LEGE`, `PORTUS_LEGE32`, `PORTUS_SCRIBE`, `PORTUS_SCRIBE32`; rector PCI mechanismum configurationis #1 exercet.
-
-### P12-II — PS/2 per primitivas nativas
-
-**Status:** `PERFECTUM per #120`.
-
-### P12-III — pontes PCI
-
-**Status:** `RESERVATUM / ACTIVUM in #122`.
-
-#122 manet aperta super basim veterem. Ante canonizationem adhuc requiruntur:
-
-- synchronizatio cum `main` recente;
-- profunditas vera topologiae, non index codae BFS;
-- bus primarius/secondarius/subordinatus explicitus;
-- custodiae allocationum canonicae `<=0`;
-- recertificatio integra.
-
-Post P12-III directio probabilis est BAR/MMIO et descriptio resourceorum, deinde interruptiones, ACPI, USB/HID et cetera hardware.
-
----
+ChatGPT hoc opus non duplicat dum reservatio valet. #122 ante canonizationem cum `main` recente synchronizandum et integraliter recertificandum est. Postea directio probabilis: BAR/MMIO → interruptiones → ACPI/USB/HID.
 
 ## P13 — Machina referentiae physica
 
 **Status:** `LONGINQUUM`.
 
-Machina referentiae requiret IDs hardware exacta et gradus boot → display → input → storage → USB → ACPI/battery → audio → rete → cetera.
-
----
-
 ## P14 — Rete Sylviae
 
 **Status:** `LONGINQUUM`; dependet a P12.
-
-NIC/Wi-Fi → Ethernet/802.11 → ARP/NDP → IPv4/IPv6 → ICMP → UDP → TCP → DHCP → DNS → TLS.
-
----
 
 ## P15 — Navigator Sylviae
 
 **Status:** `LONGINQUUM`; dependet a Fenestrale, P9/P10 et P14.
 
-Primum HTML/CSS/textus/nexus/scroll et HTTPS; postea imagines, formae, cookies, cache et layout maturior.
-
 ---
 
-## P16 — Forma et ambitus Fenestralis modernus
+## P16 — Forma, JL-UX et capacitas graphica
 
-**Status:** `PERFECTUM pro incrementis I–VI`; incrementum VII `CANONIZANDUM per #128`.
+**Status:** P16-I–X `PERFECTUM`; P16-XI iter visuale post Graphica IX `ACTIVUM`.
+
+### Incrementa canonica
 
 - P16-I / #113 — metra visualia moderna et taskbar;
 - P16-II / #114 — INITIUM functionale;
 - P16-III / #115 — bureau functionale;
 - P16-IV / #116 — catalogus applicationum dynamicus;
-- P16-V / #117 — chrome fenestrarum, focus/inertia et umbrae;
-- P16-VI / #127 — identitas visualis nox-ebur-aes, pictogrammata distincta, chrome et clientes canonici.
+- P16-V / #117 — chrome, focus et umbrae;
+- P16-VI / #127 — identitas nox-ebur-aes;
+- P16-VII / #128 — gradientiae, alpha, SIMG v1 et iconographia rastera;
+- P16-VIII / #129 — chrome fenestrarum compositum;
+- P16-IX / #130 — INITIUM et taskbar composita;
+- P16-X / #131 — canon visualis JL-UX normativus;
+- Graphica VIII / #133 — clipping, AA, 9-slice, bilinearis, damage, typographia atlas et coda backend-neutra;
+- SIMG II / #136 — formatum graphicum nativum versionatum et gestor assetorum multi-scala;
+- importatio SIMG II / #137 — catena PNG → `.simg` → compilator VINDEX → lector SIMG II;
+- Graphica IX / #139 — rastera premium bilinearis alpha praemultiplicata, cache RGBA, framebuffer/superficies et 9-slice.
 
-### P16-VI — Identitas visualis Sylviae
+`main` post #139 est fundamentum graphicum hodiernum.
 
-**Status:** `PERFECTUM per #127`.
+### Experienta P16-XI
 
-Canonicum:
+#132, primum experimentum Bureau Lucidum, **NON ADOPTATUM** est: wallpaper solus distantiam a JL-UX satis non minuebat.
 
-- palette graphitica, eburnea, papyracea, bronzea et viridis;
-- chrome fenestrarum et umbrae cohaerentes;
-- pictogrammata distincta pro quattuor applicationibus;
-- INITIUM, taskbar, PROGRAMMATA, TABULA, TERMINALE et OFFICINA eadem grammatica visuali utuntur;
-- omnes interactiones P16–P19 sub QEMU/OVMF intactae probatae sunt;
-- `documenta/sylvia/IDENTITAS_VISUALIS_VI.md` contractum visualem servat.
+#135, `Bureau Lucidum I — implementatio II`, historiam utilem servat sed **non est via canonica ad fusionem**: ex Graphica VIII ante SIMG II/Graphica IX ortum est et rail taskbar rotundum introducit, dum nucleus JL-UX testam tenuem, densam et non-pill postulat. Partes utiles selective portari possunt; ramus integer non mergendus est.
 
-### P16-VII — Capacitas Graphica Sylviae
+### P16-XI-A — Asseta Premium I
 
-**Status:** `CANONIZANDUM per #128`; curator ChatGPT; ramus `chatgpt/capacitas-graphica-sylviae-vii`.
+**Status:** `ACTIVUM apud ChatGPT` post Graphica IX.
 
-Finis est non mera nova skin, sed amplificatio renderer VINDEX ut Sylvia imagines et compositiones multo divitiores vere pingere possit.
+Prima probatio visualis nova debet differentiam rendereris statim ostendere. Ordo huius tranche:
 
-In #128 probatum:
+1. iconographia altae resolutionis pro PROGRAMMATA, TABULA, TERMINALE et OFFICINA, primum in Bureau et INITIUM;
+2. variantes multi-scala per SIMG II et cache RGBA;
+3. showroom QEMU qui nearest veterem et Graphica IX comparat;
+4. post probationem iconarum, chrome fenestrarum 9-slice;
+5. deinde cursores anti-aliased, materiae taskbar/INITIUM et wallpaper premium multi-resolutionis.
 
-- interpolatio colorum et gradientiae horizontales/verticales;
-- compositio alpha software super framebuffer et superficies clientium;
-- umbrae graduatae, halos et primitiveae compositionis sine backend externo;
-- contractus `SIMG v1` RGBA8888 et lectio pixelorum;
-- decoder palette/RLE generalis qui asseta compacta in SIMG expandit;
-- blit partium, recta source/destinationis compacta et scala nearest-neighbor;
-- emblema Sylviae rasterum XXXII×XXXII;
-- atlas XCVI×XCVI cum quattuor iconis rasteris XLVIII×XLVIII pro PROGRAMMATA, TABULA, TERMINALE et OFFICINA;
-- compositor finalis cuius ordo est fundum → bureau → rastera → fenestrae → INITIUM → taskbar → cursor;
-- custodia QEMU/OVMF dedicata quae in framebuffer vero emblema et quattuor iconae separat et metitur;
-- `tests/run_tests.sh` ad XXXV probationes canonicas auctum;
-- vetus limes staticus 212999 octetorum e verificatore VINDEX amotus; systema integrum ultra illum limitem verificatur et compilatur;
-- nulla mutatio hitbox, focus, semantica applicationum aut puritatis VINDEX.
+**Invarianta primae tranche:** geometriae et hitbox hodiernae non mutantur. Transitus ad metra finalia JL-UX — fenestra quadrata, taskbar tenuis/densa et alia — post asseta probata separatim documentabitur et probabitur.
 
-Probatio QEMU P16-VII mensuras iconarum rasterarum `936,907,984,822` rettulit et totam viam `OVMF → BOOTX64.EFI [VINDEX] → FENESTRALE II [VINDEX] → PS/2 [VINDEX] → FRAMEBUFFER` sine C servavit.
+### Lex visualis
 
-Post canonizationem #128, chrome compositus Frutiger-Aero × imperiale × Y2K super has primitiveas novas construatur; ad probationem visualem sola captura framebuffer vera QEMU/OVMF canonica est, non imago simulata aut generata.
+- `SYLVIA OS` est identitas primaria; `JL-UX` nomen technologiae internae et raro usori ostenditur;
+- palette canonica et materiae `Vitrum Minerale`, `Ebur Enamelatum`, `Metallum Frigidum`, `Lumen Molle` servantur;
+- alpha magnae superficies et blur late diffusum evitantur; effectus localis et cache praeferuntur;
+- iconographia non plana neque cartoon, sed volumetrica, clara et moderatim materialis;
+- wallpaper quietum et proprium Sylviae est, non substitutum motoris neque locus tituli `JL-UX`;
+- nulla copia servilis alterius OS;
+- nulla regressio visualis celatur mora aucta aut custodia debilitata.
 
 ---
 
@@ -312,82 +198,29 @@ Post canonizationem #128, chrome compositus Frutiger-Aero × imperiale × Y2K su
 
 **Status:** `PERFECTUM pro incrementis I et II`.
 
-P17-I / #119: linea UTF-8 dynamica, backspace Unicode et mandata interna realia.
-
-P17-II / #121: historia mandatorum, transcriptum/scrollback dynamicum, sagittae et PageUp/PageDown.
-
-**Nondum shell plenus:** processus, executio externa, navigationes fasciculorum, pipes, redirectiones, environment et job control post strata systematis vera addenda sunt.
-
----
+Historia et scrollback dynamica, UTF-8 et mandata interna canonica sunt. Processus, executio externa, pipes et job control tantum post strata vera addentur.
 
 ## P18 — OFFICINA SYLVIAE
 
 **Status:** `P18-I PERFECTUM per #123`.
 
-OFFICINA est editor VINDEX nativus intra Sylviam cum:
-
-- documentis ex lineis dynamicis dupliciter vinculatis;
-- UTF-8 et scalaribus Unicode usque ad `U+10FFFF`;
-- insertione, backspace, divisione/coniunctione linearum;
-- sagittis, PageUp/PageDown et viewport;
-- statu mutationis.
-
-P19-II persistentiam huic nucleo editoris superponit sine `OE_*` ad backend firmware directe ligando.
-
----
+Editor VINDEX nativus cum documentis dynamicis, UTF-8/Unicode, insertione, navigatione et viewport canonice exstat.
 
 ## P19 — Fasciculi et persistentia Sylviae
 
-**Status:** P19-I `PERFECTUM`; P19-II `PERFECTUM`; curator ChatGPT.
+**Status:** P19-I `PERFECTUM`; P19-II `PERFECTUM`; P19-III `PARATUM` quando necessitas hardware id poscit.
 
-### P19-I — contractus fasciculorum et backend UEFI
-
-**Status:** `PERFECTUM per #125`.
-
-Canonicum:
-
-- API `FS_*` backend-neutra, tota VINDEX;
-- viae UTF-8 cum conversione UTF-16 UEFI;
-- existentia, apertura, lectio dynamica, scriptura, flush, clausura et deletio;
-- scriptura re-aperta et byte-per-byte verificata;
-- probatio 4128 octetorum, supra vetus limen 4095;
-- duo initia QEMU/OVMF eiusdem imaginis sine copia memoriae inter initia.
-
-Backend UEFI est primus backend; futura via Block I/O / `VINDEXV0` potest addi sine applicationibus mutandis. Vetus formatum slotorum fixorum non resurrectum est.
-
-### P19-II — OFFICINA persistens
-
-**Status:** `PERFECTUM per #126`.
-
-Canonicum:
-
-- `OE_*` manet editor memoriae independens;
-- `OP_*` tenet persistentiam, viam `OFFICINA.VIX` et statum I/O;
-- initium OFFICINAE fasciculum existentem automatice legit;
-- F2 per Fenestrale ad conservationem realem routatur;
-- `MODIFICATUM` tantum post scripturam, flush, re-aperturam et verificationem exactam felicem mundatur;
-- LF canonice scribitur, CRLF recipitur;
-- UTF-8 invalidum documentum bonum non corrumpit;
-- regressio canonica 4200 octeta, Unicode et round-trip exercet;
-- QEMU boot I scribit `ZEPHYR72941\nNOVAPERSISTET` (25 octeta);
-- eadem imago iterum bootatur, documentum reaperitur, `X` additur et 26 octeta iterum servantur;
-- nulla copia memoriae inter initia transfertur.
-
-### P19-III — backend persistentiae robustior / hardware
-
-**Status:** `PARATUM` post P16-VII vel cum necessitas hardware id poscit.
-
-Finis probabilis est backend directior Block I/O / volumen VINDEX cum structura moderna dynamica, non resurrectio veterum slotorum fixorum.
+API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OFFICINA persistens per duo initia eiusdem imaginis canonica sunt. Backend directior Block I/O futurus structuram modernam dynamicam adhibebit; sloti fixi historici non redeunt.
 
 ---
 
 # IV. Coordinatio agentium
 
-- P12 manet reservatum Claude; ChatGPT non duplicat #122.
-- P16-VII est `CANONIZANDUM` in #128 apud ChatGPT.
-- P19-I et P19-II sunt canonica in `main` per #125 et #126.
-- P9 potest paralleliter procedere si facultas linguae revera impedit opus systematis.
-- mutationes maioris status per PR et probationes fiunt;
+- P12 manet reservatum Claude; ChatGPT #122 non duplicat;
+- P16-XI-A asseta premium est opus ChatGPT;
+- #134 est debitum compilatoris separatum P9;
+- P19-I/P19-II sunt canonica;
+- mutationes maioris status per branch, PR et probationes fiunt;
 - omnis documentatio canonica repositorii Lingua Latina manet;
 - Git praevalet si status scriptus obsolescit.
 
@@ -395,15 +228,15 @@ Finis probabilis est backend directior Block I/O / volumen VINDEX cum structura 
 
 # V. Actio proxima
 
-1. **#128 canonizare:** omnes custodias ultimi capitis virides obtinere, PR e draft educere et P16-VII in `main` integrare;
-2. **chrome compositum:** gradientias, alpha, umbras, halos et stratos vitreos P16-VII ad fenestras, INITIUM et taskbar applicare;
-3. **iconographiam propagare:** eadem asseta rastera in INITIUM et taskbar multiplicibus scalis sine duplicatione uti;
-4. ergonomiam et densitatem typographicam cum identitate Frutiger-Aero × imperiali × Y2K maturare, semper sub framebuffer QEMU vero;
-5. TERMINALE mandata fasciculorum realia accipiat;
-6. gestorem fasciculorum Fenestralem realem construere;
-7. processuum/executionis stratum verum construere, deinde compilationem et executionem VINDEX intra Sylviam cum OFFICINA conectere;
-8. P19-III backend persistentiae robustior ad hardware quando opportunum;
-9. P12 apud Claude paralleliter pergat post correctionem #122: pontes → BAR/MMIO → interruptiones → ACPI/USB/HID.
+1. **Asseta Premium I:** quattuor iconas principales altae resolutionis secundum JL-UX crea, per PNG → SIMG II importa et variantibus multi-scala registra;
+2. **Showroom premium:** nearest historicum contra Graphica IX in framebuffer QEMU/OVMF comparare; alpha, halos, variationem colorum et scalas metiri;
+3. **Integratio iconographiae:** eadem asseta in Bureau et INITIUM sine mutatione hitbox inserere;
+4. **Chrome 9-slice:** primum ornamentum fenestrarum vere praefabricatum et scalabile super Graphica IX construere;
+5. **Microinteractiones:** cursores anti-aliased deinde materiae INITIUM/taskbar; geometria JL-UX finalis mutatione separata;
+6. **Wallpaper premium:** post shell/iconeas, multi-resolutionis et quietum, non ut substitutum progressus;
+7. TERMINALE mandata fasciculorum realia et Explorator fasciculorum post fundamenta visualia/componentium;
+8. P19-III ad hardware quando opportunum;
+9. P12 apud Claude paralleliter pergat.
 
 ---
 

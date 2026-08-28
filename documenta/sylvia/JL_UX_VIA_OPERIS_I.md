@@ -335,3 +335,75 @@ Gradus non est `CERTIFICATUM` nisi:
 ## XIV. Meta finalis
 
 Meta non est ut captura Sylviae sit pixel-perfect tabula conceptus v0.7. Meta est ut aliquando, positis iuxta se conceptu et framebuffer vero, neuter spectator dubitet quin eadem lingua visualis, eadem identitas et idem systema ibi vivant.
+
+---
+
+## XV. Reconciliatio post Graphica IX
+
+Haec sectio statum post experimenta P16-XI et post fundamenta Graphica VIII/SIMG II/Graphica IX normativum facit. Regula XI iam permittit ut defectus technicus ordinem mutet; hoc exacte accidit.
+
+### A. Cur ordo mutatus est
+
+Primum experimentum P16-XI in #132 demonstravit wallpaper solum non sufficere. Itaque ante continuationem artis canonizata sunt:
+
+- **Graphica VIII / #133** — clipping, anti-aliasing, 9-slice, bilinearis, damage, typographia atlas et coda backend-neutra;
+- **SIMG II / #136** — formatum runtime RGBA versionatum, metadata, variantes multi-scala et gestor assetorum;
+- **Importatio SIMG II / #137** — PNG artis in `.simg`, deinde lectio realis a compilatore/runtime VINDEX;
+- **Graphica IX / #139** — cache RGBA nativa, bilinearis alpha praemultiplicata, compositio framebuffer/superficiei et 9-slice premium.
+
+Haec non sunt novi fines separati; sunt fundamenta technica necessaria ut P16-XI et P16-XII vere ad JL-UX accedere possint.
+
+### B. Status #135
+
+#135, `Bureau Lucidum I — implementatio II`, ex Graphica VIII ante SIMG II et Graphica IX ortum est. Partes eius experimentales servari possunt ad historiam et portationem selectivam, sed ramus integer non canonizandus est.
+
+Praesertim rail taskbar rotundum non concordat cum nucleo JL-UX, qui testam tenuem, densam, non-fluitantem et non-pill postulat. Fenestrae finales quoque quadratae manent; radii magni ad testam principalem non transferuntur.
+
+### C. P16-XI-A — Asseta Premium I
+
+Prima tranche post Graphica IX non incipit a novo wallpaper, sed ab assetis quae differentiam rendereris statim demonstrant:
+
+1. PROGRAMMATA;
+2. TABULA;
+3. TERMINALE;
+4. OFFICINA.
+
+Iconae fiunt altae resolutionis, volumetricae, clarae et moderatim materiales. Variantes 1× / 1.5× / 2× per SIMG II registrantur. Margines translucidi deliberatim servantur ut Graphica IX alpha praemultiplicatam vere exerceat.
+
+Prima scena QEMU debet eadem asseta per nearest historicum et per Graphica IX premium iuxta se reddere. Probatio mensurat saltem varietatem colorum, absentiam halo ex RGB occulto, alpha, selectionem scalae et integritatem cache.
+
+### D. P16-XI-B — Integratio iconographiae
+
+Post showroom certificatum eadem familia in Bureau et INITIUM inseritur. In hac tranche:
+
+- hitbox historica manet;
+- launch, hover, focus, open/close/relaunch non mutantur;
+- geometria taskbar/fenestrarum non simul migratur;
+- fallback vetus tantum ut regressio/compatibilitas manere potest, non ut facies principalis.
+
+### E. P16-XI-C — Chrome novem-partium
+
+Deinde Graphica IX ad primum chrome fenestrarum praefabricatum applicatur. SIMG II metadata 9-slice angulos servat; latera et centrum ad geometriam existentem componuntur. Haec tranche probat Vitrum Minerale, Metallum Frigidum, Ebur et Lumen Molle sine alpha lata et pretiosa.
+
+### F. Sequentes beneficiarii Graphica IX
+
+Post iconas et chrome:
+
+1. cursores anti-aliased;
+2. materiae INITIUM et taskbar;
+3. wallpaper premium multi-resolutionis;
+4. deinde P16-XII iconographia maior completa et reliqua via historica.
+
+### G. Geometria finalis JL-UX
+
+Metra hodierna runtime, sicut taskbar XL px et titulus XXXVI px, sunt contractus historici probati. Canon JL-UX tamen ad densitatem classicam tendit, cum taskbar circa XXVIII px et fenestra externa quadrata.
+
+Transitus geometricus erit incrementum explicitum post probationem assetorum; non celabitur intra P16-XI-A. Sic separantur:
+
+- **qualitas raster/materialis**;
+- **geometria et hitbox**;
+- **semantica interactionis**.
+
+### H. Auctoritas
+
+Tabula conceptus JL-UX manet auctoritas directionis artisticae. Framebuffer QEMU/OVMF verus manet auctoritas executionis. Nullum mock, SVG referentiae, PNG artis aut imago generata potest statum `CERTIFICATUM` sola dare.
