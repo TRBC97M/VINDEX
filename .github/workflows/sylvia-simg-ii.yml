@@ -10,11 +10,11 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_compat_v1.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_bridge_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_assetum.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_compat_v1.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_bridge_vii.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_assetum.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/simg_ii_importa_png.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_importatorem_simg_ii.py'
       - 'documenta/sylvia/SIMG_II.md'
+      - 'documenta/sylvia/SIMG_II_IMPORTATIO.md'
       - '.github/workflows/sylvia-simg-ii.yml'
   push:
     branches:
@@ -24,11 +24,11 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_compat_v1.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_bridge_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_assetum.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_compat_v1.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_bridge_vii.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_assetum.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/simg_ii_importa_png.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_importatorem_simg_ii.py'
       - 'documenta/sylvia/SIMG_II.md'
+      - 'documenta/sylvia/SIMG_II_IMPORTATIO.md'
       - '.github/workflows/sylvia-simg-ii.yml'
 
 permissions:
@@ -36,7 +36,7 @@ permissions:
 
 jobs:
   simg-ii:
-    name: Formatum, compressio, metadata, migratio et asseta probantur
+    name: Formatum, importatio, metadata, migratio et asseta probantur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -105,6 +105,13 @@ jobs:
           chmod +x /tmp/simg-ii-assetum
           timeout 20s /tmp/simg-ii-assetum
           printf '%s\n' 'RECTE: gestor assetorum, variantes scalae et cache rastera probantur.'
+
+      - name: PNG artis per SIMG II usque ad lectorem VINDEX converte
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          python3 instrumenta/proba_importatorem_simg_ii.py
 
       - name: Contractum publicum custodi
         shell: bash
