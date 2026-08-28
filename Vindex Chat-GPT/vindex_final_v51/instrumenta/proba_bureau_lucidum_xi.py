@@ -42,6 +42,16 @@ def colores_recti(pix: bytes, w: int, x0: int, y0: int, x1: int, y1: int) -> set
     return out
 
 
+def pixeli_lucidi(pix: bytes, w: int, x0: int, y0: int, x1: int, y1: int, limen: int) -> int:
+    n = 0
+    for y in range(y0, y1):
+        for x in range(x0, x1):
+            i = (y * w + x) * 3
+            if pix[i] + pix[i+1] + pix[i+2] >= limen:
+                n += 1
+    return n
+
+
 def principale() -> int:
     if len(sys.argv) != 5:
         print('USUS: proba_bureau_lucidum_xi.py MONITOR QMP EXITUS MORA', file=sys.stderr)
@@ -75,7 +85,6 @@ def principale() -> int:
         cyan = (0, 198, 255)
         argentum = (191, 199, 207)
         bronzeum = (181, 138, 84)
-        ebur = (242, 244, 247)
 
         # Wallpaper cached debet profunditatem lucidam habere.
         caelum_altum = aux.pixel(pix, w, 500, 36)
@@ -109,14 +118,15 @@ def principale() -> int:
             print(f'DEFECIT: civitas P16-XI non satis picta bronze/aqua/silver={civ_bronze}/{civ_aqua}/{civ_silver}', file=sys.stderr)
             return 9
 
-        # Tessera PROGRAMMATA est Ebur Enamelatum/Metallum Frigidum, non vetus rectum nocturnum.
+        # Ebur Enamelatum est materia derivata, non obligatio pixelis #F2F4F7 literalis.
+        # Probamus ergo claritatem, metallum Silver, accentum Bronze et varietatem gradientiae.
         card = (18, 72, 126, 160)
-        card_ebur = copia_coloris(pix, w, *card, ebur)
-        card_aqua = copia_coloris(pix, w, *card, aqua)
+        card_lucidi = pixeli_lucidi(pix, w, *card, 600)
+        card_silver = copia_coloris(pix, w, *card, argentum)
         card_bronze = copia_coloris(pix, w, *card, bronzeum)
         card_colores = colores_recti(pix, w, *card)
-        if card_ebur < 500 or card_aqua < 20 or card_bronze < 20 or len(card_colores) < 35:
-            print(f'DEFECIT: tessera Graphica VIII incompleta ebur/aqua/bronze/colores={card_ebur}/{card_aqua}/{card_bronze}/{len(card_colores)}', file=sys.stderr)
+        if card_lucidi < 4000 or card_silver < 180 or card_bronze < 20 or len(card_colores) < 35:
+            print(f'DEFECIT: tessera Graphica VIII incompleta lucidi/silver/bronze/colores={card_lucidi}/{card_silver}/{card_bronze}/{len(card_colores)}', file=sys.stderr)
             return 10
 
         # Iconae rasterae P16-VII manent in eodem centro/hitbox.
@@ -136,14 +146,14 @@ def principale() -> int:
         taskbar_top = h - 40
         tb_top = aux.pixel(pix, w, 400, taskbar_top + 4)
         tb_bottom = aux.pixel(pix, w, 400, taskbar_top + 35)
-        if tb_top == tb_bottom:
+        if tb_top == tb_bottom or tb_top == (0, 0, 0):
             print(f'DEFECIT: taskbar IX gradientiam amisit: {tb_top}->{tb_bottom}', file=sys.stderr)
             return 12
 
         print(f'BUREAU-LUCIDUM-XI-II: caelum={caelum_altum}->{caelum_limen} aqua={aqua_supera}->{aqua_infera} limen={limen}')
         print(f'BUREAU-LUCIDUM-XI-II: arcus aqua/cyan/bronze={aq_arc}/{cy_arc}/{br_arc}')
         print(f'BUREAU-LUCIDUM-XI-II: civitas bronze/aqua/silver={civ_bronze}/{civ_aqua}/{civ_silver}')
-        print(f'BUREAU-LUCIDUM-XI-II: tessera ebur/aqua/bronze/colores={card_ebur}/{card_aqua}/{card_bronze}/{len(card_colores)}')
+        print(f'BUREAU-LUCIDUM-XI-II: tessera lucidi/silver/bronze/colores={card_lucidi}/{card_silver}/{card_bronze}/{len(card_colores)}')
         print('RECTE: P16-XI II in framebuffer vero: wallpaper cached, civitas, 9-slice, atlas et iconographia apparent.')
         return 0
     finally:
