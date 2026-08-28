@@ -1,6 +1,70 @@
 // Sylvia OS — P16-XI: compositor Bureau Lucidum I, implementatio II.
 // Wallpaper cache + Bureau Graphica VIII; fenestrae P16-VIII et testa P16-IX servantur.
 
+// Prima pictura wallpaperis quietem sinistram per campum opacum tentabat.
+// Cache historicum huius rami non reficitur ad omnem redraw: hic tantum LVII
+// lineae originariae exacte restituuntur, operatione exigua et deterministica.
+FUNCTIO IVXI_FUNDUM_SINISTRUM_RESTITUE REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT utilis SICUT NUMERUS.
+    DECLARA limen SICUT NUMERUS VALENS utilis*57/100.
+    DECLARA tertia SICUT NUMERUS VALENS limen*42/100.
+    DECLARA caelum_medium SICUT NUMERUS VALENS FV_COLOR(106,143,157).
+    DECLARA caelum_limen SICUT NUMERUS VALENS FV_COLOR(202,226,230).
+    DECLARA aqua_supera SICUT NUMERUS VALENS FV_COLOR(89,145,157).
+    DECLARA aqua_infera SICUT NUMERUS VALENS FV_COLOR(27,48,57).
+    DECLARA lat SICUT NUMERUS VALENS w*38/100.
+    DECLARA y SICUT NUMERUS VALENS limen-28.
+    DUM y<limen PERFICE
+        DECLARA numerus SICUT NUMERUS VALENS y-tertia.
+        DECLARA denominator SICUT NUMERUS VALENS limen-tertia-1.
+        DECLARA c SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(caelum_medium,caelum_limen,numerus,denominator).
+        DECLARA f SICUT NUMERUS VALENS FV_RECT(0,y,lat,1,c).
+        y=y+1.
+    FIN-DUM.
+    y=limen.
+    DUM y<limen+28 PERFICE
+        DECLARA numerus2 SICUT NUMERUS VALENS y-limen.
+        DECLARA denominator2 SICUT NUMERUS VALENS utilis-limen-1.
+        DECLARA c2 SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(aqua_supera,aqua_infera,numerus2,denominator2).
+        DECLARA f2 SICUT NUMERUS VALENS FV_RECT(0,y,lat,1,c2).
+        y=y+1.
+    FIN-DUM.
+    // Horizonis lineae canonicae post restitutionem servantur.
+    DECLARA f3 SICUT NUMERUS VALENS FV_RECT(0,limen-3,lat,1,FV_COLOR(148,190,199)).
+    f3=FV_RECT(0,limen-2,lat,1,FV_COLOR(189,239,242)).
+    f3=FV_RECT(0,limen-1,lat,1,FV_COLOR(220,239,240)).
+    f3=FV_RECT(0,limen,lat,1,FV_COLOR(115,176,185)).
+    REDDE 1.
+FIN-FUNCTIO.
+
+// P16-XI non est gradus iconographiae maioris. Via P16-VII, iam sub QEMU
+// certificata, rastera applicationum servat; Graphica VIII circa ea materiam
+// 9-slice, recta rotunda et typographiam praebet. P16-XII iconas iterum elevabit.
+FUNCTIO IVXI_BUREAU_ICONAE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT atlas SICUT TEXTUS.
+    SI IR_VALIDUS(atlas)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        SI AI_NODUS_IN_BUREAU(nodus)!=0 TUNC
+            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index).
+            DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
+            DECLARA genus SICUT NUMERUS VALENS AI_NODUS_GENUS(nodus).
+            DECLARA sx SICUT NUMERUS VALENS IVVII_ICONA_FONS_X(genus).
+            DECLARA sy SICUT NUMERUS VALENS IVVII_ICONA_FONS_Y(genus).
+            DECLARA pars SICUT NUMERUS VALENS IRVII_RECT_CREA(sx,sy,48,48).
+            DECLARA dst SICUT NUMERUS VALENS IRVII_RECT_CREA(x+30,y+8,48,48).
+            DECLARA f SICUT NUMERUS VALENS IRVII_BLIT_FB(atlas,dst,pars).
+            index=index+1.
+        FIN-SI.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
 FUNCTIO IVXI_REDDE REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     ACCIPIT fenestrae SICUT NUMERUS.
@@ -14,12 +78,13 @@ FUNCTIO IVXI_REDDE REDDENS NUMERUS.
     DECLARA f SICUT NUMERUS VALENS 0.
     SI s[42]!=0 TUNC
         f=FS_BLIT(s[42],0,0,w,utilis).
+        f=IVXI_FUNDUM_SINISTRUM_RESTITUE(w,utilis).
     ALITER
         f=FV_FUNDUM().
     FIN-SI.
     f=CXI_BUREAU_REDDE(s,applicationes).
     SI IR_VALIDUS(emblema)!=0 TUNC f=IR_BLIT_FRAMEBUFFER(164,18,emblema). FIN-SI.
-    SI IR_VALIDUS(atlas)!=0 TUNC f=CXI_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
+    SI IR_VALIDUS(atlas)!=0 TUNC f=IVXI_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
     DECLARA focus SICUT NUMERUS VALENS FI_RELEGE_FOCUS(fenestrae).
     DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
     DUM n!=0 PERFICE
