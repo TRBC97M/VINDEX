@@ -32,7 +32,7 @@ if ! command -v qemu-system-x86_64 >/dev/null 2>&1 || [ -z "$OVMF_CODE" ] || [ -
 fi
 
 printf '%s\n' 'I. Showroom Graphica VIII ut NUCLEUS.BIN construe...'
-NUCLEUS_FONS="$RADIX/systema/showroom_graphica_viii.vindex" \
+NUCLEUS_FONS="$RADIX/systema/showroom_graphica_viii_uefi.vindex" \
     bash "$UEFI/construe_uefi_purum.sh" "$TEMPORARIUM/systema.img" "$TEMPORARIUM/BOOTX64.EFI" \
     >"$TEMPORARIUM/constructio.log" 2>&1 || {
         cat "$TEMPORARIUM/constructio.log" >&2
