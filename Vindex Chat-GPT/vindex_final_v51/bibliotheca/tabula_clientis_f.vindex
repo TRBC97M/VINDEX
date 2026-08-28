@@ -1,4 +1,4 @@
-// Sylvia OS — TABULA clientis Gradus F / P16-VI.
+// Sylvia OS — TABULA clientis Gradus F / P16-VII.
 // Status, selectio cellularum et pictura intra superficiem privatam.
 
 FUNCTIO TF_CLICK REDDENS NUMERUS.
@@ -43,22 +43,28 @@ FUNCTIO TF_RENDE REDDENS NUMERUS.
     DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
     DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
     DECLARA viride_pallidum SICUT NUMERUS VALENS FV_COLOR(219,229,221).
+    DECLARA aqua_pallida SICUT NUMERUS VALENS FV_COLOR(204,232,235).
+    DECLARA album SICUT NUMERUS VALENS FV_COLOR(255,255,255).
     DECLARA grid SICUT NUMERUS VALENS FV_COLOR(205,198,184).
-    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,ebur).
+    DECLARA f SICUT NUMERUS VALENS GSVII_GRADUS_VERTICALIS(superficies,0,0,w,h,charta,ebur).
 
-    f = FS_RECT(superficies,0,0,w,34,papyrus).
+    // Fascia superior e charta in papyrum transit; bullae habent reflexum vitreum.
+    f = GSVII_GRADUS_VERTICALIS(superficies,0,0,w,34,charta,papyrus).
     f = FS_RECT(superficies,0,33,w,1,chalybs).
-    DECLARA b1 SICUT NUMERUS VALENS charta.
-    DECLARA b2 SICUT NUMERUS VALENS charta.
-    SI status == 101 TUNC b1=bronzeum. FIN-SI.
-    SI status == 102 TUNC b2=bronzeum. FIN-SI.
-    f = FS_RECT(superficies,8,5,58,24,b1).
+    DECLARA b1_top SICUT NUMERUS VALENS charta. DECLARA b1_bot SICUT NUMERUS VALENS papyrus.
+    DECLARA b2_top SICUT NUMERUS VALENS charta. DECLARA b2_bot SICUT NUMERUS VALENS papyrus.
+    SI status == 101 TUNC b1_top=FV_COLOR(222,181,126). b1_bot=bronzeum. FIN-SI.
+    SI status == 102 TUNC b2_top=FV_COLOR(112,166,157). b2_bot=viride. FIN-SI.
+    f = GSVII_GRADUS_VERTICALIS(superficies,8,5,58,24,b1_top,b1_bot).
+    f = GSVII_RECT_ALPHA(superficies,10,7,54,7,album,84).
     f = FS_TEXTUM(superficies,16,13,"NOVUM",nox).
-    f = FS_RECT(superficies,72,5,58,24,b2).
+    f = GSVII_GRADUS_VERTICALIS(superficies,72,5,58,24,b2_top,b2_bot).
+    f = GSVII_RECT_ALPHA(superficies,74,7,54,7,album,84).
     f = FS_TEXTUM(superficies,82,13,"SERVA",nox).
 
-    // Formula regio pallida, cum accentu viridi quieto.
-    f = FS_RECT(superficies,8,38,w-16,20,charta).
+    // Formula regio translucida super chartam.
+    f = GSVII_GRADUS_HORIZONTALIS(superficies,8,38,w-16,20,charta,aqua_pallida).
+    f = GSVII_RECT_ALPHA(superficies,10,40,w-20,6,album,96).
     f = FS_RECT(superficies,8,38,2,20,viride).
     SI status >= 1 && status <= 96 TUNC
         f = FS_TEXTUM(superficies,18,44,"CELLA SELECTA",viride).
@@ -71,10 +77,12 @@ FUNCTIO TF_RENDE REDDENS NUMERUS.
     DECLARA gw SICUT NUMERUS VALENS w - 44.
     DECLARA gh SICUT NUMERUS VALENS h - 84.
     SI gw <= 0 || gh <= 22 TUNC REDDE 1. FIN-SI.
-    f = FS_RECT(superficies,8,top,26,gh,papyrus).
-    f = FS_RECT(superficies,left,top,gw,22,papyrus).
-    f = FS_RECT(superficies,left,top+22,gw,gh-22,charta).
+    f = GSVII_GRADUS_HORIZONTALIS(superficies,8,top,26,gh,papyrus,ebur).
+    f = GSVII_GRADUS_VERTICALIS(superficies,left,top,gw,22,charta,papyrus).
+    f = GSVII_GRADUS_VERTICALIS(superficies,left,top+22,gw,gh-22,FV_COLOR(253,252,248),charta).
+    f = GSVII_RECT_ALPHA(superficies,left+2,top+24,gw-4,18,album,38).
     f = FS_RECT(superficies,left,top,gw,1,chalybs).
+
     DECLARA col SICUT NUMERUS VALENS 0.
     DUM col <= 8 PERFICE
         DECLARA gx SICUT NUMERUS VALENS left + col * gw / 8.
@@ -87,6 +95,7 @@ FUNCTIO TF_RENDE REDDENS NUMERUS.
         f = FS_RECT(superficies,8,gy,w-18,1,grid).
         row = row + 1.
     FIN-DUM.
+
     SI status >= 1 && status <= 96 TUNC
         DECLARA index SICUT NUMERUS VALENS status - 1.
         DECLARA sc SICUT NUMERUS VALENS index % 8.
@@ -95,12 +104,14 @@ FUNCTIO TF_RENDE REDDENS NUMERUS.
         DECLARA x1 SICUT NUMERUS VALENS left + (sc + 1) * gw / 8.
         DECLARA y0 SICUT NUMERUS VALENS top + 22 + sr * (gh - 22) / 12.
         DECLARA y1 SICUT NUMERUS VALENS top + 22 + (sr + 1) * (gh - 22) / 12.
-        f = FS_RECT(superficies,x0+2,y0+2,x1-x0-4,y1-y0-4,viride_pallidum).
+        f = GSVII_GRADUS_VERTICALIS(superficies,x0+2,y0+2,x1-x0-4,y1-y0-4,FV_COLOR(236,246,242),viride_pallidum).
+        f = GSVII_RECT_ALPHA(superficies,x0+4,y0+4,x1-x0-8,(y1-y0-8)/2,album,70).
         f = FS_RECT(superficies,x0+2,y0+2,x1-x0-4,2,bronzeum).
         f = FS_RECT(superficies,x0+2,y0+2,2,y1-y0-4,bronzeum).
         f = FS_RECT(superficies,x0+2,y1-4,x1-x0-4,2,bronzeum).
         f = FS_RECT(superficies,x1-4,y0+2,2,y1-y0-4,bronzeum).
     FIN-SI.
+
     SI status == 101 TUNC f = FS_TEXTUM(superficies,144,13,"NOVUM: ACTIO CLIENTIS",lapis). FIN-SI.
     SI status == 102 TUNC f = FS_TEXTUM(superficies,144,13,"SERVA: ACTIO CLIENTIS",lapis). FIN-SI.
     REDDE 1.
