@@ -124,7 +124,7 @@ Haec Officina ecosystematis VINDEX est, non eadem applicatio ac OFFICINA SYLVIAE
 
 **Status:** `PERFECTUM et crescens`.
 
-`tests/run_tests.sh` nunc **XXXIV probationes rectas, nulla errata** refert.
+`tests/run_tests.sh` nunc **XXXV probationes rectas, nulla errata** refert.
 
 Inter alia probantur:
 
@@ -135,9 +135,10 @@ Inter alia probantur:
 - TERMINALE P17-I/P17-II;
 - OFFICINA SYLVIAE P18-I;
 - P19-II: documentum 4200+ octetorum, Unicode, serializatio, restitutio et round-trip;
+- P16-VII: atlas SIMG XCVI×XCVI, quattuor iconae XLVIII×XLVIII, recta fontis/destinationis compacta et lectio rastera;
 - Fenestrale II integrum.
 
-Custodiae separatae QEMU/OVMF exercent catenam historicam, PS/2, P16, TERMINALE, OFFICINAM, P19-I et P19-II. P19-II duobus initiis eiusdem imaginis persistentiam applicationis comprobat.
+Custodiae separatae QEMU/OVMF exercent catenam historicam, PS/2, P16, TERMINALE, OFFICINAM, P19-I et P19-II. P16-VII custodiam QEMU graphicam dedicatam habet quae emblema et quattuor regiones iconarum in framebuffer vero separat et metitur. P19-II duobus initiis eiusdem imaginis persistentiam applicationis comprobat.
 
 ---
 
@@ -257,7 +258,7 @@ Primum HTML/CSS/textus/nexus/scroll et HTTPS; postea imagines, formae, cookies, 
 
 ## P16 — Forma et ambitus Fenestralis modernus
 
-**Status:** `PERFECTUM pro incrementis I–VI`; incrementum VII `ACTIVUM`.
+**Status:** `PERFECTUM pro incrementis I–VI`; incrementum VII `CANONIZANDUM per #128`.
 
 - P16-I / #113 — metra visualia moderna et taskbar;
 - P16-II / #114 — INITIUM functionale;
@@ -281,21 +282,29 @@ Canonicum:
 
 ### P16-VII — Capacitas Graphica Sylviae
 
-**Status:** `ACTIVUM`; curator ChatGPT; ramus `chatgpt/capacitas-graphica-sylviae-vii`.
+**Status:** `CANONIZANDUM per #128`; curator ChatGPT; ramus `chatgpt/capacitas-graphica-sylviae-vii`.
 
 Finis est non mera nova skin, sed amplificatio renderer VINDEX ut Sylvia imagines et compositiones multo divitiores vere pingere possit.
 
-Incrementum VII primum complectatur:
+In #128 probatum:
 
-- interpolationem colorum et gradientias horizontales/verticales;
-- compositionem alpha software super framebuffer/superficies;
-- umbras graduatas et halos sine backend externo;
-- primitiveas panelorum vitreorum/lucidorum et marginum plurium stratorum;
-- contractum imaginum rasterarum et loader resourceorum nativum;
-- probationes canonicas puras et QEMU framebuffer reales;
-- nullam mutationem hitbox vel semanticam applicationum nisi separatim probatam.
+- interpolatio colorum et gradientiae horizontales/verticales;
+- compositio alpha software super framebuffer et superficies clientium;
+- umbrae graduatae, halos et primitiveae compositionis sine backend externo;
+- contractus `SIMG v1` RGBA8888 et lectio pixelorum;
+- decoder palette/RLE generalis qui asseta compacta in SIMG expandit;
+- blit partium, recta source/destinationis compacta et scala nearest-neighbor;
+- emblema Sylviae rasterum XXXII×XXXII;
+- atlas XCVI×XCVI cum quattuor iconis rasteris XLVIII×XLVIII pro PROGRAMMATA, TABULA, TERMINALE et OFFICINA;
+- compositor finalis cuius ordo est fundum → bureau → rastera → fenestrae → INITIUM → taskbar → cursor;
+- custodia QEMU/OVMF dedicata quae in framebuffer vero emblema et quattuor iconae separat et metitur;
+- `tests/run_tests.sh` ad XXXV probationes canonicas auctum;
+- vetus limes staticus 212999 octetorum e verificatore VINDEX amotus; systema integrum ultra illum limitem verificatur et compilatur;
+- nulla mutatio hitbox, focus, semantica applicationum aut puritatis VINDEX.
 
-Post has facultates, iconographia vera et chrome Frutiger-Aero / imperiale / Y2K super ipsas primitiveas construantur, non per rectangula manualia dispersa.
+Probatio QEMU P16-VII mensuras iconarum rasterarum `936,907,984,822` rettulit et totam viam `OVMF → BOOTX64.EFI [VINDEX] → FENESTRALE II [VINDEX] → PS/2 [VINDEX] → FRAMEBUFFER` sine C servavit.
+
+Post canonizationem #128, chrome compositus Frutiger-Aero × imperiale × Y2K super has primitiveas novas construatur; nullae picturae simulatae loco framebuffer veri pro probatione adhibeantur.
 
 ---
 
@@ -375,7 +384,7 @@ Finis probabilis est backend directior Block I/O / volumen VINDEX cum structura 
 # IV. Coordinatio agentium
 
 - P12 manet reservatum Claude; ChatGPT non duplicat #122.
-- P16-VII est opus activum ChatGPT.
+- P16-VII est `CANONIZANDUM` in #128 apud ChatGPT.
 - P19-I et P19-II sunt canonica in `main` per #125 et #126.
 - P9 potest paralleliter procedere si facultas linguae revera impedit opus systematis.
 - mutationes maioris status per PR et probationes fiunt;
@@ -386,10 +395,10 @@ Finis probabilis est backend directior Block I/O / volumen VINDEX cum structura 
 
 # V. Actio proxima
 
-1. **P16-VII — Capacitas Graphica:** gradientias, alpha, umbras graduatas et compositionem software canonizare;
-2. **P16-VII — Imagines:** contractum rasterarum/resourceorum et blit cum alpha construere;
-3. **Iconographia vera:** PROGRAMMATA, TABULA, TERMINALE, OFFICINA et emblemata Sylviae ut assets reales pingere et sub QEMU probare;
-4. chrome Frutiger-Aero × imperiale × Y2K super primitiveas novas reficere, sine regressione P16–P19;
+1. **#128 canonizare:** omnes custodias ultimi capitis virides obtinere, PR e draft educere et P16-VII in `main` integrare;
+2. **chrome compositum:** gradientias, alpha, umbras, halos et stratos vitreos P16-VII ad fenestras, INITIUM et taskbar applicare;
+3. **iconographiam propagare:** eadem asseta rastera in INITIUM et taskbar multiplicibus scalis sine duplicatione uti;
+4. ergonomiam et densitatem typographicam cum identitate Frutiger-Aero × imperiali × Y2K maturare, semper sub framebuffer QEMU vero;
 5. TERMINALE mandata fasciculorum realia accipiat;
 6. gestorem fasciculorum Fenestralem realem construere;
 7. processuum/executionis stratum verum construere, deinde compilationem et executionem VINDEX intra Sylviam cum OFFICINA conectere;
