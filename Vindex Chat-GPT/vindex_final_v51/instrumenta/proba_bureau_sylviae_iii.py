@@ -41,7 +41,7 @@ def principale() -> int:
         time.sleep(mora)
 
         nox = (28, 31, 32)
-        lapis = (49, 55, 55)
+        papyrus = (215, 205, 185)
         activum = (91, 69, 48)
         bronzeum = (185, 138, 82)
 
@@ -72,8 +72,8 @@ def principale() -> int:
         pos_p = aux.move_ad(monitor, out, 'bureau-programmata', 70, 110, w, h)
         aux.captura(monitor, hover_p)
         _, _, pix_hover_p = aux.ppm(hover_p)
-        if aux.pixel(pix_hover_p, w, 20, 74) != lapis:
-            print(f'DEFECIT: hover PROGRAMMATA lapideus non detectus: {aux.pixel(pix_hover_p,w,20,74)} cursor={pos_p}', file=sys.stderr)
+        if aux.pixel(pix_hover_p, w, 20, 74) != papyrus:
+            print(f'DEFECIT: hover PROGRAMMATA papyraceus non detectus: {aux.pixel(pix_hover_p,w,20,74)} cursor={pos_p}', file=sys.stderr)
             return 8
 
         aux.click(monitor)
@@ -114,7 +114,7 @@ def principale() -> int:
         mut_t = aux.differentiae(pix_clausum, pix_t)
         print(f'BUREAU-VI: cursor_init={init_pos} programmata={pos_p} clausura={pos_close} tabula={pos_t}')
         print(f'BUREAU-VI: launch_programmata_pixeli={mut_p} clausura_pixeli={mut_close} launch_tabula_pixeli={mut_t}')
-        print('RECTE: P16-VI bureau lapideum applicationes aperit, claudit et relaunchat per PS/2.')
+        print('RECTE: P16-VI bureau papyraceum applicationes aperit, claudit et relaunchat per PS/2.')
         return 0
     finally:
         try:
