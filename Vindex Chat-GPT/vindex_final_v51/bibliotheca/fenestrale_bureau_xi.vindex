@@ -251,6 +251,7 @@ FUNCTIO CXI_BUREAU_REDDE REDDENS NUMERUS.
     DECLARA materia SICUT TEXTUS VALENS TEXTUS_EX_SEDE(s[43]).
     DECLARA fons SICUT NUMERUS VALENS s[44].
     DECLARA margines SICUT NUMERUS VALENS GVIII_MARGINES_CREA(8,8,8,8).
+    DECLARA f SICUT NUMERUS VALENS 1.
 
     // Marca Sylviae: atlas anti-aliased Graphica VIII, non bitmap 8x8.
     SI TVIII_FONS_VALIDUS(fons)!=0 TUNC
@@ -276,7 +277,6 @@ FUNCTIO CXI_BUREAU_REDDE REDDENS NUMERUS.
             DECLARA hover SICUT NUMERUS VALENS 0.
             SI s[11]>=x && s[11]<x+lat && s[12]>=y && s[12]<y+alt TUNC hover=1. FIN-SI.
 
-            // Umbra externa tantum, ut via frequens PS/2 celeris maneat.
             f=GVII_UMBRA_GRADATA(x,y,lat,alt,4,umbra,86).
             DECLARA ora SICUT NUMERUS VALENS argentum.
             SI hover!=0 TUNC ora=aqua. FIN-SI.
@@ -291,7 +291,6 @@ FUNCTIO CXI_BUREAU_REDDE REDDENS NUMERUS.
                 f=FV_RECT(x+5,y+alt-4,lat-10,2,bronzeum).
             FIN-SI.
 
-            // Recessus iconis: graphite frigidum contra Ebur Enamelatum.
             f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(x+27,y+5,54,54),7,graphite).
             f=FV_RECT(x+33,y+6,42,1,cool).
             f=FV_RECT(x+33,y+57,42,1,bronzeum).
