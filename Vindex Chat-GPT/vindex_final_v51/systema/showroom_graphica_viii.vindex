@@ -8,6 +8,7 @@ IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
 IMPORTA "bibliotheca/imago_raster_vii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_viii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_interpolatio_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_damage_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_commandos_viii.vindex".
