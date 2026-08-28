@@ -1,6 +1,7 @@
 // Sylvia OS — Capacitas Graphica VIII: coda commandorum renderis.
 // Unum mandatum = XLVIII octeta: opcode,a,b,c,d,e. Descriptor = XXXII octeta.
 // Eadem coda hodie backend software exercetur; post BAR/MMIO backend acceleratus eam consumere poterit.
+IMPORTA "bibliotheca/fenestrale_interpolatio_viii.vindex".
 
 FUNCTIO QVIII_CREA REDDENS NUMERUS.
     ACCIPIT capacitas SICUT NUMERUS.
