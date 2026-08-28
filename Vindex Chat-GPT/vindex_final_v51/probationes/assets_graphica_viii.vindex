@@ -33,6 +33,17 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-DUM.
     SI semialpha<200 || plenum<200 TUNC REDDE 6. FIN-SI.
 
+    // ASCII XXXII: spatium nullum pixel alpha ferre potest.
+    DECLARA sy SICUT NUMERUS VALENS 0.
+    DUM sy<20 PERFICE
+        DECLARA sx SICUT NUMERUS VALENS 0.
+        DUM sx<16 PERFICE
+            SI ((IR_PIXEL_RGBA(atlas,sx,sy)>>24)&255)!=0 TUNC REDDE 12. FIN-SI.
+            sx=sx+1.
+        FIN-DUM.
+        sy=sy+1.
+    FIN-DUM.
+
     DECLARA materia SICUT TEXTUS VALENS MUIVIII_CREA().
     SI IR_VALIDUS(materia)==0 || IR_LATITUDO(materia)!=32 || IR_ALTITUDO(materia)!=32 TUNC REDDE 7. FIN-SI.
     DECLARA angulus SICUT NUMERUS VALENS IR_PIXEL_RGBA(materia,0,0).
