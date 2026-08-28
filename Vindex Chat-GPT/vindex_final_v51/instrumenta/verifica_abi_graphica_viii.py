@@ -10,6 +10,7 @@ RADIX = Path(__file__).resolve().parents[1]
 ARCHIVA = [
     RADIX / "bibliotheca/fenestrale_graphica_viii.vindex",
     RADIX / "bibliotheca/fenestrale_graphica_viii_superficies.vindex",
+    RADIX / "bibliotheca/fenestrale_interpolatio_viii.vindex",
     RADIX / "bibliotheca/fenestrale_damage_viii.vindex",
     RADIX / "bibliotheca/fenestrale_typographia_viii.vindex",
     RADIX / "bibliotheca/fenestrale_commandos_viii.vindex",
