@@ -1,0 +1,152 @@
+// Sylvia OS — Graphica IX: showroom rasterae premium in framebuffer vero.
+// Hic non est facies finalis Sylviae; differentiam nearest/premium et 9-slice
+// in ambiente UEFI reali probat.
+
+FUNCTIO SGIX_PIXELA_ICONAE REDDENS TEXTUS.
+    DECLARA pix SICUT TEXTUS VALENS SII_TEXTUS_CREA(256).
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(pix).
+    SI b==0 TUNC REDDE 0. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<8 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<8 PERFICE
+            DECLARA locus SICUT NUMERUS VALENS b+(y*8+x)*4.
+            // Color caeruleus occultus in pixelis transparentibus deliberate adest.
+            DECLARA r SICUT NUMERUS VALENS 0.
+            DECLARA g SICUT NUMERUS VALENS 0.
+            DECLARA c SICUT NUMERUS VALENS 255.
+            DECLARA a SICUT NUMERUS VALENS 0.
+            SI x>=1 && x<=6 && y>=1 && y<=6 TUNC
+                r=189. g=239. c=242. a=255.
+            FIN-SI.
+            SI x>=3 && x<=4 && y>=3 && y<=4 TUNC
+                r=181. g=138. c=84. a=255.
+            FIN-SI.
+            SCRIBE_OCTETUM_AB(locus,r).
+            SCRIBE_OCTETUM_AB(locus+1,g).
+            SCRIBE_OCTETUM_AB(locus+2,c).
+            SCRIBE_OCTETUM_AB(locus+3,a).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE pix.
+FIN-FUNCTIO.
+
+FUNCTIO SGIX_PIXELA_PANELIS REDDENS TEXTUS.
+    DECLARA pix SICUT TEXTUS VALENS SII_TEXTUS_CREA(256).
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(pix).
+    SI b==0 TUNC REDDE 0. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<8 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<8 PERFICE
+            DECLARA locus SICUT NUMERUS VALENS b+(y*8+x)*4.
+            DECLARA r SICUT NUMERUS VALENS 74.
+            DECLARA g SICUT NUMERUS VALENS 96.
+            DECLARA c SICUT NUMERUS VALENS 114.
+            DECLARA a SICUT NUMERUS VALENS 235.
+            SI y<2 TUNC r=189. g=239. c=242. a=255. FIN-SI.
+            SI y>=6 TUNC r=181. g=138. c=84. a=255. FIN-SI.
+            SI x<2 || x>=6 TUNC
+                SI y>=2 && y<6 TUNC r=191. g=199. c=207. a=245. FIN-SI.
+            FIN-SI.
+            SCRIBE_OCTETUM_AB(locus,r).
+            SCRIBE_OCTETUM_AB(locus+1,g).
+            SCRIBE_OCTETUM_AB(locus+2,c).
+            SCRIBE_OCTETUM_AB(locus+3,a).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE pix.
+FIN-FUNCTIO.
+
+FUNCTIO SGIX_TEXTUM REDDENS NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT gw SICUT NUMERUS.
+    ACCIPIT gh SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    REDDE TVIII_TEXTUM_FB(fons,GVIII_RECT_CREA(x,y,gw,gh),1,textus,color,255).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI w<1024 || h<700 TUNC REDDE 6. FIN-SI.
+
+    DECLARA graphite SICUT NUMERUS VALENS FV_COLOR(26,29,32).
+    DECLARA frigidum SICUT NUMERUS VALENS FV_COLOR(74,96,114).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA cyan SICUT NUMERUS VALENS FV_COLOR(0,198,255).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA atrum SICUT NUMERUS VALENS FV_COLOR(7,11,14).
+
+    DECLARA atlas SICUT TEXTUS VALENS FUIVIII_CREA().
+    SI IR_VALIDUS(atlas)==0 TUNC REDDE 7. FIN-SI.
+    DECLARA fons SICUT NUMERUS VALENS TVIII_FONS_CREA(atlas,16,16,20,32,95).
+    SI fons==0 TUNC REDDE 8. FIN-SI.
+
+    DECLARA pix SICUT TEXTUS VALENS SGIX_PIXELA_ICONAE().
+    DECLARA icona SICUT TEXTUS VALENS SII_CREA_RGBA(8,8,pix,0,2,2000).
+    SI SII_VALIDUS(icona)==0 TUNC REDDE 9. FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS AII_CREA(2000).
+    SI gestor==0 || AII_ADDE(gestor,101,icona)==0 TUNC REDDE 10. FIN-SI.
+
+    DECLARA pp SICUT TEXTUS VALENS SGIX_PIXELA_PANELIS().
+    DECLARA panel SICUT TEXTUS VALENS SII_CREA_RGBA(8,8,pp,0,3,1000).
+    SI SII_VALIDUS(panel)==0 TUNC REDDE 11. FIN-SI.
+    SI SII_META_NOVEM(panel,2,2,2,2)==0 TUNC REDDE 12. FIN-SI.
+    SI AII_ADDE(gestor,202,panel)==0 TUNC REDDE 13. FIN-SI.
+
+    DECLARA f SICUT NUMERUS VALENS GVII_GRADUS_VERTICALIS(0,0,w,h,FV_COLOR(22,31,37),FV_COLOR(8,18,25)).
+    f=FV_RECT(54,42,w-108,h-84,graphite).
+    f=GVII_UMBRA_GRADATA(54,42,w-108,h-84,10,atrum,80).
+    f=FV_RECT(78,112,w-156,2,bronzeum).
+    f=FV_RECT(78,115,w-156,1,aqua).
+
+    f=SGIX_TEXTUM(fons,82,62,16,20,"GRAPHICA IX",ebur).
+    f=SGIX_TEXTUM(fons,82,88,10,14,"SIMG II / ALPHA PREMULTIPLICATA / BILINEAR",aqua).
+
+    // Duo campi identici: sinistra nearest veteris pipeline, dextra Graphica IX.
+    f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(92,154,490,330),18,frigidum).
+    f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(610,154,490,330),18,frigidum).
+    f=FV_RECT(110,172,454,294,FV_COLOR(20,27,31)).
+    f=FV_RECT(628,172,454,294,FV_COLOR(20,27,31)).
+    f=SGIX_TEXTUM(fons,118,182,12,16,"VETUS: NEAREST",argentum).
+    f=SGIX_TEXTUM(fons,636,182,12,16,"NOVUM: PREMIUM",ebur).
+
+    DECLARA vetus SICUT TEXTUS VALENS AII_V1_CACHE(gestor,101).
+    SI IR_VALIDUS(vetus)==0 TUNC REDDE 14. FIN-SI.
+    f=GVIII_SIMG_SCALA_FB(vetus,GVIII_RECT_CREA(224,224,220,220),255).
+    f=GIX_ASSET_LINEAR_FB(gestor,101,GVIII_RECT_CREA(742,224,220,220),255).
+
+    // 9-slice nativum SIMG II per renderer premium.
+    f=GIX_ASSET_NOVEM_FB(gestor,202,GVIII_RECT_CREA(92,516,1008,112),255).
+    f=SGIX_TEXTUM(fons,122,544,12,16,"SIMG II 9-SLICE PREMIUM",ebur).
+    f=SGIX_TEXTUM(fons,122,572,10,14,"AQUA / METALLUM FRIGIDUM / BRONZE",graphite).
+
+    // Eadem rastera in superficie privata, deinde blit in framebuffer.
+    DECLARA superficies SICUT NUMERUS VALENS FS_CREA(420,72).
+    SI superficies==0 TUNC REDDE 15. FIN-SI.
+    f=FS_RECT(superficies,0,0,420,72,graphite).
+    f=GIX_ASSET_LINEAR_S(superficies,gestor,101,GVIII_RECT_CREA(12,8,56,56),255).
+    f=FS_TEXTUM(superficies,86,28,"SUPERFICIES GRAPHICA IX",ebur).
+    f=FS_BLIT(superficies,386,654,420,72).
+
+    f=SGIX_TEXTUM(fons,82,h-46,9,12,"decode semel / compone saepe / backend-neutrum",argentum).
+
+    // Framebuffer stabilis usque ad capturam QEMU.
+    DECLARA pausa SICUT NUMERUS VALENS 0.
+    DUM 1==1 PERFICE
+        pausa=pausa+1.
+        SI pausa>1000000 TUNC pausa=0. FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.

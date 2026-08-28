@@ -5,7 +5,8 @@
 // Gestor: +0 caput, +8 cauda, +16 numerus, +24 scala petita, +32 generatio.
 // Nodus LXXX octeta:
 // +0 proximus, +8 id, +16 genus, +24 scala, +32 imago II,
-// +40 cache SIMG I, +48 latitudo, +56 altitudo, +64 usus, +72 reservatum.
+// +40 cache SIMG I, +48 latitudo, +56 altitudo, +64 usus,
+// +72 cache RGBA decodificata nativa.
 
 FUNCTIO AII_CREA REDDENS NUMERUS.
     ACCIPIT scala SICUT NUMERUS.
@@ -99,6 +100,18 @@ FUNCTIO AII_IMAGO REDDENS TEXTUS.
         REDDE 0.
     FIN-SI.
     REDDE CONTENTUM(nodus+32).
+FIN-FUNCTIO.
+
+FUNCTIO AII_LATITUDO REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus<=0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(nodus+48).
+FIN-FUNCTIO.
+
+FUNCTIO AII_ALTITUDO REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus<=0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(nodus+56).
 FIN-FUNCTIO.
 
 FUNCTIO AII_VARIANS_EXACTA REDDENS NUMERUS.
@@ -234,6 +247,23 @@ FUNCTIO AII_V1_CACHE REDDENS TEXTUS.
             REDDE 0.
         FIN-SI.
         CONTENTUM(n+40)=cache.
+    FIN-SI.
+    CONTENTUM(n+64)=CONTENTUM(n+64)+1.
+    REDDE cache.
+FIN-FUNCTIO.
+
+FUNCTIO AII_RGBA_CACHE REDDENS TEXTUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS AII_OPTIMUM_NODUS(gestor,id).
+    SI n==0 TUNC REDDE 0. FIN-SI.
+    DECLARA cache SICUT NUMERUS VALENS CONTENTUM(n+72).
+    SI cache==0 TUNC
+        DECLARA imago SICUT TEXTUS VALENS CONTENTUM(n+32).
+        DECLARA rgba SICUT TEXTUS VALENS SII_EXPANDE_RGBA(imago).
+        cache=SII_TEXTUS_SEDES(rgba).
+        SI cache==0 TUNC REDDE 0. FIN-SI.
+        CONTENTUM(n+72)=cache.
     FIN-SI.
     CONTENTUM(n+64)=CONTENTUM(n+64)+1.
     REDDE cache.
