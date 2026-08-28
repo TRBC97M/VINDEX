@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-VII: metra, identitas et emblema rasterum Sylviae sub UEFI/QEMU comprobantur."""
+"""P16-VII: identitas, emblema et iconographia rastera sub UEFI/QEMU comprobantur."""
 from __future__ import annotations
 
 import socket
@@ -120,12 +120,12 @@ def principale() -> int:
             print("DEFECIT: regio systematis dextra lapidea deest", file=sys.stderr)
             return 8
 
-        # Hitbox bureau manet P16-III, sed tesserae iam nocturnae sunt.
+        # Hitbox bureau P16-III manet; cardines P16-VI non moventur.
         if pixel(pix, w, 20, 74) != nox:
-            print(f"DEFECIT: tessera PROGRAMMATA bureau nova deest: {pixel(pix,w,20,74)}", file=sys.stderr)
+            print(f"DEFECIT: tessera PROGRAMMATA bureau deest: {pixel(pix,w,20,74)}", file=sys.stderr)
             return 9
         if pixel(pix, w, 20, 178) != nox:
-            print(f"DEFECIT: tessera TABULA bureau nova deest: {pixel(pix,w,20,178)}", file=sys.stderr)
+            print(f"DEFECIT: tessera TABULA bureau deest: {pixel(pix,w,20,178)}", file=sys.stderr)
             return 10
 
         # Marca SYLVIA 2× manet contractus typographicus, nunc eburnea.
@@ -135,8 +135,6 @@ def principale() -> int:
             return 11
 
         # P16-VII: emblema XXXII×XXXII est SIMG rasterum verum ad (164,18).
-        # Duo pixela opaca exacta et copia colorum propria probant asset + blit,
-        # non solam mutationem genericam regionis.
         gemma = (234, 255, 255)
         centrum = (75, 81, 73)
         aes_iconis = (198, 147, 73)
@@ -152,11 +150,36 @@ def principale() -> int:
             print(f"DEFECIT: copia pixelorum emblematis nimis parva: gemma={gemmae} aes={aera}", file=sys.stderr)
             return 14
 
+        # Quattuor applicationes nunc atlas SIMG XCVI×XCVI utuntur. Singulae
+        # tesserae XLVIII×XLVIII separatim probantur, ne simplex pictogramma
+        # rectangulare vetus hanc custodiam accidentaliter satisfaciat.
+        centra = (
+            ("PROGRAMMATA", 72, 104, (236, 194, 113)),
+            ("TABULA", 72, 208, (201, 154, 82)),
+            ("TERMINALE", 72, 312, (17, 28, 33)),
+            ("OFFICINA", 72, 416, (232, 232, 217)),
+        )
+        for nomen, x, y, exspectatum in centra:
+            visum = pixel(pix, w, x, y)
+            if visum != exspectatum:
+                print(f"DEFECIT: centrum iconis {nomen} rasterae: {visum} loco {exspectatum}", file=sys.stderr)
+                return 15
+
+        raster_nox = (27, 30, 31)
+        copiae_iconarum: list[int] = []
+        for y0 in (80, 184, 288, 392):
+            copia = numerus_coloris_in_recto(pix, w, 48, y0, 96, y0 + 48, raster_nox)
+            copiae_iconarum.append(copia)
+            if copia < 600:
+                print(f"DEFECIT: tessera rastera ad y={y0} incompleta est: nox={copia}", file=sys.stderr)
+                return 16
+
         colores = Counter(tuple(pix[i:i+3]) for i in range(0, len(pix)-2, 3))
         print(f"FORMA-VII: resolutio={w}x{h} taskbar=40 titulus=36")
         print(f"FORMA-VII: linea_bronzea={linea_bronzea} linea_nocturna={linea_nocturna} ebur_bureau_2x={ebur_tituli}")
         print(f"FORMA-VII: emblema_gemma={gemmae} emblema_aes={aera} colores_distincti={sum(1 for _,n in colores.items() if n>30)}")
-        print("RECTE: P16-VII identitas et emblema SIMG rasterum sub UEFI vere pinguntur.")
+        print(f"FORMA-VII: iconae_rasterae={','.join(str(n) for n in copiae_iconarum)}")
+        print("RECTE: P16-VII emblema et quattuor iconae SIMG rasterae sub UEFI vere pinguntur.")
         return 0
     finally:
         try:
