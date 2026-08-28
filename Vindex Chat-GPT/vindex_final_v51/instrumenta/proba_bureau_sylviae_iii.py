@@ -83,8 +83,8 @@ def principale() -> int:
             return 5
 
         taskbar_top = h - 40
-        # x=300 est in corpore vacuo/activo et longe a glyphis tituli.
-        corpus_x = 300
+        # x=240 est intra clavem activam capta ad CXCVI px et extra glyphas tituli.
+        corpus_x = 240
         vac_body = aux.pixel(pix_ante, w, corpus_x, taskbar_top + 20)
         vac_lumen = aux.pixel(pix_ante, w, corpus_x, taskbar_top + 7)
         if vac_body != graphite or vac_lumen != aqua_xi:
