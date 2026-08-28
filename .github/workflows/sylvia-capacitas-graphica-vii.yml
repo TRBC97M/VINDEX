@@ -8,8 +8,10 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
   pull_request:
     branches:
@@ -17,8 +19,10 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
 
 permissions:
@@ -55,3 +59,13 @@ jobs:
           chmod +x /tmp/imago-raster-vii
           /tmp/imago-raster-vii
           printf '%s\n' 'RECTE: P16-VII SIMG v1 RGBA8888 validatur et pixela leguntur.'
+
+      - name: Emblema Sylviae rasterum compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/emblema_sylviae_vii.vindex /tmp/emblema-sylviae-vii
+          chmod +x /tmp/emblema-sylviae-vii
+          /tmp/emblema-sylviae-vii
+          printf '%s\n' 'RECTE: P16-VII emblema XXXII per palette, RLE et SIMG restituitur.'
