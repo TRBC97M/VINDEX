@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fenestrale II Purus P16-VI sub UEFI cum mure PS/2 nativo comprobat."""
+"""Fenestrale II Purus P16-XI sub UEFI cum mure PS/2 nativo comprobat."""
 from __future__ import annotations
 
 import json
@@ -120,18 +120,20 @@ def principale() -> int:
         acervus_octeta = hexa_hmp(hmp(monitor, "xp /32bx 0x02000000"))[:32]
         captura(monitor, ante); w1, h1, pix1 = ppm(ante)
         colores, distincti, communes, dominans = pictura_structura(pix1)
-        nox = (28,31,32)
+        # Signa visualia stabilia currentis canonis JL-UX. Graphite #1A1D20
+        # substituit colorem planum P16-VI; bronzeum et ebur manent in testa.
+        graphite = (26,29,32)
         bronzeum = (185,138,82)
         ebur = (241,238,228)
-        signa = {nox: colores[nox], bronzeum: colores[bronzeum], ebur: colores[ebur]}
+        signa = {graphite: colores[graphite], bronzeum: colores[bronzeum], ebur: colores[ebur]}
         print(f"FENESTRALE: gradus_diagnostici={gradus}/{gradus_eg} metadata={metadata}")
         print(f"FENESTRALE: acervus_qword={acervus}")
         print(f"FENESTRALE: acervus_octeta={acervus_octeta}")
         print(f"FENESTRALE: ps2_ante={ante_ps2} signa={signa} colores_communes={communes}")
         if (w1, h1) != (1280, 800): print(f"DEFECIT: resolutio {w1}x{h1}", file=sys.stderr); return 7
         if distincti < 8 or dominans > (w1*h1*97//100): print(f"DEFECIT: pictura nimis simplex: distincti={distincti} dominans={dominans}", file=sys.stderr); return 8
-        if signa[nox] < 100 or signa[bronzeum] < 100 or signa[ebur] < 20:
-            print(f"DEFECIT: signa picturae P16-VI desunt: {signa}", file=sys.stderr); return 14
+        if signa[graphite] < 100 or signa[bronzeum] < 100 or signa[ebur] < 20:
+            print(f"DEFECIT: signa picturae JL-UX/Fenestralis desunt: {signa}", file=sys.stderr); return 14
         if len(ante_ps2) < 3 or ante_ps2[0] != 9 or ante_ps2[1:3] != [250,250]: print(f"DEFECIT: initium PS/2 invalidum: {ante_ps2}", file=sys.stderr); return 9
 
         responsa=[]
@@ -148,7 +150,7 @@ def principale() -> int:
         if (w1,h1)!=(w2,h2): print("DEFECIT: dimensiones mutantur",file=sys.stderr); return 11
         if len(post_ps2)<4 or post_ps2[3]==ante_ps2[3]: print("DEFECIT: nullus fasciculus PS/2 receptus",file=sys.stderr); return 12
         if mutata<20: print("DEFECIT: PS/2 receptus est sed Fenestrale non redpinxit",file=sys.stderr); return 13
-        print("RECTE: Fenestrale II Purus P16-VI sub UEFI puro murem PS/2 nativum exercet."); return 0
+        print("RECTE: Fenestrale II Purus P16-XI sub UEFI puro murem PS/2 nativum exercet."); return 0
     finally:
         try: hmp(monitor,"quit")
         except Exception: pass
