@@ -18,8 +18,21 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/applicationes_registrum_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_applicationes_iv.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_chrome_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_clientis_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_persistentia_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
@@ -56,8 +69,21 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/clientes_eventa_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/applicationes_registrum_iv.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_applicationes_iv.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_chrome_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_clientis_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/officina_persistentia_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/murus_ps2.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
@@ -162,7 +188,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-forma'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-viii-forma'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_i.py" \
@@ -173,7 +199,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-initium'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-viii-initium'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_ii.py" \
@@ -184,18 +210,18 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-bureau'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-viii-bureau'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_sylviae_iii.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
-      - name: Fenestrae modernae sub QEMU et OVMF
+      - name: Fenestrae P16-VIII sub QEMU et OVMF
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-vi-fenestrae'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-viii-fenestrae'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_fenestras_sylviae_v.py" \
@@ -222,16 +248,16 @@ jobs:
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_officinam_sylviae_i.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
-      - name: Capturas P16-VI conserva
+      - name: Capturas P16-VIII conserva
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: qemu-p16-vi-${{ github.sha }}
+          name: qemu-p16-viii-${{ github.sha }}
           path: |
-            qemu-captura-p16-vi-forma/*.ppm
-            qemu-captura-p16-vi-initium/*.ppm
-            qemu-captura-p16-vi-bureau/*.ppm
-            qemu-captura-p16-vi-fenestrae/*.ppm
+            qemu-captura-p16-viii-forma/*.ppm
+            qemu-captura-p16-viii-initium/*.ppm
+            qemu-captura-p16-viii-bureau/*.ppm
+            qemu-captura-p16-viii-fenestrae/*.ppm
           if-no-files-found: warn
           retention-days: 7
 

@@ -1,0 +1,131 @@
+// Sylvia OS — P16-VIII: chrome fenestrarum compositum.
+// Geometria et hitbox P16-V servantur; tantum pictura ad primitiveas P16-VII migrat.
+// Identitas: graphite + ebur + aes, cum vitro viridi-caeruleo temperato.
+
+FUNCTIO CVIII_CHROME REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT titulus SICUT TEXTUS.
+    ACCIPIT activa SICUT NUMERUS.
+    SI w<=8 || h<=80 TUNC REDDE 0. FIN-SI.
+
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA papyrus SICUT NUMERUS VALENS FV_COLOR(225,218,204).
+    DECLARA papyrus_inferus SICUT NUMERUS VALENS FV_COLOR(203,194,178).
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(20,27,29).
+    DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(92,99,96).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA aes SICUT NUMERUS VALENS FV_COLOR(128,87,53).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(103,164,160).
+    DECLARA umbra SICUT NUMERUS VALENS FV_COLOR(7,12,13).
+
+    DECLARA titulus_summus SICUT NUMERUS VALENS FV_COLOR(58,96,100).
+    DECLARA titulus_inferus SICUT NUMERUS VALENS FV_COLOR(22,39,42).
+    DECLARA bulla_summus SICUT NUMERUS VALENS FV_COLOR(91,119,117).
+    DECLARA bulla_inferus SICUT NUMERUS VALENS FV_COLOR(42,58,59).
+    DECLARA clausura_summus SICUT NUMERUS VALENS FV_COLOR(181,91,76).
+    DECLARA clausura_inferus SICUT NUMERUS VALENS FV_COLOR(103,48,45).
+    DECLARA margo SICUT NUMERUS VALENS bronzeum.
+    DECLARA lux SICUT NUMERUS VALENS aqua.
+
+    SI activa==0 TUNC
+        titulus_summus=FV_COLOR(79,86,84).
+        titulus_inferus=FV_COLOR(45,51,50).
+        bulla_summus=FV_COLOR(92,99,96).
+        bulla_inferus=FV_COLOR(57,63,61).
+        clausura_summus=FV_COLOR(128,91,84).
+        clausura_inferus=FV_COLOR(82,61,58).
+        margo=chalybs.
+        lux=FV_COLOR(126,135,131).
+    FIN-SI.
+
+    DECLARA tituli_h SICUT NUMERUS VALENS FV_METRUM_TITULUS().
+    DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
+
+    // Umbra composita: alpha tantum in oras externas, ne corpus totum frustra misceatur.
+    // P16-VIII ita responsivum manet etiam sub QEMU puro.
+    DECLARA f SICUT NUMERUS VALENS GVII_UMBRA_GRADATA(x+1,y+2,w,h,6,umbra,118).
+    f=GVII_RECT_ALPHA(x+w+4,y+9,3,h-10,umbra,38).
+    f=GVII_RECT_ALPHA(x+7,y+h+4,w-8,3,umbra,38).
+
+    // Corpus et margines multi-strati.
+    f=FV_RECT(x,y,w,h,ebur).
+    f=FV_RECT(x,y,w,2,margo).
+    f=FV_RECT(x,y,1,h,chalybs).
+    f=FV_RECT(x+w-1,y,1,h,nox).
+    f=FV_RECT(x,y+h-1,w,1,nox).
+    f=FV_RECT(x+1,y+2,1,h-3,papyrus).
+    f=FV_RECT(x+w-2,y+2,1,h-3,chalybs).
+
+    // Titulus vitreus: gradientia vera + lumen alpha + limen aeneum.
+    f=GVII_GRADUS_VERTICALIS(x+2,y+2,w-4,tituli_h-4,titulus_summus,titulus_inferus).
+    f=GVII_RECT_ALPHA(x+3,y+3,w-6,3,ebur,34).
+    f=GVII_RECT_ALPHA(x+3,y+11,w-6,1,lux,72).
+    f=FV_RECT(x+2,y+2,w-4,1,lux).
+    f=FV_RECT(x+2,y+tituli_h-2,w-4,1,aes).
+    SI activa!=0 TUNC f=FV_RECT(x+2,y+tituli_h-3,w-4,1,bronzeum). FIN-SI.
+    f=FV_TEXTUM_SCALA(x+12,y+10,titulus,ebur,2).
+
+    // Bullae eadem geometria P16-V servant, sed vitro graduato pinguntur.
+    f=GVII_GRADUS_VERTICALIS(x+w-92,y+6,24,24,bulla_summus,bulla_inferus).
+    f=GVII_GRADUS_VERTICALIS(x+w-62,y+6,24,24,bulla_summus,bulla_inferus).
+    f=GVII_GRADUS_VERTICALIS(x+w-32,y+6,24,24,clausura_summus,clausura_inferus).
+    f=GVII_RECT_ALPHA(x+w-91,y+7,22,5,ebur,38).
+    f=GVII_RECT_ALPHA(x+w-61,y+7,22,5,ebur,38).
+    f=GVII_RECT_ALPHA(x+w-31,y+7,22,5,ebur,42).
+    f=FV_RECT(x+w-92,y+6,24,1,lux).
+    f=FV_RECT(x+w-62,y+6,24,1,lux).
+    f=FV_RECT(x+w-32,y+6,24,1,FV_COLOR(218,137,113)).
+    f=FV_RECT(x+w-86,y+22,12,2,ebur).
+    f=FV_RECT(x+w-56,y+11,12,2,ebur).
+    f=FV_RECT(x+w-56,y+11,2,12,ebur).
+    f=FV_RECT(x+w-46,y+11,2,12,ebur).
+    f=FV_RECT(x+w-56,y+21,12,2,ebur).
+    f=FV_RECT(x+w-26,y+12,12,2,ebur).
+    f=FV_RECT(x+w-21,y+7,2,12,ebur).
+
+    // Fascia instrumentorum calida sed subtiliter graduata.
+    f=GVII_GRADUS_VERTICALIS(x+2,y+tituli_h,w-4,clientis_y-tituli_h,ebur,papyrus).
+    f=GVII_RECT_ALPHA(x+3,y+tituli_h+1,w-6,1,ebur,100).
+    f=FV_RECT(x+2,y+clientis_y-1,w-4,1,chalybs).
+
+    // Status inferior: lapis papyraceus cum filo viridi in fenestra activa.
+    f=GVII_GRADUS_VERTICALIS(x+2,y+h-20,w-4,18,papyrus,papyrus_inferus).
+    f=FV_RECT(x+2,y+h-20,w-4,1,chalybs).
+    SI activa!=0 TUNC
+        f=FV_RECT(x+2,y+h-20,56,1,viride).
+        f=GVII_RECT_ALPHA(x+3,y+h-19,54,1,aqua,76).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CVIII_FENESTRA REDDENS NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    ACCIPIT clientes SICUT NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus==0 || CONTENTUM(nodus+48)!=0 TUNC REDDE 0. FIN-SI.
+    DECLARA id SICUT NUMERUS VALENS CONTENTUM(nodus).
+    DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(nodus+8).
+    DECLARA superficies SICUT NUMERUS VALENS CH_SUPERFICIES(clientes,cliens).
+    DECLARA app SICUT NUMERUS VALENS AI_CLIENTIS(applicationes,cliens).
+    DECLARA titulus SICUT TEXTUS VALENS "APPLICATIO".
+    SI app!=0 TUNC titulus=AI_NODUS_NOMEN(app). FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(nodus+16).
+    DECLARA y SICUT NUMERUS VALENS CONTENTUM(nodus+24).
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(nodus+32).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(nodus+40).
+    DECLARA activa SICUT NUMERUS VALENS 0.
+    SI FI_FOCUS_ID(fenestrae)==id TUNC activa=1. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS CVIII_CHROME(x,y,w,h,titulus,activa).
+    SI superficies!=0 TUNC
+        DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
+        DECLARA maxw SICUT NUMERUS VALENS w-20.
+        DECLARA maxh SICUT NUMERUS VALENS h-clientis_y-22.
+        SI maxw>0 && maxh>0 TUNC f=FS_BLIT(superficies,x+10,y+clientis_y,maxw,maxh). FIN-SI.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
