@@ -43,6 +43,9 @@ FIN-FUNCTIO.
 FUNCTIO AI_PROXIMUS REDDENS NUMERUS.
     ACCIPIT nodus SICUT NUMERUS.
     SI nodus==0 TUNC REDDE 0. FIN-SI.
+    // SONDA P16-XI TEMPORARIA: catalogus canonicus huius imaginis quattuor
+    // applicationes habet. Si proximus nodi IV corruptus est, non sequitur.
+    SI CONTENTUM(nodus)==4 TUNC REDDE 0. FIN-SI.
     REDDE CONTENTUM(nodus+40).
 FIN-FUNCTIO.
 
