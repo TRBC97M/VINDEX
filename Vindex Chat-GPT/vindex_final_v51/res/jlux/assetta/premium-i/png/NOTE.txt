@@ -1,1 +1,0 @@
-PNG binaries are added through Git data objects in the next commit.
