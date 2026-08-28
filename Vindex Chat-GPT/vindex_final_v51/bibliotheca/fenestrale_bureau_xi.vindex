@@ -1,0 +1,333 @@
+// Sylvia OS — P16-XI: Bureau Lucidum I, implementatio II.
+// Wallpaper semel in superficie privata pingitur et postea copia opaca celeriter redditur.
+// Tesserae Bureau Graphica VIII (9-slice, recta rotunda, atlas typographicus) utuntur.
+// Hitbox, ordo applicationum et semantica P16-IV servantur.
+
+FUNCTIO CXI_S_ARCUS_LUCIS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS.
+    ACCIPIT x1 SICUT NUMERUS.
+    ACCIPIT basis_y SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT spissitudo SICUT NUMERUS.
+    DECLARA partes SICUT NUMERUS VALENS 112.
+    DECLARA ante_x SICUT NUMERUS VALENS x0.
+    DECLARA ante_y SICUT NUMERUS VALENS basis_y.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<partes PERFICE
+        DECLARA x SICUT NUMERUS VALENS x0+(x1-x0)*i/(partes-1).
+        DECLARA d SICUT NUMERUS VALENS i*2-(partes-1).
+        SI d<0 TUNC d=0-d. FIN-SI.
+        DECLARA y SICUT NUMERUS VALENS basis_y-altitudo+(d*d*altitudo)/((partes-1)*(partes-1)).
+        DECLARA f SICUT NUMERUS VALENS 1.
+        SI i==0 TUNC
+            f=FS_RECT(superficies,x,y,spissitudo,spissitudo,color).
+        ALITER
+            DECLARA span SICUT NUMERUS VALENS x-ante_x+1.
+            SI span<1 TUNC span=1. FIN-SI.
+            f=FS_RECT(superficies,ante_x,ante_y,span,spissitudo,color).
+            SI y>ante_y TUNC f=FS_RECT(superficies,x,ante_y,spissitudo,y-ante_y+1,color). FIN-SI.
+            SI y<ante_y TUNC f=FS_RECT(superficies,x,y,spissitudo,ante_y-y+1,color). FIN-SI.
+        FIN-SI.
+        ante_x=x. ante_y=y. i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_S_STELLAE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<22 PERFICE
+        DECLARA x SICUT NUMERUS VALENS w*41/100+(i*137)%((w*57/100)-12).
+        DECLARA y SICUT NUMERUS VALENS 24+(i*83)%(limen*48/100).
+        DECLARA c SICUT NUMERUS VALENS argentum.
+        SI i%5==0 TUNC c=aqua. FIN-SI.
+        DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,x,y,1,1,c).
+        SI i%9==0 TUNC f=FS_RECT(superficies,x-1,y,3,1,c). FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_S_DISCUM_LUMINIS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT cx SICUT NUMERUS.
+    ACCIPIT cy SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA dy SICUT NUMERUS VALENS 0-radius.
+    DUM dy<=radius PERFICE
+        DECLARA half SICUT NUMERUS VALENS radius-(dy*dy)/radius.
+        SI half<1 TUNC half=1. FIN-SI.
+        DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,cx-half,cy+dy,half*2+1,1,color).
+        dy=dy+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_S_LUMEN_SOLARE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    DECLARA cx SICUT NUMERUS VALENS w*84/100.
+    DECLARA cy SICUT NUMERUS VALENS limen-46.
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA aureola SICUT NUMERUS VALENS FV_COLOR(166,199,199).
+    DECLARA f SICUT NUMERUS VALENS CXI_S_DISCUM_LUMINIS(superficies,cx,cy,34,aureola).
+    f=CXI_S_DISCUM_LUMINIS(superficies,cx,cy,26,bronzeum).
+    f=CXI_S_DISCUM_LUMINIS(superficies,cx,cy,19,aqua).
+    f=CXI_S_DISCUM_LUMINIS(superficies,cx,cy,11,ebur).
+    f=FS_RECT(superficies,cx-72,cy,144,1,aqua).
+    f=FS_RECT(superficies,cx-48,cy+3,96,1,bronzeum).
+    f=FS_RECT(superficies,cx,cy-54,1,108,aqua).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_S_TURRIS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT lat SICUT NUMERUS.
+    ACCIPIT alt SICUT NUMERUS.
+    ACCIPIT accentus SICUT NUMERUS.
+    ACCIPIT lumen SICUT NUMERUS.
+    DECLARA metallum SICUT NUMERUS VALENS FV_COLOR(74,96,114).
+    DECLARA umbra SICUT NUMERUS VALENS FV_COLOR(29,47,55).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA graphite SICUT NUMERUS VALENS FV_COLOR(26,29,32).
+    DECLARA y SICUT NUMERUS VALENS basis-alt.
+    DECLARA f SICUT NUMERUS VALENS GSVII_GRADUS_VERTICALIS(superficies,x,y,lat,alt,metallum,umbra).
+    f=FS_RECT(superficies,x,y,lat,1,accentus).
+    f=FS_RECT(superficies,x,y,1,alt,argentum).
+    f=FS_RECT(superficies,x+lat-1,y,1,alt,graphite).
+    DECLARA wy SICUT NUMERUS VALENS y+11.
+    DUM wy<basis-7 PERFICE
+        SI lat>=14 TUNC
+            f=FS_RECT(superficies,x+4,wy,2,3,lumen).
+            f=FS_RECT(superficies,x+lat-6,wy,2,3,lumen).
+        FIN-SI.
+        wy=wy+14.
+    FIN-DUM.
+    SI alt>=120 TUNC
+        DECLARA tx SICUT NUMERUS VALENS x+lat/2.
+        f=FS_RECT(superficies,tx-1,y-26,2,26,accentus).
+        f=FS_RECT(superficies,tx,y-35,1,9,lumen).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_S_REFLEXUM REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT lat SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<9 PERFICE
+        DECLARA y SICUT NUMERUS VALENS basis+8+i*longitudo/9.
+        DECLARA rw SICUT NUMERUS VALENS lat+(8-i)*2.
+        DECLARA rx SICUT NUMERUS VALENS x+lat/2-rw/2.
+        DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,rx,y,rw,1,color).
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_S_CIVITAS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    ACCIPIT utilis SICUT NUMERUS.
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA cyan SICUT NUMERUS VALENS FV_COLOR(0,198,255).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA laurus SICUT NUMERUS VALENS FV_COLOR(104,177,123).
+    DECLARA insula SICUT NUMERUS VALENS FV_COLOR(27,44,49).
+    DECLARA aqua_obscura SICUT NUMERUS VALENS FV_COLOR(68,112,120).
+    DECLARA aes_obscurum SICUT NUMERUS VALENS FV_COLOR(105,79,55).
+    DECLARA basis SICUT NUMERUS VALENS limen+30.
+
+    DECLARA f SICUT NUMERUS VALENS GSVII_GRADUS_VERTICALIS(superficies,w*52/100,basis-8,w*46/100,14,FV_COLOR(65,91,99),insula).
+    f=FS_RECT(superficies,w*55/100,basis-10,w*42/100,1,bronzeum).
+
+    f=CXI_S_TURRIS(superficies,w*57/100,basis,25,74,aqua,ebur).
+    f=CXI_S_TURRIS(superficies,w*61/100,basis,30,108,bronzeum,aqua).
+    f=CXI_S_TURRIS(superficies,w*65/100,basis,23,62,laurus,ebur).
+    f=CXI_S_TURRIS(superficies,w*69/100,basis,34,136,aqua,ebur).
+    f=CXI_S_TURRIS(superficies,w*73/100,basis,27,90,bronzeum,aqua).
+    f=CXI_S_TURRIS(superficies,w*77/100,basis,39,174,bronzeum,ebur).
+    f=CXI_S_TURRIS(superficies,w*82/100,basis,29,120,aqua,aqua).
+    f=CXI_S_TURRIS(superficies,w*86/100,basis,37,214,bronzeum,ebur).
+    f=CXI_S_TURRIS(superficies,w*90/100,basis,29,146,aqua,ebur).
+    f=CXI_S_TURRIS(superficies,w*94/100,basis,21,92,laurus,aqua).
+    f=CXI_S_TURRIS(superficies,w*97/100,basis,16,66,bronzeum,ebur).
+
+    f=CXI_S_REFLEXUM(superficies,w*57/100,basis,25,82,aqua_obscura).
+    f=CXI_S_REFLEXUM(superficies,w*61/100,basis,30,98,aes_obscurum).
+    f=CXI_S_REFLEXUM(superficies,w*69/100,basis,34,114,aqua_obscura).
+    f=CXI_S_REFLEXUM(superficies,w*77/100,basis,39,134,aes_obscurum).
+    f=CXI_S_REFLEXUM(superficies,w*86/100,basis,37,156,aqua_obscura).
+    f=CXI_S_REFLEXUM(superficies,w*90/100,basis,29,120,aes_obscurum).
+
+    f=FS_RECT(superficies,w*51/100,limen-2,w*47/100,1,aqua).
+    f=FS_RECT(superficies,w*61/100,limen+2,w*36/100,1,bronzeum).
+    f=FS_RECT(superficies,w*68/100,limen+7,w*29/100,1,cyan).
+    f=FS_RECT(superficies,w*72/100,basis+66,w*23/100,1,FV_COLOR(86,132,137)).
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Wallpaper officialis P16-XI II. Semel construitur et in superficie cache servatur.
+FUNCTIO CXI_WALLPAPER_CREA REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT utilis SICUT NUMERUS.
+    SI w<=0 || utilis<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA superficies SICUT NUMERUS VALENS FS_CREA(w,utilis).
+    SI superficies==0 TUNC REDDE 0. FIN-SI.
+    DECLARA limen SICUT NUMERUS VALENS utilis*57/100.
+    DECLARA graphite SICUT NUMERUS VALENS FV_COLOR(26,29,32).
+    DECLARA cool SICUT NUMERUS VALENS FV_COLOR(74,96,114).
+    DECLARA caelum_medium SICUT NUMERUS VALENS FV_COLOR(106,143,157).
+    DECLARA caelum_limen SICUT NUMERUS VALENS FV_COLOR(202,226,230).
+    DECLARA aqua_supera SICUT NUMERUS VALENS FV_COLOR(89,145,157).
+    DECLARA aqua_infera SICUT NUMERUS VALENS FV_COLOR(27,48,57).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA cyan SICUT NUMERUS VALENS FV_COLOR(0,198,255).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+
+    DECLARA tertia SICUT NUMERUS VALENS limen*42/100.
+    DECLARA f SICUT NUMERUS VALENS GSVII_GRADUS_VERTICALIS(superficies,0,0,w,tertia,cool,caelum_medium).
+    f=GSVII_GRADUS_VERTICALIS(superficies,0,tertia,w,limen-tertia,caelum_medium,caelum_limen).
+    f=GSVII_GRADUS_VERTICALIS(superficies,0,limen,w,utilis-limen,aqua_supera,aqua_infera).
+
+    f=FS_RECT(superficies,0,limen-3,w,1,FV_COLOR(148,190,199)).
+    f=FS_RECT(superficies,0,limen-2,w,1,aqua).
+    f=FS_RECT(superficies,0,limen-1,w,1,FV_COLOR(220,239,240)).
+    f=FS_RECT(superficies,0,limen,w,1,FV_COLOR(115,176,185)).
+
+    f=CXI_S_STELLAE(superficies,w,limen).
+    f=CXI_S_ARCUS_LUCIS(superficies,w*31/100,w*99/100,limen-15,limen*70/100,aqua,2).
+    f=CXI_S_ARCUS_LUCIS(superficies,w*44/100,w*100/100,limen-38,limen*55/100,argentum,1).
+    f=CXI_S_ARCUS_LUCIS(superficies,w*56/100,w*99/100,limen-70,limen*42/100,bronzeum,1).
+    f=CXI_S_ARCUS_LUCIS(superficies,w*69/100,w*100/100,limen-91,limen*32/100,cyan,1).
+    f=CXI_S_LUMEN_SOLARE(superficies,w,limen).
+    f=CXI_S_CIVITAS(superficies,w,limen,utilis).
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<20 PERFICE
+        DECLARA y SICUT NUMERUS VALENS limen+22+i*(utilis-limen-32)/20.
+        DECLARA x SICUT NUMERUS VALENS w*32/100+(i*97)%(w*51/100).
+        DECLARA rw SICUT NUMERUS VALENS 34+(i*31)%138.
+        DECLARA c SICUT NUMERUS VALENS FV_COLOR(58,93,101).
+        SI i%5==0 TUNC c=FV_COLOR(91,126,130). FIN-SI.
+        f=FS_RECT(superficies,x,y,rw,1,c).
+        i=i+1.
+    FIN-DUM.
+    // Regio sinistra sub iconis quietior manet; solum lumen diffusum horizontis accipit.
+    f=GSVII_GRADUS_HORIZONTALIS(superficies,0,limen-28,w*38/100,56,FV_COLOR(111,154,164),FV_COLOR(145,183,188)).
+    DECLARA nota SICUT NUMERUS VALENS GSVII_NOTA(superficies).
+    REDDE superficies.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_BUREAU_REDDE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    DECLARA graphite SICUT NUMERUS VALENS FV_COLOR(26,29,32).
+    DECLARA cool SICUT NUMERUS VALENS FV_COLOR(74,96,114).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA umbra SICUT NUMERUS VALENS FV_COLOR(12,20,24).
+    DECLARA materia SICUT TEXTUS VALENS TEXTUS_EX_SEDE(s[43]).
+    DECLARA fons SICUT NUMERUS VALENS s[44].
+    DECLARA margines SICUT NUMERUS VALENS GVIII_MARGINES_CREA(8,8,8,8).
+
+    // Marca Sylviae: atlas anti-aliased Graphica VIII, non bitmap 8x8.
+    SI TVIII_FONS_VALIDUS(fons)!=0 TUNC
+        DECLARA titulo SICUT NUMERUS VALENS GVIII_RECT_CREA(18,16,13,17).
+        DECLARA sub SICUT NUMERUS VALENS GVIII_RECT_CREA(20,46,7,9).
+        f=TVIII_TEXTUM_FB(fons,titulo,0,"SYLVIA",ebur,255).
+        f=FV_RECT(20,39,112,1,bronzeum).
+        f=TVIII_TEXTUM_FB(fons,sub,0,"SYSTEMA VINDEX",aqua,235).
+    ALITER
+        f=FV_TEXTUM_SCALA(18,18,"SYLVIA",ebur,2).
+        f=FV_RECT(20,47,132,1,bronzeum).
+        f=FV_TEXTUM(20,53,"SYSTEMA VINDEX",aqua).
+    FIN-SI.
+
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        SI AI_NODUS_IN_BUREAU(nodus)!=0 TUNC
+            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index).
+            DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
+            DECLARA lat SICUT NUMERUS VALENS FV_METRUM_BUREAU_LATITUDO().
+            DECLARA alt SICUT NUMERUS VALENS FV_METRUM_BUREAU_ALTITUDO().
+            DECLARA hover SICUT NUMERUS VALENS 0.
+            SI s[11]>=x && s[11]<x+lat && s[12]>=y && s[12]<y+alt TUNC hover=1. FIN-SI.
+
+            // Umbra externa tantum, ut via frequens PS/2 celeris maneat.
+            f=GVII_UMBRA_GRADATA(x,y,lat,alt,4,umbra,86).
+            DECLARA ora SICUT NUMERUS VALENS argentum.
+            SI hover!=0 TUNC ora=aqua. FIN-SI.
+            f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(x,y,lat,alt),8,ora).
+            SI IR_VALIDUS(materia)!=0 TUNC
+                f=GVIII_SIMG_NOVEM_PARTES_FB(materia,margines,GVIII_RECT_CREA(x+1,y+1,lat-2,alt-2),252).
+            ALITER
+                f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(x+1,y+1,lat-2,alt-2),7,ebur).
+            FIN-SI.
+            SI hover!=0 TUNC
+                f=FV_RECT(x+9,y+3,lat-18,2,aqua).
+                f=FV_RECT(x+5,y+alt-4,lat-10,2,bronzeum).
+            FIN-SI.
+
+            // Recessus iconis: graphite frigidum contra Ebur Enamelatum.
+            f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(x+27,y+5,54,54),7,graphite).
+            f=FV_RECT(x+33,y+6,42,1,cool).
+            f=FV_RECT(x+33,y+57,42,1,bronzeum).
+
+            SI TVIII_FONS_VALIDUS(fons)!=0 TUNC
+                f=TVIII_TEXTUM_FB(fons,GVIII_RECT_CREA(x+10,y+68,7,9),0,AI_NODUS_NOMEN(nodus),graphite,255).
+            ALITER
+                f=FV_TEXTUM(x+8,y+66,AI_NODUS_NOMEN(nodus),graphite).
+            FIN-SI.
+            index=index+1.
+        FIN-SI.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_BUREAU_ICONAE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT atlas SICUT TEXTUS.
+    SI IR_VALIDUS(atlas)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        SI AI_NODUS_IN_BUREAU(nodus)!=0 TUNC
+            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index).
+            DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
+            DECLARA genus SICUT NUMERUS VALENS AI_NODUS_GENUS(nodus).
+            DECLARA sx SICUT NUMERUS VALENS IVVII_ICONA_FONS_X(genus).
+            DECLARA sy SICUT NUMERUS VALENS IVVII_ICONA_FONS_Y(genus).
+            DECLARA src SICUT NUMERUS VALENS GVIII_RECT_CREA(sx,sy,48,48).
+            DECLARA dst SICUT NUMERUS VALENS GVIII_RECT_CREA(x+30,y+8,48,48).
+            DECLARA f SICUT NUMERUS VALENS GVIII_SIMG_REGIONEM_SCALA_FB(atlas,src,dst,255).
+            index=index+1.
+        FIN-SI.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
