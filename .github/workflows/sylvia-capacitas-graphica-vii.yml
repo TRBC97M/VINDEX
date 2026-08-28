@@ -18,11 +18,13 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_ix.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/iconae_sylviae_vii.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
   pull_request:
@@ -41,11 +43,13 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_ix.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/iconae_sylviae_vii.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
 
@@ -112,22 +116,22 @@ jobs:
           /tmp/iconae-sylviae-vii
           printf '%s\n' 'RECTE: P16-VII quattuor iconae XLVIII in atlas XCVI per SIMG servantur.'
 
-      - name: Capacitas VII in facie P16-IX sub QEMU et OVMF
+      - name: Capacitas VII in facie P16-XI sub QEMU et OVMF
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
-          MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-ix-graphica-vii'
+          MORA_INITII: '24'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-xi-graphica-vii'
         run: |
           set -euo pipefail
-          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_ix.py" \
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_lucidum_xi.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
-      - name: Capturam integrationis P16-IX conserva
+      - name: Capturam integrationis P16-XI conserva
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: qemu-p16-ix-graphica-vii-${{ github.sha }}
-          path: qemu-captura-p16-ix-graphica-vii/*.ppm
+          name: qemu-p16-xi-graphica-vii-${{ github.sha }}
+          path: qemu-captura-p16-xi-graphica-vii/*.ppm
           if-no-files-found: warn
           retention-days: 7
