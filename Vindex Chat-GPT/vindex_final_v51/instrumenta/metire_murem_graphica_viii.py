@@ -10,6 +10,12 @@ import sys
 import time
 from pathlib import Path
 
+# Tres mensurae initiales in runneribus GitHub separatis dederunt p95 <= 32.380 ms.
+# Limina hic late supra baseline servantur ut varietatem hostis tolerent, sed regressum
+# perceptibilem post integrationem Graphica VIII statim deprehendant.
+LIMEN_P95_MS = 50.0
+LIMEN_MAX_MS = 75.0
+
 
 def auxilia() -> object:
     via = Path(__file__).resolve().with_name("proba_murem_uefi_053.py")
@@ -133,7 +139,8 @@ def principale() -> int:
         motus = [(12, -7), (18, 5), (-9, 11), (7, -13), (15, 9), (-11, -6),
                  (9, 14), (-14, 8), (13, -10), (6, 12), (-8, -15), (16, 7),
                  (-12, 10), (10, -8), (14, 6), (-7, 13)]
-        morae: list[float] = []
+        morae_telemetriae: list[float] = []
+        morae_totales: list[float] = []
         polling: list[int] = []
         for n, (dx, dy) in enumerate(motus, 1):
             ante = status[3]
@@ -150,19 +157,37 @@ def principale() -> int:
             if mora_ms < 0 or novus is None:
                 print(f"DEFECIT: eventus {n} intra 750 ms non observatus est", file=sys.stderr)
                 return 11
-            # Mora finem QMP->telemetria metitur; tempus mittendi separatim nuntiatur.
-            morae.append(mora_ms)
+            total_ms = qmp_ms + mora_ms
+            morae_telemetriae.append(mora_ms)
+            morae_totales.append(total_ms)
             polling.append(probes)
             status = novus
-            print(f"MURUS-GVIII: specimen={n:02d} qmp={qmp_ms:.3f}ms telemetria={mora_ms:.3f}ms probes={probes}")
+            print(
+                f"MURUS-GVIII: specimen={n:02d} qmp={qmp_ms:.3f}ms "
+                f"telemetria={mora_ms:.3f}ms total={total_ms:.3f}ms probes={probes}"
+            )
 
-        mediana = statistics.median(morae)
-        p95 = percentile_95(morae)
-        maximum = max(morae)
-        minimum = min(morae)
-        print(f"MURUS-GVIII: n={len(morae)} min={minimum:.3f}ms mediana={mediana:.3f}ms p95={p95:.3f}ms max={maximum:.3f}ms")
-        print(f"MURUS-GVIII: probes_mediana={statistics.median(polling):.1f} probes_max={max(polling)}")
-        print("RECTE: baseline responsivitatis PS/2 Graphica VIII mensuratus est.")
+        mediana = statistics.median(morae_totales)
+        p95 = percentile_95(morae_totales)
+        maximum = max(morae_totales)
+        minimum = min(morae_totales)
+        tele_mediana = statistics.median(morae_telemetriae)
+        print(
+            f"MURUS-GVIII: n={len(morae_totales)} total_min={minimum:.3f}ms "
+            f"total_mediana={mediana:.3f}ms total_p95={p95:.3f}ms total_max={maximum:.3f}ms"
+        )
+        print(
+            f"MURUS-GVIII: telemetria_mediana={tele_mediana:.3f}ms "
+            f"probes_mediana={statistics.median(polling):.1f} probes_max={max(polling)}"
+        )
+        print(f"MURUS-GVIII: limen_p95={LIMEN_P95_MS:.1f}ms limen_max={LIMEN_MAX_MS:.1f}ms")
+        if p95 > LIMEN_P95_MS:
+            print(f"DEFECIT: p95 PS/2 {p95:.3f} ms limen {LIMEN_P95_MS:.1f} ms excedit", file=sys.stderr)
+            return 12
+        if maximum > LIMEN_MAX_MS:
+            print(f"DEFECIT: maximum PS/2 {maximum:.3f} ms limen {LIMEN_MAX_MS:.1f} ms excedit", file=sys.stderr)
+            return 13
+        print("RECTE: responsivitas PS/2 intra limina Graphica VIII manet.")
         return 0
     finally:
         try:
