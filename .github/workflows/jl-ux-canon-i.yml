@@ -1,0 +1,45 @@
+name: Sylvia OS — Canon JL-UX I
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'documenta/sylvia/JL_UX_*.md'
+      - 'instrumenta/verifica_canonem_jlux_i.py'
+      - '.github/workflows/jl-ux-canon-i.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'documenta/sylvia/JL_UX_*.md'
+      - 'instrumenta/verifica_canonem_jlux_i.py'
+      - '.github/workflows/jl-ux-canon-i.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  canon-jlux-i:
+    name: Canon, paletta et via JL-UX custodiuntur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Canonem JL-UX I verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_canonem_jlux_i.py
+
+      - name: Documenta Latina confirma
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in documenta/sylvia/JL_UX_*.md; do
+            test -s "$f"
+            ! grep -Eq '^(Status|Goal|Purpose|Roadmap|Design system):' "$f"
+          done
+          printf '%s\n' 'RECTE: documenta canonica JL-UX Latina et non vacua sunt.'
