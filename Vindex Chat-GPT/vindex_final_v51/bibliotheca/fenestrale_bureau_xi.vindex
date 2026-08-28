@@ -10,14 +10,27 @@ FUNCTIO CXI_ARCUS_LUCIS REDDENS NUMERUS.
     ACCIPIT altitudo SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
     ACCIPIT spissitudo SICUT NUMERUS.
-    DECLARA partes SICUT NUMERUS VALENS 96.
+    DECLARA partes SICUT NUMERUS VALENS 128.
+    DECLARA ante_x SICUT NUMERUS VALENS x0.
+    DECLARA ante_y SICUT NUMERUS VALENS basis_y.
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i<partes PERFICE
         DECLARA x SICUT NUMERUS VALENS x0+(x1-x0)*i/(partes-1).
         DECLARA d SICUT NUMERUS VALENS i*2-(partes-1).
         SI d<0 TUNC d=0-d. FIN-SI.
         DECLARA y SICUT NUMERUS VALENS basis_y-altitudo+(d*d*altitudo)/((partes-1)*(partes-1)).
-        DECLARA f SICUT NUMERUS VALENS FV_RECT(x,y,spissitudo,1,color).
+        DECLARA f SICUT NUMERUS VALENS 1.
+        SI i==0 TUNC
+            f=FV_RECT(x,y,spissitudo,spissitudo,color).
+        ALITER
+            DECLARA span SICUT NUMERUS VALENS x-ante_x+1.
+            SI span<1 TUNC span=1. FIN-SI.
+            f=FV_RECT(ante_x,ante_y,span,spissitudo,color).
+            SI y>ante_y TUNC f=FV_RECT(x,ante_y,spissitudo,y-ante_y+1,color). FIN-SI.
+            SI y<ante_y TUNC f=FV_RECT(x,y,spissitudo,ante_y-y+1,color). FIN-SI.
+        FIN-SI.
+        ante_x=x.
+        ante_y=y.
         i=i+1.
     FIN-DUM.
     REDDE 1.
@@ -38,6 +51,42 @@ FUNCTIO CXI_STELLAE REDDENS NUMERUS.
         SI i%9==0 TUNC f=FV_RECT(x-1,y,3,1,c). FIN-SI.
         i=i+1.
     FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_DISCUM_LUMINIS REDDENS NUMERUS.
+    ACCIPIT cx SICUT NUMERUS.
+    ACCIPIT cy SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA dy SICUT NUMERUS VALENS 0-radius.
+    DUM dy<=radius PERFICE
+        DECLARA half SICUT NUMERUS VALENS radius-(dy*dy)/radius.
+        SI half<1 TUNC half=1. FIN-SI.
+        DECLARA f SICUT NUMERUS VALENS FV_RECT(cx-half,cy+dy,half*2+1,1,color).
+        dy=dy+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CXI_LUMEN_SOLARE REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    DECLARA cx SICUT NUMERUS VALENS w*89/100.
+    DECLARA cy SICUT NUMERUS VALENS limen-54.
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(189,239,242).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA aureola SICUT NUMERUS VALENS FV_COLOR(126,165,166).
+    DECLARA f SICUT NUMERUS VALENS CXI_DISCUM_LUMINIS(cx,cy,31,aureola).
+    f=CXI_DISCUM_LUMINIS(cx,cy,23,bronzeum).
+    f=CXI_DISCUM_LUMINIS(cx,cy,17,aqua).
+    f=CXI_DISCUM_LUMINIS(cx,cy,10,ebur).
+    // Radii horizontales et verticales sunt lineae tenues, non alpha fullscreen.
+    f=FV_RECT(cx-58,cy,116,1,aqua).
+    f=FV_RECT(cx-42,cy+3,84,1,bronzeum).
+    f=FV_RECT(cx,cy-46,1,92,aqua).
+    f=FV_RECT(cx+3,cy-30,1,60,bronzeum).
     REDDE 1.
 FIN-FUNCTIO.
 
@@ -66,9 +115,9 @@ FUNCTIO CXI_TURRIS REDDENS NUMERUS.
         wy=wy+14.
     FIN-DUM.
     SI alt>=120 TUNC
-        DECLARA cx SICUT NUMERUS VALENS x+lat/2.
-        f=FV_RECT(cx-1,y-28,2,28,accentus).
-        f=FV_RECT(cx,y-38,1,10,lumen).
+        DECLARA tx SICUT NUMERUS VALENS x+lat/2.
+        f=FV_RECT(tx-1,y-28,2,28,accentus).
+        f=FV_RECT(tx,y-38,1,10,lumen).
     FIN-SI.
     REDDE 1.
 FIN-FUNCTIO.
@@ -121,7 +170,7 @@ FUNCTIO CXI_CIVITAS REDDENS NUMERUS.
     f=CXI_TURRIS(w*94/100,basis,20,92,laurus,aqua).
     f=CXI_TURRIS(w*96/100,basis,18,67,bronzeum,ebur).
 
-    // Reflections in aqua; breves lineae, nullum alpha plenum.
+    // Reflexiones in aqua; breves lineae, nullum alpha plenum.
     f=CXI_REFLEXUM(w*60/100,basis,24,86,aqua_obscura).
     f=CXI_REFLEXUM(w*64/100,basis,31,102,aes_obscurum).
     f=CXI_REFLEXUM(w*72/100,basis,34,118,aqua_obscura).
@@ -165,11 +214,12 @@ FUNCTIO CXI_FUNDUM REDDENS NUMERUS.
     f=FV_RECT(0,limen,w,1,FV_COLOR(115,176,185)).
 
     f=CXI_STELLAE(w,limen).
-    // Arcus magni ab regione iconarum recedunt et conceptum v0.7 evocant.
+    // Arcus continui et lumen solare conceptum v0.7 evocant sine alpha fullscreen.
     f=CXI_ARCUS_LUCIS(w*28/100,w*99/100,limen-18,limen*72/100,aqua,2).
     f=CXI_ARCUS_LUCIS(w*42/100,w*100/100,limen-42,limen*57/100,argentum,1).
     f=CXI_ARCUS_LUCIS(w*52/100,w*99/100,limen-76,limen*44/100,bronzeum,1).
     f=CXI_ARCUS_LUCIS(w*67/100,w*100/100,limen-96,limen*34/100,cyan,1).
+    f=CXI_LUMEN_SOLARE(w,limen).
 
     f=CXI_CIVITAS(w,limen,utilis).
 
