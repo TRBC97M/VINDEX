@@ -19,6 +19,12 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_ix.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/terminale_clientis_i.vindex'
@@ -108,6 +114,7 @@ jobs:
           uviii='bibliotheca/fenestrale_compositor_viii.vindex'
           cix='bibliotheca/fenestrale_shell_ix.vindex'
           uix='bibliotheca/fenestrale_compositor_ix.vindex'
+          uxi='bibliotheca/fenestrale_compositor_xi.vindex'
           v='bibliotheca/fenestrale_ii_purus.vindex'
           e='bibliotheca/terminale_clientis_i.vindex'
           o='bibliotheca/officina_clientis_i.vindex'
@@ -207,7 +214,7 @@ jobs:
           grep -Fq 'EG_PONE(coda,2,cliens,scan,0,unicode)' "$g"
           grep -Fq 'CI_EVENTA_AGE(s[36],s[37],s[34])' "$s"
           grep -Fq 'IV_MOUSE_DOWN(s,s[37],s[34],s[39])' "$s"
-          grep -Fq 'IVIX_REDDE(s,s[37],s[36],s[39]' "$s"
+          grep -Fq 'IVXI_REDDE(s,s[37],s[36],s[39]' "$s"
 
           grep -Fq 'FUNCTIO IVVII_REDDE REDDENS NUMERUS' "$uvii"
           grep -Fq 'FUNCTIO CVIII_CHROME REDDENS NUMERUS' "$cviii"
@@ -219,6 +226,11 @@ jobs:
           grep -Fq 'CVIII_FENESTRA(fenestrae,clientes,applicationes,n)' "$uix"
           grep -Fq 'CIX_INITIUM_REDDE(s,applicationes)' "$uix"
           grep -Fq 'CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes)' "$uix"
+          grep -Fq 'FUNCTIO IVXI_REDDE REDDENS NUMERUS' "$uxi"
+          grep -Fq 'CXI_BUREAU_REDDE(s,applicationes)' "$uxi"
+          grep -Fq 'CVIII_FENESTRA(fenestrae,clientes,applicationes,n)' "$uxi"
+          grep -Fq 'CIX_INITIUM_REDDE(s,applicationes)' "$uxi"
+          grep -Fq 'CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes)' "$uxi"
 
           grep -Fq 'FUNCTIO IV_INITIUM_REDDE REDDENS NUMERUS' "$u"
           grep -Fq 'FUNCTIO IV_BUREAU_REDDE REDDENS NUMERUS' "$u"
@@ -233,10 +245,10 @@ jobs:
           ! grep -Eq 'PE_CLICK|TF_CLICK' "$s"
           ! grep -Fq 'OE_CLAVIS_EVENTUM(status,e[2],e[4])' "$c"
 
-          for f in "$r" "$g" "$c" "$a" "$u" "$uvii" "$cviii" "$uviii" "$cix" "$uix" "$v" "$e" "$o" "$op" "$fs" "$s"; do
+          for f in "$r" "$g" "$c" "$a" "$u" "$uvii" "$cviii" "$uviii" "$cix" "$uix" "$uxi" "$v" "$e" "$o" "$op" "$fs" "$s"; do
             ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"
           done
-          printf '%s\n' 'RECTE: Fenestrale P16-IX super P16-VIII, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
+          printf '%s\n' 'RECTE: Fenestrale P16-XI super P16-VIII et testa P16-IX, TERMINALE et OFFICINA P19-II contractibus dynamicis respondent.'
 
       - name: Regressiones Fenestralis exsequere
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -267,4 +279,4 @@ jobs:
           set -euo pipefail
           ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale_ii_purus_i.elf
           file /tmp/fenestrale_ii_purus_i.elf | grep -q 'ELF 64-bit'
-          printf '%s\n' 'RECTE: Fenestrale II Purus I P16-IX super P16-VIII cum OFFICINA persistente compilatum est.'
+          printf '%s\n' 'RECTE: Fenestrale II Purus I P16-XI super P16-VIII cum testa P16-IX et OFFICINA persistente compilatum est.'
