@@ -1,0 +1,80 @@
+name: Sylvia OS — Graphica IX rastera premium
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_ix*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_assetum.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_ix.vindex'
+      - '.github/workflows/sylvia-graphica-ix.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_ix*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_assetum.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_ix.vindex'
+      - '.github/workflows/sylvia-graphica-ix.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  graphica-ix:
+    name: Alpha praemultiplicata, bilinearis et superficies probantur
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Compilator exsecutabilis sit
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Radicem Graphica IX statice verifica
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          python3 instrumenta/vindex_verifica.py probationes/capacitas_graphica_ix.vindex
+
+      - name: Rasteram premium compilator nativus exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_ix.vindex /tmp/graphica-ix
+          file /tmp/graphica-ix | grep -q 'ELF 64-bit'
+          chmod +x /tmp/graphica-ix
+          timeout 20s /tmp/graphica-ix
+          printf '%s\n' 'RECTE: bilinearis alpha praemultiplicata et superficies Graphica IX probantur.'
+
+      - name: Contractum publicum custodi
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          g='bibliotheca/fenestrale_graphica_ix.vindex'
+          s='bibliotheca/fenestrale_graphica_ix_superficies.vindex'
+          a='bibliotheca/simg_ii_assetum.vindex'
+          for signum in \
+            'FUNCTIO GIX_RGBA_LINEAR REDDENS NUMERUS' \
+            'FUNCTIO GIX_ASSET_LINEAR_FB REDDENS NUMERUS' \
+            'FUNCTIO GIX_ASSET_NOVEM_FB REDDENS NUMERUS'
+          do grep -Fq "$signum" "$g"; done
+          for signum in \
+            'FUNCTIO GIX_RGBA_REGION_S REDDENS NUMERUS' \
+            'FUNCTIO GIX_ASSET_LINEAR_S REDDENS NUMERUS' \
+            'FUNCTIO GIX_ASSET_NOVEM_S REDDENS NUMERUS'
+          do grep -Fq "$signum" "$s"; done
+          grep -Fq 'FUNCTIO AII_RGBA_CACHE REDDENS TEXTUS' "$a"
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$g" "$s" "$a"
+          printf '%s\n' 'RECTE: contractus publicus Graphica IX VINDEX manet.'
