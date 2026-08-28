@@ -1,0 +1,101 @@
+name: Sylvia OS — P16-XI Bureau Lucidum
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - '.github/workflows/sylvia-p16-xi-bureau-lucidum.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - '.github/workflows/sylvia-p16-xi-bureau-lucidum.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bureau-lucidum:
+    name: Bureau cached, materiales VIII, QEMU et PS/2
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta QEMU institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Bureau Lucidum visualiter sub QEMU et OVMF proba
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '24'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-p16-xi-visualis'
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_lucidum_xi.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Bureau interactiones historicas sub QEMU custodi
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '24'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-p16-xi-interactio'
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_sylviae_iii.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Responsivitatem PS/2 Graphica VIII custodi
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/metire_murem_graphica_viii_uefi.sh
+
+      - name: Capturas P16-XI conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-p16-xi-${{ github.sha }}
+          path: |
+            qemu-p16-xi-visualis/*.ppm
+            qemu-p16-xi-interactio/*.ppm
+          if-no-files-found: warn
+          retention-days: 7
