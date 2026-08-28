@@ -1,6 +1,5 @@
-IMPORTA "bibliotheca/simg_ii.vindex".
-
 // Sylvia OS — SIMG II: pons temporarius ad pipeline SIMG v1 / Graphica VII-VIII.
+// Radix compilationis `bibliotheca/simg_ii.vindex` ante hunc fontem importet.
 // Imago II semel expanditur et in descriptor SIMG v1 convertitur; vocans potest
 // descriptor resultatum in cache servare. Sic asseta II iam a blitteribus veteribus
 // sumi possunt sine mutatione formae II neque duplicata decode per pixel.
