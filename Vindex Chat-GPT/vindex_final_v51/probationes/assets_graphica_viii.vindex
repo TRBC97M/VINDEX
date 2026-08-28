@@ -1,0 +1,48 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
+IMPORTA "bibliotheca/fons_ui_viii.vindex".
+IMPORTA "bibliotheca/materia_ui_viii.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA atlas SICUT TEXTUS VALENS FUIVIII_CREA().
+    SI IR_VALIDUS(atlas)==0 TUNC REDDE 1. FIN-SI.
+    SI IR_LATITUDO(atlas)!=256 || IR_ALTITUDO(atlas)!=120 || IR_STRIDE(atlas)!=1024 TUNC REDDE 2. FIN-SI.
+    DECLARA fons SICUT NUMERUS VALENS TVIII_FONS_CREA(atlas,16,16,20,32,95).
+    SI TVIII_FONS_VALIDUS(fons)==0 TUNC REDDE 3. FIN-SI.
+    SI TVIII_FONS_INDEX(fons,32)!=0 || TVIII_FONS_INDEX(fons,65)!=33 || TVIII_FONS_INDEX(fons,126)!=94 TUNC REDDE 4. FIN-SI.
+    SI TVIII_FONS_INDEX(fons,127)!=-1 TUNC REDDE 5. FIN-SI.
+
+    // Atlas vere alpha graduatum habet, non fontem binarium 8x8 auctum.
+    DECLARA semialpha SICUT NUMERUS VALENS 0.
+    DECLARA plenum SICUT NUMERUS VALENS 0.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<120 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<256 PERFICE
+            DECLARA rgba SICUT NUMERUS VALENS IR_PIXEL_RGBA(atlas,x,y).
+            DECLARA a SICUT NUMERUS VALENS (rgba>>24)&255.
+            SI a>0 && a<255 TUNC semialpha=semialpha+1. FIN-SI.
+            SI a==255 TUNC plenum=plenum+1. FIN-SI.
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    SI semialpha<200 || plenum<200 TUNC REDDE 6. FIN-SI.
+
+    DECLARA materia SICUT TEXTUS VALENS MUIVIII_CREA().
+    SI IR_VALIDUS(materia)==0 || IR_LATITUDO(materia)!=32 || IR_ALTITUDO(materia)!=32 TUNC REDDE 7. FIN-SI.
+    DECLARA angulus SICUT NUMERUS VALENS IR_PIXEL_RGBA(materia,0,0).
+    DECLARA centrum SICUT NUMERUS VALENS IR_PIXEL_RGBA(materia,16,16).
+    DECLARA summus SICUT NUMERUS VALENS IR_PIXEL_RGBA(materia,16,0).
+    DECLARA inferus SICUT NUMERUS VALENS IR_PIXEL_RGBA(materia,16,31).
+    SI ((angulus>>24)&255)!=0 TUNC REDDE 8. FIN-SI.
+    SI ((centrum>>24)&255)!=255 TUNC REDDE 9. FIN-SI.
+    SI (summus&255)<170 || ((summus>>8)&255)<210 TUNC REDDE 10. FIN-SI.
+    SI (inferus&255)<160 || ((inferus>>8)&255)>170 TUNC REDDE 11. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
