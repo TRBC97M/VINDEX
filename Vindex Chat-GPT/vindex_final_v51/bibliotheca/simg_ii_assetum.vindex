@@ -1,0 +1,240 @@
+// Sylvia OS — SIMG II: gestor assetorum nativus.
+// Radix compilationis simg_ii.vindex et, si cache v1 adhibetur,
+// simg_ii_bridge_vii.vindex ante hunc fontem importet.
+//
+// Gestor: +0 caput, +8 cauda, +16 numerus, +24 scala petita, +32 generatio.
+// Nodus LXXX octeta:
+// +0 proximus, +8 id, +16 genus, +24 scala, +32 imago II,
+// +40 cache SIMG I, +48 latitudo, +56 altitudo, +64 usus, +72 reservatum.
+
+FUNCTIO AII_CREA REDDENS NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    SI scala<250 || scala>8000 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA a SICUT NUMERUS VALENS RESERVA_OCTETA(40).
+    SI a<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(a)=0.
+    CONTENTUM(a+8)=0.
+    CONTENTUM(a+16)=0.
+    CONTENTUM(a+24)=scala.
+    CONTENTUM(a+32)=1.
+    REDDE a.
+FIN-FUNCTIO.
+
+FUNCTIO AII_NUMERUS REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(gestor+16).
+FIN-FUNCTIO.
+
+FUNCTIO AII_SCALA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(gestor+24).
+FIN-FUNCTIO.
+
+FUNCTIO AII_SCALA_PONE REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    SI gestor<=0 || scala<250 || scala>8000 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI CONTENTUM(gestor+24)!=scala TUNC
+        CONTENTUM(gestor+24)=scala.
+        CONTENTUM(gestor+32)=CONTENTUM(gestor+32)+1.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO AII_GENERATIO REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(gestor+32).
+FIN-FUNCTIO.
+
+FUNCTIO AII_PRIMUS REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(gestor).
+FIN-FUNCTIO.
+
+FUNCTIO AII_PROXIMUS REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(nodus).
+FIN-FUNCTIO.
+
+FUNCTIO AII_ID REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(nodus+8).
+FIN-FUNCTIO.
+
+FUNCTIO AII_NODUS_SCALA REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(nodus+24).
+FIN-FUNCTIO.
+
+FUNCTIO AII_IMAGO REDDENS TEXTUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(nodus+32).
+FIN-FUNCTIO.
+
+FUNCTIO AII_VARIANS_EXACTA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    SI gestor<=0 || id<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(gestor).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+8)==id && CONTENTUM(n+24)==scala TUNC
+            REDDE n.
+        FIN-SI.
+        n=CONTENTUM(n).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO AII_ADDE REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI gestor<=0 || id<=0 || SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA scala SICUT NUMERUS VALENS SII_SCALA(imago).
+    SI AII_VARIANS_EXACTA(gestor,id,scala)!=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    SI n<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(n)=0.
+    CONTENTUM(n+8)=id.
+    CONTENTUM(n+16)=SII_GENUS(imago).
+    CONTENTUM(n+24)=scala.
+    CONTENTUM(n+32)=SII_TEXTUS_SEDES(imago).
+    CONTENTUM(n+40)=0.
+    CONTENTUM(n+48)=SII_LATITUDO(imago).
+    CONTENTUM(n+56)=SII_ALTITUDO(imago).
+    CONTENTUM(n+64)=0.
+    CONTENTUM(n+72)=0.
+    DECLARA cauda SICUT NUMERUS VALENS CONTENTUM(gestor+8).
+    SI cauda==0 TUNC
+        CONTENTUM(gestor)=n.
+    ALITER
+        CONTENTUM(cauda)=n.
+    FIN-SI.
+    CONTENTUM(gestor+8)=n.
+    CONTENTUM(gestor+16)=CONTENTUM(gestor+16)+1.
+    CONTENTUM(gestor+32)=CONTENTUM(gestor+32)+1.
+    REDDE n.
+FIN-FUNCTIO.
+
+FUNCTIO AII_NODUS_OPT REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    SI gestor<=0 || id<=0 || scala<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(gestor).
+    DECLARA supra SICUT NUMERUS VALENS 0.
+    DECLARA supra_scala SICUT NUMERUS VALENS 2147483647.
+    DECLARA infra SICUT NUMERUS VALENS 0.
+    DECLARA infra_scala SICUT NUMERUS VALENS 0.
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+8)==id TUNC
+            DECLARA ns SICUT NUMERUS VALENS CONTENTUM(n+24).
+            SI ns==scala TUNC
+                REDDE n.
+            FIN-SI.
+            SI ns>scala && ns<supra_scala TUNC
+                supra=n.
+                supra_scala=ns.
+            FIN-SI.
+            SI ns<scala && ns>infra_scala TUNC
+                infra=n.
+                infra_scala=ns.
+            FIN-SI.
+        FIN-SI.
+        n=CONTENTUM(n).
+    FIN-DUM.
+    SI supra!=0 TUNC
+        REDDE supra.
+    FIN-SI.
+    REDDE infra.
+FIN-FUNCTIO.
+
+FUNCTIO AII_OPTIMUM_NODUS REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI gestor<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE AII_NODUS_OPT(gestor,id,CONTENTUM(gestor+24)).
+FIN-FUNCTIO.
+
+FUNCTIO AII_OPTIMUM REDDENS TEXTUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS AII_OPTIMUM_NODUS(gestor,id).
+    SI n==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(n+64)=CONTENTUM(n+64)+1.
+    REDDE CONTENTUM(n+32).
+FIN-FUNCTIO.
+
+FUNCTIO AII_USUS REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus<=0 TUNC
+        REDDE 0.
+    FIN-SI.
+    REDDE CONTENTUM(nodus+64).
+FIN-FUNCTIO.
+
+FUNCTIO AII_V1_CACHE REDDENS TEXTUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS AII_OPTIMUM_NODUS(gestor,id).
+    SI n==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA cache SICUT NUMERUS VALENS CONTENTUM(n+40).
+    SI cache==0 TUNC
+        DECLARA imago SICUT TEXTUS VALENS CONTENTUM(n+32).
+        DECLARA vetus SICUT TEXTUS VALENS SII_AD_V1(imago).
+        cache=SII_TEXTUS_SEDES(vetus).
+        SI cache==0 TUNC
+            REDDE 0.
+        FIN-SI.
+        CONTENTUM(n+40)=cache.
+    FIN-SI.
+    CONTENTUM(n+64)=CONTENTUM(n+64)+1.
+    REDDE cache.
+FIN-FUNCTIO.
