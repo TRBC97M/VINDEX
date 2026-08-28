@@ -20,7 +20,9 @@ def importa_modulum(nomen: str, fasciculus: str) -> object:
 
 
 def mitte(aux: object, monitor: socket.socket, clavis: str, mora: float = 0.13) -> None:
-    responsum = aux.hmp(monitor, f'sendkey {clavis}')
+    # QEMU sendkey aliter circa C ms clavem tenet. Probatio sagittas etiam
+    # LXXX ms inter se mittit; hold explicitus XXX ms overlap artificiosum tollit.
+    responsum = aux.hmp(monitor, f'sendkey {clavis} 30')
     if 'unknown command' in responsum.lower():
         raise RuntimeError(f'HMP sendkey deest: {clavis}')
     time.sleep(mora)
