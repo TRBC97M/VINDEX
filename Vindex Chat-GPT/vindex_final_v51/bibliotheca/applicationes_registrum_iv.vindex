@@ -43,10 +43,8 @@ FIN-FUNCTIO.
 FUNCTIO AI_PROXIMUS REDDENS NUMERUS.
     ACCIPIT nodus SICUT NUMERUS.
     SI nodus==0 TUNC REDDE 0. FIN-SI.
-    // SONDA P16-XI TEMPORARIA: catalogus canonicus huius imaginis quattuor
-    // applicationes habet. Si proximus nodi IV corruptus est, non sequitur.
-    SI CONTENTUM(nodus)==4 TUNC REDDE 0. FIN-SI.
-    REDDE CONTENTUM(nodus+40).
+    // SONDA P16-XI TEMPORARIA: dichotomia, unus nodus tantum.
+    REDDE 0.
 FIN-FUNCTIO.
 
 FUNCTIO AI_QUAERE REDDENS NUMERUS.
@@ -119,8 +117,6 @@ FIN-FUNCTIO.
 FUNCTIO AI_NODUS_NOMEN REDDENS TEXTUS.
     ACCIPIT nodus SICUT NUMERUS.
     SI nodus==0 TUNC REDDE 0. FIN-SI.
-    // SONDA P16-XI TEMPORARIA: nuntium quartum ad unum glyphum redigitur.
-    SI CONTENTUM(nodus)==4 TUNC REDDE "O". FIN-SI.
     REDDE AI_TEXTUS_EX_SEDE(CONTENTUM(nodus+24)).
 FIN-FUNCTIO.
 
