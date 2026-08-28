@@ -8,10 +8,15 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/iconae_sylviae_vii.vindex'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
   pull_request:
     branches:
@@ -19,10 +24,15 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/iconae_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/imago_raster_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/iconae_sylviae_vii.vindex'
       - '.github/workflows/sylvia-capacitas-graphica-vii.yml'
 
 permissions:
@@ -69,3 +79,13 @@ jobs:
           chmod +x /tmp/emblema-sylviae-vii
           /tmp/emblema-sylviae-vii
           printf '%s\n' 'RECTE: P16-VII emblema XXXII per palette, RLE et SIMG restituitur.'
+
+      - name: Atlas iconarum rasterarum compila et exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/iconae_sylviae_vii.vindex /tmp/iconae-sylviae-vii
+          chmod +x /tmp/iconae-sylviae-vii
+          /tmp/iconae-sylviae-vii
+          printf '%s\n' 'RECTE: P16-VII quattuor iconae XLVIII in atlas XCVI per SIMG servantur.'
