@@ -62,7 +62,7 @@ FUNCTIO CIX_INITIUM_REDDE REDDENS NUMERUS.
             f=GVII_GRADUS_VERTICALIS(ix,iy,300,item_h,hover_summus,hover_inferus).
             f=FV_RECT(ix,iy,3,item_h,bronzeum).
             f=FV_RECT(ix+3,iy,297,1,aqua).
-        SINON
+        ALITER
             f=GVII_GRADUS_VERTICALIS(ix,iy,300,item_h,ebur,ebur_inferum).
             f=FV_RECT(ix,iy+item_h-1,300,1,papyrus_inferus).
         FIN-SI.
@@ -120,7 +120,7 @@ FUNCTIO CIX_TASKBAR_REDDE REDDENS NUMERUS.
         init_summus=activa_summus.
         init_inferus=activa_inferus.
         init_activum=1.
-    SINON
+    ALITER
         SI s[11]>=6 && s[11]<110 && s[12]>=top+6 && s[12]<top+th-6 TUNC
             init_summus=hover_summus.
             init_inferus=hover_inferus.
@@ -173,7 +173,7 @@ FUNCTIO CIX_TASKBAR_REDDE REDDENS NUMERUS.
             f=GVII_GRADUS_VERTICALIS(bx,top+6,lat,th-12,summus,inferus).
             SI activa!=0 TUNC
                 f=FV_RECT(bx,top+6,lat,2,bronzeum).
-            SINON
+            ALITER
                 f=FV_RECT(bx,top+6,lat,1,chalybs).
             FIN-SI.
             DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(n+8).
