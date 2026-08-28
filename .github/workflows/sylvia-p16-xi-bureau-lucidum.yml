@@ -7,12 +7,14 @@ on:
       - main
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
       - '.github/workflows/sylvia-p16-xi-bureau-lucidum.yml'
@@ -21,12 +23,14 @@ on:
       - main
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
       - '.github/workflows/sylvia-p16-xi-bureau-lucidum.yml'
@@ -36,9 +40,9 @@ permissions:
 
 jobs:
   bureau-lucidum:
-    name: Bureau cached, materiales VIII, QEMU et PS/2
+    name: Bureau et testa XI, QEMU et PS/2
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 24
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v5
@@ -60,7 +64,7 @@ jobs:
           set -euo pipefail
           python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Bureau Lucidum visualiter sub QEMU et OVMF proba
+      - name: Bureau et rail XI visualiter sub QEMU proba
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         env:
@@ -69,6 +73,17 @@ jobs:
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_lucidum_xi.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: INITIUM XI sub QEMU et OVMF proba
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '24'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-p16-xi-initium'
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_xi.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
       - name: Bureau interactiones historicas sub QEMU custodi
@@ -96,6 +111,7 @@ jobs:
           name: qemu-p16-xi-${{ github.sha }}
           path: |
             qemu-p16-xi-visualis/*.ppm
+            qemu-p16-xi-initium/*.ppm
             qemu-p16-xi-interactio/*.ppm
           if-no-files-found: warn
           retention-days: 7
