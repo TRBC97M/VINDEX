@@ -9,9 +9,11 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_compat_v1.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_bridge_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_assetum.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_compat_v1.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_bridge_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_assetum.vindex'
       - 'documenta/sylvia/SIMG_II.md'
       - '.github/workflows/sylvia-simg-ii.yml'
   push:
@@ -21,9 +23,11 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_compat_v1.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_bridge_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii_assetum.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_compat_v1.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_bridge_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/simg_ii_assetum.vindex'
       - 'documenta/sylvia/SIMG_II.md'
       - '.github/workflows/sylvia-simg-ii.yml'
 
@@ -32,7 +36,7 @@ permissions:
 
 jobs:
   simg-ii:
-    name: Formatum, compressio, metadata et migratio probantur
+    name: Formatum, compressio, metadata, migratio et asseta probantur
     runs-on: ubuntu-24.04
     steps:
       - name: Repositorium accipe
@@ -55,7 +59,8 @@ jobs:
           for f in \
             probationes/simg_ii.vindex \
             probationes/simg_ii_compat_v1.vindex \
-            probationes/simg_ii_bridge_vii.vindex
+            probationes/simg_ii_bridge_vii.vindex \
+            probationes/simg_ii_assetum.vindex
           do
             python3 instrumenta/vindex_verifica.py "$f"
           done
@@ -91,6 +96,16 @@ jobs:
           timeout 20s /tmp/simg-ii-bridge
           printf '%s\n' 'RECTE: SIMG II semel expanditur et descriptor SIMG I ad cache veterem paratur.'
 
+      - name: Gestorem assetorum et variantes scalae exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/simg_ii_assetum.vindex /tmp/simg-ii-assetum
+          chmod +x /tmp/simg-ii-assetum
+          timeout 20s /tmp/simg-ii-assetum
+          printf '%s\n' 'RECTE: gestor assetorum, variantes scalae et cache rastera probantur.'
+
       - name: Contractum publicum custodi
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
@@ -99,6 +114,7 @@ jobs:
           g='bibliotheca/simg_ii.vindex'
           c='bibliotheca/simg_ii_compat_v1.vindex'
           b='bibliotheca/simg_ii_bridge_vii.vindex'
+          a='bibliotheca/simg_ii_assetum.vindex'
           for signum in \
             'FUNCTIO SII_VALIDUS REDDENS NUMERUS' \
             'FUNCTIO SII_CREA_RGBA REDDENS TEXTUS' \
@@ -108,5 +124,11 @@ jobs:
           do grep -Fq "$signum" "$g"; done
           grep -Fq 'FUNCTIO SII_EX_V1 REDDENS TEXTUS' "$c"
           grep -Fq 'FUNCTIO SII_AD_V1 REDDENS TEXTUS' "$b"
-          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$g" "$c" "$b"
-          printf '%s\n' 'RECTE: contractus publicus SIMG II VINDEX manet.'
+          for signum in \
+            'FUNCTIO AII_CREA REDDENS NUMERUS' \
+            'FUNCTIO AII_ADDE REDDENS NUMERUS' \
+            'FUNCTIO AII_OPTIMUM REDDENS TEXTUS' \
+            'FUNCTIO AII_V1_CACHE REDDENS TEXTUS'
+          do grep -Fq "$signum" "$a"; done
+          ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$g" "$c" "$b" "$a"
+          printf '%s\n' 'RECTE: contractus publicus SIMG II et gestor assetorum VINDEX manent.'
