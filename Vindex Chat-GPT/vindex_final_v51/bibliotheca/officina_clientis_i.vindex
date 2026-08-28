@@ -1,4 +1,4 @@
-// Sylvia OS — OFFICINA SYLVIAE P18-I.
+// Sylvia OS — OFFICINA SYLVIAE P18-I / P16-VI.
 // Editor VINDEX nativus intra Fenestrale: documentum in memoria volatili,
 // lineae UTF-8 dynamicae et cursor sine capacitate parva fixa.
 //
@@ -402,32 +402,37 @@ FUNCTIO OE_RENDE REDDENS NUMERUS.
     SI superficies==0 || status==0 TUNC REDDE 0. FIN-SI.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
     DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
-    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
-    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
-    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
-    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(28,31,32).
+    DECLARA lapis SICUT NUMERUS VALENS FV_COLOR(49,55,55).
+    DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(92,99,96).
     DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
-    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
-    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA papyrus SICUT NUMERUS VALENS FV_COLOR(219,211,196).
     DECLARA charta SICUT NUMERUS VALENS FV_COLOR(250,249,245).
-    DECLARA selectum SICUT NUMERUS VALENS FV_COLOR(226,236,242).
+    DECLARA selectum SICUT NUMERUS VALENS FV_COLOR(238,232,219).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
     DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,ebur).
-    f=FS_RECT(superficies,0,0,w,34,profundum).
-    f=FS_RECT(superficies,0,33,w,1,aqua).
-    f=FS_TEXTUM(superficies,12,11,"OFFICINA SYLVIAE",lux).
-    f=FS_TEXTUM(superficies,w-92,11,"P18-I",argentum).
-    f=FS_RECT(superficies,0,34,w,28,argentum).
-    f=FS_TEXTUM(superficies,12,44,"EDITOR VINDEX",profundum).
-    f=FS_TEXTUM(superficies,w-190,44,"MEMORIA VOLATILIS",medium).
+
+    // Caput OFFICINAE idem lapidem et aes ac Fenestrale sequitur.
+    f=FS_RECT(superficies,0,0,w,34,nox).
+    f=FS_RECT(superficies,0,33,w,1,bronzeum).
+    f=FS_TEXTUM(superficies,12,11,"OFFICINA SYLVIAE",ebur).
+    f=FS_TEXTUM(superficies,w-92,11,"P18-I",chalybs).
+    f=FS_RECT(superficies,0,34,w,28,papyrus).
+    f=FS_TEXTUM(superficies,12,44,"EDITOR VINDEX",nox).
+    f=FS_TEXTUM(superficies,w-190,44,"MEMORIA VOLATILIS",viride).
+
     DECLARA y0 SICUT NUMERUS VALENS 68.
     DECLARA y_fin SICUT NUMERUS VALENS h-32.
     DECLARA line_h SICUT NUMERUS VALENS 14.
     DECLARA visibiles SICUT NUMERUS VALENS (y_fin-y0)/line_h.
     SI visibiles<1 TUNC visibiles=1. FIN-SI.
     DECLARA adapta SICUT NUMERUS VALENS OE_VISUM_ADAPTA(status,visibiles).
-    f=FS_RECT(superficies,0,y0,48,y_fin-y0,charta).
+
+    // Gutter papyraceus, charta editoris, linea activa calida sine cyan.
+    f=FS_RECT(superficies,0,y0,48,y_fin-y0,papyrus).
     f=FS_RECT(superficies,48,y0,w-48,y_fin-y0,charta).
-    f=FS_RECT(superficies,47,y0,1,y_fin-y0,argentum).
+    f=FS_RECT(superficies,47,y0,1,y_fin-y0,chalybs).
     DECLARA initium SICUT NUMERUS VALENS CONTENTUM(status+48).
     DECLARA index SICUT NUMERUS VALENS 0.
     DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status).
@@ -441,26 +446,28 @@ FUNCTIO OE_RENDE REDDENS NUMERUS.
         SI nodus==cursor_nodus TUNC
             f=FS_RECT(superficies,48,y,w-48,line_h,selectum).
             f=FS_RECT(superficies,4,y+2,36,line_h-4,bronzeum).
-            f=FS_TEXTUM(superficies,16,y+3,">",profundum).
+            f=FS_TEXTUM(superficies,16,y+3,">",nox).
         FIN-SI.
         DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
-        SI d!=0 && CONTENTUM(d)>0 TUNC f=FS_TEXTUM(superficies,56,y+3,OE_TEXTUS_EX_SEDE(d),profundum). FIN-SI.
+        SI d!=0 && CONTENTUM(d)>0 TUNC f=FS_TEXTUM(superficies,56,y+3,OE_TEXTUS_EX_SEDE(d),nox). FIN-SI.
         SI nodus==cursor_nodus TUNC
             DECLARA col SICUT NUMERUS VALENS OE_COLUMNA(d,CONTENTUM(status+24)).
             DECLARA cx SICUT NUMERUS VALENS 56+col*8.
             SI cx>w-8 TUNC cx=w-8. FIN-SI.
-            f=FS_RECT(superficies,cx,y+2,2,line_h-2,medium).
+            f=FS_RECT(superficies,cx,y+2,2,line_h-2,viride).
         FIN-SI.
         nodus=CONTENTUM(nodus+16).
         y=y+line_h.
         index=index+1.
     FIN-DUM.
-    f=FS_RECT(superficies,0,h-32,w,32,profundum).
+
+    f=FS_RECT(superficies,0,h-32,w,32,nox).
+    f=FS_RECT(superficies,0,h-32,52,1,bronzeum).
     SI CONTENTUM(status+40)!=0 TUNC
         f=FS_TEXTUM(superficies,12,h-20,"MODIFICATUM",bronzeum).
     ALITER
-        f=FS_TEXTUM(superficies,12,h-20,"IMMUTATUM",argentum).
+        f=FS_TEXTUM(superficies,12,h-20,"IMMUTATUM",chalybs).
     FIN-SI.
-    f=FS_TEXTUM(superficies,w-176,h-20,"FASCICULI: NONDUM",argentum).
+    f=FS_TEXTUM(superficies,w-176,h-20,"FASCICULI: NONDUM",chalybs).
     REDDE 1.
 FIN-FUNCTIO.

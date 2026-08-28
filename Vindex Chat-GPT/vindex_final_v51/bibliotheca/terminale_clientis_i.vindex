@@ -1,4 +1,4 @@
-// Sylvia OS — TERMINALE P17-II.
+// Sylvia OS — TERMINALE P17-II / P16-VI.
 // Clientis Fenestralis verus: linea UTF-8 dynamica, eventa claviaturae,
 // historia mandatorum et transcriptum dynamicum sine capacitate parva fixa.
 // Status clientis:
@@ -403,30 +403,37 @@ FUNCTIO TE_RENDE REDDENS NUMERUS.
     SI superficies==0 || status==0 TUNC REDDE 0. FIN-SI.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
     DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
-    DECLARA fundum SICUT NUMERUS VALENS FV_COLOR(5,18,30).
-    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
-    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
-    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98,215,242).
-    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234,248,255).
-    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
-    DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(168,58,58).
-    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,fundum).
-    f=FS_RECT(superficies,0,0,w,28,profundum).
-    f=FS_RECT(superficies,0,27,w,1,medium).
-    f=FS_TEXTUM(superficies,12,10,"SYLVIA TERMINALE",aqua).
-    f=FS_TEXTUM(superficies,w-116,10,"P17-II",argentum).
-    f=FS_TEXTUM(superficies,14,48,"VINDEX 0.53 / SYLVIA",argentum).
+    DECLARA carbonem SICUT NUMERUS VALENS FV_COLOR(22,24,23).
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(28,31,32).
+    DECLARA lapis SICUT NUMERUS VALENS FV_COLOR(49,55,55).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(144,149,144).
+    DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(177,95,82).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,carbonem).
+
+    // Caput lapideum cum linea aenea: terminale intra eandem identitatem systematis.
+    f=FS_RECT(superficies,0,0,w,28,lapis).
+    f=FS_RECT(superficies,0,27,w,1,bronzeum).
+    f=FS_TEXTUM(superficies,12,10,"SYLVIA TERMINALE",ebur).
+    f=FS_TEXTUM(superficies,w-116,10,"P17-II",chalybs).
+    f=FS_TEXTUM(superficies,14,48,"VINDEX 0.53 / SYLVIA",viride).
+
     DECLARA responsum SICUT NUMERUS VALENS CONTENTUM(status+8).
-    f=TE_RESPONSUM_RENDE(superficies,14,78,responsum,lux,rubrum).
+    f=TE_RESPONSUM_RENDE(superficies,14,78,responsum,ebur,rubrum).
     DECLARA y SICUT NUMERUS VALENS h-42.
-    DECLARA t SICUT NUMERUS VALENS TE_TRANSCRIPTUM_RENDE(superficies,status,y-22,aqua,lux,rubrum).
-    SI CONTENTUM(status+64)>0 TUNC f=FS_TEXTUM(superficies,w-120,y-22,"SCROLLBACK",argentum). FIN-SI.
-    f=FS_RECT(superficies,10,y-8,w-20,30,profundum).
-    f=FS_TEXTUM(superficies,16,y,">",aqua).
+    DECLARA t SICUT NUMERUS VALENS TE_TRANSCRIPTUM_RENDE(superficies,status,y-22,bronzeum,ebur,rubrum).
+    SI CONTENTUM(status+64)>0 TUNC f=FS_TEXTUM(superficies,w-120,y-22,"SCROLLBACK",chalybs). FIN-SI.
+
+    // Prompt in alveo paulo clariore; viride est cursor quietus, aes promptum.
+    f=FS_RECT(superficies,10,y-8,w-20,30,nox).
+    f=FS_RECT(superficies,10,y-8,2,30,viride).
+    f=FS_TEXTUM(superficies,16,y,">",bronzeum).
     DECLARA d SICUT NUMERUS VALENS CONTENTUM(status).
-    SI CONTENTUM(d)>0 TUNC f=FS_TEXTUM(superficies,32,y,TE_TEXTUS_EX_SEDE(d),lux). FIN-SI.
+    SI CONTENTUM(d)>0 TUNC f=FS_TEXTUM(superficies,32,y,TE_TEXTUS_EX_SEDE(d),ebur). FIN-SI.
     DECLARA cx SICUT NUMERUS VALENS 32+TE_SCALAE(d)*8.
     SI cx>w-18 TUNC cx=w-18. FIN-SI.
-    f=FS_RECT(superficies,cx,y+10,7,2,aqua).
+    f=FS_RECT(superficies,cx,y+10,7,2,viride).
     REDDE 1.
 FIN-FUNCTIO.

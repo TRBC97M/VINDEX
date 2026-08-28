@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-II: INITIUM apertum, hover et focus TABULA sub UEFI/QEMU comprobat."""
+"""P16-VI: INITIUM apertum, hover et focus TABULA sub UEFI/QEMU comprobat."""
 from __future__ import annotations
 
 import socket
@@ -89,21 +89,21 @@ def initium_top_quaere(
     pix: bytes,
     w: int,
     h: int,
-    vitrum: tuple[int, int, int],
-    aqua: tuple[int, int, int],
-    ebur: tuple[int, int, int],
+    caput: tuple[int, int, int],
+    accentus: tuple[int, int, int],
+    corpus: tuple[int, int, int],
 ) -> int | None:
-    """Pannum INITIUM ex linea aqua, capite vitreo et corpore eburneo reperit."""
+    """Pannum INITIUM ex linea aenea, capite nocturno et corpore eburneo reperit."""
     for y in range(120, h - 120):
-        if pixel(pix, w, 20, y) != aqua:
+        if pixel(pix, w, 20, y) != accentus:
             continue
         if y + 70 >= h:
             continue
-        if pixel(pix, w, 20, y + 4) != vitrum:
+        if pixel(pix, w, 20, y + 4) != caput:
             continue
-        if pixel(pix, w, 300, y + 4) != vitrum:
+        if pixel(pix, w, 300, y + 4) != caput:
             continue
-        if pixel(pix, w, 300, y + 70) != ebur:
+        if pixel(pix, w, 300, y + 70) != corpus:
             continue
         return y
     return None
@@ -219,29 +219,26 @@ def principale() -> int:
             print("DEFECIT: dimensiones post INITIUM mutantur", file=sys.stderr)
             return 6
 
-        vitrum = (14, 66, 111)
-        aqua = (98, 215, 242)
-        ebur = (241, 238, 228)
-        lux = (234, 248, 255)
-        argentum = (185, 196, 207)
+        nox = (28, 31, 32)
         bronzeum = (185, 138, 82)
-        profundum = (8, 35, 61)
-        menu_top = initium_top_quaere(pix_open, w, h, vitrum, aqua, ebur)
+        ebur = (241, 238, 228)
+        papyrus = (215, 205, 185)
+        menu_top = initium_top_quaere(pix_open, w, h, nox, bronzeum, ebur)
         if menu_top is None:
-            print("DEFECIT: caput INITIUM non inventum", file=sys.stderr)
+            print("DEFECIT: caput INITIUM P16-VI non inventum", file=sys.stderr)
             return 7
         programmata_y = menu_top + 92
         tabula_y = programmata_y + 54
         programmata_scopus = programmata_y + 22
         tabula_scopus = tabula_y + 22
 
-        if pixel(pix_open, w, 20, menu_top + 10) != vitrum:
-            print(f"DEFECIT: caput INITIUM non apertum: {pixel(pix_open,w,20,menu_top+10)} cursor={pos_initium}", file=sys.stderr)
+        if pixel(pix_open, w, 20, menu_top + 10) != nox:
+            print(f"DEFECIT: caput INITIUM non est nox: {pixel(pix_open,w,20,menu_top+10)} cursor={pos_initium}", file=sys.stderr)
             return 8
         if pixel(pix_open, w, 300, menu_top + 70) != ebur:
-            print(f"DEFECIT: corpus INITIUM deest: {pixel(pix_open,w,300,menu_top+70)}", file=sys.stderr)
+            print(f"DEFECIT: corpus INITIUM eburneum deest: {pixel(pix_open,w,300,menu_top+70)}", file=sys.stderr)
             return 9
-        if pixel(pix_open, w, 300, programmata_scopus) != lux or pixel(pix_open, w, 300, tabula_scopus) != lux:
+        if pixel(pix_open, w, 300, programmata_scopus) != ebur or pixel(pix_open, w, 300, tabula_scopus) != ebur:
             print("DEFECIT: tesserae applicationum INITIUM desunt", file=sys.stderr)
             return 10
         mutata_open = differentiae(pix_ante, pix_open)
@@ -252,36 +249,36 @@ def principale() -> int:
         pos_tabula = move_ad(monitor, out, "tabula", 150, tabula_scopus, w, h)
         captura(monitor, hover)
         _, _, pix_hover = ppm(hover)
-        if pixel(pix_hover, w, 300, tabula_scopus) != argentum:
-            print(f"DEFECIT: hover TABULA non detectus: {pixel(pix_hover,w,300,tabula_scopus)} cursor={pos_tabula}", file=sys.stderr)
+        if pixel(pix_hover, w, 300, tabula_scopus) != papyrus:
+            print(f"DEFECIT: hover TABULA papyraceus non detectus: {pixel(pix_hover,w,300,tabula_scopus)} cursor={pos_tabula}", file=sys.stderr)
             return 12
-        if pixel(pix_hover, w, 300, programmata_scopus) != lux:
+        if pixel(pix_hover, w, 300, programmata_scopus) != ebur:
             print("DEFECIT: hover TABULA tesseram PROGRAMMATA mutavit", file=sys.stderr)
             return 13
 
         click(monitor)
         captura(monitor, post)
         _, _, pix_post = ppm(post)
-        menu_post = initium_top_quaere(pix_post, w, h, vitrum, aqua, ebur)
+        menu_post = initium_top_quaere(pix_post, w, h, nox, bronzeum, ebur)
         if menu_post is not None:
             print(f"DEFECIT: INITIUM post electionem adhuc repertum est ad y={menu_post}", file=sys.stderr)
             return 14
 
-        # TABULA initialiter x≈679 y=168. Post electionem debet focus et marginem bronzeum accipere.
+        # TABULA initialiter x≈679 y=168. Focus bronzeus P16-V manet.
         focus_pixel = pixel(pix_post, w, 700, 168)
         if focus_pixel != bronzeum:
             print(f"DEFECIT: TABULA focus non accepit: {focus_pixel}", file=sys.stderr)
             return 15
 
-        if pixel(pix_open, w, 24, programmata_y + 12) != profundum:
+        if pixel(pix_open, w, 24, programmata_y + 12) != nox:
             print("DEFECIT: signum PROGRAMMATA in INITIUM deest", file=sys.stderr)
             return 16
 
         mutata_post = differentiae(pix_open, pix_post)
-        print(f"INITIUM: top={menu_top} cursor_init={init_pos} cursor_tessera={pos_initium} cursor_tabula={pos_tabula}")
-        print(f"INITIUM: apertio_pixeli={mutata_open} clausura_focus_pixeli={mutata_post}")
-        print(f"INITIUM: caput={pixel(pix_open,w,20,menu_top+10)} hover_tabula={pixel(pix_hover,w,300,tabula_scopus)} focus_tabula={focus_pixel}")
-        print("RECTE: P16-II INITIUM capacitatem dynamicam tolerat et TABULA vere focalizat.")
+        print(f"INITIUM-VI: top={menu_top} cursor_init={init_pos} cursor_tessera={pos_initium} cursor_tabula={pos_tabula}")
+        print(f"INITIUM-VI: apertio_pixeli={mutata_open} clausura_focus_pixeli={mutata_post}")
+        print(f"INITIUM-VI: caput={pixel(pix_open,w,20,menu_top+10)} hover_tabula={pixel(pix_hover,w,300,tabula_scopus)} focus_tabula={focus_pixel}")
+        print("RECTE: P16-VI INITIUM nox-ebur-aes TABULA vere focalizat.")
         return 0
     finally:
         try:

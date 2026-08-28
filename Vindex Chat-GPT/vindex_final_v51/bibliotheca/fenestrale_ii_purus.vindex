@@ -1,4 +1,4 @@
-// Sylvia OS — Fenestrale II Purus.
+// Sylvia OS — Fenestrale II Purus / P16-VI.
 // Primitivae graphicae communes omnino in VINDEX nativo.
 // Post bootstrap UEFI nullus runtime alienae linguae adhibetur.
 
@@ -204,6 +204,7 @@ FUNCTIO FV_TEXTUM_SCALA REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
+// P16-VI: fundum sobrius, graphiticus, cum arcu aeneo valde discreto.
 FUNCTIO FV_FUNDUM REDDENS NUMERUS.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
     DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
@@ -211,32 +212,44 @@ FUNCTIO FV_FUNDUM REDDENS NUMERUS.
     DUM banda < 32 PERFICE
         DECLARA y0 SICUT NUMERUS VALENS banda * h / 32.
         DECLARA y1 SICUT NUMERUS VALENS (banda + 1) * h / 32.
-        DECLARA r SICUT NUMERUS VALENS (8 * (32 - banda) + 5 * banda) / 32.
-        DECLARA g SICUT NUMERUS VALENS (52 * (32 - banda) + 24 * banda) / 32.
-        DECLARA b SICUT NUMERUS VALENS (90 * (32 - banda) + 48 * banda) / 32.
+        DECLARA r SICUT NUMERUS VALENS (24 * (32 - banda) + 39 * banda) / 32.
+        DECLARA g SICUT NUMERUS VALENS (27 * (32 - banda) + 43 * banda) / 32.
+        DECLARA b SICUT NUMERUS VALENS (28 * (32 - banda) + 40 * banda) / 32.
         DECLARA f SICUT NUMERUS VALENS FV_RECT(0, y0, w, y1 - y0, FV_COLOR(r, g, b)).
         banda = banda + 1.
     FIN-DUM.
+
+    // Lineae architectonicae non sunt ornamentum dominans: tantum ordinem dant.
+    DECLARA aes_obscurum SICUT NUMERUS VALENS FV_COLOR(92, 65, 46).
+    DECLARA lapis_obscurus SICUT NUMERUS VALENS FV_COLOR(48, 52, 49).
+    DECLARA viride_obscurum SICUT NUMERUS VALENS FV_COLOR(48, 73, 67).
     DECLARA i SICUT NUMERUS VALENS 0.
-    DUM i < 54 PERFICE
-        DECLARA x SICUT NUMERUS VALENS w * 8 / 100 + i * w * 83 / 5400.
-        DECLARA y SICUT NUMERUS VALENS h * 61 / 100 - (i * i * h) / 190000.
-        DECLARA f1 SICUT NUMERUS VALENS FV_RECT(x, y, w / 120 + 2, 2, FV_COLOR(46, 130, 171)).
+    DUM i < 48 PERFICE
+        DECLARA dx SICUT NUMERUS VALENS i - 24.
+        SI dx < 0 TUNC dx = 0 - dx. FIN-SI.
+        DECLARA x SICUT NUMERUS VALENS w * 57 / 100 + i * w * 37 / 4800.
+        DECLARA y SICUT NUMERUS VALENS h * 25 / 100 + (dx * dx * h) / 76000.
+        DECLARA f1 SICUT NUMERUS VALENS FV_RECT(x, y, w / 210 + 2, 1, aes_obscurum).
         i = i + 1.
     FIN-DUM.
     i = 0.
-    DUM i < 46 PERFICE
-        DECLARA x2 SICUT NUMERUS VALENS w * 20 / 100 + i * w * 67 / 4600.
-        DECLARA y2 SICUT NUMERUS VALENS h * 69 / 100 - (i * i * h) / 160000.
-        DECLARA f2 SICUT NUMERUS VALENS FV_RECT(x2, y2, w / 150 + 2, 1, FV_COLOR(98, 215, 242)).
+    DUM i < 36 PERFICE
+        DECLARA dx2 SICUT NUMERUS VALENS i - 18.
+        SI dx2 < 0 TUNC dx2 = 0 - dx2. FIN-SI.
+        DECLARA x2 SICUT NUMERUS VALENS w * 64 / 100 + i * w * 27 / 3600.
+        DECLARA y2 SICUT NUMERUS VALENS h * 31 / 100 + (dx2 * dx2 * h) / 62000.
+        DECLARA f2 SICUT NUMERUS VALENS FV_RECT(x2, y2, w / 240 + 2, 1, viride_obscurum).
         i = i + 1.
     FIN-DUM.
-    DECLARA horizon SICUT NUMERUS VALENS h * 78 / 100.
-    DECLARA fh SICUT NUMERUS VALENS FV_RECT(0, horizon, w, h - horizon - 28, FV_COLOR(7, 29, 52)).
-    fh = FV_RECT(0, horizon, w, 1, FV_COLOR(55, 126, 164)).
+
+    DECLARA limen SICUT NUMERUS VALENS h * 78 / 100.
+    DECLARA fl SICUT NUMERUS VALENS FV_RECT(0, limen, w, h - limen - FV_METRUM_TASKBAR(), FV_COLOR(25, 28, 27)).
+    fl = FV_RECT(0, limen, w, 1, lapis_obscurus).
+    fl = FV_RECT(w * 42 / 100, limen - 1, w * 53 / 100, 1, aes_obscurum).
     REDDE 1.
 FIN-FUNCTIO.
 
+// P16-VI: fenestra ex lapide, ebore et aere; geometria P16-V intacta manet.
 FUNCTIO FV_FENESTRA REDDENS NUMERUS.
     ACCIPIT x SICUT NUMERUS.
     ACCIPIT y SICUT NUMERUS.
@@ -245,72 +258,74 @@ FUNCTIO FV_FENESTRA REDDENS NUMERUS.
     ACCIPIT titulus SICUT TEXTUS.
     ACCIPIT activa SICUT NUMERUS.
     DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241, 238, 228).
-    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185, 196, 207).
-    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8, 35, 61).
-    DECLARA vitrum SICUT NUMERUS VALENS FV_COLOR(14, 66, 111).
-    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26, 93, 146).
-    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(98, 215, 242).
-    DECLARA lux SICUT NUMERUS VALENS FV_COLOR(234, 248, 255).
+    DECLARA papyrus SICUT NUMERUS VALENS FV_COLOR(225, 218, 204).
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(28, 31, 32).
+    DECLARA lapis SICUT NUMERUS VALENS FV_COLOR(49, 55, 55).
+    DECLARA cineres SICUT NUMERUS VALENS FV_COLOR(66, 71, 69).
+    DECLARA cineres_inferi SICUT NUMERUS VALENS FV_COLOR(78, 83, 80).
+    DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(92, 99, 96).
     DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185, 138, 82).
-    DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(168, 58, 58).
-    DECLARA ferrum SICUT NUMERUS VALENS FV_COLOR(78, 92, 104).
-    DECLARA umbra_mollis SICUT NUMERUS VALENS FV_COLOR(6, 25, 43).
-    DECLARA umbra_profunda SICUT NUMERUS VALENS FV_COLOR(3, 14, 25).
-    DECLARA bulla SICUT NUMERUS VALENS FV_COLOR(207, 216, 220).
-    DECLARA titulus_superior SICUT NUMERUS VALENS vitrum.
-    DECLARA titulus_inferior SICUT NUMERUS VALENS medium.
-    DECLARA accentus SICUT NUMERUS VALENS aqua.
+    DECLARA aes SICUT NUMERUS VALENS FV_COLOR(128, 87, 53).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71, 118, 111).
+    DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(143, 64, 58).
+    DECLARA umbra_mollis SICUT NUMERUS VALENS FV_COLOR(22, 23, 22).
+    DECLARA umbra_profunda SICUT NUMERUS VALENS FV_COLOR(12, 14, 14).
+    DECLARA titulus_superior SICUT NUMERUS VALENS nox.
+    DECLARA titulus_inferior SICUT NUMERUS VALENS lapis.
+    DECLARA accentus SICUT NUMERUS VALENS bronzeum.
     DECLARA clausura SICUT NUMERUS VALENS rubrum.
     DECLARA margo SICUT NUMERUS VALENS bronzeum.
     SI activa == 0 TUNC
-        margo = argentum.
-        titulus_superior = FV_COLOR(73, 95, 111).
-        titulus_inferior = FV_COLOR(91, 111, 124).
-        accentus = argentum.
-        clausura = FV_COLOR(132, 90, 90).
+        margo = chalybs.
+        titulus_superior = cineres.
+        titulus_inferior = cineres_inferi.
+        accentus = chalybs.
+        clausura = FV_COLOR(108, 75, 71).
     FIN-SI.
     DECLARA tituli_h SICUT NUMERUS VALENS FV_METRUM_TITULUS().
     DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
 
-    // P16-V: umbra duplex, levis et determinata, extra geometriam interactive.
+    // Umbra duplex sed neutra, ut fenestra a fundo separetur sine aura caerulea.
     DECLARA f SICUT NUMERUS VALENS FV_RECT(x + 6, y + 7, w + 3, h + 3, umbra_profunda).
     f = FV_RECT(x + 3, y + 4, w + 3, h + 3, umbra_mollis).
 
-    // Corpus et duplex margo: accentus focus supra, ferrum extra, argentum intra.
+    // Corpus eburneum et margo activus aeneus.
     f = FV_RECT(x, y, w, h, ebur).
     f = FV_RECT(x, y, w, 3, margo).
-    f = FV_RECT(x, y, 1, h, ferrum).
-    f = FV_RECT(x + w - 1, y, 1, h, profundum).
-    f = FV_RECT(x, y + h - 1, w, 1, profundum).
-    f = FV_RECT(x + 1, y + 3, 1, h - 4, argentum).
-    f = FV_RECT(x + w - 2, y + 3, 1, h - 4, ferrum).
+    f = FV_RECT(x, y, 1, h, chalybs).
+    f = FV_RECT(x + w - 1, y, 1, h, nox).
+    f = FV_RECT(x, y + h - 1, w, 1, nox).
+    f = FV_RECT(x + 1, y + 3, 1, h - 4, papyrus).
+    f = FV_RECT(x + w - 2, y + 3, 1, h - 4, chalybs).
 
-    // Titulus duobus tonis, cum linea accentus et separatione inferiore.
+    // Titulus lapideus: focus per lineam aeneam, non per magnam massam saturatam.
     f = FV_RECT(x + 2, y + 3, w - 4, tituli_h - 4, titulus_superior).
     f = FV_RECT(x + 2, y + tituli_h - 9, w - 4, 6, titulus_inferior).
     f = FV_RECT(x + 2, y + 3, w - 4, 1, accentus).
-    f = FV_RECT(x + 2, y + tituli_h - 2, w - 4, 1, ferrum).
-    f = FV_TEXTUM_SCALA(x + 12, y + 10, titulus, lux, 2).
+    f = FV_RECT(x + 2, y + tituli_h - 2, w - 4, 1, aes).
+    f = FV_TEXTUM_SCALA(x + 12, y + 10, titulus, ebur, 2).
 
-    // Bullae planae P16-V; hit-testing historice easdem sedes retinet.
-    f = FV_RECT(x + w - 92, y + 6, 24, 24, bulla).
-    f = FV_RECT(x + w - 62, y + 6, 24, 24, bulla).
+    // Bullae compactae: eadem hitbox P16-V, sed una grammatica lapidea.
+    f = FV_RECT(x + w - 92, y + 6, 24, 24, lapis).
+    f = FV_RECT(x + w - 62, y + 6, 24, 24, lapis).
     f = FV_RECT(x + w - 32, y + 6, 24, 24, clausura).
-    f = FV_RECT(x + w - 92, y + 6, 24, 1, lux).
-    f = FV_RECT(x + w - 62, y + 6, 24, 1, lux).
-    f = FV_RECT(x + w - 86, y + 22, 12, 2, profundum).
-    f = FV_RECT(x + w - 56, y + 11, 12, 2, profundum).
-    f = FV_RECT(x + w - 56, y + 11, 2, 12, profundum).
-    f = FV_RECT(x + w - 46, y + 11, 2, 12, profundum).
-    f = FV_RECT(x + w - 56, y + 21, 12, 2, profundum).
-    f = FV_RECT(x + w - 26, y + 12, 12, 2, lux).
-    f = FV_RECT(x + w - 21, y + 7, 2, 12, lux).
+    f = FV_RECT(x + w - 92, y + 6, 24, 1, chalybs).
+    f = FV_RECT(x + w - 62, y + 6, 24, 1, chalybs).
+    f = FV_RECT(x + w - 32, y + 6, 24, 1, FV_COLOR(177, 95, 82)).
+    f = FV_RECT(x + w - 86, y + 22, 12, 2, ebur).
+    f = FV_RECT(x + w - 56, y + 11, 12, 2, ebur).
+    f = FV_RECT(x + w - 56, y + 11, 2, 12, ebur).
+    f = FV_RECT(x + w - 46, y + 11, 2, 12, ebur).
+    f = FV_RECT(x + w - 56, y + 21, 12, 2, ebur).
+    f = FV_RECT(x + w - 26, y + 12, 12, 2, ebur).
+    f = FV_RECT(x + w - 21, y + 7, 2, 12, ebur).
 
-    // Regio instrumentorum et status minus gravis quam vetus fascia argentata.
-    f = FV_RECT(x + 2, y + tituli_h, w - 4, clientis_y - tituli_h, ebur).
-    f = FV_RECT(x + 2, y + clientis_y - 1, w - 4, 1, argentum).
-    f = FV_RECT(x + 2, y + h - 20, w - 4, 18, FV_COLOR(218, 223, 224)).
-    f = FV_RECT(x + 2, y + h - 20, w - 4, 1, argentum).
+    // Regio instrumentorum et status calidiora sunt quam corpus clientis.
+    f = FV_RECT(x + 2, y + tituli_h, w - 4, clientis_y - tituli_h, papyrus).
+    f = FV_RECT(x + 2, y + clientis_y - 1, w - 4, 1, chalybs).
+    f = FV_RECT(x + 2, y + h - 20, w - 4, 18, FV_COLOR(211, 204, 190)).
+    f = FV_RECT(x + 2, y + h - 20, w - 4, 1, chalybs).
+    SI activa != 0 TUNC f = FV_RECT(x + 2, y + h - 20, 42, 1, viride). FIN-SI.
     REDDE 1.
 FIN-FUNCTIO.
 

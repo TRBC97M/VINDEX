@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P17-II: TERMINALE, claviatura, mandata et historia sub QEMU probantur."""
+"""P17-II/P16-VI: TERMINALE, claviatura, mandata et historia sub QEMU probantur."""
 from __future__ import annotations
 
 import importlib.util
@@ -77,18 +77,17 @@ def principale() -> int:
         _, _, pix_open = aux.ppm(apertum)
 
         bronzeum = (185, 138, 82)
-        fundum = (5, 18, 30)
-        profundum = (8, 35, 61)
-        medium = (26, 93, 146)
+        carbonem = (22, 24, 23)
+        lapis = (49, 55, 55)
         if aux.pixel(pix_open, w, 500, 96) != bronzeum:
             print(f'DEFECIT: TERMINALE focus non accepit: {aux.pixel(pix_open,w,500,96)}', file=sys.stderr)
             return 5
         # Fenestra TERMINALE: x=230 y=96; clientis superficies incipit x=240 y=156.
-        if aux.pixel(pix_open, w, 300, 200) != fundum:
-            print(f'DEFECIT: superficies TERMINALIS obscura deest: {aux.pixel(pix_open,w,300,200)}', file=sys.stderr)
+        if aux.pixel(pix_open, w, 300, 200) != carbonem:
+            print(f'DEFECIT: superficies TERMINALIS carbonaria deest: {aux.pixel(pix_open,w,300,200)}', file=sys.stderr)
             return 6
-        if aux.pixel(pix_open, w, 300, 160) != profundum or aux.pixel(pix_open, w, 300, 183) != medium:
-            print('DEFECIT: caput TERMINALIS deest', file=sys.stderr)
+        if aux.pixel(pix_open, w, 300, 160) != lapis or aux.pixel(pix_open, w, 300, 183) != bronzeum:
+            print('DEFECIT: caput lapideum TERMINALIS P16-VI deest', file=sys.stderr)
             return 7
 
         # SALVE maiusculum per claviaturam QEMU → UEFI → coda Fenestralis → clientem.
@@ -155,7 +154,7 @@ def principale() -> int:
 
         print(f'TERMINALE: cursor={pos} prompt_pixeli={prompt_mut} responsum_pixeli={responsum_mut}')
         print(f'TERMINALE-II: versio_pixeli={versio_mut} historia_pixeli={historia_mut} responsum_historiae={historia_responsum}')
-        print('RECTE: P17-II TERMINALE historiam per scans UEFI revocat et mandata ex transcriptis exsequitur.')
+        print('RECTE: P17-II/P16-VI TERMINALE carbonarium historiam et mandata per UEFI exercet.')
         return 0
     finally:
         try:

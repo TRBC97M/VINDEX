@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-III: bureau mundum, launch, clausuram et relaunch sub UEFI/QEMU comprobat."""
+"""P16-VI: bureau mundum, launch, clausuram et relaunch sub UEFI/QEMU comprobat."""
 from __future__ import annotations
 
 import importlib.util
@@ -40,10 +40,9 @@ def principale() -> int:
         aux.lege_usque(monitor, b'(qemu) ', 2.0)
         time.sleep(mora)
 
-        profundum = (8, 35, 61)
-        vitrum = (14, 66, 111)
-        medium = (26, 93, 146)
-        argentum = (185, 196, 207)
+        nox = (28, 31, 32)
+        papyrus = (215, 205, 185)
+        activum = (91, 69, 48)
         bronzeum = (185, 138, 82)
 
         ante = out / 'bureau-ante.ppm'
@@ -63,18 +62,18 @@ def principale() -> int:
             return 5
 
         # Bureau initio nullam applicationem apertam in taskbar habet.
-        if aux.pixel(pix_ante, w, 130, 770) != profundum:
+        if aux.pixel(pix_ante, w, 130, 770) != nox:
             print(f'DEFECIT: taskbar initio non vacua: {aux.pixel(pix_ante,w,130,770)}', file=sys.stderr)
             return 6
-        if aux.pixel(pix_ante, w, 20, 74) != vitrum or aux.pixel(pix_ante, w, 20, 178) != vitrum:
-            print('DEFECIT: iconae bureau initiales desunt', file=sys.stderr)
+        if aux.pixel(pix_ante, w, 20, 74) != nox or aux.pixel(pix_ante, w, 20, 178) != nox:
+            print('DEFECIT: tesserae bureau nocturnae initiales desunt', file=sys.stderr)
             return 7
 
         pos_p = aux.move_ad(monitor, out, 'bureau-programmata', 70, 110, w, h)
         aux.captura(monitor, hover_p)
         _, _, pix_hover_p = aux.ppm(hover_p)
-        if aux.pixel(pix_hover_p, w, 20, 74) != argentum:
-            print(f'DEFECIT: hover PROGRAMMATA non detectus: {aux.pixel(pix_hover_p,w,20,74)} cursor={pos_p}', file=sys.stderr)
+        if aux.pixel(pix_hover_p, w, 20, 74) != papyrus:
+            print(f'DEFECIT: hover PROGRAMMATA papyraceus non detectus: {aux.pixel(pix_hover_p,w,20,74)} cursor={pos_p}', file=sys.stderr)
             return 8
 
         aux.click(monitor)
@@ -83,8 +82,8 @@ def principale() -> int:
         if aux.pixel(pix_p, w, 300, 56) != bronzeum:
             print(f'DEFECIT: PROGRAMMATA non aperta/focalizata: {aux.pixel(pix_p,w,300,56)}', file=sys.stderr)
             return 9
-        if aux.pixel(pix_p, w, 130, 770) != medium:
-            print(f'DEFECIT: PROGRAMMATA in taskbar non apparuit: {aux.pixel(pix_p,w,130,770)}', file=sys.stderr)
+        if aux.pixel(pix_p, w, 130, 770) != activum:
+            print(f'DEFECIT: PROGRAMMATA in taskbar activa non apparuit: {aux.pixel(pix_p,w,130,770)}', file=sys.stderr)
             return 10
 
         # Bulla clausurae PROGRAMMATA: geometria canonica circa (798,74).
@@ -92,7 +91,7 @@ def principale() -> int:
         aux.click(monitor)
         aux.captura(monitor, clausum_p)
         _, _, pix_clausum = aux.ppm(clausum_p)
-        if aux.pixel(pix_clausum, w, 130, 770) != profundum:
+        if aux.pixel(pix_clausum, w, 130, 770) != nox:
             print(f'DEFECIT: PROGRAMMATA post clausuram in taskbar manet: {aux.pixel(pix_clausum,w,130,770)}', file=sys.stderr)
             return 11
         if aux.pixel(pix_clausum, w, 300, 56) == bronzeum:
@@ -106,16 +105,16 @@ def principale() -> int:
         if aux.pixel(pix_t, w, 700, 168) != bronzeum:
             print(f'DEFECIT: TABULA ex bureau non aperta/focalizata: {aux.pixel(pix_t,w,700,168)}', file=sys.stderr)
             return 13
-        if aux.pixel(pix_t, w, 130, 770) != medium:
-            print(f'DEFECIT: TABULA in taskbar non apparuit: {aux.pixel(pix_t,w,130,770)}', file=sys.stderr)
+        if aux.pixel(pix_t, w, 130, 770) != activum:
+            print(f'DEFECIT: TABULA in taskbar activa non apparuit: {aux.pixel(pix_t,w,130,770)}', file=sys.stderr)
             return 14
 
         mut_p = aux.differentiae(pix_ante, pix_p)
         mut_close = aux.differentiae(pix_p, pix_clausum)
         mut_t = aux.differentiae(pix_clausum, pix_t)
-        print(f'BUREAU: cursor_init={init_pos} programmata={pos_p} clausura={pos_close} tabula={pos_t}')
-        print(f'BUREAU: launch_programmata_pixeli={mut_p} clausura_pixeli={mut_close} launch_tabula_pixeli={mut_t}')
-        print('RECTE: P16-III bureau mundum applicationes aperit, claudit et relaunchat per PS/2.')
+        print(f'BUREAU-VI: cursor_init={init_pos} programmata={pos_p} clausura={pos_close} tabula={pos_t}')
+        print(f'BUREAU-VI: launch_programmata_pixeli={mut_p} clausura_pixeli={mut_close} launch_tabula_pixeli={mut_t}')
+        print('RECTE: P16-VI bureau papyraceum applicationes aperit, claudit et relaunchat per PS/2.')
         return 0
     finally:
         try:

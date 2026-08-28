@@ -1,4 +1,4 @@
-// Sylvia OS — P19-II: persistentia OFFICINAE super contractum FS_*.
+// Sylvia OS — P19-II / P16-VI: persistentia OFFICINAE super contractum FS_*.
 // Editor P18-I manet nucleus memoriae; hoc stratum fasciculum realem ei coniungit.
 //
 // Status persistentiae:
@@ -247,28 +247,34 @@ FUNCTIO OP_RENDE REDDENS NUMERUS.
 
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies).
     DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
-    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(8,35,61).
-    DECLARA medium SICUT NUMERUS VALENS FV_COLOR(26,93,146).
-    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(185,196,207).
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(28,31,32).
+    DECLARA lapis SICUT NUMERUS VALENS FV_COLOR(49,55,55).
+    DECLARA papyrus SICUT NUMERUS VALENS FV_COLOR(219,211,196).
+    DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(144,149,144).
     DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
-    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,w-96,0,96,34,profundum).
-    f=FS_TEXTUM(superficies,w-84,11,"P19-II",argentum).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
+    DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(177,95,82).
 
-    // Vetus titulus memoriae volatilis P18 hic a contractu persistente tegitur.
-    f=FS_RECT(superficies,w-220,34,220,28,argentum).
-    f=FS_TEXTUM(superficies,w-204,44,"F2 SERVA",profundum).
+    // P19-II in capite sine fascia caerulea: versio discreta in lapide.
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,w-96,0,96,34,nox).
+    f=FS_TEXTUM(superficies,w-84,11,"P19-II",chalybs).
+
+    // F2 et via activa in fascia papyracea P16-VI.
+    f=FS_RECT(superficies,w-220,34,220,28,papyrus).
+    f=FS_RECT(superficies,w-220,61,220,1,bronzeum).
+    f=FS_TEXTUM(superficies,w-204,44,"F2 SERVA",lapis).
     DECLARA via SICUT TEXTUS VALENS OP_VIA(status).
-    SI TEXTUS_SEDES(via)!=0 TUNC f=FS_TEXTUM(superficies,124,44,via,medium). FIN-SI.
+    SI TEXTUS_SEDES(via)!=0 TUNC f=FS_TEXTUM(superficies,124,44,via,viride). FIN-SI.
 
-    // Vetus FASCICULI: NONDUM tegitur et status I/O verus ostenditur.
-    f=FS_RECT(superficies,w-244,h-32,244,32,profundum).
+    // Status I/O in fundo graphitico: viride pro successu, rubrum pro errore.
+    f=FS_RECT(superficies,w-244,h-32,244,32,nox).
     DECLARA io SICUT NUMERUS VALENS CONTENTUM(status+16).
-    SI io==0 TUNC f=FS_TEXTUM(superficies,w-116,h-20,"INITIUM",argentum). FIN-SI.
-    SI io==1 TUNC f=FS_TEXTUM(superficies,w-100,h-20,"NOVUM",argentum). FIN-SI.
-    SI io==2 TUNC f=FS_TEXTUM(superficies,w-116,h-20,"APERTUM",medium). FIN-SI.
-    SI io==3 TUNC f=FS_TEXTUM(superficies,w-124,h-20,"SERVATUM",medium). FIN-SI.
-    SI io==4 TUNC f=FS_TEXTUM(superficies,w-156,h-20,"LECTIO ERRAT",bronzeum). FIN-SI.
-    SI io==5 TUNC f=FS_TEXTUM(superficies,w-180,h-20,"SCRIPTURA ERRAT",bronzeum). FIN-SI.
+    SI io==0 TUNC f=FS_TEXTUM(superficies,w-116,h-20,"INITIUM",chalybs). FIN-SI.
+    SI io==1 TUNC f=FS_TEXTUM(superficies,w-100,h-20,"NOVUM",chalybs). FIN-SI.
+    SI io==2 TUNC f=FS_TEXTUM(superficies,w-116,h-20,"APERTUM",viride). FIN-SI.
+    SI io==3 TUNC f=FS_TEXTUM(superficies,w-124,h-20,"SERVATUM",viride). FIN-SI.
+    SI io==4 TUNC f=FS_TEXTUM(superficies,w-156,h-20,"LECTIO ERRAT",rubrum). FIN-SI.
+    SI io==5 TUNC f=FS_TEXTUM(superficies,w-180,h-20,"SCRIPTURA ERRAT",rubrum). FIN-SI.
     SI io==6 TUNC f=FS_TEXTUM(superficies,w-188,h-20,"FASCICULI ABSUNT",bronzeum). FIN-SI.
     REDDE 1.
 FIN-FUNCTIO.
