@@ -116,17 +116,38 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     // Integritas payload mutatum detegere debet.
     DECLARA rb SICUT NUMERUS VALENS SII_CORPUS(rle).
-    SCRIBE_OCTETUM_AB(rb+81,OCTETUS_AB(rb+81)^1).
-    SI SII_VALIDUS(rle)!=0 TUNC
+    DECLARA po SICUT NUMERUS VALENS SII_U32_LE(rb,24).
+    DECLARA pl SICUT NUMERUS VALENS SII_U32_LE(rb,28).
+    DECLARA scriptum SICUT NUMERUS VALENS SII_CHECKSUM(rle).
+    DECLARA ante SICUT NUMERUS VALENS SII_ADLER32(rb+po,pl).
+    SI scriptum!=ante TUNC
         REDDE 20.
+    FIN-SI.
+    DECLARA vetus SICUT NUMERUS VALENS OCTETUS_AB(rb+po+1).
+    SCRIBE_OCTETUM_AB(rb+po+1,vetus^1).
+    DECLARA novus SICUT NUMERUS VALENS OCTETUS_AB(rb+po+1).
+    SI novus==vetus TUNC
+        REDDE 21.
+    FIN-SI.
+    DECLARA post SICUT NUMERUS VALENS SII_ADLER32(rb+po,pl).
+    PROCLAMA scriptum.
+    PROCLAMA ante.
+    PROCLAMA vetus.
+    PROCLAMA novus.
+    PROCLAMA post.
+    SI post==scriptum TUNC
+        REDDE 22.
+    FIN-SI.
+    SI SII_VALIDUS(rle)!=0 TUNC
+        REDDE 23.
     FIN-SI.
 
     // Metadata invalida numquam admittitur.
     SI SII_META_NOVEM(raw,2,0,1,0)!=0 TUNC
-        REDDE 21.
+        REDDE 24.
     FIN-SI.
     SI SII_META_CURSOR(raw,2,1)!=0 TUNC
-        REDDE 22.
+        REDDE 25.
     FIN-SI.
 
     REDDE 0.
