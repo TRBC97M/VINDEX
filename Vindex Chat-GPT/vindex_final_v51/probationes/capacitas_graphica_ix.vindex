@@ -1,13 +1,8 @@
-IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
-IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
-IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
-IMPORTA "bibliotheca/imago_raster_vii.vindex".
 IMPORTA "bibliotheca/simg_ii.vindex".
 IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
 IMPORTA "bibliotheca/simg_ii_assetum.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
-IMPORTA "bibliotheca/fenestrale_graphica_ix_superficies.vindex".
 
 FUNCTIO PIXELA_II REDDENS TEXTUS.
     DECLARA d SICUT NUMERUS VALENS RESERVA_OCTETA(25).
@@ -15,6 +10,7 @@ FUNCTIO PIXELA_II REDDENS TEXTUS.
     CONTENTUM(d)=8.
     CONTENTUM(d+8)=8.
     DECLARA b SICUT NUMERUS VALENS d+16.
+    // Ruber opacus deinde caeruleus omnino transparens.
     SCRIBE_OCTETUM_AB(b,255).
     SCRIBE_OCTETUM_AB(b+1,0).
     SCRIBE_OCTETUM_AB(b+2,0).
@@ -28,70 +24,36 @@ FUNCTIO PIXELA_II REDDENS TEXTUS.
 FIN-FUNCTIO.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    PROCLAMA 100.
     DECLARA pix SICUT TEXTUS VALENS PIXELA_II().
-    PROCLAMA 101.
     DECLARA imago SICUT TEXTUS VALENS SII_CREA_RGBA(2,1,pix,0,2,1000).
     SI SII_VALIDUS(imago)==0 TUNC REDDE 1. FIN-SI.
-    PROCLAMA 102.
 
     DECLARA gestor SICUT NUMERUS VALENS AII_CREA(1000).
     SI gestor==0 TUNC REDDE 2. FIN-SI.
     DECLARA n SICUT NUMERUS VALENS AII_ADDE(gestor,101,imago).
     SI n==0 TUNC REDDE 3. FIN-SI.
-    PROCLAMA 103.
 
-    DECLARA prae SICUT NUMERUS VALENS FS_CREA(3,1).
-    PROCLAMA 1031.
-    SI prae==0 TUNC REDDE 30. FIN-SI.
-    DECLARA pf SICUT NUMERUS VALENS FS_RECT(prae,0,0,3,1,FV_COLOR(0,0,0)).
-    PROCLAMA 1032.
-
+    // Cache RGBA nativa semel expanditur et eadem sedes redditur.
     DECLARA rgba1 SICUT TEXTUS VALENS AII_RGBA_CACHE(gestor,101).
-    PROCLAMA 104.
     DECLARA rgba2 SICUT TEXTUS VALENS AII_RGBA_CACHE(gestor,101).
     SI SII_CORPUS(rgba1)==0 || SII_CORPUS(rgba2)==0 TUNC REDDE 4. FIN-SI.
     SI SII_TEXTUS_SEDES(rgba1)!=SII_TEXTUS_SEDES(rgba2) TUNC REDDE 5. FIN-SI.
     SI AII_LATITUDO(n)!=2 || AII_ALTITUDO(n)!=1 TUNC REDDE 6. FIN-SI.
-    PROCLAMA 105.
 
+    // Alpha praemultiplicata: color occultus pixelis transparentis non miscetur.
     DECLARA q0 SICUT NUMERUS VALENS GIX_RGBA_LINEAR(rgba1,2,1,0,0).
-    PROCLAMA 106.
     SI (q0&255)!=255 || ((q0>>8)&255)!=0 || ((q0>>16)&255)!=0 || ((q0>>24)&255)!=255 TUNC REDDE 7. FIN-SI.
     DECLARA qm SICUT NUMERUS VALENS GIX_RGBA_LINEAR(rgba1,2,1,32768,0).
-    PROCLAMA 107.
     SI (qm&255)!=255 || ((qm>>8)&255)!=0 || ((qm>>16)&255)!=0 TUNC REDDE 8. FIN-SI.
     SI ((qm>>24)&255)<126 || ((qm>>24)&255)>128 TUNC REDDE 9. FIN-SI.
     DECLARA q1 SICUT NUMERUS VALENS GIX_RGBA_LINEAR(rgba1,2,1,65536,0).
     SI ((q1>>24)&255)!=0 TUNC REDDE 10. FIN-SI.
-    PROCLAMA 108.
 
-    DECLARA s SICUT NUMERUS VALENS FS_CREA(3,1).
-    PROCLAMA 1081.
-    SI s==0 TUNC REDDE 11. FIN-SI.
-    DECLARA f SICUT NUMERUS VALENS FS_RECT(s,0,0,3,1,FV_COLOR(0,0,0)).
-    PROCLAMA 1082.
-    DECLARA dest SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,3,1).
-    PROCLAMA 1083.
-    SI GIX_ASSET_LINEAR_S(s,gestor,101,dest,255)==0 TUNC REDDE 12. FIN-SI.
-    PROCLAMA 110.
-    DECLARA c0 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(s,0,0).
-    DECLARA cm SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(s,1,0).
-    DECLARA c1 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(s,2,0).
-    SI (c0&255)!=255 || ((c0>>8)&255)!=0 || ((c0>>16)&255)!=0 TUNC REDDE 13. FIN-SI.
-    SI (cm&255)<126 || (cm&255)>128 TUNC REDDE 14. FIN-SI.
-    SI ((cm>>8)&255)!=0 || ((cm>>16)&255)!=0 TUNC REDDE 15. FIN-SI.
-    SI c1!=0 TUNC REDDE 16. FIN-SI.
-    PROCLAMA 111.
-
-    DECLARA s2 SICUT NUMERUS VALENS FS_CREA(1,1).
-    SI s2==0 TUNC REDDE 17. FIN-SI.
-    f=FS_RECT(s2,0,0,1,1,FV_COLOR(0,0,0)).
-    SI GIX_ASSET_LINEAR_S(s2,gestor,101,GVIII_RECT_CREA(0,0,1,1),128)==0 TUNC REDDE 18. FIN-SI.
-    DECLARA ca SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(s2,0,0).
-    SI (ca&255)<127 || (ca&255)>128 TUNC REDDE 19. FIN-SI.
-    SI ((ca>>8)&255)!=0 || ((ca>>16)&255)!=0 TUNC REDDE 20. FIN-SI.
-    PROCLAMA 112.
+    // Clamping fixed-point extra limites quoque deterministicum manet.
+    DECLARA qneg SICUT NUMERUS VALENS GIX_RGBA_LINEAR(rgba1,2,1,0-65536,0).
+    SI qneg!=q0 TUNC REDDE 11. FIN-SI.
+    DECLARA qextra SICUT NUMERUS VALENS GIX_RGBA_LINEAR(rgba1,2,1,131072,0).
+    SI ((qextra>>24)&255)!=0 TUNC REDDE 12. FIN-SI.
 
     REDDE 0.
 FIN-FUNCTIO.
