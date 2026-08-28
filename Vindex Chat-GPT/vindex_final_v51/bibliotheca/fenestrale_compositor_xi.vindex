@@ -167,8 +167,27 @@ FUNCTIO IVXI_REDDE REDDENS NUMERUS.
     ACCIPIT applicationes SICUT NUMERUS.
     ACCIPIT emblema SICUT TEXTUS.
     ACCIPIT atlas SICUT TEXTUS.
+
+    // SONDA P16-XI: metadata framebuffer ante Bureau servantur; marca post reditum
+    // directe per sedem et pitch veteres scribitur, sine FV_RECT neque metadata nova.
+    DECLARA basis_ante SICUT NUMERUS VALENS CONTENTUM(50333712).
+    DECLARA linea_ante SICUT NUMERUS VALENS CONTENTUM(50333720).
+    DECLARA color_marca SICUT NUMERUS VALENS FV_COLOR(255,0,255).
+    DECLARA par_marca SICUT NUMERUS VALENS color_marca+color_marca*4294967296.
+
     DECLARA f SICUT NUMERUS VALENS IVXI_FUNDUM().
     f=CXI_BUREAU_REDDE(s,applicationes).
+
+    DECLARA my SICUT NUMERUS VALENS 764.
+    DUM my<772 PERFICE
+        DECLARA mx SICUT NUMERUS VALENS 400.
+        DUM mx<480 PERFICE
+            CONTENTUM(basis_ante+(my*linea_ante+mx)*4)=par_marca.
+            mx=mx+2.
+        FIN-DUM.
+        my=my+1.
+    FIN-DUM.
+
     SI IR_VALIDUS(emblema)!=0 TUNC f=IR_BLIT_FRAMEBUFFER(164,18,emblema). FIN-SI.
     SI IR_VALIDUS(atlas)!=0 TUNC f=IVXI_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
 
