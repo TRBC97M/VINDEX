@@ -1,4 +1,4 @@
-// Sylvia OS — PROGRAMMATA clientis Gradus E / P16-VII.
+// Sylvia OS — PROGRAMMATA clientis Gradus E / P16-VI.
 // Status et click intra contentum clientis sine ornamentis systematis.
 
 FUNCTIO PE_CLICK REDDENS NUMERUS.
@@ -35,65 +35,53 @@ FUNCTIO PE_RENDE REDDENS NUMERUS.
     DECLARA aes SICUT NUMERUS VALENS FV_COLOR(128,87,53).
     DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
     DECLARA viride_pallidum SICUT NUMERUS VALENS FV_COLOR(219,229,221).
-    DECLARA aqua_pallida SICUT NUMERUS VALENS FV_COLOR(204,232,235).
-    DECLARA album SICUT NUMERUS VALENS FV_COLOR(255,255,255).
     DECLARA rubrum SICUT NUMERUS VALENS FV_COLOR(143,64,58).
-    DECLARA f SICUT NUMERUS VALENS GSVII_GRADUS_VERTICALIS(superficies,0,0,w,h,charta,ebur).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,0,w,h,ebur).
 
-    // Instrumenta iam gradientiam continuam habent, non bandas manuales.
-    f = GSVII_GRADUS_VERTICALIS(superficies,0,0,w,34,charta,papyrus).
+    // Instrumenta in papyro; actio activa aere, deletio rubro indicatur.
+    f = FS_RECT(superficies,0,0,w,34,papyrus).
     f = FS_RECT(superficies,0,33,w,1,chalybs).
-    DECLARA b1_top SICUT NUMERUS VALENS charta. DECLARA b1_bot SICUT NUMERUS VALENS papyrus.
-    DECLARA b2_top SICUT NUMERUS VALENS charta. DECLARA b2_bot SICUT NUMERUS VALENS papyrus.
-    DECLARA b3_top SICUT NUMERUS VALENS charta. DECLARA b3_bot SICUT NUMERUS VALENS papyrus.
-    DECLARA b4_top SICUT NUMERUS VALENS charta. DECLARA b4_bot SICUT NUMERUS VALENS papyrus.
-    SI status == 2 TUNC b1_top=FV_COLOR(222,181,126). b1_bot=bronzeum. FIN-SI.
-    SI status == 3 TUNC b2_top=FV_COLOR(222,181,126). b2_bot=bronzeum. FIN-SI.
-    SI status == 4 TUNC b3_top=FV_COLOR(222,181,126). b3_bot=bronzeum. FIN-SI.
-    SI status == 5 TUNC b4_top=FV_COLOR(181,96,88). b4_bot=rubrum. FIN-SI.
-    f = GSVII_GRADUS_VERTICALIS(superficies,8,5,62,24,b1_top,b1_bot).
-    f = GSVII_RECT_ALPHA(superficies,10,7,58,7,album,82).
+    DECLARA b1 SICUT NUMERUS VALENS charta.
+    DECLARA b2 SICUT NUMERUS VALENS charta.
+    DECLARA b3 SICUT NUMERUS VALENS charta.
+    DECLARA b4 SICUT NUMERUS VALENS charta.
+    SI status == 2 TUNC b1=bronzeum. FIN-SI.
+    SI status == 3 TUNC b2=bronzeum. FIN-SI.
+    SI status == 4 TUNC b3=bronzeum. FIN-SI.
+    SI status == 5 TUNC b4=rubrum. FIN-SI.
+    f = FS_RECT(superficies,8,5,62,24,b1).
     f = FS_TEXTUM(superficies,16,13,"NOVUM",nox).
-    f = GSVII_GRADUS_VERTICALIS(superficies,76,5,62,24,b2_top,b2_bot).
-    f = GSVII_RECT_ALPHA(superficies,78,7,58,7,album,82).
+    f = FS_RECT(superficies,76,5,62,24,b2).
     f = FS_TEXTUM(superficies,84,13,"EDITE",nox).
-    f = GSVII_GRADUS_VERTICALIS(superficies,144,5,62,24,b3_top,b3_bot).
-    f = GSVII_RECT_ALPHA(superficies,146,7,58,7,album,82).
+    f = FS_RECT(superficies,144,5,62,24,b3).
     f = FS_TEXTUM(superficies,152,13,"NOMEN",nox).
-    f = GSVII_GRADUS_VERTICALIS(superficies,212,5,62,24,b4_top,b4_bot).
-    f = GSVII_RECT_ALPHA(superficies,214,7,58,7,album,74).
+    f = FS_RECT(superficies,212,5,62,24,b4).
     f = FS_TEXTUM(superficies,220,13,"DELE",nox).
 
-    // Columna locorum et card centralis nunc habent profunditatem graduatam.
-    f = GSVII_GRADUS_HORIZONTALIS(superficies,0,34,142,h-34,papyrus,ebur).
+    // Columna locorum lapidea, card centralis eburnea.
+    f = FS_RECT(superficies,0,34,142,h-34,papyrus).
     f = FS_TEXTUM(superficies,14,54,"LOCORUM",lapis).
-    f = GSVII_GRADUS_VERTICALIS(superficies,10,72,122,22,charta,papyrus).
+    f = FS_RECT(superficies,10,72,122,22,charta).
     f = FS_RECT(superficies,10,72,3,22,viride).
-    f = GSVII_RECT_ALPHA(superficies,14,74,114,5,album,90).
     f = FS_TEXTUM(superficies,20,79,"PROGRAMMATA",nox).
-
-    DECLARA card_top SICUT NUMERUS VALENS charta.
-    DECLARA card_bot SICUT NUMERUS VALENS ebur.
-    SI status == 1 || status == 3 || status == 4 || status == 5 TUNC card_bot=viride_pallidum. FIN-SI.
-    f = GSVII_GRADUS_VERTICALIS(superficies,154,48,w-166,116,card_top,card_bot).
+    DECLARA card SICUT NUMERUS VALENS charta.
+    SI status == 1 || status == 3 || status == 4 || status == 5 TUNC card=viride_pallidum. FIN-SI.
+    f = FS_RECT(superficies,154,48,w-166,116,card).
     f = FS_RECT(superficies,154,48,w-166,2,viride).
-    f = GSVII_RECT_ALPHA(superficies,158,52,w-174,22,album,76).
     SI status == 1 || status == 3 || status == 4 || status == 5 TUNC
         f = FS_RECT(superficies,154,48,2,116,bronzeum).
     FIN-SI.
 
-    // Pictogramma TABULAE: corpus gradientis, vitreum cyan tenue et tesserae aeneae.
-    f = GSVII_GRADUS_VERTICALIS(superficies,174,68,66,66,lapis,nox).
-    f = GSVII_RECT_ALPHA(superficies,178,72,58,20,album,34).
-    f = GSVII_GRADUS_VERTICALIS(superficies,184,78,46,46,charta,papyrus).
-    f = GSVII_RECT_ALPHA(superficies,186,80,42,12,aqua_pallida,92).
-    f = GSVII_GRADUS_VERTICALIS(superficies,189,83,16,14,FV_COLOR(224,188,134),bronzeum).
-    f = GSVII_GRADUS_VERTICALIS(superficies,209,83,16,14,FV_COLOR(112,166,157),viride).
-    f = GSVII_GRADUS_VERTICALIS(superficies,189,101,36,18,album,charta).
+    // Pictogramma TABULAE e lapide et aere.
+    f = FS_RECT(superficies,174,68,66,66,lapis).
+    f = FS_RECT(superficies,184,78,46,46,papyrus).
+    f = FS_RECT(superficies,189,83,16,14,bronzeum).
+    f = FS_RECT(superficies,209,83,16,14,viride).
+    f = FS_RECT(superficies,189,101,36,18,charta).
     f = FS_TEXTUM(superficies,254,82,"TABULA.VXNAT",nox).
     f = FS_TEXTUM(superficies,254,104,"APPLICATIO",viride).
 
-    f = GSVII_GRADUS_VERTICALIS(superficies,154,178,w-166,h-188,ebur,papyrus).
+    f = FS_RECT(superficies,154,178,w-166,h-188,papyrus).
     f = FS_RECT(superficies,154,178,w-166,1,chalybs).
     SI status == 0 TUNC f = FS_TEXTUM(superficies,168,194,"PARATUS",lapis). FIN-SI.
     SI status == 1 TUNC f = FS_TEXTUM(superficies,168,194,"SELECTUM: TABULA.VXNAT",nox). FIN-SI.
