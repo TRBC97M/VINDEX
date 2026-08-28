@@ -304,7 +304,7 @@ In #128 probatum:
 
 Probatio QEMU P16-VII mensuras iconarum rasterarum `936,907,984,822` rettulit et totam viam `OVMF → BOOTX64.EFI [VINDEX] → FENESTRALE II [VINDEX] → PS/2 [VINDEX] → FRAMEBUFFER` sine C servavit.
 
-Post canonizationem #128, chrome compositus Frutiger-Aero × imperiale × Y2K super has primitiveas novas construatur; nullae picturae simulatae loco framebuffer veri pro probatione adhibeantur.
+Post canonizationem #128, chrome compositus Frutiger-Aero × imperiale × Y2K super has primitiveas novas construatur; ad probationem visualem sola captura framebuffer vera QEMU/OVMF canonica est, non imago simulata aut generata.
 
 ---
 
