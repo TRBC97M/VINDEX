@@ -29,6 +29,8 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_ix.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
@@ -43,9 +45,11 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ix.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_sylviae_i.py'
@@ -84,6 +88,8 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_ix.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_bureau_xi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_xi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fasciculi_sylviae_i.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/programmata_clientis_e.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/tabula_clientis_f.vindex'
@@ -98,9 +104,11 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_ix.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_lucidum_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_ix.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_iii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_bureau_sylviae_xi.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestras_sylviae_v.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_terminale_sylviae_i.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_officinam_sylviae_i.py'
@@ -191,15 +199,15 @@ jobs:
           MORA_INITII: '28'
         run: bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
-      - name: Forma P16-IX sub QEMU et OVMF
+      - name: Bureau Lucidum P16-XI sub QEMU et OVMF
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-ix-forma'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-xi-forma'
         run: |
           set -euo pipefail
-          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_ix.py" \
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_lucidum_xi.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
       - name: INITIUM P16-IX sub QEMU et OVMF
@@ -207,21 +215,21 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-ix-initium'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-xi-initium'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_ix.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
-      - name: Bureau functionale sub QEMU et OVMF
+      - name: Bureau P16-XI functionale sub QEMU et OVMF
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-ix-bureau'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-xi-bureau'
         run: |
           set -euo pipefail
-          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_sylviae_iii.py" \
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_bureau_sylviae_xi.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
       - name: Fenestrae P16-VIII sub QEMU et OVMF
@@ -229,7 +237,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
-          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-ix-fenestrae'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-p16-xi-fenestrae'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_fenestras_sylviae_v.py" \
@@ -256,16 +264,16 @@ jobs:
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_officinam_sylviae_i.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
-      - name: Capturas P16-IX conserva
+      - name: Capturas P16-XI conserva
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: qemu-p16-ix-${{ github.sha }}
+          name: qemu-p16-xi-${{ github.sha }}
           path: |
-            qemu-captura-p16-ix-forma/*.ppm
-            qemu-captura-p16-ix-initium/*.ppm
-            qemu-captura-p16-ix-bureau/*.ppm
-            qemu-captura-p16-ix-fenestrae/*.ppm
+            qemu-captura-p16-xi-forma/*.ppm
+            qemu-captura-p16-xi-initium/*.ppm
+            qemu-captura-p16-xi-bureau/*.ppm
+            qemu-captura-p16-xi-fenestrae/*.ppm
           if-no-files-found: warn
           retention-days: 7
 
