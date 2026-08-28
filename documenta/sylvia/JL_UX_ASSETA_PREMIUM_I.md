@@ -78,7 +78,21 @@ Basis hodierna iconis Fenestralis est XLVIII px. Prima familia igitur ad magnitu
 
 Postea P16-XII familias XVI/XXIV/XXXII et alias scalas canonicas complet.
 
-## VI. Nomina et dispositiones
+## VI. Prototypum iam in Git repertum
+
+Post #139 ramus `chatgpt/p16-xii-iconographia-premium-i` ad commit `9e61806d5c8f26d03b47cc8e7cbc60513e9656e0` creatus est. Ille ramus unum folium `iconae_jlux_xii.vindex` habet et quattuor iconas LXIV×LXIV procedurali VINDEX pingere incipit.
+
+Hoc opus **non perditur**, sed nec ipsum fit assetum canonicum huius gradus:
+
+- valet ut probatio silhouette, palette et grammaticae iconarum;
+- demonstrat generationem RGBA VINDEX possibilem esse;
+- tamen pipeline PNG → SIMG II non exercet;
+- tantum una magnitudo runtime ibi principaliter construitur;
+- asseta praefabricata multi-scala, quae Graphica IX recipere debet, nondum demonstrantur.
+
+Ita partes visuales utiles selective portandae sunt; ramus integer non mergitur. P16-XI-A eosdem fines artistice maturiores per vera asseta SIMG II probat.
+
+## VII. Nomina et dispositiones
 
 Fons artis et output runtime separantur. Forma commendata:
 
@@ -93,7 +107,7 @@ res/jlux/assetta/premium-i/simg/<nomen>@2x.simg
 
 PNG est fons artis; `.simg` est res runtime. Asseta canonica non duplicantur in pluribus atlas sine causa.
 
-## VII. Showroom
+## VIII. Showroom
 
 Ante integrationem in Bureau, showroom QEMU dedicatum debet:
 
@@ -106,7 +120,7 @@ Ante integrationem in Bureau, showroom QEMU dedicatum debet:
 
 Showroom non est mock: payload UEFI a compilatore VINDEX construitur et Graphica IX realis framebuffer pingit.
 
-## VIII. Probationes host
+## IX. Probationes host
 
 Probationes sine QEMU verificent:
 
@@ -119,7 +133,7 @@ Probationes sine QEMU verificent:
 - cache RGBA stabilem;
 - nullam corruptionem alpha.
 
-## IX. Probationes framebuffer
+## X. Probationes framebuffer
 
 Validator QEMU metitur saltem:
 
@@ -132,7 +146,7 @@ Validator QEMU metitur saltem:
 
 Numerus magicus unus non fit auctoritas. Signatura regionis pluribus mensuris constat.
 
-## X. Invarianta Fenestralis
+## XI. Invarianta Fenestralis
 
 Hoc gradu non mutantur:
 
@@ -146,7 +160,7 @@ Hoc gradu non mutantur:
 
 Qualitas rastera a geometria separatur.
 
-## XI. Perfunctionis lex
+## XII. Perfunctionis lex
 
 - decode semel, compone saepe;
 - cache RGBA nativa adhibetur;
@@ -154,7 +168,7 @@ Qualitas rastera a geometria separatur.
 - redraw PS/2 non occultatur mora maiore;
 - si integra shell post integrationem p95 excedit limen Graphica VIII, causa corrigitur, non custodia laxatur.
 
-## XII. Definition of Done
+## XIII. Definition of Done
 
 P16-XI-A non est `CERTIFICATUM` nisi:
 
@@ -167,7 +181,7 @@ P16-XI-A non est `CERTIFICATUM` nisi:
 7. nullus sleep auctus neque guard debilitatus successum fingit;
 8. distantia relicta a conceptu JL-UX in PR aperte describitur.
 
-## XIII. Post hunc gradum
+## XIV. Post hunc gradum
 
 Post certificationem:
 
