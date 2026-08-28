@@ -1,0 +1,191 @@
+// Sylvia OS — P16-IX: testa composita INITII et taskbar.
+// Geometria, hitbox et semantica P16-IV/V servantur; sola pictura mutatur.
+// Materia eadem ac P16-VIII: graphite, ebur, aes et vitrum viridi-caeruleum.
+
+FUNCTIO CIX_INITIUM_REDDE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA x SICUT NUMERUS VALENS 6.
+    DECLARA w SICUT NUMERUS VALENS IV_INITIUM_LATITUDO(applicationes).
+    DECLARA h SICUT NUMERUS VALENS IV_INITIUM_ALTITUDO(applicationes).
+    DECLARA y SICUT NUMERUS VALENS screen_h-FV_METRUM_TASKBAR()-h.
+    DECLARA caput_h SICUT NUMERUS VALENS FV_METRUM_INITIUM_CAPUT().
+
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(20,27,29).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA ebur_inferum SICUT NUMERUS VALENS FV_COLOR(232,226,213).
+    DECLARA papyrus SICUT NUMERUS VALENS FV_COLOR(225,218,204).
+    DECLARA papyrus_inferus SICUT NUMERUS VALENS FV_COLOR(203,194,178).
+    DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(92,99,96).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA aes SICUT NUMERUS VALENS FV_COLOR(128,87,53).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(103,164,160).
+    DECLARA umbra SICUT NUMERUS VALENS FV_COLOR(7,12,13).
+    DECLARA caput_summus SICUT NUMERUS VALENS FV_COLOR(58,96,100).
+    DECLARA caput_inferus SICUT NUMERUS VALENS FV_COLOR(22,39,42).
+    DECLARA hover_summus SICUT NUMERUS VALENS FV_COLOR(229,226,211).
+    DECLARA hover_inferus SICUT NUMERUS VALENS FV_COLOR(205,209,193).
+
+    // Umbra tantum extra pannum: responsivitas P16-VIII servatur.
+    DECLARA f SICUT NUMERUS VALENS GVII_UMBRA_GRADATA(x,y,w,h,6,umbra,108).
+
+    // Corpus eburneum subtiliter graduatum.
+    f=GVII_GRADUS_VERTICALIS(x,y,w,h,ebur,papyrus).
+    f=FV_RECT(x,y,1,h,chalybs).
+    f=FV_RECT(x+w-1,y,1,h,nox).
+    f=FV_RECT(x,y+h-1,w,1,nox).
+
+    // Caput vitreum eadem lingua visuali ac titulus fenestrae activae.
+    f=GVII_GRADUS_VERTICALIS(x+2,y+2,w-4,caput_h-3,caput_summus,caput_inferus).
+    f=FV_RECT(x,y,w,2,bronzeum).
+    f=FV_RECT(x+2,y+2,w-4,1,aqua).
+    f=GVII_RECT_ALPHA(x+3,y+3,w-6,3,ebur,30).
+    f=FV_RECT(x+2,y+caput_h-1,w-4,1,aes).
+    f=FV_RECT(x+12,y+13,4,34,bronzeum).
+    f=FV_TEXTUM_SCALA(x+24,y+13,"SYLVIA",ebur,2).
+    f=FV_TEXTUM(x+25,y+44,"SYSTEMA VINDEX",aqua).
+
+    // Titulus catalogi manet ad eandem coordinatam historicam.
+    f=FV_TEXTUM(x+18,y+74,"APPLICATIONES",aes).
+
+    DECLARA item_h SICUT NUMERUS VALENS FV_METRUM_INITIUM_ITEM().
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        DECLARA ix SICUT NUMERUS VALENS IV_INITIUM_ITEM_X(index).
+        DECLARA iy SICUT NUMERUS VALENS IV_INITIUM_ITEM_Y(applicationes,index).
+        DECLARA hover SICUT NUMERUS VALENS 0.
+        SI s[11]>=ix && s[11]<ix+300 && s[12]>=iy && s[12]<iy+item_h TUNC hover=1. FIN-SI.
+        SI hover!=0 TUNC
+            f=GVII_GRADUS_VERTICALIS(ix,iy,300,item_h,hover_summus,hover_inferus).
+            f=FV_RECT(ix,iy,3,item_h,bronzeum).
+            f=FV_RECT(ix+3,iy,297,1,aqua).
+        SINON
+            f=GVII_GRADUS_VERTICALIS(ix,iy,300,item_h,ebur,ebur_inferum).
+            f=FV_RECT(ix,iy+item_h-1,300,1,papyrus_inferus).
+        FIN-SI.
+        // Pictogramma vectoriale fallback manet; atlas P16-VII superponitur a compositore.
+        f=IV_ICONA_MENU(ix+8,iy+6,AI_NODUS_GENUS(nodus)).
+        f=FV_TEXTUM(ix+54,iy+18,AI_NODUS_NOMEN(nodus),nox).
+        index=index+1.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+
+    // Pes pannorum: status calidus et nota versionis actualis.
+    f=GVII_GRADUS_VERTICALIS(x+2,y+h-47,w-4,46,papyrus,papyrus_inferus).
+    f=FV_RECT(x+10,y+h-48,w-20,1,chalybs).
+    f=FV_RECT(x+2,y+h-47,54,1,viride).
+    f=FV_TEXTUM(x+18,y+h-30,"VINDEX 0.53",viride).
+    f=FV_TEXTUM(x+w-78,y+h-30,"P16-IX",aes).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CIX_TASKBAR_REDDE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    ACCIPIT clientes SICUT NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA th SICUT NUMERUS VALENS FV_METRUM_TASKBAR().
+    DECLARA top SICUT NUMERUS VALENS h-th.
+
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(20,27,29).
+    DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(92,99,96).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA aes SICUT NUMERUS VALENS FV_COLOR(128,87,53).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(103,164,160).
+    DECLARA fundum_summus SICUT NUMERUS VALENS FV_COLOR(42,62,63).
+    DECLARA fundum_inferus SICUT NUMERUS VALENS FV_COLOR(18,25,27).
+    DECLARA tessera_summus SICUT NUMERUS VALENS FV_COLOR(79,86,84).
+    DECLARA tessera_inferus SICUT NUMERUS VALENS FV_COLOR(45,51,50).
+    DECLARA hover_summus SICUT NUMERUS VALENS FV_COLOR(91,119,117).
+    DECLARA hover_inferus SICUT NUMERUS VALENS FV_COLOR(42,58,59).
+    DECLARA activa_summus SICUT NUMERUS VALENS FV_COLOR(58,96,100).
+    DECLARA activa_inferus SICUT NUMERUS VALENS FV_COLOR(22,39,42).
+
+    DECLARA f SICUT NUMERUS VALENS GVII_GRADUS_VERTICALIS(0,top,w,th,fundum_summus,fundum_inferus).
+    f=FV_RECT(0,top,w,2,bronzeum).
+    f=FV_RECT(0,top+2,w,1,aqua).
+
+    // INITIUM: eadem hitbox 104×(th-12), nunc vitrea et status-aware.
+    DECLARA init_summus SICUT NUMERUS VALENS tessera_summus.
+    DECLARA init_inferus SICUT NUMERUS VALENS tessera_inferus.
+    DECLARA init_activum SICUT NUMERUS VALENS 0.
+    SI s[38]==1 TUNC
+        init_summus=activa_summus.
+        init_inferus=activa_inferus.
+        init_activum=1.
+    SINON
+        SI s[11]>=6 && s[11]<110 && s[12]>=top+6 && s[12]<top+th-6 TUNC
+            init_summus=hover_summus.
+            init_inferus=hover_inferus.
+        FIN-SI.
+    FIN-SI.
+    f=GVII_GRADUS_VERTICALIS(6,top+6,104,th-12,init_summus,init_inferus).
+    f=FV_RECT(6,top+6,3,th-12,bronzeum).
+    f=FV_RECT(9,top+6,101,1,aqua).
+    SI init_activum!=0 TUNC f=FV_RECT(9,top+7,101,1,bronzeum). FIN-SI.
+    f=FV_RECT(14,top+12,14,14,bronzeum).
+    f=FV_RECT(18,top+15,6,8,nox).
+    f=FV_RECT(20,top+12,2,14,viride).
+    f=FV_TEXTUM(36,top+16,"INITIUM",ebur).
+
+    // Regio systematis dextra eandem geometriam historicam retinet.
+    DECLARA tray SICUT NUMERUS VALENS w-126.
+    f=GVII_GRADUS_VERTICALIS(tray,top+6,120,th-12,tessera_summus,tessera_inferus).
+    f=FV_RECT(tray,top+6,120,1,aqua).
+    f=FV_RECT(tray+1,top+7,2,th-14,aes).
+    f=FV_RECT(tray+9,top+12,14,14,nox).
+    f=FV_RECT(tray+12,top+15,8,8,bronzeum).
+    f=FV_RECT(tray+13,top+16,6,2,aqua).
+    f=FV_TEXTUM(tray+32,top+16,"SYLVIA",ebur).
+
+    DECLARA numerus SICUT NUMERUS VALENS FI_APERTA_NUM(fenestrae).
+    SI numerus<=0 TUNC REDDE 1. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS 118.
+    DECLARA spatium SICUT NUMERUS VALENS tray-basis-6.
+    SI spatium<=0 TUNC REDDE 1. FIN-SI.
+    DECLARA bw SICUT NUMERUS VALENS spatium/numerus.
+    SI bw>196 TUNC bw=196. FIN-SI.
+    SI bw<1 TUNC bw=1. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<numerus PERFICE
+        DECLARA bx SICUT NUMERUS VALENS basis+i*bw.
+        SI bx>=tray-6 TUNC DESINE. FIN-SI.
+        DECLARA id SICUT NUMERUS VALENS FI_APERTA_N(fenestrae,i).
+        DECLARA n SICUT NUMERUS VALENS FI_QUAERE(fenestrae,id).
+        SI n!=0 TUNC
+            DECLARA summus SICUT NUMERUS VALENS tessera_summus.
+            DECLARA inferus SICUT NUMERUS VALENS tessera_inferus.
+            DECLARA activa SICUT NUMERUS VALENS 0.
+            SI FI_FOCUS_ID(fenestrae)==id && CONTENTUM(n+48)==0 TUNC
+                summus=activa_summus.
+                inferus=activa_inferus.
+                activa=1.
+            FIN-SI.
+            DECLARA lat SICUT NUMERUS VALENS bw-8.
+            SI lat<1 TUNC lat=1. FIN-SI.
+            f=GVII_GRADUS_VERTICALIS(bx,top+6,lat,th-12,summus,inferus).
+            SI activa!=0 TUNC
+                f=FV_RECT(bx,top+6,lat,2,bronzeum).
+            SINON
+                f=FV_RECT(bx,top+6,lat,1,chalybs).
+            FIN-SI.
+            DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(n+8).
+            DECLARA app SICUT NUMERUS VALENS AI_CLIENTIS(applicationes,cliens).
+            DECLARA genus SICUT NUMERUS VALENS CH_GENUS(clientes,cliens).
+            SI app!=0 && bw>=104 TUNC f=FV_TEXTUM(bx+10,top+16,AI_NODUS_NOMEN(app),ebur). FIN-SI.
+            SI bw<104 && bw>=28 && genus==1 TUNC f=FV_TEXTUM(bx+10,top+16,"P",ebur). FIN-SI.
+            SI bw<104 && bw>=28 && genus==2 TUNC f=FV_TEXTUM(bx+10,top+16,"T",ebur). FIN-SI.
+            SI bw<104 && bw>=28 && genus==3 TUNC f=FV_TEXTUM(bx+10,top+16,">",viride). FIN-SI.
+            SI bw<104 && bw>=28 && genus==4 TUNC f=FV_TEXTUM(bx+10,top+16,"O",bronzeum). FIN-SI.
+        FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
