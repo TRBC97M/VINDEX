@@ -91,16 +91,24 @@ Futurus backend GPU idem contractum servare potest.
 
 ## VII. Probatio canonica
 
-`probationes/capacitas_graphica_ix.vindex` exercet:
+Probatio in duos gradus dividitur, quia `FV_COLOR` et compositio framebufferis statum UEFI Sylviae requirunt.
 
-- cache RGBA native;
+`probationes/capacitas_graphica_ix.vindex` sub ELF nativo exercet partes puras:
+
+- cache RGBA nativam;
+- identitatem cache inter vocationes;
 - interpolationem in margine transparente sine halo;
 - alpha resultatum;
-- scaling 2→3 pixela;
-- compositionem in superficie privata;
-- alpha globalem.
+- clamping coordinatarum fixed-point.
 
-Porta CI dedicata compilat hanc probationem per compilatorem VINDEX nativum et executable ELF vere currit.
+Deinde `systema/showroom_graphica_ix_uefi.vindex` sub QEMU/OVMF exercet partes quae framebuffer verum requirunt:
+
+- eundem assetum per nearest veterem et Graphica IX premium;
+- compositionem bilinearem alpha praemultiplicatam in framebuffer;
+- 9-slice ex metadata SIMG II;
+- compositionem in superficie privata atque blit ad framebuffer.
+
+Validator framebuffer exactum metitur. In certificatione initiali specimen nearest **III colores** habuit, specimen premium **CDXXII colores**, color caeruleus occultus in alpha-zero **nullum halo** creavit, et orae 9-slice aqua/bronze utrumque **M-VIII pixela** continua servaverunt.
 
 ---
 
