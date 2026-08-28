@@ -45,9 +45,11 @@ FUNCTIO CVIII_CHROME REDDENS NUMERUS.
     DECLARA tituli_h SICUT NUMERUS VALENS FV_METRUM_TITULUS().
     DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
 
-    // Umbra alpha gradatim evanescit; non est iam rectangulum nigrum duplex.
-    DECLARA f SICUT NUMERUS VALENS GVII_UMBRA_GRADATA(x+1,y+2,w,h,12,umbra,132).
-    f=GVII_RECT_ALPHA(x+3,y+5,w+2,h+2,umbra,42).
+    // Umbra composita: alpha tantum in oras externas, ne corpus totum frustra misceatur.
+    // P16-VIII ita responsivum manet etiam sub QEMU puro.
+    DECLARA f SICUT NUMERUS VALENS GVII_UMBRA_GRADATA(x+1,y+2,w,h,6,umbra,118).
+    f=GVII_RECT_ALPHA(x+w+4,y+9,3,h-10,umbra,38).
+    f=GVII_RECT_ALPHA(x+7,y+h+4,w-8,3,umbra,38).
 
     // Corpus et margines multi-strati.
     f=FV_RECT(x,y,w,h,ebur).
@@ -60,7 +62,7 @@ FUNCTIO CVIII_CHROME REDDENS NUMERUS.
 
     // Titulus vitreus: gradientia vera + lumen alpha + limen aeneum.
     f=GVII_GRADUS_VERTICALIS(x+2,y+2,w-4,tituli_h-4,titulus_summus,titulus_inferus).
-    f=GVII_RECT_ALPHA(x+3,y+3,w-6,8,ebur,34).
+    f=GVII_RECT_ALPHA(x+3,y+3,w-6,3,ebur,34).
     f=GVII_RECT_ALPHA(x+3,y+11,w-6,1,lux,72).
     f=FV_RECT(x+2,y+2,w-4,1,lux).
     f=FV_RECT(x+2,y+tituli_h-2,w-4,1,aes).
