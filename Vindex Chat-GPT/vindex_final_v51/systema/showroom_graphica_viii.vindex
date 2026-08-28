@@ -1,0 +1,120 @@
+// Sylvia OS — Capacitas Graphica VIII: showroom UEFI/QEMU.
+// Hic payload nullam faciem finalem Sylviae constituit. Solum facultates motoris
+// Graphica VIII in framebuffer vero demonstrat ante integrationem in shell.
+
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_damage_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_commandos_viii.vindex".
+IMPORTA "bibliotheca/fons_ui_viii.vindex".
+IMPORTA "bibliotheca/materia_ui_viii.vindex".
+IMPORTA "bibliotheca/emblema_sylviae_vii.vindex".
+
+FUNCTIO SGVIII_TEXTUM REDDENS NUMERUS.
+    ACCIPIT fons SICUT NUMERUS. ACCIPIT x SICUT NUMERUS. ACCIPIT y SICUT NUMERUS.
+    ACCIPIT gw SICUT NUMERUS. ACCIPIT gh SICUT NUMERUS. ACCIPIT textus SICUT TEXTUS. ACCIPIT color SICUT NUMERUS.
+    REDDE TVIII_TEXTUM_FB(fons,GVIII_RECT_CREA(x,y,gw,gh),1,textus,color,255).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI w<1024 || h<700 TUNC REDDE 6. FIN-SI.
+
+    DECLARA graphite0 SICUT NUMERUS VALENS FV_COLOR(18,24,29).
+    DECLARA graphite1 SICUT NUMERUS VALENS FV_COLOR(29,42,47).
+    DECLARA graphite2 SICUT NUMERUS VALENS FV_COLOR(35,53,58).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(241,238,228).
+    DECLARA papyrus SICUT NUMERUS VALENS FV_COLOR(226,223,213).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(103,164,160).
+    DECLARA cyan SICUT NUMERUS VALENS FV_COLOR(178,235,233).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA atrum SICUT NUMERUS VALENS FV_COLOR(5,8,10).
+
+    DECLARA atlas SICUT TEXTUS VALENS FUIVIII_CREA().
+    SI IR_VALIDUS(atlas)==0 TUNC REDDE 71. FIN-SI.
+    DECLARA fons SICUT NUMERUS VALENS TVIII_FONS_CREA(atlas,16,16,20,32,95).
+    SI fons<=0 TUNC REDDE 71. FIN-SI.
+    DECLARA materia SICUT TEXTUS VALENS MUIVIII_CREA().
+    SI IR_VALIDUS(materia)==0 TUNC REDDE 71. FIN-SI.
+    DECLARA emblema SICUT TEXTUS VALENS EVII_CREA().
+    SI IR_VALIDUS(emblema)==0 TUNC REDDE 71. FIN-SI.
+
+    // Superficies parva ad differentiam nearest / bilinear manifestandam.
+    DECLARA specimen SICUT NUMERUS VALENS FS_CREA(12,12).
+    SI specimen==0 TUNC REDDE 71. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(specimen,0,0,12,12,graphite0).
+    f=FS_RECT(specimen,1,1,5,5,bronzeum). f=FS_RECT(specimen,6,1,5,5,aqua).
+    f=FS_RECT(specimen,1,6,5,5,ebur). f=FS_RECT(specimen,6,6,5,5,graphite2).
+    f=FS_RECT(specimen,5,0,2,12,cyan). f=FS_RECT(specimen,0,5,12,2,cyan).
+
+    DECLARA q SICUT NUMERUS VALENS QVIII_CREA(24).
+    SI q<=0 TUNC REDDE 71. FIN-SI.
+    DECLARA screen SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,w,h).
+    DECLARA corpus SICUT NUMERUS VALENS GVIII_RECT_CREA(54,42,w-108,h-84).
+    DECLARA card1 SICUT NUMERUS VALENS GVIII_RECT_CREA(78,150,474,222).
+    DECLARA card2 SICUT NUMERUS VALENS GVIII_RECT_CREA(576,150,w-654,222).
+    DECLARA card3 SICUT NUMERUS VALENS GVIII_RECT_CREA(78,398,w-156,h-470).
+    DECLARA margines SICUT NUMERUS VALENS GVIII_MARGINES_CREA(8,8,8,8).
+
+    // Omnia haec per codam backend-neutram transmittuntur.
+    SI QVIII_ADDE(q,QVIII_OP_GRADUS_V(),screen,graphite1,graphite0,0,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_UMBRA_ORAE(),corpus,12,atrum,110,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_ROTUNDUS(),corpus,24,graphite2,0,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_SIMG_NOVEM(),materia,margines,card1,255,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_SIMG_NOVEM(),materia,margines,card2,255,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_SIMG_NOVEM(),materia,margines,card3,255,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_SUPERFICIES_SCALA(),specimen,GVIII_RECT_CREA(616,222,132,112),0,0,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_SUPERFICIES_LINEARIS(),specimen,GVIII_RECT_CREA(780,222,132,112),0,0,0)==0 TUNC REDDE 72. FIN-SI.
+    SI QVIII_EXSEQUERE_FB(q)==0 TUNC REDDE 73. FIN-SI.
+
+    // Accentus et typographia atlas anti-aliased.
+    f=FV_RECT(78,111,w-156,2,bronzeum). f=FV_RECT(78,114,w-156,1,aqua).
+    f=SGVIII_TEXTUM(fons,82,62,16,20,"GRAPHICA VIII",ebur).
+    f=SGVIII_TEXTUM(fons,82,88,11,14,"FUNDAMENTUM JL-UX / RENDERER VINDEX",cyan).
+
+    f=SGVIII_TEXTUM(fons,104,174,13,17,"COMPONENTES",graphite0).
+    f=SGVIII_TEXTUM(fons,104,202,10,13,"9-SLICE RASTER / ROUNDED AA",graphite1).
+    f=GVIII_UMBRA_ROTUNDA_FB(GVIII_RECT_CREA(110,246,178,62),14,7,atrum,70).
+    f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(110,246,178,62),14,graphite1).
+    f=GVII_GRADUS_HORIZONTALIS(128,264,142,2,bronzeum,aqua).
+    f=SGVIII_TEXTUM(fons,132,267,10,14,"ACTIO PRIMA",ebur).
+    f=GVIII_UMBRA_ROTUNDA_FB(GVIII_RECT_CREA(310,246,178,62),14,7,atrum,55).
+    f=GVIII_RECT_ROTUNDUS_FB(GVIII_RECT_CREA(310,246,178,62),14,papyrus).
+    f=SGVIII_TEXTUM(fons,332,267,10,14,"ACTIO ALTERA",graphite0).
+
+    f=SGVIII_TEXTUM(fons,602,174,13,17,"SCALING",graphite0).
+    f=SGVIII_TEXTUM(fons,616,202,9,12,"NEAREST",graphite1).
+    f=SGVIII_TEXTUM(fons,780,202,9,12,"BILINEAR",graphite1).
+    f=GVIII_SIMG_SCALA_FB(emblema,GVIII_RECT_CREA(w-218,238,82,82),255).
+    f=SGVIII_TEXTUM(fons,w-222,326,9,12,"SIMG RGBA",graphite1).
+
+    f=SGVIII_TEXTUM(fons,104,422,13,17,"TYPOGRAPHIA ATLAS ANTI-ALIASED",graphite0).
+    f=SGVIII_TEXTUM(fons,104,454,16,20,"SYLVIA OS",graphite1).
+    f=SGVIII_TEXTUM(fons,104,486,11,15,"Inter Display raster / alpha 256 graduum",graphite1).
+    f=SGVIII_TEXTUM(fons,104,516,11,15,"Ivory  Aqua  Bronze  Graphite",graphite1).
+
+    // Damage tracker: tres regiones, duae tangentes, in duas regiones coalescunt.
+    DECLARA damnum SICUT ORDO DE NUMERUS CAPACITAS 8.
+    DECLARA di SICUT NUMERUS VALENS DVIII_INIT(damnum).
+    di=DVIII_ADDE_FB(damnum,7,GVIII_RECT_CREA(100,580,90,32)).
+    di=DVIII_ADDE_FB(damnum,7,GVIII_RECT_CREA(180,590,100,32)).
+    di=DVIII_ADDE_FB(damnum,7,GVIII_RECT_CREA(340,580,90,32)).
+    DECLARA stat SICUT TEXTUS VALENS "DAMAGE: III REGIONIBUS -> II COALESCUNT".
+    SI DVIII_NUMERUS(damnum)!=2 TUNC stat="DAMAGE: DEFECIT". FIN-SI.
+    f=SGVIII_TEXTUM(fons,104,h-124,10,14,stat,bronzeum).
+    f=SGVIII_TEXTUM(fons,104,h-96,10,14,"COMMAND QUEUE -> SOFTWARE BACKEND",aqua).
+    f=SGVIII_TEXTUM(fons,104,h-68,9,12,"VirtIO-GPU backend paratus post BAR/MMIO canonicum",papyrus).
+
+    // Showroom manet stabilis dum QEMU framebuffer capturat.
+    DUM 1==1 PERFICE
+        DECLARA pausa SICUT NUMERUS VALENS FB_STALL().
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
