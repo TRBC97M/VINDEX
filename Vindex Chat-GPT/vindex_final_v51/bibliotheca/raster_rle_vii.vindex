@@ -1,0 +1,106 @@
+// Sylvia OS — P16-VII: decoder genericus assetorum rasterorum.
+// Fons compactus: palette RGBA hexadecimale + cursus RLE (mensura,index).
+// Exitus: descriptor TEXTUS continens SIMG v1 RGBA8888.
+
+FUNCTIO RRVII_TEXTUS_SEDES REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    REDDE textus.
+FIN-FUNCTIO.
+
+FUNCTIO RRVII_LONGITUDO REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA d SICUT NUMERUS VALENS RRVII_TEXTUS_SEDES(textus).
+    SI d==0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(d).
+FIN-FUNCTIO.
+
+FUNCTIO RRVII_HEX_NIBBLE REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    SI c>=48 && c<=57 TUNC REDDE c-48. FIN-SI.
+    SI c>=65 && c<=70 TUNC REDDE c-55. FIN-SI.
+    SI c>=97 && c<=102 TUNC REDDE c-87. FIN-SI.
+    REDDE -1.
+FIN-FUNCTIO.
+
+FUNCTIO RRVII_HEX_OCTETUM REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT pos SICUT NUMERUS.
+    DECLARA a SICUT NUMERUS VALENS RRVII_HEX_NIBBLE(OCTETUS_AB(basis+pos)).
+    DECLARA b SICUT NUMERUS VALENS RRVII_HEX_NIBBLE(OCTETUS_AB(basis+pos+1)).
+    SI a<0 || b<0 TUNC REDDE -1. FIN-SI.
+    REDDE a*16+b.
+FIN-FUNCTIO.
+
+FUNCTIO RRVII_U32_LE_PONE REDDENS NUMERUS.
+    ACCIPIT locus SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(locus,valor&255).
+    SCRIBE_OCTETUM_AB(locus+1,(valor>>8)&255).
+    SCRIBE_OCTETUM_AB(locus+2,(valor>>16)&255).
+    SCRIBE_OCTETUM_AB(locus+3,(valor>>24)&255).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO RRVII_CREA REDDENS TEXTUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    ACCIPIT palette_hex SICUT TEXTUS.
+    ACCIPIT palette_num SICUT NUMERUS.
+    ACCIPIT rle_hex SICUT TEXTUS.
+    SI latitudo<=0 || altitudo<=0 || latitudo>4096 || altitudo>4096 TUNC REDDE 0. FIN-SI.
+    SI palette_num<=0 || palette_num>256 TUNC REDDE 0. FIN-SI.
+    SI RRVII_LONGITUDO(palette_hex)!=palette_num*8 TUNC REDDE 0. FIN-SI.
+    DECLARA rn SICUT NUMERUS VALENS RRVII_LONGITUDO(rle_hex).
+    SI rn<=0 || rn%4!=0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA palette SICUT NUMERUS VALENS RESERVA_OCTETA(palette_num*8).
+    SI palette<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA pb SICUT NUMERUS VALENS RRVII_TEXTUS_SEDES(palette_hex)+16.
+    DECLARA p SICUT NUMERUS VALENS 0.
+    DUM p<palette_num PERFICE
+        DECLARA q SICUT NUMERUS VALENS p*8.
+        DECLARA r SICUT NUMERUS VALENS RRVII_HEX_OCTETUM(pb,q).
+        DECLARA g SICUT NUMERUS VALENS RRVII_HEX_OCTETUM(pb,q+2).
+        DECLARA b SICUT NUMERUS VALENS RRVII_HEX_OCTETUM(pb,q+4).
+        DECLARA a SICUT NUMERUS VALENS RRVII_HEX_OCTETUM(pb,q+6).
+        SI r<0 || g<0 || b<0 || a<0 TUNC REDDE 0. FIN-SI.
+        CONTENTUM(palette+p*8)=r+(g<<8)+(b<<16)+(a<<24).
+        p=p+1.
+    FIN-DUM.
+
+    DECLARA stride SICUT NUMERUS VALENS latitudo*4.
+    DECLARA mensura SICUT NUMERUS VALENS 24+stride*altitudo.
+    DECLARA d SICUT NUMERUS VALENS RESERVA_OCTETA(17+mensura).
+    SI d<=0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(d)=mensura. CONTENTUM(d+8)=mensura.
+    DECLARA out SICUT NUMERUS VALENS d+16.
+    SCRIBE_OCTETUM_AB(out,83). SCRIBE_OCTETUM_AB(out+1,73). SCRIBE_OCTETUM_AB(out+2,77). SCRIBE_OCTETUM_AB(out+3,71).
+    SCRIBE_OCTETUM_AB(out+4,1). SCRIBE_OCTETUM_AB(out+5,1). SCRIBE_OCTETUM_AB(out+6,0). SCRIBE_OCTETUM_AB(out+7,0).
+    DECLARA z SICUT NUMERUS VALENS RRVII_U32_LE_PONE(out+8,latitudo).
+    z=RRVII_U32_LE_PONE(out+12,altitudo). z=RRVII_U32_LE_PONE(out+16,stride). z=RRVII_U32_LE_PONE(out+20,0).
+
+    DECLARA rb SICUT NUMERUS VALENS RRVII_TEXTUS_SEDES(rle_hex)+16.
+    DECLARA rp SICUT NUMERUS VALENS 0.
+    DECLARA pixel SICUT NUMERUS VALENS 0.
+    DECLARA totalis SICUT NUMERUS VALENS latitudo*altitudo.
+    DUM rp+3<rn PERFICE
+        DECLARA cursus SICUT NUMERUS VALENS RRVII_HEX_OCTETUM(rb,rp).
+        DECLARA index SICUT NUMERUS VALENS RRVII_HEX_OCTETUM(rb,rp+2).
+        SI cursus<=0 || index<0 || index>=palette_num TUNC REDDE 0. FIN-SI.
+        DECLARA rgba SICUT NUMERUS VALENS CONTENTUM(palette+index*8).
+        DECLARA i SICUT NUMERUS VALENS 0.
+        DUM i<cursus PERFICE
+            SI pixel>=totalis TUNC REDDE 0. FIN-SI.
+            DECLARA locus SICUT NUMERUS VALENS out+24+pixel*4.
+            SCRIBE_OCTETUM_AB(locus,rgba&255).
+            SCRIBE_OCTETUM_AB(locus+1,(rgba>>8)&255).
+            SCRIBE_OCTETUM_AB(locus+2,(rgba>>16)&255).
+            SCRIBE_OCTETUM_AB(locus+3,(rgba>>24)&255).
+            pixel=pixel+1. i=i+1.
+        FIN-DUM.
+        rp=rp+4.
+    FIN-DUM.
+    SI pixel!=totalis TUNC REDDE 0. FIN-SI.
+    SCRIBE_OCTETUM_AB(out+mensura,0).
+    REDDE d.
+FIN-FUNCTIO.
