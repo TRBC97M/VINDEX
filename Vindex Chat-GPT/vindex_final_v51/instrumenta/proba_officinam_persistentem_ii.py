@@ -20,8 +20,7 @@ def importa_modulum(nomen: str, fasciculus: str) -> object:
 
 
 def mitte(aux: object, monitor: socket.socket, clavis: str, mora: float = 0.13) -> None:
-    # QEMU sendkey aliter circa C ms clavem tenet. Probatio sagittas etiam
-    # LXXX ms inter se mittit; hold explicitus XXX ms overlap artificiosum tollit.
+    # Hold explicitus XXX ms pressuram/relationem deterministicas facit.
     responsum = aux.hmp(monitor, f'sendkey {clavis} 30')
     if 'unknown command' in responsum.lower():
         raise RuntimeError(f'HMP sendkey deest: {clavis}')
@@ -158,12 +157,9 @@ def principale() -> int:
             mitte(aux, monitor, 'ret')
             scribe_maiusculas(aux, monitor, 'NOVAPERSISTET')
         else:
-            # OP_INIT cursor ad initium primae lineae ponit. Deorsum ad secundam,
-            # deinde XIII dextrae ad finem NOVAPERSISTET; si fasciculus non
-            # relectus esset, hae claves nihil utile moverent et solum X servaretur.
-            mitte(aux, monitor, 'down')
-            for _ in range(13):
-                mitte(aux, monitor, 'right', 0.08)
+            # OP_INIT documentum relectum cum cursore ad initium primae lineae
+            # reddit. X statim inseritur: ita haec probatio persistentiam ipsam
+            # comprobat, non burst navigationis. Sagittae separatim P18-I probantur.
             scribe_maiusculas(aux, monitor, 'X')
 
         # EFI scan XII = F2, a P19-II OFFICINAE ut SERVA routatur.
