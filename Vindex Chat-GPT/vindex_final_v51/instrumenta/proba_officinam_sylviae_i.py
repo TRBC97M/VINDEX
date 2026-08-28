@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P18-I: OFFICINA SYLVIAE, editor et claviatura sub UEFI/QEMU probantur."""
+"""P18-I/P16-VI: OFFICINA SYLVIAE, editor et claviatura sub UEFI/QEMU probantur."""
 from __future__ import annotations
 
 import importlib.util
@@ -83,23 +83,23 @@ def principale() -> int:
         _, _, pix_open = aux.ppm(apertum)
 
         bronzeum = (185, 138, 82)
-        profundum = (8, 35, 61)
-        ebur = (241, 238, 228)
+        nox = (28, 31, 32)
+        papyrus = (219, 211, 196)
         charta = (250, 249, 245)
-        medium = (26, 93, 146)
+        selectum = (238, 232, 219)
 
         # Geometria P18-I ad 1280x800: fenestra x=153 y=64; clientis x=163 y=124.
         if aux.pixel(pix_open, w, 500, 64) != bronzeum:
             print(f'DEFECIT: OFFICINA focus non accepit: {aux.pixel(pix_open,w,500,64)}', file=sys.stderr)
             return 5
-        if aux.pixel(pix_open, w, 200, 130) != profundum:
-            print(f'DEFECIT: caput OFFICINAE deest: {aux.pixel(pix_open,w,200,130)}', file=sys.stderr)
+        if aux.pixel(pix_open, w, 200, 130) != nox:
+            print(f'DEFECIT: caput graphiticum OFFICINAE deest: {aux.pixel(pix_open,w,200,130)}', file=sys.stderr)
             return 6
-        if aux.pixel(pix_open, w, 200, 170) not in (ebur, (185, 196, 207)):
-            print(f'DEFECIT: fascia editoris deest: {aux.pixel(pix_open,w,200,170)}', file=sys.stderr)
+        if aux.pixel(pix_open, w, 200, 170) != papyrus:
+            print(f'DEFECIT: fascia papyracea editoris deest: {aux.pixel(pix_open,w,200,170)}', file=sys.stderr)
             return 7
-        if aux.pixel(pix_open, w, 400, 200) not in (charta, (226, 236, 242)):
-            print(f'DEFECIT: charta editoris deest: {aux.pixel(pix_open,w,400,200)}', file=sys.stderr)
+        if aux.pixel(pix_open, w, 400, 200) not in (charta, selectum):
+            print(f'DEFECIT: charta editoris P16-VI deest: {aux.pixel(pix_open,w,400,200)}', file=sys.stderr)
             return 8
 
         # VINDEX in prima linea: QEMU -> UEFI -> Fenestrale -> OFFICINA.
@@ -158,7 +158,7 @@ def principale() -> int:
 
         print(f'OFFICINA: cursor={pos} prima_pixeli={prima_mut} secunda_pixeli={secunda_mut}')
         print(f'OFFICINA: sursum_pixeli={sursum_mut} insertio_pixeli={insertio_mut} status_pixeli={status_mut}')
-        print('RECTE: P18-I OFFICINA e bureau aperitur, duas lineas editat et sagittas ad cursorem per scans UEFI accipit.')
+        print('RECTE: P18-I/P16-VI OFFICINA eburnea duas lineas editat et sagittas per UEFI accipit.')
         return 0
     finally:
         try:
