@@ -1,0 +1,46 @@
+IMPORTA "bibliotheca/simg_ii.vindex".
+
+// Sylvia OS — SIMG II: pons temporarius ad pipeline SIMG v1 / Graphica VII-VIII.
+// Imago II semel expanditur et in descriptor SIMG v1 convertitur; vocans potest
+// descriptor resultatum in cache servare. Sic asseta II iam a blitteribus veteribus
+// sumi possunt sine mutatione formae II neque duplicata decode per pixel.
+
+FUNCTIO SII_AD_V1 REDDENS TEXTUS.
+    ACCIPIT imago SICUT TEXTUS.
+    SI SII_VALIDUS(imago)==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS SII_LATITUDO(imago).
+    DECLARA h SICUT NUMERUS VALENS SII_ALTITUDO(imago).
+    DECLARA stride SICUT NUMERUS VALENS w*4.
+    DECLARA pix SICUT TEXTUS VALENS SII_EXPANDE_RGBA(imago).
+    DECLARA pb SICUT NUMERUS VALENS SII_CORPUS(pix).
+    SI pb==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    DECLARA mensura SICUT NUMERUS VALENS 24+stride*h.
+    DECLARA vetus SICUT TEXTUS VALENS SII_TEXTUS_CREA(mensura).
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(vetus).
+    SI b==0 TUNC
+        REDDE 0.
+    FIN-SI.
+    SCRIBE_OCTETUM_AB(b,83).
+    SCRIBE_OCTETUM_AB(b+1,73).
+    SCRIBE_OCTETUM_AB(b+2,77).
+    SCRIBE_OCTETUM_AB(b+3,71).
+    SCRIBE_OCTETUM_AB(b+4,1).
+    SCRIBE_OCTETUM_AB(b+5,1).
+    SCRIBE_OCTETUM_AB(b+6,0).
+    SCRIBE_OCTETUM_AB(b+7,0).
+    DECLARA z SICUT NUMERUS VALENS SII_U32_PONE(b+8,w).
+    z=SII_U32_PONE(b+12,h).
+    z=SII_U32_PONE(b+16,stride).
+    z=SII_U32_PONE(b+20,0).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA dl SICUT NUMERUS VALENS stride*h.
+    DUM i<dl PERFICE
+        SCRIBE_OCTETUM_AB(b+24+i,OCTETUS_AB(pb+i)).
+        i=i+1.
+    FIN-DUM.
+    REDDE vetus.
+FIN-FUNCTIO.
