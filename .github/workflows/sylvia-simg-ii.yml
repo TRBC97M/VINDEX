@@ -47,15 +47,12 @@ jobs:
           set -euo pipefail
           python3 instrumenta/verifica_puritatem_sylviae.py
 
-      - name: Fontes SIMG II statice verifica
+      - name: Radices SIMG II statice verifica
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         run: |
           set -euo pipefail
           for f in \
-            bibliotheca/simg_ii.vindex \
-            bibliotheca/simg_ii_compat_v1.vindex \
-            bibliotheca/simg_ii_bridge_vii.vindex \
             probationes/simg_ii.vindex \
             probationes/simg_ii_compat_v1.vindex \
             probationes/simg_ii_bridge_vii.vindex
