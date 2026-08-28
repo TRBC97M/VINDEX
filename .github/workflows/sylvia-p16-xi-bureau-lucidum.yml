@@ -64,8 +64,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         env:
-          # Diagnostica tantum: non est limen finale. Permittit videre num prima pictura lente perficiatur.
-          MORA_INITII: '60'
+          MORA_INITII: '24'
           SERVA_CAPTURAS: '${{ github.workspace }}/qemu-p16-xi-visualis'
         run: |
           set -euo pipefail
