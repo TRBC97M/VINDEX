@@ -29,15 +29,15 @@ FUNCTIO GIX_CLAMPA REDDENS NUMERUS.
     REDDE v.
 FIN-FUNCTIO.
 
-FUNCTIO GIX_RGBA_LINEAR REDDENS NUMERUS.
-    ACCIPIT rgba SICUT TEXTUS.
+// Via calida: basis iam validata est a vocante, ne descriptor singulis pixelis
+// iterum inspiciatur. Hanc functionem solum post mensuram RGBA verificatam voca.
+FUNCTIO GIX_RGBA_LIN_BASIS REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
     ACCIPIT w SICUT NUMERUS.
     ACCIPIT h SICUT NUMERUS.
     ACCIPIT ux SICUT NUMERUS.
     ACCIPIT uy SICUT NUMERUS.
-    DECLARA basis SICUT NUMERUS VALENS SII_CORPUS(rgba).
     SI basis==0 || w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
-    SI SII_LONGITUDO(rgba)<w*h*4 TUNC REDDE 0. FIN-SI.
     DECLARA maxx SICUT NUMERUS VALENS (w-1)*65536.
     DECLARA maxy SICUT NUMERUS VALENS (h-1)*65536.
     ux=GIX_CLAMPA(ux,0,maxx).
@@ -76,6 +76,18 @@ FUNCTIO GIX_RGBA_LINEAR REDDENS NUMERUS.
     REDDE r+g*256+b*65536+alpha*16777216.
 FIN-FUNCTIO.
 
+FUNCTIO GIX_RGBA_LINEAR REDDENS NUMERUS.
+    ACCIPIT rgba SICUT TEXTUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT ux SICUT NUMERUS.
+    ACCIPIT uy SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS SII_CORPUS(rgba).
+    SI basis==0 || w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
+    SI SII_LONGITUDO(rgba)<w*h*4 TUNC REDDE 0. FIN-SI.
+    REDDE GIX_RGBA_LIN_BASIS(basis,w,h,ux,uy).
+FIN-FUNCTIO.
+
 FUNCTIO GIX_RGBA_REGION_FB REDDENS NUMERUS.
     ACCIPIT rgba SICUT TEXTUS.
     ACCIPIT iw SICUT NUMERUS.
@@ -83,7 +95,8 @@ FUNCTIO GIX_RGBA_REGION_FB REDDENS NUMERUS.
     ACCIPIT fons SICUT NUMERUS.
     ACCIPIT destinatio SICUT NUMERUS.
     ACCIPIT alpha_globalis SICUT NUMERUS.
-    SI SII_CORPUS(rgba)==0 || iw<=0 || ih<=0 || fons==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS SII_CORPUS(rgba).
+    SI basis==0 || iw<=0 || ih<=0 || fons==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
     SI SII_LONGITUDO(rgba)<iw*ih*4 TUNC REDDE 0. FIN-SI.
     DECLARA sx SICUT NUMERUS VALENS GVIII_RECT_X(fons).
     DECLARA sy SICUT NUMERUS VALENS GVIII_RECT_Y(fons).
@@ -111,7 +124,7 @@ FUNCTIO GIX_RGBA_REGION_FB REDDENS NUMERUS.
                 SI xx>=0 && xx<screen_w TUNC
                     DECLARA ux SICUT NUMERUS VALENS sx*65536.
                     SI dw>1 && sw>1 TUNC ux=ux+px*(sw-1)*65536/(dw-1). FIN-SI.
-                    DECLARA q SICUT NUMERUS VALENS GIX_RGBA_LINEAR(rgba,iw,ih,ux,uy).
+                    DECLARA q SICUT NUMERUS VALENS GIX_RGBA_LIN_BASIS(basis,iw,ih,ux,uy).
                     DECLARA a SICUT NUMERUS VALENS ((q>>24)&255)*ag/255.
                     SI a>0 TUNC
                         DECLARA color SICUT NUMERUS VALENS FV_COLOR(q&255,(q>>8)&255,(q>>16)&255).
