@@ -37,8 +37,12 @@ FUNCTIO MUIVIII_CREA REDDENS TEXTUS.
             SI y<8 TUNC dy=7-y. FIN-SI. SI y>=24 TUNC dy=y-24. FIN-SI.
             SI dx>0 && dy>0 TUNC
                 DECLARA d2 SICUT NUMERUS VALENS dx*dx+dy*dy.
-                SI d2>=64 TUNC a=0.
-                ALITER SI d2>=49 TUNC a=(64-d2)*17. FIN-SI.
+                SI d2>=64 TUNC
+                    a=0.
+                ALITER
+                    SI d2>=49 TUNC
+                        a=(64-d2)*17.
+                    FIN-SI.
                 FIN-SI.
             FIN-SI.
 

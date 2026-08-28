@@ -300,6 +300,8 @@ FUNCTIO CXI_BUREAU_REDDE REDDENS NUMERUS.
             ALITER
                 f=FV_TEXTUM(x+8,y+66,AI_NODUS_NOMEN(nodus),graphite).
             FIN-SI.
+            // Clavis aenea canonica post materiam pingitur ut #B58A54 exactum maneat.
+            f=FV_RECT(x+8,y+alt-3,lat-16,1,bronzeum).
             index=index+1.
         FIN-SI.
         nodus=AI_PROXIMUS(nodus).
