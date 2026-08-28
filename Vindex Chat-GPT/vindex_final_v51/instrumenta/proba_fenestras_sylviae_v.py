@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-V: chrome fenestrarum activarum et inactivarum sub UEFI/QEMU comprobat."""
+"""P16-VI: chrome fenestrarum activarum et inactivarum sub UEFI/QEMU comprobat."""
 from __future__ import annotations
 
 import importlib.util
@@ -41,17 +41,17 @@ def principale() -> int:
         time.sleep(mora)
 
         bronzeum = (185, 138, 82)
-        argentum = (185, 196, 207)
-        vitrum = (14, 66, 111)
-        titulus_inactivus = (73, 95, 111)
-        titulus_inferior_inactivus = (91, 111, 124)
-        umbra_profunda = (3, 14, 25)
-        bulla = (207, 216, 220)
-        rubrum = (168, 58, 58)
+        chalybs = (92, 99, 96)
+        nox = (28, 31, 32)
+        titulus_inactivus = (66, 71, 69)
+        titulus_inferior_inactivus = (78, 83, 80)
+        umbra_profunda = (12, 14, 14)
+        bulla = (49, 55, 55)
+        rubrum = (143, 64, 58)
 
-        ante = out / 'fenestrae-v-ante.ppm'
-        programmata = out / 'fenestrae-v-programmata.ppm'
-        duae = out / 'fenestrae-v-duae.ppm'
+        ante = out / 'fenestrae-vi-ante.ppm'
+        programmata = out / 'fenestrae-vi-programmata.ppm'
+        duae = out / 'fenestrae-vi-duae.ppm'
 
         aux.captura(monitor, ante)
         w, h, pix_ante = aux.ppm(ante)
@@ -60,7 +60,7 @@ def principale() -> int:
             return 4
 
         # PROGRAMMATA e bureau aperitur.
-        pos_p = aux.move_ad(monitor, out, 'fenestrae-v-programmata', 70, 110, w, h)
+        pos_p = aux.move_ad(monitor, out, 'fenestrae-vi-programmata', 70, 110, w, h)
         aux.click(monitor)
         aux.captura(monitor, programmata)
         _, _, pix_p = aux.ppm(programmata)
@@ -68,30 +68,30 @@ def principale() -> int:
         if aux.pixel(pix_p, w, 300, 56) != bronzeum:
             print(f'DEFECIT: accentus activus PROGRAMMATA deest: {aux.pixel(pix_p,w,300,56)}', file=sys.stderr)
             return 5
-        if aux.pixel(pix_p, w, 300, 62) != vitrum:
-            print(f'DEFECIT: titulus activus PROGRAMMATA non est vitrum: {aux.pixel(pix_p,w,300,62)}', file=sys.stderr)
+        if aux.pixel(pix_p, w, 300, 62) != nox:
+            print(f'DEFECIT: titulus activus PROGRAMMATA non est nox graphitica: {aux.pixel(pix_p,w,300,62)}', file=sys.stderr)
             return 6
         if aux.pixel(pix_p, w, 825, 100) != umbra_profunda:
             print(f'DEFECIT: umbra duplex PROGRAMMATA deest: {aux.pixel(pix_p,w,825,100)}', file=sys.stderr)
             return 7
         if aux.pixel(pix_p, w, 730, 66) != bulla:
-            print(f'DEFECIT: bulla plana minimizationis deest: {aux.pixel(pix_p,w,730,66)}', file=sys.stderr)
+            print(f'DEFECIT: bulla lapidea minimizationis deest: {aux.pixel(pix_p,w,730,66)}', file=sys.stderr)
             return 8
         if aux.pixel(pix_p, w, 790, 66) != rubrum:
-            print(f'DEFECIT: bulla clausurae activa non est rubra: {aux.pixel(pix_p,w,790,66)}', file=sys.stderr)
+            print(f'DEFECIT: bulla clausurae activa non est rubra temperata: {aux.pixel(pix_p,w,790,66)}', file=sys.stderr)
             return 9
 
         # TABULA quoque e bureau aperitur; PROGRAMMATA fit inactiva.
-        pos_t = aux.move_ad(monitor, out, 'fenestrae-v-tabula', 70, 214, w, h)
+        pos_t = aux.move_ad(monitor, out, 'fenestrae-vi-tabula', 70, 214, w, h)
         aux.click(monitor)
         aux.captura(monitor, duae)
         _, _, pix_duae = aux.ppm(duae)
 
-        if aux.pixel(pix_duae, w, 300, 56) != argentum:
+        if aux.pixel(pix_duae, w, 300, 56) != chalybs:
             print(f'DEFECIT: PROGRAMMATA post focus TABULAE non fit inactiva: {aux.pixel(pix_duae,w,300,56)}', file=sys.stderr)
             return 10
         if aux.pixel(pix_duae, w, 300, 62) != titulus_inactivus:
-            print(f'DEFECIT: titulus inactivus non est desaturatus: {aux.pixel(pix_duae,w,300,62)}', file=sys.stderr)
+            print(f'DEFECIT: titulus inactivus non est lapis desaturatus: {aux.pixel(pix_duae,w,300,62)}', file=sys.stderr)
             return 11
         if aux.pixel(pix_duae, w, 300, 84) != titulus_inferior_inactivus:
             print(f'DEFECIT: fascia inferior tituli inactivi deest: {aux.pixel(pix_duae,w,300,84)}', file=sys.stderr)
@@ -105,9 +105,9 @@ def principale() -> int:
 
         mut_p = aux.differentiae(pix_ante, pix_p)
         mut_duae = aux.differentiae(pix_p, pix_duae)
-        print(f'FENESTRAE-V: programmata={pos_p} tabula={pos_t}')
-        print(f'FENESTRAE-V: launch_programmata_pixeli={mut_p} focus_tabula_pixeli={mut_duae}')
-        print('RECTE: P16-V chrome modernum focus, inertiam, bullas et umbras vere pingit.')
+        print(f'FENESTRAE-VI: programmata={pos_p} tabula={pos_t}')
+        print(f'FENESTRAE-VI: launch_programmata_pixeli={mut_p} focus_tabula_pixeli={mut_duae}')
+        print('RECTE: P16-VI chrome lapideum focus, inertiam, bullas et umbras vere pingit.')
         return 0
     finally:
         try:
