@@ -10,8 +10,10 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii_superficies.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_damage_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_commandos_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/coda_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
@@ -26,8 +28,10 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii_superficies.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_damage_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_commandos_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/coda_graphica_viii.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
       - 'documenta/sylvia/GRAPHICA_VIII.md'
       - '.github/workflows/sylvia-capacitas-graphica-viii.yml'
@@ -37,7 +41,7 @@ permissions:
 
 jobs:
   graphica-viii:
-    name: Clipping, damage, scaling, 9-slice et typographia
+    name: Clipping, damage, scaling, 9-slice, typographia et coda
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
@@ -70,6 +74,7 @@ jobs:
           s='bibliotheca/fenestrale_graphica_viii_superficies.vindex'
           d='bibliotheca/fenestrale_damage_viii.vindex'
           t='bibliotheca/fenestrale_typographia_viii.vindex'
+          q='bibliotheca/fenestrale_commandos_viii.vindex'
           for signum in \
             'FUNCTIO GVIII_RECT_CREA REDDENS NUMERUS' \
             'FUNCTIO GVIII_RECT_SECA REDDENS NUMERUS' \
@@ -86,7 +91,9 @@ jobs:
           grep -Fq 'FUNCTIO TVIII_FONS_CREA REDDENS NUMERUS' "$t"
           grep -Fq 'FUNCTIO TVIII_GLYPHUM_FB REDDENS NUMERUS' "$t"
           grep -Fq 'FUNCTIO TVIII_TEXTUM_S REDDENS NUMERUS' "$t"
-          for f in "$g" "$s" "$d" "$t"; do ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"; done
+          grep -Fq 'FUNCTIO QVIII_ADDE REDDENS NUMERUS' "$q"
+          grep -Fq 'FUNCTIO QVIII_EXSEQUERE_FB REDDENS NUMERUS' "$q"
+          for f in "$g" "$s" "$d" "$t" "$q"; do ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"; done
           printf '%s\n' 'RECTE: contractus Graphica VIII compacti adsunt et nullum POLLE occultum continetur.'
 
       - name: Primitivas Graphica VIII compila et exerce
@@ -108,6 +115,16 @@ jobs:
           chmod +x /tmp/graphica-viii-superficies
           timeout 15s /tmp/graphica-viii-superficies
           printf '%s\n' 'RECTE: rectangulum rotundum anti-aliased et copia superficierum vere exercentur.'
+
+      - name: Codam commandorum Graphica VIII compila et exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/coda_graphica_viii.vindex /tmp/coda-graphica-viii
+          chmod +x /tmp/coda-graphica-viii
+          timeout 15s /tmp/coda-graphica-viii
+          printf '%s\n' 'RECTE: coda backend-neutra mandata compacta servat et saturatio detectatur.'
 
       - name: Regressio Graphica VII compila et exerce
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
