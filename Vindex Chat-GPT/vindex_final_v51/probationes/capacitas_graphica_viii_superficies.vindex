@@ -1,0 +1,35 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii_superficies.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA niger SICUT NUMERUS VALENS 0.
+    DECLARA albus SICUT NUMERUS VALENS 16777215.
+    DECLARA s SICUT NUMERUS VALENS FS_CREA(32,32).
+    SI s==0 TUNC REDDE 1. FIN-SI.
+    SI FS_RECT(s,0,0,32,32,niger)==0 TUNC REDDE 2. FIN-SI.
+    SI GVIII_RECT_ROTUNDUS_S(s,4,4,24,24,6,albus)==0 TUNC REDDE 3. FIN-SI.
+    // Angulus exterior manet niger; centrum plene album.
+    SI GSVII_PIXEL_LEGE(s,4,4)!=niger TUNC REDDE 4. FIN-SI.
+    SI GSVII_PIXEL_LEGE(s,16,16)!=albus TUNC REDDE 5. FIN-SI.
+    // Pixel anti-aliased inter utrumque statum esse debet.
+    DECLARA aa SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(s,5,5).
+    SI aa<=niger || aa>=albus TUNC REDDE 6. FIN-SI.
+
+    DECLARA fons SICUT NUMERUS VALENS FS_CREA(12,12).
+    DECLARA dst SICUT NUMERUS VALENS FS_CREA(20,20).
+    SI fons==0 || dst==0 TUNC REDDE 7. FIN-SI.
+    DECLARA signum SICUT NUMERUS VALENS 3368601.
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(fons,0,0,12,12,niger).
+    f=FS_RECT(fons,2,3,6,5,signum).
+    f=FS_RECT(dst,0,0,20,20,albus).
+    SI GVIII_SUPERFICIES_COPIA_RECT(dst,fons,2,3,7,8,6,5)==0 TUNC REDDE 8. FIN-SI.
+    SI GSVII_PIXEL_LEGE(dst,7,8)!=signum TUNC REDDE 9. FIN-SI.
+    SI GSVII_PIXEL_LEGE(dst,12,12)!=signum TUNC REDDE 10. FIN-SI.
+    SI GSVII_PIXEL_LEGE(dst,6,8)!=albus TUNC REDDE 11. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
