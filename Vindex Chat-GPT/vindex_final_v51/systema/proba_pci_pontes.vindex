@@ -105,7 +105,14 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         SCRIBE_OCTETUM_AB(buf + p, 47).
         p = p + 2.
         p = p + HEX8_SCRIBE(buf, p, CONTENTUM(sedes + 48)).
-        SI CONTENTUM(sedes + 56) > 0 TUNC
+        // Profunditas vera in arbore
+        SCRIBE_OCTETUM_AB(buf + p, 32).
+        p = p + 2.
+        SCRIBE_OCTETUM_AB(buf + p, 80).
+        SCRIBE_OCTETUM_AB(buf + p + 2, 61).
+        p = p + 4.
+        p = p + HEX8_SCRIBE(buf, p, CONTENTUM(sedes + 80)).
+        SI CONTENTUM(sedes + 64) > 0 TUNC
             SCRIBE_OCTETUM_AB(buf + p, 32).
             p = p + 2.
             SCRIBE_OCTETUM_AB(buf + p, 80).
@@ -115,6 +122,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             SCRIBE_OCTETUM_AB(buf + p + 8, 62).
             p = p + 10.
             p = p + HEX8_SCRIBE(buf, p, CONTENTUM(sedes + 56)).
+            SCRIBE_OCTETUM_AB(buf + p, 47).
+            p = p + 2.
+            p = p + HEX8_SCRIBE(buf, p, CONTENTUM(sedes + 64)).
+            SCRIBE_OCTETUM_AB(buf + p, 47).
+            p = p + 2.
+            p = p + HEX8_SCRIBE(buf, p, CONTENTUM(sedes + 72)).
         FIN-SI.
         SCRIBE_OCTETUM_AB(buf + p, 13).
         SCRIBE_OCTETUM_AB(buf + p + 2, 10).

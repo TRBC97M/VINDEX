@@ -87,7 +87,7 @@ strings "$TEMPORARIUM/pontes.log" | grep -E '^[0-9A-F]{2}:[0-9A-F]{2}\.' >>"$TEM
 grep -q '^PCIP=' "$TEMPORARIUM/pontes.txt" || defecit 'enumeratio cum pontibus nihil reddidit' 3
 
 # Pontes agnoscendi sunt: classis 06, subclassis 04, cum bus secundario.
-NUM_PONTIUM="$(grep -cE '06/04 PONS>' "$TEMPORARIUM/pontes.txt" || true)"
+NUM_PONTIUM="$(grep -cE '06/04 P=[0-9A-F]{2} PONS>' "$TEMPORARIUM/pontes.txt" || true)"
 [ "$NUM_PONTIUM" -ge 2 ] || defecit "pontes non agniti (inventi: $NUM_PONTIUM)" 3
 nuntia "   RECTE: $NUM_PONTIUM pontes agniti cum bus secundario."
 
@@ -113,6 +113,28 @@ CAP_DEC="$((16#${CAPACITAS}))"
 [ "$CAP_DEC" -gt 2 ] || defecit "registrum non crevit (capacitas $CAP_DEC, initialis 2)" 6
 nuntia "   RECTE: capacitas ex II ad $CAP_DEC crevit (duplicatio vera)."
 
+# --- VII. Profunditas vera in topologia nidificata ---
+nuntia 'VII. Topologia nidificata (pons in ponte)...'
+exsequere "$TEMPORARIUM/nidus.log" -M q35 \
+    -device pcie-root-port,id=rp0,bus=pcie.0,chassis=1 \
+    -device x3130-upstream,id=up0,bus=rp0 \
+    -device xio3130-downstream,id=dn0,bus=up0,chassis=2,slot=0 \
+    -device e1000e,bus=dn0
+strings "$TEMPORARIUM/nidus.log" | grep -E '^[0-9A-F]{2}:[0-9A-F]{2}\.' >"$TEMPORARIUM/nidus.txt" || true
+
+# Profunditas vera: apparatus in fine catenae profunditatem III habere debet.
+grep -qE 'P=03' "$TEMPORARIUM/nidus.txt" \
+    || { cat "$TEMPORARIUM/nidus.txt" >&2; defecit 'profunditas vera non computata (P=03 abest)' 7; }
+nuntia '   RECTE: profunditas vera arboris computata (0 -> 1 -> 2 -> 3).'
+
+# Numeri bus primarius/secundarius/subordinatus expliciti.
+grep -qE 'PONS>0[0-9]/0[0-9]/0[0-9]' "$TEMPORARIUM/nidus.txt" \
+    || defecit 'numeri bus primarius/secundarius/subordinatus non expliciti' 7
+nuntia '   RECTE: bus primarius/secundarius/subordinatus expliciti.'
+
 nuntia ''
 nuntia '=== ENUMERATIO PCI PER PONTES PROBATA ==='
+nuntia 'Topologia plana:'
 sed 's/^/   /' "$TEMPORARIUM/pontes.txt"
+nuntia 'Topologia nidificata:'
+sed 's/^/   /' "$TEMPORARIUM/nidus.txt"
