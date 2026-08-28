@@ -1,0 +1,57 @@
+// Sylvia OS — Graphica VIII: interpolatio bilinearis superficierum.
+// Nomen publicum sub XXXII characteribus manet donec EXTRAHE_ET_SIGNA
+// compilatoris VINDEX a vetere tamponis CAPACITAS XXXII liberetur.
+// FS_*, GSVII_*, GVII_* et GVIII_* ante hoc importentur.
+
+FUNCTIO GVIII_SUPERFICIES_LINEARIS_FB REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    SI superficies==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(superficies).
+    DECLARA sh SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio).
+    DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio).
+    DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI sw<=0 || sh<=0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
+    SI sw==1 || sh==1 || dw==1 || dh==1 TUNC
+        REDDE GVIII_SUPERFICIES_SCALA_FB(superficies,destinatio).
+    FIN-SI.
+    DECLARA screen_w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA denx SICUT NUMERUS VALENS dw-1.
+    DECLARA deny SICUT NUMERUS VALENS dh-1.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<dh PERFICE
+        DECLARA yy SICUT NUMERUS VALENS dy+py.
+        DECLARA uy SICUT NUMERUS VALENS py*(sh-1).
+        DECLARA y0 SICUT NUMERUS VALENS uy/deny.
+        DECLARA fy SICUT NUMERUS VALENS uy%deny.
+        DECLARA y1 SICUT NUMERUS VALENS y0+1.
+        SI y1>=sh TUNC y1=sh-1. FIN-SI.
+        SI yy>=0 && yy<screen_h TUNC
+            DECLARA px SICUT NUMERUS VALENS 0.
+            DUM px<dw PERFICE
+                DECLARA xx SICUT NUMERUS VALENS dx+px.
+                SI xx>=0 && xx<screen_w TUNC
+                    DECLARA ux SICUT NUMERUS VALENS px*(sw-1).
+                    DECLARA x0 SICUT NUMERUS VALENS ux/denx.
+                    DECLARA fx SICUT NUMERUS VALENS ux%denx.
+                    DECLARA x1 SICUT NUMERUS VALENS x0+1.
+                    SI x1>=sw TUNC x1=sw-1. FIN-SI.
+                    DECLARA c00 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x0,y0).
+                    DECLARA c10 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x1,y0).
+                    DECLARA c01 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x0,y1).
+                    DECLARA c11 SICUT NUMERUS VALENS GSVII_PIXEL_LEGE(superficies,x1,y1).
+                    DECLARA ca SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(c00,c10,fx,denx).
+                    DECLARA cb SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(c01,c11,fx,denx).
+                    DECLARA c SICUT NUMERUS VALENS GVII_COLOR_INTERPOLA(ca,cb,fy,deny).
+                    DECLARA f SICUT NUMERUS VALENS FV_PIXEL_COLOR(xx,yy,c).
+                FIN-SI.
+                px=px+1.
+            FIN-DUM.
+        FIN-SI.
+        py=py+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.

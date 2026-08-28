@@ -1,0 +1,27 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_interpolatio_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_commandos_viii.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA q SICUT NUMERUS VALENS QVIII_CREA(3).
+    SI q==0 || QVIII_CAPACITAS(q)!=3 || QVIII_NUMERUS(q)!=0 TUNC REDDE 1. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS GVIII_RECT_CREA(10,20,30,40).
+    SI QVIII_ADDE(q,QVIII_OP_RECT(),r,123,0,0,0)!=1 TUNC REDDE 2. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_ROTUNDUS(),r,8,456,0,0)!=1 TUNC REDDE 3. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_GRADUS_V(),r,11,22,0,0)!=1 TUNC REDDE 4. FIN-SI.
+    SI QVIII_NUMERUS(q)!=3 TUNC REDDE 5. FIN-SI.
+    SI QVIII_OPCODE(q,0)!=QVIII_OP_RECT() || QVIII_A(q,0)!=r || QVIII_B(q,0)!=123 TUNC REDDE 6. FIN-SI.
+    SI QVIII_OPCODE(q,1)!=QVIII_OP_ROTUNDUS() || QVIII_B(q,1)!=8 || QVIII_C(q,1)!=456 TUNC REDDE 7. FIN-SI.
+    SI QVIII_OPCODE(q,2)!=QVIII_OP_GRADUS_V() || QVIII_B(q,2)!=11 || QVIII_C(q,2)!=22 TUNC REDDE 8. FIN-SI.
+    SI QVIII_ADDE(q,QVIII_OP_RECT(),r,0,0,0,0)!=0 || QVIII_ERRATUM(q)!=1 TUNC REDDE 9. FIN-SI.
+    SI QVIII_RESET(q)!=1 || QVIII_NUMERUS(q)!=0 || QVIII_ERRATUM(q)!=0 TUNC REDDE 10. FIN-SI.
+    SI QVIII_ADDE(q,77,r,0,0,0,0)!=1 TUNC REDDE 11. FIN-SI.
+    // Opcode ignotum in coda condi potest pro backend futuro; executor software eum recusabit.
+    SI QVIII_OPCODE(q,0)!=77 TUNC REDDE 12. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

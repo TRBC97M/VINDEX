@@ -1,0 +1,19 @@
+// Graphica VIII — radix importuum completa pro showroom UEFI.
+// Compilator VINDEX hodiernus dependentias payload importati non semper propagat;
+// ideo radix eas ordine explicito praebet, sicut systema Fenestrale canonicum.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/raster_rle_vii.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_interpolatio_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_damage_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_commandos_viii.vindex".
+IMPORTA "bibliotheca/fons_ui_viii.vindex".
+IMPORTA "bibliotheca/materia_ui_viii.vindex".
+IMPORTA "bibliotheca/emblema_sylviae_vii.vindex".
+IMPORTA "systema/showroom_graphica_viii.vindex".

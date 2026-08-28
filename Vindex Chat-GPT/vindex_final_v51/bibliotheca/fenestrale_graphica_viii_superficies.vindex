@@ -1,0 +1,109 @@
+// Sylvia OS — Capacitas Graphica VIII: compositio in superficies privatas.
+// Omnes recta per GVIII_RECT_* compacta sunt; nulla vocatio ABI > VII argumenta.
+
+FUNCTIO GVIII_SUPERFICIES_COPIA_RECT REDDENS NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS. ACCIPIT fons SICUT NUMERUS. ACCIPIT pars_fons SICUT NUMERUS. ACCIPIT pars_dest SICUT NUMERUS.
+    SI destinatio==0 || fons==0 || pars_fons==0 || pars_dest==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sx SICUT NUMERUS VALENS GVIII_RECT_X(pars_fons). DECLARA sy SICUT NUMERUS VALENS GVIII_RECT_Y(pars_fons).
+    DECLARA swr SICUT NUMERUS VALENS GVIII_RECT_W(pars_fons). DECLARA shr SICUT NUMERUS VALENS GVIII_RECT_H(pars_fons).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(pars_dest). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(pars_dest).
+    DECLARA dwr SICUT NUMERUS VALENS GVIII_RECT_W(pars_dest). DECLARA dhr SICUT NUMERUS VALENS GVIII_RECT_H(pars_dest).
+    SI swr!=dwr || shr!=dhr TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS swr. DECLARA h SICUT NUMERUS VALENS shr.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(fons). DECLARA sh SICUT NUMERUS VALENS CONTENTUM(fons+8).
+    DECLARA dw SICUT NUMERUS VALENS CONTENTUM(destinatio). DECLARA dh SICUT NUMERUS VALENS CONTENTUM(destinatio+8).
+
+    // Clipping symmetrice translationem servat.
+    SI sx<0 TUNC DECLARA q0 SICUT NUMERUS VALENS 0-sx. sx=0. dx=dx+q0. w=w-q0. FIN-SI.
+    SI sy<0 TUNC DECLARA q1 SICUT NUMERUS VALENS 0-sy. sy=0. dy=dy+q1. h=h-q1. FIN-SI.
+    SI dx<0 TUNC DECLARA q2 SICUT NUMERUS VALENS 0-dx. dx=0. sx=sx+q2. w=w-q2. FIN-SI.
+    SI dy<0 TUNC DECLARA q3 SICUT NUMERUS VALENS 0-dy. dy=0. sy=sy+q3. h=h-q3. FIN-SI.
+    SI sx+w>sw TUNC w=sw-sx. FIN-SI. SI sy+h>sh TUNC h=sh-sy. FIN-SI.
+    SI dx+w>dw TUNC w=dw-dx. FIN-SI. SI dy+h>dh TUNC h=dh-dy. FIN-SI.
+    SI w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA sb SICUT NUMERUS VALENS CONTENTUM(fons+24). DECLARA db SICUT NUMERUS VALENS CONTENTUM(destinatio+24).
+    DECLARA ss SICUT NUMERUS VALENS CONTENTUM(fons+16). DECLARA ds SICUT NUMERUS VALENS CONTENTUM(destinatio+16).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<h PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px+1<w PERFICE
+            CONTENTUM(db+((dy+py)*ds+dx+px)*4)=CONTENTUM(sb+((sy+py)*ss+sx+px)*4).
+            px=px+2.
+        FIN-DUM.
+        SI px<w TUNC
+            DECLARA ls SICUT NUMERUS VALENS sb+((sy+py)*ss+sx+px)*4. DECLARA ld SICUT NUMERUS VALENS db+((dy+py)*ds+dx+px)*4.
+            SCRIBE_OCTETUM_AB(ld,OCTETUS_AB(ls)). SCRIBE_OCTETUM_AB(ld+1,OCTETUS_AB(ls+1)).
+            SCRIBE_OCTETUM_AB(ld+2,OCTETUS_AB(ls+2)). SCRIBE_OCTETUM_AB(ld+3,0).
+        FIN-SI.
+        py=py+1.
+    FIN-DUM.
+    REDDE GSVII_NOTA(destinatio).
+FIN-FUNCTIO.
+
+FUNCTIO GVIII_SIMG_REGIONEM_SCALA_S REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT imago SICUT TEXTUS. ACCIPIT fons SICUT NUMERUS. ACCIPIT destinatio SICUT NUMERUS. ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI superficies==0 || IR_VALIDUS(imago)==0 || fons==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sx SICUT NUMERUS VALENS GVIII_RECT_X(fons). DECLARA sy SICUT NUMERUS VALENS GVIII_RECT_Y(fons).
+    DECLARA sw SICUT NUMERUS VALENS GVIII_RECT_W(fons). DECLARA sh SICUT NUMERUS VALENS GVIII_RECT_H(fons).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI sx<0 || sy<0 || sx+sw>IR_LATITUDO(imago) || sy+sh>IR_ALTITUDO(imago) TUNC REDDE 0. FIN-SI.
+    DECLARA surf_w SICUT NUMERUS VALENS CONTENTUM(superficies). DECLARA surf_h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA ag SICUT NUMERUS VALENS GVIII_CLAMPA(alpha_globalis,0,255). SI ag==0 TUNC REDDE 1. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS IR_TEXTUS_SEDES(imago)+16+24. DECLARA stride SICUT NUMERUS VALENS IR_STRIDE(imago).
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<dh PERFICE
+        DECLARA yy SICUT NUMERUS VALENS dy+py.
+        SI yy>=0 && yy<surf_h TUNC
+            DECLARA iy SICUT NUMERUS VALENS sy+py*sh/dh. SI iy>=sy+sh TUNC iy=sy+sh-1. FIN-SI.
+            DECLARA px SICUT NUMERUS VALENS 0.
+            DUM px<dw PERFICE
+                DECLARA xx SICUT NUMERUS VALENS dx+px.
+                SI xx>=0 && xx<surf_w TUNC
+                    DECLARA ix SICUT NUMERUS VALENS sx+px*sw/dw. SI ix>=sx+sw TUNC ix=sx+sw-1. FIN-SI.
+                    DECLARA locus SICUT NUMERUS VALENS basis+iy*stride+ix*4.
+                    DECLARA a SICUT NUMERUS VALENS OCTETUS_AB(locus+3)*ag/255.
+                    SI a>0 TUNC
+                        DECLARA c SICUT NUMERUS VALENS FV_COLOR(OCTETUS_AB(locus),OCTETUS_AB(locus+1),OCTETUS_AB(locus+2)).
+                        DECLARA f SICUT NUMERUS VALENS GSVII_PIXEL_ALPHA(superficies,xx,yy,c,a).
+                    FIN-SI.
+                FIN-SI.
+                px=px+1.
+            FIN-DUM.
+        FIN-SI.
+        py=py+1.
+    FIN-DUM.
+    REDDE GSVII_NOTA(superficies).
+FIN-FUNCTIO.
+
+FUNCTIO GVIII_SIMG_SCALA_S REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT imago SICUT TEXTUS. ACCIPIT destinatio SICUT NUMERUS. ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI IR_VALIDUS(imago)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA fons SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,IR_LATITUDO(imago),IR_ALTITUDO(imago)).
+    REDDE GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,fons,destinatio,alpha_globalis).
+FIN-FUNCTIO.
+
+FUNCTIO GVIII_SIMG_NOVEM_PARTES_S REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT imago SICUT TEXTUS. ACCIPIT margines SICUT NUMERUS. ACCIPIT destinatio SICUT NUMERUS. ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI superficies==0 || IR_VALIDUS(imago)==0 || margines==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA ms SICUT NUMERUS VALENS GVIII_MARGO_SIN(margines). DECLARA mt SICUT NUMERUS VALENS GVIII_MARGO_SUP(margines).
+    DECLARA md SICUT NUMERUS VALENS GVIII_MARGO_DEX(margines). DECLARA mi SICUT NUMERUS VALENS GVIII_MARGO_INF(margines).
+    DECLARA iw SICUT NUMERUS VALENS IR_LATITUDO(imago). DECLARA ih SICUT NUMERUS VALENS IR_ALTITUDO(imago).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI ms+md>=iw || mt+mi>=ih || dw<ms+md || dh<mt+mi TUNC REDDE 0. FIN-SI.
+    DECLARA smw SICUT NUMERUS VALENS iw-ms-md. DECLARA smh SICUT NUMERUS VALENS ih-mt-mi.
+    DECLARA dmw SICUT NUMERUS VALENS dw-ms-md. DECLARA dmh SICUT NUMERUS VALENS dh-mt-mi.
+    DECLARA f SICUT NUMERUS VALENS 0.
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(0,0,ms,mt),GVIII_RECT_CREA(dx,dy,ms,mt),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(ms,0,smw,mt),GVIII_RECT_CREA(dx+ms,dy,dmw,mt),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(iw-md,0,md,mt),GVIII_RECT_CREA(dx+dw-md,dy,md,mt),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(0,mt,ms,smh),GVIII_RECT_CREA(dx,dy+mt,ms,dmh),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(ms,mt,smw,smh),GVIII_RECT_CREA(dx+ms,dy+mt,dmw,dmh),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(iw-md,mt,md,smh),GVIII_RECT_CREA(dx+dw-md,dy+mt,md,dmh),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(0,ih-mi,ms,mi),GVIII_RECT_CREA(dx,dy+dh-mi,ms,mi),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(ms,ih-mi,smw,mi),GVIII_RECT_CREA(dx+ms,dy+dh-mi,dmw,mi),alpha_globalis).
+    f=GVIII_SIMG_REGIONEM_SCALA_S(superficies,imago,GVIII_RECT_CREA(iw-md,ih-mi,md,mi),GVIII_RECT_CREA(dx+dw-md,dy+dh-mi,md,mi),alpha_globalis).
+    REDDE GSVII_NOTA(superficies).
+FIN-FUNCTIO.

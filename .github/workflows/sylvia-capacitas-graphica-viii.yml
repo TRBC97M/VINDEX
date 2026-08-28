@@ -1,0 +1,199 @@
+name: Sylvia OS — Capacitas Graphica VIII
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_interpolatio_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_damage_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_commandos_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/coda_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/assets_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_viii_uefi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii_uefi.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
+      - 'documenta/sylvia/GRAPHICA_VIII.md'
+      - '.github/workflows/sylvia-capacitas-graphica-viii.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_interpolatio_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_damage_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_typographia_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_commandos_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/materia_ui_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/imago_raster_partes_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/raster_rle_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/emblema_sylviae_vii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/capacitas_graphica_viii_superficies.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/coda_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/assets_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_viii.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_viii_uefi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_viii_uefi.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
+      - 'documenta/sylvia/GRAPHICA_VIII.md'
+      - '.github/workflows/sylvia-capacitas-graphica-viii.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  graphica-viii:
+    name: Motor 2D, typographia, coda et showroom QEMU
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta QEMU institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilator exsecutabilis sit
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: ABI Graphica VIII verifica
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_abi_graphica_viii.py
+
+      - name: Contractus Graphica VIII custodi
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          g='bibliotheca/fenestrale_graphica_viii.vindex'
+          s='bibliotheca/fenestrale_graphica_viii_superficies.vindex'
+          i='bibliotheca/fenestrale_interpolatio_viii.vindex'
+          d='bibliotheca/fenestrale_damage_viii.vindex'
+          t='bibliotheca/fenestrale_typographia_viii.vindex'
+          q='bibliotheca/fenestrale_commandos_viii.vindex'
+          for signum in \
+            'FUNCTIO GVIII_RECT_CREA REDDENS NUMERUS' \
+            'FUNCTIO GVIII_RECT_SECA REDDENS NUMERUS' \
+            'FUNCTIO GVIII_RECT_ROTUNDUS_FB REDDENS NUMERUS' \
+            'FUNCTIO GVIII_RECT_ROTUNDUS_S REDDENS NUMERUS' \
+            'FUNCTIO GVIII_SIMG_REGIONEM_SCALA_FB REDDENS NUMERUS' \
+            'FUNCTIO GVIII_SIMG_NOVEM_PARTES_FB REDDENS NUMERUS'
+          do grep -Fq "$signum" "$g"; done
+          grep -Fq 'FUNCTIO GVIII_SUPERFICIES_COPIA_RECT REDDENS NUMERUS' "$s"
+          grep -Fq 'FUNCTIO GVIII_SIMG_NOVEM_PARTES_S REDDENS NUMERUS' "$s"
+          grep -Fq 'FUNCTIO GVIII_SUPERFICIES_LINEARIS_FB REDDENS NUMERUS' "$i"
+          grep -Fq 'FUNCTIO DVIII_ADDE REDDENS NUMERUS' "$d"
+          grep -Fq 'FUNCTIO DVIII_ADDE_FB REDDENS NUMERUS' "$d"
+          grep -Fq 'FUNCTIO TVIII_FONS_CREA REDDENS NUMERUS' "$t"
+          grep -Fq 'FUNCTIO TVIII_GLYPHUM_FB REDDENS NUMERUS' "$t"
+          grep -Fq 'FUNCTIO TVIII_TEXTUM_S REDDENS NUMERUS' "$t"
+          grep -Fq 'FUNCTIO QVIII_ADDE REDDENS NUMERUS' "$q"
+          grep -Fq 'FUNCTIO QVIII_EXSEQUERE_FB REDDENS NUMERUS' "$q"
+          for f in "$g" "$s" "$i" "$d" "$t" "$q"; do ! grep -Eq '(^|[^A-Z0-9_])POLLE\(\)' "$f"; done
+          printf '%s\n' 'RECTE: contractus Graphica VIII compacti adsunt et nullum POLLE occultum continetur.'
+
+      - name: Primitivas Graphica VIII compila et exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_viii.vindex /tmp/graphica-viii
+          chmod +x /tmp/graphica-viii
+          timeout 15s /tmp/graphica-viii
+          printf '%s\n' 'RECTE: recta compacta, clipping, damage et typographiae descriptoria transeunt.'
+
+      - name: Superficies Graphica VIII compila et exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_viii_superficies.vindex /tmp/graphica-viii-superficies
+          chmod +x /tmp/graphica-viii-superficies
+          timeout 15s /tmp/graphica-viii-superficies
+          printf '%s\n' 'RECTE: rectangulum rotundum anti-aliased et copia superficierum vere exercentur.'
+
+      - name: Codam commandorum Graphica VIII compila et exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/coda_graphica_viii.vindex /tmp/coda-graphica-viii
+          chmod +x /tmp/coda-graphica-viii
+          timeout 15s /tmp/coda-graphica-viii
+          printf '%s\n' 'RECTE: coda backend-neutra mandata compacta servat et saturatio detectatur.'
+
+      - name: Asseta Graphica VIII compila et exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/assets_graphica_viii.vindex /tmp/assets-graphica-viii
+          chmod +x /tmp/assets-graphica-viii
+          timeout 20s /tmp/assets-graphica-viii
+          printf '%s\n' 'RECTE: atlas UI VINDEX alpha-gradatus et materia 9-slice SIMG valida sunt.'
+
+      - name: Regressio Graphica VII compila et exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_vii.vindex /tmp/graphica-vii
+          chmod +x /tmp/graphica-vii
+          timeout 15s /tmp/graphica-vii
+          printf '%s\n' 'RECTE: fundamentum P16-VII non regressum est.'
+
+      - name: Showroom Graphica VIII sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '20'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-graphica-viii'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_showroom_graphica_viii_uefi.sh
+
+      - name: Capturam showroom conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-graphica-viii-${{ github.sha }}
+          path: qemu-graphica-viii/*
+          if-no-files-found: warn
+          retention-days: 7
