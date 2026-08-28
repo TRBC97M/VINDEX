@@ -1,11 +1,13 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-IV / P17-II / P19-II.
+// Sylvia OS — Fenestrale II Purus I, facies P16-VII / P17-II / P19-II.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
 IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/emblema_sylviae_vii.vindex".
 IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
 IMPORTA "bibliotheca/programmata_clientis_e.vindex".
 IMPORTA "bibliotheca/tabula_clientis_f.vindex".
@@ -30,11 +32,20 @@ FUNCTIO UEFI_MURIS_PUBLICA REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
+// Emblema rasterum post compositionem Fenestralem in zona identitatis pingitur.
+// Nulla fenestra canonica supra y=56 incipit; ergo regio 164..195 / 18..49
+// nullam hitbox neque superficiem clientis tegit.
+FUNCTIO VII_EMBLEMA_REDDE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI s[40]==0 TUNC REDDE 0. FIN-SI.
+    REDDE IR_BLIT_FRAMEBUFFER(164,18,TEXTUS_EX_SEDE(s[40])).
+FIN-FUNCTIO.
+
 // Vector systematis nullam geometriam neque statum fenestrae continet.
 // 11/12 murus x/y; 13 bullae; 14 fenestra tractata; 15/16 offset vel murus prior.
 // 27 margines resize; 28 murus relativus; 29 murus absolutus.
 // 34 coda eventuum; 35 eventa perdita; 36 clientes; 37 fenestrae;
-// 38 INITIUM apertum; 39 catalogus applicationum.
+// 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG P16-VII.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
@@ -42,11 +53,14 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
     DECLARA utilis_h SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
     s[11]=w/2. s[12]=h/2. s[13]=0. s[14]=0. s[15]=0. s[16]=0. s[27]=0.
-    s[28]=0. s[29]=0. s[35]=0. s[38]=0.
+    s[28]=0. s[29]=0. s[35]=0. s[38]=0. s[40]=0.
     s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
     s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
     s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
     s[39]=AI_CREA(). SI s[39]==0 TUNC REDDE 71. FIN-SI.
+    DECLARA emblema SICUT TEXTUS VALENS EVII_CREA().
+    SI IR_VALIDUS(emblema)==0 TUNC REDDE 71. FIN-SI.
+    s[40]=TEXTUS_SEDES(emblema).
 
     DECLARA superficies_p SICUT NUMERUS VALENS FS_CREA(496,260).
     DECLARA superficies_t SICUT NUMERUS VALENS FS_CREA(396,226).
@@ -108,6 +122,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
     ro=OP_RENDE(superficies_o,status_o).
     DECLARA f SICUT NUMERUS VALENS IV_REDDE(s,s[37],s[36],s[39]).
+    DECLARA emblematis SICUT NUMERUS VALENS VII_EMBLEMA_REDDE(s).
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
         DECLARA redde SICUT NUMERUS VALENS 0.
@@ -127,7 +142,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         FIN-SI.
         DECLARA acta SICUT NUMERUS VALENS CI_EVENTA_AGE(s[36],s[37],s[34]).
         SI acta>0 TUNC redde=1. FIN-SI.
-        SI redde==1 TUNC f=IV_REDDE(s,s[37],s[36],s[39]). FIN-SI.
+        SI redde==1 TUNC
+            f=IV_REDDE(s,s[37],s[36],s[39]).
+            emblematis=VII_EMBLEMA_REDDE(s).
+        FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
     FIN-DUM.
     REDDE 0.
