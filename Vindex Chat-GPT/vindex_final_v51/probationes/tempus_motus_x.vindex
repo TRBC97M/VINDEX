@@ -1,0 +1,69 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "bibliotheca/fenestrale_tempus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_motus_x.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    // Horologium manuale eandem API frame probat sine firmware.
+    DECLARA h SICUT NUMERUS VALENS TX_CREA_MANUALE().
+    SI h==0 || TX_FRAME(h)!=0 TUNC REDDE 1. FIN-SI.
+    SI TX_CONSULE(h)!=1 || TX_FRAME(h)!=1 TUNC REDDE 2. FIN-SI.
+    SI TX_CONSULTATIONES(h)!=1 || TX_SIGNA(h)!=1 TUNC REDDE 3. FIN-SI.
+    SI TX_CLAUDE(h)!=1 || TX_CONSULE(h)!=0 TUNC REDDE 4. FIN-SI.
+
+    // Curvae fixed-point: fines exacti et medium smoothstep exactum.
+    SI MX_CURVA(0,0)!=0 || MX_CURVA(65536,0)!=65536 TUNC REDDE 5. FIN-SI.
+    SI MX_CURVA(32768,2)!=32768 TUNC REDDE 6. FIN-SI.
+    SI MX_CURVA(32768,1)<=32768 TUNC REDDE 7. FIN-SI.
+    SI MX_INTERPOLA(10,110,32768)!=60 TUNC REDDE 8. FIN-SI.
+
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(200,140).
+    DECLARA panel SICUT NUMERUS VALENS GX_CREA(24,18).
+    SI fundum==0 || panel==0 TUNC REDDE 9. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,200,140),2105376,255).
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(0,0,24,18),12959488,255).
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(200,140,fundum).
+    SI scena==0 TUNC REDDE 10. FIN-SI.
+    DECLARA s SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,77,panel,10,10,10,80).
+    SI s==0 TUNC REDDE 11. FIN-SI.
+    DECLARA m SICUT NUMERUS VALENS MX_CREA(scena).
+    SI m==0 TUNC REDDE 12. FIN-SI.
+
+    // Motus I: 10,10,80 -> 110,50,200 in X frame, smoothstep.
+    SI MX_ANIMA(m,77,110,50,200,10,2)==0 TUNC REDDE 13. FIN-SI.
+    SI MX_ACTIVI(m)!=1 TUNC REDDE 14. FIN-SI.
+    SI MX_PULSA(m,5)==0 TUNC REDDE 15. FIN-SI.
+    SI CONTENTUM(s+16)!=60 || CONTENTUM(s+24)!=30 || CONTENTUM(s+40)!=140 TUNC REDDE 16. FIN-SI.
+
+    // Retargetatio fit ex statu composito praesenti, nullo saltu.
+    SI MX_ANIMA(m,77,30,100,220,5,0)==0 TUNC REDDE 17. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS MX_QUAERE(m,77).
+    SI n==0 TUNC REDDE 18. FIN-SI.
+    SI CONTENTUM(n+32)!=60 || CONTENTUM(n+40)!=30 || CONTENTUM(n+48)!=140 TUNC REDDE 19. FIN-SI.
+    SI MX_INTERRUPTIONES(m)!=1 TUNC REDDE 20. FIN-SI.
+
+    // Prima frame post interruptionem progreditur continenter.
+    SI MX_PULSA(m,6)==0 TUNC REDDE 21. FIN-SI.
+    SI CONTENTUM(s+16)!=54 || CONTENTUM(s+24)!=44 || CONTENTUM(s+40)!=156 TUNC REDDE 22. FIN-SI.
+
+    // Eadem frame iterata nullam mutationem nec opus compositorium generat.
+    SI MX_PULSA(m,6)!=0 TUNC REDDE 23. FIN-SI.
+    SI CONTENTUM(s+16)!=54 || CONTENTUM(s+24)!=44 || CONTENTUM(s+40)!=156 TUNC REDDE 24. FIN-SI.
+
+    // Finis semper destinationem exactam capit et motum claudit.
+    SI MX_PULSA(m,10)==0 TUNC REDDE 25. FIN-SI.
+    SI CONTENTUM(s+16)!=30 || CONTENTUM(s+24)!=100 || CONTENTUM(s+40)!=220 TUNC REDDE 26. FIN-SI.
+    SI MX_ACTIVI(m)!=0 TUNC REDDE 27. FIN-SI.
+
+    // Duratio nulla est mutatio immediata deterministica.
+    SI MX_ANIMA(m,77,90,20,255,0,1)==0 TUNC REDDE 28. FIN-SI.
+    SI CONTENTUM(s+16)!=90 || CONTENTUM(s+24)!=20 || CONTENTUM(s+40)!=255 TUNC REDDE 29. FIN-SI.
+    SI MX_ACTIVI(m)!=0 TUNC REDDE 30. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
