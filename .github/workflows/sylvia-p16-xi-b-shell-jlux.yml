@@ -1,0 +1,108 @@
+name: Sylvia OS — P16-XI-B Shell JL-UX
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_iconographia_xib.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_shell_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_viii*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_ix*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/construe_uefi_purum.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/genera_asseta_premium_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/adde_fasciculos_fat.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_xib.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xib.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_fallback_vii.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/res/jlux/assetta/premium-i/png/**'
+      - 'documenta/sylvia/JL_UX_INTEGRATIO_SHELL_I.md'
+      - '.github/workflows/sylvia-p16-xi-b-shell-jlux.yml'
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  shell-jlux:
+    name: Bureau, INITIUM et fallback in framebuffer vero certificantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilatorem para et puritatem verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fenestrale integrum native VINDEX compila
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale-xib.elf
+          file /tmp/fenestrale-xib.elf | grep -q 'ELF 64-bit'
+          printf '%s\n' 'RECTE: Fenestrale P16-XI-B native VINDEX compilatur.'
+
+      - name: Bureau premium sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-xib-bureau'
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_xib.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: INITIUM premium et semantica sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-xib-initium'
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_xib.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Fallback atlas VII sine assetis premium
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '28'
+          ASSETA_PREMIUM_I: '0'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-xib-fallback'
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_formam_sylviae_fallback_vii.py" \
+            bash ./instrumenta/proba_fenestrale_uefi_purum.sh
+
+      - name: Capturas framebuffer conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-p16-xi-b-${{ github.sha }}
+          path: |
+            qemu-xib-bureau/*.ppm
+            qemu-xib-initium/*.ppm
+            qemu-xib-fallback/*.ppm
+          if-no-files-found: warn
+          retention-days: 7
