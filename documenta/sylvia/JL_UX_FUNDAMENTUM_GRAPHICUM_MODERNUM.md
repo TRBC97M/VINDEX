@@ -1,7 +1,7 @@
 # JL-UX — FUNDAMENTUM GRAPHICUM MODERNUM
 
 **Sylvia OS — P16-XII**  
-Status: **P16-XII-A et P16-XII-B PERFECTA; P16-XII-C ACTIVUM, C1 PROBATUM / CANONIZANDUM**
+Status: **P16-XII-A, B et C PERFECTA; P16-XII-D PROXIMUM**
 
 ## I. Propositum
 
@@ -30,6 +30,8 @@ RGB praemultiplicatum per alpha
 Compositio utitur regula `source-over` praemultiplicata. Pixel alpha=0 nullum colorem occultum in framebuffer emittere potest.
 
 Framebuffer GOP potest ordinem canalium mutare; conversio fit tantum in limite backendis. Memoria Graphica X manet canonica RGBA. Color iam per `FV_COLOR` ad ordinem GOP conversus **numquam** in superficiem `GX_*` ponendus est; hoc invarians P16-XII-B captura QEMU explicite confirmavit.
+
+Graphica IX rasteram SIMG II in RGBA recto bilineari reddit. P16-XII-C2 hoc RGBA in limite `GXX_*` semel praemultiplicat et deinde in GX componit. Ita rastera premium et compositor modernus eandem legem pixelorum participant sine conversione GOP intermedia.
 
 ## IV. Descriptor superficiei
 
@@ -72,7 +74,9 @@ Blur et umbrae magnae non singulis frameis recreandae sunt. Lex productionis est
 - blur late diffusum sine causa vitatur;
 - radius blur secundum aream superficiei coerceri potest.
 
-P16-XII-C1 hanc legem iam exsequitur per gestorem `XP_*` cum hit/miss, cache umbrarum et backdrop, blur adaptivo, maska alpha, clipping materializato et gloss reutilizabili.
+P16-XII-C1 hanc legem exsequitur per gestorem `XP_*` cum hit/miss, cache umbrarum et backdrop, blur adaptivo, maska alpha, clipping materializato et gloss reutilizabili.
+
+P16-XII-C2 addit pontem `GXX_*`: rastera premium SIMG II/Graphica IX directe in superficies GX redduntur, etiam per 9-slice, alpha recto in praemultiplicatum semel converso. Materia rastera igitur potest postea uti eodem Z, damage, cache, opacitate et backend-neutro compositore ac cetera strata.
 
 Implementatio software est backend referentiae et veritatis semanticae, non finis accelerationis.
 
@@ -118,9 +122,9 @@ Ordo intentus:
 
 ### P16-XII-C — Effectus productionis
 
-**Status: ACTIVUM; C1 PROBATUM / CANONIZANDUM per #149.**
+**Status: PERFECTUM per C1/#150 et C2/#151 post canonizationem.**
 
-C1 iam instituit:
+C1 instituit:
 
 - cache umbrarum;
 - backdrop cache cum generatione fontis in clave;
@@ -130,13 +134,18 @@ C1 iam instituit:
 - clipping materializatum;
 - hit/miss et capacitatem gestorii cache.
 
-C2 proximum est:
+C2 instituit:
 
 - pontem rasterae premium Graphica IX/SIMG II → superficies GX;
-- 9-slice materialem in superficie compositoris;
-- contractum quo chrome JL-UX raster premium sine framebuffer directo reddi possit.
+- conversionem RGBA recti in praemultiplicatum tantum in limite `GXX_*`;
+- bilinearem alpha-correctam directe in GX;
+- regionem, scaling linearem et 9-slice in superficie compositoris;
+- constructorium superficiei materialis 9-slice paratae ad stratum Z;
+- contractum quo chrome JL-UX raster premium sine framebuffer directo reddi potest.
 
 ### P16-XII-D — Tempus et motus
+
+**Status: PROXIMUM.**
 
 - horologium frame;
 - interpolationes;
@@ -231,7 +240,7 @@ Probatio VINDEX nativa confirmat:
 - clip mensuram et pixelum originis exactum servare;
 - gloss partem superiorem illuminare sine parte inferiore mutata.
 
-Showroom QEMU/OVMF 1280×800 capitis `512d470d…` rettulit:
+Showroom QEMU/OVMF 1280×800 capitis C1 rettulit:
 
 ```text
 colores framebuffer: 1587
@@ -245,7 +254,38 @@ XXXV probationes canonicae: 35 / 35
 
 Captura framebuffer inspecta est. Backdrop strias vere mollit; anguli maskae ad fundum redeunt; highlight superior clarus sed localis est; clip intra limites suos manet; eadem umbra cacheata in pluribus stratis reutilizatur.
 
-## XIII. Invarianta
+## XIII. Probationes P16-XII-C2
+
+Probatio VINDEX nativa confirmat:
+
+- conversionem RGBA recti Graphica IX in pixelum GX praemultiplicatum;
+- alpha globalem sine mutatione coloris occulti;
+- 9-slice SIMG II in destinatione GX;
+- oram superiorem aqua et inferiorem bronzeam integram;
+- flancum argentum semi-opacum;
+- centrum vitrum alpha `170` cum canalibus praemultiplicatis;
+- transparentiam extra destinationem;
+- damage novem partium in unum rectum destinationis coalitum;
+- constructorium directum superficiei materialis cum alpha globali.
+
+Showroom QEMU/OVMF 1280×800 capitis `adf6b109…` ex **eadem rastera SIMG II 16×16** superficies `500×300` et `330×205` creavit:
+
+```text
+colores framebuffer: 323
+ora magna aqua/centrum/bronze: (80,178,197) / (18,45,57) / (163,123,75)
+ora parva aqua/centrum/bronze: (74,169,187) / (18,47,61) / (151,118,74)
+colores centri: 3 / 3
+halo magenta occultum: 0 / 0
+flanc/centrum magna: (169,178,186) / (18,45,57)
+flanc/centrum parva: (157,167,176) / (18,47,61)
+XXXV probationes canonicae: 35 / 35
+```
+
+Captura framebuffer inspecta est. Margines quattuor pixelorum eandem crassitudinem servant in duabus magnitudinibus; centrum semi-transparens fascias fundi ostendit; flancum argentum a centro distinguitur; quattuor anguli fontis colorem magenta occultum sub alpha zero continent sed **nullum halo** in framebuffer apparet.
+
+Hoc est primum contractum canonicum quo materia rastera premium redimensionabilis potest directe fieri stratum compositoris Graphica X.
+
+## XIV. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -255,8 +295,10 @@ Captura framebuffer inspecta est. Backdrop strias vere mollit; anguli maskae ad 
 - wallpaper non substituit motorem;
 - effectus non iustificant input lentum;
 - memoria GX semper RGBA canonica manet; conversio GOP tantum in limite framebufferis fit;
-- effectus cacheatus non iterum calculatur nisi clavis vel generatio fontis mutatur.
+- effectus cacheatus non iterum calculatur nisi clavis vel generatio fontis mutatur;
+- rastera Graphica IX in GX tantum per conversionem recti→praemultiplicati intrat;
+- 9-slice margines materialis non cum dimensione destinationis extenduntur.
 
-## XIV. Sententia
+## XV. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**

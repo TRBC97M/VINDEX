@@ -1,0 +1,116 @@
+name: Sylvia OS — Asseta GX Novem X
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_ix.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_x_asseta.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_effectus_productio_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/asseta_gx_novem_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_asseta_gx_novem_x*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_asseta_gx_novem_x*'
+      - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
+      - '.github/workflows/sylvia-asseta-gx-novem-x.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_x_asseta.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/asseta_gx_novem_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_asseta_gx_novem_x*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_asseta_gx_novem_x*'
+      - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
+      - '.github/workflows/sylvia-asseta-gx-novem-x.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  asseta-gx-novem-x:
+    name: SIMG II, Graphica IX et GX 9-slice certificantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilatorem et instrumenta para
+        shell: bash
+        run: |
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_asseta_gx_novem_x_uefi.sh'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Graphica IX canonica iterum exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_ix.vindex /tmp/graphica-ix
+          chmod +x /tmp/graphica-ix
+          timeout 25s /tmp/graphica-ix
+
+      - name: Effectus XII-C1 iterum exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/effectus_productio_x.vindex /tmp/effectus-x-c1
+          chmod +x /tmp/effectus-x-c1
+          timeout 30s /tmp/effectus-x-c1
+
+      - name: Pontem Assetorum GX native VINDEX exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/asseta_gx_novem_x.vindex /tmp/asseta-gx-x-test
+          file /tmp/asseta-gx-x-test | grep -q 'ELF 64-bit'
+          chmod +x /tmp/asseta-gx-x-test
+          timeout 30s /tmp/asseta-gx-x-test
+          printf '%s\n' 'RECTE: SIMG II et Graphica IX in superficies GX 9-slice probata sunt.'
+
+      - name: Regressionem canonicam VINDEX exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tests/run_tests.sh
+
+      - name: Showroom Assetorum GX Novem sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '20'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-asseta-gx-novem-x'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_showroom_asseta_gx_novem_x_uefi.sh
+
+      - name: Capturam conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-asseta-gx-novem-x-${{ github.sha }}
+          path: |
+            qemu-asseta-gx-novem-x/*.ppm
+            qemu-asseta-gx-novem-x/*.log
+          if-no-files-found: warn
+          retention-days: 7

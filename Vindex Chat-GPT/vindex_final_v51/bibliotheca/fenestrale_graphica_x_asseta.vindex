@@ -1,0 +1,135 @@
+// Sylvia OS — P16-XII-C2: pons Assetorum Graphica IX -> superficies Graphica X.
+// Dependentiæ: SIMG II, gestor AII, Graphica IX, Graphica X et recta Graphica VIII.
+//
+// Graphica IX exemplum bilineare in RGBA recto reddit. Hic terminus id semel
+// praemultiplicat et in superficiem GX componit. Nullus color FV/GOP intrat.
+
+FUNCTIO GXX_PM_EX_RGBA REDDENS NUMERUS.
+    ACCIPIT q SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    DECLARA ag SICUT NUMERUS VALENS GVIII_CLAMPA(alpha_globalis,0,255).
+    DECLARA a SICUT NUMERUS VALENS ((q>>24)&255)*ag/255.
+    SI a<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS (q&255)*a/255.
+    DECLARA g SICUT NUMERUS VALENS ((q>>8)&255)*a/255.
+    DECLARA b SICUT NUMERUS VALENS ((q>>16)&255)*a/255.
+    REDDE r|(g<<8)|(b<<16)|(a<<24).
+FIN-FUNCTIO.
+
+FUNCTIO GXX_RGBA_REGION_GX REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT rgba SICUT TEXTUS.
+    ACCIPIT iw SICUT NUMERUS.
+    ACCIPIT ih SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS SII_CORPUS(rgba).
+    SI dst==0 || basis==0 || iw<=0 || ih<=0 || fons==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    SI SII_LONGITUDO(rgba)<iw*ih*4 TUNC REDDE 0. FIN-SI.
+    DECLARA sx SICUT NUMERUS VALENS GVIII_RECT_X(fons). DECLARA sy SICUT NUMERUS VALENS GVIII_RECT_Y(fons).
+    DECLARA sw SICUT NUMERUS VALENS GVIII_RECT_W(fons). DECLARA sh SICUT NUMERUS VALENS GVIII_RECT_H(fons).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI sw<=0 || sh<=0 || dw<=0 || dh<=0 TUNC REDDE 0. FIN-SI.
+    SI sx<0 || sy<0 || sx+sw>iw || sy+sh>ih TUNC REDDE 0. FIN-SI.
+    DECLARA ag SICUT NUMERUS VALENS GVIII_CLAMPA(alpha_globalis,0,255).
+    SI ag==0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<dh PERFICE
+        DECLARA yy SICUT NUMERUS VALENS dy+y.
+        SI yy>=0 && yy<GX_H(dst) TUNC
+            DECLARA uy SICUT NUMERUS VALENS sy*65536.
+            SI dh>1 && sh>1 TUNC uy=uy+y*(sh-1)*65536/(dh-1). FIN-SI.
+            DECLARA x SICUT NUMERUS VALENS 0.
+            DUM x<dw PERFICE
+                DECLARA xx SICUT NUMERUS VALENS dx+x.
+                SI xx>=0 && xx<GX_W(dst) TUNC
+                    DECLARA ux SICUT NUMERUS VALENS sx*65536.
+                    SI dw>1 && sw>1 TUNC ux=ux+x*(sw-1)*65536/(dw-1). FIN-SI.
+                    DECLARA q SICUT NUMERUS VALENS GIX_RGBA_LIN_BASIS(basis,iw,ih,ux,uy).
+                    DECLARA sup SICUT NUMERUS VALENS GXX_PM_EX_RGBA(q,ag).
+                    SI ((sup>>24)&255)>0 TUNC
+                        DECLARA sub SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,xx,yy).
+                        DECLARA f SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,xx,yy,GX_PM_SUPER(sub,sup,255)).
+                    FIN-SI.
+                FIN-SI.
+                x=x+1.
+            FIN-DUM.
+        FIN-SI.
+        y=y+1.
+    FIN-DUM.
+    REDDE GX_DAMNA_NOTA(dst,destinatio).
+FIN-FUNCTIO.
+
+FUNCTIO GXX_ASSET_REGION_GX REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT fons SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS AII_OPTIMUM_NODUS(gestor,id).
+    SI dst==0 || n==0 TUNC REDDE 0. FIN-SI.
+    DECLARA rgba SICUT TEXTUS VALENS AII_RGBA_CACHE(gestor,id).
+    SI SII_CORPUS(rgba)==0 TUNC REDDE 0. FIN-SI.
+    REDDE GXX_RGBA_REGION_GX(dst,rgba,AII_LATITUDO(n),AII_ALTITUDO(n),fons,destinatio,alpha_globalis).
+FIN-FUNCTIO.
+
+FUNCTIO GXX_ASSET_LINEAR_GX REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS AII_OPTIMUM_NODUS(gestor,id).
+    SI n==0 TUNC REDDE 0. FIN-SI.
+    REDDE GXX_ASSET_REGION_GX(dst,gestor,id,GVIII_RECT_CREA(0,0,AII_LATITUDO(n),AII_ALTITUDO(n)),destinatio,alpha_globalis).
+FIN-FUNCTIO.
+
+FUNCTIO GXX_ASSET_NOVEM_GX REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS AII_OPTIMUM_NODUS(gestor,id).
+    SI dst==0 || n==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA imago SICUT TEXTUS VALENS AII_IMAGO(n).
+    SI SII_VALIDUS(imago)==0 || (SII_META_VEXILLA(imago)&1)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA rgba SICUT TEXTUS VALENS AII_RGBA_CACHE(gestor,id).
+    SI SII_CORPUS(rgba)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA iw SICUT NUMERUS VALENS AII_LATITUDO(n). DECLARA ih SICUT NUMERUS VALENS AII_ALTITUDO(n).
+    DECLARA ml SICUT NUMERUS VALENS SII_MARGO(imago,0). DECLARA mt SICUT NUMERUS VALENS SII_MARGO(imago,1).
+    DECLARA mr SICUT NUMERUS VALENS SII_MARGO(imago,2). DECLARA mb SICUT NUMERUS VALENS SII_MARGO(imago,3).
+    DECLARA dx SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA dy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA dw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA dh SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI ml+mr>iw || mt+mb>ih || dw<ml+mr || dh<mt+mb TUNC REDDE 0. FIN-SI.
+    DECLARA smw SICUT NUMERUS VALENS iw-ml-mr. DECLARA smh SICUT NUMERUS VALENS ih-mt-mb.
+    DECLARA dmw SICUT NUMERUS VALENS dw-ml-mr. DECLARA dmh SICUT NUMERUS VALENS dh-mt-mb.
+    DECLARA f SICUT NUMERUS VALENS 0.
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(0,0,ml,mt),GVIII_RECT_CREA(dx,dy,ml,mt),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(ml,0,smw,mt),GVIII_RECT_CREA(dx+ml,dy,dmw,mt),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(iw-mr,0,mr,mt),GVIII_RECT_CREA(dx+dw-mr,dy,mr,mt),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(0,mt,ml,smh),GVIII_RECT_CREA(dx,dy+mt,ml,dmh),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(ml,mt,smw,smh),GVIII_RECT_CREA(dx+ml,dy+mt,dmw,dmh),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(iw-mr,mt,mr,smh),GVIII_RECT_CREA(dx+dw-mr,dy+mt,mr,dmh),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(0,ih-mb,ml,mb),GVIII_RECT_CREA(dx,dy+dh-mb,ml,mb),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(ml,ih-mb,smw,mb),GVIII_RECT_CREA(dx+ml,dy+dh-mb,dmw,mb),alpha_globalis).
+    f=GXX_RGBA_REGION_GX(dst,rgba,iw,ih,GVIII_RECT_CREA(iw-mr,ih-mb,mr,mb),GVIII_RECT_CREA(dx+dw-mr,dy+dh-mb,mr,mb),alpha_globalis).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GXX_ASSET_NOVEM_CREA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA s SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI s==0 TUNC REDDE 0. FIN-SI.
+    SI GXX_ASSET_NOVEM_GX(s,gestor,id,GVIII_RECT_CREA(0,0,w,h),alpha_globalis)==0 TUNC REDDE 0. FIN-SI.
+    REDDE s.
+FIN-FUNCTIO.
