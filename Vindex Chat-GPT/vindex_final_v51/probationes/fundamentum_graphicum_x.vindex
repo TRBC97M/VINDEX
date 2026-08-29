@@ -1,0 +1,66 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    // Superficies nova vere transparens incipit.
+    DECLARA s SICUT NUMERUS VALENS GX_CREA(8,8).
+    SI s==0 TUNC REDDE 1. FIN-SI.
+    SI GX_PIX_PM_LEGE(s,0,0)!=0 TUNC REDDE 2. FIN-SI.
+    SI GX_DAMNA_RECT(s)!=0 TUNC REDDE 3. FIN-SI.
+
+    // Rubrum 50% in memoria praemultiplicata: R=128, A=128.
+    SI GX_PIX_PONE(s,1,1,255,128)==0 TUNC REDDE 4. FIN-SI.
+    DECLARA q SICUT NUMERUS VALENS GX_PIX_PM_LEGE(s,1,1).
+    SI (q&255)!=128 || ((q>>8)&255)!=0 || ((q>>16)&255)!=0 || ((q>>24)&255)!=128 TUNC REDDE 5. FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS GX_DAMNA_RECT(s).
+    SI GVIII_RECT_X(d)!=1 || GVIII_RECT_Y(d)!=1 || GVIII_RECT_W(d)!=1 || GVIII_RECT_H(d)!=1 TUNC REDDE 6. FIN-SI.
+
+    // Unio damage non totam superficiem frustra contaminat.
+    SI GX_RECT_ALPHA(s,GVIII_RECT_CREA(4,3,2,2),16711680,128)==0 TUNC REDDE 7. FIN-SI.
+    d=GX_DAMNA_RECT(s).
+    SI GVIII_RECT_X(d)!=1 || GVIII_RECT_Y(d)!=1 || GVIII_RECT_W(d)!=5 || GVIII_RECT_H(d)!=4 TUNC REDDE 8. FIN-SI.
+
+    // Source-over praemultiplicatum: rubrum 50% super album opacum = 255,127,127,255.
+    DECLARA dst SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA src SICUT NUMERUS VALENS GX_CREA(2,2).
+    SI dst==0 || src==0 TUNC REDDE 9. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(dst,GVIII_RECT_CREA(0,0,4,4),16777215,255).
+    f=GX_RECT_ALPHA(src,GVIII_RECT_CREA(0,0,2,2),255,128).
+    SI GX_COMPOSITA_S(dst,src,1,1,255)==0 TUNC REDDE 10. FIN-SI.
+    q=GX_PIX_PM_LEGE(dst,1,1).
+    SI (q&255)!=255 || ((q>>8)&255)!=127 || ((q>>16)&255)!=127 || ((q>>24)&255)!=255 TUNC REDDE 11. FIN-SI.
+
+    // Alpha globalis dimidiam opacitatem iterum attenuat.
+    DECLARA dst2 SICUT NUMERUS VALENS GX_CREA(2,2).
+    SI dst2==0 TUNC REDDE 12. FIN-SI.
+    f=GX_RECT_ALPHA(dst2,GVIII_RECT_CREA(0,0,2,2),16777215,255).
+    f=GX_COMPOSITA_S(dst2,src,0,0,128).
+    q=GX_PIX_PM_LEGE(dst2,0,0).
+    SI (q&255)<254 || ((q>>8)&255)<190 || ((q>>8)&255)>192 || ((q>>24)&255)!=255 TUNC REDDE 13. FIN-SI.
+
+    // Blur separabilis diffundit alpha sine creando halo RGB alienum.
+    DECLARA punctum SICUT NUMERUS VALENS GX_CREA(7,3).
+    SI punctum==0 TUNC REDDE 14. FIN-SI.
+    f=GX_PIX_PONE(punctum,3,1,255,255).
+    DECLARA mollis SICUT NUMERUS VALENS GX_BLUR(punctum,1).
+    SI mollis==0 TUNC REDDE 15. FIN-SI.
+    DECLARA centrum SICUT NUMERUS VALENS GX_PIX_PM_LEGE(mollis,3,1).
+    DECLARA vicinus SICUT NUMERUS VALENS GX_PIX_PM_LEGE(mollis,2,1).
+    SI ((centrum>>24)&255)<20 || ((centrum>>24)&255)>40 TUNC REDDE 16. FIN-SI.
+    SI ((vicinus>>24)&255)<20 || ((vicinus>>24)&255)>40 TUNC REDDE 17. FIN-SI.
+    SI ((centrum>>8)&255)!=0 || ((centrum>>16)&255)!=0 TUNC REDDE 18. FIN-SI.
+
+    // Generator umbrae expandit mensuram et relinquit angulum remotum transparentem.
+    DECLARA umbra SICUT NUMERUS VALENS GX_UMBRA_CREA(20,10,4,3,0,180).
+    SI umbra==0 TUNC REDDE 19. FIN-SI.
+    SI GX_W(umbra)!=32 || GX_H(umbra)!=22 TUNC REDDE 20. FIN-SI.
+    SI ((GX_PIX_PM_LEGE(umbra,16,11)>>24)&255)<=0 TUNC REDDE 21. FIN-SI.
+    SI ((GX_PIX_PM_LEGE(umbra,0,0)>>24)&255)!=0 TUNC REDDE 22. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.

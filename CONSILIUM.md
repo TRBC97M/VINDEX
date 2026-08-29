@@ -143,7 +143,7 @@ ChatGPT hoc opus non duplicat dum reservatio valet. #122 ante canonizationem cum
 
 ## P16 — Forma, JL-UX et capacitas graphica
 
-**Status:** P16-I–X `PERFECTUM`; P16-XI iter visuale post Graphica IX `ACTIVUM`.
+**Status:** P16-I–XI-B `PERFECTUM`; **P16-XII Fundamentum Graphicum Modernum `ACTIVUM`**.
 
 ### Incrementa canonica
 
@@ -161,9 +161,10 @@ ChatGPT hoc opus non duplicat dum reservatio valet. #122 ante canonizationem cum
 - SIMG II / #136 — formatum graphicum nativum versionatum et gestor assetorum multi-scala;
 - importatio SIMG II / #137 — catena PNG → `.simg` → compilator VINDEX → lector SIMG II;
 - Graphica IX / #139 — rastera premium bilinearis alpha praemultiplicata, cache RGBA, framebuffer/superficies et 9-slice;
-- P16-XI-A / #142 — XII fontes PNG/SIMG II premium, quattuor identitates, tres scalae et showroom QEMU/OVMF certificatum.
+- P16-XI-A / #142 — XII fontes PNG/SIMG II premium, quattuor identitates, tres scalae et showroom QEMU/OVMF certificatum;
+- P16-XI-B / #144 — Asseta Premium I in Bureau et INITIUM shellis realis, cum fallback atlas P16-VII.
 
-`main` post #142 (`2074a2e…`) est fundamentum graphicum canonicum ante integrationem shellis #143.
+`main` post #144 est `29a82ba6…` et est basis canonica P16-XII.
 
 ### Experienta P16-XI
 
@@ -179,9 +180,9 @@ Catena `PNG → SIMG II → FAT → VINDEX → Graphica IX → framebuffer QEMU/
 
 ### P16-XI-B — Integratio Shell JL-UX I
 
-**Status:** `CANONIZANDUM per #143`.
+**Status:** `PERFECTUM per #144`; #143 draft historicum eundem caput certificatum servat.
 
-Eadem familia nunc in payload `fenestrale_ii_purus_i.vindex` ipsum inseritur:
+Eadem familia in payload `fenestrale_ii_purus_i.vindex` ipsum inserta est:
 
 - XII SIMG automatice in ESP imaginis Fenestralis includuntur;
 - gestor `s[42]` familiam completam tantum accipit;
@@ -190,28 +191,38 @@ Eadem familia nunc in payload `fenestrale_ii_purus_i.vindex` ipsum inseritur:
 - familia absens/incompleta ad atlas P16-VII redit;
 - hitbox, launch, focus/Z, fenestrae et persistentia OFFICINAE non mutantur.
 
-Framebuffer QEMU/OVMF exacti capitis probavit:
-
-- Bureau: `708 / 665 / 685 / 826` colores, centra veteria `0`, caeruleum occultum `0`;
-- INITIUM: `437 / 476 / 474 / 539` colores, quadrata obscura veteria `0`, caeruleum `0`;
-- hover/click/focus TABULAE integra;
-- fallback `ASSETA_PREMIUM_I=0`: quattuor centra atlas P16-VII redeunt.
-
-Captura vera inspecta est. Iconographia nova evidenter melior est, sed testa globalis adhuc austera et parva manet: P16-XI-B infrastructuram artisticam probat, non metam JL-UX completam.
+Framebuffer QEMU/OVMF probavit Bureau et INITIUM premium, hover/click/focus TABULAE et fallback sine assetis. Captura vera etiam ostendit rem criticam: infrastructura assetorum operatur, sed testa globalis adhuc nimis austera est ut meta JL-UX habeatur.
 
 ### P16-XI-C — Chrome Premium I
 
-**Status:** `PROXIMUM / PARATUM post #143`.
+**Status:** `SUSPENSUM donec P16-XII fundamentum sufficiat`.
 
-Proxima tranche magnum effectum visualem petet: chrome fenestrarum ex assetis SIMG II 9-slice, Graphica IX et materiae JL-UX, cum statibus activus/inactivus et bullis nativis. Geometria et input contractus primo servantur; metra maiora separatim probabuntur ubi opus est.
+Chrome 9-slice manet finis artisticus validus, sed non amplius proximum opus est. Non volumus ornamentum premium super compositorem adhuc nimis infirmum ponere.
+
+### P16-XII — Fundamentum Graphicum Modernum
+
+**Status:** `ACTIVUM apud ChatGPT` in ramo `chatgpt/p16-xii-fundamentum-graphicum-modernum`.
+
+Finis est capacitas technica desktop classis Vista/Aero, sine imitatione identitatis Windows. Contractus plenus est in `documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md`.
+
+Ordo officialis:
+
+1. **P16-XII-A — Compositor RGBA:** superficies `GX_*` praemultiplicatae, alpha verum, source-over, damage regionale, blur, umbra, vitrum, showroom QEMU;
+2. **P16-XII-B — Scena compositoris:** strata/Z/opacitas, damage-only presentatio et double buffering;
+3. **P16-XII-C — Effectus productionis:** caches umbrarum/backdrop, blur adaptivus, maskae, gloss et 9-slice materialis;
+4. **P16-XII-D — Tempus et motus:** frame-clock et animationes interruptibiles;
+5. **P16-XII-E — Migratio shellis:** fenestrae, chrome, INITIUM, taskbar, cursor et Bureau super compositorem novum;
+6. **P16-XII-F — Backend accelerabilis:** API backend-neutra et via GPU cum P12 hardware id sinit.
+
+Backend software VINDEX purus sub QEMU est referentia semantica. Acceleratio GPU futura non est condicio XII-A, sed nulla architectura quae eam impedit admittitur.
 
 ### Lex visualis
 
 - `SYLVIA OS` est identitas primaria; `JL-UX` nomen technologiae internae et raro usori ostenditur;
 - palette canonica et materiae `Vitrum Minerale`, `Ebur Enamelatum`, `Metallum Frigidum`, `Lumen Molle` servantur;
-- alpha magnae superficies et blur late diffusum evitantur; effectus localis et cache praeferuntur;
+- effectus magni cacheantur et damage locale praeferuntur;
 - iconographia non plana neque cartoon, sed volumetrica, clara et moderatim materialis;
-- wallpaper quietum et proprium Sylviae est, non substitutum motoris neque locus tituli `JL-UX`;
+- wallpaper quietum et proprium Sylviae est, non substitutum motoris;
 - nulla copia servilis alterius OS;
 - nulla regressio visualis celatur mora aucta aut custodia debilitata.
 
@@ -240,8 +251,9 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 # IV. Coordinatio agentium
 
 - P12 manet reservatum Claude; ChatGPT #122 non duplicat;
-- P16-XI-B #143 est opus visuale ChatGPT ad canonizationem;
-- P16-XI-C chrome premium est proximum post #143;
+- P16-XI-A/B sunt canonica per #142/#144;
+- **P16-XII est prioritas graphica ChatGPT**;
+- P16-XI-C chrome premium exspectat migrationem P16-XII-E;
 - #134 est debitum compilatoris separatum P9; renderer ad verificatorem obsoletum non deminuitur;
 - P19-I/P19-II sunt canonica;
 - mutationes maioris status per branch, PR et probationes fiunt;
@@ -252,15 +264,16 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 
 # V. Actio proxima
 
-1. **#143 canoniza:** integratio Bureau/INITIUM premium iam probata est; omnes custodiae finales exspectandae et capturae servandae sunt;
-2. **P16-XI-C — Chrome Premium I:** fontes PNG/SIMG II 9-slice pro fenestra activa/inactiva crea et Graphica IX in `CVIII_CHROME` substitue;
-3. bullas minimizationis/maximizationis/clausurae et status earum materia JL-UX nativa perfice;
-4. post chrome, cursores anti-aliased et materiae taskbar/INITIUM;
-5. metra visualia nimis parva separatim revalida, sine fractura hitbox/input;
-6. wallpaper premium multi-resolutionis tantum postquam ipsa testa premium est;
-7. TERMINALE mandata fasciculorum realia et Explorator fasciculorum post fundamenta visualia/componentium;
-8. P19-III ad hardware quando opportunum;
-9. P12 apud Claude paralleliter pergat.
+1. **P16-XII-A certifica:** mathesis RGBA/source-over/damage, blur et umbra in memoria;
+2. showroom QEMU/OVMF Graphica X cum backdrop blur, vitro et stratis translucentibus metire atque capturam inspice;
+3. post XII-A, registrum stratorum et compositor damage-only P16-XII-B construe;
+4. double buffering et praesentatio stabilis ante migrationem shellis perfice;
+5. effectus cacheabiles P16-XII-C deinde frame-clock P16-XII-D;
+6. tantum postea chrome, INITIUM, taskbar et fenestrae ad P16-XII-E migrant;
+7. contractum backend accelerabilem ad P16-XII-F serva; backend GPU cum P12 hardware permittit;
+8. TERMINALE mandata fasciculorum realia et Explorator fasciculorum post fundamenta visualia/componentium;
+9. P19-III ad hardware quando opportunum;
+10. P12 apud Claude paralleliter pergat.
 
 ---
 

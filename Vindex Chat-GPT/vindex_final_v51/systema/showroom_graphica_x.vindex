@@ -1,0 +1,84 @@
+// Sylvia OS — P16-XII: showroom Fundamentum Graphicum Modernum.
+// Probatio capacitatum, non facies finalis Sylviae.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI w<1024 || h<700 TUNC REDDE 6. FIN-SI.
+
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(8,17,27).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(18,42,58).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(0,198,255).
+    DECLARA cyan_molle SICUT NUMERUS VALENS FV_COLOR(105,218,235).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+
+    // Fundum intentionaliter alta frequentia habet ut blur vere mensurari possit.
+    DECLARA f SICUT NUMERUS VALENS GVII_GRADUS_VERTICALIS(0,0,w,h,FV_COLOR(20,46,64),nox).
+    DECLARA x SICUT NUMERUS VALENS 0.
+    DUM x<w PERFICE
+        DECLARA c SICUT NUMERUS VALENS FV_COLOR(24,78,101).
+        SI ((x/12)%2)==0 TUNC c=FV_COLOR(58,150,174). FIN-SI.
+        f=GVII_RECT_ALPHA(x,90,12,540,c,150).
+        x=x+12.
+    FIN-DUM.
+    // Lignes lumineuses transversales pour rendre le flou évident.
+    f=GVII_RECT_ALPHA(0,238,w,3,FV_COLOR(162,239,250),180).
+    f=GVII_RECT_ALPHA(0,406,w,2,FV_COLOR(208,166,104),170).
+    f=GVII_RECT_ALPHA(0,548,w,3,FV_COLOR(92,218,225),160).
+
+    DECLARA px SICUT NUMERUS VALENS 280.
+    DECLARA py SICUT NUMERUS VALENS 142.
+    DECLARA pw SICUT NUMERUS VALENS 720.
+    DECLARA ph SICUT NUMERUS VALENS 420.
+
+    // Umbra cacheable ex alpha vera, mollita passibus separabilibus.
+    DECLARA umbra SICUT NUMERUS VALENS GX_UMBRA_CREA(pw,ph,18,10,0,190).
+    SI umbra==0 TUNC REDDE 7. FIN-SI.
+    f=GX_COMPOSITA_FB(umbra,px-20+8,py-20+12,255).
+
+    // Backdrop blur + tinctura: facultas vitrea ipsa, ante laminam translucentem.
+    DECLARA vitreum_rect SICUT NUMERUS VALENS GVIII_RECT_CREA(px,py,pw,ph).
+    SI GX_VITRUM_FB(vitreum_rect,7,35+65*256+82*65536,82)==0 TUNC REDDE 8. FIN-SI.
+
+    // Lamina RGBA praemultiplicata; nulla copia opaca framebufferis.
+    DECLARA panel SICUT NUMERUS VALENS GX_CREA(pw,ph).
+    SI panel==0 TUNC REDDE 9. FIN-SI.
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(0,0,pw,ph),28+43*256+54*65536,82).
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(0,0,pw,88),45+79*256+96*65536,150).
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(0,0,pw,2),105+218*256+235*65536,235).
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(0,86,pw,2),181+138*256+84*65536,220).
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(1,1,2,ph-2),191+199*256+207*65536,150).
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(pw-3,1,2,ph-2),8+17*256+27*65536,170).
+    f=GX_RECT_ALPHA(panel,GVIII_RECT_CREA(20,18,pw-40,3),242+244*256+247*65536,48).
+    f=GX_COMPOSITA_FB(panel,px,py,255).
+
+    // Duo strata translucida se superponunt: source-over debet mixturam veram creare.
+    DECLARA card_a SICUT NUMERUS VALENS GX_CREA(250,140).
+    DECLARA card_b SICUT NUMERUS VALENS GX_CREA(250,140).
+    SI card_a==0 || card_b==0 TUNC REDDE 10. FIN-SI.
+    f=GX_RECT_ROT_ALPHA(card_a,GVIII_RECT_CREA(0,0,250,140),14,15+144*256+170*65536,185).
+    f=GX_RECT_ALPHA(card_a,GVIII_RECT_CREA(12,12,226,2),105+218*256+235*65536,210).
+    f=GX_RECT_ROT_ALPHA(card_b,GVIII_RECT_CREA(0,0,250,140),14,164+111*256+62*65536,175).
+    f=GX_RECT_ALPHA(card_b,GVIII_RECT_CREA(12,126,226,2),224+178*256+105*65536,220).
+    f=GX_COMPOSITA_FB(card_a,px+92,py+176,255).
+    f=GX_COMPOSITA_FB(card_b,px+294,py+218,255).
+
+    // Textus directus tantum probationem explicat; materia sub eo Graphica X est.
+    f=FV_TEXTUM_SCALA(px+34,py+24,"GRAPHICA X",ebur,2).
+    f=FV_TEXTUM(px+36,py+57,"RGBA / COMPOSITIO / BLUR / VITRUM / UMBRA",cyan_molle).
+    f=FV_TEXTUM(px+112,py+226,"STRATUM AQUA",ebur).
+    f=FV_TEXTUM(px+326,py+302,"STRATUM BRONZEUM",ebur).
+    f=FV_TEXTUM(56,40,"P16-XII — FUNDAMENTUM GRAPHICUM MODERNUM",ebur).
+    f=FV_TEXTUM(56,62,"capacitas Vista-class; identitas manet Sylvia",argentum).
+    f=FV_TEXTUM(56,h-38,"superficies praemultiplicatae / damage regionale / effectus cacheabiles",bronzeum).
+
+    DECLARA pausa SICUT NUMERUS VALENS 0.
+    DUM 1==1 PERFICE
+        pausa=pausa+1.
+        SI pausa>1000000 TUNC pausa=0. FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
