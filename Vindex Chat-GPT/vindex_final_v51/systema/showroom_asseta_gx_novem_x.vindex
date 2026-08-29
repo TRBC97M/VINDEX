@@ -1,0 +1,122 @@
+// Sylvia OS — P16-XII-C2: showroom SIMG II -> Graphica IX -> GX 9-slice -> scena.
+// Probatio motoris est, non chrome finalis Sylviae.
+
+FUNCTIO AXII_PIXELA_MATERIAE REDDENS TEXTUS.
+    DECLARA pix SICUT TEXTUS VALENS SII_TEXTUS_CREA(1024).
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(pix).
+    SI b==0 TUNC REDDE 0. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<16 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<16 PERFICE
+            DECLARA r SICUT NUMERUS VALENS 28.
+            DECLARA g SICUT NUMERUS VALENS 68.
+            DECLARA c SICUT NUMERUS VALENS 86.
+            DECLARA a SICUT NUMERUS VALENS 165.
+            // Metallum/aqua in ora superiore quattuor pixelorum.
+            SI y<4 TUNC
+                r=107-y*10. g=222-y*14. c=238-y*12. a=245-y*5.
+            FIN-SI.
+            // Bronzeum in ora inferiore quattuor pixelorum.
+            SI y>=12 TUNC
+                DECLARA d SICUT NUMERUS VALENS y-12.
+                r=181-d*8. g=138-d*7. c=84-d*4. a=245-d*4.
+            FIN-SI.
+            // Latera argentea tantum in parte media.
+            SI y>=4 && y<12 && (x<4 || x>=12) TUNC
+                r=191. g=199. c=207. a=225.
+            FIN-SI.
+            // Color occultus magenta in angulis alpha=0: halo apparere non debet.
+            SI (x<2 && y<2) || (x>=14 && y<2) || (x<2 && y>=14) || (x>=14 && y>=14) TUNC
+                r=255. g=0. c=255. a=0.
+            FIN-SI.
+            DECLARA p SICUT NUMERUS VALENS b+(y*16+x)*4.
+            SCRIBE_OCTETUM_AB(p,r). SCRIBE_OCTETUM_AB(p+1,g).
+            SCRIBE_OCTETUM_AB(p+2,c). SCRIBE_OCTETUM_AB(p+3,a).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE pix.
+FIN-FUNCTIO.
+
+FUNCTIO AXII_ASSETUM REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    DECLARA pix SICUT TEXTUS VALENS AXII_PIXELA_MATERIAE().
+    DECLARA imago SICUT TEXTUS VALENS SII_CREA_RGBA(16,16,pix,0,7,1000).
+    SI SII_VALIDUS(imago)==0 TUNC REDDE 0. FIN-SI.
+    SI SII_META_NOVEM(imago,4,4,4,4)==0 TUNC REDDE 0. FIN-SI.
+    REDDE AII_ADDE(gestor,601,imago).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI w<1024 || h<700 TUNC REDDE 6. FIN-SI.
+
+    DECLARA nox SICUT NUMERUS VALENS 7+14*256+23*65536.
+    DECLARA fascia1 SICUT NUMERUS VALENS 22+63*256+82*65536.
+    DECLARA fascia2 SICUT NUMERUS VALENS 8+29*256+42*65536.
+    DECLARA cyan SICUT NUMERUS VALENS 107+222*256+238*65536.
+    DECLARA bronzeum SICUT NUMERUS VALENS 181+138*256+84*65536.
+    DECLARA ebur_fb SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA aqua_fb SICUT NUMERUS VALENS FV_COLOR(107,222,238).
+    DECLARA bronze_fb SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA argentum_fb SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+
+    // Fundum striatum ostendit alpha centri materialis.
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI fundum==0 TUNC REDDE 7. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,w,h),nox,255).
+    DECLARA x SICUT NUMERUS VALENS 0.
+    DUM x<w PERFICE
+        DECLARA cc SICUT NUMERUS VALENS fascia2.
+        SI ((x/28)%2)==0 TUNC cc=fascia1. FIN-SI.
+        f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(x,94,14,h-176),cc,255).
+        x=x+28.
+    FIN-DUM.
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,246,w,2),cyan,180).
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,570,w,2),bronzeum,180).
+
+    DECLARA gestor SICUT NUMERUS VALENS AII_CREA(1000).
+    SI gestor==0 || AXII_ASSETUM(gestor)==0 TUNC REDDE 8. FIN-SI.
+
+    // Eadem rastera 16x16 duos magnos formatos sine deformatione orarum creat.
+    DECLARA magna SICUT NUMERUS VALENS GXX_ASSET_NOVEM_CREA(gestor,601,500,300,255).
+    DECLARA parva SICUT NUMERUS VALENS GXX_ASSET_NOVEM_CREA(gestor,601,330,205,235).
+    SI magna==0 || parva==0 TUNC REDDE 9. FIN-SI.
+
+    // C1 effectus productionis adhibentur: eadem umbra geometriae parvae si iterum petatur cache hit fit.
+    DECLARA cache SICUT NUMERUS VALENS XP_CACHE_CREA(12).
+    DECLARA umbra_m SICUT NUMERUS VALENS XP_UMBRA_CACHE(cache,500,300,22,7,0,185).
+    DECLARA umbra_p SICUT NUMERUS VALENS XP_UMBRA_CACHE(cache,330,205,18,6,0,175).
+    DECLARA umbra_p2 SICUT NUMERUS VALENS XP_UMBRA_CACHE(cache,330,205,18,6,0,175).
+    SI cache==0 || umbra_m==0 || umbra_p==0 || umbra_p2!=umbra_p TUNC REDDE 10. FIN-SI.
+
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(w,h,fundum).
+    SI scena==0 TUNC REDDE 11. FIN-SI.
+    DECLARA mx SICUT NUMERUS VALENS 120. DECLARA my SICUT NUMERUS VALENS 150.
+    DECLARA px SICUT NUMERUS VALENS 735. DECLARA py SICUT NUMERUS VALENS 330.
+    DECLARA n1 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,101,umbra_m,mx-14,my-14,5,255).
+    DECLARA n2 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,102,magna,mx,my,10,255).
+    DECLARA n3 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,201,umbra_p,px-12,py-12,15,255).
+    DECLARA n4 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,202,parva,px,py,20,255).
+    SI n1==0 || n2==0 || n3==0 || n4==0 TUNC REDDE 12. FIN-SI.
+    SI CX_PRAESENTA_FB(scena)==0 TUNC REDDE 13. FIN-SI.
+
+    // Annotationes fiunt post compositorium, non pars probationis materialis.
+    f=FV_TEXTUM_SCALA(54,34,"P16-XII-C2 — ASSETA GX / 9-SLICE",ebur_fb,2).
+    f=FV_TEXTUM(56,66,"SIMG II -> GRAPHICA IX -> RGBA PM -> GX -> SCENA",aqua_fb).
+    f=FV_TEXTUM(mx+32,my+28,"MATERIA 500 x 300",ebur_fb).
+    f=FV_TEXTUM(px+28,py+28,"EADEM 330 x 205",ebur_fb).
+    f=FV_TEXTUM(56,h-48,"ora IV px manet / centrum alpha / anguli vere transparentes",argentum_fb).
+    f=FV_TEXTUM(56,h-26,"rastera semel decoditur, superficies saepe componuntur",bronze_fb).
+
+    DECLARA pausa SICUT NUMERUS VALENS 0.
+    DUM 1==1 PERFICE
+        pausa=pausa+1.
+        SI pausa>1000000 TUNC pausa=0. FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
