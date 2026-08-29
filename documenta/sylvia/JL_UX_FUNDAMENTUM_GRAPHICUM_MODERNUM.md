@@ -1,7 +1,7 @@
 # JL-UX — FUNDAMENTUM GRAPHICUM MODERNUM
 
 **Sylvia OS — P16-XII**  
-Status: **ACTIVUM**
+Status: **P16-XII-A PROBATUM / CANONIZANDUM**
 
 ## I. Propositum
 
@@ -91,6 +91,8 @@ Ordo intentus:
 
 ### P16-XII-A — Compositor RGBA
 
+**Status: PROBATUM / CANONIZANDUM.**
+
 - `GX_*` superficies;
 - source-over;
 - damage regionale;
@@ -167,6 +169,21 @@ Prima tranche requirit:
 9. metrum umbrae mollis;
 10. metrum overlap duorum stratorum translucentium;
 11. capturam framebuffer inspectam.
+
+Omnia haec in capite `1e09e737…` probata sunt. Showroom verus 1280×800 rettulit:
+
+```text
+colores framebuffer: 881
+vitrum: 2 → 5 tonos
+contrastus texturae: 104 → 2
+umbra, lumen locale: 216 / 251
+overlap: aqua (15,113,135)
+         mixtum (116,111,84)
+         bronzeum (117,86,55)
+XXXV probationes canonicae: 35 / 35
+```
+
+Captura framebuffer inspecta est: striae post vitrum localiter molliuntur, umbra externa gradatim evanescit et regio duorum stratorum tertium colorem compositum ostendit. Showroom est probatio motoris, non propositum artis finalis Sylviae.
 
 ## XI. Invarianta
 
