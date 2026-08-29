@@ -1,0 +1,160 @@
+// Sylvia OS — P16-XII / Graphica X: effectus compositoris moderni.
+// GX_* et GVIII_* ante hoc folium importentur.
+// Blur hic separabilis est et in superficie praemultiplicata operatur.
+// In shell reali effectus magni cacheandi sunt; non singulis frameis recreandi.
+
+FUNCTIO GX_COPIA_RECT REDDENS NUMERUS.
+    ACCIPIT src SICUT NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    SI src==0 || rectum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA limen SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,GX_W(src),GX_H(src)).
+    DECLARA q SICUT NUMERUS VALENS GVIII_RECT_SECA(rectum,limen).
+    SI q==0 || GVIII_RECT_W(q)!=GVIII_RECT_W(rectum) || GVIII_RECT_H(q)!=GVIII_RECT_H(rectum) TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(q). DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(q).
+    DECLARA x0 SICUT NUMERUS VALENS GVIII_RECT_X(q). DECLARA y0 SICUT NUMERUS VALENS GVIII_RECT_Y(q).
+    DECLARA dst SICUT NUMERUS VALENS GX_CREA(w,h). SI dst==0 TUNC REDDE 0. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<w PERFICE
+            DECLARA f SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,x,y,GX_PIX_PM_LEGE(src,x0+x,y0+y)).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    DECLARA nota SICUT NUMERUS VALENS GX_DAMNA_NOTA(dst,GVIII_RECT_CREA(0,0,w,h)).
+    REDDE dst.
+FIN-FUNCTIO.
+
+FUNCTIO GX_BLUR REDDENS NUMERUS.
+    ACCIPIT src SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    SI src==0 TUNC REDDE 0. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS radius.
+    SI r<1 TUNC r=1. FIN-SI. SI r>24 TUNC r=24. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS GX_W(src). DECLARA h SICUT NUMERUS VALENS GX_H(src).
+    DECLARA tmp SICUT NUMERUS VALENS GX_CREA(w,h). DECLARA dst SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI tmp==0 || dst==0 TUNC REDDE 0. FIN-SI.
+
+    // Passus horizontalis.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<w PERFICE
+            DECLARA sr SICUT NUMERUS VALENS 0. DECLARA sg SICUT NUMERUS VALENS 0.
+            DECLARA sb SICUT NUMERUS VALENS 0. DECLARA sa SICUT NUMERUS VALENS 0. DECLARA n SICUT NUMERUS VALENS 0.
+            DECLARA k SICUT NUMERUS VALENS 0-r.
+            DUM k<=r PERFICE
+                DECLARA xx SICUT NUMERUS VALENS x+k.
+                SI xx>=0 && xx<w TUNC
+                    DECLARA q SICUT NUMERUS VALENS GX_PIX_PM_LEGE(src,xx,y).
+                    sr=sr+(q&255). sg=sg+((q>>8)&255). sb=sb+((q>>16)&255). sa=sa+((q>>24)&255). n=n+1.
+                FIN-SI.
+                k=k+1.
+            FIN-DUM.
+            DECLARA f SICUT NUMERUS VALENS GX_PIX_PM_PONE(tmp,x,y,(sr/n)|((sg/n)<<8)|((sb/n)<<16)|((sa/n)<<24)).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+
+    // Passus verticalis.
+    y=0.
+    DUM y<h PERFICE
+        DECLARA x2 SICUT NUMERUS VALENS 0.
+        DUM x2<w PERFICE
+            DECLARA sr2 SICUT NUMERUS VALENS 0. DECLARA sg2 SICUT NUMERUS VALENS 0.
+            DECLARA sb2 SICUT NUMERUS VALENS 0. DECLARA sa2 SICUT NUMERUS VALENS 0. DECLARA n2 SICUT NUMERUS VALENS 0.
+            DECLARA k2 SICUT NUMERUS VALENS 0-r.
+            DUM k2<=r PERFICE
+                DECLARA yy SICUT NUMERUS VALENS y+k2.
+                SI yy>=0 && yy<h TUNC
+                    DECLARA q2 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(tmp,x2,yy).
+                    sr2=sr2+(q2&255). sg2=sg2+((q2>>8)&255). sb2=sb2+((q2>>16)&255). sa2=sa2+((q2>>24)&255). n2=n2+1.
+                FIN-SI.
+                k2=k2+1.
+            FIN-DUM.
+            DECLARA f2 SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,x2,y,(sr2/n2)|((sg2/n2)<<8)|((sb2/n2)<<16)|((sa2/n2)<<24)).
+            x2=x2+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    DECLARA nota SICUT NUMERUS VALENS GX_DAMNA_NOTA(dst,GVIII_RECT_CREA(0,0,w,h)).
+    REDDE dst.
+FIN-FUNCTIO.
+
+FUNCTIO GX_RECT_ROT_ALPHA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI s==0 || rectum==0 || alpha<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA x0 SICUT NUMERUS VALENS GVIII_RECT_X(rectum). DECLARA y0 SICUT NUMERUS VALENS GVIII_RECT_Y(rectum).
+    DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(rectum). DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(rectum).
+    DECLARA r SICUT NUMERUS VALENS radius. SI r<1 TUNC REDDE GX_RECT_ALPHA(s,rectum,color,alpha). FIN-SI.
+    DECLARA dim SICUT NUMERUS VALENS GVIII_MIN(w,h)/2. SI r>dim TUNC r=dim. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<w PERFICE
+            DECLARA cov SICUT NUMERUS VALENS 255.
+            SI x<r && y<r TUNC cov=GVIII_COVER_ROTUNDUM(x,y,r). FIN-SI.
+            SI x>=w-r && y<r TUNC cov=GVIII_COVER_ROTUNDUM(w-1-x,y,r). FIN-SI.
+            SI x<r && y>=h-r TUNC cov=GVIII_COVER_ROTUNDUM(x,h-1-y,r). FIN-SI.
+            SI x>=w-r && y>=h-r TUNC cov=GVIII_COVER_ROTUNDUM(w-1-x,h-1-y,r). FIN-SI.
+            SI cov>0 TUNC
+                DECLARA a SICUT NUMERUS VALENS alpha*cov/255.
+                DECLARA rr SICUT NUMERUS VALENS (color&255)*a/255.
+                DECLARA gg SICUT NUMERUS VALENS ((color>>8)&255)*a/255.
+                DECLARA bb SICUT NUMERUS VALENS ((color>>16)&255)*a/255.
+                DECLARA sup SICUT NUMERUS VALENS rr|(gg<<8)|(bb<<16)|(a<<24).
+                DECLARA sub SICUT NUMERUS VALENS GX_PIX_PM_LEGE(s,x0+x,y0+y).
+                DECLARA f SICUT NUMERUS VALENS GX_PIX_PM_PONE(s,x0+x,y0+y,GX_PM_SUPER(sub,sup,255)).
+            FIN-SI.
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE GX_DAMNA_NOTA(s,rectum).
+FIN-FUNCTIO.
+
+FUNCTIO GX_UMBRA_CREA REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT blur SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI w<=0 || h<=0 || blur<=0 || alpha<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS blur. SI b>24 TUNC b=24. FIN-SI.
+    DECLARA m SICUT NUMERUS VALENS b*2.
+    DECLARA basis SICUT NUMERUS VALENS GX_CREA(w+m*2,h+m*2). SI basis==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ROT_ALPHA(basis,GVIII_RECT_CREA(m,m,w,h),radius,color,alpha).
+    REDDE GX_BLUR(basis,b).
+FIN-FUNCTIO.
+
+FUNCTIO GX_VITRUM_S REDDENS NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT tinctura SICUT NUMERUS.
+    ACCIPIT alpha_tinctura SICUT NUMERUS.
+    SI scena==0 || rectum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA capta SICUT NUMERUS VALENS GX_COPIA_RECT(scena,rectum). SI capta==0 TUNC REDDE 0. FIN-SI.
+    DECLARA mollis SICUT NUMERUS VALENS GX_BLUR(capta,radius). SI mollis==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(mollis,GVIII_RECT_CREA(0,0,GX_W(mollis),GX_H(mollis)),tinctura,alpha_tinctura).
+    REDDE GX_COMPOSITA_S(scena,mollis,GVIII_RECT_X(rectum),GVIII_RECT_Y(rectum),255).
+FIN-FUNCTIO.
+
+FUNCTIO GX_VITRUM_FB REDDENS NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT tinctura SICUT NUMERUS.
+    ACCIPIT alpha_tinctura SICUT NUMERUS.
+    SI rectum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA capta SICUT NUMERUS VALENS GX_CAPTURA_FB(rectum). SI capta==0 TUNC REDDE 0. FIN-SI.
+    DECLARA mollis SICUT NUMERUS VALENS GX_BLUR(capta,radius). SI mollis==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(mollis,GVIII_RECT_CREA(0,0,GX_W(mollis),GX_H(mollis)),tinctura,alpha_tinctura).
+    REDDE GX_COMPOSITA_FB(mollis,GVIII_RECT_X(rectum),GVIII_RECT_Y(rectum),255).
+FIN-FUNCTIO.
