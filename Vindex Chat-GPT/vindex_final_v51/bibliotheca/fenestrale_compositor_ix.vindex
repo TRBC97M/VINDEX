@@ -1,6 +1,6 @@
-// Sylvia OS — P16-IX: compositor finalis cum testa composita.
-// Bureau et iconographia P16-VII servantur; fenestrae P16-VIII intactae manent.
-// INITIUM et taskbar tantum ad CIX migrant.
+// Sylvia OS — P16-XI-B: compositor finalis cum testa P16-IX et assetis premium.
+// Geometria et semantica P16-IX servantur. Familia XIB, si integra adest,
+// atlas P16-VII in Bureau et INITIUM tantum substituit.
 
 FUNCTIO IVIX_REDDE REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
@@ -12,7 +12,11 @@ FUNCTIO IVIX_REDDE REDDENS NUMERUS.
     DECLARA f SICUT NUMERUS VALENS FV_FUNDUM().
     f=IV_BUREAU_REDDE(s,applicationes).
     SI IR_VALIDUS(emblema)!=0 TUNC f=IR_BLIT_FRAMEBUFFER(164,18,emblema). FIN-SI.
-    SI IR_VALIDUS(atlas)!=0 TUNC f=IVVII_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
+    SI s[42]!=0 TUNC
+        f=XIB_BUREAU_ICONAE(s,applicationes,s[42]).
+    ALITER
+        SI IR_VALIDUS(atlas)!=0 TUNC f=IVVII_BUREAU_ICONAE(s,applicationes,atlas). FIN-SI.
+    FIN-SI.
     DECLARA focus SICUT NUMERUS VALENS FI_RELEGE_FOCUS(fenestrae).
     DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
     DUM n!=0 PERFICE
@@ -21,7 +25,11 @@ FUNCTIO IVIX_REDDE REDDENS NUMERUS.
     FIN-DUM.
     SI s[38]==1 TUNC
         f=CIX_INITIUM_REDDE(s,applicationes).
-        SI IR_VALIDUS(atlas)!=0 TUNC f=IVVII_INITIUM_ICONAE(s,applicationes,atlas). FIN-SI.
+        SI s[42]!=0 TUNC
+            f=XIB_INITIUM_ICONAE(applicationes,s[42]).
+        ALITER
+            SI IR_VALIDUS(atlas)!=0 TUNC f=IVVII_INITIUM_ICONAE(s,applicationes,atlas). FIN-SI.
+        FIN-SI.
     FIN-SI.
     f=CIX_TASKBAR_REDDE(s,fenestrae,clientes,applicationes).
     f=FV_CURSOR(s[11],s[12]).

@@ -7,7 +7,10 @@
 # fasciculus in volumine ESP ponitur, quem ponticulus per protocollum
 # fasciculorum UEFI legit.
 #
-# Nulla exceptio linguae manet.
+# Si payload est Fenestrale II Purus I, familia JL-UX Premium I automatice
+# ex fontibus PNG in SIMG II convertitur et in radicem ESP inseritur. Haec
+# conversio est instrumentum constructionis; runtime Sylviae manet VINDEX purus.
+# Nulla exceptio linguae runtime manet.
 
 set -eu
 
@@ -15,6 +18,7 @@ RADIX="$(cd "$(dirname "$0")/../.." && pwd)"
 UEFI="$RADIX/systema/uefi"
 PONTICULUS="${PONTICULUS_FONS:-$RADIX/systema/uefi/ponticulus_uefi_purus.vindex}"
 NUCLEUS_FONS="${NUCLEUS_FONS:-$RADIX/systema/nucleus.vindex}"
+ASSETA_PREMIUM_I="${ASSETA_PREMIUM_I:-auto}"
 IMAGO="${1:-$RADIX/systema_vindex_uefi_purum.img}"
 APPLICATIO="${2:-$RADIX/BOOTX64_PURUM.EFI}"
 TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-uefi-purum.XXXXXX")"
@@ -22,12 +26,12 @@ TEMPORARIUM="$(mktemp -d "${TMPDIR:-/tmp}/vindex-uefi-purum.XXXXXX")"
 purga() {
     if [ -d "$TEMPORARIUM" ]; then
         find "$TEMPORARIUM" -type f -delete 2>/dev/null || true
-        rmdir "$TEMPORARIUM" 2>/dev/null || true
+        find "$TEMPORARIUM" -depth -type d -empty -delete 2>/dev/null || true
     fi
 }
 trap purga EXIT HUP INT TERM
 
-# Instrumenta necessaria: solum python3 (pro imagine FAT) et compilator ipse.
+# Instrumenta necessaria: python3 pro imagine FAT/pipeline artis et compilator ipse.
 # NEC gcc, NEC ld, NEC objcopy.
 for instrumentum in python3 file; do
     if ! command -v "$instrumentum" >/dev/null 2>&1; then
@@ -85,11 +89,34 @@ if ! grep -qa 'NUCLEUS BIN' "$TEMPORARIUM/imago.img"; then
     exit 65
 fi
 
+# V. Fenestrale canonicum familiam premium runtime secum portat.
+# ASSETA_PREMIUM_I=0 hanc additionem tantum ad diagnostica/fallback vetus vetat.
+if [ "$ASSETA_PREMIUM_I" != "0" ] && [ "$(basename "$NUCLEUS_FONS")" = "fenestrale_ii_purus_i.vindex" ]; then
+    printf '%s\n' 'IV. Asseta JL-UX Premium I -> SIMG II -> radicem ESP...'
+    ASSETA_DIR="$TEMPORARIUM/asseta-premium-i"
+    mkdir -p "$ASSETA_DIR"
+    python3 "$RADIX/instrumenta/genera_asseta_premium_i.py" --destinatio "$ASSETA_DIR" --quietum
+    python3 "$RADIX/instrumenta/adde_fasciculos_fat.py" "$TEMPORARIUM/imago.img" \
+        "$ASSETA_DIR/programmata@1x.simg=PRG1.SMG" \
+        "$ASSETA_DIR/programmata@1_5x.simg=PRG15.SMG" \
+        "$ASSETA_DIR/programmata@2x.simg=PRG2.SMG" \
+        "$ASSETA_DIR/tabula@1x.simg=TAB1.SMG" \
+        "$ASSETA_DIR/tabula@1_5x.simg=TAB15.SMG" \
+        "$ASSETA_DIR/tabula@2x.simg=TAB2.SMG" \
+        "$ASSETA_DIR/terminale@1x.simg=TRM1.SMG" \
+        "$ASSETA_DIR/terminale@1_5x.simg=TRM15.SMG" \
+        "$ASSETA_DIR/terminale@2x.simg=TRM2.SMG" \
+        "$ASSETA_DIR/officina@1x.simg=OFF1.SMG" \
+        "$ASSETA_DIR/officina@1_5x.simg=OFF15.SMG" \
+        "$ASSETA_DIR/officina@2x.simg=OFF2.SMG"
+    printf '%s\n' '   RECTE: XII asseta SIMG II in imagine Sylviae inclusa.'
+fi
+
 mkdir -p "$(dirname "$IMAGO")" "$(dirname "$APPLICATIO")"
 cp -f "$TEMPORARIUM/BOOTX64.EFI" "$APPLICATIO"
 cp -f "$TEMPORARIUM/imago.img" "$IMAGO"
 
-printf '%s\n' 'RECTE: Sylvia OS UEFI constructa est OMNINO in VINDEX.'
+printf '%s\n' 'RECTE: Sylvia OS UEFI constructa est OMNINO in VINDEX ad runtime.'
 printf '%s\n' 'Nullum gcc, nullum ld, nullum objcopy, nullus C adhibitus est.'
 printf 'APPLICATIO: %s\n' "$APPLICATIO"
-printf 'IMAGO:      %s (nucleum inclusum continet)\n' "$IMAGO"
+printf 'IMAGO:      %s (nucleum et, pro Fenestrali, asseta premium continet)\n' "$IMAGO"

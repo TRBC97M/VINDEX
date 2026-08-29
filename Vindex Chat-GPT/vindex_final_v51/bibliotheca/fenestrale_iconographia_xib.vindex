@@ -1,0 +1,112 @@
+// Sylvia OS — P16-XI-B: iconographia premium in Bureau et INITIUM.
+// Familia completa e fasciculis SIMG II legitur. Si quid deest, compositor
+// ad atlas P16-VII redit; semantica, hitbox et geometria non mutantur.
+
+FUNCTIO XIB_ASSET_ID REDDENS NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    SI genus<1 || genus>4 TUNC REDDE 0. FIN-SI.
+    REDDE 100+genus.
+FIN-FUNCTIO.
+
+FUNCTIO XIB_LEGE REDDENS TEXTUS.
+    ACCIPIT via SICUT TEXTUS.
+    DECLARA imago SICUT TEXTUS VALENS FS_LEGE_TEXTUM(via).
+    SI TEXTUS_SEDES(imago)==0 TUNC REDDE 0. FIN-SI.
+    SI SII_VALIDUS(imago)==0 || SII_GENUS(imago)!=2 TUNC REDDE 0. FIN-SI.
+    REDDE imago.
+FIN-FUNCTIO.
+
+FUNCTIO XIB_ADDE REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT via SICUT TEXTUS.
+    ACCIPIT scala SICUT NUMERUS.
+    DECLARA imago SICUT TEXTUS VALENS XIB_LEGE(via).
+    SI SII_VALIDUS(imago)==0 || SII_SCALA(imago)!=scala TUNC REDDE 0. FIN-SI.
+    SI AII_ADDE(gestor,id,imago)==0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIB_CREA REDDENS NUMERUS.
+    SI FS_DISPONIBILIS()==0 TUNC REDDE 0. FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS AII_CREA(1000).
+    SI gestor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA recta SICUT NUMERUS VALENS 0.
+
+    recta=recta+XIB_ADDE(gestor,101,"PRG1.SMG",1000).
+    recta=recta+XIB_ADDE(gestor,101,"PRG15.SMG",1500).
+    recta=recta+XIB_ADDE(gestor,101,"PRG2.SMG",2000).
+    recta=recta+XIB_ADDE(gestor,102,"TAB1.SMG",1000).
+    recta=recta+XIB_ADDE(gestor,102,"TAB15.SMG",1500).
+    recta=recta+XIB_ADDE(gestor,102,"TAB2.SMG",2000).
+    recta=recta+XIB_ADDE(gestor,103,"TRM1.SMG",1000).
+    recta=recta+XIB_ADDE(gestor,103,"TRM15.SMG",1500).
+    recta=recta+XIB_ADDE(gestor,103,"TRM2.SMG",2000).
+    recta=recta+XIB_ADDE(gestor,104,"OFF1.SMG",1000).
+    recta=recta+XIB_ADDE(gestor,104,"OFF15.SMG",1500).
+    recta=recta+XIB_ADDE(gestor,104,"OFF2.SMG",2000).
+
+    // Familia partialis numquam picturam mixtam fingit: atlas vetus fallback est.
+    SI recta!=12 || AII_NUMERUS(gestor)!=12 TUNC REDDE 0. FIN-SI.
+    REDDE gestor.
+FIN-FUNCTIO.
+
+FUNCTIO XIB_SCALA_PARA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA scala SICUT NUMERUS VALENS 1000.
+    SI w>=1600 || h>=1000 TUNC scala=1500. FIN-SI.
+    SI w>=2400 || h>=1400 TUNC scala=2000. FIN-SI.
+    REDDE AII_SCALA_PONE(gestor,scala).
+FIN-FUNCTIO.
+
+FUNCTIO XIB_BUREAU_ICONAE REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA para SICUT NUMERUS VALENS XIB_SCALA_PARA(gestor).
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(28,31,32).
+    DECLARA lapis SICUT NUMERUS VALENS FV_COLOR(49,55,55).
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        SI AI_NODUS_IN_BUREAU(nodus)!=0 TUNC
+            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index).
+            DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
+            DECLARA corpus SICUT NUMERUS VALENS nox.
+            SI s[11]>=x && s[11]<x+FV_METRUM_BUREAU_LATITUDO() && s[12]>=y && s[12]<y+FV_METRUM_BUREAU_ALTITUDO() TUNC corpus=lapis. FIN-SI.
+            // Pictogramma vectoriale P16-VI deletur, cardo et nomen intacta manent.
+            DECLARA f SICUT NUMERUS VALENS FV_RECT(x+24,y+6,60,54,corpus).
+            DECLARA id SICUT NUMERUS VALENS XIB_ASSET_ID(AI_NODUS_GENUS(nodus)).
+            SI id!=0 TUNC
+                f=GIX_ASSET_LINEAR_FB(gestor,id,GVIII_RECT_CREA(x+30,y+8,48,48),255).
+            FIN-SI.
+            index=index+1.
+        FIN-SI.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIB_INITIUM_ICONAE REDDENS NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA para SICUT NUMERUS VALENS XIB_SCALA_PARA(gestor).
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        DECLARA ix SICUT NUMERUS VALENS IV_INITIUM_ITEM_X(index).
+        DECLARA iy SICUT NUMERUS VALENS IV_INITIUM_ITEM_Y(applicationes,index).
+        DECLARA id SICUT NUMERUS VALENS XIB_ASSET_ID(AI_NODUS_GENUS(nodus)).
+        SI id!=0 TUNC
+            DECLARA f SICUT NUMERUS VALENS GIX_ASSET_LINEAR_FB(gestor,id,GVIII_RECT_CREA(ix+8,iy+6,32,32),255).
+        FIN-SI.
+        index=index+1.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.

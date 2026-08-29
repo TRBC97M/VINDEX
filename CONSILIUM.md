@@ -70,13 +70,15 @@ Haec Officina ecosystematis VINDEX est, non eadem applicatio ac OFFICINA SYLVIAE
 
 **Status:** `PERFECTUM et crescens`.
 
-`tests/run_tests.sh` XXXV probationes canonicas servat. Praeterea workflow dedicata nunc separatim probant:
+`tests/run_tests.sh` XXXV probationes canonicas servat. Praeterea workflow dedicata separatim probant:
 
-- Catena UEFI pura et PS/2;
+- catenam UEFI puram et PS/2;
 - P16-VII rastera historica;
 - Graphica VIII, showroom et responsivitatem PS/2;
 - SIMG II, gestorem assetorum et importationem PNG → SIMG II → VINDEX;
 - Graphica IX: cache RGBA, bilinearem alpha praemultiplicatam, 9-slice, framebuffer et superficies privatas;
+- Asseta Premium I in showroom et, per P16-XI-B, in Bureau/INITIUM shellis realis;
+- fallback atlas P16-VII sine assetis premium;
 - P19-I/P19-II per duo initia eiusdem imaginis.
 
 Captura framebuffer QEMU/OVMF vera est auctoritas executionis visualis. Imago conceptus vel generata probationem runtime numquam substituit.
@@ -158,9 +160,10 @@ ChatGPT hoc opus non duplicat dum reservatio valet. #122 ante canonizationem cum
 - Graphica VIII / #133 — clipping, AA, 9-slice, bilinearis, damage, typographia atlas et coda backend-neutra;
 - SIMG II / #136 — formatum graphicum nativum versionatum et gestor assetorum multi-scala;
 - importatio SIMG II / #137 — catena PNG → `.simg` → compilator VINDEX → lector SIMG II;
-- Graphica IX / #139 — rastera premium bilinearis alpha praemultiplicata, cache RGBA, framebuffer/superficies et 9-slice.
+- Graphica IX / #139 — rastera premium bilinearis alpha praemultiplicata, cache RGBA, framebuffer/superficies et 9-slice;
+- P16-XI-A / #142 — XII fontes PNG/SIMG II premium, quattuor identitates, tres scalae et showroom QEMU/OVMF certificatum.
 
-`main` post #139 est fundamentum graphicum hodiernum.
+`main` post #142 (`2074a2e…`) est fundamentum graphicum canonicum ante integrationem shellis #143.
 
 ### Experienta P16-XI
 
@@ -170,17 +173,37 @@ ChatGPT hoc opus non duplicat dum reservatio valet. #122 ante canonizationem cum
 
 ### P16-XI-A — Asseta Premium I
 
-**Status:** `ACTIVUM apud ChatGPT` post Graphica IX.
+**Status:** `PERFECTUM per #142`.
 
-Prima probatio visualis nova debet differentiam rendereris statim ostendere. Ordo huius tranche:
+Catena `PNG → SIMG II → FAT → VINDEX → Graphica IX → framebuffer QEMU/OVMF` probata est. Showroom certificavit nearest `706` colores, premium `7813`, halo caeruleum `0`, superficies privata `9844` pixela activa et XXXV regressiones rectas.
 
-1. iconographia altae resolutionis pro PROGRAMMATA, TABULA, TERMINALE et OFFICINA, primum in Bureau et INITIUM;
-2. variantes multi-scala per SIMG II et cache RGBA;
-3. showroom QEMU qui nearest veterem et Graphica IX comparat;
-4. post probationem iconarum, chrome fenestrarum 9-slice;
-5. deinde cursores anti-aliased, materiae taskbar/INITIUM et wallpaper premium multi-resolutionis.
+### P16-XI-B — Integratio Shell JL-UX I
 
-**Invarianta primae tranche:** geometriae et hitbox hodiernae non mutantur. Transitus ad metra finalia JL-UX — fenestra quadrata, taskbar tenuis/densa et alia — post asseta probata separatim documentabitur et probabitur.
+**Status:** `CANONIZANDUM per #143`.
+
+Eadem familia nunc in payload `fenestrale_ii_purus_i.vindex` ipsum inseritur:
+
+- XII SIMG automatice in ESP imaginis Fenestralis includuntur;
+- gestor `s[42]` familiam completam tantum accipit;
+- Bureau Graphica IX iconas 48×48 componit;
+- INITIUM Graphica IX iconas 32×32 super materiam eburneam componit;
+- familia absens/incompleta ad atlas P16-VII redit;
+- hitbox, launch, focus/Z, fenestrae et persistentia OFFICINAE non mutantur.
+
+Framebuffer QEMU/OVMF exacti capitis probavit:
+
+- Bureau: `708 / 665 / 685 / 826` colores, centra veteria `0`, caeruleum occultum `0`;
+- INITIUM: `437 / 476 / 474 / 539` colores, quadrata obscura veteria `0`, caeruleum `0`;
+- hover/click/focus TABULAE integra;
+- fallback `ASSETA_PREMIUM_I=0`: quattuor centra atlas P16-VII redeunt.
+
+Captura vera inspecta est. Iconographia nova evidenter melior est, sed testa globalis adhuc austera et parva manet: P16-XI-B infrastructuram artisticam probat, non metam JL-UX completam.
+
+### P16-XI-C — Chrome Premium I
+
+**Status:** `PROXIMUM / PARATUM post #143`.
+
+Proxima tranche magnum effectum visualem petet: chrome fenestrarum ex assetis SIMG II 9-slice, Graphica IX et materiae JL-UX, cum statibus activus/inactivus et bullis nativis. Geometria et input contractus primo servantur; metra maiora separatim probabuntur ubi opus est.
 
 ### Lex visualis
 
@@ -217,8 +240,9 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 # IV. Coordinatio agentium
 
 - P12 manet reservatum Claude; ChatGPT #122 non duplicat;
-- P16-XI-A asseta premium est opus ChatGPT;
-- #134 est debitum compilatoris separatum P9;
+- P16-XI-B #143 est opus visuale ChatGPT ad canonizationem;
+- P16-XI-C chrome premium est proximum post #143;
+- #134 est debitum compilatoris separatum P9; renderer ad verificatorem obsoletum non deminuitur;
 - P19-I/P19-II sunt canonica;
 - mutationes maioris status per branch, PR et probationes fiunt;
 - omnis documentatio canonica repositorii Lingua Latina manet;
@@ -228,12 +252,12 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 
 # V. Actio proxima
 
-1. **Asseta Premium I:** quattuor iconas principales altae resolutionis secundum JL-UX crea, per PNG → SIMG II importa et variantibus multi-scala registra;
-2. **Showroom premium:** nearest historicum contra Graphica IX in framebuffer QEMU/OVMF comparare; alpha, halos, variationem colorum et scalas metiri;
-3. **Integratio iconographiae:** eadem asseta in Bureau et INITIUM sine mutatione hitbox inserere;
-4. **Chrome 9-slice:** primum ornamentum fenestrarum vere praefabricatum et scalabile super Graphica IX construere;
-5. **Microinteractiones:** cursores anti-aliased deinde materiae INITIUM/taskbar; geometria JL-UX finalis mutatione separata;
-6. **Wallpaper premium:** post shell/iconeas, multi-resolutionis et quietum, non ut substitutum progressus;
+1. **#143 canoniza:** integratio Bureau/INITIUM premium iam probata est; omnes custodiae finales exspectandae et capturae servandae sunt;
+2. **P16-XI-C — Chrome Premium I:** fontes PNG/SIMG II 9-slice pro fenestra activa/inactiva crea et Graphica IX in `CVIII_CHROME` substitue;
+3. bullas minimizationis/maximizationis/clausurae et status earum materia JL-UX nativa perfice;
+4. post chrome, cursores anti-aliased et materiae taskbar/INITIUM;
+5. metra visualia nimis parva separatim revalida, sine fractura hitbox/input;
+6. wallpaper premium multi-resolutionis tantum postquam ipsa testa premium est;
 7. TERMINALE mandata fasciculorum realia et Explorator fasciculorum post fundamenta visualia/componentium;
 8. P19-III ad hardware quando opportunum;
 9. P12 apud Claude paralleliter pergat.

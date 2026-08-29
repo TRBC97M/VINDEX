@@ -1,4 +1,4 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-IX / P17-II / P19-II.
+// Sylvia OS — Fenestrale II Purus I, facies P16-XI-B / P17-II / P19-II.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
@@ -12,6 +12,11 @@ IMPORTA "bibliotheca/textus.vindex".
 IMPORTA "bibliotheca/emblema_sylviae_vii.vindex".
 IMPORTA "bibliotheca/iconae_sylviae_vii.vindex".
 IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
+IMPORTA "bibliotheca/simg_ii.vindex".
+IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
+IMPORTA "bibliotheca/simg_ii_assetum.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
 IMPORTA "bibliotheca/programmata_clientis_e.vindex".
 IMPORTA "bibliotheca/tabula_clientis_f.vindex".
 IMPORTA "bibliotheca/terminale_clientis_i.vindex".
@@ -26,6 +31,7 @@ IMPORTA "bibliotheca/applicationes_registrum_iv.vindex".
 IMPORTA "bibliotheca/fenestrale_gestor_i.vindex".
 IMPORTA "bibliotheca/fenestrale_applicationes_iv.vindex".
 IMPORTA "bibliotheca/fenestrale_iconographia_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_iconographia_xib.vindex".
 IMPORTA "bibliotheca/fenestrale_chrome_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_shell_ix.vindex".
@@ -44,7 +50,8 @@ FIN-FUNCTIO.
 // 11/12 murus x/y; 13 bullae; 14 fenestra tractata; 15/16 offset vel murus prior.
 // 27 margines resize; 28 murus relativus; 29 murus absolutus.
 // 34 coda eventuum; 35 eventa perdita; 36 clientes; 37 fenestrae;
-// 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG; 41 atlas iconarum SIMG.
+// 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG; 41 atlas P16-VII;
+// 42 gestor assetorum premium P16-XI-B, vel 0 si familia runtime deest.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
@@ -52,7 +59,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
     DECLARA utilis_h SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
     s[11]=w/2. s[12]=h/2. s[13]=0. s[14]=0. s[15]=0. s[16]=0. s[27]=0.
-    s[28]=0. s[29]=0. s[35]=0. s[38]=0. s[40]=0. s[41]=0.
+    s[28]=0. s[29]=0. s[35]=0. s[38]=0. s[40]=0. s[41]=0. s[42]=0.
     s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
     s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
     s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
@@ -120,6 +127,8 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     // Omnes allocationes Fenestrales iam perfectae sunt: input et PS/2
     // ante primam operationem fasciculorum persistentium parantur.
     DECLARA pp SICUT NUMERUS VALENS IN_PARA(s).
+    // Familia premium non est conditio boot: si volumine deest, atlas VII manet.
+    s[42]=XIB_CREA().
     // OFFICINA manet utilis etiam si backend non adest aut lectio errat.
     DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
     ro=OP_RENDE(superficies_o,status_o).
