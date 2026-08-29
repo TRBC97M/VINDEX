@@ -1,0 +1,92 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+
+FUNCTIO PX_CANALIS REDDENS NUMERUS.
+    ACCIPIT q SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    SI n==0 TUNC REDDE q&255. FIN-SI.
+    SI n==1 TUNC REDDE (q>>8)&255. FIN-SI.
+    SI n==2 TUNC REDDE (q>>16)&255. FIN-SI.
+    REDDE (q>>24)&255.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA albus SICUT NUMERUS VALENS 16777215.
+    DECLARA ruber SICUT NUMERUS VALENS 255.
+    DECLARA caeruleus SICUT NUMERUS VALENS 16711680.
+    DECLARA viridis SICUT NUMERUS VALENS 65280.
+
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(20,12).
+    DECLARA r SICUT NUMERUS VALENS GX_CREA(8,8).
+    DECLARA b SICUT NUMERUS VALENS GX_CREA(8,8).
+    SI fundum==0 || r==0 || b==0 TUNC REDDE 1. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,20,12),albus,255).
+    f=GX_RECT_ALPHA(r,GVIII_RECT_CREA(0,0,8,8),ruber,128).
+    f=GX_RECT_ALPHA(b,GVIII_RECT_CREA(0,0,8,8),caeruleus,128).
+
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(20,12,fundum).
+    SI scena==0 TUNC REDDE 2. FIN-SI.
+    DECLARA nr SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,1,r,2,2,10,255).
+    DECLARA nb SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,2,b,5,2,20,255).
+    SI nr==0 || nb==0 || CONTENTUM(scena+40)!=2 TUNC REDDE 3. FIN-SI.
+    SI CONTENTUM(scena+32)!=nr || CONTENTUM(nr+56)!=nb TUNC REDDE 4. FIN-SI.
+
+    // Primum render totam scenam componit extra framebuffer.
+    DECLARA d SICUT NUMERUS VALENS CX_SCENA_RENDE(scena).
+    SI d==0 || CONTENTUM(scena+96)!=240 TUNC REDDE 5. FIN-SI.
+    DECLARA back SICUT NUMERUS VALENS CX_SCENA_BACK(scena).
+    DECLARA q SICUT NUMERUS VALENS GX_PIX_PM_LEGE(back,6,3).
+    // caeruleum 50% supra rubrum 50% supra album = 127,63,191,255.
+    SI PX_CANALIS(q,0)!=127 || PX_CANALIS(q,1)!=63 || PX_CANALIS(q,2)!=191 || PX_CANALIS(q,3)!=255 TUNC REDDE 6. FIN-SI.
+
+    // Motus rubri damnum est unio veteris et novi recti, non tota scena.
+    f=CX_DAMNA_PURA(scena).
+    f=GX_PIX_PM_PONE(back,0,0,viridis|(255<<24)).
+    SI CX_STRATUM_MOVE(scena,1,10,2)==0 TUNC REDDE 7. FIN-SI.
+    d=CX_DAMNA_RECT(scena).
+    SI GVIII_RECT_X(d)!=2 || GVIII_RECT_Y(d)!=2 || GVIII_RECT_W(d)!=16 || GVIII_RECT_H(d)!=8 TUNC REDDE 8. FIN-SI.
+    d=CX_SCENA_RENDE(scena).
+    SI CONTENTUM(scena+96)!=128 TUNC REDDE 9. FIN-SI.
+    SI GX_PIX_PM_LEGE(back,0,0)!=(viridis|(255<<24)) TUNC REDDE 10. FIN-SI.
+    q=GX_PIX_PM_LEGE(back,3,3).
+    SI PX_CANALIS(q,0)!=255 || PX_CANALIS(q,1)!=255 || PX_CANALIS(q,2)!=255 TUNC REDDE 11. FIN-SI.
+    q=GX_PIX_PM_LEGE(back,11,3).
+    SI PX_CANALIS(q,0)!=127 || PX_CANALIS(q,1)!=63 || PX_CANALIS(q,2)!=191 TUNC REDDE 12. FIN-SI.
+
+    // Mutatio Z reordinat listam et overlap, eadem semantica source-over.
+    f=CX_DAMNA_PURA(scena).
+    SI CX_STRATUM_Z(scena,1,30)==0 TUNC REDDE 13. FIN-SI.
+    SI CONTENTUM(scena+32)!=nb || CONTENTUM(nb+56)!=nr TUNC REDDE 14. FIN-SI.
+    d=CX_SCENA_RENDE(scena).
+    q=GX_PIX_PM_LEGE(back,11,3).
+    // rubrum supra caeruleum = 191,63,127.
+    SI PX_CANALIS(q,0)!=191 || PX_CANALIS(q,1)!=63 || PX_CANALIS(q,2)!=127 TUNC REDDE 15. FIN-SI.
+
+    // Visibilitas caerulei removet stratum sine arte residua.
+    f=CX_DAMNA_PURA(scena).
+    SI CX_STRATUM_VISIBILIS(scena,2,0)==0 TUNC REDDE 16. FIN-SI.
+    d=CX_SCENA_RENDE(scena).
+    q=GX_PIX_PM_LEGE(back,11,3).
+    SI PX_CANALIS(q,0)!=255 || PX_CANALIS(q,1)!=127 || PX_CANALIS(q,2)!=127 TUNC REDDE 17. FIN-SI.
+
+    // Opacitas per stratum operatur sine mutatione ipsius superficiei.
+    f=CX_DAMNA_PURA(scena).
+    SI CX_STRATUM_ALPHA(scena,1,128)==0 TUNC REDDE 18. FIN-SI.
+    d=CX_SCENA_RENDE(scena).
+    q=GX_PIX_PM_LEGE(back,11,3).
+    // Fons iam alpha 128 est; alpha globalis 128 efficit circiter 25% rubri.
+    SI PX_CANALIS(q,0)<254 || PX_CANALIS(q,1)<190 || PX_CANALIS(q,1)>192 || PX_CANALIS(q,2)<190 || PX_CANALIS(q,2)>192 TUNC REDDE 19. FIN-SI.
+
+    // Parvus motus post statum stabilem tantum LXXX pixela recomponit.
+    f=CX_DAMNA_PURA(scena).
+    SI CX_STRATUM_MOVE(scena,1,12,2)==0 TUNC REDDE 20. FIN-SI.
+    d=CX_SCENA_RENDE(scena).
+    SI CONTENTUM(scena+96)!=80 TUNC REDDE 21. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.

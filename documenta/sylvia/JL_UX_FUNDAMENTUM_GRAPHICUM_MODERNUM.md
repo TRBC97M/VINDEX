@@ -1,7 +1,7 @@
 # JL-UX — FUNDAMENTUM GRAPHICUM MODERNUM
 
 **Sylvia OS — P16-XII**  
-Status: **P16-XII-A PROBATUM / CANONIZANDUM**
+Status: **P16-XII-A PERFECTUM; P16-XII-B PROBATUM / CANONIZANDUM**
 
 ## I. Propositum
 
@@ -29,7 +29,7 @@ RGB praemultiplicatum per alpha
 
 Compositio utitur regula `source-over` praemultiplicata. Pixel alpha=0 nullum colorem occultum in framebuffer emittere potest.
 
-Framebuffer GOP potest ordinem canalium mutare; conversio fit tantum in limite backendis. Memoria Graphica X manet canonica RGBA.
+Framebuffer GOP potest ordinem canalium mutare; conversio fit tantum in limite backendis. Memoria Graphica X manet canonica RGBA. Color iam per `FV_COLOR` ad ordinem GOP conversus **numquam** in superficiem `GX_*` ponendus est; hoc invarians P16-XII-B captura QEMU explicite confirmavit.
 
 ## IV. Descriptor superficiei
 
@@ -85,13 +85,13 @@ Ordo intentus:
 4. post fundamenta P12 BAR/MMIO/interruptiones, backend hardware acceleratus addi potest;
 5. copia CPU↔GPU et cache texturarum minimantur.
 
-**Acceleratio GPU non est condicio primae certificationis P16-XII-A; architectura quae eam impedit vetita est.**
+**Acceleratio GPU non est condicio primae certificationis P16-XII; architectura quae eam impedit vetita est.**
 
 ## VIII. Gradus P16-XII
 
 ### P16-XII-A — Compositor RGBA
 
-**Status: PROBATUM / CANONIZANDUM.**
+**Status: PERFECTUM per #146.**
 
 - `GX_*` superficies;
 - source-over;
@@ -101,11 +101,17 @@ Ordo intentus:
 
 ### P16-XII-B — Scena compositoris
 
-- registrum stratorum;
-- Z ordinatum;
-- opacitas et transformata per stratum;
-- compositio tantum regionum laesarum;
-- double buffering/presentatio stabilis.
+**Status: PROBATUM / CANONIZANDUM per #147.**
+
+- registrum dynamicum stratorum;
+- Z ordinatum et mutabile runtime;
+- x/y, visibilitas et opacitas per stratum;
+- backbuffer GX plenum;
+- recompositio tantum regionum laesarum;
+- praesentia framebuffer tantum regionis laesae;
+- prima forma double buffering: compositio off-screen completur ante praesentiam;
+- canarii framebuffer probant regionem extra damage non repingi;
+- locus vetus post motum ex fundo et Z ordine recte restituitur.
 
 ### P16-XII-C — Effectus productionis
 
@@ -156,21 +162,7 @@ P16-XII totum non dicitur perfectum quia unum panel translucet. Ante conclusione
 
 ## X. Probationes P16-XII-A
 
-Prima tranche requirit:
-
-1. compilationem per compilatorem VINDEX nativum;
-2. probationes matheseos RGBA/source-over;
-3. probationem damage regionalis;
-4. probationem blur et umbrae in memoria;
-5. XXXV regressiones canonicas;
-6. puritatem Sylviae;
-7. showroom QEMU/OVMF verum;
-8. metrum quod blur contrastum texturae minuit et colores intermedios creat;
-9. metrum umbrae mollis;
-10. metrum overlap duorum stratorum translucentium;
-11. capturam framebuffer inspectam.
-
-Omnia haec in capite `1e09e737…` probata sunt. Showroom verus 1280×800 rettulit:
+P16-XII-A sub QEMU/OVMF certificavit:
 
 ```text
 colores framebuffer: 881
@@ -185,7 +177,35 @@ XXXV probationes canonicae: 35 / 35
 
 Captura framebuffer inspecta est: striae post vitrum localiter molliuntur, umbra externa gradatim evanescit et regio duorum stratorum tertium colorem compositum ostendit. Showroom est probatio motoris, non propositum artis finalis Sylviae.
 
-## XI. Invarianta
+## XI. Probationes P16-XII-B
+
+Scena compositoris separatim probat logicam in memoria et presentationem in framebuffer vero.
+
+Probatio VINDEX nativa confirmat:
+
+- compositionem Z `source-over`;
+- mutationem Z runtime;
+- motum cum unione loci veteris et novi;
+- visibilitatem et opacitatem per stratum;
+- backbuffer intactum extra damage;
+- parvum motum qui tantum **LXXX pixela** recomponit, non totam scenam.
+
+Showroom QEMU/OVMF 1280×800 capitis `64a2f70d…` rettulit:
+
+```text
+colores framebuffer: 699
+canarius extra damage: (181,138,84) — servatus
+locus vetus restitutus: (32,91,112)
+stratum A: (14,115,136)
+overlap/Z: (107,73,45)
+stratum B: (107,69,41)
+umbra, lumen locale: 170 / 235
+XXXV probationes canonicae: 35 / 35
+```
+
+Captura inspecta est. Aqua et bronzeum ordinem colorum rectum servant; canarius extra damage post secundam praesentiam manet; canarius intra locum veterem deletur; umbra est stratum separatum infra panel; compositor regionem laesam tantum praesentat.
+
+## XII. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -193,8 +213,9 @@ Captura framebuffer inspecta est: striae post vitrum localiter molliuntur, umbra
 - canon JL-UX manet auctoritas artis;
 - imago conceptus est scopus visualis, QEMU est auctoritas executionis;
 - wallpaper non substituit motorem;
-- effectus non iustificant input lentum.
+- effectus non iustificant input lentum;
+- memoria GX semper RGBA canonica manet; conversio GOP tantum in limite framebufferis fit.
 
-## XII. Sententia
+## XIII. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**
