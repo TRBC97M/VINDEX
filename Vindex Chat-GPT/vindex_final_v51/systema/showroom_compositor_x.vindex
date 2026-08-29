@@ -1,0 +1,91 @@
+// Sylvia OS — P16-XII-B: showroom scenae, Z et damage-only.
+// Probatio motoris est, non facies finalis Sylviae.
+
+FUNCTIO SCX_PANEL REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    DECLARA s SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI s==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ROT_ALPHA(s,GVIII_RECT_CREA(0,0,w,h),18,color,210).
+    f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(16,14,w-32,3),16777215,42).
+    f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(0,0,w,2),limen,235).
+    f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(0,h-2,w,2),limen,180).
+    f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(24,60,w-48,1),16777215,35).
+    REDDE s.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI w<1024 || h<700 TUNC REDDE 6. FIN-SI.
+
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(8,18,28).
+    DECLARA profundum SICUT NUMERUS VALENS FV_COLOR(15,38,54).
+    DECLARA linea SICUT NUMERUS VALENS FV_COLOR(32,91,112).
+    DECLARA aqua SICUT NUMERUS VALENS FV_COLOR(18,139,164).
+    DECLARA cyan SICUT NUMERUS VALENS FV_COLOR(107,222,238).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA aes SICUT NUMERUS VALENS FV_COLOR(130,83,48).
+    DECLARA ebur SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA argentum SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+    DECLARA magenta SICUT NUMERUS VALENS FV_COLOR(255,0,255).
+
+    // Fundum opacum plenum est frontis logicae scenae.
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI fundum==0 TUNC REDDE 7. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,w,h),nox,255).
+    DECLARA x SICUT NUMERUS VALENS 0.
+    DUM x<w PERFICE
+        DECLARA c SICUT NUMERUS VALENS profundum.
+        SI ((x/32)%2)==0 TUNC c=linea. FIN-SI.
+        f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(x,92,16,h-180),c,255).
+        x=x+32.
+    FIN-DUM.
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,236,w,2),cyan,180).
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,512,w,2),bronzeum,190).
+
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(w,h,fundum).
+    SI scena==0 TUNC REDDE 8. FIN-SI.
+
+    DECLARA a SICUT NUMERUS VALENS SCX_PANEL(420,260,aqua,cyan).
+    DECLARA b SICUT NUMERUS VALENS SCX_PANEL(420,260,aes,bronzeum).
+    DECLARA ua SICUT NUMERUS VALENS GX_UMBRA_CREA(420,260,18,8,0,170).
+    DECLARA ub SICUT NUMERUS VALENS GX_UMBRA_CREA(420,260,18,8,0,185).
+    SI a==0 || b==0 || ua==0 || ub==0 TUNC REDDE 9. FIN-SI.
+
+    // Prima positio: A ad sinistram, B superponitur dextra.
+    DECLARA nua SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,101,ua,144,164,10,255).
+    DECLARA na SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,102,a,160,180,20,255).
+    DECLARA nub SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,201,ub,504,244,25,255).
+    DECLARA nb SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,202,b,520,260,30,255).
+    SI nua==0 || na==0 || nub==0 || nb==0 TUNC REDDE 10. FIN-SI.
+    SI CX_PRAESENTA_FB(scena)==0 TUNC REDDE 11. FIN-SI.
+
+    // Canarii post primam praesentiam. Exterior damage servari debet; interior deleri.
+    f=FV_RECT(38,h-62,34,18,bronzeum).
+    f=FV_RECT(190,210,20,20,magenta).
+
+    // A et umbra eius moventur. Damage est unio locorum veteris/novi; B redibitur
+    // tantum ubi huic regioni intersecat, servato Z.
+    f=CX_STRATUM_MOVE(scena,101,244,124).
+    f=CX_STRATUM_MOVE(scena,102,260,140).
+    SI CX_PRAESENTA_FB(scena)==0 TUNC REDDE 12. FIN-SI.
+
+    // Tituli post ultimam praesentiam tantum annotationes showroom sunt.
+    f=FV_TEXTUM_SCALA(54,34,"P16-XII-B — SCENA COMPOSITORIS",ebur,2).
+    f=FV_TEXTUM(56,66,"Z / OPACITAS / BACKBUFFER / DAMAGE-ONLY",cyan).
+    f=FV_TEXTUM(302,176,"STRATUM A — MOTUM",ebur).
+    f=FV_TEXTUM(558,296,"STRATUM B — Z SUPERIUS",ebur).
+    f=FV_TEXTUM(82,h-58,"CANARIUS EXTRA DAMNUM",argentum).
+    f=FV_TEXTUM(54,h-30,"render off-screen completus ante praesentiam regionalem",bronzeum).
+
+    DECLARA pausa SICUT NUMERUS VALENS 0.
+    DUM 1==1 PERFICE
+        pausa=pausa+1.
+        SI pausa>1000000 TUNC pausa=0. FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
