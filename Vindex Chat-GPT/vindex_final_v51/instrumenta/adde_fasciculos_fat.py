@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 EOC = 0x0FFFFFFF
+SECTOR = 512
 
 
 class ErrorFAT(ValueError):
@@ -20,6 +21,10 @@ def u16(buf: bytes | bytearray, off: int) -> int:
 
 def u32(buf: bytes | bytearray, off: int) -> int:
     return struct.unpack_from("<I", buf, off)[0]
+
+
+def u64(buf: bytes | bytearray, off: int) -> int:
+    return struct.unpack_from("<Q", buf, off)[0]
 
 
 def p16(buf: bytearray, off: int, value: int) -> None:
@@ -48,20 +53,68 @@ def nomen_83(textus: str) -> bytes:
     return basis.encode("ascii").ljust(8, b" ") + ext.encode("ascii").ljust(3, b" ")
 
 
+def boot_fat32_validus(data: bytearray, lba: int) -> bool:
+    off = lba * SECTOR
+    if lba <= 0 or off + SECTOR > len(data):
+        return False
+    b = data[off:off + SECTOR]
+    if b[510:512] != b"\x55\xaa":
+        return False
+    bps = u16(b, 11)
+    spc = b[13]
+    res = u16(b, 14)
+    nfats = b[16]
+    spf = u32(b, 36)
+    root = u32(b, 44)
+    total = u32(b, 32)
+    return bps == 512 and spc > 0 and res > 0 and nfats > 0 and spf > 0 and root >= 2 and total > 0
+
+
+def partitio_fat_inveni(data: bytearray) -> int:
+    if len(data) < SECTOR or data[510:512] != b"\x55\xaa":
+        raise ErrorFAT("MBR invalidus")
+
+    # Imago canonica Sylviae GPT protectivum MBR habet. In tali imagine
+    # MBR LBA=1 totum discum describit, non partitionem FAT. Tabula GPT
+    # ipsa igitur legitur et prima partitio cum BPB FAT32 valido eligitur.
+    if len(data) >= 2 * SECTOR and data[SECTOR:SECTOR + 8] == b"EFI PART":
+        caput = SECTOR
+        entries_lba = u64(data, caput + 72)
+        numerus = u32(data, caput + 80)
+        mensura = u32(data, caput + 84)
+        if entries_lba > 0 and 128 <= mensura <= 4096 and numerus > 0:
+            basis = entries_lba * SECTOR
+            finis = min(numerus, 256)
+            for i in range(finis):
+                pos = basis + i * mensura
+                if pos + 48 > len(data):
+                    break
+                if data[pos:pos + 16] == b"\0" * 16:
+                    continue
+                initium = u64(data, pos + 32)
+                if boot_fat32_validus(data, initium):
+                    return initium
+
+    # Compatibilitas imaginum MBR veterum: partitiones quattuor probantur,
+    # sed ingressus protectivus 0xEE numquam pro FAT accipitur.
+    for i in range(4):
+        pos = 446 + i * 16
+        typus = data[pos + 4]
+        initium = u32(data, pos + 8)
+        if typus == 0 or typus == 0xEE:
+            continue
+        if boot_fat32_validus(data, initium):
+            return initium
+
+    raise ErrorFAT("partitio FAT32 in GPT/MBR non invenitur")
+
+
 class FAT32:
     def __init__(self, data: bytearray):
         self.data = data
-        if len(data) < 512 or data[510:512] != b"\x55\xaa":
-            raise ErrorFAT("MBR invalidus")
-        self.part_lba = u32(data, 446 + 8)
-        if self.part_lba <= 0:
-            raise ErrorFAT("partitio FAT deest")
-        self.part = self.part_lba * 512
-        if self.part + 512 > len(data):
-            raise ErrorFAT("partitio extra imaginem")
-        b = data[self.part:self.part + 512]
-        if b[510:512] != b"\x55\xaa":
-            raise ErrorFAT("boot sector FAT invalidus")
+        self.part_lba = partitio_fat_inveni(data)
+        self.part = self.part_lba * SECTOR
+        b = data[self.part:self.part + SECTOR]
         self.bps = u16(b, 11)
         self.spc = b[13]
         self.res = u16(b, 14)
@@ -69,7 +122,7 @@ class FAT32:
         self.spf = u32(b, 36)
         self.root = u32(b, 44)
         total = u32(b, 32)
-        if self.bps != 512 or self.spc <= 0 or self.res <= 0 or self.nfats < 1 or self.spf <= 0:
+        if self.bps != SECTOR or self.spc <= 0 or self.res <= 0 or self.nfats < 1 or self.spf <= 0:
             raise ErrorFAT("BPB FAT32 non sustinetur")
         self.cluster_bytes = self.bps * self.spc
         self.data_sector = self.res + self.nfats * self.spf
@@ -188,6 +241,7 @@ def principale(argv: list[str] | None = None) -> int:
     try:
         data = bytearray(ns.imago.read_bytes())
         fat = FAT32(data)
+        print(f"FAT32: partitio LBA={fat.part_lba}, cluster={fat.cluster_bytes} octeta")
         for spec in ns.fasciculi:
             if "=" not in spec:
                 raise ErrorFAT(f"argumentum invalidum: {spec}")
@@ -197,7 +251,7 @@ def principale(argv: list[str] | None = None) -> int:
             fat.adde(nomen, corpus)
             print(f"RECTE: {fons} -> /{nomen.upper()} ({len(corpus)} octeta)")
         ns.imago.write_bytes(data)
-    except (OSError, ErrorFAT) as exc:
+    except (OSError, ErrorFAT, struct.error) as exc:
         print(f"DEFECIT: {exc}", file=sys.stderr)
         return 2
     return 0
