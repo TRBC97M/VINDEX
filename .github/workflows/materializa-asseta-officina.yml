@@ -25,14 +25,14 @@ jobs:
           set -euo pipefail
           d='Vindex Chat-GPT/vindex_final_v51/res/jlux/assetta/premium-i/png'
           mkdir -p "$d"
-          cat .tmp-asseta/officina-1_5x.part* | tr -d '\r\n' | base64 -d > "$d/officina@1_5x.png"
-          cat .tmp-asseta/officina-2x.part* | tr -d '\r\n' | base64 -d > "$d/officina@2x.png"
+          cat .tmp-asseta/exact15.* | base64 -d > "$d/officina@1_5x.png"
+          cat .tmp-asseta/exact2.* | base64 -d > "$d/officina@2x.png"
           test "$(git hash-object "$d/officina@1_5x.png")" = 'b52c472ce9226cb141da017258591378725440d3'
           test "$(git hash-object "$d/officina@2x.png")" = 'cde708d197402789afe857ab9b10ae987fb59db1'
           file "$d/officina@1_5x.png" | grep -q 'PNG image data, 72 x 72'
           file "$d/officina@2x.png" | grep -q 'PNG image data, 96 x 96'
 
-      - name: Fontes canonicos committe et instrumenta temporaria dele
+      - name: Fontes canonicos committe et temporaria dele
         shell: bash
         run: |
           set -euo pipefail
