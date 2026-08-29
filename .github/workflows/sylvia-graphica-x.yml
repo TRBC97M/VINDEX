@@ -1,0 +1,98 @@
+name: Sylvia OS — Graphica X Fundamentum Modernum
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_effectus_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fundamentum_graphicum_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_x*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_x*'
+      - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
+      - 'CONSILIUM.md'
+      - '.github/workflows/sylvia-graphica-x.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_effectus_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/fundamentum_graphicum_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_graphica_x*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_x*'
+      - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
+      - 'CONSILIUM.md'
+      - '.github/workflows/sylvia-graphica-x.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  graphica-x:
+    name: RGBA, compositio, blur, vitrum et umbra certificantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilatorem et instrumenta para
+        shell: bash
+        run: |
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_graphica_x_uefi.sh'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Fundamentum Graphica X native VINDEX exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/fundamentum_graphicum_x.vindex /tmp/graphica-x-test
+          file /tmp/graphica-x-test | grep -q 'ELF 64-bit'
+          chmod +x /tmp/graphica-x-test
+          timeout 25s /tmp/graphica-x-test
+          printf '%s\n' 'RECTE: mathesis RGBA et effectuum Graphica X probata est.'
+
+      - name: Regressionem canonicam VINDEX exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tests/run_tests.sh
+
+      - name: Showroom Graphica X sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '18'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-graphica-x'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_showroom_graphica_x_uefi.sh
+
+      - name: Capturam conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-graphica-x-${{ github.sha }}
+          path: |
+            qemu-graphica-x/*.ppm
+            qemu-graphica-x/*.log
+          if-no-files-found: warn
+          retention-days: 7
