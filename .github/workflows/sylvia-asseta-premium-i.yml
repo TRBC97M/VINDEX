@@ -1,0 +1,113 @@
+name: Sylvia OS — Asseta Premium I
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/res/jlux/assetta/premium-i/png/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/genera_asseta_premium_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_asseta_premium_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/adde_fasciculos_fat.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_asseta_premium_i*'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_asseta_premium_i*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/simg_ii*.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_ix*.vindex'
+      - 'documenta/sylvia/JL_UX_ASSETA_PREMIUM_I.md'
+      - '.github/workflows/sylvia-asseta-premium-i.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/res/jlux/assetta/premium-i/png/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/genera_asseta_premium_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_asseta_premium_i.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/adde_fasciculos_fat.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_asseta_premium_i*'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_asseta_premium_i*.vindex'
+      - 'documenta/sylvia/JL_UX_ASSETA_PREMIUM_I.md'
+      - '.github/workflows/sylvia-asseta-premium-i.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  asseta-premium-i:
+    name: PNG, SIMG II, multi-scala et framebuffer premium probantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: Instrumenta QEMU institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Instrumenta exsecutabilia sint
+        shell: bash
+        run: |
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_asseta_premium_i_uefi.sh'
+
+      - name: Puritatem Sylviae verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: XII fontes PNG et derivata SIMG II verifica
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          python3 instrumenta/proba_asseta_premium_i.py
+
+      - name: Importatorem SIMG II canonicum exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          python3 instrumenta/proba_importatorem_simg_ii.py
+
+      - name: Graphica IX per compilatorem VINDEX exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/capacitas_graphica_ix.vindex /tmp/graphica-ix-premium-assets
+          chmod +x /tmp/graphica-ix-premium-assets
+          timeout 20s /tmp/graphica-ix-premium-assets
+
+      - name: Regressionem canonicam VINDEX exerce
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          bash tests/run_tests.sh
+
+      - name: Showroom Assetorum Premium I sub QEMU et OVMF
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        env:
+          MORA_INITII: '22'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-asseta-premium-i'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_showroom_asseta_premium_i_uefi.sh
+
+      - name: Capturam et metra conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-asseta-premium-i-${{ github.sha }}
+          path: |
+            qemu-asseta-premium-i/*.ppm
+            qemu-asseta-premium-i/*.json
+            qemu-asseta-premium-i/*.log
+          if-no-files-found: warn
+          retention-days: 7
