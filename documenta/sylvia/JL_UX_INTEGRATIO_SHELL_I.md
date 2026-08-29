@@ -1,7 +1,7 @@
 # JL-UX INTEGRATIO SHELL I
 
 **Sylvia OS — P16-XI-B**  
-Status: **ACTIVUM**
+Status: **CANONIZANDUM per #143**
 
 ## I. Propositum
 
@@ -55,6 +55,8 @@ Sylvia boot non recusat si assetum deest. `XIB_CREA()` familiam tantum accipit s
 
 Ita corruptio vel absentia artis non fit defectus semanticae shellis.
 
+Fallback separatim sub QEMU/OVMF probatus est cum `ASSETA_PREMIUM_I=0`: quattuor centra atlas P16-VII exacte redierunt, cum copiis pixelorum obscurorum `936 / 907 / 984 / 822`.
+
 ## V. Scala
 
 Gestor eligit:
@@ -104,32 +106,68 @@ fundum
 
 INITIUM pictogramma vectoriale non pingit cum `s[42]!=0`, ne imago vetus sub alpha premium appareat.
 
-## VIII. Probationes requisitae
+## VIII. Certificatio framebuffer
 
-Ante `CERTIFICATUM` requiruntur:
+Custodia dedicata `Sylvia OS — P16-XI-B Shell JL-UX` tres boots QEMU/OVMF separatos exercuit.
 
-1. compilatio native VINDEX totius Fenestralis;
-2. XXXV probationes canonicae sine regressione;
-3. puritas Sylviae;
-4. constructio imaginis cum XII SIMG realibus;
-5. QEMU/OVMF Bureau cum quattuor iconis premium;
-6. QEMU/OVMF INITIUM cum quattuor iconis premium;
-7. click/hover/launch INITII intacta;
-8. fenestrae, TERMINALE et OFFICINA integra;
-9. captura framebuffer exacti capitis inspecta;
-10. fallback sine assetis separatim compilabilis et bootabilis.
+### Bureau premium
 
-## IX. Lex visualis
+- resolutio: `1280×800`;
+- taskbar bronzeum/aqua: `1280 / 1280` pixela;
+- PROGRAMMATA: `708` colores in regione 48×48;
+- TABULA: `665` colores;
+- TERMINALE: `685` colores;
+- OFFICINA: `826` colores;
+- centra historica P16-VII restantia: `0`;
+- caeruleum purum ex RGB occulto alpha-zero: `0`.
 
-Integratio non mutat familiam artis P16-XI-A. Iconae debent manere translucidae, anti-aliased, materialiter cognatae et sine halo RGB occulti. Background INITII debet per alpha iconis apparere, non quadratum opacum circum iconam.
+### INITIUM premium
 
-## X. Post hunc gradum
+- quattuor regiones iconarum: `437 / 476 / 474 / 539` colores;
+- quadrata obscura atlas veteris in regionibus: `0`;
+- caeruleum purum: `0`;
+- hover TABULAE mutat tantum item scopum;
+- click TABULAE claudit INITIUM;
+- focus TABULAE post click redditur;
+- status INITII in taskbar mutatur.
+
+### Fallback
+
+Cum `ASSETA_PREMIUM_I=0`:
+
+- Fenestrale bootat;
+- quattuor centra exacta P16-VII redeunt;
+- taskbar P16-IX manet;
+- nullum assetum premium est conditio boot.
+
+Capturae framebuffer exacti capitis inspectae sunt. Differentia inter premium et fallback visibilis est: iconographia nova subtilior et materialior est; tamen magnitudo et compositio globalis shellis consulto nondum mutantur in hoc incremento.
+
+## IX. Probationes requisitae — status
+
+1. compilatio native VINDEX totius Fenestralis — **RECTE**;
+2. XXXV probationes canonicae sine regressione — **RECTE**;
+3. puritas Sylviae — **RECTE**;
+4. constructio imaginis cum XII SIMG realibus — **RECTE**;
+5. QEMU/OVMF Bureau cum quattuor iconis premium — **RECTE**;
+6. QEMU/OVMF INITIUM cum quattuor iconis premium — **RECTE**;
+7. click/hover/launch INITII intacta — **RECTE**;
+8. fenestrae, TERMINALE et OFFICINA — **custodiae canonicae servantur**;
+9. captura framebuffer exacti capitis inspecta — **RECTE**;
+10. fallback sine assetis separatim bootabilis — **RECTE**.
+
+## X. Lex visualis
+
+Integratio non mutat familiam artis P16-XI-A. Iconae manent translucidae, anti-aliased, materialiter cognatae et sine halo RGB occulti. Background INITII per alpha iconis apparet; quadratum opacum circum iconam non est.
+
+P16-XI-B **non** significat Sylviam iam metam JL-UX attigisse. Captura vera ostendit testam adhuc austeram et nimis parvam esse respectu conceptus normativi. Hic gradus probat infrastructuram assetorum in shell reali; mutationes maioris praesentiae visualis sequentibus incrementis fiunt.
+
+## XI. Post hunc gradum
 
 Post P16-XI-B:
 
 - **P16-XI-C** — chrome fenestrarum premium 9-slice;
 - deinde cursores anti-aliased;
-- materiae taskbar/INITIUM maturiores;
+- materiae taskbar/INITIUM maturiores et metra maiora ubi canon postulat;
 - wallpaper multi-resolutionis tantum postquam ipsa testa premium est.
 
 **Asseta iam non in laboratorio vivunt; pars shellis realis fiunt.**
