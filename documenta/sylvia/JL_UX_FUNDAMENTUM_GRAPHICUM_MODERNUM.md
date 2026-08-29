@@ -1,7 +1,7 @@
 # JL-UX — FUNDAMENTUM GRAPHICUM MODERNUM
 
 **Sylvia OS — P16-XII**  
-Status: **P16-XII-A, B et C PERFECTA; P16-XII-D PROXIMUM**
+Status: **P16-XII-A, B et C PERFECTA; P16-XII-D PROBATUM / CANONIZANDUM**
 
 ## I. Propositum
 
@@ -80,7 +80,35 @@ P16-XII-C2 addit pontem `GXX_*`: rastera premium SIMG II/Graphica IX directe in 
 
 Implementatio software est backend referentiae et veritatis semanticae, non finis accelerationis.
 
-## VII. Via ad accelerationem GPU
+## VII. Tempus et motus
+
+P16-XII-D separat **tempus logicum** a numero imaginum re vera praesentatarum.
+
+Familia `TX_*` definit horologium backend-neutrum. Backend UEFI hodiernus utitur:
+
+- `EFI_BOOT_SERVICES.CreateEvent` et `SetTimer` ad pacing atque telemetriam;
+- `CheckEvent` tantum non-obstruenter, ideo ansa UI numquam eventum timeris exspectat;
+- TSC x86-64 monotono ut fonte temporis animationis;
+- calibratione semel facta per `BootServices.Stall(10 ms)` ante ansam UI.
+
+Rutina TSC tredecim octetorum (`LFENCE; RDTSC; SHL RDX,32; OR RAX,RDX; RET`) a VINDEX ipso in memoria runtime scribitur et per vocatorem nativum existentem exercetur. Nullus assembler externus, nullum C et nulla mutatio compilatoris requiruntur.
+
+**Lex temporis:** signum UEFI non est frame. Si renderer software periodum 16.67 ms superat, `TX_*` frame logicum ex tempore TSC elapso statim ad praesentem positionem promovet. Frames presentationis omitti possunt; tempus animationis non retardatur.
+
+Familia `MX_*` motus stratorum regit:
+
+- interpolatione fixed-point 16.16 ad proximum rotundata;
+- curva lineari, ease-out cubica et smoothstep;
+- x, y et alpha uno motu;
+- duratione in frameis logicis temporalibus;
+- retargetatione ex statu composito praesenti;
+- nullo saltu cum meta inter motum mutatur;
+- nullo opere si eadem frame bis pulsatur;
+- mutationibus compositoris tantum ubi valor re vera mutatus est.
+
+Hoc contractum backend-neutrum manet: futurus HPET/APIC, compositor GPU vel vsync alium fontem temporis praebere poterit sine mutatione semantica `MX_*`.
+
+## VIII. Via ad accelerationem GPU
 
 P16-XII debet API compositoris ita definire ut backend CPU hodiernus postea a backend GPU substitui possit sine mutatione semantica shellis.
 
@@ -88,13 +116,13 @@ Ordo intentus:
 
 1. backend software VINDEX purus sub QEMU ut referentia;
 2. coda mandatorum Graphica VIII/Graphica X ad operationes compositionis extenditur;
-3. superficies et effectus backend-neutri manent;
+3. superficies, effectus et motus backend-neutri manent;
 4. post fundamenta P12 BAR/MMIO/interruptiones, backend hardware acceleratus addi potest;
 5. copia CPU↔GPU et cache texturarum minimantur.
 
 **Acceleratio GPU non est condicio primae certificationis P16-XII; architectura quae eam impedit vetita est.**
 
-## VIII. Gradus P16-XII
+## IX. Gradus P16-XII
 
 ### P16-XII-A — Compositor RGBA
 
@@ -122,7 +150,7 @@ Ordo intentus:
 
 ### P16-XII-C — Effectus productionis
 
-**Status: PERFECTUM per C1/#150 et C2/#151 post canonizationem.**
+**Status: PERFECTUM per C1/#150 et C2/#152.**
 
 C1 instituit:
 
@@ -145,13 +173,18 @@ C2 instituit:
 
 ### P16-XII-D — Tempus et motus
 
-**Status: PROXIMUM.**
+**Status: PROBATUM / CANONIZANDUM per #153.**
 
-- horologium frame;
-- interpolationes;
-- apertura/clausura/focus/hover;
-- transitus breves et interruptibiles;
-- nulla animatio input tardat.
+- `TX_*` horologium backend-neutrum;
+- TSC monotonicum, semel per UEFI calibratum;
+- eventus UEFI ut pacer/telemetria, non ut definitio temporis;
+- catch-up ad frame logicum temporis realis sub onere;
+- `MX_*` interpolationes fixed-point;
+- linearis, ease-out cubica et smoothstep;
+- x/y/alpha per stratum;
+- retargetatio interruptibilis sine saltu;
+- eadem frame iterata nullum opus compositorium creat;
+- input non obstruitur ab horologio.
 
 ### P16-XII-E — Migratio shellis
 
@@ -170,7 +203,7 @@ C2 instituit:
 - texturarum cache;
 - via GPU cum infrastructura hardware id sinit.
 
-## IX. Criterium Vista-class
+## X. Criterium Vista-class
 
 P16-XII totum non dicitur perfectum quia unum panel translucet. Ante conclusionem, motor debet posse:
 
@@ -183,7 +216,7 @@ P16-XII totum non dicitur perfectum quia unum panel translucet. Ante conclusione
 - animationes UI stabili frame-clock regere;
 - backend mutabilem sine mutatione theme/shell servare.
 
-## X. Probationes P16-XII-A
+## XI. Probationes P16-XII-A
 
 P16-XII-A sub QEMU/OVMF certificavit:
 
@@ -200,7 +233,7 @@ XXXV probationes canonicae: 35 / 35
 
 Captura framebuffer inspecta est: striae post vitrum localiter molliuntur, umbra externa gradatim evanescit et regio duorum stratorum tertium colorem compositum ostendit. Showroom est probatio motoris, non propositum artis finalis Sylviae.
 
-## XI. Probationes P16-XII-B
+## XII. Probationes P16-XII-B
 
 Scena compositoris separatim probat logicam in memoria et presentationem in framebuffer vero.
 
@@ -228,7 +261,7 @@ XXXV probationes canonicae: 35 / 35
 
 Captura inspecta est. Aqua et bronzeum ordinem colorum rectum servant; canarius extra damage post secundam praesentiam manet; canarius intra locum veterem deletur; umbra est stratum separatum infra panel; compositor regionem laesam tantum praesentat.
 
-## XII. Probationes P16-XII-C1
+## XIII. Probationes P16-XII-C1
 
 Probatio VINDEX nativa confirmat:
 
@@ -254,7 +287,7 @@ XXXV probationes canonicae: 35 / 35
 
 Captura framebuffer inspecta est. Backdrop strias vere mollit; anguli maskae ad fundum redeunt; highlight superior clarus sed localis est; clip intra limites suos manet; eadem umbra cacheata in pluribus stratis reutilizatur.
 
-## XIII. Probationes P16-XII-C2
+## XIV. Probationes P16-XII-C2
 
 Probatio VINDEX nativa confirmat:
 
@@ -285,7 +318,45 @@ Captura framebuffer inspecta est. Margines quattuor pixelorum eandem crassitudin
 
 Hoc est primum contractum canonicum quo materia rastera premium redimensionabilis potest directe fieri stratum compositoris Graphica X.
 
-## XIV. Invarianta
+## XV. Probationes P16-XII-D
+
+Probatio VINDEX nativa confirmat:
+
+- horologium manuale eandem API `TX_*` sine firmware exercere;
+- fines interpolationis exactos;
+- smoothstep medium `0.5` exactum;
+- ease-out medium ultra linearem procedere;
+- motum `(10,10,80) → (110,50,200)` ad medium exactum `(60,30,140)`;
+- retargetationem ex hoc statu ipso, non ex meta veteri;
+- primam frame post retargetationem continuam `(54,44,156)`;
+- eandem frame bis pulsatam nullam mutationem creare;
+- destinationem finalem exactam et motum deactivatum.
+
+Showroom QEMU/OVMF 1280×800 capitis `30691241…` probavit TSC reale et catch-up sub renderer software lento:
+
+```text
+colores framebuffer: 329
+status internus: (104,177,123) — viridis
+ora ad metam secundam: (101,214,231)
+centrum ad metam secundam: (18,110,131)
+locus initialis restitutus: (8,18,28)
+pixela bronzea trajectoriae: 147
+saltus maximus temporalis: 27 frame
+praesentationes logicae omissae: 75
+XXXV probationes canonicae: 35 / 35
+```
+
+Captura framebuffer inspecta est. Tres loci intermedii bronzei et hiatus inter eos demonstrant renderer QEMU non posse omnes frame LX Hz praesentare; nihilominus panel ad metam secundam exactam pervenit et status viridis manet. Duae barrae framebuffer telemetriam `27 / 75` codificant et validator Python eas sine OCR legit.
+
+Hoc probat differentiam essentialem XII-D: **sub onere praesentationes omittuntur, tempus non retardatur**. Retargetatio manet continua quia nova trajectoria semper a statu composito praesenti incipit.
+
+Catena certificata:
+
+```text
+OVMF → VINDEX → EFI timer pacer → TSC calibratum → TX → MX → scena GX → damage-only → framebuffer
+```
+
+## XVI. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -297,8 +368,13 @@ Hoc est primum contractum canonicum quo materia rastera premium redimensionabili
 - memoria GX semper RGBA canonica manet; conversio GOP tantum in limite framebufferis fit;
 - effectus cacheatus non iterum calculatur nisi clavis vel generatio fontis mutatur;
 - rastera Graphica IX in GX tantum per conversionem recti→praemultiplicati intrat;
-- 9-slice margines materialis non cum dimensione destinationis extenduntur.
+- 9-slice margines materialis non cum dimensione destinationis extenduntur;
+- eventus timeris non definit tempus animationis;
+- frame logicum ex tempore monotono derivatur;
+- frame presentationis omissa non debet durationem animationis extendere;
+- retargetatio semper ex statu composito praesenti incipit;
+- horologium UI non obstruit ansam input.
 
-## XV. Sententia
+## XVII. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**
