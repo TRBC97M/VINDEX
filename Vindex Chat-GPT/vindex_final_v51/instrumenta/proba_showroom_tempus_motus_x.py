@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-XII-D: horologium UEFI et motum interruptibilem in framebuffer QEMU metitur."""
+"""P16-XII-D: horologium UEFI/TSC et motum interruptibilem in framebuffer QEMU metitur."""
 from __future__ import annotations
 
 import importlib.util
@@ -22,6 +22,21 @@ def auxilia() -> object:
 def bronzeum(c: tuple[int, int, int]) -> bool:
     r, g, b = c
     return r > 120 and 85 < g < 175 and b < 115 and r > g + 25 and g > b + 20
+
+
+def cyan(c: tuple[int, int, int]) -> bool:
+    r, g, b = c
+    return g > r + 70 and b > r + 90 and b >= g
+
+
+def longitudo_barrae(aux: object, pix: bytes, w: int, x0: int, y: int, pred) -> int:
+    n = 0
+    for x in range(x0, x0 + 300):
+        if pred(aux.pixel(pix, w, x, y)):
+            n += 1
+        else:
+            break
+    return n
 
 
 def principale() -> int:
@@ -50,7 +65,7 @@ def principale() -> int:
             print(f"DEFECIT: resolutio {w}x{h}", file=sys.stderr)
             return 4
 
-        # Status internus: viride tantum si timer, continuitas et finis omnes recti sunt.
+        # Status internus: viride tantum si TSC, continuitas et finis omnes recti sunt.
         status = aux.pixel(pix, w, 55, h - 62)
         if not (status[1] > status[0] + 45 and status[1] > status[2] + 30 and status[0] > 70):
             print(f"DEFECIT: status temporis non viridis est: {status}", file=sys.stderr)
@@ -72,7 +87,7 @@ def principale() -> int:
             print(f"DEFECIT: residuum panelis in loco initiali mansit: {vetus}", file=sys.stderr)
             return 8
 
-        # Vestigia bronzea singulis VI frame relicta trajectoriam finalem demonstrant.
+        # Vestigia bronzea sunt frames re vera praesentatae, non frames logicae omnes.
         n_bronze = 0
         for y in range(210, 535):
             for x in range(150, 910):
@@ -82,15 +97,25 @@ def principale() -> int:
             print(f"DEFECIT: vestigia motus nimis pauca sunt: {n_bronze}", file=sys.stderr)
             return 9
 
+        # Telemetria codificata: III pixela = una frame logica.
+        saltus_px = longitudo_barrae(aux, pix, w, 800, h - 70, cyan)
+        omissae_px = longitudo_barrae(aux, pix, w, 800, h - 50, bronzeum)
+        if saltus_px <= 0 or saltus_px % 3 != 0 or omissae_px % 3 != 0:
+            print(f"DEFECIT: telemetria catch-up invalida: px={saltus_px}/{omissae_px}", file=sys.stderr)
+            return 10
+        saltus_max = saltus_px // 3
+        omissae = omissae_px // 3
+
         colores = {tuple(pix[i:i+3]) for i in range(0, len(pix)-2, 3)}
         if len(colores) < 300:
             print(f"DEFECIT: varietas framebuffer nimis parva est: {len(colores)}", file=sys.stderr)
-            return 10
+            return 11
 
         print(f"TEMPUS-MOTUS-X: resolutio={w}x{h} colores={len(colores)}")
         print(f"TEMPUS-MOTUS-X: status={status} top={top} centrum={centrum} vetus={vetus}")
         print(f"TEMPUS-MOTUS-X: pixela bronzea trajectoriae={n_bronze}")
-        print("RECTE: timer UEFI, retargetatio et motus frame sub QEMU probata sunt.")
+        print(f"TEMPUS-MOTUS-X: saltus-max={saltus_max} frames; praesentationes-omissae={omissae}")
+        print("RECTE: TSC reale, UEFI pacer, catch-up, retargetatio et motus frame sub QEMU probata sunt.")
         return 0
     finally:
         try:
