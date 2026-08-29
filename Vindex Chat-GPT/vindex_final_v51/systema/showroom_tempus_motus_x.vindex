@@ -68,12 +68,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA motus SICUT NUMERUS VALENS MX_CREA(scena).
     SI motus==0 TUNC REDDE 11. FIN-SI.
 
-    // Prima meta; ambo strata eadem duratione moventur.
+    // Prima meta; ambo strata eadem duratione temporali moventur.
     SI MX_ANIMA(motus,701,494,174,180,36,2)==0 TUNC REDDE 12. FIN-SI.
     SI MX_ANIMA(motus,702,480,160,230,36,2)==0 TUNC REDDE 13. FIN-SI.
     SI CX_PRAESENTA_FB(scena)==0 TUNC REDDE 14. FIN-SI.
 
-    // LX Hz: 166667 * 100 ns ≈ 16.6667 ms.
+    // LX Hz nominalis. TX_* frame tamen ex TSC reali, non ex numero eventuum, derivat.
     DECLARA hor SICUT NUMERUS VALENS TX_CREA_UEFI(166667).
     SI hor==0 TUNC
         f=FV_RECT(42,h-72,26,26,rubrum_fb).
@@ -82,12 +82,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     DECLARA retargetatum SICUT NUMERUS VALENS 0.
     DECLARA continuum SICUT NUMERUS VALENS 1.
+    DECLARA finis_frame SICUT NUMERUS VALENS 0.
     DECLARA px_vetus SICUT NUMERUS VALENS CONTENTUM(sp+16).
     DECLARA py_vetus SICUT NUMERUS VALENS CONTENTUM(sp+24).
     DECLARA maximus_passus SICUT NUMERUS VALENS 0.
-    DECLARA ultima_signa SICUT NUMERUS VALENS 0.
 
-    DUM TX_FRAME(hor)<48 PERFICE
+    DUM finis_frame==0 || TX_FRAME(hor)<finis_frame PERFICE
         DECLARA signum SICUT NUMERUS VALENS TX_CONSULE(hor).
         SI signum!=0 TUNC
             DECLARA frame SICUT NUMERUS VALENS TX_FRAME(hor).
@@ -98,9 +98,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             SI passus>maximus_passus TUNC maximus_passus=passus. FIN-SI.
             px_vetus=px. py_vetus=py.
 
-            // Ad medium primae trajectoriae meta mutatur. MX_ANIMA initium
-            // ex statu praesenti legit; id ipsum post vocationem verificamus.
-            SI frame==18 && retargetatum==0 TUNC
+            // Prima praesentatio quae tempus XVIII attigit recipit novam metam.
+            // Si renderer frames presentationis omisit, initium tamen ex statu
+            // temporali iam composito legitur: nulla teletransportatio fit.
+            SI frame>=18 && retargetatum==0 TUNC
                 DECLARA rx SICUT NUMERUS VALENS px.
                 DECLARA ry SICUT NUMERUS VALENS py.
                 DECLARA ra SICUT NUMERUS VALENS CONTENTUM(sp+40).
@@ -109,23 +110,25 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 DECLARA mn SICUT NUMERUS VALENS MX_QUAERE(motus,702).
                 SI mn==0 || CONTENTUM(mn+32)!=rx || CONTENTUM(mn+40)!=ry || CONTENTUM(mn+48)!=ra TUNC continuum=0. FIN-SI.
                 retargetatum=1.
+                finis_frame=frame+30.
             FIN-SI.
 
-            // Vestigia singulis VI frame in fundo relinquuntur: captura finalis
-            // trajectoriam curvam et continuitatem oculis quoque demonstrat.
-            SI (frame%6)==0 TUNC
-                DECLARA vx SICUT NUMERUS VALENS CONTENTUM(sp+16)+150.
-                DECLARA vy SICUT NUMERUS VALENS CONTENTUM(sp+24)+85.
-                f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(vx-3,vy-3,7,7),bronzeum,230).
-                f=CX_DAMNA_NOTA(scena,GVIII_RECT_CREA(vx-4,vy-4,9,9)).
-            FIN-SI.
+            // Una nota bronzea per frame re vera praesentatam: hiatus longiores
+            // inter notas exhibent frames omissas sine tempore animationis lenteacto.
+            DECLARA vx SICUT NUMERUS VALENS CONTENTUM(sp+16)+150.
+            DECLARA vy SICUT NUMERUS VALENS CONTENTUM(sp+24)+85.
+            f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(vx-3,vy-3,7,7),bronzeum,230).
+            f=CX_DAMNA_NOTA(scena,GVIII_RECT_CREA(vx-4,vy-4,9,9)).
+
             SI CX_PRAESENTA_FB(scena)==0 TUNC REDDE 16. FIN-SI.
-            ultima_signa=TX_SIGNA(hor).
         FIN-SI.
     FIN-DUM.
 
     DECLARA consultationes SICUT NUMERUS VALENS TX_CONSULTATIONES(hor).
     DECLARA signa SICUT NUMERUS VALENS TX_SIGNA(hor).
+    DECLARA saltus_max SICUT NUMERUS VALENS TX_SALTUS_MAX(hor).
+    DECLARA omissae SICUT NUMERUS VALENS TX_OMISSAE(hor).
+    DECLARA tsc_frame SICUT NUMERUS VALENS TX_TSC_PER_FRAME(hor).
     DECLARA interruptiones SICUT NUMERUS VALENS MX_INTERRUPTIONES(motus).
     DECLARA fx SICUT NUMERUS VALENS CONTENTUM(sp+16).
     DECLARA fy SICUT NUMERUS VALENS CONTENTUM(sp+24).
@@ -133,21 +136,21 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA clausum SICUT NUMERUS VALENS TX_CLAUDE(hor).
 
     DECLARA recte SICUT NUMERUS VALENS 1.
-    SI retargetatum==0 || continuum==0 TUNC recte=0. FIN-SI.
+    SI retargetatum==0 || continuum==0 || finis_frame<=0 TUNC recte=0. FIN-SI.
     SI fx!=720 || fy!=360 || fa!=255 TUNC recte=0. FIN-SI.
     SI interruptiones!=2 TUNC recte=0. FIN-SI.
-    SI maximus_passus>44 TUNC recte=0. FIN-SI.
-    // CheckEvent est non-bloquans: inter signa timeris multae consultationes fiunt.
+    SI tsc_frame<=0 || saltus_max<=0 TUNC recte=0. FIN-SI.
+    // CheckEvent manet non-bloquans; TSC, non signum coalescens, regit tempus.
     SI consultationes<=signa*4 TUNC recte=0. FIN-SI.
 
     DECLARA status_color SICUT NUMERUS VALENS viride_fb.
     SI recte==0 TUNC status_color=rubrum_fb. FIN-SI.
     f=FV_RECT(42,h-76,28,28,status_color).
     f=FV_TEXTUM_SCALA(48,34,"P16-XII-D — TEMPUS ET MOTUS",ebur_fb,2).
-    f=FV_TEXTUM(50,68,"UEFI TIMER / FIXED-POINT / RETARGETATIO INTERRUPTIBILIS",cyan_fb).
+    f=FV_TEXTUM(50,68,"TSC REALIS / UEFI PACER / FIXED-POINT / CATCH-UP",cyan_fb).
     f=FV_TEXTUM(760,334,"META SECUNDA",ebur_fb).
-    f=FV_TEXTUM(82,h-70,"STATUS HOROLOGII ET CONTINUITATIS",ebur_fb).
-    f=FV_TEXTUM(82,h-44,"vestigia bronzea = trajectoria frame",bronzeum_fb).
+    f=FV_TEXTUM(82,h-70,"STATUS TEMPORIS REALIS ET CONTINUITATIS",ebur_fb).
+    f=FV_TEXTUM(82,h-44,"vestigia bronzea = frames re vera praesentatae",bronzeum_fb).
 
     SI recte==0 TUNC REDDE 17. FIN-SI.
     DECLARA pausa SICUT NUMERUS VALENS 0.
