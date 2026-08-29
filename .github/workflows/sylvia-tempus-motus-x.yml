@@ -37,10 +37,18 @@ jobs:
       - name: Repositorium accipe
         uses: actions/checkout@v5
 
-      - name: Compilatorem para
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Compilatorem et instrumenta para
         shell: bash
         run: |
           chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_tempus_motus_x_uefi.sh'
 
       - name: Puritatem Sylviae verifica
         shell: bash
@@ -74,3 +82,24 @@ jobs:
         run: |
           set -euo pipefail
           bash tests/run_tests.sh
+
+      - name: Showroom Tempus et Motus sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '20'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-tempus-motus-x'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_showroom_tempus_motus_x_uefi.sh
+
+      - name: Capturam conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-tempus-motus-x-${{ github.sha }}
+          path: |
+            qemu-tempus-motus-x/*.ppm
+            qemu-tempus-motus-x/*.log
+          if-no-files-found: warn
+          retention-days: 7
