@@ -1,5 +1,6 @@
-// Sylvia OS — P16-IX: testa composita INITII et taskbar.
-// Geometria, hitbox et semantica P16-IV/V servantur; sola pictura mutatur.
+// Sylvia OS — P16-XI-B: testa composita INITII et taskbar.
+// Geometria, hitbox et semantica P16-IV/V servantur; asseta premium XIB
+// pictogrammata INITII tantum substituunt cum familia integra adest.
 // Materia eadem ac P16-VIII: graphite, ebur, aes et vitrum viridi-caeruleum.
 
 FUNCTIO CIX_INITIUM_REDDE REDDENS NUMERUS.
@@ -66,8 +67,9 @@ FUNCTIO CIX_INITIUM_REDDE REDDENS NUMERUS.
             f=GVII_GRADUS_VERTICALIS(ix,iy,300,item_h,ebur,ebur_inferum).
             f=FV_RECT(ix,iy+item_h-1,300,1,papyrus_inferus).
         FIN-SI.
-        // Pictogramma vectoriale fallback manet; atlas P16-VII superponitur a compositore.
-        f=IV_ICONA_MENU(ix+8,iy+6,AI_NODUS_GENUS(nodus)).
+        // Cum familia premium deest, fallback vectoriale historicum manet.
+        // Cum XIB adest, spatium purum relinquitur et compositor iconam RGBA superponit.
+        SI s[42]==0 TUNC f=IV_ICONA_MENU(ix+8,iy+6,AI_NODUS_GENUS(nodus)). FIN-SI.
         f=FV_TEXTUM(ix+54,iy+18,AI_NODUS_NOMEN(nodus),nox).
         index=index+1.
         nodus=AI_PROXIMUS(nodus).
@@ -78,7 +80,7 @@ FUNCTIO CIX_INITIUM_REDDE REDDENS NUMERUS.
     f=FV_RECT(x+10,y+h-48,w-20,1,chalybs).
     f=FV_RECT(x+2,y+h-47,54,1,viride).
     f=FV_TEXTUM(x+18,y+h-30,"VINDEX 0.53",viride).
-    f=FV_TEXTUM(x+w-78,y+h-30,"P16-IX",aes).
+    f=FV_TEXTUM(x+w-78,y+h-30,"P16-XI",aes).
     REDDE 1.
 FIN-FUNCTIO.
 
