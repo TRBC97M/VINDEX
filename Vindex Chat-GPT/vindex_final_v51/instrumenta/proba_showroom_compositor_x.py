@@ -79,9 +79,10 @@ def principale() -> int:
             print(f"DEFECIT: stratum B identitatem aeneam amisit: {b}", file=sys.stderr)
             return 9
 
-        # Umbra A manet stratum separatum infra panel et molliter obscurat eundem x.
-        umbra = aux.pixel(pix, w, 250, 300)
-        sine_umbra = aux.pixel(pix, w, 250, 470)
+        # Umbra A est stratum separatum. x=258 intra marginem blur est, sed adhuc
+        # extra panel quod x=260 incipit; eadem columna infra umbram dat referentiam.
+        umbra = aux.pixel(pix, w, 258, 300)
+        sine_umbra = aux.pixel(pix, w, 258, 470)
         if lumen(umbra) >= lumen(sine_umbra) - 10:
             print(f"DEFECIT: umbra strati non videtur: {umbra}/{sine_umbra}", file=sys.stderr)
             return 10
