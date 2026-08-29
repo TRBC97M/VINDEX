@@ -1,0 +1,207 @@
+// Sylvia OS — P16-XII-D: motus interruptibilis Graphica X.
+// CX_* compositor ante hoc folium importetur.
+//
+// Gestor LXIV octeta:
+//   0 scena CX, 8 primus motus, 16 numerus nodorum, 24 generatio,
+//  32 frame praesens, 40 mutationes ultimi pulsus,
+//  48 mutationes totales, 56 interruptionum numerus.
+//
+// Motus CXII octeta:
+//   0 id strati, 8 activus, 16 frame initii, 24 duratio frame,
+//  32 x0, 40 y0, 48 a0, 56 x1, 64 y1, 72 a1,
+//  80 curva, 88 proximus, 96 generatio, 104 frame ultimum.
+//
+// Curvae: 0 linearis, 1 exiens cubica, 2 lenis smoothstep.
+
+FUNCTIO MX_MEM_PURA REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<n PERFICE
+        SCRIBE_OCTETUM_AB(p+i,0).
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MX_CLAMPA_T REDDENS NUMERUS.
+    ACCIPIT t SICUT NUMERUS.
+    SI t<0 TUNC REDDE 0. FIN-SI.
+    SI t>65536 TUNC REDDE 65536. FIN-SI.
+    REDDE t.
+FIN-FUNCTIO.
+
+FUNCTIO MX_CURVA REDDENS NUMERUS.
+    ACCIPIT t0 SICUT NUMERUS.
+    ACCIPIT curva SICUT NUMERUS.
+    DECLARA t SICUT NUMERUS VALENS MX_CLAMPA_T(t0).
+    SI curva==0 TUNC REDDE t. FIN-SI.
+    SI curva==1 TUNC
+        DECLARA inv SICUT NUMERUS VALENS 65536-t.
+        DECLARA q SICUT NUMERUS VALENS inv*inv/65536.
+        q=q*inv/65536.
+        REDDE 65536-q.
+    FIN-SI.
+    // Smoothstep: t^2 * (3 - 2t).
+    DECLARA t2 SICUT NUMERUS VALENS t*t/65536.
+    REDDE t2*(196608-2*t)/65536.
+FIN-FUNCTIO.
+
+FUNCTIO MX_INTERPOLA REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT t SICUT NUMERUS.
+    DECLARA q SICUT NUMERUS VALENS MX_CLAMPA_T(t).
+    REDDE a+(b-a)*q/65536.
+FIN-FUNCTIO.
+
+FUNCTIO MX_CREA REDDENS NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    SI scena==0 TUNC REDDE 0. FIN-SI.
+    DECLARA m SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI m<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS MX_MEM_PURA(m,64).
+    CONTENTUM(m)=scena.
+    CONTENTUM(m+24)=1.
+    REDDE m.
+FIN-FUNCTIO.
+
+FUNCTIO MX_QUAERE REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI m==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(m+8).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n)==id TUNC REDDE n. FIN-SI.
+        n=CONTENTUM(n+88).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO MX_NODUM REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI m==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS MX_QUAERE(m,id).
+    SI n!=0 TUNC REDDE n. FIN-SI.
+    n=RESERVA_OCTETA(112).
+    SI n<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS MX_MEM_PURA(n,112).
+    CONTENTUM(n)=id.
+    CONTENTUM(n+88)=CONTENTUM(m+8).
+    CONTENTUM(m+8)=n.
+    CONTENTUM(m+16)=CONTENTUM(m+16)+1.
+    CONTENTUM(m+24)=CONTENTUM(m+24)+1.
+    REDDE n.
+FIN-FUNCTIO.
+
+FUNCTIO MX_FRAME REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    SI m==0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(m+32).
+FIN-FUNCTIO.
+
+FUNCTIO MX_INTERRUPTIONES REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    SI m==0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(m+56).
+FIN-FUNCTIO.
+
+FUNCTIO MX_ANIMA REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    ACCIPIT duratio SICUT NUMERUS.
+    ACCIPIT curva SICUT NUMERUS.
+    SI m==0 TUNC REDDE 0. FIN-SI.
+    DECLARA scena SICUT NUMERUS VALENS CONTENTUM(m).
+    DECLARA stratum SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,id).
+    SI stratum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS MX_NODUM(m,id).
+    SI n==0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(n+8)!=0 TUNC CONTENTUM(m+56)=CONTENTUM(m+56)+1. FIN-SI.
+
+    SI duratio<=0 TUNC
+        DECLARA f0 SICUT NUMERUS VALENS CX_STRATUM_MOVE(scena,id,x,y).
+        DECLARA f1 SICUT NUMERUS VALENS CX_STRATUM_ALPHA(scena,id,alpha).
+        CONTENTUM(n+8)=0.
+        CONTENTUM(n+56)=x. CONTENTUM(n+64)=y. CONTENTUM(n+72)=GVIII_CLAMPA(alpha,0,255).
+        CONTENTUM(n+96)=CONTENTUM(n+96)+1.
+        REDDE 1.
+    FIN-SI.
+
+    // Initium semper ex statu strati iam composito legitur.
+    // Ita retargetatio in medio motu nullum saltum facit.
+    CONTENTUM(n+32)=CONTENTUM(stratum+16).
+    CONTENTUM(n+40)=CONTENTUM(stratum+24).
+    CONTENTUM(n+48)=CONTENTUM(stratum+40).
+    CONTENTUM(n+56)=x.
+    CONTENTUM(n+64)=y.
+    CONTENTUM(n+72)=GVIII_CLAMPA(alpha,0,255).
+    CONTENTUM(n+16)=CONTENTUM(m+32).
+    CONTENTUM(n+24)=duratio.
+    CONTENTUM(n+80)=curva.
+    CONTENTUM(n+8)=1.
+    CONTENTUM(n+96)=CONTENTUM(n+96)+1.
+    CONTENTUM(n+104)=CONTENTUM(m+32).
+    CONTENTUM(m+24)=CONTENTUM(m+24)+1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MX_PULSA REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT frame SICUT NUMERUS.
+    SI m==0 TUNC REDDE 0. FIN-SI.
+    SI frame<CONTENTUM(m+32) TUNC frame=CONTENTUM(m+32). FIN-SI.
+    CONTENTUM(m+32)=frame.
+    CONTENTUM(m+40)=0.
+    DECLARA scena SICUT NUMERUS VALENS CONTENTUM(m).
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(m+8).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+8)!=0 TUNC
+            DECLARA dur SICUT NUMERUS VALENS CONTENTUM(n+24).
+            DECLARA el SICUT NUMERUS VALENS frame-CONTENTUM(n+16).
+            DECLARA t SICUT NUMERUS VALENS 0.
+            SI el>=dur TUNC t=65536.
+            ALITER SI el>0 TUNC t=el*65536/dur. FIN-SI.
+            DECLARA e SICUT NUMERUS VALENS MX_CURVA(t,CONTENTUM(n+80)).
+            DECLARA nx SICUT NUMERUS VALENS MX_INTERPOLA(CONTENTUM(n+32),CONTENTUM(n+56),e).
+            DECLARA ny SICUT NUMERUS VALENS MX_INTERPOLA(CONTENTUM(n+40),CONTENTUM(n+64),e).
+            DECLARA na SICUT NUMERUS VALENS MX_INTERPOLA(CONTENTUM(n+48),CONTENTUM(n+72),e).
+            DECLARA s SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,CONTENTUM(n)).
+            SI s!=0 TUNC
+                DECLARA mut SICUT NUMERUS VALENS 0.
+                SI CONTENTUM(s+16)!=nx || CONTENTUM(s+24)!=ny TUNC
+                    DECLARA fm SICUT NUMERUS VALENS CX_STRATUM_MOVE(scena,CONTENTUM(n),nx,ny).
+                    mut=1.
+                FIN-SI.
+                SI CONTENTUM(s+40)!=na TUNC
+                    DECLARA fa SICUT NUMERUS VALENS CX_STRATUM_ALPHA(scena,CONTENTUM(n),na).
+                    mut=1.
+                FIN-SI.
+                SI mut!=0 TUNC
+                    CONTENTUM(m+40)=CONTENTUM(m+40)+1.
+                    CONTENTUM(m+48)=CONTENTUM(m+48)+1.
+                FIN-SI.
+            FIN-SI.
+            CONTENTUM(n+104)=frame.
+            SI t>=65536 TUNC CONTENTUM(n+8)=0. FIN-SI.
+        FIN-SI.
+        n=CONTENTUM(n+88).
+    FIN-DUM.
+    REDDE CONTENTUM(m+40).
+FIN-FUNCTIO.
+
+FUNCTIO MX_ACTIVI REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    SI m==0 TUNC REDDE 0. FIN-SI.
+    DECLARA q SICUT NUMERUS VALENS 0.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(m+8).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+8)!=0 TUNC q=q+1. FIN-SI.
+        n=CONTENTUM(n+88).
+    FIN-DUM.
+    REDDE q.
+FIN-FUNCTIO.
