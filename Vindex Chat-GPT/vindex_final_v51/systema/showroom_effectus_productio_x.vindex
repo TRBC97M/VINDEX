@@ -1,0 +1,118 @@
+// Sylvia OS — P16-XII-C1: showroom effectuum productionis.
+// Probatio motoris est, non facies finalis Sylviae.
+
+FUNCTIO XPX_CARD REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    DECLARA raw SICUT NUMERUS VALENS GX_CREA(w,h).
+    DECLARA mask SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI raw==0 || mask==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(raw,GVIII_RECT_CREA(0,0,w,h),color,205).
+    f=GX_RECT_ALPHA(raw,GVIII_RECT_CREA(18,48,w-36,1),16777215,34).
+    f=GX_RECT_ALPHA(raw,GVIII_RECT_CREA(0,0,w,2),limen,225).
+    f=XP_GLOSS(raw,GVIII_RECT_CREA(0,0,w,h),16777215,72).
+    f=GX_RECT_ROT_ALPHA(mask,GVIII_RECT_CREA(0,0,w,h),20,16777215,255).
+    REDDE XP_MASCA_APPLICA(raw,mask).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    SI w<1024 || h<700 TUNC REDDE 6. FIN-SI.
+
+    DECLARA nox_gx SICUT NUMERUS VALENS 7+15*256+24*65536.
+    DECLARA profundum_gx SICUT NUMERUS VALENS 13+37*256+54*65536.
+    DECLARA linea_gx SICUT NUMERUS VALENS 37+103*256+127*65536.
+    DECLARA vitrum_gx SICUT NUMERUS VALENS 26+52*256+68*65536.
+    DECLARA aqua_gx SICUT NUMERUS VALENS 18+139*256+164*65536.
+    DECLARA cyan_gx SICUT NUMERUS VALENS 107+222*256+238*65536.
+    DECLARA aes_gx SICUT NUMERUS VALENS 126+80*256+47*65536.
+    DECLARA bronzeum_gx SICUT NUMERUS VALENS 181+138*256+84*65536.
+
+    DECLARA ebur_fb SICUT NUMERUS VALENS FV_COLOR(242,244,247).
+    DECLARA aqua_fb SICUT NUMERUS VALENS FV_COLOR(107,222,238).
+    DECLARA bronzeum_fb SICUT NUMERUS VALENS FV_COLOR(181,138,84).
+    DECLARA argentum_fb SICUT NUMERUS VALENS FV_COLOR(191,199,207).
+
+    // Fundum alta frequentia: backdrop cache blur evidenter probari potest.
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI fundum==0 TUNC REDDE 7. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,w,h),nox_gx,255).
+    DECLARA x SICUT NUMERUS VALENS 0.
+    DUM x<w PERFICE
+        DECLARA c SICUT NUMERUS VALENS profundum_gx.
+        SI ((x/24)%2)==0 TUNC c=linea_gx. FIN-SI.
+        f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(x,92,12,h-168),c,255).
+        x=x+24.
+    FIN-DUM.
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,246,w,2),cyan_gx,190).
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,532,w,2),bronzeum_gx,185).
+
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(w,h,fundum).
+    DECLARA cache SICUT NUMERUS VALENS XP_CACHE_CREA(24).
+    SI scena==0 || cache==0 TUNC REDDE 8. FIN-SI.
+
+    DECLARA cw SICUT NUMERUS VALENS 360. DECLARA ch SICUT NUMERUS VALENS 220.
+    DECLARA ax SICUT NUMERUS VALENS 160. DECLARA ay SICUT NUMERUS VALENS 160.
+    DECLARA bx SICUT NUMERUS VALENS 650. DECLARA by SICUT NUMERUS VALENS 310.
+
+    // Umbra eadem geometria bis petitur: secunda petitio cache hit esse debet.
+    DECLARA umbra1 SICUT NUMERUS VALENS XP_UMBRA_CACHE(cache,cw,ch,20,6,0,180).
+    DECLARA umbra2 SICUT NUMERUS VALENS XP_UMBRA_CACHE(cache,cw,ch,20,6,0,180).
+    SI umbra1==0 || umbra1!=umbra2 TUNC REDDE 9. FIN-SI.
+
+    // Backdrop idem bis petitur; secunda petitio non iterum blur computat.
+    DECLARA vr SICUT NUMERUS VALENS GVIII_RECT_CREA(ax,ay,cw,ch).
+    DECLARA back1 SICUT NUMERUS VALENS XP_BACKDROP_CACHE(cache,fundum,vr,9,vitrum_gx,76).
+    DECLARA back2 SICUT NUMERUS VALENS XP_BACKDROP_CACHE(cache,fundum,vr,9,vitrum_gx,76).
+    SI back1==0 || back1!=back2 TUNC REDDE 10. FIN-SI.
+
+    // Backdrop quoque eadem masca rotunda ut card accipit.
+    DECLARA mask SICUT NUMERUS VALENS GX_CREA(cw,ch).
+    SI mask==0 TUNC REDDE 11. FIN-SI.
+    f=GX_RECT_ROT_ALPHA(mask,GVIII_RECT_CREA(0,0,cw,ch),20,16777215,255).
+    DECLARA back_mask SICUT NUMERUS VALENS XP_MASCA_APPLICA(back1,mask).
+    DECLARA card_a SICUT NUMERUS VALENS XPX_CARD(cw,ch,aqua_gx,cyan_gx).
+    DECLARA card_b SICUT NUMERUS VALENS XPX_CARD(cw,ch,aes_gx,bronzeum_gx).
+    SI back_mask==0 || card_a==0 || card_b==0 TUNC REDDE 12. FIN-SI.
+
+    // Clipping materializat ribbon exactum antequam stratum fiat.
+    DECLARA ribbon_full SICUT NUMERUS VALENS GX_CREA(520,42).
+    SI ribbon_full==0 TUNC REDDE 13. FIN-SI.
+    f=GX_RECT_ALPHA(ribbon_full,GVIII_RECT_CREA(0,0,520,42),cyan_gx,150).
+    f=XP_GLOSS(ribbon_full,GVIII_RECT_CREA(0,0,520,42),16777215,70).
+    DECLARA ribbon SICUT NUMERUS VALENS XP_CLIP_COPIA(ribbon_full,GVIII_RECT_CREA(100,0,260,42)).
+    SI ribbon==0 || GX_W(ribbon)!=260 TUNC REDDE 14. FIN-SI.
+
+    // Cache contractus ipse runtime custoditur.
+    SI XP_CACHE_HIT(cache)!=2 || XP_CACHE_MISS(cache)!=2 || XP_CACHE_NUMERUS(cache)!=2 TUNC REDDE 15. FIN-SI.
+
+    // Scena: umbra cacheata bis adhibetur, backdrop cacheatum, cardae mascatae et clip.
+    DECLARA n1 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,101,umbra1,ax-12,ay-12,5,255).
+    DECLARA n2 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,102,back_mask,ax,ay,10,255).
+    DECLARA n3 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,103,card_a,ax,ay,20,255).
+    DECLARA n4 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,104,ribbon,ax+48,ay+132,30,255).
+    DECLARA n5 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,201,umbra2,bx-12,by-12,5,255).
+    DECLARA n6 SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,202,card_b,bx,by,20,255).
+    SI n1==0 || n2==0 || n3==0 || n4==0 || n5==0 || n6==0 TUNC REDDE 16. FIN-SI.
+    SI CX_PRAESENTA_FB(scena)==0 TUNC REDDE 17. FIN-SI.
+
+    // Annotationes directae non sunt pars materiae probatae.
+    f=FV_TEXTUM_SCALA(54,34,"P16-XII-C1 — EFFECTUS PRODUCTIONIS",ebur_fb,2).
+    f=FV_TEXTUM(56,66,"CACHE / BACKDROP / BLUR ADAPTIVUS / MASCA / CLIP / GLOSS",aqua_fb).
+    f=FV_TEXTUM(ax+34,ay+28,"VITRUM CACHEATUM",ebur_fb).
+    f=FV_TEXTUM(ax+50,ay+147,"CLIP MATERIALIZATUS",ebur_fb).
+    f=FV_TEXTUM(bx+34,by+28,"UMBRA REUTILIZATA",ebur_fb).
+    f=FV_TEXTUM(56,h-48,"duo hit / duo miss / duo nodi cache",argentum_fb).
+    f=FV_TEXTUM(56,h-26,"effectus statici non iterum calculantur sine mutatione fontis",bronzeum_fb).
+
+    DECLARA pausa SICUT NUMERUS VALENS 0.
+    DUM 1==1 PERFICE
+        pausa=pausa+1.
+        SI pausa>1000000 TUNC pausa=0. FIN-SI.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.

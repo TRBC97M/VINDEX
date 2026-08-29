@@ -1,0 +1,69 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_productio_x.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    // Blur adaptivus nimiam impensam in superficiebus magnis coercet.
+    SI XP_RADIUS_ADAPT(200,200,24)!=20 TUNC REDDE 1. FIN-SI.
+    SI XP_RADIUS_ADAPT(800,600,24)!=12 TUNC REDDE 2. FIN-SI.
+    SI XP_RADIUS_ADAPT(1600,900,24)!=8 TUNC REDDE 3. FIN-SI.
+
+    // Eadem umbra bis petita eandem superficiem cacheatam reddit.
+    DECLARA cache SICUT NUMERUS VALENS XP_CACHE_CREA(16).
+    SI cache==0 TUNC REDDE 4. FIN-SI.
+    DECLARA u1 SICUT NUMERUS VALENS XP_UMBRA_CACHE(cache,80,50,10,6,0,170).
+    DECLARA u2 SICUT NUMERUS VALENS XP_UMBRA_CACHE(cache,80,50,10,6,0,170).
+    SI u1==0 || u2==0 || u1!=u2 TUNC REDDE 5. FIN-SI.
+    SI XP_CACHE_MISS(cache)!=1 || XP_CACHE_HIT(cache)!=1 || XP_CACHE_NUMERUS(cache)!=1 TUNC REDDE 6. FIN-SI.
+
+    // Backdrop idem fontem eadem generatione reutilizat; mutatio fontis invalidat clavem.
+    DECLARA fons SICUT NUMERUS VALENS GX_CREA(64,48).
+    SI fons==0 TUNC REDDE 7. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(fons,GVIII_RECT_CREA(0,0,64,48),20+70*256+100*65536,255).
+    f=GX_RECT_ALPHA(fons,GVIII_RECT_CREA(0,20,64,4),180+220*256+240*65536,255).
+    DECLARA rr SICUT NUMERUS VALENS GVIII_RECT_CREA(8,8,40,28).
+    DECLARA b1 SICUT NUMERUS VALENS XP_BACKDROP_CACHE(cache,fons,rr,9,30+45*256+60*65536,70).
+    DECLARA b2 SICUT NUMERUS VALENS XP_BACKDROP_CACHE(cache,fons,rr,9,30+45*256+60*65536,70).
+    SI b1==0 || b2==0 || b1!=b2 TUNC REDDE 8. FIN-SI.
+    f=GX_RECT_ALPHA(fons,GVIII_RECT_CREA(2,2,3,3),200+20*256+30*65536,255).
+    DECLARA b3 SICUT NUMERUS VALENS XP_BACKDROP_CACHE(cache,fons,rr,9,30+45*256+60*65536,70).
+    SI b3==0 || b3==b2 TUNC REDDE 9. FIN-SI.
+    SI XP_CACHE_MISS(cache)!=3 || XP_CACHE_HIT(cache)!=2 || XP_CACHE_NUMERUS(cache)!=3 TUNC REDDE 10. FIN-SI.
+
+    // Masca alpha multiplicat canales praemultiplicatos sine halo.
+    DECLARA src SICUT NUMERUS VALENS GX_CREA(6,4).
+    DECLARA mask SICUT NUMERUS VALENS GX_CREA(6,4).
+    SI src==0 || mask==0 TUNC REDDE 11. FIN-SI.
+    f=GX_RECT_ALPHA(src,GVIII_RECT_CREA(0,0,6,4),255,255).
+    f=GX_RECT_ALPHA(mask,GVIII_RECT_CREA(0,0,3,4),16777215,255).
+    f=GX_RECT_ALPHA(mask,GVIII_RECT_CREA(3,0,3,4),16777215,128).
+    DECLARA mascatum SICUT NUMERUS VALENS XP_MASCA_APPLICA(src,mask).
+    SI mascatum==0 TUNC REDDE 12. FIN-SI.
+    DECLARA q1 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(mascatum,1,1).
+    DECLARA q2 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(mascatum,4,1).
+    SI (q1&255)!=255 || ((q1>>24)&255)!=255 TUNC REDDE 13. FIN-SI.
+    SI (q2&255)<127 || (q2&255)>128 || ((q2>>24)&255)<127 || ((q2>>24)&255)>128 TUNC REDDE 14. FIN-SI.
+
+    // Clip materializat subregionem exactam.
+    DECLARA clip SICUT NUMERUS VALENS XP_CLIP_COPIA(fons,GVIII_RECT_CREA(10,10,12,9)).
+    SI clip==0 || GX_W(clip)!=12 || GX_H(clip)!=9 TUNC REDDE 15. FIN-SI.
+    SI GX_PIX_PM_LEGE(clip,0,0)!=GX_PIX_PM_LEGE(fons,10,10) TUNC REDDE 16. FIN-SI.
+
+    // Gloss auget lumen superioris partis sine mutando fundum inferius.
+    DECLARA gl SICUT NUMERUS VALENS GX_CREA(20,12).
+    SI gl==0 TUNC REDDE 17. FIN-SI.
+    f=GX_RECT_ALPHA(gl,GVIII_RECT_CREA(0,0,20,12),20+30*256+40*65536,255).
+    DECLARA ante SICUT NUMERUS VALENS GX_PIX_PM_LEGE(gl,10,10).
+    SI XP_GLOSS(gl,GVIII_RECT_CREA(0,0,20,12),16777215,90)==0 TUNC REDDE 18. FIN-SI.
+    DECLARA supra SICUT NUMERUS VALENS GX_PIX_PM_LEGE(gl,10,0).
+    DECLARA infra SICUT NUMERUS VALENS GX_PIX_PM_LEGE(gl,10,10).
+    SI (supra&255)<=20 || ((supra>>8)&255)<=30 || ((supra>>16)&255)<=40 TUNC REDDE 19. FIN-SI.
+    SI infra!=ante TUNC REDDE 20. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
