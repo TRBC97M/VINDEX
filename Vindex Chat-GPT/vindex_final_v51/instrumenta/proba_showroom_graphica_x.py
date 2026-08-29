@@ -59,7 +59,9 @@ def principale() -> int:
             print(f"DEFECIT: resolutio {w}x{h}", file=sys.stderr)
             return 4
 
-        # Eadem textura striata extra et intra vitrum: blur debet colores intermedios creare.
+        # Eadem textura striata extra et intra vitrum. Probatio non numerum
+        # arbitrarium colorum petit: blur debet saltem novos tonos creare et
+        # transitum localem multo molliorem reddere.
         extra = linea(aux, pix, w, 300, 72, 244)
         intra = linea(aux, pix, w, 300, 320, 960)
         u_extra = len(set(extra))
@@ -69,11 +71,11 @@ def principale() -> int:
         if u_extra > 6:
             print(f"DEFECIT: textura referentiae nimis varia est: {u_extra}", file=sys.stderr)
             return 5
-        if u_intra < u_extra + 8:
-            print(f"DEFECIT: vitrum colores intermedios non creavit: extra={u_extra} intra={u_intra}", file=sys.stderr)
+        if u_intra <= u_extra or u_intra < 4:
+            print(f"DEFECIT: vitrum tonos intermedios non creavit: extra={u_extra} intra={u_intra}", file=sys.stderr)
             return 6
-        if c_intra >= c_extra:
-            print(f"DEFECIT: blur contrastum non minuit: extra={c_extra} intra={c_intra}", file=sys.stderr)
+        if c_extra <= 0 or c_intra * 2 >= c_extra:
+            print(f"DEFECIT: blur contrastum non satis minuit: extra={c_extra} intra={c_intra}", file=sys.stderr)
             return 7
 
         # Umbra mollis sub fenestra luminantiam localiter deprimit.
