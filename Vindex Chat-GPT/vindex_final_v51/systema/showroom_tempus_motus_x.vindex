@@ -42,6 +42,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA bronzeum_fb SICUT NUMERUS VALENS FV_COLOR(181,138,84).
     DECLARA viride_fb SICUT NUMERUS VALENS FV_COLOR(104,177,123).
     DECLARA rubrum_fb SICUT NUMERUS VALENS FV_COLOR(196,61,61).
+    DECLARA fundum_barrae_fb SICUT NUMERUS VALENS FV_COLOR(14,31,44).
 
     DECLARA fundum SICUT NUMERUS VALENS GX_CREA(w,h).
     SI fundum==0 TUNC REDDE 7. FIN-SI.
@@ -151,6 +152,19 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     f=FV_TEXTUM(760,334,"META SECUNDA",ebur_fb).
     f=FV_TEXTUM(82,h-70,"STATUS TEMPORIS REALIS ET CONTINUITATIS",ebur_fb).
     f=FV_TEXTUM(82,h-44,"vestigia bronzea = frames re vera praesentatae",bronzeum_fb).
+
+    // Telemetria framebuffer: I pixel logicus = III pixela horizontalis.
+    // Python longitudinem directe legit; nullum OCR nec log internum requiritur.
+    DECLARA saltus_bar SICUT NUMERUS VALENS saltus_max.
+    DECLARA omissae_bar SICUT NUMERUS VALENS omissae.
+    SI saltus_bar>100 TUNC saltus_bar=100. FIN-SI.
+    SI omissae_bar>100 TUNC omissae_bar=100. FIN-SI.
+    f=FV_RECT(800,h-74,300,8,fundum_barrae_fb).
+    f=FV_RECT(800,h-74,saltus_bar*3,8,cyan_fb).
+    f=FV_RECT(800,h-54,300,8,fundum_barrae_fb).
+    f=FV_RECT(800,h-54,omissae_bar*3,8,bronzeum_fb).
+    f=FV_TEXTUM(1110,h-76,"SALTUS",ebur_fb).
+    f=FV_TEXTUM(1110,h-56,"OMISSAE",ebur_fb).
 
     SI recte==0 TUNC REDDE 17. FIN-SI.
     DECLARA pausa SICUT NUMERUS VALENS 0.
