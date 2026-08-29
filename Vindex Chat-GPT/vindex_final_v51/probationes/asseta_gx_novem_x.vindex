@@ -1,0 +1,89 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/simg_ii.vindex".
+IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
+IMPORTA "bibliotheca/simg_ii_assetum.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x_asseta.vindex".
+
+FUNCTIO AGX_PIXELA_PANELIS REDDENS TEXTUS.
+    DECLARA pix SICUT TEXTUS VALENS SII_TEXTUS_CREA(256).
+    DECLARA b SICUT NUMERUS VALENS SII_CORPUS(pix).
+    SI b==0 TUNC REDDE 0. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<8 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<8 PERFICE
+            DECLARA r SICUT NUMERUS VALENS 35.
+            DECLARA g SICUT NUMERUS VALENS 70.
+            DECLARA c SICUT NUMERUS VALENS 90.
+            DECLARA a SICUT NUMERUS VALENS 170.
+            SI y<2 TUNC r=107. g=222. c=238. a=255. FIN-SI.
+            SI y>=6 TUNC r=181. g=138. c=84. a=255. FIN-SI.
+            SI y>=2 && y<6 && (x<2 || x>=6) TUNC r=191. g=199. c=207. a=235. FIN-SI.
+            DECLARA p SICUT NUMERUS VALENS b+(y*8+x)*4.
+            SCRIBE_OCTETUM_AB(p,r). SCRIBE_OCTETUM_AB(p+1,g).
+            SCRIBE_OCTETUM_AB(p+2,c). SCRIBE_OCTETUM_AB(p+3,a).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE pix.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    // Conversio recta RGBA -> PM fit semel in limite GXX.
+    DECLARA pm SICUT NUMERUS VALENS GXX_PM_EX_RGBA(255|(128<<24),255).
+    SI (pm&255)<127 || (pm&255)>128 || ((pm>>24)&255)!=128 TUNC REDDE 1. FIN-SI.
+    SI GXX_PM_EX_RGBA(255,255)!=0 TUNC REDDE 2. FIN-SI.
+
+    DECLARA pix SICUT TEXTUS VALENS AGX_PIXELA_PANELIS().
+    DECLARA imago SICUT TEXTUS VALENS SII_CREA_RGBA(8,8,pix,0,3,1000).
+    SI SII_VALIDUS(imago)==0 TUNC REDDE 3. FIN-SI.
+    SI SII_META_NOVEM(imago,2,2,2,2)==0 TUNC REDDE 4. FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS AII_CREA(1000).
+    SI gestor==0 || AII_ADDE(gestor,501,imago)==0 TUNC REDDE 5. FIN-SI.
+
+    DECLARA dst SICUT NUMERUS VALENS GX_CREA(120,80).
+    SI dst==0 TUNC REDDE 6. FIN-SI.
+    DECLARA rectum SICUT NUMERUS VALENS GVIII_RECT_CREA(10,8,100,60).
+    SI GXX_ASSET_NOVEM_GX(dst,gestor,501,rectum,255)==0 TUNC REDDE 7. FIN-SI.
+
+    // Ora superior aqua et inferior bronze manent integrae per 9-slice.
+    DECLARA top SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,60,8).
+    SI (top&255)!=107 || ((top>>8)&255)!=222 || ((top>>16)&255)!=238 || ((top>>24)&255)!=255 TUNC REDDE 8. FIN-SI.
+    DECLARA bot SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,60,67).
+    SI (bot&255)!=181 || ((bot>>8)&255)!=138 || ((bot>>16)&255)!=84 || ((bot>>24)&255)!=255 TUNC REDDE 9. FIN-SI.
+
+    // Flanc argentum semi-opacum non fit opacum per conversionem.
+    DECLARA latus SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,10,36).
+    SI ((latus>>24)&255)<234 || ((latus>>24)&255)>235 TUNC REDDE 10. FIN-SI.
+    SI (latus&255)<175 || (latus&255)>177 TUNC REDDE 11. FIN-SI.
+
+    // Centrum vitrum alpha=170 et canales praemultiplicatos retinet.
+    DECLARA centrum SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,60,36).
+    SI ((centrum>>24)&255)<169 || ((centrum>>24)&255)>170 TUNC REDDE 12. FIN-SI.
+    SI (centrum&255)<22 || (centrum&255)>24 TUNC REDDE 13. FIN-SI.
+    SI ((centrum>>8)&255)<45 || ((centrum>>8)&255)>47 TUNC REDDE 14. FIN-SI.
+    SI ((centrum>>16)&255)<59 || ((centrum>>16)&255)>61 TUNC REDDE 15. FIN-SI.
+
+    // Extra destinatum superficies vere transparens manet.
+    SI GX_PIX_PM_LEGE(dst,2,2)!=0 TUNC REDDE 16. FIN-SI.
+
+    // Damage novem regionum in unum rectum destinationis coalescit.
+    DECLARA damnum SICUT NUMERUS VALENS GX_DAMNA_RECT(dst).
+    SI damnum==0 TUNC REDDE 17. FIN-SI.
+    SI GVIII_RECT_X(damnum)!=10 || GVIII_RECT_Y(damnum)!=8 || GVIII_RECT_W(damnum)!=100 || GVIII_RECT_H(damnum)!=60 TUNC REDDE 18. FIN-SI.
+
+    // Constructor directus quoque dimensionem materialem servat.
+    DECLARA materialis SICUT NUMERUS VALENS GXX_ASSET_NOVEM_CREA(gestor,501,73,41,220).
+    SI materialis==0 || GX_W(materialis)!=73 || GX_H(materialis)!=41 TUNC REDDE 19. FIN-SI.
+    DECLARA mc SICUT NUMERUS VALENS GX_PIX_PM_LEGE(materialis,36,20).
+    SI ((mc>>24)&255)<145 || ((mc>>24)&255)>148 TUNC REDDE 20. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.
