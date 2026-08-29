@@ -1,7 +1,7 @@
 # JL-UX — FUNDAMENTUM GRAPHICUM MODERNUM
 
 **Sylvia OS — P16-XII**  
-Status: **P16-XII-A PERFECTUM; P16-XII-B PROBATUM / CANONIZANDUM**
+Status: **P16-XII-A et P16-XII-B PERFECTA; P16-XII-C ACTIVUM, C1 PROBATUM / CANONIZANDUM**
 
 ## I. Propositum
 
@@ -63,13 +63,16 @@ Haec non sunt ornamenta hard-coded shellis; sunt primitive compositoris reutiliz
 
 ## VI. Effectus et cache
 
-Blur et umbrae magnae non singulis frameis recreandae sunt. Lex productionis erit:
+Blur et umbrae magnae non singulis frameis recreandae sunt. Lex productionis est:
 
 - effectus staticus → cache;
-- mutatio contenti → invalida tantum regionem affectam;
+- mutatio contenti → nova generatio fontis et invalidatio naturalis clavis cache;
 - resize → recrea cache necessarium;
 - compositio → damage tantum praesentat;
-- blur late diffusum sine causa vitatur.
+- blur late diffusum sine causa vitatur;
+- radius blur secundum aream superficiei coerceri potest.
+
+P16-XII-C1 hanc legem iam exsequitur per gestorem `XP_*` cum hit/miss, cache umbrarum et backdrop, blur adaptivo, maska alpha, clipping materializato et gloss reutilizabili.
 
 Implementatio software est backend referentiae et veritatis semanticae, non finis accelerationis.
 
@@ -101,7 +104,7 @@ Ordo intentus:
 
 ### P16-XII-B — Scena compositoris
 
-**Status: PROBATUM / CANONIZANDUM per #147.**
+**Status: PERFECTUM per #148; #147 historiam draft servat.**
 
 - registrum dynamicum stratorum;
 - Z ordinatum et mutabile runtime;
@@ -115,12 +118,23 @@ Ordo intentus:
 
 ### P16-XII-C — Effectus productionis
 
+**Status: ACTIVUM; C1 PROBATUM / CANONIZANDUM per #149.**
+
+C1 iam instituit:
+
 - cache umbrarum;
-- backdrop cache;
-- blur adaptivus;
-- gloss/highlight;
-- maskae et clipping per stratum;
-- 9-slice materialis super Graphica IX.
+- backdrop cache cum generatione fontis in clave;
+- blur adaptivum secundum aream;
+- gloss/highlight reutilizabile;
+- maskam alpha praemultiplicatam;
+- clipping materializatum;
+- hit/miss et capacitatem gestorii cache.
+
+C2 proximum est:
+
+- pontem rasterae premium Graphica IX/SIMG II → superficies GX;
+- 9-slice materialem in superficie compositoris;
+- contractum quo chrome JL-UX raster premium sine framebuffer directo reddi possit.
 
 ### P16-XII-D — Tempus et motus
 
@@ -190,7 +204,7 @@ Probatio VINDEX nativa confirmat:
 - backbuffer intactum extra damage;
 - parvum motum qui tantum **LXXX pixela** recomponit, non totam scenam.
 
-Showroom QEMU/OVMF 1280×800 capitis `64a2f70d…` rettulit:
+Showroom QEMU/OVMF 1280×800 rettulit:
 
 ```text
 colores framebuffer: 699
@@ -205,7 +219,33 @@ XXXV probationes canonicae: 35 / 35
 
 Captura inspecta est. Aqua et bronzeum ordinem colorum rectum servant; canarius extra damage post secundam praesentiam manet; canarius intra locum veterem deletur; umbra est stratum separatum infra panel; compositor regionem laesam tantum praesentat.
 
-## XII. Invarianta
+## XII. Probationes P16-XII-C1
+
+Probatio VINDEX nativa confirmat:
+
+- radius blur adaptivus `20 / 12 / 8` pro areis parva/media/magna;
+- eandem umbram bis petitam eandem superficiem cacheatam reddere;
+- backdrop eadem generatione cache hit dare;
+- mutationem fontis generationem mutare et backdrop novum producere;
+- maskam alpha canales praemultiplicatos simul minuere;
+- clip mensuram et pixelum originis exactum servare;
+- gloss partem superiorem illuminare sine parte inferiore mutata.
+
+Showroom QEMU/OVMF 1280×800 capitis `512d470d…` rettulit:
+
+```text
+colores framebuffer: 1587
+contrastus extra/intra backdrop: 11.20 / 0.60
+masca, angulus/centrum: (6,14,23) / (18,123,147)
+gloss, lumen supra/infra: 380 / 273
+umbra cacheata, lumen: 37 / 46
+cache showroom: duo hit / duo miss / duo nodi
+XXXV probationes canonicae: 35 / 35
+```
+
+Captura framebuffer inspecta est. Backdrop strias vere mollit; anguli maskae ad fundum redeunt; highlight superior clarus sed localis est; clip intra limites suos manet; eadem umbra cacheata in pluribus stratis reutilizatur.
+
+## XIII. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -214,8 +254,9 @@ Captura inspecta est. Aqua et bronzeum ordinem colorum rectum servant; canarius 
 - imago conceptus est scopus visualis, QEMU est auctoritas executionis;
 - wallpaper non substituit motorem;
 - effectus non iustificant input lentum;
-- memoria GX semper RGBA canonica manet; conversio GOP tantum in limite framebufferis fit.
+- memoria GX semper RGBA canonica manet; conversio GOP tantum in limite framebufferis fit;
+- effectus cacheatus non iterum calculatur nisi clavis vel generatio fontis mutatur.
 
-## XIII. Sententia
+## XIV. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**
