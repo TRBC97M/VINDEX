@@ -1,0 +1,131 @@
+// P12-IV — probatio BAR et regionum MMIO sub UEFI vero.
+//
+// Enumerat apparatus, deinde pro quoque BAR adhibito monstrat:
+//   genus (M = memoria, P = portus), adressam, mensuram.
+//
+// Probat regiones veras esse: apparatus graphicus QEMU (1234:1111)
+// framebuffer suum per BAR 0 exponit, cuius mensura pluribus
+// megabytis aequatur.
+
+IMPORTA "rectores/pci.vindex".
+
+FUNCTIO MEMORIA_VACUA REDDENS NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(destinatio + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO CIFRA_HEX REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI valor < 10 TUNC REDDE 48 + valor. FIN-SI.
+    REDDE 55 + valor.
+FIN-FUNCTIO.
+
+FUNCTIO HEX8_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, CIFRA_HEX((valor / 16) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 2, CIFRA_HEX(valor & 15)).
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO HEX16_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, CIFRA_HEX((valor / 4096) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 2, CIFRA_HEX((valor / 256) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 4, CIFRA_HEX((valor / 16) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 6, CIFRA_HEX(valor & 15)).
+    REDDE 8.
+FIN-FUNCTIO.
+
+FUNCTIO HEX32_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA ig1 SICUT NUMERUS VALENS HEX16_SCRIBE(buf, positio, (valor / 65536) & 65535).
+    DECLARA ig2 SICUT NUMERUS VALENS HEX16_SCRIBE(buf, positio + 8, valor & 65535).
+    REDDE 16.
+FIN-FUNCTIO.
+
+FUNCTIO SCRIBE_CATENAM REDDENS NUMERUS.
+    ACCIPIT conout SICUT NUMERUS.
+    ACCIPIT catena SICUT NUMERUS.
+    DECLARA sc SICUT NUMERUS VALENS CONTENTUM(conout + 8).
+    REDDE UEFI_VOCA6(sc, conout, catena, 0, 0, 0, 0).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA ts SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI ts == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA co SICUT NUMERUS VALENS CONTENTUM(ts + 64).
+
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(256).
+    DECLARA descriptor SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI PCI_REGISTRUM_INITIA(descriptor, 2) != 0 TUNC REDDE 2. FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS PCI_ENUMERA_PER_PONTES(descriptor).
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        DECLARA sedes SICUT NUMERUS VALENS PCI_REGISTRUM_SEDES(descriptor, i).
+        DECLARA bus SICUT NUMERUS VALENS CONTENTUM(sedes).
+        DECLARA app SICUT NUMERUS VALENS CONTENTUM(sedes + 8).
+        DECLARA fn SICUT NUMERUS VALENS CONTENTUM(sedes + 16).
+        DECLARA nbar SICUT NUMERUS VALENS PCI_BAR_NUMERUS(bus, app, fn).
+
+        SI nbar > 0 TUNC
+            DECLARA b SICUT NUMERUS VALENS 0.
+            DUM b < 6 PERFICE
+                DECLARA v SICUT NUMERUS VALENS PCI_BAR_LEGE(bus, app, fn, b).
+                SI v != 0 TUNC
+                    DECLARA ig_v SICUT NUMERUS VALENS MEMORIA_VACUA(buf, 256).
+                    DECLARA p SICUT NUMERUS VALENS 0.
+                    // venditor:apparatus
+                    p = p + HEX16_SCRIBE(buf, p, CONTENTUM(sedes + 24)).
+                    SCRIBE_OCTETUM_AB(buf + p, 58). p = p + 2.
+                    p = p + HEX16_SCRIBE(buf, p, CONTENTUM(sedes + 32)).
+                    SCRIBE_OCTETUM_AB(buf + p, 32). p = p + 2.
+                    // BAR index
+                    SCRIBE_OCTETUM_AB(buf + p, 66). p = p + 2.
+                    p = p + HEX8_SCRIBE(buf, p, b).
+                    SCRIBE_OCTETUM_AB(buf + p, 32). p = p + 2.
+                    // genus
+                    SI PCI_BAR_EST_MEMORIA(v) == 1 TUNC
+                        SCRIBE_OCTETUM_AB(buf + p, 77).
+                    ALITER
+                        SCRIBE_OCTETUM_AB(buf + p, 80).
+                    FIN-SI.
+                    p = p + 2.
+                    SI PCI_BAR_EST_LXIV(v) == 1 TUNC
+                        SCRIBE_OCTETUM_AB(buf + p, 54).
+                        SCRIBE_OCTETUM_AB(buf + p + 2, 52).
+                        p = p + 4.
+                    FIN-SI.
+                    SCRIBE_OCTETUM_AB(buf + p, 32). p = p + 2.
+                    // adressa
+                    p = p + HEX32_SCRIBE(buf, p, PCI_BAR_ADRESSA(v)).
+                    SCRIBE_OCTETUM_AB(buf + p, 32). p = p + 2.
+                    // mensura
+                    p = p + HEX32_SCRIBE(buf, p, PCI_BAR_MENSURA(bus, app, fn, b)).
+                    SCRIBE_OCTETUM_AB(buf + p, 13).
+                    SCRIBE_OCTETUM_AB(buf + p + 2, 10).
+                    DECLARA ig_s SICUT NUMERUS VALENS SCRIBE_CATENAM(co, buf).
+                    SI PCI_BAR_EST_LXIV(v) == 1 TUNC
+                        b = b + 1.
+                    FIN-SI.
+                FIN-SI.
+                b = b + 1.
+            FIN-DUM.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+
+    REDDE 0.
+FIN-FUNCTIO.

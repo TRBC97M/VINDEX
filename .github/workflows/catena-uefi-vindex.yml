@@ -39,6 +39,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_pontes_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
@@ -96,6 +97,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/uefi/**'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_pontes_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
@@ -285,3 +287,8 @@ jobs:
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         run: bash ./instrumenta/proba_pci_pontes_053.sh
+
+      - name: BAR et regiones MMIO (P12-IV)
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: bash ./instrumenta/proba_pci_bar_053.sh

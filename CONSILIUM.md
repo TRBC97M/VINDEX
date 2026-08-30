@@ -142,6 +142,22 @@ Probatio `instrumenta/proba_pci_pontes_053.sh` (septem gradus, in CI), topologia
 
 Topologia per configurationem QEMU construitur (q35, `x3130-upstream`, `xio3130-downstream`): nihil in runtime fingitur.
 
+### P12-IV — BAR et regiones MMIO
+
+Sex BAR (registra 16..36) leguntur; genus (memoria vel portus), adressa, mensura et praefetchabilitas agnoscuntur. BAR LXIV bitorum tractantur (duos indices occupant). Mensura per explorationem canonicam invenitur (scriptio omnium unitatum, relectio, inversio), valore originali semper restituto.
+
+Probatio `instrumenta/proba_pci_bar_053.sh` (sex gradus, in CI):
+
+```text
+8086:7010 B04 P 0000C000 00000010
+1234:1111 B00 M 80000000 01000000
+1234:1111 B02 M 81010000 00001000
+```
+
+Collatio decisiva: BAR 0 apparatus graphici (`1234:1111`) adressam `0x80000000` reddit — **eandem quam firmware per protocollum graphicum pro framebuffer dat**. Regiones ergo verae sunt, non coniecturales. Mensurae omnes potentiae duorum sunt (regula PCI). In topologia q35 sedecim BAR aguntur.
+
+Hoc stratum viam ad backend acceleratum P16-XII-F aperit: regiones MMIO apparatuum nunc a VINDEX ipso inveniri possunt.
+
 ## P13 — Machina referentiae physica
 
 **Status:** `LONGINQUUM`.
