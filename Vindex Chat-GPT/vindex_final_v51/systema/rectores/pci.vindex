@@ -96,6 +96,226 @@ FUNCTIO PCI_ADEST REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
+// --- Descriptio pontium PCI-ad-PCI ---
+// Pons habet classem 6 (pons) et subclassem 4 (PCI-ad-PCI).
+// Registrum 24 continet: bus primarius (bits 0-7), secundarius (8-15),
+// subordinatus (16-23), limen latentiae (24-31).
+
+FUNCTIO PCI_EST_PONS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    SI PCI_CLASSIS(bus, apparatus, functio) != 6 TUNC REDDE 0. FIN-SI.
+    SI PCI_SUBCLASSIS(bus, apparatus, functio) != 4 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BUS_PRIMARIUS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE PCI_LEGE(bus, apparatus, functio, 24) & 255.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BUS_SECUNDARIUS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE (PCI_LEGE(bus, apparatus, functio, 24) / 256) & 255.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BUS_SUBORDINATUS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE (PCI_LEGE(bus, apparatus, functio, 24) / 65536) & 255.
+FIN-FUNCTIO.
+
+// --- Registrum apparatuum, vere dynamicum ---
+// Descriptor tria verba occupat: +0 basis, +8 capacitas, +16 numerus.
+// Quisque ingressus undecim verba (88 octeta):
+//   +0 bus, +8 apparatus, +16 functio, +24 venditor, +32 id apparatus,
+//   +40 classis, +48 subclassis,
+//   +56 bus primarius   (ex registro 24; 0 si non pons),
+//   +64 bus secundarius (0 si non pons),
+//   +72 bus subordinatus (0 si non pons),
+//   +80 profunditas vera in arbore (radix = 0).
+//
+// Capacitas duplicatur cum impletur: nulla limitatio artificialis manet.
+
+FUNCTIO PCI_REGISTRUM_INITIA REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT capacitas_initialis SICUT NUMERUS.
+    DECLARA basis SICUT NUMERUS VALENS RESERVA_OCTETA(capacitas_initialis * 88).
+    SI basis <= 0 TUNC REDDE 1. FIN-SI.
+    CONTENTUM(descriptor) = basis.
+    CONTENTUM(descriptor + 8) = capacitas_initialis.
+    CONTENTUM(descriptor + 16) = 0.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_REGISTRUM_CRESCE REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    DECLARA vetus_basis SICUT NUMERUS VALENS CONTENTUM(descriptor).
+    DECLARA vetus_capacitas SICUT NUMERUS VALENS CONTENTUM(descriptor + 8).
+    DECLARA nova_capacitas SICUT NUMERUS VALENS vetus_capacitas * 2.
+    DECLARA nova_basis SICUT NUMERUS VALENS RESERVA_OCTETA(nova_capacitas * 88).
+    SI nova_basis <= 0 TUNC REDDE 1. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA octeta SICUT NUMERUS VALENS CONTENTUM(descriptor + 16) * 88.
+    DUM i < octeta PERFICE
+        SCRIBE_OCTETUM_AB(nova_basis + i, OCTETUS_AB(vetus_basis + i)).
+        i = i + 1.
+    FIN-DUM.
+    CONTENTUM(descriptor) = nova_basis.
+    CONTENTUM(descriptor + 8) = nova_capacitas.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_REGISTRUM_ADDE REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT profunditas SICUT NUMERUS.
+    SI CONTENTUM(descriptor + 16) >= CONTENTUM(descriptor + 8) TUNC
+        SI PCI_REGISTRUM_CRESCE(descriptor) != 0 TUNC REDDE 1. FIN-SI.
+    FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS CONTENTUM(descriptor + 16).
+    DECLARA sedes SICUT NUMERUS VALENS CONTENTUM(descriptor) + (index * 88).
+    CONTENTUM(sedes) = bus.
+    CONTENTUM(sedes + 8) = apparatus.
+    CONTENTUM(sedes + 16) = functio.
+    CONTENTUM(sedes + 24) = PCI_VENDITOR(bus, apparatus, functio).
+    CONTENTUM(sedes + 32) = PCI_APPARATUS_ID(bus, apparatus, functio).
+    CONTENTUM(sedes + 40) = PCI_CLASSIS(bus, apparatus, functio).
+    CONTENTUM(sedes + 48) = PCI_SUBCLASSIS(bus, apparatus, functio).
+    SI PCI_EST_PONS(bus, apparatus, functio) == 1 TUNC
+        CONTENTUM(sedes + 56) = PCI_BUS_PRIMARIUS(bus, apparatus, functio).
+        CONTENTUM(sedes + 64) = PCI_BUS_SECUNDARIUS(bus, apparatus, functio).
+        CONTENTUM(sedes + 72) = PCI_BUS_SUBORDINATUS(bus, apparatus, functio).
+    ALITER
+        CONTENTUM(sedes + 56) = 0.
+        CONTENTUM(sedes + 64) = 0.
+        CONTENTUM(sedes + 72) = 0.
+    FIN-SI.
+    CONTENTUM(sedes + 80) = profunditas.
+    CONTENTUM(descriptor + 16) = index + 1.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_REGISTRUM_NUMERUS REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    REDDE CONTENTUM(descriptor + 16).
+FIN-FUNCTIO.
+
+FUNCTIO PCI_REGISTRUM_SEDES REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    REDDE CONTENTUM(descriptor) + (index * 88).
+FIN-FUNCTIO.
+
+// --- Enumeratio recursiva per pontes ---
+//
+// Tabula bus visitatorum CCLVI octeta occupat: haec non est limitatio
+// artificialis sed ipsa architectura PCI (numerus bus octo bitorum est).
+// Duplex custodia contra circulos: bus iam visitatus non iteratur, et
+// pons qui ad bus suum ipsum vel ad bus priorem mittit ignoratur.
+
+FUNCTIO PCI_BUS_NOTA REDDENS NUMERUS.
+    ACCIPIT tabula SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(tabula + bus, 1).
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BUS_VISITATUS REDDENS NUMERUS.
+    ACCIPIT tabula SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    REDDE OCTETUS_AB(tabula + bus).
+FIN-FUNCTIO.
+
+// Unum bus percurrit; pontes inventos in cauda ponit.
+// Cauda paria (bus, profunditas) servat, sedecim octeta per ingressum,
+// cum numero suo in capite. Profunditas ergo VERA est: profunditas
+// bus secundarii est profunditas patris plus una, non index codae.
+FUNCTIO PCI_BUS_PERCURRE REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    ACCIPIT tabula SICUT NUMERUS.
+    ACCIPIT cauda SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT profunditas SICUT NUMERUS.
+    DECLARA app SICUT NUMERUS VALENS 0.
+    DUM app < 32 PERFICE
+        SI PCI_ADEST(bus, app, 0) == 1 TUNC
+            DECLARA caput SICUT NUMERUS VALENS PCI_GENUS_CAPITIS(bus, app, 0).
+            DECLARA functiones SICUT NUMERUS VALENS 1.
+            SI (caput & 128) == 128 TUNC
+                functiones = 8.
+            FIN-SI.
+            DECLARA fn SICUT NUMERUS VALENS 0.
+            DUM fn < functiones PERFICE
+                SI PCI_ADEST(bus, app, fn) == 1 TUNC
+                    DECLARA ig_add SICUT NUMERUS VALENS PCI_REGISTRUM_ADDE(descriptor, bus, app, fn, profunditas).
+                    SI PCI_EST_PONS(bus, app, fn) == 1 TUNC
+                        DECLARA sec SICUT NUMERUS VALENS PCI_BUS_SECUNDARIUS(bus, app, fn).
+                        // Custodia contra circulos: bus secundarius validus
+                        // esse debet, nec iam visitatus, nec idem ac praesens.
+                        SI sec > 0 && sec != bus && PCI_BUS_VISITATUS(tabula, sec) == 0 TUNC
+                            DECLARA n_cauda SICUT NUMERUS VALENS CONTENTUM(cauda).
+                            SI n_cauda < 256 TUNC
+                                CONTENTUM(cauda + 8 + (n_cauda * 16)) = sec.
+                                CONTENTUM(cauda + 16 + (n_cauda * 16)) = profunditas + 1.
+                                CONTENTUM(cauda) = n_cauda + 1.
+                                DECLARA ig_nota SICUT NUMERUS VALENS PCI_BUS_NOTA(tabula, sec).
+                            FIN-SI.
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+                fn = fn + 1.
+            FIN-DUM.
+        FIN-SI.
+        app = app + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+// Enumeratio principalis: incipit a bus 0, deinde bus secundarios
+// per pontes inventos percurrit, donec cauda vacua sit.
+// Reddit numerum apparatuum inventorum; registrum dynamice crescit.
+FUNCTIO PCI_ENUMERA_PER_PONTES REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    DECLARA tabula SICUT NUMERUS VALENS RESERVA_OCTETA(256).
+    SI tabula <= 0 TUNC REDDE 0 - 1. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 256 PERFICE
+        SCRIBE_OCTETUM_AB(tabula + i, 0).
+        i = i + 1.
+    FIN-DUM.
+
+    DECLARA cauda SICUT NUMERUS VALENS RESERVA_OCTETA(4104).
+    SI cauda <= 0 TUNC REDDE 0 - 1. FIN-SI.
+    CONTENTUM(cauda) = 0.
+
+    // Bus 0 semper radix est.
+    DECLARA ig_r SICUT NUMERUS VALENS PCI_BUS_NOTA(tabula, 0).
+    CONTENTUM(cauda + 8) = 0.
+    CONTENTUM(cauda + 16) = 0.
+    CONTENTUM(cauda) = 1.
+
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DUM index < CONTENTUM(cauda) PERFICE
+        DECLARA bus SICUT NUMERUS VALENS CONTENTUM(cauda + 8 + (index * 16)).
+        DECLARA prof SICUT NUMERUS VALENS CONTENTUM(cauda + 16 + (index * 16)).
+        DECLARA ig_p SICUT NUMERUS VALENS PCI_BUS_PERCURRE(descriptor, tabula, cauda, bus, prof).
+        index = index + 1.
+    FIN-DUM.
+
+    REDDE PCI_REGISTRUM_NUMERUS(descriptor).
+FIN-FUNCTIO.
+
+// Enumeratio plana antiqua, servata pro compatibilitate et comparatione.
+// Reddit numerum apparatuum inventorum; registrum implet usque ad limen.
 // Registrum apparatuum inventorum. Quisque ingressus octo verba occupat:
 //   +0 bus, +8 apparatus, +16 functio, +24 venditor, +32 id apparatus,
 //   +40 classis, +48 subclassis, +56 reservatum.
