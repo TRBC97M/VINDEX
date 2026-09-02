@@ -1,0 +1,8 @@
+// P9: chorda litteralis non clausa.
+// Ante correctionem: circulus lectionis sine limite super n, ergo lectio
+// ultra finem fontis et compilator cadens (SIGSEGV, exitus 139).
+// Post correctionem: nullus casus, compilatio terminatur.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    PROCLAMA "chorda quae numquam clauditur.
+    REDDE 0.
+FIN-FUNCTIO.

@@ -1864,6 +1864,9 @@ FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.
     SI genus == 6 TUNC
         PROCLAMA "ERRATUM: proiectum VINDEX invalidum est".
     FIN-SI.
+    SI genus == 7 TUNC
+        PROCLAMA "ERRATUM: chorda litteralis non clauditur".
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -2171,7 +2174,7 @@ FUNCTIO COMPONE_CAMBIA_DIRECTORIUM REDDENS NUMERUS.
         DECLARA loci_saltus_cd SICUT NUMERUS VALENS 0.
         p = COMPONE_JMP_FUTURUM(codex, p, SEDES(loci_saltus_cd)).
         DECLARA sedes_cd SICUT NUMERUS VALENS p.
-        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
             CODEX_SCRIBE(codex, p, fons[CONTENTUM(pos_fontis)]).
             p = p + 1.
             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
@@ -2804,7 +2807,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             DECLARA loci_saltus_viae SICUT NUMERUS VALENS 0.
             CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_viae)).
             DECLARA sedes_viae SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-            DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+            DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
                 CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), fons[CONTENTUM(pos_fontis)]).
                 CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
                 CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
@@ -2869,7 +2872,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         DECLARA loci_saltus_cmd SICUT NUMERUS VALENS 0.
         CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_cmd)).
         DECLARA sedes_cmd SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
             CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), fons[CONTENTUM(pos_fontis)]).
             CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
@@ -2961,7 +2964,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         DECLARA loci_saltus_cmd2 SICUT NUMERUS VALENS 0.
         CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_cmd2)).
         DECLARA sedes_cmd2 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
             CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), fons[CONTENTUM(pos_fontis)]).
             CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
@@ -3091,7 +3094,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             DECLARA loci_saltus_viae2 SICUT NUMERUS VALENS 0.
             CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_viae2)).
             DECLARA sedes_viae2 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-            DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+            DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
                 CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), fons[CONTENTUM(pos_fontis)]).
                 CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
                 CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
@@ -3133,7 +3136,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         DECLARA loci_saltus_viae3 SICUT NUMERUS VALENS 0.
         CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_viae3)).
         DECLARA sedes_viae3 SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
-        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
             CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), fons[CONTENTUM(pos_fontis)]).
             CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
@@ -5008,7 +5011,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                         CONTENTUM(pos_codicis) = COMPONE_JMP_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_saltus_chorda)).
                                         DECLARA sedes_chorda SICUT NUMERUS VALENS CONTENTUM(pos_codicis).
                                         DECLARA mensura_chorda SICUT NUMERUS VALENS 0.
-                                        DUM fons[CONTENTUM(pos_fontis)] != 34 PERFICE
+                                        DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 34 PERFICE
                                             CODEX_SCRIBE(codex, CONTENTUM(pos_codicis), fons[CONTENTUM(pos_fontis)]).
                                             CONTENTUM(pos_codicis) = CONTENTUM(pos_codicis) + 1.
                                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
