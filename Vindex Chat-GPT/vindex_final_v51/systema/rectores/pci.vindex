@@ -373,3 +373,103 @@ FUNCTIO PCI_ENUMERA REDDENS NUMERUS.
     FIN-DUM.
     REDDE numerus.
 FIN-FUNCTIO.
+
+// ============================================================
+// P12-IV — BAR (Base Address Registers) et regiones MMIO
+// ============================================================
+//
+// Quisque apparatus usque ad sex BAR habet, in registris 16, 20, 24,
+// 28, 32, 36. Quisque BAR regionem memoriae vel portuum describit.
+//
+// Formatum:
+//   bit 0 == 0 -> regio memoriae (MMIO); adressa = valor & 0xFFFFFFF0
+//   bit 0 == 1 -> regio portuum;         adressa = valor & 0xFFFFFFFC
+//   in memoria: bits 1-2 == genus (0 = XXXII bitorum, 2 = LXIV bitorum)
+//               bit 3 == praefetchabilis
+//
+// Mensura regionis non directe legitur sed exploratur: scribimus
+// omnes unitates (0xFFFFFFFF), relegimus, invertimus, unum addimus.
+// Valor originalis postea restituendus est, ne apparatus turbetur.
+
+FUNCTIO PCI_BAR_REGISTRUM REDDENS NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    REDDE 16 + (index * 4).
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BAR_LEGE REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    REDDE PCI_LEGE(bus, apparatus, functio, PCI_BAR_REGISTRUM(index)).
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BAR_EST_MEMORIA REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI (valor & 1) == 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BAR_EST_LXIV REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI (valor & 1) != 0 TUNC REDDE 0. FIN-SI.
+    SI ((valor / 2) & 3) == 2 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BAR_PRAEFETCHABILIS REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI (valor & 1) != 0 TUNC REDDE 0. FIN-SI.
+    SI ((valor / 8) & 1) == 1 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PCI_BAR_ADRESSA REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI (valor & 1) == 0 TUNC
+        REDDE valor & 4294967280.
+    FIN-SI.
+    REDDE valor & 4294967292.
+FIN-FUNCTIO.
+
+// Mensuram regionis explorat, deinde valorem originalem restituit.
+// Reddit 0 si BAR non adhibetur.
+FUNCTIO PCI_BAR_MENSURA REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    DECLARA reg SICUT NUMERUS VALENS PCI_BAR_REGISTRUM(index).
+    DECLARA originalis SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, reg).
+    SI originalis == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA ig_s SICUT NUMERUS VALENS PCI_SCRIBE(bus, apparatus, functio, reg, 4294967295).
+    DECLARA proba SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, reg);
+    DECLARA ig_r SICUT NUMERUS VALENS PCI_SCRIBE(bus, apparatus, functio, reg, originalis).
+    SI proba == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA larva SICUT NUMERUS VALENS PCI_BAR_ADRESSA(proba).
+    SI larva == 0 TUNC REDDE 0. FIN-SI.
+    // mensura = (~larva) + 1, in XXXII bitis
+    DECLARA inversa SICUT NUMERUS VALENS (4294967295 - larva) & 4294967295.
+    REDDE (inversa + 1) & 4294967295.
+FIN-FUNCTIO.
+
+// Numerum BAR adhibitorum reddit; sex maximum, sed BAR LXIV bitorum
+// duos occupat, ideo index saliendus est.
+FUNCTIO PCI_BAR_NUMERUS REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    DECLARA numerus SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 6 PERFICE
+        DECLARA v SICUT NUMERUS VALENS PCI_BAR_LEGE(bus, apparatus, functio, i).
+        SI v != 0 TUNC
+            numerus = numerus + 1.
+            SI PCI_BAR_EST_LXIV(v) == 1 TUNC
+                i = i + 1.
+            FIN-SI.
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE numerus.
+FIN-FUNCTIO.
