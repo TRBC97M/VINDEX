@@ -99,7 +99,12 @@ Historia servatur, sed `main`, `ARCHITECTURA.md` et haec tabula auctoritatem pra
 
 Iam canonica sunt collectiones dynamicae, series contiguae, segmenta mutuata, UTF-8 strictum, scalaria Unicode, reditus `TEXTUS`, `SUBTEXTUS_SCALARUM` et structurae internae byte-addressatae.
 
-**Debitum apertum #134:** `EXTRAHE_ET_SIGNA` tamponem historicum identificatorum XXXII octetorum habet. Graphica VIII/IX nomen publicum tutum adhibet; correctio compilatoris separatim fieri debet, cum regressione >XXXII litterarum, puncto fixo, ELF, Win64 et UEFI. Renderer visualis ad hoc debitum miscendum non est nisi vere impeditur.
+**Debitum #134 solutum.** `EXTRAHE_ET_SIGNA` tampone omnino caret: signum litteram post litteram computatur, nullo intermedio. Duo defectus reales sublati:
+
+- identificator ultra XXXII litteras aream excedebat — **compilator ipse cadebat** (probatum: XL litterae → SIGSEGV, exitus 139);
+- duo nomina post XXXII litteram tantum differentia idem signum accipiebant — collisio silens.
+
+Formula signi eadem manet (`signum * 31 + littera`), sed omnes litterae numerantur. Regressio `tests/casus/identificatores_longi.vindex` addita. Probatum: functiones usque ad D litteras; punctum fixum novum `8b22021c…`, ELF, PE/Win64, UEFI, XXXV/XXXV probationes canonicae, regressiones PCI.
 
 Candidata futura: typi maturiores, structurae/uniones/enumerationes, functiones ut valores, moduli, ABI explicitius, ELF multi-`PT_LOAD`, graphemata et normalizatio Unicode.
 

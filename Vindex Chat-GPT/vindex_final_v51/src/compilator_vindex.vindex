@@ -1613,18 +1613,24 @@ FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
     REDDE signum.
 FIN-FUNCTIO.
 
+// Signum identificatoris sine tampone computatur, littera post litteram.
+// Tampon historicus XXXII octetorum (debitum #134) omnino tollitur:
+//   - identificator ultra XXXII litteras aream excedebat, unde corruptio
+//     memoriae et compilator ipse cadens (probatum: XL litterae -> SIGSEGV);
+//   - duo nomina post XXXII litteram tantum differentia idem signum
+//     accipiebant, unde collisio silens.
+// Signum idem manet ac prius pro nominibus brevibus: eadem formula
+// signum * 31 + littera, sed omnes litterae numerantur, nulla omissa.
 FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
     ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
-    DECLARA verbum SICUT ORDO DE LITTERA CAPACITAS 32.
-    DECLARA mensura SICUT NUMERUS VALENS 0.
+    DECLARA signum SICUT NUMERUS VALENS 0.
     DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
-        verbum[mensura] = fons[CONTENTUM(pos)].
-        mensura = mensura + 1.
+        signum = signum * 31 + fons[CONTENTUM(pos)].
         CONTENTUM(pos) = CONTENTUM(pos) + 1.
     FIN-DUM.
-    REDDE SIGNUM_VERBI(verbum, mensura).
+    REDDE signum.
 FIN-FUNCTIO.
 
 FUNCTIO COMPONE_SHL REDDENS NUMERUS.
