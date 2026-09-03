@@ -2,23 +2,44 @@
 from pathlib import Path
 
 VIA = Path("Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex")
-
 fons = VIA.read_text(encoding="utf-8")
 mutatum = False
 
-# Compilator ipse unum ordinem localem identificatoris ad SIGNUM_VERBI tradit.
-# Postquam ORDO DE LITTERA byte-addressatus fit, parametrum quoque contractum
-# byte-addressatum ACUS<LITTERA> sequi debet; aliter hash identificatorum
-# stride VIII veterem retineret et functiones non inveniret.
-vetus_signum = "    ACCIPIT verbum SICUT ORDO DE LITTERA.\n"
-novum_signum = "    ACCIPIT verbum SICUT ACUS<LITTERA>.\n"
-if vetus_signum in fons:
-    if fons.count(vetus_signum) != 1:
-        raise SystemExit("ERRATUM: SIGNUM_VERBI ORDO signature non unica est")
-    fons = fons.replace(vetus_signum, novum_signum, 1)
+
+def substitue_unum(vetus: str, novum: str, nomen: str) -> None:
+    global fons, mutatum
+    if novum in fons:
+        return
+    numerus = fons.count(vetus)
+    if numerus != 1:
+        raise SystemExit(f"ERRATUM: ancora {nomen!r} inventa {numerus} vice/ibus, exspectata 1")
+    fons = fons.replace(vetus, novum, 1)
     mutatum = True
-elif novum_signum not in fons:
-    raise SystemExit("ERRATUM: SIGNUM_VERBI signature neque vetus neque nova inventa est")
+
+
+# Bootstrap internus: antequam semantica publica mutetur, compilator ipse
+# buffers LITTERA suos per octeta cruda tractat. Ita compilator vetus et novus
+# eundem fontem sine conflictu stride VIII/stride I compilare possunt.
+substitue_unum(
+    "    ACCIPIT verbum SICUT ORDO DE LITTERA.\n",
+    "    ACCIPIT verbum SICUT ACUS<LITTERA>.\n",
+    "SIGNUM_VERBI signature",
+)
+substitue_unum(
+    "        signum = signum * 31 + verbum[idx].\n",
+    "        signum = signum * 31 + OCTETUS_AB(verbum + idx).\n",
+    "SIGNUM_VERBI lectio",
+)
+substitue_unum(
+    "        verbum[mensura] = fons[CONTENTUM(pos)].\n",
+    "        SCRIBE_OCTETUM_AB(verbum + mensura, fons[CONTENTUM(pos)]).\n",
+    "EXTRAHE_ET_SIGNA scriptio",
+)
+substitue_unum(
+    "            buffer[mensura] = OCTETUS_AB(textus + positio + mensura).\n",
+    "            SCRIBE_OCTETUM_AB(buffer + mensura, OCTETUS_AB(textus + positio + mensura)).\n",
+    "buffer diagnostici scriptio",
+)
 
 MARCA = "// P9 — ORDO DE LITTERA elementa unius octeti sunt."
 if MARCA not in fons:
@@ -41,23 +62,6 @@ if MARCA not in fons:
                             DECLARA nomen_typus_ordo SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
 '''
 
-    vetus_magnitudo = '''                            DECLARA numerus_campi_ordo SICUT NUMERUS VALENS NUMERUS_CAMPORUM_FORMAE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), nomen_typus_ordo).
-                            DECLARA magnitudo_elem_ordo SICUT NUMERUS VALENS 8.
-                            SI numerus_campi_ordo > 0 TUNC
-                                magnitudo_elem_ordo = numerus_campi_ordo * 8.
-                            FIN-SI.
-'''
-
-    novus_magnitudo = '''                            DECLARA numerus_campi_ordo SICUT NUMERUS VALENS NUMERUS_CAMPORUM_FORMAE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), nomen_typus_ordo).
-                            DECLARA magnitudo_elem_ordo SICUT NUMERUS VALENS 8.
-                            SI es_arr_littera == 1 TUNC
-                                magnitudo_elem_ordo = 1.
-                            FIN-SI.
-                            SI numerus_campi_ordo > 0 TUNC
-                                magnitudo_elem_ordo = numerus_campi_ordo * 8.
-                            FIN-SI.
-'''
-
     vetus_meta = '''                            LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 1, intervallum_base).
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 2, 1).
                             SI es_arr_fluitans == 1 TUNC
@@ -70,9 +74,8 @@ if MARCA not in fons:
 
     novus_meta = '''                            LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 1, intervallum_base).
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 2, 1).
-                            // Tantum elementa quorum magnitudo a via historica VIII differt
-                            // metadata explicitam accipiunt. ORDO DE NUMERUS et FLUITANS
-                            // semitam canonicam veterem servant.
+                            // P9: layout pilae interim eundem spatium historicum servat,
+                            // sed accessus LITTERA stride unius octeti accipit.
                             SI es_arr_littera == 1 TUNC
                                 LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 3, 1).
                             FIN-SI.
@@ -85,18 +88,17 @@ if MARCA not in fons:
 '''
 
     for nomen, vetus, novus in (
-        ("detectio typi", vetus_typus, novus_typus),
-        ("magnitudo elementi", vetus_magnitudo, novus_magnitudo),
-        ("metadata elementi", vetus_meta, novus_meta),
+        ("detectio typi LITTERA", vetus_typus, novus_typus),
+        ("metadata elementi LITTERA", vetus_meta, novus_meta),
     ):
         numerus = fons.count(vetus)
         if numerus != 1:
             raise SystemExit(f"ERRATUM: ancora {nomen!r} inventa {numerus} vice/ibus, exspectata 1")
         fons = fons.replace(vetus, novus, 1)
-    mutatum = True
+        mutatum = True
 
 if mutatum:
     VIA.write_text(fons, encoding="utf-8")
-    print("RECTE: ORDO DE LITTERA et SIGNUM_VERBI ad contractum byte-addressatum migrata sunt.")
+    print("RECTE: bootstrap internus et accessus ORDO DE LITTERA byte-addressati sunt.")
 else:
     print("RECTE: correctio ORDO DE LITTERA iam adest.")
