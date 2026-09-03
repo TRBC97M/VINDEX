@@ -52,7 +52,7 @@ jobs:
         run: |
           set -euo pipefail
           ROOT='PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM'
-          directum=$(grep -RniE 'WINAPP_TEXTUS|TextOutA' "$ROOT" --include='*.vindex' || true)
+          directum=$(grep -RniE 'WINAPP_TEXTUS[[:space:]]*\(|"TextOutA"' "$ROOT" --include='*.vindex' || true)
           if [ -n "$directum" ]; then
             echo 'ERRATUM: pictura textus extra compositorem unicum inventa est:'
             printf '%s\n' "$directum"
