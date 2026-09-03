@@ -1,0 +1,53 @@
+name: VINDEX — Win32 App API
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/win32_app.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-win32-app.yml'
+
+jobs:
+  genera:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Testem Win32 App PE genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex tests/casus/win32_app.vindex /tmp/proba_win32_app.exe pe
+          file /tmp/proba_win32_app.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: proba-win32-app
+          path: /tmp/proba_win32_app.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  windows:
+    needs: genera
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: proba-win32-app
+          path: proba
+      - name: API Win32 applicationis vere exerce
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $exe = (Resolve-Path '.\proba\proba_win32_app.exe').Path
+          $out = & $exe 2>&1
+          $code = $LASTEXITCODE
+          $text = ($out -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "proba_win32_app exitus $code" }
+          if ($text -notmatch 'WIN32 APP RECTE') { throw 'confirmatio Win32 App deest' }
+          $numeri = @($out | Where-Object { $_ -match '^\d+$' })
+          if ($numeri.Count -lt 1 -or [int64]$numeri[-1] -ne 8) { throw 'StretchDIBits VIII lineas non reddidit' }
