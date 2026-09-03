@@ -1,0 +1,46 @@
+// ATMOS NATIVUM — mundus abyssalis et bathymetria.
+// Referentia HTML: WORLD_RADIUS = 3,000,000 m;
+// depth ~= 1800 + rim*9000 + local*1200 + sin(x*0.00001)*200,
+// clampata 900..12000 m.
+// Hic primus portus VINDEX sinum per undam triangularem determinatam approximat;
+// ceteri termini contractum numericum originalem servant.
+
+FUNCTIO NAT_MUNDUS_RADIUS REDDENS NUMERUS.
+    REDDE 3000000.
+FIN-FUNCTIO.
+
+// Approximatio periodica [-200,200] periodi ~628,318 m,
+// eidem periodo ac sin(x*0.00001) proxima.
+FUNCTIO NAT_MUNDUS_UNDA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    DECLARA periodus SICUT NUMERUS VALENS 628318.
+    DECLARA q SICUT NUMERUS VALENS 157079.
+    DECLARA p SICUT NUMERUS VALENS x % periodus.
+    SI p < 0 TUNC p = p + periodus. FIN-SI.
+    SI p < q TUNC REDDE p * 200 / q. FIN-SI.
+    SI p < q * 2 TUNC REDDE 200 - (p - q) * 200 / q. FIN-SI.
+    SI p < q * 3 TUNC REDDE 0 - (p - q * 2) * 200 / q. FIN-SI.
+    REDDE -200 + (p - q * 3) * 200 / q.
+FIN-FUNCTIO.
+
+// Variatio localis 0..1199, deterministica per semen et coordinatas.
+FUNCTIO NAT_MUNDUS_LOCAL REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA h SICUT NUMERUS VALENS ALEA_MISCE_U32(semen, x, y).
+    h = ALEA_MISCE_U32(h, 307, 0).
+    REDDE h % 1200.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_MUNDUS_PROFUNDITAS REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA d SICUT NUMERUS VALENS NAT_ISQRT(x * x + y * y).
+    DECLARA radius SICUT NUMERUS VALENS NAT_MUNDUS_RADIUS().
+    SI d > radius TUNC d = radius. FIN-SI.
+    DECLARA local SICUT NUMERUS VALENS NAT_MUNDUS_LOCAL(semen, x, y).
+    DECLARA profunditas SICUT NUMERUS VALENS 1800 + d * 9000 / radius + local + NAT_MUNDUS_UNDA(x).
+    REDDE NAT_CLAMPA(profunditas, 900, 12000).
+FIN-FUNCTIO.
