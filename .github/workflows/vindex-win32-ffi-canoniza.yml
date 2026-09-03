@@ -5,6 +5,7 @@ on:
     paths:
       - 'instrumenta/applica_win32_ffi_patch.py'
       - 'instrumenta/corrige_win32_ffi_textus.py'
+      - 'instrumenta/corrige_textus_litterale_pe.py'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_pe_structuram_053.vindex'
@@ -37,6 +38,7 @@ jobs:
             echo 'RECTE: fundamentum FFI Win64 iam canonizatum est.'
           fi
           python3 instrumenta/corrige_win32_ffi_textus.py
+          python3 instrumenta/corrige_textus_litterale_pe.py
 
       - name: Compilatorem ad punctum fixum regenera
         working-directory: Vindex Chat-GPT/vindex_final_v51
