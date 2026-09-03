@@ -20,5 +20,21 @@ if old_forma in s:
 elif new_forma not in s:
     raise SystemExit('ERRATUM: recognitio FORMA historica non inventa est')
 
+# Commentaria // inter declarationes top-level omnino praetermittuntur.
+# Aliter verba IMPORTA/FORMA/FUNCTIO intra commentarium parserem fallere possunt.
+old_top = '''    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
+new_top = '''    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI i + 1 < n && fons[i] == 47 && fons[i+1] == 47 TUNC\n            DUM i < n && fons[i] != 10 PERFICE\n                i = i + 1.\n            FIN-DUM.\n        ALITER\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
+if old_top in s:
+    s = s.replace(old_top, new_top, 1)
+elif 'SI i + 1 < n && fons[i] == 47 && fons[i+1] == 47 TUNC' not in s:
+    raise SystemExit('ERRATUM: initium scanneris top-level non inventum est')
+
+old_fin = '''        FIN-SI.\n        FIN-SI.\n        FIN-SI.\n    FIN-DUM.\n\n    SI inventa_principalis == 0 TUNC\n'''
+new_fin = '''        FIN-SI.\n        FIN-SI.\n        FIN-SI.\n        FIN-SI.\n    FIN-DUM.\n\n    SI inventa_principalis == 0 TUNC\n'''
+if old_fin in s:
+    s = s.replace(old_fin, new_fin, 1)
+elif new_fin not in s:
+    raise SystemExit('ERRATUM: finis scanneris top-level non inventus est')
+
 P.write_text(s, encoding='utf-8')
-print('RECTE: identificatores longi et recognitio FORMA corriguntur.')
+print('RECTE: identificatores longi, FORMA et commentaria top-level corriguntur.')
