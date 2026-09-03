@@ -1,0 +1,58 @@
+// ALEATORIUM — generator pseudo-aleatorius determinatus VINDEX.
+//
+// Contractus P11-E:
+// - status est unum verbum NUMERUS a cliente possessum;
+// - arithmeticam u32 explicitam servat per & 0xFFFFFFFF;
+// - eodem semine eadem series sub omnibus targetis redditur;
+// - nulla entropia OS aut tempus implicite adhibetur.
+
+FUNCTIO ALEA_SEMEN REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    SI status <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status) = semen & 4294967295.
+    REDDE CONTENTUM(status).
+FIN-FUNCTIO.
+
+// LCG Numerical Recipes, modulo 2^32.
+FUNCTIO ALEA_PROXIMUM_U32 REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA prius SICUT NUMERUS VALENS CONTENTUM(status) & 4294967295.
+    DECLARA novum SICUT NUMERUS VALENS (prius * 1664525 + 1013904223) & 4294967295.
+    CONTENTUM(status) = novum.
+    REDDE novum.
+FIN-FUNCTIO.
+
+// Integer in [0, limen). Limen <= 0 reddit 0 sine mutando statum.
+FUNCTIO ALEA_INFRA REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    SI limen <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA v SICUT NUMERUS VALENS ALEA_PROXIMUM_U32(status).
+    REDDE v % limen.
+FIN-FUNCTIO.
+
+// Integer inclusivus in [minimum, maximum]. Intervallum invalidum reddit minimum.
+FUNCTIO ALEA_INTER REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT minimum SICUT NUMERUS.
+    ACCIPIT maximum SICUT NUMERUS.
+    SI maximum <= minimum TUNC REDDE minimum. FIN-SI.
+    DECLARA spatium SICUT NUMERUS VALENS maximum - minimum + 1.
+    REDDE minimum + ALEA_INFRA(status, spatium).
+FIN-FUNCTIO.
+
+// Hash u32 purus ad semina ex coordinatis/identificatoribus derivanda.
+FUNCTIO ALEA_MISCE_U32 REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    DECLARA x SICUT NUMERUS VALENS (a ^ 2166136261) & 4294967295.
+    x = ((x ^ (b & 4294967295)) * 16777619) & 4294967295.
+    x = ((x ^ (c & 4294967295)) * 16777619) & 4294967295.
+    x = (x ^ (x >> 16)) & 4294967295.
+    x = (x * 2246822519) & 4294967295.
+    x = (x ^ (x >> 13)) & 4294967295.
+    REDDE x.
+FIN-FUNCTIO.
