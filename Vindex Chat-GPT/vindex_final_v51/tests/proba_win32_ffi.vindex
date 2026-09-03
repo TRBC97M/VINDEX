@@ -1,32 +1,9 @@
 // P11-C — FFI Win64 generalis: LoadLibraryA + GetProcAddress + vocatio indirecta.
-// Sub Windows vero kernel32.dll et user32.dll aperiuntur; symbola dynamice vocantur.
+// Sub Windows vero user32.dll aperitur et GetSystemMetrics(SM_CXSCREEN) vocatur.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argc SICUT NUMERUS.
     ACCIPIT argv SICUT ACUS<NUMERUS>.
-
-    DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
-    DECLARA i SICUT NUMERUS VALENS 0.
-    DUM i < 16 PERFICE
-        argumenta[i] = 0.
-        i = i + 1.
-    FIN-DUM.
-
-    DECLARA kernel32 SICUT NUMERUS VALENS WIN_DLL_APERI("kernel32.dll").
-    SI kernel32 == 0 TUNC
-        PROCLAMA "ERRATUM: kernel32.dll aperiri non potest".
-        REDDE 80.
-    FIN-SI.
-    DECLARA get_pid SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(kernel32, "GetCurrentProcessId").
-    SI get_pid == 0 TUNC
-        PROCLAMA "ERRATUM: GetCurrentProcessId non inventa est".
-        REDDE 84.
-    FIN-SI.
-    DECLARA pid SICUT NUMERUS VALENS ABI_MSX64_VOCA16(get_pid, SEDES(argumenta)).
-    SI pid <= 0 TUNC
-        PROCLAMA "ERRATUM: PID invalidum est".
-        REDDE 85.
-    FIN-SI.
 
     DECLARA user32 SICUT NUMERUS VALENS WIN_DLL_APERI("user32.dll").
     SI user32 == 0 TUNC
@@ -40,6 +17,13 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         REDDE 82.
     FIN-SI.
 
+    DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE
+        argumenta[i] = 0.
+        i = i + 1.
+    FIN-DUM.
+
     // SM_CXSCREEN = 0.
     argumenta[0] = 0.
     DECLARA latitudo SICUT NUMERUS VALENS ABI_MSX64_VOCA16(get_system_metrics, SEDES(argumenta)).
@@ -49,7 +33,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
 
     PROCLAMA "RECTE: WIN32 FFI VINDEX".
-    PROCLAMA pid.
     PROCLAMA latitudo.
     REDDE 0.
 FIN-FUNCTIO.

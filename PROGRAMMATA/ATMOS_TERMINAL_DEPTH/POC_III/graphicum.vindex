@@ -1,0 +1,263 @@
+// ATMOS // TERMINAL DEPTH — POC III / Graphica Win64 nativa.
+//
+// Nulla HTML, JavaScript, Electron, SDL aut runtime C adhibetur.
+// VINDEX user32.dll et gdi32.dll per FFI generalem aperit, fenestram systemicam
+// creat et framebuffer BGRA proprium per StretchDIBits praesentat.
+
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex".
+
+FUNCTIO MEM_U16_SCRIBE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(basis + off, valor & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 1, (valor >> 8) & 255).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MEM_U32_SCRIBE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(basis + off, valor & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 1, (valor >> 8) & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 2, (valor >> 16) & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 3, (valor >> 24) & 255).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_FRAMEBUFFER_PINGE REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y < h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x < w PERFICE
+            DECLARA b SICUT NUMERUS VALENS 9.
+            DECLARA g SICUT NUMERUS VALENS 18.
+            DECLARA r SICUT NUMERUS VALENS 5.
+
+            // Pannus interior CRT.
+            SI x > 10 && x < w - 10 && y > 10 && y < h - 10 TUNC
+                b = 15.
+                g = 31.
+                r = 7.
+            FIN-SI.
+
+            // Scanlines.
+            SI (y % 4) == 0 TUNC
+                g = g + 8.
+            FIN-SI.
+
+            // Crux sonar centralis.
+            SI x == (w / 2) || y == (h / 2) TUNC
+                b = 34.
+                g = 128.
+                r = 22.
+            FIN-SI.
+
+            // Corona sonar rhombica sine floating point.
+            DECLARA dx SICUT NUMERUS VALENS x - (w / 2).
+            DECLARA dy SICUT NUMERUS VALENS y - (h / 2).
+            SI dx < 0 TUNC dx = 0 - dx. FIN-SI.
+            SI dy < 0 TUNC dy = 0 - dy. FIN-SI.
+            DECLARA distantia SICUT NUMERUS VALENS dx + dy.
+            SI distantia >= 48 && distantia <= 50 TUNC
+                b = 28.
+                g = 176.
+                r = 32.
+            FIN-SI.
+
+            // Status bars: oxygenium, energia, integritas.
+            SI y >= 22 && y < 28 && x >= 22 && x < 112 TUNC
+                b = 40. g = 188. r = 38.
+            FIN-SI.
+            SI y >= 34 && y < 40 && x >= 22 && x < 100 TUNC
+                b = 36. g = 148. r = 30.
+            FIN-SI.
+            SI y >= 46 && y < 52 && x >= 22 && x < 116 TUNC
+                b = 46. g = 210. r = 44.
+            FIN-SI.
+
+            DECLARA p SICUT NUMERUS VALENS ((y * w) + x) * 4.
+            SCRIBE_OCTETUM_AB(pixels + p, b).
+            SCRIBE_OCTETUM_AB(pixels + p + 1, g).
+            SCRIBE_OCTETUM_AB(pixels + p + 2, r).
+            SCRIBE_OCTETUM_AB(pixels + p + 3, 0).
+            x = x + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_BITMAPINFO_CREA REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    DECLARA bmi SICUT NUMERUS VALENS RESERVA_OCTETA(40).
+    SI bmi <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 40 PERFICE
+        SCRIBE_OCTETUM_AB(bmi + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    DECLARA ig SICUT NUMERUS VALENS MEM_U32_SCRIBE(bmi, 0, 40).
+    ig = MEM_U32_SCRIBE(bmi, 4, w).
+    // Altitudo negativa = DIB top-down.
+    ig = MEM_U32_SCRIBE(bmi, 8, 0 - h).
+    ig = MEM_U16_SCRIBE(bmi, 12, 1).
+    ig = MEM_U16_SCRIBE(bmi, 14, 32).
+    ig = MEM_U32_SCRIBE(bmi, 16, 0).
+    ig = MEM_U32_SCRIBE(bmi, 20, w * h * 4).
+    REDDE bmi.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    DECLARA user32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("user32.dll").
+    DECLARA gdi32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("gdi32.dll").
+    DECLARA kernel32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("kernel32.dll").
+    SI user32 == 0 || gdi32 == 0 || kernel32 == 0 TUNC
+        PROCLAMA "ERRATUM: DLL graphica aperiri non potest".
+        REDDE 91.
+    FIN-SI.
+
+    DECLARA create_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "CreateWindowExA").
+    DECLARA get_dc SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "GetDC").
+    DECLARA release_dc SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "ReleaseDC").
+    DECLARA destroy_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "DestroyWindow").
+    DECLARA show_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "ShowWindow").
+    DECLARA update_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "UpdateWindow").
+    DECLARA stretch_dibits SICUT NUMERUS VALENS WIN32_SYMBOLUM(gdi32, "StretchDIBits").
+    DECLARA get_module SICUT NUMERUS VALENS WIN32_SYMBOLUM(kernel32, "GetModuleHandleA").
+    DECLARA sleep_fn SICUT NUMERUS VALENS WIN32_SYMBOLUM(kernel32, "Sleep").
+
+    SI create_window == 0 || get_dc == 0 || release_dc == 0 || destroy_window == 0 || stretch_dibits == 0 || get_module == 0 TUNC
+        PROCLAMA "ERRATUM: symbolum Win32 graphicae deest".
+        REDDE 92.
+    FIN-SI.
+
+    DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA args SICUT NUMERUS VALENS SEDES(argumenta).
+    DECLARA ig0 SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(args).
+
+    // GetModuleHandleA(NULL).
+    CONTENTUM(args) = 0.
+    DECLARA hinstance SICUT NUMERUS VALENS MSX64_VOCA(get_module, args).
+    SI hinstance == 0 TUNC
+        PROCLAMA "ERRATUM: HINSTANCE deest".
+        REDDE 93.
+    FIN-SI.
+
+    DECLARA classis SICUT TEXTUS VALENS "STATIC".
+    DECLARA titulus SICUT TEXTUS VALENS "ATMOS // TERMINAL DEPTH — VINDEX NATIVE".
+
+    // CreateWindowExA(0, "STATIC", titulus, WS_OVERLAPPEDWINDOW, ...)
+    ig0 = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = 0.
+    CONTENTUM(args + 8) = TEXTUS_BASIS_OCTETORUM(classis).
+    CONTENTUM(args + 16) = TEXTUS_BASIS_OCTETORUM(titulus).
+    CONTENTUM(args + 24) = 13565952.
+    CONTENTUM(args + 32) = 80.
+    CONTENTUM(args + 40) = 80.
+    CONTENTUM(args + 48) = 800.
+    CONTENTUM(args + 56) = 500.
+    CONTENTUM(args + 64) = 0.
+    CONTENTUM(args + 72) = 0.
+    CONTENTUM(args + 80) = hinstance.
+    CONTENTUM(args + 88) = 0.
+    DECLARA hwnd SICUT NUMERUS VALENS MSX64_VOCA(create_window, args).
+    SI hwnd == 0 TUNC
+        PROCLAMA "ERRATUM: CreateWindowExA nullum reddidit".
+        REDDE 94.
+    FIN-SI.
+
+    DECLARA w SICUT NUMERUS VALENS 320.
+    DECLARA h SICUT NUMERUS VALENS 180.
+    DECLARA pixels SICUT NUMERUS VALENS RESERVA_OCTETA(w * h * 4).
+    SI pixels <= 0 TUNC REDDE 95. FIN-SI.
+    DECLARA pictum SICUT NUMERUS VALENS ATMOS_FRAMEBUFFER_PINGE(pixels, w, h).
+    DECLARA bmi SICUT NUMERUS VALENS ATMOS_BITMAPINFO_CREA(w, h).
+    SI bmi <= 0 TUNC REDDE 96. FIN-SI.
+
+    ig0 = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    DECLARA hdc SICUT NUMERUS VALENS MSX64_VOCA(get_dc, args).
+    SI hdc == 0 TUNC
+        PROCLAMA "ERRATUM: GetDC nullum reddidit".
+        REDDE 97.
+    FIN-SI.
+
+    // StretchDIBits(hdc,0,0,800,500,0,0,320,180,pixels,bmi,DIB_RGB_COLORS,SRCCOPY)
+    ig0 = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = hdc.
+    CONTENTUM(args + 8) = 0.
+    CONTENTUM(args + 16) = 0.
+    CONTENTUM(args + 24) = 800.
+    CONTENTUM(args + 32) = 500.
+    CONTENTUM(args + 40) = 0.
+    CONTENTUM(args + 48) = 0.
+    CONTENTUM(args + 56) = w.
+    CONTENTUM(args + 64) = h.
+    CONTENTUM(args + 72) = pixels.
+    CONTENTUM(args + 80) = bmi.
+    CONTENTUM(args + 88) = 0.
+    CONTENTUM(args + 96) = 13369376.
+    DECLARA lineae SICUT NUMERUS VALENS MSX64_VOCA(stretch_dibits, args).
+    SI lineae <= 0 TUNC
+        PROCLAMA "ERRATUM: StretchDIBits nihil praesentavit".
+        REDDE 98.
+    FIN-SI.
+
+    // Sine argumento: fenestra ostenditur circiter III secundis.
+    SI argc < 2 && show_window != 0 && update_window != 0 && sleep_fn != 0 TUNC
+        ig0 = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        CONTENTUM(args + 8) = 5.
+        DECLARA visus SICUT NUMERUS VALENS MSX64_VOCA(show_window, args).
+
+        ig0 = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        DECLARA renovatum SICUT NUMERUS VALENS MSX64_VOCA(update_window, args).
+
+        // Post ShowWindow repraesentamus, quia WM_PAINT classis STATIC superficiem mutare potest.
+        ig0 = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args + 0) = hdc.
+        CONTENTUM(args + 8) = 0.
+        CONTENTUM(args + 16) = 0.
+        CONTENTUM(args + 24) = 800.
+        CONTENTUM(args + 32) = 500.
+        CONTENTUM(args + 40) = 0.
+        CONTENTUM(args + 48) = 0.
+        CONTENTUM(args + 56) = w.
+        CONTENTUM(args + 64) = h.
+        CONTENTUM(args + 72) = pixels.
+        CONTENTUM(args + 80) = bmi.
+        CONTENTUM(args + 88) = 0.
+        CONTENTUM(args + 96) = 13369376.
+        DECLARA lineae_visae SICUT NUMERUS VALENS MSX64_VOCA(stretch_dibits, args).
+
+        ig0 = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = 3000.
+        DECLARA dormitum SICUT NUMERUS VALENS MSX64_VOCA(sleep_fn, args).
+    FIN-SI.
+
+    ig0 = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    CONTENTUM(args + 8) = hdc.
+    DECLARA liberatum SICUT NUMERUS VALENS MSX64_VOCA(release_dc, args).
+
+    ig0 = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    DECLARA deletum SICUT NUMERUS VALENS MSX64_VOCA(destroy_window, args).
+
+    PROCLAMA "RECTE: ATMOS GRAPHICA WIN64".
+    PROCLAMA hwnd.
+    PROCLAMA lineae.
+    REDDE 0.
+FIN-FUNCTIO.
