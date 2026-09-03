@@ -1,0 +1,160 @@
+// ATMOS // TERMINAL DEPTH — NATIVUM.
+// Reconstructionis linea activa: HTML mores refert, runtime totus VINDEX.
+
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_bitmap_5x7.vindex".
+IMPORTA "machina/platforma_win32.vindex".
+IMPORTA "ludus/mathematica.vindex".
+IMPORTA "ludus/mundus.vindex".
+IMPORTA "ludus/status.vindex".
+IMPORTA "ludus/rendere.vindex".
+
+FUNCTIO NAT_I32_LEGE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS OCTETUS_AB(basis + off).
+    v = v + OCTETUS_AB(basis + off + 1) * 256.
+    v = v + OCTETUS_AB(basis + off + 2) * 65536.
+    v = v + OCTETUS_AB(basis + off + 3) * 16777216.
+    SI v >= 2147483648 TUNC v = v - 4294967296. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_SONAR_CLIC REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT mx SICUT NUMERUS.
+    ACCIPIT my SICUT NUMERUS.
+    DECLARA cx SICUT NUMERUS VALENS 324.
+    DECLARA cy SICUT NUMERUS VALENS 374.
+    DECLARA radius SICUT NUMERUS VALENS 270.
+    DECLARA dx SICUT NUMERUS VALENS mx - cx.
+    DECLARA dy SICUT NUMERUS VALENS my - cy.
+    SI dx * dx + dy * dy > radius * radius TUNC REDDE 0. FIN-SI.
+    DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
+    DECLARA tx SICUT NUMERUS VALENS CONTENTUM(s + 40) + dx * range / radius.
+    DECLARA ty SICUT NUMERUS VALENS CONTENTUM(s + 48) + dy * range / radius.
+    REDDE NAT_CURSUS_IMPONE(s, tx, ty).
+FIN-FUNCTIO.
+
+FUNCTIO NAT_SMOKE REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT canvas SICUT NUMERUS.
+    ACCIPIT ctx SICUT NUMERUS.
+    ACCIPIT hwnd SICUT NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT rect SICUT NUMERUS.
+    SI NAT_SONAR_CLIC(s, 459, 374) == 0 TUNC REDDE 40. FIN-SI.
+    DECLARA guard SICUT NUMERUS VALENS 0.
+    DUM CONTENTUM(s + 80) != 0 && guard < 1000 PERFICE
+        DECLARA g SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(s).
+        guard = guard + 1.
+    FIN-DUM.
+    SI CONTENTUM(s + 80) != 0 TUNC REDDE 41. FIN-SI.
+    SI CONTENTUM(s + 40) != 140 || CONTENTUM(s + 48) != 0 TUNC REDDE 42. FIN-SI.
+    SI CONTENTUM(s + 24) < 900 || CONTENTUM(s + 24) > 12000 TUNC REDDE 43. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
+    SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) == 0 TUNC REDDE 44. FIN-SI.
+    DECLARA cw SICUT NUMERUS VALENS NAT_I32_LEGE(rect, 8) - NAT_I32_LEGE(rect, 0).
+    DECLARA ch SICUT NUMERUS VALENS NAT_I32_LEGE(rect, 12) - NAT_I32_LEGE(rect, 4).
+    SI cw <= 0 || ch <= 0 TUNC REDDE 45. FIN-SI.
+    SI WINAPP_SUPERFICIES_DESTINATIO(superficies, hdc, cw, ch) == 0 TUNC REDDE 46. FIN-SI.
+    DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficies).
+    SI lineae != 720 TUNC REDDE 47. FIN-SI.
+    PROCLAMA "RECTE: ATMOS NATIVUM FUNDAMENTUM WIN64".
+    PROCLAMA CONTENTUM(s + 40).
+    PROCLAMA CONTENTUM(s + 48).
+    PROCLAMA CONTENTUM(s + 24).
+    PROCLAMA CONTENTUM(s + 0).
+    PROCLAMA cw.
+    PROCLAMA ch.
+    PROCLAMA lineae.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    DECLARA s SICUT NUMERUS VALENS NAT_STATUS_CREA(7319).
+    DECLARA canvas SICUT NUMERUS VALENS CBGRA_CREA(960, 720).
+    SI s == 0 || canvas == 0 TUNC REDDE 70. FIN-SI.
+
+    DECLARA plat SICUT NUMERUS VALENS NATWIN_CREA().
+    DECLARA ctx SICUT NUMERUS VALENS WINAPP_CONTEXUS_CREA().
+    SI plat == 0 || ctx == 0 TUNC REDDE 71. FIN-SI.
+    DECLARA hwnd SICUT NUMERUS VALENS NATWIN_FENESTRA(plat, "ATMOS // TERMINAL DEPTH", 1100, 800).
+    SI hwnd == 0 TUNC REDDE 72. FIN-SI.
+    DECLARA hdc SICUT NUMERUS VALENS WINAPP_HDC_CAPE(ctx, hwnd).
+    SI hdc == 0 TUNC REDDE 73. FIN-SI.
+
+    DECLARA bmi SICUT NUMERUS VALENS WINAPP_BITMAPINFO_CREA(960, 720).
+    DECLARA superficies SICUT NUMERUS VALENS WINAPP_SUPERFICIES_CREA(CBGRA_PIXELS(canvas), bmi, 960, 720).
+    DECLARA rect SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    DECLARA msg SICUT NUMERUS VALENS RESERVA_OCTETA(48).
+    DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    SI bmi == 0 || superficies == 0 || rect == 0 || msg == 0 || point == 0 TUNC REDDE 74. FIN-SI.
+
+    SI argc >= 2 TUNC
+        DECLARA code SICUT NUMERUS VALENS NAT_SMOKE(s, canvas, ctx, hwnd, hdc, superficies, rect).
+        DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).
+        DECLARA del SICUT NUMERUS VALENS WINAPP_FENESTRA_DELE(ctx, hwnd).
+        REDDE code.
+    FIN-SI.
+
+    DECLARA ost SICUT NUMERUS VALENS WINAPP_FENESTRA_OSTENDE(ctx, hwnd).
+    DECLARA currens SICUT NUMERUS VALENS 1.
+    DECLARA mouse_prius SICUT NUMERUS VALENS 0.
+
+    DUM currens == 1 PERFICE
+        DECLARA n SICUT NUMERUS VALENS 1.
+        DUM n != 0 PERFICE
+            n = WINAPP_NUNTIUM_CAPE(ctx, msg).
+            SI n != 0 TUNC DECLARA d SICUT NUMERUS VALENS WINAPP_NUNTIUM_DISPATCH(ctx, msg). FIN-SI.
+        FIN-DUM.
+        SI WINAPP_VIVIT(ctx, hwnd) == 0 TUNC currens = 0. FIN-SI.
+
+        SI currens == 1 TUNC
+            SI (WINAPP_CLAVIS(ctx, 27) & 32768) != 0 TUNC currens = 0. FIN-SI.
+        FIN-SI.
+
+        SI currens == 1 TUNC
+            DECLARA cw SICUT NUMERUS VALENS 0.
+            DECLARA ch SICUT NUMERUS VALENS 0.
+            SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) != 0 TUNC
+                cw = NAT_I32_LEGE(rect, 8) - NAT_I32_LEGE(rect, 0).
+                ch = NAT_I32_LEGE(rect, 12) - NAT_I32_LEGE(rect, 4).
+            FIN-SI.
+
+            SI cw > 0 && ch > 0 TUNC
+                DECLARA mouse_nunc SICUT NUMERUS VALENS WINAPP_CLAVIS(ctx, 1) & 32768.
+                SI mouse_nunc != 0 && mouse_prius == 0 TUNC
+                    SI WINAPP_CURSOR_CAPE(ctx, point) != 0 && WINAPP_SCREEN_AD_CLIENT(ctx, hwnd, point) != 0 TUNC
+                        DECLARA mx SICUT NUMERUS VALENS NAT_I32_LEGE(point, 0).
+                        DECLARA my SICUT NUMERUS VALENS NAT_I32_LEGE(point, 4).
+                        DECLARA lx SICUT NUMERUS VALENS mx * 960 / cw.
+                        DECLARA ly SICUT NUMERUS VALENS my * 720 / ch.
+                        DECLARA cclick SICUT NUMERUS VALENS NAT_SONAR_CLIC(s, lx, ly).
+                    FIN-SI.
+                FIN-SI.
+                mouse_prius = mouse_nunc.
+
+                DECLARA mov SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(s).
+                DECLARA drain SICUT NUMERUS VALENS NAT_DRAIN_GRADUS(s).
+                DECLARA pictum SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
+                DECLARA dst SICUT NUMERUS VALENS WINAPP_SUPERFICIES_DESTINATIO(superficies, hdc, cw, ch).
+                DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficies).
+            FIN-SI.
+            DECLARA dorm SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 16).
+        FIN-SI.
+    FIN-DUM.
+
+    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).
+    SI WINAPP_VIVIT(ctx, hwnd) != 0 TUNC DECLARA del SICUT NUMERUS VALENS WINAPP_FENESTRA_DELE(ctx, hwnd). FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
