@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'instrumenta/applica_stdio_win64_patch.py'
+      - 'instrumenta/corrige_atmos_poc_ii.py'
       - '.github/workflows/vindex-stdio-canoniza.yml'
 
 permissions:
@@ -26,6 +27,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 instrumenta/applica_stdio_win64_patch.py
+          python3 instrumenta/corrige_atmos_poc_ii.py
 
       - name: Compilatorem auto-hospitem ad punctum fixum regenera
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -51,10 +53,11 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' \
+                  'Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/interactivum.vindex'
           if git diff --cached --quiet; then
             echo 'RECTE: nihil novum commitendum est.'
             exit 0
           fi
-          git commit -m 'P11-B: descriptor stdin Win64 canoniza'
+          git commit -m 'P11-B: stdin Win64 et ATMOS interactum canoniza'
           git push origin HEAD:${{ github.event.pull_request.head.ref }}
