@@ -20,7 +20,7 @@ Producta compilata (`.exe`, ELF, `.efi`, imagines temporariae) ex CI vel constru
 
 | Programma | Genus | Status |
 | --- | --- | --- |
-| `ATMOS_TERMINAL_DEPTH/` | ludus terminalis / probatio conceptus | POC I probatum; POC II activum |
+| `ATMOS_TERMINAL_DEPTH/` | ludus terminalis / probatio conceptus | POC I et POC II sub Win64 vero probata |
 
 ## Regula architectonica
 
