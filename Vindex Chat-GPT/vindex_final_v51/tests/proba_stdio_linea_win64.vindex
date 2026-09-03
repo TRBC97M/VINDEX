@@ -1,0 +1,26 @@
+IMPORTA "bibliotheca/stdio.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA linea SICUT ORDO DE LITTERA CAPACITAS 64.
+    DECLARA expectata SICUT ORDO DE LITTERA CAPACITAS 7.
+    expectata[0]=100. expectata[1]=101. expectata[2]=115. expectata[3]=99.
+    expectata[4]=101. expectata[5]=110. expectata[6]=100.
+
+    DECLARA n SICUT NUMERUS VALENS STDIO_LEGE_LINEAM(linea, 64).
+    PROCLAMA "N".
+    PROCLAMA n.
+    PROCLAMA "B0". PROCLAMA linea[0].
+    PROCLAMA "B1". PROCLAMA linea[1].
+    PROCLAMA "B2". PROCLAMA linea[2].
+    PROCLAMA "B3". PROCLAMA linea[3].
+    PROCLAMA "B4". PROCLAMA linea[4].
+    PROCLAMA "B5". PROCLAMA linea[5].
+    PROCLAMA "B6". PROCLAMA linea[6].
+    SI n != 7 TUNC REDDE 20. FIN-SI.
+    SI STDIO_AEQUA(linea, n, expectata, 7) != 1 TUNC
+        PROCLAMA "ERRATUM: STDIO_AEQUA".
+        REDDE 21.
+    FIN-SI.
+    PROCLAMA "RECTE: STDIO LINEA WIN64".
+    REDDE 0.
+FIN-FUNCTIO.
