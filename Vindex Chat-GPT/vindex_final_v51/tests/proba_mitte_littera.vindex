@@ -1,3 +1,4 @@
+// Regressio generalis: MITTE debet layout elementi ORDO observare.
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA data SICUT ORDO DE LITTERA CAPACITAS 8.
     data[0] = 65.
