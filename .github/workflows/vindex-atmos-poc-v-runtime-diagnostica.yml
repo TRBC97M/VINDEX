@@ -52,7 +52,17 @@ jobs:
             ('    DECLARA pictum SICUT NUMERUS VALENS ATMOS_V_FRAME_PINGE(pixels, w, h, status, mundus).\n', '    DECLARA pictum SICUT NUMERUS VALENS ATMOS_V_FRAME_PINGE(pixels, w, h, status, mundus).\n    PROCLAMA "V9".\n'),
             ('    DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficies).\n', '    DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficies).\n    PROCLAMA "V10".\n'),
             ('    DECLARA hud SICUT NUMERUS VALENS ATMOS_V_HUD(ctx, hdc, status, mundus).\n', '    DECLARA hud SICUT NUMERUS VALENS ATMOS_V_HUD(ctx, hdc, status, mundus).\n    PROCLAMA "V11".\n'),
-            ('    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).\n', '    PROCLAMA "V12".\n    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).\n')
+            ('    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).\n', '    PROCLAMA "V12".\n    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).\n'),
+            ('    DECLARA ig SICUT NUMERUS VALENS WINAPP_TEXTUS_MODUS(ctx, hdc, 6091336).\n', '    PROCLAMA "H0".\n    DECLARA ig SICUT NUMERUS VALENS WINAPP_TEXTUS_MODUS(ctx, hdc, 6091336).\n    PROCLAMA "H1".\n'),
+            ('    ig = WINAPP_TEXTUS(ctx, hdc, 12, 10, "ATMOS // TERMINAL DEPTH — POC V").\n', '    ig = WINAPP_TEXTUS(ctx, hdc, 12, 10, "ATMOS // TERMINAL DEPTH — POC V").\n    PROCLAMA "H2".\n'),
+            ('    DECLARA t SICUT TEXTUS VALENS "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8)).\n', '    PROCLAMA "H3".\n    DECLARA t SICUT TEXTUS VALENS "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8)).\n    PROCLAMA "H4".\n'),
+            ('    t = t + " m". ig = WINAPP_TEXTUS(ctx, hdc, 18, 30, t).\n', '    t = t + " m". PROCLAMA "H5". ig = WINAPP_TEXTUS(ctx, hdc, 18, 30, t). PROCLAMA "H6".\n'),
+            ('    t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16)).\n', '    t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16)). PROCLAMA "H7".\n'),
+            ('    ig = WINAPP_TEXTUS(ctx, hdc, 18, 56, t).\n', '    ig = WINAPP_TEXTUS(ctx, hdc, 18, 56, t). PROCLAMA "H8".\n'),
+            ('    t = "SECTOR " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m)).\n', '    PROCLAMA "H9". t = "SECTOR " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m)). PROCLAMA "H10".\n'),
+            ('    t = t + "," + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m + 8)).\n', '    t = t + "," + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m + 8)). PROCLAMA "H11".\n'),
+            ('    t = "TYPE " + ATMOS_V_GENUS_NOMEN(CONTENTUM(m + 24)).\n', '    PROCLAMA "H12". t = "TYPE " + ATMOS_V_GENUS_NOMEN(CONTENTUM(m + 24)). PROCLAMA "H13".\n'),
+            ('    t = "CONTACT " + ATMOS_V_CONTACTUS_NOMEN(CONTENTUM(m + 32)).\n', '    PROCLAMA "H14". t = "CONTACT " + ATMOS_V_CONTACTUS_NOMEN(CONTENTUM(m + 32)). PROCLAMA "H15".\n')
           ]
           for old, new in reps:
               if old not in s:
