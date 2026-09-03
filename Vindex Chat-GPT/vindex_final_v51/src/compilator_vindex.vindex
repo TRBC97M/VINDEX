@@ -2358,6 +2358,7 @@ FUNCTIO COMPONE_TRANSFER_FASCICULUM_PE REDDENS NUMERUS.
     p_tr = p_tr + 4.
 
     SI id_api == 3 TUNC
+        // MITTE(1, ...) -> verum STD_OUTPUT_HANDLE Win32.
         p_tr = COMPONE_ONERA(codex, p_tr, 0, 1).
         p_tr = COMPONE_CMP(codex, p_tr, 7, 0).
         DECLARA loci_descriptor_stdout SICUT NUMERUS VALENS 0.
@@ -2366,6 +2367,18 @@ FUNCTIO COMPONE_TRANSFER_FASCICULUM_PE REDDENS NUMERUS.
         p_tr = COMPONE_SUME_INDIRECTUM(codex, p_tr, 7, 0).
         DECLARA pos_descriptor_stdout SICUT NUMERUS VALENS p_tr.
         DECLARA ign_descriptor_stdout SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_descriptor_stdout, pos_descriptor_stdout).
+    FIN-SI.
+
+    SI id_api == 5 TUNC
+        // LEGE(0, ...) -> verum STD_INPUT_HANDLE Win32.
+        p_tr = COMPONE_ONERA(codex, p_tr, 0, 0).
+        p_tr = COMPONE_CMP(codex, p_tr, 7, 0).
+        DECLARA loci_descriptor_stdin SICUT NUMERUS VALENS 0.
+        p_tr = COMPONE_JNE_FUTURUM(codex, p_tr, SEDES(loci_descriptor_stdin)).
+        p_tr = COMPONE_ONERA(codex, p_tr, 0, 16777224).
+        p_tr = COMPONE_SUME_INDIRECTUM(codex, p_tr, 7, 0).
+        DECLARA pos_descriptor_stdin SICUT NUMERUS VALENS p_tr.
+        DECLARA ign_descriptor_stdin SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_descriptor_stdin, pos_descriptor_stdin).
     FIN-SI.
 
     p_tr = COMPONE_TRANSCRIBE(codex, p_tr, 1, 7).
@@ -6261,10 +6274,17 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     pos = COMPONE_ONERA(codex, pos, 8, 12288).
                     pos = COMPONE_ONERA(codex, pos, 9, 4).
                     pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 1).
+                    // Descriptor abstractus 1 = stdout; handle Win32 ad +0 servatur.
                     DECLARA valor_neg_std_output_prologus SICUT NUMERUS VALENS 0 - 11.
                     pos = COMPONE_ONERA(codex, pos, 1, valor_neg_std_output_prologus).
                     pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 2).
                     pos = COMPONE_ONERA(codex, pos, 2, 16777216).
+                    pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
+                    // Descriptor abstractus 0 = stdin; handle Win32 ad +8 servatur.
+                    DECLARA valor_neg_std_input_prologus SICUT NUMERUS VALENS 0 - 10.
+                    pos = COMPONE_ONERA(codex, pos, 1, valor_neg_std_input_prologus).
+                    pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 2).
+                    pos = COMPONE_ONERA(codex, pos, 2, 16777224).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
                     pos = COMPONE_ARGUMENTA_PE(codex, pos, contextus_parseris).
                 ALITER
