@@ -21,8 +21,7 @@ jobs:
           set -euo pipefail
           COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
           chmod +x "$COMP"
-          "$COMP" graphica.vindex /tmp/atmos_graphicum.exe pe 2>/dev/null || \
-            "$COMP" graphicum.vindex /tmp/atmos_graphicum.exe pe
+          "$COMP" graphicum.vindex /tmp/atmos_graphicum.exe pe
           file /tmp/atmos_graphicum.exe
       - uses: actions/upload-artifact@v4
         with:
@@ -40,7 +39,7 @@ jobs:
         with:
           name: atmos-graphicum-poc-iii
           path: atmos
-      - name: Fenestram et framebuffer sub Windows vero proba
+      - name: Fenestram framebuffer inputumque sub Windows vero proba
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -54,4 +53,4 @@ jobs:
           $numeri = @($out | Where-Object { $_ -match '^\d+$' })
           if ($numeri.Count -lt 2) { throw 'HWND/lineae probationis desunt' }
           if ([int64]$numeri[-2] -le 0) { throw 'HWND invalidum est' }
-          if ([int64]$numeri[-1] -le 0) { throw 'StretchDIBits nihil praesentavit' }
+          if ([int64]$numeri[-1] -ne 180) { throw 'StretchDIBits CLXXX lineas non praesentavit' }
