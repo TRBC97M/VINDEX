@@ -43,16 +43,16 @@ FUNCTIO ALEA_INTER REDDENS NUMERUS.
     REDDE minimum + ALEA_INFRA(status, spatium).
 FIN-FUNCTIO.
 
-// Hash u32 purus ad semina ex coordinatis/identificatoribus derivanda.
+// Hash spatial u32 purus. Multiplicatores primi coordinatas separant;
+// unus passus LCG diffusionem addit. Ad mundum proceduralem reproducibilem utilis.
 FUNCTIO ALEA_MISCE_U32 REDDENS NUMERUS.
     ACCIPIT a SICUT NUMERUS.
     ACCIPIT b SICUT NUMERUS.
     ACCIPIT c SICUT NUMERUS.
-    DECLARA x SICUT NUMERUS VALENS (a ^ 2166136261) & 4294967295.
-    x = ((x ^ (b & 4294967295)) * 16777619) & 4294967295.
-    x = ((x ^ (c & 4294967295)) * 16777619) & 4294967295.
-    x = (x ^ (x >> 16)) & 4294967295.
-    x = (x * 2246822519) & 4294967295.
-    x = (x ^ (x >> 13)) & 4294967295.
+    DECLARA aa SICUT NUMERUS VALENS a & 4294967295.
+    DECLARA bb SICUT NUMERUS VALENS b & 4294967295.
+    DECLARA cc SICUT NUMERUS VALENS c & 4294967295.
+    DECLARA x SICUT NUMERUS VALENS (aa * 73856093 + bb * 19349663 + cc * 83492791) & 4294967295.
+    x = (x * 1664525 + 1013904223) & 4294967295.
     REDDE x.
 FIN-FUNCTIO.
