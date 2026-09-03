@@ -36,5 +36,15 @@ if old_fin in s:
 elif new_fin not in s:
     raise SystemExit('ERRATUM: finis scanneris top-level non inventus est')
 
+# P11-E — affectatio simplex: post '=' spatia ante ANALYSA_COMPARATIO
+# praetermittenda sunt. Sine hoc, PROSPICE_EST_FLUITANS spatium videbat et
+# `t = t + " m"` ut additionem NUMERUS generabat (pointers additi).
+old_aff = '''                                        ALITER\n                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.\n                                            ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).\n                                            CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_aff, 0).\n                                        FIN-SI.\n'''
+new_aff = '''                                        ALITER\n                                            CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.\n                                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).\n                                            ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).\n                                            CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_aff, 0).\n                                        FIN-SI.\n'''
+if old_aff in s:
+    s = s.replace(old_aff, new_aff, 1)
+elif new_aff not in s:
+    raise SystemExit('ERRATUM: affectatio simplex canonica non inventa est')
+
 P.write_text(s, encoding='utf-8')
-print('RECTE: identificatores longi, FORMA et commentaria top-level corriguntur.')
+print('RECTE: identificatores longi, scanner top-level et affectatio typata corriguntur.')
