@@ -1,0 +1,56 @@
+// Conversiones generales VINDEX.
+// Dependit a bibliotheca/textus.vindex iam importata a cliente.
+
+FUNCTIO TEXTUS_EX_NUMERO_DECIMALI REDDENS TEXTUS.
+    ACCIPIT valor SICUT NUMERUS.
+
+    // Minimum i64 separatim tractatur, quia absolutum eius in i64 non repraesentatur.
+    DECLARA minimus SICUT NUMERUS VALENS (0 - 9223372036854775807) - 1.
+    SI valor == minimus TUNC
+        REDDE "-9223372036854775808".
+    FIN-SI.
+
+    DECLARA negativus SICUT NUMERUS VALENS 0.
+    DECLARA v SICUT NUMERUS VALENS valor.
+    SI v < 0 TUNC
+        negativus = 1.
+        v = 0 - v.
+    FIN-SI.
+
+    DECLARA inversus SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    SI inversus <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA digiti SICUT NUMERUS VALENS 0.
+    SI v == 0 TUNC
+        SCRIBE_OCTETUM_AB(inversus, 48).
+        digiti = 1.
+    ALITER
+        DUM v > 0 PERFICE
+            DECLARA digitus SICUT NUMERUS VALENS v % 10.
+            SCRIBE_OCTETUM_AB(inversus + digiti, 48 + digitus).
+            digiti = digiti + 1.
+            v = v / 10.
+        FIN-DUM.
+    FIN-SI.
+
+    DECLARA longitudo SICUT NUMERUS VALENS digiti + negativus.
+    DECLARA descriptor SICUT NUMERUS VALENS RESERVA_OCTETA(17 + longitudo).
+    SI descriptor <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(descriptor) = longitudo.
+    CONTENTUM(descriptor + 8) = longitudo.
+
+    DECLARA positio SICUT NUMERUS VALENS 0.
+    SI negativus == 1 TUNC
+        SCRIBE_OCTETUM_AB(descriptor + 16, 45).
+        positio = 1.
+    FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS digiti - 1.
+    DUM i >= 0 PERFICE
+        SCRIBE_OCTETUM_AB(descriptor + 16 + positio, OCTETUS_AB(inversus + i)).
+        positio = positio + 1.
+        i = i - 1.
+    FIN-DUM.
+    SCRIBE_OCTETUM_AB(descriptor + 16 + longitudo, 0).
+    REDDE TEXTUS_EX_SEDE(descriptor).
+FIN-FUNCTIO.
