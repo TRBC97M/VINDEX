@@ -1,0 +1,37 @@
+// P11-C — bibliotheca minima FFI Win64 generalis.
+//
+// Intrinseca a compilatore praebita:
+//   WIN_DLL_APERI(nomen TEXTUS)
+//   WIN_DLL_SYMBOLUM(modulus, nomen TEXTUS)
+//   ABI_MSX64_VOCA16(functio, argumenta)
+//
+// TEXTUS VINDEX UTF-8 NUL-terminatus ad LPCSTR Win32 convertitur a backend.
+// `argumenta` punctat ad XVI verba NUMERUS contigua (CXXVIII octeta).
+
+FUNCTIO WIN32_MODULUM_APERI REDDENS NUMERUS.
+    ACCIPIT nomen SICUT TEXTUS.
+    REDDE WIN_DLL_APERI(nomen).
+FIN-FUNCTIO.
+
+FUNCTIO WIN32_SYMBOLUM REDDENS NUMERUS.
+    ACCIPIT modulus SICUT NUMERUS.
+    ACCIPIT nomen SICUT TEXTUS.
+    REDDE WIN_DLL_SYMBOLUM(modulus, nomen).
+FIN-FUNCTIO.
+
+FUNCTIO MSX64_ARGUMENTA_VACUA REDDENS NUMERUS.
+    ACCIPIT argumenta SICUT ACUS<NUMERUS>.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE
+        // ACUS<NUMERUS> arithmeticam typatam habet: + i iam i * VIII octeta significat.
+        CONTENTUM(argumenta + i) = 0.
+        i = i + 1.
+    FIN-DUM.
+    REDDE argumenta.
+FIN-FUNCTIO.
+
+FUNCTIO MSX64_VOCA REDDENS NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT argumenta SICUT ACUS<NUMERUS>.
+    REDDE ABI_MSX64_VOCA16(functio, argumenta).
+FIN-FUNCTIO.

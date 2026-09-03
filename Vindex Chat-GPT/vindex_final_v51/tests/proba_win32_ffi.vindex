@@ -1,0 +1,70 @@
+// P11-C — certificatio FFI Win64 generalis sub Windows vero.
+// Exercet TEXTUS -> LPCSTR, argumenta I/XII/XIV et creationem HWND.
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/win32_ffi.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    DECLARA user32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("user32.dll").
+    DECLARA gdi32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("gdi32.dll").
+    SI user32 == 0 || gdi32 == 0 TUNC REDDE 81. FIN-SI.
+
+    DECLARA get_system_metrics SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "GetSystemMetrics").
+    DECLARA register_message SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "RegisterWindowMessageA").
+    DECLARA create_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "CreateWindowExA").
+    DECLARA destroy_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "DestroyWindow").
+    DECLARA create_font SICUT NUMERUS VALENS WIN32_SYMBOLUM(gdi32, "CreateFontA").
+    SI get_system_metrics == 0 || register_message == 0 || create_window == 0 || destroy_window == 0 || create_font == 0 TUNC REDDE 82. FIN-SI.
+
+    DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA args SICUT NUMERUS VALENS SEDES(argumenta).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(args).
+
+    // I argumentum: RCX.
+    CONTENTUM(args) = 0.
+    DECLARA latitudo SICUT NUMERUS VALENS MSX64_VOCA(get_system_metrics, args).
+    SI latitudo <= 0 TUNC REDDE 83. FIN-SI.
+
+    // XIV argumenta: argumenta V-XIV per pilam Microsoft x64.
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = 16.
+    CONTENTUM(args + 32) = 400.
+    DECLARA hfont SICUT NUMERUS VALENS MSX64_VOCA(create_font, args).
+    SI hfont == 0 TUNC REDDE 84. FIN-SI.
+
+    // TEXTUS VINDEX NUL-terminatus ut LPCSTR legitime legitur.
+    DECLARA classis SICUT TEXTUS VALENS "STATIC".
+    DECLARA classis_c SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(classis).
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = classis_c.
+    DECLARA msg_id SICUT NUMERUS VALENS MSX64_VOCA(register_message, args).
+    SI msg_id == 0 TUNC REDDE 85. FIN-SI.
+
+    // XII argumenta: fenestra systemica occulta 64x64.
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = 0.
+    CONTENTUM(args + 8) = classis_c.
+    CONTENTUM(args + 16) = 0.
+    CONTENTUM(args + 24) = 2147483648.
+    CONTENTUM(args + 32) = 0.
+    CONTENTUM(args + 40) = 0.
+    CONTENTUM(args + 48) = 64.
+    CONTENTUM(args + 56) = 64.
+    CONTENTUM(args + 64) = 0.
+    CONTENTUM(args + 72) = 0.
+    CONTENTUM(args + 80) = 0.
+    CONTENTUM(args + 88) = 0.
+    DECLARA hwnd SICUT NUMERUS VALENS MSX64_VOCA(create_window, args).
+    SI hwnd == 0 TUNC REDDE 86. FIN-SI.
+
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    DECLARA deletum SICUT NUMERUS VALENS MSX64_VOCA(destroy_window, args).
+
+    PROCLAMA "RECTE: WIN32 FFI VINDEX".
+    PROCLAMA hwnd.
+    PROCLAMA latitudo.
+    REDDE 0.
+FIN-FUNCTIO.
