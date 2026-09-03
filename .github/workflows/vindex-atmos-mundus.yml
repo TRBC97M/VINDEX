@@ -1,0 +1,59 @@
+name: VINDEX — ATMOS Mundus Proceduralis
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/COMMUNE/mundus.vindex'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/COMMUNE/nucleus.vindex'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V/mundus_smoke.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-atmos-mundus.yml'
+
+jobs:
+  genera:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mundum ATMOS PE compila
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" mundus_smoke.vindex /tmp/atmos_mundus.exe pe
+          file /tmp/atmos_mundus.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-mundus
+          path: /tmp/atmos_mundus.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  windows:
+    needs: genera
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-mundus
+          path: mundus
+      - name: Mundum et ATW1 sub Windows vero proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Set-Location (Resolve-Path '.\mundus')
+          Remove-Item '.\atmos.sav','\.atmos.world' -Force -ErrorAction SilentlyContinue
+          Remove-Item '.\atmos.world' -Force -ErrorAction SilentlyContinue
+          $out = & '.\atmos_mundus.exe' 2>&1
+          $code = $LASTEXITCODE
+          $text = ($out -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "atmos_mundus exitus $code" }
+          if ($text -notmatch 'MUNDUS ATMOS RECTE') { throw 'confirmatio mundi deest' }
+          if (!(Test-Path '.\atmos.world')) { throw 'atmos.world deest' }
+          $b = [IO.File]::ReadAllBytes((Resolve-Path '.\atmos.world'))
+          if ($b.Length -ne 20) { throw "mensura ATW1 falsa: $($b.Length)" }
+          if ($b[0] -ne 65 -or $b[1] -ne 84 -or $b[2] -ne 87 -or $b[3] -ne 49 -or $b[4] -ne 1) { throw 'caput ATW1 v1 falsum est' }
+          if ([BitConverter]::ToInt32($b,8) -ne 1 -or [BitConverter]::ToInt32($b,12) -ne 0 -or [BitConverter]::ToUInt32($b,16) -ne 2) { throw 'positio ATW1 falsa est' }
