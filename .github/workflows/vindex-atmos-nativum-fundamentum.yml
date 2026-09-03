@@ -5,11 +5,13 @@ on:
     paths:
       - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM/**'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra_externus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_bitmap_5x7.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_dib.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
       - '.github/workflows/vindex-atmos-nativum-fundamentum.yml'
@@ -68,7 +70,7 @@ jobs:
         with:
           name: atmos-nativum-fundamentum
           path: atmos
-      - name: Fenestram, canvas unicum et cursum sonar sub Windows proba
+      - name: DIB, pixel visibile et cursum sonar sub Windows proba
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -78,7 +80,7 @@ jobs:
           $text = ($out -join "`n")
           Write-Host $text
           if ($code -ne 0) { throw "ATMOS NATIVUM exitus $code" }
-          if ($text -notmatch 'RECTE: ATMOS NATIVUM FUNDAMENTUM WIN64') { throw 'confirmatio NATIVUM deest' }
+          if ($text -notmatch 'RECTE: ATMOS NATIVUM DIB WIN64') { throw 'confirmatio NATIVUM DIB deest' }
           $nums = @($out | Where-Object { $_ -match '^-?\d+$' } | ForEach-Object { [int64]$_ })
           if ($nums.Count -lt 7) { throw 'status NATIVUM incompletus est' }
           $f = $nums[($nums.Count-7)..($nums.Count-1)]
@@ -86,5 +88,5 @@ jobs:
           if ($f[2] -lt 900 -or $f[2] -gt 12000) { throw "bathymetria falsa: $($f[2])" }
           if ($f[3] -ne 950) { throw "oxygenium post cursum falsum: $($f[3])" }
           if ($f[4] -le 0 -or $f[5] -le 0) { throw 'client rect invalidum est' }
-          if ($f[6] -ne 720) { throw "praesentatio falsa: $($f[6])" }
-          Write-Host 'RECTE: NATIVUM una compositione + sonar + resize destinatio sub Windows probata sunt.'
+          if ($f[6] -ne 2107408) { throw "pixel fenestrae falsus: $($f[6])" }
+          Write-Host 'RECTE: NATIVUM DIB realem colorem in fenestra Windows praesentavit.'
