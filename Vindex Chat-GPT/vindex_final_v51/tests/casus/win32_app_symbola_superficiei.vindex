@@ -1,0 +1,26 @@
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/win32_ffi.vindex".
+IMPORTA "bibliotheca/win32_app.vindex".
+
+// P11-E — isolatio registrationis symbolorum post WINAPP_BITMAPINFO_CREA.
+// Nulla API Windows exercetur: tantum compilationem/ligationem functionum probamus.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA pixels SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    DECLARA bmi SICUT NUMERUS VALENS WINAPP_BITMAPINFO_CREA(4, 4).
+    SI pixels <= 0 || bmi <= 0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA superficies SICUT NUMERUS VALENS WINAPP_SUPERFICIES_CREA(pixels, bmi, 4, 4).
+    SI superficies <= 0 TUNC REDDE 2. FIN-SI.
+
+    // Non vocamus DESTINATIO/PRAESENTA runtime quia HDC/contextus desunt.
+    // Expressiones infra in ramo impossibili cogunt tamen symbola resolvi.
+    SI pixels == 0 TUNC
+        DECLARA a SICUT NUMERUS VALENS WINAPP_SUPERFICIES_DESTINATIO(superficies, 1, 4, 4).
+        DECLARA b SICUT NUMERUS VALENS WINAPP_PRAESENTA(1, superficies).
+        PROCLAMA a + b.
+    FIN-SI.
+
+    PROCLAMA "WIN32 APP SYMBOLA SUPERFICIEI RECTE".
+    REDDE 0.
+FIN-FUNCTIO.
