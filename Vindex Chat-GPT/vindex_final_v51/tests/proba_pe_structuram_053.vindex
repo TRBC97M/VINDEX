@@ -55,6 +55,16 @@ FUNCTIO CONGRUIT_API REDDENS NUMERUS.
         SI pos + 15 > n TUNC REDDE 0. FIN-SI.
         REDDE OCTETUS_AB(memoria+pos)==71 && OCTETUS_AB(memoria+pos+1)==101 && OCTETUS_AB(memoria+pos+2)==116 && OCTETUS_AB(memoria+pos+3)==67 && OCTETUS_AB(memoria+pos+4)==111 && OCTETUS_AB(memoria+pos+5)==109 && OCTETUS_AB(memoria+pos+6)==109 && OCTETUS_AB(memoria+pos+7)==97 && OCTETUS_AB(memoria+pos+8)==110 && OCTETUS_AB(memoria+pos+9)==100 && OCTETUS_AB(memoria+pos+10)==76 && OCTETUS_AB(memoria+pos+11)==105 && OCTETUS_AB(memoria+pos+12)==110 && OCTETUS_AB(memoria+pos+13)==101 && OCTETUS_AB(memoria+pos+14)==65.
     FIN-SI.
+    // LoadLibraryA
+    SI id == 8 TUNC
+        SI pos + 12 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==76 && OCTETUS_AB(memoria+pos+1)==111 && OCTETUS_AB(memoria+pos+2)==97 && OCTETUS_AB(memoria+pos+3)==100 && OCTETUS_AB(memoria+pos+4)==76 && OCTETUS_AB(memoria+pos+5)==105 && OCTETUS_AB(memoria+pos+6)==98 && OCTETUS_AB(memoria+pos+7)==114 && OCTETUS_AB(memoria+pos+8)==97 && OCTETUS_AB(memoria+pos+9)==114 && OCTETUS_AB(memoria+pos+10)==121 && OCTETUS_AB(memoria+pos+11)==65.
+    FIN-SI.
+    // GetProcAddress
+    SI id == 9 TUNC
+        SI pos + 14 > n TUNC REDDE 0. FIN-SI.
+        REDDE OCTETUS_AB(memoria+pos)==71 && OCTETUS_AB(memoria+pos+1)==101 && OCTETUS_AB(memoria+pos+2)==116 && OCTETUS_AB(memoria+pos+3)==80 && OCTETUS_AB(memoria+pos+4)==114 && OCTETUS_AB(memoria+pos+5)==111 && OCTETUS_AB(memoria+pos+6)==99 && OCTETUS_AB(memoria+pos+7)==65 && OCTETUS_AB(memoria+pos+8)==100 && OCTETUS_AB(memoria+pos+9)==100 && OCTETUS_AB(memoria+pos+10)==114 && OCTETUS_AB(memoria+pos+11)==101 && OCTETUS_AB(memoria+pos+12)==115 && OCTETUS_AB(memoria+pos+13)==115.
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -172,7 +182,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
 
     i = 0.
-    DUM i < 8 PERFICE
+    DUM i < 10 PERFICE
         SI HABET_API(memoria, n, i) == 0 TUNC
             PROCLAMA "ERRATUM: API KERNEL32 requisita deest".
             PROCLAMA i.
