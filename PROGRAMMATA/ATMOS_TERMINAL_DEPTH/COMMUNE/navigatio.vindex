@@ -1,0 +1,151 @@
+// ATMOS // TERMINAL DEPTH — navigatio continua sonar, tota VINDEX.
+//
+// Referentia morum: ludus HTML destinationem in sonar cliccatam accipit et
+// navem progressive ad punctum mundi movet. Hic nucleus idem contractum sine
+// JavaScript, browser aut machina aliena praebet.
+//
+// Status LXIV octeta / VIII verba NUMERUS:
+// +0  positio x
+// +8  positio y
+// +16 destinatio x
+// +24 destinatio y
+// +32 iter activum: 0/1
+// +40 velocitas per gradum
+// +48 distantia ultima (approximatio Chebyshev)
+// +56 radius sonar / maxima distantia unius cursus
+
+FUNCTIO NAVIGATIO_ABS REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    SI v < 0 TUNC REDDE 0 - v. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO NAVIGATIO_MAX REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    SI a > b TUNC REDDE a. FIN-SI.
+    REDDE b.
+FIN-FUNCTIO.
+
+FUNCTIO NAVIGATIO_INIT REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    SI n <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(n + 0) = 0.
+    CONTENTUM(n + 8) = 0.
+    CONTENTUM(n + 16) = 0.
+    CONTENTUM(n + 24) = 0.
+    CONTENTUM(n + 32) = 0.
+    CONTENTUM(n + 40) = 8.
+    CONTENTUM(n + 48) = 0.
+    CONTENTUM(n + 56) = 280.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO NAVIGATIO_VELOCITAS REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    SI n <= 0 || v <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(n + 40) = v.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO NAVIGATIO_RADIUS REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    SI n <= 0 || r <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(n + 56) = r.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Destinationem imponit; si ultra radium sonar est, cursum ad marginem stringit.
+FUNCTIO NAVIGATIO_DESTINATIO REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT tx SICUT NUMERUS.
+    ACCIPIT ty SICUT NUMERUS.
+    SI n <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(n + 0).
+    DECLARA y SICUT NUMERUS VALENS CONTENTUM(n + 8).
+    DECLARA dx SICUT NUMERUS VALENS tx - x.
+    DECLARA dy SICUT NUMERUS VALENS ty - y.
+    DECLARA ax SICUT NUMERUS VALENS NAVIGATIO_ABS(dx).
+    DECLARA ay SICUT NUMERUS VALENS NAVIGATIO_ABS(dy).
+    DECLARA d SICUT NUMERUS VALENS NAVIGATIO_MAX(ax, ay).
+    DECLARA radius SICUT NUMERUS VALENS CONTENTUM(n + 56).
+    SI d == 0 TUNC
+        CONTENTUM(n + 16) = x.
+        CONTENTUM(n + 24) = y.
+        CONTENTUM(n + 32) = 0.
+        CONTENTUM(n + 48) = 0.
+        REDDE 1.
+    FIN-SI.
+    SI d > radius TUNC
+        tx = x + (dx * radius) / d.
+        ty = y + (dy * radius) / d.
+        dx = tx - x.
+        dy = ty - y.
+        ax = NAVIGATIO_ABS(dx).
+        ay = NAVIGATIO_ABS(dy).
+        d = NAVIGATIO_MAX(ax, ay).
+    FIN-SI.
+    CONTENTUM(n + 16) = tx.
+    CONTENTUM(n + 24) = ty.
+    CONTENTUM(n + 32) = 1.
+    CONTENTUM(n + 48) = d.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Convertit coordinatas pixel sonar ad coordinatas mundi circa navem.
+// cx/cy = centrum sonar; radius_px = radius visibilis in pixelis.
+FUNCTIO NAVIGATIO_SONAR_DESTINATIO REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT mx SICUT NUMERUS.
+    ACCIPIT my SICUT NUMERUS.
+    ACCIPIT cx SICUT NUMERUS.
+    ACCIPIT cy SICUT NUMERUS.
+    ACCIPIT radius_px SICUT NUMERUS.
+    SI n <= 0 || radius_px <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA radius SICUT NUMERUS VALENS CONTENTUM(n + 56).
+    DECLARA wx SICUT NUMERUS VALENS CONTENTUM(n + 0) + ((mx - cx) * radius) / radius_px.
+    DECLARA wy SICUT NUMERUS VALENS CONTENTUM(n + 8) + ((my - cy) * radius) / radius_px.
+    REDDE NAVIGATIO_DESTINATIO(n, wx, wy).
+FIN-FUNCTIO.
+
+// Unus gradus simulationis. Reddit 0 si quiescit, 1 si movetur, 2 si advenit.
+FUNCTIO NAVIGATIO_GRADUS REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    SI n <= 0 || CONTENTUM(n + 32) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(n + 0).
+    DECLARA y SICUT NUMERUS VALENS CONTENTUM(n + 8).
+    DECLARA tx SICUT NUMERUS VALENS CONTENTUM(n + 16).
+    DECLARA ty SICUT NUMERUS VALENS CONTENTUM(n + 24).
+    DECLARA dx SICUT NUMERUS VALENS tx - x.
+    DECLARA dy SICUT NUMERUS VALENS ty - y.
+    DECLARA ax SICUT NUMERUS VALENS NAVIGATIO_ABS(dx).
+    DECLARA ay SICUT NUMERUS VALENS NAVIGATIO_ABS(dy).
+    DECLARA d SICUT NUMERUS VALENS NAVIGATIO_MAX(ax, ay).
+    DECLARA v SICUT NUMERUS VALENS CONTENTUM(n + 40).
+    SI d <= v TUNC
+        CONTENTUM(n + 0) = tx.
+        CONTENTUM(n + 8) = ty.
+        CONTENTUM(n + 32) = 0.
+        REDDE 2.
+    FIN-SI.
+    CONTENTUM(n + 0) = x + (dx * v) / d.
+    CONTENTUM(n + 8) = y + (dy * v) / d.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO NAVIGATIO_X REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    REDDE CONTENTUM(n + 0).
+FIN-FUNCTIO.
+
+FUNCTIO NAVIGATIO_Y REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    REDDE CONTENTUM(n + 8).
+FIN-FUNCTIO.
+
+FUNCTIO NAVIGATIO_ITER REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    REDDE CONTENTUM(n + 32).
+FIN-FUNCTIO.
