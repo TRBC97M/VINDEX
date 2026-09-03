@@ -1604,11 +1604,11 @@ FIN-FUNCTIO.
 
 
 FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
-    ACCIPIT verbum SICUT ORDO DE LITTERA.
+    ACCIPIT verbum SICUT ACUS<LITTERA>.
     ACCIPIT mensura SICUT NUMERUS.
     DECLARA signum SICUT NUMERUS VALENS 0.
     PER idx AB 0 AD mensura - 1 PERFICE
-        signum = signum * 31 + verbum[idx].
+        signum = signum * 31 + OCTETUS_AB(verbum + idx).
     FIN-PER.
     REDDE signum.
 FIN-FUNCTIO.
@@ -1620,7 +1620,7 @@ FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
     DECLARA verbum SICUT ORDO DE LITTERA CAPACITAS 32.
     DECLARA mensura SICUT NUMERUS VALENS 0.
     DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
-        verbum[mensura] = fons[CONTENTUM(pos)].
+        SCRIBE_OCTETUM_AB(verbum + mensura, fons[CONTENTUM(pos)]).
         mensura = mensura + 1.
         CONTENTUM(pos) = CONTENTUM(pos) + 1.
     FIN-DUM.
@@ -1788,7 +1788,7 @@ FUNCTIO EXHIBE_CATHENAM_DIAGNOSTICI REDDENS NUMERUS.
     DUM continua == 1 PERFICE
         DECLARA mensura SICUT NUMERUS VALENS 0.
         DUM mensura < 256 && OCTETUS_AB(textus + positio + mensura) != 0 PERFICE
-            buffer[mensura] = OCTETUS_AB(textus + positio + mensura).
+            SCRIBE_OCTETUM_AB(buffer + mensura, OCTETUS_AB(textus + positio + mensura)).
             mensura = mensura + 1.
         FIN-DUM.
         SI mensura > 0 TUNC
@@ -4827,8 +4827,13 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
                             ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                             DECLARA es_arr_fluitans SICUT NUMERUS VALENS 0.
+                            DECLARA es_arr_littera SICUT NUMERUS VALENS 0.
                             SI fons[CONTENTUM(pos_fontis)] == 70 && CONTENTUM(pos_fontis) + 7 < n && fons[CONTENTUM(pos_fontis)+1] == 76 && fons[CONTENTUM(pos_fontis)+2] == 85 && fons[CONTENTUM(pos_fontis)+3] == 73 && fons[CONTENTUM(pos_fontis)+4] == 84 && fons[CONTENTUM(pos_fontis)+5] == 65 && fons[CONTENTUM(pos_fontis)+6] == 78 && fons[CONTENTUM(pos_fontis)+7] == 83 TUNC
                                 es_arr_fluitans = 1.
+                            FIN-SI.
+                            // P9 — ORDO DE LITTERA elementa unius octeti sunt.
+                            SI fons[CONTENTUM(pos_fontis)] == 76 && CONTENTUM(pos_fontis) + 6 < n && fons[CONTENTUM(pos_fontis)+1] == 73 && fons[CONTENTUM(pos_fontis)+2] == 84 && fons[CONTENTUM(pos_fontis)+3] == 84 && fons[CONTENTUM(pos_fontis)+4] == 69 && fons[CONTENTUM(pos_fontis)+5] == 82 && fons[CONTENTUM(pos_fontis)+6] == 65 TUNC
+                                es_arr_littera = 1.
                             FIN-SI.
                             DECLARA nomen_typus_ordo SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
                             ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
@@ -4853,6 +4858,11 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 0, nomen).
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 1, intervallum_base).
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 2, 1).
+                            // P9: layout pilae interim eundem spatium historicum servat,
+                            // sed accessus LITTERA stride unius octeti accipit.
+                            SI es_arr_littera == 1 TUNC
+                                LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 3, 1).
+                            FIN-SI.
                             SI es_arr_fluitans == 1 TUNC
                                 LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 5, 1).
                             FIN-SI.
