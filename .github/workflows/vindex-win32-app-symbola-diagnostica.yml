@@ -27,9 +27,8 @@ jobs:
           s = p.read_text(encoding='utf-8')
           target = '-8428582279422563406'
 
-          # Vestigium cursoris top-level: num declarationem ipsam scanner videat.
           loop = '''    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
-          loop_dbg = f'''    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC\n            DECLARA dbg_scan_pos SICUT NUMERUS VALENS i + 8.\n            DECLARA dbg_scan_hash SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(dbg_scan_pos), n).\n            SI dbg_scan_hash == {target} TUNC\n                PROCLAMA "P11E SCAN TARGET".\n                PROCLAMA i.\n            FIN-SI.\n        FIN-SI.\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
+          loop_dbg = f'''    DECLARA dbg_all SICUT NUMERUS VALENS 0.\n    DUM dbg_all < n PERFICE\n        SI fons[dbg_all] == 70 && dbg_all + 7 < n && fons[dbg_all+1] == 85 && fons[dbg_all+2] == 78 && fons[dbg_all+3] == 67 && fons[dbg_all+4] == 84 && fons[dbg_all+5] == 73 && fons[dbg_all+6] == 79 && fons[dbg_all+7] == 32 TUNC\n            DECLARA dbg_all_pos SICUT NUMERUS VALENS dbg_all + 8.\n            DECLARA dbg_all_hash SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(dbg_all_pos), n).\n            SI dbg_all_hash == {target} TUNC\n                PROCLAMA "P11E SOURCE TARGET".\n                PROCLAMA dbg_all.\n            FIN-SI.\n        FIN-SI.\n        dbg_all = dbg_all + 1.\n    FIN-DUM.\n\n    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC\n            DECLARA dbg_scan_pos SICUT NUMERUS VALENS i + 8.\n            DECLARA dbg_scan_hash SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(dbg_scan_pos), n).\n            SI dbg_scan_hash == {target} TUNC\n                PROCLAMA "P11E SCAN TARGET".\n                PROCLAMA i.\n            FIN-SI.\n        FIN-SI.\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
           if loop not in s:
               raise SystemExit('top-level loop needle deest')
           s = s.replace(loop, loop_dbg, 1)
@@ -43,7 +42,7 @@ jobs:
           start = s.index('FUNCTIO CERCA_FUNCTIONEM_DYNAMICAM REDDENS NUMERUS.')
           pos = s.index('    DECLARA idx_fn_dyn SICUT NUMERUS VALENS 0.\n', start)
           needle = '    DECLARA idx_fn_dyn SICUT NUMERUS VALENS 0.\n'
-          dbg = needle + f'''    SI nomen_fn_dyn == {target} TUNC\n        PROCLAMA "P11E LOOK TARGET".\n        PROCLAMA PARES_QUANTITAS(descriptor).\n        DECLARA dbg_i SICUT NUMERUS VALENS 0.\n        DUM dbg_i < PARES_QUANTITAS(descriptor) PERFICE\n            SI PARES_LEGE(descriptor, dbg_i, 0) == nomen_fn_dyn TUNC\n                PROCLAMA "P11E FOUND TARGET".\n                PROCLAMA dbg_i.\n                PROCLAMA PARES_LEGE(descriptor, dbg_i, 1).\n            FIN-SI.\n            dbg_i = dbg_i + 1.\n        FIN-DUM.\n    FIN-SI.\n'''
+          dbg = needle + f'''    SI nomen_fn_dyn == {target} TUNC\n        PROCLAMA "P11E LOOK TARGET".\n        PROCLAMA PARES_QUANTITAS(descriptor).\n    FIN-SI.\n'''
           s = s[:pos] + s[pos:].replace(needle, dbg, 1)
           p.write_text(s, encoding='utf-8')
           PY
@@ -57,8 +56,3 @@ jobs:
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: /tmp/g3 tests/casus/win32_app.vindex /tmp/win32.exe pe
-      - name: Symbola post CREA compila
-        if: always()
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        shell: bash
-        run: /tmp/g3 tests/casus/win32_app_symbola_post.vindex /tmp/post.exe pe
