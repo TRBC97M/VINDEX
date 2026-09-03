@@ -1,0 +1,90 @@
+name: VINDEX — ATMOS NATIVUM Fundamentum
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_bitmap_5x7.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-atmos-nativum-fundamentum.yml'
+
+jobs:
+  elf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Canvas et fontem VINDEX proba
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM/probationes
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" proba_canvas.vindex /tmp/proba_canvas
+          chmod +x /tmp/proba_canvas
+          /tmp/proba_canvas
+      - name: Nucleum ludicum VINDEX proba
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM/probationes
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          "$COMP" proba_nucleus.vindex /tmp/proba_nucleus
+          chmod +x /tmp/proba_nucleus
+          /tmp/proba_nucleus
+
+  genera-pe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ATMOS NATIVUM ex VINDEX compila
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" ludus.vindex /tmp/atmos_nativum.exe pe
+          file /tmp/atmos_nativum.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-nativum-fundamentum
+          path: /tmp/atmos_nativum.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    needs: genera-pe
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-nativum-fundamentum
+          path: atmos
+      - name: Fenestram, canvas unicum et cursum sonar sub Windows proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Set-Location (Resolve-Path '.\atmos')
+          $out = & .\atmos_nativum.exe smoke 2>&1
+          $code = $LASTEXITCODE
+          $text = ($out -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "ATMOS NATIVUM exitus $code" }
+          if ($text -notmatch 'RECTE: ATMOS NATIVUM FUNDAMENTUM WIN64') { throw 'confirmatio NATIVUM deest' }
+          $nums = @($out | Where-Object { $_ -match '^-?\d+$' } | ForEach-Object { [int64]$_ })
+          if ($nums.Count -lt 7) { throw 'status NATIVUM incompletus est' }
+          $f = $nums[($nums.Count-7)..($nums.Count-1)]
+          if ($f[0] -ne 140 -or $f[1] -ne 0) { throw "cursus sonar falsus: $($f[0]),$($f[1])" }
+          if ($f[2] -lt 900 -or $f[2] -gt 12000) { throw "bathymetria falsa: $($f[2])" }
+          if ($f[3] -ne 950) { throw "oxygenium post cursum falsum: $($f[3])" }
+          if ($f[4] -le 0 -or $f[5] -le 0) { throw 'client rect invalidum est' }
+          if ($f[6] -ne 720) { throw "praesentatio falsa: $($f[6])" }
+          Write-Host 'RECTE: NATIVUM una compositione + sonar + resize destinatio sub Windows probata sunt.'
