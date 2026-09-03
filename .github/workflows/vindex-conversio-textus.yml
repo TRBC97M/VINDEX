@@ -21,6 +21,7 @@ jobs:
           set -euo pipefail
           chmod +x compilator_vindex
           ./compilator_vindex tests/casus/conversio_textus.vindex /tmp/proba_conversio
+          chmod +x /tmp/proba_conversio
           /tmp/proba_conversio | tee /tmp/conversio.log
           grep -F 'CONVERSIO TEXTUS RECTE' /tmp/conversio.log
           ./compilator_vindex tests/casus/conversio_textus.vindex /tmp/proba_conversio.exe pe
