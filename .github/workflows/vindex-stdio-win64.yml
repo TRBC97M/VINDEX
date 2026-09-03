@@ -5,6 +5,8 @@ on:
   pull_request:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_stdio_win64.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_stdio_linea_win64.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/stdio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
       - '.github/workflows/vindex-stdio-win64.yml'
@@ -48,7 +50,7 @@ jobs:
           name: stdio-compilator-win64
           path: instrumenta-stdio
 
-      - name: Probationem stdio compila
+      - name: Probationes stdio compila
         shell: pwsh
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
@@ -56,8 +58,10 @@ jobs:
           $compilator = (Resolve-Path '..\..\instrumenta-stdio\compilator_vindex.exe').Path
           & $compilator tests\proba_stdio_win64.vindex proba_stdio_win64.exe pe
           if ($LASTEXITCODE -ne 0) { throw "compilatio stdio exitus $LASTEXITCODE" }
+          & $compilator tests\proba_stdio_linea_win64.vindex proba_stdio_linea_win64.exe pe
+          if ($LASTEXITCODE -ne 0) { throw "compilatio lineae stdio exitus $LASTEXITCODE" }
 
-      - name: STDIN et STDOUT sub Windows vero proba
+      - name: STDIN et STDOUT humilia sub Windows vero proba
         shell: pwsh
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
@@ -68,3 +72,15 @@ jobs:
           Write-Host $text
           if ($code -ne 0) { throw "probatio stdio exitus $code" }
           if ($text -notmatch 'RECTE: STDIO WIN64') { throw 'confirmatio STDIO deest' }
+
+      - name: Lectorem lineae et comparationem sub Windows vero proba
+        shell: pwsh
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $output = 'descend' | .\proba_stdio_linea_win64.exe 2>&1
+          $code = $LASTEXITCODE
+          $text = ($output -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "probatio lineae stdio exitus $code" }
+          if ($text -notmatch 'RECTE: STDIO LINEA WIN64') { throw 'confirmatio lineae STDIO deest' }
