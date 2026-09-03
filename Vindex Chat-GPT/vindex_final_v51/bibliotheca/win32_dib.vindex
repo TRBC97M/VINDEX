@@ -1,0 +1,148 @@
+// VINDEX — superficies DIB Section Win32 pro renderer software.
+// Dependit a textus.vindex, win32_ffi.vindex et win32_app.vindex.
+// VINDEX scribit directe in pixels bitmapis a Windows possessi;
+// GDI solum bitmap finalem ad fenestram praesentat.
+
+// Contextus LXXII octeta:
+// +0 gdi32, +8 CreateCompatibleDC, +16 CreateDIBSection,
+// +24 SelectObject, +32 StretchBlt, +40 SetStretchBltMode,
+// +48 DeleteDC, +56 DeleteObject, +64 GetPixel.
+FUNCTIO WDIB_CONTEXUS_CREA REDDENS NUMERUS.
+    DECLARA c SICUT NUMERUS VALENS RESERVA_OCTETA(72).
+    SI c <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA g SICUT NUMERUS VALENS WIN32_MODULUM_APERI("gdi32.dll").
+    SI g == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(c + 0) = g.
+    CONTENTUM(c + 8) = WIN32_SYMBOLUM(g, "CreateCompatibleDC").
+    CONTENTUM(c + 16) = WIN32_SYMBOLUM(g, "CreateDIBSection").
+    CONTENTUM(c + 24) = WIN32_SYMBOLUM(g, "SelectObject").
+    CONTENTUM(c + 32) = WIN32_SYMBOLUM(g, "StretchBlt").
+    CONTENTUM(c + 40) = WIN32_SYMBOLUM(g, "SetStretchBltMode").
+    CONTENTUM(c + 48) = WIN32_SYMBOLUM(g, "DeleteDC").
+    CONTENTUM(c + 56) = WIN32_SYMBOLUM(g, "DeleteObject").
+    CONTENTUM(c + 64) = WIN32_SYMBOLUM(g, "GetPixel").
+    SI CONTENTUM(c + 8) == 0 || CONTENTUM(c + 16) == 0 || CONTENTUM(c + 24) == 0 || CONTENTUM(c + 32) == 0 || CONTENTUM(c + 40) == 0 || CONTENTUM(c + 48) == 0 || CONTENTUM(c + 56) == 0 || CONTENTUM(c + 64) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE c.
+FIN-FUNCTIO.
+
+// Descriptor LXIV octeta:
+// +0 memdc, +8 bitmap, +16 vetus obiectum, +24 pixels,
+// +32 BITMAPINFO, +40/+48 latitudo/altitudo.
+FUNCTIO WDIB_CREA REDDENS NUMERUS.
+    ACCIPIT ctx SICUT NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI ctx <= 0 || hdc <= 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA p SICUT NUMERUS VALENS SEDES(a).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p) = hdc.
+    DECLARA memdc SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(ctx + 8), p).
+    SI memdc == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA bmi SICUT NUMERUS VALENS WINAPP_BITMAPINFO_CREA(w, h).
+    DECLARA pp SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    SI bmi == 0 || pp <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(pp) = 0.
+
+    ig = MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = hdc.
+    CONTENTUM(p + 8) = bmi.
+    CONTENTUM(p + 16) = 0.
+    CONTENTUM(p + 24) = pp.
+    CONTENTUM(p + 32) = 0.
+    CONTENTUM(p + 40) = 0.
+    DECLARA bitmap SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(ctx + 16), p).
+    DECLARA pixels SICUT NUMERUS VALENS CONTENTUM(pp).
+    SI bitmap == 0 || pixels == 0 TUNC REDDE 0. FIN-SI.
+
+    ig = MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = memdc.
+    CONTENTUM(p + 8) = bitmap.
+    DECLARA vetus SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(ctx + 24), p).
+    SI vetus == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA d SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI d <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(d + 0) = memdc.
+    CONTENTUM(d + 8) = bitmap.
+    CONTENTUM(d + 16) = vetus.
+    CONTENTUM(d + 24) = pixels.
+    CONTENTUM(d + 32) = bmi.
+    CONTENTUM(d + 40) = w.
+    CONTENTUM(d + 48) = h.
+    CONTENTUM(d + 56) = 0.
+    REDDE d.
+FIN-FUNCTIO.
+
+FUNCTIO WDIB_PIXELS REDDENS NUMERUS.
+    ACCIPIT dib SICUT NUMERUS.
+    SI dib <= 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(dib + 24).
+FIN-FUNCTIO.
+
+FUNCTIO WDIB_PRAESENTA REDDENS NUMERUS.
+    ACCIPIT ctx SICUT NUMERUS.
+    ACCIPIT dib SICUT NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT dw SICUT NUMERUS.
+    ACCIPIT dh SICUT NUMERUS.
+    SI ctx <= 0 || dib <= 0 || hdc <= 0 || dw <= 0 || dh <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA p SICUT NUMERUS VALENS SEDES(a).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = hdc.
+    CONTENTUM(p + 8) = 3. // COLORONCOLOR
+    DECLARA modus SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(ctx + 40), p).
+
+    ig = MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = hdc.
+    CONTENTUM(p + 8) = 0.
+    CONTENTUM(p + 16) = 0.
+    CONTENTUM(p + 24) = dw.
+    CONTENTUM(p + 32) = dh.
+    CONTENTUM(p + 40) = CONTENTUM(dib + 0).
+    CONTENTUM(p + 48) = 0.
+    CONTENTUM(p + 56) = 0.
+    CONTENTUM(p + 64) = CONTENTUM(dib + 40).
+    CONTENTUM(p + 72) = CONTENTUM(dib + 48).
+    CONTENTUM(p + 80) = 13369376. // SRCCOPY
+    REDDE MSX64_VOCA(CONTENTUM(ctx + 32), p).
+FIN-FUNCTIO.
+
+FUNCTIO WDIB_PIXEL_ECRAN REDDENS NUMERUS.
+    ACCIPIT ctx SICUT NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI ctx <= 0 || hdc <= 0 TUNC REDDE 4294967295. FIN-SI.
+    DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA p SICUT NUMERUS VALENS SEDES(a).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = hdc.
+    CONTENTUM(p + 8) = x.
+    CONTENTUM(p + 16) = y.
+    REDDE MSX64_VOCA(CONTENTUM(ctx + 64), p) & 4294967295.
+FIN-FUNCTIO.
+
+FUNCTIO WDIB_DELE REDDENS NUMERUS.
+    ACCIPIT ctx SICUT NUMERUS.
+    ACCIPIT dib SICUT NUMERUS.
+    SI ctx <= 0 || dib <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA p SICUT NUMERUS VALENS SEDES(a).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = CONTENTUM(dib + 0).
+    CONTENTUM(p + 8) = CONTENTUM(dib + 16).
+    DECLARA sel SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(ctx + 24), p).
+    ig = MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = CONTENTUM(dib + 8).
+    DECLARA db SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(ctx + 56), p).
+    ig = MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = CONTENTUM(dib + 0).
+    DECLARA dc SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(ctx + 48), p).
+    REDDE 1.
+FIN-FUNCTIO.
