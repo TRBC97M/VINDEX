@@ -1,0 +1,69 @@
+// ATMOS // TERMINAL DEPTH — interactio stabilis communis.
+//
+// Contextus CXXVIII octeta:
+// +0..+88  XII memoriae clavium (NUMERUS): sinistra, dextra, sursum,
+//          deorsum, 1,2,3,4,5,6, mus sinister, Escape.
+// +96      ultima actio UI (0 nulla; 1..6 ludus; 10..13 navigatio).
+// +104     ultimus exitus (-1 error save; 0 recusata; 1 accepta).
+// Reliqua reservata.
+//
+// INTERACTIO_ORA reddit 1 solum in transitu 0 -> 1. Clavis retenta
+// igitur actionem unicam excitat, non actionem singulis frame.
+
+FUNCTIO INTERACTIO_CREA REDDENS NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS RESERVA_OCTETA(128).
+    SI i <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS 0.
+    DUM p < 128 PERFICE
+        SCRIBE_OCTETUM_AB(i + p, 0).
+        p = p + 1.
+    FIN-DUM.
+    REDDE i.
+FIN-FUNCTIO.
+
+FUNCTIO INTERACTIO_CLAVES_RESETA REDDENS NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    SI i <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS 0.
+    DUM p < 12 PERFICE
+        CONTENTUM(i + p * 8) = 0.
+        p = p + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO INTERACTIO_ORA REDDENS NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT deorsum SICUT NUMERUS.
+    SI i <= 0 || index < 0 || index >= 12 TUNC REDDE 0. FIN-SI.
+    DECLARA off SICUT NUMERUS VALENS index * 8.
+    DECLARA ante SICUT NUMERUS VALENS CONTENTUM(i + off).
+    DECLARA nunc SICUT NUMERUS VALENS 0.
+    SI deorsum != 0 TUNC nunc = 1. FIN-SI.
+    CONTENTUM(i + off) = nunc.
+    SI nunc == 1 && ante == 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO INTERACTIO_EVENTUM REDDENS NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT actio SICUT NUMERUS.
+    ACCIPIT exitus SICUT NUMERUS.
+    SI i <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(i + 96) = actio.
+    CONTENTUM(i + 104) = exitus.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO INTERACTIO_ACTIO REDDENS NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    SI i <= 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(i + 96).
+FIN-FUNCTIO.
+
+FUNCTIO INTERACTIO_EXITUS REDDENS NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    SI i <= 0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(i + 104).
+FIN-FUNCTIO.
