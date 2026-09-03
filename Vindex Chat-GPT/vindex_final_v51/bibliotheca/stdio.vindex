@@ -27,6 +27,10 @@ FIN-FUNCTIO.
 //   -1    errorem I/O vel argumentum invalidum;
 //   -2    EOF ante ullum octetum.
 // Tampon semper NUL terminatur ubi capacitas id permittit.
+//
+// Nota: LITTERA in structuris humilis gradus byte-addressata est. Hic
+// OCTETUS_AB/SCRIBE_OCTETUM_AB deliberate adhibentur ne lectio verbi LXIV
+// bitorum per accidens plures litteras simul comparet aut mutet.
 FUNCTIO STDIO_LEGE_LINEAM REDDENS NUMERUS.
     ACCIPIT tampon SICUT ACUS<LITTERA>.
     ACCIPIT capacitas SICUT NUMERUS.
@@ -36,27 +40,27 @@ FUNCTIO STDIO_LEGE_LINEAM REDDENS NUMERUS.
     DUM i < capacitas - 1 PERFICE
         DECLARA n SICUT NUMERUS VALENS LEGE(0, 1).
         SI n < 0 TUNC
-            tampon[i] = 0.
+            SCRIBE_OCTETUM_AB(tampon + i, 0).
             REDDE -1.
         FIN-SI.
         SI n == 0 TUNC
-            tampon[i] = 0.
+            SCRIBE_OCTETUM_AB(tampon + i, 0).
             SI i == 0 TUNC REDDE -2. FIN-SI.
             REDDE i.
         FIN-SI.
 
         DECLARA c SICUT NUMERUS VALENS OCTETUS(0).
         SI c == 10 TUNC
-            tampon[i] = 0.
+            SCRIBE_OCTETUM_AB(tampon + i, 0).
             REDDE i.
         FIN-SI.
         SI c != 13 TUNC
-            tampon[i] = c.
+            SCRIBE_OCTETUM_AB(tampon + i, c).
             i = i + 1.
         FIN-SI.
     FIN-DUM.
 
-    tampon[i] = 0.
+    SCRIBE_OCTETUM_AB(tampon + i, 0).
     REDDE i.
 FIN-FUNCTIO.
 
@@ -68,7 +72,7 @@ FUNCTIO STDIO_AEQUA REDDENS NUMERUS.
     SI a == 0 || b == 0 || na != nb || na < 0 TUNC REDDE 0. FIN-SI.
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i < na PERFICE
-        SI a[i] != b[i] TUNC REDDE 0. FIN-SI.
+        SI OCTETUS_AB(a + i) != OCTETUS_AB(b + i) TUNC REDDE 0. FIN-SI.
         i = i + 1.
     FIN-DUM.
     REDDE 1.
