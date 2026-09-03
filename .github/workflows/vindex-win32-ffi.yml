@@ -5,6 +5,7 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_win32_ffi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_pe_structuram_053.vindex'
       - '.github/workflows/vindex-win32-ffi.yml'
