@@ -1,0 +1,222 @@
+// ATMOS // TERMINAL DEPTH — nucleus ludicus communis.
+//
+// Status memoriae: X verba NUMERUS / LXXX octeta.
+// +0  cyclus
+// +8  profunditas metris
+// +16 oxygenium
+// +24 energia
+// +32 integritas
+// +40 credita
+// +48 minera
+// +56 semen mundi
+// +64 ultimum contactum sonar: 0 nullum, 1 minera, 2 structura, 3 convoy, 4 Below
+// +72 ultimum eventum: 0 nullum, 1 fractura pressionis, 2 inventarium salutis
+//
+// atmos.sav manet ATD1 versio I, XLVIII octeta, compatible cum POC I/II.
+
+FUNCTIO ATMOS_INIT REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(s) = 0.
+    CONTENTUM(s + 8) = 120.
+    CONTENTUM(s + 16) = 100.
+    CONTENTUM(s + 24) = 100.
+    CONTENTUM(s + 32) = 100.
+    CONTENTUM(s + 40) = 250.
+    CONTENTUM(s + 48) = 0.
+    CONTENTUM(s + 56) = 7319.
+    CONTENTUM(s + 64) = 0.
+    CONTENTUM(s + 72) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_CARICA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("atmos.sav").
+    SI fd < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 48).
+    DECLARA clausum SICUT NUMERUS VALENS CLAUDE(fd).
+    SI n != 48 TUNC REDDE 0. FIN-SI.
+    SI OCTETUS(0) != 65 || OCTETUS(1) != 84 || OCTETUS(2) != 68 || OCTETUS(3) != 49 TUNC REDDE 0. FIN-SI.
+    SI OCTETUS(4) != 1 TUNC REDDE 0. FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 10 PERFICE
+        DECLARA p SICUT NUMERUS VALENS 8 + i * 4.
+        DECLARA v SICUT NUMERUS VALENS OCTETUS(p).
+        v = v + OCTETUS(p + 1) * 256.
+        v = v + OCTETUS(p + 2) * 65536.
+        v = v + OCTETUS(p + 3) * 16777216.
+        CONTENTUM(s + i * 8) = v.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_SALVA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    DECLARA salva SICUT ORDO DE LITTERA CAPACITAS 48.
+    salva[0] = 65.
+    salva[1] = 84.
+    salva[2] = 68.
+    salva[3] = 49.
+    salva[4] = 1.
+    salva[5] = 0.
+    salva[6] = 0.
+    salva[7] = 0.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 10 PERFICE
+        DECLARA v SICUT NUMERUS VALENS CONTENTUM(s + i * 8).
+        DECLARA p SICUT NUMERUS VALENS 8 + i * 4.
+        salva[p] = v & 255.
+        salva[p + 1] = (v >> 8) & 255.
+        salva[p + 2] = (v >> 16) & 255.
+        salva[p + 3] = (v >> 24) & 255.
+        i = i + 1.
+    FIN-DUM.
+
+    DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("atmos.sav").
+    SI fd < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd, salva, 48).
+    DECLARA clausum SICUT NUMERUS VALENS CLAUDE(fd).
+    SI scriptum != 48 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_EVENTUM REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    CONTENTUM(s + 72) = 0.
+    DECLARA profunditas SICUT NUMERUS VALENS CONTENTUM(s + 8).
+    SI profunditas <= 300 TUNC REDDE 0. FIN-SI.
+    DECLARA semen SICUT NUMERUS VALENS CONTENTUM(s + 56).
+    DECLARA cyclus SICUT NUMERUS VALENS CONTENTUM(s).
+    DECLARA eventum SICUT NUMERUS VALENS (semen * 97 + cyclus * 31 + profunditas * 7) % 100.
+
+    SI eventum < 4 TUNC
+        DECLARA integritas SICUT NUMERUS VALENS CONTENTUM(s + 32) - 7.
+        SI integritas < 0 TUNC integritas = 0. FIN-SI.
+        CONTENTUM(s + 32) = integritas.
+        CONTENTUM(s + 72) = 1.
+        REDDE 1.
+    FIN-SI.
+
+    SI eventum >= 4 && eventum < 8 TUNC
+        CONTENTUM(s + 40) = CONTENTUM(s + 40) + 25.
+        CONTENTUM(s + 72) = 2.
+        REDDE 2.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_SCAN REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 24) < 3 || CONTENTUM(s + 16) < 1 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 3.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 1.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+
+    DECLARA signum SICUT NUMERUS VALENS (CONTENTUM(s + 56) + CONTENTUM(s) * 17 + CONTENTUM(s + 8) * 11) % 100.
+    SI signum < 35 TUNC CONTENTUM(s + 64) = 1. FIN-SI.
+    SI signum >= 35 && signum < 60 TUNC CONTENTUM(s + 64) = 2. FIN-SI.
+    SI signum >= 60 && signum < 85 TUNC CONTENTUM(s + 64) = 3. FIN-SI.
+    SI signum >= 85 TUNC CONTENTUM(s + 64) = 4. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_DESCENDE REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 24) < 8 || CONTENTUM(s + 16) < 6 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(s + 8) = CONTENTUM(s + 8) + 150.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 8.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 6.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ASCENDE REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 24) < 5 || CONTENTUM(s + 16) < 3 TUNC REDDE 0. FIN-SI.
+    DECLARA nova SICUT NUMERUS VALENS CONTENTUM(s + 8) - 150.
+    SI nova < 0 TUNC nova = 0. FIN-SI.
+    CONTENTUM(s + 8) = nova.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 5.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 3.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    SI nova == 0 TUNC
+        CONTENTUM(s + 16) = 100.
+        DECLARA energia SICUT NUMERUS VALENS CONTENTUM(s + 24) + 10.
+        SI energia > 100 TUNC energia = 100. FIN-SI.
+        CONTENTUM(s + 24) = energia.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_MINERA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 8) < 100 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(s + 24) < 12 || CONTENTUM(s + 16) < 4 TUNC REDDE 0. FIN-SI.
+    DECLARA lucrum SICUT NUMERUS VALENS 5 + ((CONTENTUM(s + 56) + CONTENTUM(s) + CONTENTUM(s + 8)) % 11).
+    CONTENTUM(s + 48) = CONTENTUM(s + 48) + lucrum.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 12.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 4.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_MERCATURA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 8) > 150 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(s + 48) <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pretium SICUT NUMERUS VALENS 8 + ((CONTENTUM(s + 56) + CONTENTUM(s)) % 5).
+    DECLARA minera SICUT NUMERUS VALENS CONTENTUM(s + 48).
+    CONTENTUM(s + 40) = CONTENTUM(s + 40) + minera * pretium.
+    CONTENTUM(s + 48) = 0.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_REPARA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 32) >= 100 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(s + 40) < 40 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(s + 40) = CONTENTUM(s + 40) - 40.
+    DECLARA integritas SICUT NUMERUS VALENS CONTENTUM(s + 32) + 20.
+    SI integritas > 100 TUNC integritas = 100. FIN-SI.
+    CONTENTUM(s + 32) = integritas.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_FINIS REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 16) <= 0 || CONTENTUM(s + 24) <= 0 || CONTENTUM(s + 32) <= 0 TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+// Codices actionum:
+// 1 scan, 2 descende, 3 ascende, 4 minera, 5 mercatura, 6 repara, 7 novum.
+// Reddit 1 si actio mutavit et save scripta est; 0 si actio recusata; -1 si save fallit.
+FUNCTIO ATMOS_ACTIO REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+
+    SI codex == 7 TUNC
+        SI ATMOS_INIT(s) == 0 TUNC REDDE 0. FIN-SI.
+        SI ATMOS_SALVA(s) == 0 TUNC REDDE -1. FIN-SI.
+        REDDE 1.
+    FIN-SI.
+
+    DECLARA mutatum SICUT NUMERUS VALENS 0.
+    SI codex == 1 TUNC mutatum = ATMOS_SCAN(s). FIN-SI.
+    SI codex == 2 TUNC mutatum = ATMOS_DESCENDE(s). FIN-SI.
+    SI codex == 3 TUNC mutatum = ATMOS_ASCENDE(s). FIN-SI.
+    SI codex == 4 TUNC mutatum = ATMOS_MINERA(s). FIN-SI.
+    SI codex == 5 TUNC mutatum = ATMOS_MERCATURA(s). FIN-SI.
+    SI codex == 6 TUNC mutatum = ATMOS_REPARA(s). FIN-SI.
+    SI mutatum == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA eventum SICUT NUMERUS VALENS ATMOS_EVENTUM(s).
+    SI ATMOS_SALVA(s) == 0 TUNC REDDE -1. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
