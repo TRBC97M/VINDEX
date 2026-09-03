@@ -28,22 +28,29 @@ jobs:
           set -euo pipefail
           python3 instrumenta/applica_ordo_littera_patch.py
 
-      - name: Compilatorem auto-hospitem ad punctum fixum regenera
+      - name: Compilatorem post bootstrap semanticum ad punctum fixum regenera
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           set -euo pipefail
           chmod +x compilator_vindex
+
+          # G2 est transitorius: compilator vetus fontem cum semantica nova compilat.
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
+
+          # A G3 deinceps compilator novam semanticam suam ipsius iam adhibet.
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
           chmod +x /tmp/g3
-          cmp /tmp/g2 /tmp/g3
-          cp /tmp/g3 compilator_vindex
+          /tmp/g3 src/compilator_vindex.vindex /tmp/g4
+          chmod +x /tmp/g4
+          cmp /tmp/g3 /tmp/g4
+
+          cp /tmp/g4 compilator_vindex
           chmod +x compilator_vindex
-          ./compilator_vindex src/compilator_vindex.vindex /tmp/g4
-          cmp compilator_vindex /tmp/g4
-          echo 'RECTE: G2 = G3 = compilator canonicus.'
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/g5
+          cmp compilator_vindex /tmp/g5
+          echo 'RECTE: post bootstrap semanticum G3 = G4 = G5.'
 
       - name: Regressionem ORDO DE LITTERA ante commit proba
         working-directory: Vindex Chat-GPT/vindex_final_v51
