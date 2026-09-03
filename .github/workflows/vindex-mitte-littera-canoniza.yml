@@ -61,12 +61,7 @@ jobs:
             ATD1*'RECTE: MITTE LITTERA'*) ;;
             *) echo 'ERRATUM: stdout MITTE/LITTERA' >&2; exit 31 ;;
           esac
-          python3 - <<'PY'
-from pathlib import Path
-b = Path('/tmp/proba_mitte_littera.bin').read_bytes()
-assert b == bytes([65,84,68,49,1]), b
-print('RECTE: fasciculus MITTE LITTERA exactus est.')
-PY
+          python3 -c "from pathlib import Path; b=Path('/tmp/proba_mitte_littera.bin').read_bytes(); assert b == bytes([65,84,68,49,1]), b; print('RECTE: fasciculus MITTE LITTERA exactus est.')"
 
       - name: Mutationem canonicam in ramum repone
         shell: bash
