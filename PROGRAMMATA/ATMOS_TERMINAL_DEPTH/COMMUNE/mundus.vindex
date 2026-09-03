@@ -1,0 +1,139 @@
+// ATMOS // TERMINAL DEPTH — mundus proceduralis communis POC V.
+// Client ante hunc fontem importare debet bibliotheca/aleatorium.vindex et nucleus.vindex.
+//
+// Status mundi in memoria (IX verba / LXXII octeta):
+// +0  sector x
+// +8  sector y
+// +16 numerus sectorum visitatorum
+// +24 genus sectoris: 0 abyssus, 1 iugum minerale, 2 fons thermalis,
+//                     3 ruina, 4 via convoy, 5 anomalia Below
+// +32 genus contactus: 0 nullum, 1 minera, 2 structura, 3 convoy, 4 Below
+// +40 contactus x in radar 0..319
+// +48 contactus y in radar 0..179
+// +56 divitiae 0..100
+// +64 periculum 0..100
+//
+// Persistitur tantum x/y/visitata in atmos.world. Reliqua ex semine mundi
+// et tranche profunditatis deterministice regenerantur.
+//
+// atmos.world: XX octeta
+// 0..3 "ATW1"; 4 versio I; 5..7 reservata;
+// 8..11 x i32 LE; 12..15 y i32 LE; 16..19 visitata u32 LE.
+
+FUNCTIO MUNDUS_U32_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buffer SICUT ACUS<LITTERA>.
+    ACCIPIT off SICUT NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    buffer[off] = v & 255.
+    buffer[off + 1] = (v >> 8) & 255.
+    buffer[off + 2] = (v >> 16) & 255.
+    buffer[off + 3] = (v >> 24) & 255.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MUNDUS_INIT REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    SI m <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(m) = 0.
+    CONTENTUM(m + 8) = 0.
+    CONTENTUM(m + 16) = 1.
+    CONTENTUM(m + 24) = 0.
+    CONTENTUM(m + 32) = 0.
+    CONTENTUM(m + 40) = 160.
+    CONTENTUM(m + 48) = 90.
+    CONTENTUM(m + 56) = 0.
+    CONTENTUM(m + 64) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MUNDUS_SALVA REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    DECLARA data SICUT ORDO DE LITTERA CAPACITAS 20.
+    data[0] = 65. data[1] = 84. data[2] = 87. data[3] = 49.
+    data[4] = 1. data[5] = 0. data[6] = 0. data[7] = 0.
+    DECLARA ig SICUT NUMERUS VALENS MUNDUS_U32_SCRIBE(data, 8, CONTENTUM(m)).
+    ig = MUNDUS_U32_SCRIBE(data, 12, CONTENTUM(m + 8)).
+    ig = MUNDUS_U32_SCRIBE(data, 16, CONTENTUM(m + 16)).
+    DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("atmos.world").
+    SI fd < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS MITTE(fd, data, 20).
+    DECLARA c SICUT NUMERUS VALENS CLAUDE(fd).
+    SI n != 20 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MUNDUS_CARICA REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("atmos.world").
+    SI fd < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 20).
+    DECLARA c SICUT NUMERUS VALENS CLAUDE(fd).
+    SI n != 20 TUNC REDDE 0. FIN-SI.
+    SI OCTETUS(0) != 65 || OCTETUS(1) != 84 || OCTETUS(2) != 87 || OCTETUS(3) != 49 || OCTETUS(4) != 1 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS OCTETUS(8) + OCTETUS(9) * 256 + OCTETUS(10) * 65536 + OCTETUS(11) * 16777216.
+    DECLARA y SICUT NUMERUS VALENS OCTETUS(12) + OCTETUS(13) * 256 + OCTETUS(14) * 65536 + OCTETUS(15) * 16777216.
+    SI x >= 2147483648 TUNC x = x - 4294967296. FIN-SI.
+    SI y >= 2147483648 TUNC y = y - 4294967296. FIN-SI.
+    DECLARA visites SICUT NUMERUS VALENS OCTETUS(16) + OCTETUS(17) * 256 + OCTETUS(18) * 65536 + OCTETUS(19) * 16777216.
+    CONTENTUM(m) = x.
+    CONTENTUM(m + 8) = y.
+    CONTENTUM(m + 16) = visites.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MUNDUS_SECTOR_GENERA REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT semen_mundi SICUT NUMERUS.
+    ACCIPIT profunditas SICUT NUMERUS.
+    DECLARA tranche SICUT NUMERUS VALENS profunditas / 150.
+    DECLARA primum SICUT NUMERUS VALENS ALEA_MISCE_U32(semen_mundi, CONTENTUM(m), CONTENTUM(m + 8)).
+    DECLARA semen_sectoris SICUT NUMERUS VALENS ALEA_MISCE_U32(primum, tranche, 53431).
+    DECLARA rng SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    SI rng <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA init SICUT NUMERUS VALENS ALEA_SEMEN(rng, semen_sectoris).
+    DECLARA r SICUT NUMERUS VALENS ALEA_INFRA(rng, 100).
+    DECLARA genus SICUT NUMERUS VALENS 0.
+    SI r >= 30 && r < 50 TUNC genus = 1. FIN-SI.
+    SI r >= 50 && r < 65 TUNC genus = 2. FIN-SI.
+    SI r >= 65 && r < 80 TUNC genus = 3. FIN-SI.
+    SI r >= 80 && r < 92 TUNC genus = 4. FIN-SI.
+    SI r >= 92 TUNC genus = 5. FIN-SI.
+    CONTENTUM(m + 24) = genus.
+
+    DECLARA contactus SICUT NUMERUS VALENS 0.
+    SI genus == 1 || genus == 2 TUNC contactus = 1. FIN-SI.
+    SI genus == 3 TUNC contactus = 2. FIN-SI.
+    SI genus == 4 TUNC contactus = 3. FIN-SI.
+    SI genus == 5 TUNC contactus = 4. FIN-SI.
+    SI genus == 0 && ALEA_INFRA(rng, 100) < 18 TUNC contactus = 3. FIN-SI.
+    CONTENTUM(m + 32) = contactus.
+    CONTENTUM(m + 40) = ALEA_INTER(rng, 175, 292).
+    CONTENTUM(m + 48) = ALEA_INTER(rng, 26, 140).
+    CONTENTUM(m + 56) = ALEA_INFRA(rng, 101).
+    CONTENTUM(m + 64) = ALEA_INFRA(rng, 101).
+    REDDE 1.
+FIN-FUNCTIO.
+
+// dx/dy debent esse -1,0,1 et unum axem tantum mutare.
+// Motus II energiae + I oxygenii consumit et cyclum auget.
+FUNCTIO MUNDUS_NAVIGA REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    SI (dx == 0 && dy == 0) || (dx != 0 && dy != 0) TUNC REDDE 0. FIN-SI.
+    SI dx < -1 || dx > 1 || dy < -1 || dy > 1 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(status + 24) < 2 || CONTENTUM(status + 16) < 1 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(m) = CONTENTUM(m) + dx.
+    CONTENTUM(m + 8) = CONTENTUM(m + 8) + dy.
+    CONTENTUM(m + 16) = CONTENTUM(m + 16) + 1.
+    CONTENTUM(status + 24) = CONTENTUM(status + 24) - 2.
+    CONTENTUM(status + 16) = CONTENTUM(status + 16) - 1.
+    CONTENTUM(status) = CONTENTUM(status) + 1.
+    CONTENTUM(status + 72) = 0.
+    DECLARA g SICUT NUMERUS VALENS MUNDUS_SECTOR_GENERA(m, CONTENTUM(status + 56), CONTENTUM(status + 8)).
+    SI g == 0 TUNC REDDE -1. FIN-SI.
+    SI ATMOS_SALVA(status) == 0 TUNC REDDE -1. FIN-SI.
+    SI MUNDUS_SALVA(m) == 0 TUNC REDDE -1. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
