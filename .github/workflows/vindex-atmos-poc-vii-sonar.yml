@@ -1,0 +1,67 @@
+name: VINDEX — ATMOS POC VII Restitutio Sonar
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_VII/**'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/COMMUNE/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-atmos-poc-vii-sonar.yml'
+
+jobs:
+  genera:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ATMOS POC VII ex VINDEX compila
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_VII
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" ludus.vindex /tmp/atmos_poc_vii.exe pe
+          file /tmp/atmos_poc_vii.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-poc-vii-sonar
+          path: /tmp/atmos_poc_vii.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    needs: genera
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-poc-vii-sonar
+          path: atmos
+      - name: Sonar, bathymetriam, resize destinationem et persistentiam proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dir = (Resolve-Path '.\atmos').Path
+          $exe = Join-Path $dir 'atmos_poc_vii.exe'
+          Set-Location $dir
+          Remove-Item '.\atmos.sav' -Force -ErrorAction SilentlyContinue
+          Remove-Item '.\atmos.world' -Force -ErrorAction SilentlyContinue
+          $out = & $exe smoke 2>&1
+          $code = $LASTEXITCODE
+          $text = ($out -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "atmos_poc_vii exitus $code" }
+          if ($text -notmatch 'RECTE: ATMOS POC VII SONAR RESTITUTIO WIN64') { throw 'confirmatio POC VII deest' }
+          $nums = @($out | Where-Object { $_ -match '^-?\d+$' } | ForEach-Object { [int64]$_ })
+          if ($nums.Count -lt 6) { throw 'status POC VII incompletus est' }
+          $f = $nums[($nums.Count-6)..($nums.Count-1)]
+          if ($f[0] -ne 280 -or $f[1] -ne 0) { throw "navigatio sonar falsa: $($f[0]),$($f[1])" }
+          if ($f[2] -lt 600 -or $f[2] -gt 9000) { throw "bathymetria falsa: $($f[2])" }
+          if ($f[4] -le 0 -or $f[5] -le 0) { throw 'client rect falsum' }
+          $s = [IO.File]::ReadAllBytes((Resolve-Path '.\atmos.sav'))
+          if ($s.Length -ne 48 -or $s[0] -ne 65 -or $s[1] -ne 84 -or $s[2] -ne 68 -or $s[3] -ne 49) { throw 'ATD1 falsum' }
+          $w = [IO.File]::ReadAllBytes((Resolve-Path '.\atmos.world'))
+          if ($w.Length -ne 20 -or $w[0] -ne 65 -or $w[1] -ne 84 -or $w[2] -ne 87 -or $w[3] -ne 49) { throw 'ATW1 falsum' }
+          Write-Host 'RECTE: sonar continuus + bathymetria + client resize destination probata sunt.'
