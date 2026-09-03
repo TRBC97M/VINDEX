@@ -1,0 +1,151 @@
+name: VINDEX — ATMOS Terminal Depth POC I
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'documenta/vindex/ATMOS_TERMINAL_DEPTH_POC_I.md'
+      - '.github/workflows/vindex-atmos-poc-i.yml'
+
+jobs:
+  compilator-win64:
+    name: Compilator VINDEX Win64 generatur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem VINDEX Win64 genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          mkdir -p /tmp/atmos
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/atmos/compilator_vindex.exe pe
+          file /tmp/atmos/compilator_vindex.exe
+
+      - name: Compilatorem conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: atmos-compilator-win64
+          path: /tmp/atmos/compilator_vindex.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  atmos-windows:
+    name: ATMOS VINDEX construitur et persistentia probatur
+    needs: compilator-win64
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem Win64 accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: atmos-compilator-win64
+          path: instrumenta-atmos
+
+      - name: ATMOS ex fonte VINDEX construe
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $compilator = (Resolve-Path '.\instrumenta-atmos\compilator_vindex.exe').Path
+          $radix = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\exempla\atmos_terminal_depth').Path
+          $fons = Join-Path $radix 'principalis.vindex'
+          $productum = Join-Path $radix 'atmos.exe'
+
+          & $compilator $fons $productum pe
+          if ($LASTEXITCODE -ne 0) { throw "compilatio ATMOS exitus $LASTEXITCODE" }
+          if (!(Test-Path $productum)) { throw 'atmos.exe deest' }
+
+          $bytes = [IO.File]::ReadAllBytes($productum)
+          if ($bytes.Length -lt 512) { throw 'atmos.exe nimis breve est' }
+          if ($bytes[0] -ne 0x4D -or $bytes[1] -ne 0x5A) { throw 'signatura MZ deest' }
+
+      - name: Ludum et persistentiam sub Windows vero proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $radix = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\exempla\atmos_terminal_depth').Path
+          $exe = Join-Path $radix 'atmos.exe'
+          $save = Join-Path $radix 'atmos.sav'
+          Set-Location $radix
+          Remove-Item $save -Force -ErrorAction SilentlyContinue
+
+          function Invoke-Atmos([string]$Command) {
+              $out = & $exe $Command 2>&1
+              $code = $LASTEXITCODE
+              $text = ($out -join "`n")
+              Write-Host $text
+              if ($code -ne 0) { throw "atmos.exe $Command exitus $code" }
+              return $text
+          }
+
+          function Lege-U32([byte[]]$Bytes, [int]$Offset) {
+              return [BitConverter]::ToUInt32($Bytes, $Offset)
+          }
+
+          $novum = Invoke-Atmos 'new'
+          if ($novum -notmatch 'NEW EXPEDITION CREATED') { throw 'new non confirmatum est' }
+          if (!(Test-Path $save)) { throw 'atmos.sav post new deest' }
+
+          $b = [IO.File]::ReadAllBytes($save)
+          if ($b.Length -ne 48) { throw "mensura save falsa: $($b.Length)" }
+          if ($b[0] -ne 65 -or $b[1] -ne 84 -or $b[2] -ne 68 -or $b[3] -ne 49 -or $b[4] -ne 1) {
+              throw 'caput ATD1/versio falsum est'
+          }
+          if ((Lege-U32 $b 8) -ne 0) { throw 'cyclus initialis falsus' }
+          if ((Lege-U32 $b 12) -ne 120) { throw 'profunditas initialis falsa' }
+          if ((Lege-U32 $b 16) -ne 100) { throw 'oxygenium initiale falsum' }
+          if ((Lege-U32 $b 20) -ne 100) { throw 'energia initialis falsa' }
+          if ((Lege-U32 $b 24) -ne 100) { throw 'integritas initialis falsa' }
+          if ((Lege-U32 $b 28) -ne 250) { throw 'credita initialia falsa' }
+          if ((Lege-U32 $b 32) -ne 0) { throw 'minera initialia falsa' }
+          if ((Lege-U32 $b 36) -ne 7319) { throw 'semen initiale falsum' }
+
+          [void](Invoke-Atmos 'descend')
+          $b = [IO.File]::ReadAllBytes($save)
+          if ((Lege-U32 $b 8) -ne 1) { throw 'cyclus post descend falsus' }
+          if ((Lege-U32 $b 12) -ne 270) { throw 'profunditas post descend falsa' }
+          if ((Lege-U32 $b 16) -ne 94) { throw 'oxygenium post descend falsum' }
+          if ((Lege-U32 $b 20) -ne 92) { throw 'energia post descend falsa' }
+
+          $metalla = Invoke-Atmos 'mine'
+          if ($metalla -notmatch 'ORE EXTRACTED') { throw 'mine non confirmatum est' }
+          $b = [IO.File]::ReadAllBytes($save)
+          if ((Lege-U32 $b 8) -ne 2) { throw 'cyclus post mine falsus' }
+          if ((Lege-U32 $b 16) -ne 90) { throw 'oxygenium post mine falsum' }
+          if ((Lege-U32 $b 20) -ne 80) { throw 'energia post mine falsa' }
+          if ((Lege-U32 $b 32) -ne 5) { throw 'minera post mine falsa' }
+
+          [void](Invoke-Atmos 'ascend')
+          $b = [IO.File]::ReadAllBytes($save)
+          if ((Lege-U32 $b 8) -ne 3) { throw 'cyclus post ascend falsus' }
+          if ((Lege-U32 $b 12) -ne 120) { throw 'profunditas post ascend falsa' }
+
+          $mercatura = Invoke-Atmos 'trade'
+          if ($mercatura -notmatch 'TRADE COMPLETE') { throw 'trade non confirmatum est' }
+          $b = [IO.File]::ReadAllBytes($save)
+          if ((Lege-U32 $b 8) -ne 4) { throw 'cyclus post trade falsus' }
+          if ((Lege-U32 $b 28) -ne 300) { throw 'credita post trade falsa' }
+          if ((Lege-U32 $b 32) -ne 0) { throw 'minera post trade non vacua' }
+
+          $status = Invoke-Atmos 'status'
+          if ($status -notmatch 'ATMOS // TERMINAL DEPTH') { throw 'titulus status deest' }
+          if ($status -notmatch 'WORLD_SEED') { throw 'semen in output deest' }
+
+          Write-Host 'RECTE: ATMOS VINDEX PE Win64 et persistentia sub Windows probata sunt.'
+
+      - name: Productum ATMOS conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: atmos-terminal-depth-vindex-poc-i
+          path: Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/atmos.exe
+          if-no-files-found: error
+          retention-days: 14
