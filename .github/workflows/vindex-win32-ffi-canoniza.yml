@@ -30,7 +30,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 instrumenta/applica_win32_ffi_patch.py
+          COMP='Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+          if grep -q 'DECLARA numerus_functionum_pe SICUT NUMERUS VALENS 8\.' "$COMP"; then
+            python3 instrumenta/applica_win32_ffi_patch.py
+          else
+            echo 'RECTE: fundamentum FFI Win64 iam canonizatum est.'
+          fi
           python3 instrumenta/corrige_win32_ffi_textus.py
 
       - name: Compilatorem ad punctum fixum regenera
