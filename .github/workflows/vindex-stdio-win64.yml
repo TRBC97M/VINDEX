@@ -10,27 +10,51 @@ on:
       - '.github/workflows/vindex-stdio-win64.yml'
 
 jobs:
+  compilator-win64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem VINDEX Win64 genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          mkdir -p /tmp/stdio
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/stdio/compilator_vindex.exe pe
+          file /tmp/stdio/compilator_vindex.exe
+
+      - name: Compilatorem conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: stdio-compilator-win64
+          path: /tmp/stdio/compilator_vindex.exe
+          if-no-files-found: error
+          retention-days: 1
+
   stdio-win64:
+    needs: compilator-win64
     runs-on: windows-latest
     timeout-minutes: 10
     steps:
       - name: Repositorium accipe
         uses: actions/checkout@v4
 
-      - name: Compilatorem Win64 ex artefacto ELF genera
-        shell: bash
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        run: |
-          set -euo pipefail
-          chmod +x compilator_vindex
-          ./compilator_vindex src/compilator_vindex.vindex compilator_vindex.exe pe
+      - name: Compilatorem Win64 accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: stdio-compilator-win64
+          path: instrumenta-stdio
 
       - name: Probationem stdio compila
         shell: pwsh
         working-directory: Vindex Chat-GPT/vindex_final_v51
         run: |
           $ErrorActionPreference = 'Stop'
-          .\compilator_vindex.exe tests\proba_stdio_win64.vindex proba_stdio_win64.exe pe
+          $compilator = (Resolve-Path '..\..\instrumenta-stdio\compilator_vindex.exe').Path
+          & $compilator tests\proba_stdio_win64.vindex proba_stdio_win64.exe pe
           if ($LASTEXITCODE -ne 0) { throw "compilatio stdio exitus $LASTEXITCODE" }
 
       - name: STDIN et STDOUT sub Windows vero proba
@@ -44,4 +68,3 @@ jobs:
           Write-Host $text
           if ($code -ne 0) { throw "probatio stdio exitus $code" }
           if ($text -notmatch 'RECTE: STDIO WIN64') { throw 'confirmatio STDIO deest' }
-          if ($text -notmatch 'RECTE: STDIO WIN64') { throw 'stdout VINDEX non visum est' }
