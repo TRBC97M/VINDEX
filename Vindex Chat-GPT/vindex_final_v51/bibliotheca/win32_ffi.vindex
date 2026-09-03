@@ -1,20 +1,21 @@
 // P11-C — bibliotheca minima FFI Win64 generalis.
 //
 // Intrinseca a compilatore praebita:
-//   WIN_DLL_APERI(nomen)
-//   WIN_DLL_SYMBOLUM(modulus, nomen)
+//   WIN_DLL_APERI(nomen TEXTUS)
+//   WIN_DLL_SYMBOLUM(modulus, nomen TEXTUS)
 //   ABI_MSX64_VOCA16(functio, argumenta)
 //
+// TEXTUS VINDEX UTF-8 NUL-terminatus ad LPCSTR Win32 convertitur a backend.
 // `argumenta` punctat ad XVI verba NUMERUS contigua (CXXVIII octeta).
 
 FUNCTIO WIN32_MODULUM_APERI REDDENS NUMERUS.
-    ACCIPIT nomen SICUT ACUS<LITTERA>.
+    ACCIPIT nomen SICUT TEXTUS.
     REDDE WIN_DLL_APERI(nomen).
 FIN-FUNCTIO.
 
 FUNCTIO WIN32_SYMBOLUM REDDENS NUMERUS.
     ACCIPIT modulus SICUT NUMERUS.
-    ACCIPIT nomen SICUT ACUS<LITTERA>.
+    ACCIPIT nomen SICUT TEXTUS.
     REDDE WIN_DLL_SYMBOLUM(modulus, nomen).
 FIN-FUNCTIO.
 
