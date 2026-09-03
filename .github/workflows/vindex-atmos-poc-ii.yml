@@ -1,0 +1,127 @@
+name: VINDEX — ATMOS Terminal Depth POC II
+
+# P11-B: una sessio stdin vera; PROGRAMMATA est fons applicationis canonicus.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_II/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/stdio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'documenta/vindex/ATMOS_TERMINAL_DEPTH_POC_II.md'
+      - '.github/workflows/vindex-atmos-poc-ii.yml'
+
+jobs:
+  compilator-win64:
+    name: Compilator VINDEX Win64 generatur
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem Win64 genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          mkdir -p /tmp/atmos2
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/atmos2/compilator_vindex.exe pe
+          file /tmp/atmos2/compilator_vindex.exe
+
+      - name: Compilatorem conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: atmos2-compilator-win64
+          path: /tmp/atmos2/compilator_vindex.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  atmos-interactivum-windows:
+    name: ATMOS sessio interactiva sub Windows vero
+    needs: compilator-win64
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem Win64 accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: atmos2-compilator-win64
+          path: instrumenta-atmos2
+
+      - name: ATMOS interactum ex PROGRAMMATA compila
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $compilator = (Resolve-Path '.\instrumenta-atmos2\compilator_vindex.exe').Path
+          $radix = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51').Path
+          $program = (Resolve-Path '.\PROGRAMMATA\ATMOS_TERMINAL_DEPTH\POC_II').Path
+          $fons = Join-Path $program 'interactivum.vindex'
+          $exe = Join-Path $program 'atmos_interactivum.exe'
+          Push-Location $radix
+          try {
+            & $compilator $fons $exe pe
+            if ($LASTEXITCODE -ne 0) { throw "compilatio ATMOS II exitus $LASTEXITCODE" }
+          } finally { Pop-Location }
+          if (!(Test-Path $exe)) { throw 'atmos_interactivum.exe deest' }
+          $bytes = [IO.File]::ReadAllBytes($exe)
+          if ($bytes.Length -lt 512) { throw 'atmos_interactivum.exe nimis breve est' }
+          if ($bytes[0] -ne 0x4D -or $bytes[1] -ne 0x5A) { throw 'signatura MZ deest' }
+
+      - name: Sessionem unam continuam exerce
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dir = (Resolve-Path '.\PROGRAMMATA\ATMOS_TERMINAL_DEPTH\POC_II').Path
+          $exe = Join-Path $dir 'atmos_interactivum.exe'
+          $save = Join-Path $dir 'atmos.sav'
+          Set-Location $dir
+          Remove-Item $save -Force -ErrorAction SilentlyContinue
+
+          $mandata = @('descend','mine','ascend','trade','status','quit')
+          $output = $mandata | & $exe 2>&1
+          $code = $LASTEXITCODE
+          $text = ($output -join "`n")
+          Write-Host $text
+
+          if ($code -ne 0) { throw "ATMOS II exitus $code" }
+          foreach ($signum in @(
+            'ATMOS LINK ONLINE',
+            'DESCENT COMPLETE',
+            'ORE EXTRACTED',
+            'ASCENT COMPLETE',
+            'TRADE COMPLETE',
+            'SESSION CLOSED'
+          )) {
+            if ($text -notmatch [regex]::Escape($signum)) { throw "output deest: $signum" }
+          }
+
+          if (!(Test-Path $save)) { throw 'atmos.sav deest' }
+          $b = [IO.File]::ReadAllBytes($save)
+          if ($b.Length -ne 48) { throw "mensura save falsa: $($b.Length)" }
+          if ($b[0] -ne 65 -or $b[1] -ne 84 -or $b[2] -ne 68 -or $b[3] -ne 49 -or $b[4] -ne 1) {
+            throw 'ATD1 v1 deest'
+          }
+          function U32([int]$o) { return [BitConverter]::ToUInt32($b, $o) }
+          if ((U32 8) -ne 4) { throw "cyclus finalis falsus: $(U32 8)" }
+          if ((U32 12) -ne 120) { throw "profunditas finalis falsa: $(U32 12)" }
+          if ((U32 16) -ne 87) { throw "oxygenium finale falsum: $(U32 16)" }
+          if ((U32 20) -ne 75) { throw "energia finalis falsa: $(U32 20)" }
+          if ((U32 24) -ne 100) { throw "integritas finalis falsa: $(U32 24)" }
+          if ((U32 28) -ne 300) { throw "credita finalia falsa: $(U32 28)" }
+          if ((U32 32) -ne 0) { throw "minera finalia falsa: $(U32 32)" }
+          if ((U32 36) -ne 7319) { throw "semen falsum: $(U32 36)" }
+
+          Write-Host 'RECTE: ATMOS POC II una sessione stdin Win64 persistente currit.'
+
+      - name: Productum conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: atmos-terminal-depth-vindex-poc-ii
+          path: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_II/atmos_interactivum.exe
+          if-no-files-found: error
+          retention-days: 14

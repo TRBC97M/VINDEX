@@ -1,0 +1,24 @@
+// Regressio generalis: MITTE debet layout elementi ORDO observare.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA data SICUT ORDO DE LITTERA CAPACITAS 8.
+    data[0] = 65.
+    data[1] = 84.
+    data[2] = 68.
+    data[3] = 49.
+    data[4] = 1.
+    data[5] = 10.
+
+    // stdout debet octeta contigua ipsius ORDO DE LITTERA videre.
+    DECLARA scriptum_stdout SICUT NUMERUS VALENS MITTE(1, data, 4).
+    SI scriptum_stdout != 4 TUNC REDDE 20. FIN-SI.
+
+    // Eadem via ad fasciculum probatur: ATD1 + versio 1.
+    DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("proba_mitte_littera.bin").
+    SI fd < 0 TUNC REDDE 21. FIN-SI.
+    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd, data, 5).
+    DECLARA clausum SICUT NUMERUS VALENS CLAUDE(fd).
+    SI scriptum != 5 TUNC REDDE 22. FIN-SI.
+
+    PROCLAMA "RECTE: MITTE LITTERA".
+    REDDE 0.
+FIN-FUNCTIO.

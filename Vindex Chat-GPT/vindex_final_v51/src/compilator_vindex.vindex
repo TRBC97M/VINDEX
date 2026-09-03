@@ -1604,11 +1604,11 @@ FIN-FUNCTIO.
 
 
 FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
-    ACCIPIT verbum SICUT ORDO DE LITTERA.
+    ACCIPIT verbum SICUT ACUS<LITTERA>.
     ACCIPIT mensura SICUT NUMERUS.
     DECLARA signum SICUT NUMERUS VALENS 0.
     PER idx AB 0 AD mensura - 1 PERFICE
-        signum = signum * 31 + verbum[idx].
+        signum = signum * 31 + OCTETUS_AB(verbum + idx).
     FIN-PER.
     REDDE signum.
 FIN-FUNCTIO.
@@ -1620,7 +1620,7 @@ FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
     DECLARA verbum SICUT ORDO DE LITTERA CAPACITAS 32.
     DECLARA mensura SICUT NUMERUS VALENS 0.
     DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
-        verbum[mensura] = fons[CONTENTUM(pos)].
+        SCRIBE_OCTETUM_AB(verbum + mensura, fons[CONTENTUM(pos)]).
         mensura = mensura + 1.
         CONTENTUM(pos) = CONTENTUM(pos) + 1.
     FIN-DUM.
@@ -1788,7 +1788,7 @@ FUNCTIO EXHIBE_CATHENAM_DIAGNOSTICI REDDENS NUMERUS.
     DUM continua == 1 PERFICE
         DECLARA mensura SICUT NUMERUS VALENS 0.
         DUM mensura < 256 && OCTETUS_AB(textus + positio + mensura) != 0 PERFICE
-            buffer[mensura] = OCTETUS_AB(textus + positio + mensura).
+            SCRIBE_OCTETUM_AB(buffer + mensura, OCTETUS_AB(textus + positio + mensura)).
             mensura = mensura + 1.
         FIN-DUM.
         SI mensura > 0 TUNC
@@ -2358,6 +2358,7 @@ FUNCTIO COMPONE_TRANSFER_FASCICULUM_PE REDDENS NUMERUS.
     p_tr = p_tr + 4.
 
     SI id_api == 3 TUNC
+        // MITTE(1, ...) -> verum STD_OUTPUT_HANDLE Win32.
         p_tr = COMPONE_ONERA(codex, p_tr, 0, 1).
         p_tr = COMPONE_CMP(codex, p_tr, 7, 0).
         DECLARA loci_descriptor_stdout SICUT NUMERUS VALENS 0.
@@ -2366,6 +2367,18 @@ FUNCTIO COMPONE_TRANSFER_FASCICULUM_PE REDDENS NUMERUS.
         p_tr = COMPONE_SUME_INDIRECTUM(codex, p_tr, 7, 0).
         DECLARA pos_descriptor_stdout SICUT NUMERUS VALENS p_tr.
         DECLARA ign_descriptor_stdout SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_descriptor_stdout, pos_descriptor_stdout).
+    FIN-SI.
+
+    SI id_api == 5 TUNC
+        // LEGE(0, ...) -> verum STD_INPUT_HANDLE Win32.
+        p_tr = COMPONE_ONERA(codex, p_tr, 0, 0).
+        p_tr = COMPONE_CMP(codex, p_tr, 7, 0).
+        DECLARA loci_descriptor_stdin SICUT NUMERUS VALENS 0.
+        p_tr = COMPONE_JNE_FUTURUM(codex, p_tr, SEDES(loci_descriptor_stdin)).
+        p_tr = COMPONE_ONERA(codex, p_tr, 0, 16777224).
+        p_tr = COMPONE_SUME_INDIRECTUM(codex, p_tr, 7, 0).
+        DECLARA pos_descriptor_stdin SICUT NUMERUS VALENS p_tr.
+        DECLARA ign_descriptor_stdin SICUT NUMERUS VALENS CORRIGE_SALTUM(codex, loci_descriptor_stdin, pos_descriptor_stdin).
     FIN-SI.
 
     p_tr = COMPONE_TRANSCRIBE(codex, p_tr, 1, 7).
@@ -3251,6 +3264,12 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
         DECLARA nomen_tab_mitte SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
         DECLARA intervallum_tab_mitte SICUT NUMERUS VALENS CERCA_VARIABILEM(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), nomen_tab_mitte).
+        // P9 — MITTE magnitudinem elementi ordinis observat.
+        // Metadata 0 est via historica scalarum ordinariorum: stride VIII.
+        DECLARA magnitudo_tab_mitte SICUT NUMERUS VALENS MAGNITUDO_VARIABILIS(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), nomen_tab_mitte).
+        SI magnitudo_tab_mitte <= 0 TUNC
+            magnitudo_tab_mitte = 8.
+        FIN-SI.
         ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         ig_mi = IGNORA_SPATIA(fons, pos_fontis, n).
@@ -3275,11 +3294,15 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         CONTENTUM(pos_codicis) = COMPONE_JE_FUTURUM(codex, CONTENTUM(pos_codicis), SEDES(loci_je_mitte)).
 
         CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 0, 1).
-        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, 8).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 3, magnitudo_tab_mitte).
         CONTENTUM(pos_codicis) = COMPONE_MULTIPLICA(codex, CONTENTUM(pos_codicis), 0, 3).
         CONTENTUM(pos_codicis) = COMPONE_LEA_PILA(codex, CONTENTUM(pos_codicis), 3, intervallum_tab_mitte).
         CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 3, 0).
-        CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 3).
+        SI magnitudo_tab_mitte == 1 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_MOVZX(codex, CONTENTUM(pos_codicis), 0, 3).
+        ALITER
+            CONTENTUM(pos_codicis) = COMPONE_SUME_INDIRECTUM(codex, CONTENTUM(pos_codicis), 0, 3).
+        FIN-SI.
 
         CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
         CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 3, 11).
@@ -4814,8 +4837,13 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 3.
                             ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                             DECLARA es_arr_fluitans SICUT NUMERUS VALENS 0.
+                            DECLARA es_arr_littera SICUT NUMERUS VALENS 0.
                             SI fons[CONTENTUM(pos_fontis)] == 70 && CONTENTUM(pos_fontis) + 7 < n && fons[CONTENTUM(pos_fontis)+1] == 76 && fons[CONTENTUM(pos_fontis)+2] == 85 && fons[CONTENTUM(pos_fontis)+3] == 73 && fons[CONTENTUM(pos_fontis)+4] == 84 && fons[CONTENTUM(pos_fontis)+5] == 65 && fons[CONTENTUM(pos_fontis)+6] == 78 && fons[CONTENTUM(pos_fontis)+7] == 83 TUNC
                                 es_arr_fluitans = 1.
+                            FIN-SI.
+                            // P9 — ORDO DE LITTERA elementa unius octeti sunt.
+                            SI fons[CONTENTUM(pos_fontis)] == 76 && CONTENTUM(pos_fontis) + 6 < n && fons[CONTENTUM(pos_fontis)+1] == 73 && fons[CONTENTUM(pos_fontis)+2] == 84 && fons[CONTENTUM(pos_fontis)+3] == 84 && fons[CONTENTUM(pos_fontis)+4] == 69 && fons[CONTENTUM(pos_fontis)+5] == 82 && fons[CONTENTUM(pos_fontis)+6] == 65 TUNC
+                                es_arr_littera = 1.
                             FIN-SI.
                             DECLARA nomen_typus_ordo SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
                             ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
@@ -4840,6 +4868,11 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 0, nomen).
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 1, intervallum_base).
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 2, 1).
+                            // P9: layout pilae interim eundem spatium historicum servat,
+                            // sed accessus LITTERA stride unius octeti accipit.
+                            SI es_arr_littera == 1 TUNC
+                                LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 3, 1).
+                            FIN-SI.
                             SI es_arr_fluitans == 1 TUNC
                                 LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 5, 1).
                             FIN-SI.
@@ -6181,6 +6214,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         SI fons[i] == 79 TUNC
                             est_series_pp = 2.
                         FIN-SI.
+                        SI fons[i] == 79 && i + 14 < n && fons[i+1] == 82 && fons[i+2] == 68 && fons[i+3] == 79 && fons[i+4] == 32 && fons[i+5] == 68 && fons[i+6] == 69 && fons[i+7] == 32 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 84 && fons[i+11] == 84 && fons[i+12] == 69 && fons[i+13] == 82 && fons[i+14] == 65 TUNC
+                            magnitudo_pp = 1.
+                        FIN-SI.
                         SI fons[i] == 65 && i + 4 < n && fons[i+1] == 67 && fons[i+2] == 85 && fons[i+3] == 83 && fons[i+4] == 60 TUNC
                             SI fons[i+5] == 76 TUNC
                                 magnitudo_pp = 1.
@@ -6261,10 +6297,17 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     pos = COMPONE_ONERA(codex, pos, 8, 12288).
                     pos = COMPONE_ONERA(codex, pos, 9, 4).
                     pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 1).
+                    // Descriptor abstractus 1 = stdout; handle Win32 ad +0 servatur.
                     DECLARA valor_neg_std_output_prologus SICUT NUMERUS VALENS 0 - 11.
                     pos = COMPONE_ONERA(codex, pos, 1, valor_neg_std_output_prologus).
                     pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 2).
                     pos = COMPONE_ONERA(codex, pos, 2, 16777216).
+                    pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
+                    // Descriptor abstractus 0 = stdin; handle Win32 ad +8 servatur.
+                    DECLARA valor_neg_std_input_prologus SICUT NUMERUS VALENS 0 - 10.
+                    pos = COMPONE_ONERA(codex, pos, 1, valor_neg_std_input_prologus).
+                    pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 2).
+                    pos = COMPONE_ONERA(codex, pos, 2, 16777224).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
                     pos = COMPONE_ARGUMENTA_PE(codex, pos, contextus_parseris).
                 ALITER
@@ -6336,6 +6379,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         FIN-SI.
                         SI fons[i] == 79 TUNC
                             est_series_param = 2.
+                        FIN-SI.
+                        SI fons[i] == 79 && i + 14 < n && fons[i+1] == 82 && fons[i+2] == 68 && fons[i+3] == 79 && fons[i+4] == 32 && fons[i+5] == 68 && fons[i+6] == 69 && fons[i+7] == 32 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 84 && fons[i+11] == 84 && fons[i+12] == 69 && fons[i+13] == 82 && fons[i+14] == 65 TUNC
+                            magnitudo_param = 1.
                         FIN-SI.
                         SI fons[i] == 70 && i + 7 < n && fons[i+1] == 76 && fons[i+2] == 85 && fons[i+3] == 73 && fons[i+4] == 84 && fons[i+5] == 65 && fons[i+6] == 78 && fons[i+7] == 83 TUNC
                             es_flot_param = 1.

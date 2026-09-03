@@ -1,0 +1,86 @@
+name: VINDEX — STDIO Win64
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_stdio_win64.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_stdio_linea_win64.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/stdio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-stdio-win64.yml'
+
+jobs:
+  compilator-win64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem VINDEX Win64 genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          mkdir -p /tmp/stdio
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/stdio/compilator_vindex.exe pe
+          file /tmp/stdio/compilator_vindex.exe
+
+      - name: Compilatorem conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: stdio-compilator-win64
+          path: /tmp/stdio/compilator_vindex.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  stdio-win64:
+    needs: compilator-win64
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Compilatorem Win64 accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: stdio-compilator-win64
+          path: instrumenta-stdio
+
+      - name: Probationes stdio compila
+        shell: pwsh
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $compilator = (Resolve-Path '..\..\instrumenta-stdio\compilator_vindex.exe').Path
+          & $compilator tests\proba_stdio_win64.vindex proba_stdio_win64.exe pe
+          if ($LASTEXITCODE -ne 0) { throw "compilatio stdio exitus $LASTEXITCODE" }
+          & $compilator tests\proba_stdio_linea_win64.vindex proba_stdio_linea_win64.exe pe
+          if ($LASTEXITCODE -ne 0) { throw "compilatio lineae stdio exitus $LASTEXITCODE" }
+
+      - name: STDIN et STDOUT humilia sub Windows vero proba
+        shell: pwsh
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $output = 'status' | .\proba_stdio_win64.exe 2>&1
+          $code = $LASTEXITCODE
+          $text = ($output -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "probatio stdio exitus $code" }
+          if ($text -notmatch 'RECTE: STDIO WIN64') { throw 'confirmatio STDIO deest' }
+
+      - name: Lectorem lineae et comparationem sub Windows vero proba
+        shell: pwsh
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $output = 'descend' | .\proba_stdio_linea_win64.exe 2>&1
+          $code = $LASTEXITCODE
+          $text = ($output -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "probatio lineae stdio exitus $code" }
+          if ($text -notmatch 'RECTE: STDIO LINEA WIN64') { throw 'confirmatio lineae STDIO deest' }

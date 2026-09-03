@@ -1,0 +1,61 @@
+FUNCTIO VERIFICA_LITTERAS REDDENS NUMERUS.
+    ACCIPIT p SICUT ACUS<LITTERA>.
+    SI OCTETUS_AB(p + 0) != 65 TUNC REDDE 10. FIN-SI.
+    SI OCTETUS_AB(p + 1) != 84 TUNC REDDE 11. FIN-SI.
+    SI OCTETUS_AB(p + 2) != 77 TUNC REDDE 12. FIN-SI.
+    SI OCTETUS_AB(p + 3) != 79 TUNC REDDE 13. FIN-SI.
+    SI OCTETUS_AB(p + 4) != 83 TUNC REDDE 14. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO VERIFICA_ORDINEM REDDENS NUMERUS.
+    ACCIPIT p SICUT ORDO DE LITTERA.
+    SI p[0] != 65 TUNC REDDE 50. FIN-SI.
+    SI p[1] != 84 TUNC REDDE 51. FIN-SI.
+    SI p[2] != 77 TUNC REDDE 52. FIN-SI.
+    SI p[3] != 79 TUNC REDDE 53. FIN-SI.
+    SI p[4] != 83 TUNC REDDE 54. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA litterae SICUT ORDO DE LITTERA CAPACITAS 8.
+    litterae[0] = 65.
+    litterae[1] = 84.
+    litterae[2] = 77.
+    litterae[3] = 79.
+    litterae[4] = 83.
+    litterae[5] = 0.
+
+    // Contractus principalis: ORDO DE LITTERA est byte-addressatus et contiguus.
+    SI OCTETUS_AB(litterae + 0) != 65 TUNC REDDE 20. FIN-SI.
+    SI OCTETUS_AB(litterae + 1) != 84 TUNC REDDE 21. FIN-SI.
+    SI OCTETUS_AB(litterae + 2) != 77 TUNC REDDE 22. FIN-SI.
+    SI OCTETUS_AB(litterae + 3) != 79 TUNC REDDE 23. FIN-SI.
+    SI OCTETUS_AB(litterae + 4) != 83 TUNC REDDE 24. FIN-SI.
+
+    // Lectio per index eandem semanticam servat.
+    SI litterae[0] != 65 TUNC REDDE 30. FIN-SI.
+    SI litterae[1] != 84 TUNC REDDE 31. FIN-SI.
+    SI litterae[4] != 83 TUNC REDDE 34. FIN-SI.
+
+    // Conversio naturalis ORDO -> ACUS<LITTERA> contractum contiguum servat.
+    DECLARA status SICUT NUMERUS VALENS VERIFICA_LITTERAS(litterae).
+    SI status != 0 TUNC REDDE status. FIN-SI.
+
+    // Parametrum ORDO DE LITTERA eundem stride unius octeti servat.
+    status = VERIFICA_ORDINEM(litterae).
+    SI status != 0 TUNC REDDE status. FIN-SI.
+
+    // Ordines scalarum ordinariorum manent octo-octetales.
+    DECLARA numeri SICUT ORDO DE NUMERUS CAPACITAS 3.
+    numeri[0] = 111111.
+    numeri[1] = 222222.
+    numeri[2] = 333333.
+    SI numeri[0] != 111111 TUNC REDDE 40. FIN-SI.
+    SI numeri[1] != 222222 TUNC REDDE 41. FIN-SI.
+    SI numeri[2] != 333333 TUNC REDDE 42. FIN-SI.
+
+    PROCLAMA "RECTE: ORDO DE LITTERA CONTIGUUS".
+    REDDE 0.
+FIN-FUNCTIO.

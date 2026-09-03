@@ -1,0 +1,74 @@
+name: VINDEX — ORDO DE LITTERA
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/proba_ordo_littera.vindex'
+      - '.github/workflows/vindex-ordo-littera.yml'
+
+jobs:
+  elf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Regressionem ELF compila et exerce
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex tests/proba_ordo_littera.vindex /tmp/proba_ordo_littera
+          chmod +x /tmp/proba_ordo_littera
+          /tmp/proba_ordo_littera
+
+  pe-genera:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v4
+
+      - name: Regressionem PE32+ genera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex tests/proba_ordo_littera.vindex /tmp/proba_ordo_littera.exe pe
+          file /tmp/proba_ordo_littera.exe
+
+      - name: Productum conserva
+        uses: actions/upload-artifact@v4
+        with:
+          name: proba-ordo-littera-win64
+          path: /tmp/proba_ordo_littera.exe
+          if-no-files-found: error
+          retention-days: 1
+
+  win64:
+    needs: pe-genera
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Regressionem accipe
+        uses: actions/download-artifact@v4
+        with:
+          name: proba-ordo-littera-win64
+          path: proba
+
+      - name: Regressionem sub Windows vero exerce
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $output = & .\proba\proba_ordo_littera.exe 2>&1
+          $code = $LASTEXITCODE
+          $text = ($output -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "ORDO DE LITTERA Win64 exitus $code" }
+          if ($text -notmatch 'RECTE: ORDO DE LITTERA CONTIGUUS') { throw 'confirmatio ORDO DE LITTERA deest' }

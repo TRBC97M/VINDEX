@@ -1,0 +1,46 @@
+// P11-B — probatio contractus stdio Win64.
+// Verificat descriptor 0 ad LEGE et descriptor 1 ad MITTE sub PE32+.
+// Contractus portabilis: 0 = stdin, 1 = stdout etiam sub Win64.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS LEGE(0, 64).
+    SI n < 6 TUNC
+        PROCLAMA "ERRATUM: stdin breve aut vacuum est".
+        REDDE 10.
+    FIN-SI.
+
+    SI OCTETUS(0) != 115 || OCTETUS(1) != 116 || OCTETUS(2) != 97 || OCTETUS(3) != 116 || OCTETUS(4) != 117 || OCTETUS(5) != 115 TUNC
+        PROCLAMA "ERRATUM: stdin contentum falsum est".
+        REDDE 11.
+    FIN-SI.
+
+    DECLARA responsum SICUT ORDO DE LITTERA CAPACITAS 21.
+    responsum[0] = 82.
+    responsum[1] = 69.
+    responsum[2] = 67.
+    responsum[3] = 84.
+    responsum[4] = 69.
+    responsum[5] = 58.
+    responsum[6] = 32.
+    responsum[7] = 83.
+    responsum[8] = 84.
+    responsum[9] = 68.
+    responsum[10] = 73.
+    responsum[11] = 79.
+    responsum[12] = 32.
+    responsum[13] = 87.
+    responsum[14] = 73.
+    responsum[15] = 78.
+    responsum[16] = 54.
+    responsum[17] = 52.
+    responsum[18] = 10.
+
+    DECLARA scriptum SICUT NUMERUS VALENS MITTE(1, responsum, 19).
+    SI scriptum != 19 TUNC
+        PROCLAMA "ERRATUM: stdout scriptio defecit".
+        REDDE 12.
+    FIN-SI.
+
+    PROCLAMA "RECTE: STDIO WIN64".
+    REDDE 0.
+FIN-FUNCTIO.
