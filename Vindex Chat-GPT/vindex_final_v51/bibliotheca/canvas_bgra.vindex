@@ -78,13 +78,23 @@ FUNCTIO CBGRA_RECT REDDENS NUMERUS.
     SI x >= cw || y >= ch || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
     SI x + w > cw TUNC w = cw - x. FIN-SI.
     SI y + h > ch TUNC h = ch - y. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(c + 24).
+    DECLARA stride SICUT NUMERUS VALENS CONTENTUM(c + 16).
+    DECLARA par SICUT NUMERUS VALENS color + color * 4294967296.
     DECLARA yy SICUT NUMERUS VALENS y.
     DUM yy < y + h PERFICE
         DECLARA xx SICUT NUMERUS VALENS x.
-        DUM xx < x + w PERFICE
-            DECLARA f SICUT NUMERUS VALENS CBGRA_PIXEL(c, xx, yy, color).
-            xx = xx + 1.
+        DUM xx + 1 < x + w PERFICE
+            CONTENTUM(basis + (yy * stride + xx) * 4) = par.
+            xx = xx + 2.
         FIN-DUM.
+        SI xx < x + w TUNC
+            DECLARA p SICUT NUMERUS VALENS basis + (yy * stride + xx) * 4.
+            SCRIBE_OCTETUM_AB(p + 0, color & 255).
+            SCRIBE_OCTETUM_AB(p + 1, (color >> 8) & 255).
+            SCRIBE_OCTETUM_AB(p + 2, (color >> 16) & 255).
+            SCRIBE_OCTETUM_AB(p + 3, 0).
+        FIN-SI.
         yy = yy + 1.
     FIN-DUM.
     REDDE 1.
