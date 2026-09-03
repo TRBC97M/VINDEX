@@ -128,5 +128,5 @@ jobs:
           $text = ($out -join "`n")
           Write-Host $text
           if ($code -ne 0) { throw "ATMOS NATIVUM purus exitus $code" }
-          if ($text -notmatch 'RECTE: ATMOS NATIVUM FUNDAMENTUM WIN64') { throw 'executio pura NATIVUM non confirmata est' }
+          if ($text -notmatch 'RECTE: ATMOS NATIVUM DIB WIN64') { throw 'executio pura NATIVUM DIB non confirmata est' }
           Write-Host 'RECTE: LA PASSE GENOCIDAIRE NATIVUM — runtime et codex applicationis C percentum VINDEX sunt.'
