@@ -70,13 +70,17 @@ if MARCA not in fons:
 
     novus_meta = '''                            LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 1, intervallum_base).
                             LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 2, 1).
-                            // Magnitudo elementi omnium ordinum explicite servatur:
-                            // LITTERA=1; scalaria ordinaria=8; FORMA=magnitudo formae.
-                            LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 3, magnitudo_elem_ordo).
+                            // Tantum elementa quorum magnitudo a via historica VIII differt
+                            // metadata explicitam accipiunt. ORDO DE NUMERUS et FLUITANS
+                            // semitam canonicam veterem servant.
+                            SI es_arr_littera == 1 TUNC
+                                LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 3, 1).
+                            FIN-SI.
                             SI es_arr_fluitans == 1 TUNC
                                 LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 5, 1).
                             FIN-SI.
                             SI numerus_campi_ordo > 0 TUNC
+                                LOCALE_SCRIBE(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), idx_nova, 3, magnitudo_elem_ordo).
                                 DECLARA idx_struct_ordo SICUT NUMERUS VALENS INDEX_STRUCTURAE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), nomen_typus_ordo).
 '''
 
