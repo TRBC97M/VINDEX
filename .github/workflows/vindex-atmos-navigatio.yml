@@ -1,0 +1,70 @@
+name: VINDEX — ATMOS Navigatio Continua
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/COMMUNE/navigatio.vindex'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_VI/navigatio_smoke.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-atmos-navigatio.yml'
+
+jobs:
+  elf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Navigationem continuam ELF proba
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_VI
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" navigatio_smoke.vindex /tmp/navigatio_smoke
+          chmod +x /tmp/navigatio_smoke
+          out=$(/tmp/navigatio_smoke)
+          printf '%s\n' "$out"
+          grep -q 'RECTE: ATMOS NAVIGATIO CONTINUA VINDEX' <<<"$out"
+          nums=$(printf '%s\n' "$out" | grep -E '^-?[0-9]+$' | tail -n 2 | tr '\n' ' ')
+          test "$nums" = '700 280 '
+
+  genera-pe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Navigationem continuam PE genera
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_VI
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" navigatio_smoke.vindex /tmp/navigatio_smoke.exe pe
+          file /tmp/navigatio_smoke.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-navigatio-smoke
+          path: /tmp/navigatio_smoke.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    needs: genera-pe
+    runs-on: windows-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-navigatio-smoke
+          path: nav
+      - name: Navigationem continuam Win64 proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $out = & '.\nav\navigatio_smoke.exe' 2>&1
+          $code = $LASTEXITCODE
+          $text = ($out -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "navigatio exitus $code" }
+          if ($text -notmatch 'RECTE: ATMOS NAVIGATIO CONTINUA VINDEX') { throw 'confirmatio navigationis deest' }
+          $nums = @($out | Where-Object { $_ -match '^-?\d+$' } | ForEach-Object { [int64]$_ })
+          if ($nums.Count -lt 2 -or $nums[-2] -ne 700 -or $nums[-1] -ne 280) { throw 'coordinatae finales falsae sunt' }
