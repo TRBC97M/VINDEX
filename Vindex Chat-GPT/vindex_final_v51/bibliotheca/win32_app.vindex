@@ -260,25 +260,56 @@ FUNCTIO WINAPP_BITMAPINFO_CREA REDDENS NUMERUS.
     REDDE bmi.
 FIN-FUNCTIO.
 
+// Superficies BGRA applicationis. Descriptor LVI octeta:
+// +0 pixels, +8 BITMAPINFO, +16/+24 source w/h,
+// +32 HDC, +40/+48 destination w/h.
+FUNCTIO WINAPP_SUPERFICIES_CREA REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT bmi SICUT NUMERUS.
+    ACCIPIT sw SICUT NUMERUS.
+    ACCIPIT sh SICUT NUMERUS.
+    SI pixels <= 0 || bmi <= 0 || sw <= 0 || sh <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA superficies SICUT NUMERUS VALENS RESERVA_OCTETA(56).
+    SI superficies <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(superficies + 0) = pixels.
+    CONTENTUM(superficies + 8) = bmi.
+    CONTENTUM(superficies + 16) = sw.
+    CONTENTUM(superficies + 24) = sh.
+    CONTENTUM(superficies + 32) = 0.
+    CONTENTUM(superficies + 40) = sw.
+    CONTENTUM(superficies + 48) = sh.
+    REDDE superficies.
+FIN-FUNCTIO.
+
+FUNCTIO WINAPP_SUPERFICIES_DESTINATIO REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT dw SICUT NUMERUS.
+    ACCIPIT dh SICUT NUMERUS.
+    SI superficies <= 0 || hdc <= 0 || dw <= 0 || dh <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(superficies + 32) = hdc.
+    CONTENTUM(superficies + 40) = dw.
+    CONTENTUM(superficies + 48) = dh.
+    REDDE 1.
+FIN-FUNCTIO.
+
 // Praesentat BGRA top-down. Reddit numerum scanlinearum a StretchDIBits.
 FUNCTIO WINAPP_PRAESENTA REDDENS NUMERUS.
     ACCIPIT ctx SICUT NUMERUS.
-    ACCIPIT hdc SICUT NUMERUS.
-    ACCIPIT dest_w SICUT NUMERUS.
-    ACCIPIT dest_h SICUT NUMERUS.
-    ACCIPIT src_w SICUT NUMERUS.
-    ACCIPIT src_h SICUT NUMERUS.
-    ACCIPIT pixels SICUT NUMERUS.
-    ACCIPIT bmi SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI ctx <= 0 || superficies <= 0 TUNC REDDE 0. FIN-SI.
     DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
     DECLARA p SICUT NUMERUS VALENS SEDES(a).
     DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
-    CONTENTUM(p + 0) = hdc.
+    CONTENTUM(p + 0) = CONTENTUM(superficies + 32).
     CONTENTUM(p + 8) = 0. CONTENTUM(p + 16) = 0.
-    CONTENTUM(p + 24) = dest_w. CONTENTUM(p + 32) = dest_h.
+    CONTENTUM(p + 24) = CONTENTUM(superficies + 40).
+    CONTENTUM(p + 32) = CONTENTUM(superficies + 48).
     CONTENTUM(p + 40) = 0. CONTENTUM(p + 48) = 0.
-    CONTENTUM(p + 56) = src_w. CONTENTUM(p + 64) = src_h.
-    CONTENTUM(p + 72) = pixels. CONTENTUM(p + 80) = bmi.
+    CONTENTUM(p + 56) = CONTENTUM(superficies + 16).
+    CONTENTUM(p + 64) = CONTENTUM(superficies + 24).
+    CONTENTUM(p + 72) = CONTENTUM(superficies + 0).
+    CONTENTUM(p + 80) = CONTENTUM(superficies + 8).
     CONTENTUM(p + 88) = 0. CONTENTUM(p + 96) = 13369376.
     REDDE MSX64_VOCA(CONTENTUM(ctx + 136), p).
 FIN-FUNCTIO.
