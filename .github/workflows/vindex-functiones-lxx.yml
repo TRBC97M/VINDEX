@@ -1,0 +1,28 @@
+name: VINDEX — Functiones LXX
+
+on:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/functiones_lxx.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-functiones-lxx.yml'
+
+jobs:
+  elf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: LXX functiones compila et exerce
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex tests/casus/functiones_lxx.vindex /tmp/functiones_lxx
+          chmod +x /tmp/functiones_lxx
+          out=$(/tmp/functiones_lxx)
+          printf '%s\n' "$out"
+          grep -q 'FUNCTIONES LXX RECTE' <<<"$out"
+          grep -qx '196' <<<"$out"
