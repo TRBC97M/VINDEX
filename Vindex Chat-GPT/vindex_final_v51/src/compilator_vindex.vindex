@@ -2592,7 +2592,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
     DECLARA ignoratum SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
 
     SI fons[CONTENTUM(pos_fontis)] == 34 TUNC
-        REDDE COMPONE_LITTERALE_TEXTUS(codex, pos_codicis, fons, pos_fontis, n).
+        REDDE COMPONE_LITTERALE_TEXTUS(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
     FIN-SI.
 
     SI fons[CONTENTUM(pos_fontis)] == 82 && CONTENTUM(pos_fontis) + 14 < n && fons[CONTENTUM(pos_fontis)+1] == 69 && fons[CONTENTUM(pos_fontis)+2] == 83 && fons[CONTENTUM(pos_fontis)+3] == 69 && fons[CONTENTUM(pos_fontis)+4] == 82 && fons[CONTENTUM(pos_fontis)+5] == 86 && fons[CONTENTUM(pos_fontis)+6] == 65 && fons[CONTENTUM(pos_fontis)+7] == 95 && fons[CONTENTUM(pos_fontis)+8] == 79 && fons[CONTENTUM(pos_fontis)+9] == 67 && fons[CONTENTUM(pos_fontis)+10] == 84 && fons[CONTENTUM(pos_fontis)+11] == 69 && fons[CONTENTUM(pos_fontis)+12] == 84 && fons[CONTENTUM(pos_fontis)+13] == 65 && fons[CONTENTUM(pos_fontis)+14] == 40 TUNC
@@ -4888,6 +4888,7 @@ FUNCTIO COMPONE_LITTERALE_TEXTUS REDDENS NUMERUS.
     ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos_fontis SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
+    ACCIPIT contextus_parseris SICUT NUMERUS.
     DECLARA loci_saltus_textus SICUT NUMERUS VALENS 0.
     DECLARA sedes_textus SICUT NUMERUS VALENS 0.
     DECLARA mensura_textus SICUT NUMERUS VALENS 0.
@@ -4921,7 +4922,12 @@ FUNCTIO COMPONE_LITTERALE_TEXTUS REDDENS NUMERUS.
     ign_textus = CORRIGE_PILA(codex, sedes_textus, mensura_textus).
     ign_textus = CORRIGE_PILA(codex, sedes_textus + 8, mensura_textus).
     ign_textus = CORRIGE_SALTUM(codex, loci_saltus_textus, CONTENTUM(pos_codicis)).
-    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, 4194304 + sedes_textus).
+    // P11-C — locus litteralis TEXTUS secundum target ELF/PE.
+    DECLARA locus_textus_reale SICUT NUMERUS VALENS 4194304 + sedes_textus.
+    SI MODUS_PE_LEGE(contextus_parseris) >= 1 TUNC
+        locus_textus_reale = 5368709120 + 4096 - 512 + sedes_textus.
+    FIN-SI.
+    CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 0, locus_textus_reale).
     REDDE 0.
 FIN-FUNCTIO.
 
