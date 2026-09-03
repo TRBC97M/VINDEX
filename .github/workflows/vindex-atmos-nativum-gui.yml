@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: ATMOS GUI ex VINDEX compila et subsystema confirma
+      - name: ATMOS et minimum GUI ex VINDEX compila
         working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM
         shell: bash
         run: |
@@ -23,19 +23,31 @@ jobs:
           COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
           chmod +x "$COMP"
           "$COMP" ludus.vindex /tmp/ATMOS_NATIVUM.exe gui
-          file /tmp/ATMOS_NATIVUM.exe
-          objdump -p /tmp/ATMOS_NATIVUM.exe > /tmp/gui-pe.txt
-          grep -E 'Subsystem.*Windows GUI' /tmp/gui-pe.txt
-          if grep -Eiq 'DLL Name:.*(msvcrt|ucrtbase|vcruntime|mscoree|libstdc\+\+|libgcc|python|node)' /tmp/gui-pe.txt; then
-            echo 'ERRATUM: runtime alienum in GUI repertum est.'
-            exit 1
-          fi
-          echo 'RECTE: ATMOS est PE Windows GUI, nulla consola postulatur.'
+          cat > /tmp/gui_min.vindex <<'EOF'
+          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+              ACCIPIT argc SICUT NUMERUS.
+              ACCIPIT argv SICUT ACUS<NUMERUS>.
+              REDDE 0.
+          FIN-FUNCTIO.
+          EOF
+          "$COMP" /tmp/gui_min.vindex /tmp/GUI_MIN.exe gui
+          for exe in /tmp/ATMOS_NATIVUM.exe /tmp/GUI_MIN.exe; do
+            file "$exe"
+            objdump -p "$exe" > /tmp/gui-pe.txt
+            grep -E 'Subsystem.*Windows GUI' /tmp/gui-pe.txt
+            if grep -Eiq 'DLL Name:.*(msvcrt|ucrtbase|vcruntime|mscoree|libstdc\+\+|libgcc|python|node)' /tmp/gui-pe.txt; then
+              echo 'ERRATUM: runtime alienum in GUI repertum est.'
+              exit 1
+            fi
+          done
+          echo 'RECTE: bina PE Windows GUI sine CRT generata sunt.'
 
       - uses: actions/upload-artifact@v4
         with:
           name: atmos-nativum-gui-purum-vindex
-          path: /tmp/ATMOS_NATIVUM.exe
+          path: |
+            /tmp/ATMOS_NATIVUM.exe
+            /tmp/GUI_MIN.exe
           if-no-files-found: error
           retention-days: 14
 
@@ -49,7 +61,16 @@ jobs:
           name: atmos-nativum-gui-purum-vindex
           path: atmos
 
-      - name: Executabile GUI sine consola sub Windows exerce
+      - name: Bootstrap GUI minimum exerce
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Set-Location (Resolve-Path '.\atmos')
+          $m = Start-Process -FilePath '.\GUI_MIN.exe' -Wait -PassThru
+          if ($m.ExitCode -ne 0) { throw "GUI minimum exitus $($m.ExitCode)" }
+          Write-Host 'RECTE: bootstrap VINDEX Windows GUI minimum currit.'
+
+      - name: ATMOS GUI sine consola exerce
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
