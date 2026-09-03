@@ -1,19 +1,21 @@
 // P11-C — FFI Win64 generalis: LoadLibraryA + GetProcAddress + vocatio indirecta.
-// Sub Windows vero user32.dll aperitur et GetSystemMetrics(SM_CXSCREEN) vocatur.
+// Probatio exercet vocationem unius argumenti et ABI Microsoft x64 cum XIV argumentis.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argc SICUT NUMERUS.
     ACCIPIT argv SICUT ACUS<NUMERUS>.
 
     DECLARA user32 SICUT NUMERUS VALENS WIN_DLL_APERI("user32.dll").
-    SI user32 == 0 TUNC
-        PROCLAMA "ERRATUM: user32.dll aperiri non potest".
+    DECLARA gdi32 SICUT NUMERUS VALENS WIN_DLL_APERI("gdi32.dll").
+    SI user32 == 0 || gdi32 == 0 TUNC
+        PROCLAMA "ERRATUM: DLL FFI aperiri non potest".
         REDDE 81.
     FIN-SI.
 
     DECLARA get_system_metrics SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(user32, "GetSystemMetrics").
-    SI get_system_metrics == 0 TUNC
-        PROCLAMA "ERRATUM: GetSystemMetrics non inventa est".
+    DECLARA create_font SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(gdi32, "CreateFontA").
+    SI get_system_metrics == 0 || create_font == 0 TUNC
+        PROCLAMA "ERRATUM: symbolum FFI non inventum est".
         REDDE 82.
     FIN-SI.
 
@@ -24,13 +26,31 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         i = i + 1.
     FIN-DUM.
 
-    // SM_CXSCREEN = 0.
+    // SM_CXSCREEN = 0: probatio argumenti primi in RCX.
     argumenta[0] = 0.
     DECLARA latitudo SICUT NUMERUS VALENS ABI_MSX64_VOCA16(get_system_metrics, SEDES(argumenta)).
     SI latitudo <= 0 TUNC
         PROCLAMA "ERRATUM: GetSystemMetrics latitudinem invalidam reddidit".
         REDDE 83.
     FIN-SI.
+    PROCLAMA "RECTE: MSX64 I".
+
+    // CreateFontA habet XIV argumenta. Facies NULL legitima est.
+    // Haec probatio argumenta V-XIV in pila Microsoft x64 exercet sine fenestra.
+    i = 0.
+    DUM i < 16 PERFICE
+        argumenta[i] = 0.
+        i = i + 1.
+    FIN-DUM.
+    argumenta[0] = 16.
+    argumenta[4] = 400.
+    DECLARA hfont SICUT NUMERUS VALENS ABI_MSX64_VOCA16(create_font, SEDES(argumenta)).
+    SI hfont == 0 TUNC
+        PROCLAMA "ERRATUM: CreateFontA XIV argumenta recusavit".
+        REDDE 84.
+    FIN-SI.
+    PROCLAMA "RECTE: MSX64 XIV".
+    PROCLAMA hfont.
 
     PROCLAMA "RECTE: WIN32 FFI VINDEX".
     PROCLAMA latitudo.
