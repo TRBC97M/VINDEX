@@ -1,0 +1,47 @@
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
+IMPORTA "../COMMUNE/navigatio.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+    DECLARA n SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI n <= 0 TUNC REDDE 10. FIN-SI.
+    SI NAVIGATIO_INIT(n) != 1 TUNC REDDE 11. FIN-SI.
+    SI NAVIGATIO_VELOCITAS(n, 20) != 1 TUNC REDDE 12. FIN-SI.
+    SI NAVIGATIO_RADIUS(n, 280) != 1 TUNC REDDE 13. FIN-SI.
+
+    // Clic 140 px ad dextram in radar 280 px -> +140 m.
+    SI NAVIGATIO_SONAR_DESTINATIO(n, 440, 300, 300, 300, 280) != 1 TUNC REDDE 14. FIN-SI.
+    DECLARA gradus SICUT NUMERUS VALENS 0.
+    DUM NAVIGATIO_ITER(n) == 1 PERFICE
+        DECLARA r SICUT NUMERUS VALENS NAVIGATIO_GRADUS(n).
+        gradus = gradus + 1.
+        SI gradus > 20 TUNC REDDE 15. FIN-SI.
+    FIN-DUM.
+    SI NAVIGATIO_X(n) != 140 || NAVIGATIO_Y(n) != 0 || gradus != 7 TUNC REDDE 16. FIN-SI.
+
+    // Clic 560 px ultra centrum: radius sonar stringit cursum ad 280 m.
+    SI NAVIGATIO_SONAR_DESTINATIO(n, 860, 300, 300, 300, 280) != 1 TUNC REDDE 17. FIN-SI.
+    gradus = 0.
+    DUM NAVIGATIO_ITER(n) == 1 PERFICE
+        DECLARA r2 SICUT NUMERUS VALENS NAVIGATIO_GRADUS(n).
+        gradus = gradus + 1.
+        SI gradus > 30 TUNC REDDE 18. FIN-SI.
+    FIN-DUM.
+    SI NAVIGATIO_X(n) != 420 || NAVIGATIO_Y(n) != 0 || gradus != 14 TUNC REDDE 19. FIN-SI.
+
+    // Clic diagonal: motus continuus in utroque axe.
+    SI NAVIGATIO_SONAR_DESTINATIO(n, 580, 580, 300, 300, 280) != 1 TUNC REDDE 20. FIN-SI.
+    gradus = 0.
+    DUM NAVIGATIO_ITER(n) == 1 PERFICE
+        DECLARA r3 SICUT NUMERUS VALENS NAVIGATIO_GRADUS(n).
+        gradus = gradus + 1.
+        SI gradus > 30 TUNC REDDE 21. FIN-SI.
+    FIN-DUM.
+    SI NAVIGATIO_X(n) != 700 || NAVIGATIO_Y(n) != 280 || gradus != 14 TUNC REDDE 22. FIN-SI.
+
+    PROCLAMA "RECTE: ATMOS NAVIGATIO CONTINUA VINDEX".
+    PROCLAMA NAVIGATIO_X(n).
+    PROCLAMA NAVIGATIO_Y(n).
+    REDDE 0.
+FIN-FUNCTIO.
