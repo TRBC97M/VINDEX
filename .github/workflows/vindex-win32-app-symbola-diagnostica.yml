@@ -26,24 +26,29 @@ jobs:
           p = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
           s = p.read_text(encoding='utf-8')
           target = '-8428582279422563406'
+          bitmap = '1085049311889078899'
 
           loop = '''    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
-          loop_dbg = f'''    DECLARA dbg_all SICUT NUMERUS VALENS 0.\n    DUM dbg_all < n PERFICE\n        SI fons[dbg_all] == 70 && dbg_all + 7 < n && fons[dbg_all+1] == 85 && fons[dbg_all+2] == 78 && fons[dbg_all+3] == 67 && fons[dbg_all+4] == 84 && fons[dbg_all+5] == 73 && fons[dbg_all+6] == 79 && fons[dbg_all+7] == 32 TUNC\n            DECLARA dbg_all_pos SICUT NUMERUS VALENS dbg_all + 8.\n            DECLARA dbg_all_hash SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(dbg_all_pos), n).\n            SI dbg_all_hash == {target} TUNC\n                PROCLAMA "P11E SOURCE TARGET".\n                PROCLAMA dbg_all.\n            FIN-SI.\n        FIN-SI.\n        dbg_all = dbg_all + 1.\n    FIN-DUM.\n\n    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC\n            DECLARA dbg_scan_pos SICUT NUMERUS VALENS i + 8.\n            DECLARA dbg_scan_hash SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(dbg_scan_pos), n).\n            SI dbg_scan_hash == {target} TUNC\n                PROCLAMA "P11E SCAN TARGET".\n                PROCLAMA i.\n            FIN-SI.\n        FIN-SI.\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
-          if loop not in s:
-              raise SystemExit('top-level loop needle deest')
+          loop_dbg = f'''    DECLARA dbg_all SICUT NUMERUS VALENS 0.\n    DUM dbg_all < n PERFICE\n        SI fons[dbg_all] == 70 && dbg_all + 7 < n && fons[dbg_all+1] == 85 && fons[dbg_all+2] == 78 && fons[dbg_all+3] == 67 && fons[dbg_all+4] == 84 && fons[dbg_all+5] == 73 && fons[dbg_all+6] == 79 && fons[dbg_all+7] == 32 TUNC\n            DECLARA dbg_all_pos SICUT NUMERUS VALENS dbg_all + 8.\n            DECLARA dbg_all_hash SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(dbg_all_pos), n).\n            SI dbg_all_hash == {target} TUNC PROCLAMA "P11E SOURCE TARGET". PROCLAMA dbg_all. FIN-SI.\n            SI dbg_all_hash == {bitmap} TUNC PROCLAMA "P11E SOURCE BITMAP". PROCLAMA dbg_all. FIN-SI.\n        FIN-SI.\n        dbg_all = dbg_all + 1.\n    FIN-DUM.\n\n    DECLARA i SICUT NUMERUS VALENS 0.\n    DUM i < n PERFICE\n        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC\n            DECLARA dbg_scan_pos SICUT NUMERUS VALENS i + 8.\n            DECLARA dbg_scan_hash SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(dbg_scan_pos), n).\n            SI dbg_scan_hash == {target} TUNC PROCLAMA "P11E SCAN TARGET". PROCLAMA i. FIN-SI.\n            SI dbg_scan_hash == {bitmap} TUNC PROCLAMA "P11E SCAN BITMAP". PROCLAMA i. FIN-SI.\n        FIN-SI.\n        SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC\n'''
+          if loop not in s: raise SystemExit('top-level loop needle deest')
           s = s.replace(loop, loop_dbg, 1)
 
-          reg = '                ig_fn_dyn = PARES_SCRIBE(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), idx_fn, 1, pos).\n'
-          reg_dbg = reg + f'''                SI nomen_adiutoris == {target} TUNC\n                    PROCLAMA "P11E REG TARGET".\n                    PROCLAMA idx_fn.\n                    PROCLAMA pos.\n                FIN-SI.\n'''
-          if reg not in s:
-              raise SystemExit('registration needle deest')
-          s = s.replace(reg, reg_dbg, 1)
+          after = '                DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).\n'
+          after_dbg = after + f'''                SI nomen_adiutoris == {bitmap} TUNC\n                    PROCLAMA "P11E BITMAP POST BLOCUS".\n                    PROCLAMA i.\n                FIN-SI.\n'''
+          if after not in s: raise SystemExit('ANALYSA_BLOCUS helper needle deest')
+          s = s.replace(after, after_dbg, 1)
 
-          start = s.index('FUNCTIO CERCA_FUNCTIONEM_DYNAMICAM REDDENS NUMERUS.')
-          pos = s.index('    DECLARA idx_fn_dyn SICUT NUMERUS VALENS 0.\n', start)
-          needle = '    DECLARA idx_fn_dyn SICUT NUMERUS VALENS 0.\n'
-          dbg = needle + f'''    SI nomen_fn_dyn == {target} TUNC\n        PROCLAMA "P11E LOOK TARGET".\n        PROCLAMA PARES_QUANTITAS(descriptor).\n    FIN-SI.\n'''
-          s = s[:pos] + s[pos:].replace(needle, dbg, 1)
+          dot = '''                DUM i < n && fons[i] != 46 PERFICE\n                    i = i + 1.\n                FIN-DUM.\n                i = i + 1.\n'''
+          dot_dbg = f'''                DUM i < n && fons[i] != 46 PERFICE\n                    i = i + 1.\n                FIN-DUM.\n                SI nomen_adiutoris == {bitmap} TUNC\n                    PROCLAMA "P11E BITMAP POST DOT".\n                    PROCLAMA i.\n                FIN-SI.\n                i = i + 1.\n                SI nomen_adiutoris == {bitmap} TUNC\n                    PROCLAMA "P11E BITMAP NEXT".\n                    PROCLAMA i.\n                FIN-SI.\n'''
+          # Ultima occurrentia est cleanup functionis adiutoriae.
+          idx = s.rfind(dot)
+          if idx < 0: raise SystemExit('dot cleanup needle deest')
+          s = s[:idx] + s[idx:].replace(dot, dot_dbg, 1)
+
+          reg = '                ig_fn_dyn = PARES_SCRIBE(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), idx_fn, 1, pos).\n'
+          reg_dbg = reg + f'''                SI nomen_adiutoris == {target} TUNC PROCLAMA "P11E REG TARGET". PROCLAMA idx_fn. PROCLAMA pos. FIN-SI.\n'''
+          if reg not in s: raise SystemExit('registration needle deest')
+          s = s.replace(reg, reg_dbg, 1)
           p.write_text(s, encoding='utf-8')
           PY
           cd 'Vindex Chat-GPT/vindex_final_v51'
