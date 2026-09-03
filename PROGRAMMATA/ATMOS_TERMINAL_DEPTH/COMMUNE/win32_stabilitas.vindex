@@ -1,0 +1,68 @@
+// ATMOS // TERMINAL DEPTH — stabilitas Win32 minima, tota VINDEX.
+// Client importare debet textus.vindex et win32_ffi.vindex.
+//
+// Hoc stratum duas difficultates POC V corrigit:
+// - fenestra fixa non-resizabilis ne framebuffer et HUD inter se discedant;
+// - input tantum cum fenestra ATMOS foreground est.
+//
+// Contextus XL octeta:
+// +0 user32, +8 kernel32, +16 CreateWindowExA,
+// +24 GetModuleHandleA, +32 GetForegroundWindow.
+
+FUNCTIO ATMOS_WIN_STAB_CREA REDDENS NUMERUS.
+    DECLARA c SICUT NUMERUS VALENS RESERVA_OCTETA(40).
+    SI c <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA u SICUT NUMERUS VALENS WIN32_MODULUM_APERI("user32.dll").
+    DECLARA k SICUT NUMERUS VALENS WIN32_MODULUM_APERI("kernel32.dll").
+    SI u == 0 || k == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(c) = u.
+    CONTENTUM(c + 8) = k.
+    CONTENTUM(c + 16) = WIN32_SYMBOLUM(u, "CreateWindowExA").
+    CONTENTUM(c + 24) = WIN32_SYMBOLUM(k, "GetModuleHandleA").
+    CONTENTUM(c + 32) = WIN32_SYMBOLUM(u, "GetForegroundWindow").
+    SI CONTENTUM(c + 16) == 0 || CONTENTUM(c + 24) == 0 || CONTENTUM(c + 32) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE c.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_WIN_FENESTRA_FIXA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT titulus SICUT TEXTUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    SI c <= 0 || latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA p SICUT NUMERUS VALENS SEDES(a).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p) = 0.
+    DECLARA hinstance SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(c + 24), p).
+    SI hinstance == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA classis SICUT TEXTUS VALENS "STATIC".
+    ig = MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p + 0) = 0.
+    CONTENTUM(p + 8) = TEXTUS_BASIS_OCTETORUM(classis).
+    CONTENTUM(p + 16) = TEXTUS_BASIS_OCTETORUM(titulus).
+    // WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX: nulla resize/maximize.
+    CONTENTUM(p + 24) = 13238272.
+    CONTENTUM(p + 32) = 80.
+    CONTENTUM(p + 40) = 80.
+    CONTENTUM(p + 48) = latitudo.
+    CONTENTUM(p + 56) = altitudo.
+    CONTENTUM(p + 64) = 0.
+    CONTENTUM(p + 72) = 0.
+    CONTENTUM(p + 80) = hinstance.
+    CONTENTUM(p + 88) = 0.
+    REDDE MSX64_VOCA(CONTENTUM(c + 16), p).
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_WIN_ACTIVA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT hwnd SICUT NUMERUS.
+    SI c <= 0 || hwnd <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA p SICUT NUMERUS VALENS SEDES(a).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
+    DECLARA activa SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(c + 32), p).
+    SI activa == hwnd TUNC REDDE 1. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
