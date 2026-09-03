@@ -1,16 +1,22 @@
-// ATMOS // TERMINAL DEPTH — stabilitas Win32 minima, tota VINDEX.
+// ATMOS // TERMINAL DEPTH — fenestra Win32 applicationis, tota VINDEX.
 // Client importare debet textus.vindex et win32_ffi.vindex.
 //
-// Hoc stratum duas difficultates POC V corrigit:
-// - fenestra fixa non-resizabilis ne framebuffer et HUD inter se discedant;
-// - input tantum cum fenestra ATMOS foreground est.
+// POC V/VI classem systematis STATIC tamquam fenestram top-level adhibebant.
+// Id satis erat ad probationem graphicam, sed non ad applicationem humanam:
+// motus, maximize, resize et clausura normali fideles non erant.
 //
-// Contextus XL octeta:
+// Hoc stratum classem propriam Win32 registrat, cuius WndProc est ipsa
+// DefWindowProcA. Ita non opus est callback alienae linguae: VINDEX structuram
+// WNDCLASSEXA construit, RegisterClassExA vocat et Windows non-client area
+// (caption, move, minimize, maximize, resize, close) canonice administrat.
+//
+// Contextus LVI octeta:
 // +0 user32, +8 kernel32, +16 CreateWindowExA,
-// +24 GetModuleHandleA, +32 GetForegroundWindow.
+// +24 GetModuleHandleA, +32 GetForegroundWindow,
+// +40 RegisterClassExA, +48 DefWindowProcA.
 
 FUNCTIO ATMOS_WIN_STAB_CREA REDDENS NUMERUS.
-    DECLARA c SICUT NUMERUS VALENS RESERVA_OCTETA(40).
+    DECLARA c SICUT NUMERUS VALENS RESERVA_OCTETA(56).
     SI c <= 0 TUNC REDDE 0. FIN-SI.
     DECLARA u SICUT NUMERUS VALENS WIN32_MODULUM_APERI("user32.dll").
     DECLARA k SICUT NUMERUS VALENS WIN32_MODULUM_APERI("kernel32.dll").
@@ -20,16 +26,15 @@ FUNCTIO ATMOS_WIN_STAB_CREA REDDENS NUMERUS.
     CONTENTUM(c + 16) = WIN32_SYMBOLUM(u, "CreateWindowExA").
     CONTENTUM(c + 24) = WIN32_SYMBOLUM(k, "GetModuleHandleA").
     CONTENTUM(c + 32) = WIN32_SYMBOLUM(u, "GetForegroundWindow").
-    SI CONTENTUM(c + 16) == 0 || CONTENTUM(c + 24) == 0 || CONTENTUM(c + 32) == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(c + 40) = WIN32_SYMBOLUM(u, "RegisterClassExA").
+    CONTENTUM(c + 48) = WIN32_SYMBOLUM(u, "DefWindowProcA").
+    SI CONTENTUM(c + 16) == 0 || CONTENTUM(c + 24) == 0 || CONTENTUM(c + 32) == 0 || CONTENTUM(c + 40) == 0 || CONTENTUM(c + 48) == 0 TUNC REDDE 0. FIN-SI.
     REDDE c.
 FIN-FUNCTIO.
 
-FUNCTIO ATMOS_WIN_FENESTRA_FIXA REDDENS NUMERUS.
+FUNCTIO ATMOS_WIN_CLASSIS_REGISTRA REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
-    ACCIPIT titulus SICUT TEXTUS.
-    ACCIPIT latitudo SICUT NUMERUS.
-    ACCIPIT altitudo SICUT NUMERUS.
-    SI c <= 0 || latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    SI c <= 0 TUNC REDDE 0. FIN-SI.
     DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
     DECLARA p SICUT NUMERUS VALENS SEDES(a).
     DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
@@ -37,13 +42,49 @@ FUNCTIO ATMOS_WIN_FENESTRA_FIXA REDDENS NUMERUS.
     DECLARA hinstance SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(c + 24), p).
     SI hinstance == 0 TUNC REDDE 0. FIN-SI.
 
-    DECLARA classis SICUT TEXTUS VALENS "STATIC".
+    // WNDCLASSEXA = LXXX octeta in Win64.
+    DECLARA wc SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    SI wc <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS 0.
+    DUM z < 80 PERFICE
+        SCRIBE_OCTETUM_AB(wc + z, 0).
+        z = z + 1.
+    FIN-DUM.
+    // cbSize = 80; style = 0.
+    SCRIBE_OCTETUM_AB(wc + 0, 80).
+    CONTENTUM(wc + 8) = CONTENTUM(c + 48).
+    CONTENTUM(wc + 24) = hinstance.
+    DECLARA classis SICUT TEXTUS VALENS "ATMOS_VINDEX_FENESTRA".
+    CONTENTUM(wc + 64) = TEXTUS_BASIS_OCTETORUM(classis).
+
+    ig = MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p) = wc.
+    REDDE MSX64_VOCA(CONTENTUM(c + 40), p).
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_WIN_FENESTRA_VERA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT titulus SICUT TEXTUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT altitudo SICUT NUMERUS.
+    SI c <= 0 || latitudo <= 0 || altitudo <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA atom SICUT NUMERUS VALENS ATMOS_WIN_CLASSIS_REGISTRA(c).
+    SI atom == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA a SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA p SICUT NUMERUS VALENS SEDES(a).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(p).
+    CONTENTUM(p) = 0.
+    DECLARA hinstance SICUT NUMERUS VALENS MSX64_VOCA(CONTENTUM(c + 24), p).
+    SI hinstance == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA classis SICUT TEXTUS VALENS "ATMOS_VINDEX_FENESTRA".
     ig = MSX64_ARGUMENTA_VACUA(p).
     CONTENTUM(p + 0) = 0.
     CONTENTUM(p + 8) = TEXTUS_BASIS_OCTETORUM(classis).
     CONTENTUM(p + 16) = TEXTUS_BASIS_OCTETORUM(titulus).
-    // WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX: nulla resize/maximize.
-    CONTENTUM(p + 24) = 13238272.
+    // WS_OVERLAPPEDWINDOW = caption + sysmenu + minimize + maximize + thickframe.
+    CONTENTUM(p + 24) = 13565952.
     CONTENTUM(p + 32) = 80.
     CONTENTUM(p + 40) = 80.
     CONTENTUM(p + 48) = latitudo.
