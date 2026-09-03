@@ -1,0 +1,95 @@
+name: VINDEX — ATMOS POC V Runtime Diagnostica
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V/**'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/COMMUNE/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'instrumenta/corrige_identificatores_longi_poc_v.py'
+      - '.github/workflows/vindex-atmos-poc-v-runtime-diagnostica.yml'
+
+jobs:
+  genera:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Compilatorem correctum temporaliter genera
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/corrige_identificatores_longi_poc_v.py
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          chmod +x compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+          chmod +x /tmp/g2
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          chmod +x /tmp/g3
+          /tmp/g3 src/compilator_vindex.vindex /tmp/g4
+          chmod +x /tmp/g4
+          cmp /tmp/g3 /tmp/g4
+      - name: POC V temporaliter instrumenta
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V/ludus.vindex')
+          s = p.read_text(encoding='utf-8')
+          reps = [
+            ('    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(80).\n', '    PROCLAMA "V0".\n    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(80).\n'),
+            ('    DECLARA smoke SICUT NUMERUS VALENS 0.\n', '    PROCLAMA "V1".\n    DECLARA smoke SICUT NUMERUS VALENS 0.\n'),
+            ('    DECLARA ctx SICUT NUMERUS VALENS WINAPP_CONTEXUS_CREA().\n', '    PROCLAMA "V2".\n    DECLARA ctx SICUT NUMERUS VALENS WINAPP_CONTEXUS_CREA().\n    PROCLAMA "V3".\n'),
+            ('    DECLARA hwnd SICUT NUMERUS VALENS WINAPP_FENESTRA_CREA(ctx, "ATMOS // TERMINAL DEPTH — PROCEDURAL WORLD", 980, 720).\n', '    DECLARA hwnd SICUT NUMERUS VALENS WINAPP_FENESTRA_CREA(ctx, "ATMOS // TERMINAL DEPTH — PROCEDURAL WORLD", 980, 720).\n    PROCLAMA "V4".\n'),
+            ('    DECLARA hdc SICUT NUMERUS VALENS WINAPP_HDC_CAPE(ctx, hwnd).\n', '    DECLARA hdc SICUT NUMERUS VALENS WINAPP_HDC_CAPE(ctx, hwnd).\n    PROCLAMA "V5".\n'),
+            ('    SI pixels <= 0 || bmi <= 0 || superficies <= 0 || rect <= 0 || msg <= 0 TUNC REDDE 83. FIN-SI.\n', '    SI pixels <= 0 || bmi <= 0 || superficies <= 0 || rect <= 0 || msg <= 0 TUNC REDDE 83. FIN-SI.\n    PROCLAMA "V6".\n'),
+            ('    SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) == 0 TUNC REDDE 84. FIN-SI.\n', '    SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) == 0 TUNC REDDE 84. FIN-SI.\n    PROCLAMA "V7".\n'),
+            ('    SI WINAPP_SUPERFICIES_DESTINATIO(superficies, hdc, client_w, client_h) == 0 TUNC REDDE 85. FIN-SI.\n', '    SI WINAPP_SUPERFICIES_DESTINATIO(superficies, hdc, client_w, client_h) == 0 TUNC REDDE 85. FIN-SI.\n    PROCLAMA "V8".\n'),
+            ('    DECLARA pictum SICUT NUMERUS VALENS ATMOS_V_FRAME_PINGE(pixels, w, h, status, mundus).\n', '    DECLARA pictum SICUT NUMERUS VALENS ATMOS_V_FRAME_PINGE(pixels, w, h, status, mundus).\n    PROCLAMA "V9".\n'),
+            ('    DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficies).\n', '    DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficies).\n    PROCLAMA "V10".\n'),
+            ('    DECLARA hud SICUT NUMERUS VALENS ATMOS_V_HUD(ctx, hdc, status, mundus).\n', '    DECLARA hud SICUT NUMERUS VALENS ATMOS_V_HUD(ctx, hdc, status, mundus).\n    PROCLAMA "V11".\n'),
+            ('    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).\n', '    PROCLAMA "V12".\n    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).\n')
+          ]
+          for old, new in reps:
+              if old not in s:
+                  raise SystemExit('needle deest: ' + old[:70])
+              s = s.replace(old, new, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: POC V PE genera
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/g4 ludus.vindex /tmp/atmos_poc_v_diag.exe pe
+          file /tmp/atmos_poc_v_diag.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-poc-v-runtime-diag
+          path: /tmp/atmos_poc_v_diag.exe
+          retention-days: 2
+
+  windows:
+    needs: genera
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-poc-v-runtime-diag
+          path: diag
+      - name: POC V gradatim exerce
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Continue'
+          Push-Location diag
+          Remove-Item atmos.sav, atmos.world -ErrorAction SilentlyContinue
+          & .\atmos_poc_v_diag.exe smoke
+          $code = $LASTEXITCODE
+          Write-Host "EXITUS=$code"
+          Pop-Location
+          if ($code -ne 0) { exit 1 }
