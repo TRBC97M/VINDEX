@@ -459,6 +459,9 @@ FUNCTIO CONSTRUE_CAPUT_PE REDDENS NUMERUS.
     DECLARA igac SICUT NUMERUS VALENS SCRIBE_U32(codex, 148, capita_mensura).
     DECLARA igad SICUT NUMERUS VALENS SCRIBE_U32(codex, 152, 0).
     DECLARA subsystema_pe SICUT NUMERUS VALENS 3.
+    SI MODUS_PE_LEGE(contextus_parseris) == 3 TUNC
+        subsystema_pe = 2.
+    FIN-SI.
     SI MODUS_PE_LEGE(contextus_parseris) == 2 TUNC
         subsystema_pe = 10.
     FIN-SI.
@@ -6007,7 +6010,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     SI argc < 3 TUNC
         PROCLAMA "USUS: compilator_vindex PROIECTUM <proiectum.vindex>".
-        PROCLAMA "USUS: compilator_vindex <fons.vindex> <exsecutabile> [pe|uefi]".
+        PROCLAMA "USUS: compilator_vindex <fons.vindex> <exsecutabile> [pe|gui|uefi]".
         REDDE 64.
     FIN-SI.
 
@@ -6029,6 +6032,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             DECLARA arg3 SICUT ACUS<LITTERA> VALENS argv[3].
             SI arg3[0] == 112 && arg3[1] == 101 && arg3[2] == 0 TUNC
                 modus_pe = 1.
+            FIN-SI.
+        FIN-SI.
+        SI argc >= 4 TUNC
+            DECLARA arg3_gui SICUT ACUS<LITTERA> VALENS argv[3].
+            SI arg3_gui[0] == 103 && arg3_gui[1] == 117 && arg3_gui[2] == 105 && arg3_gui[3] == 0 TUNC
+                modus_pe = 3.
             FIN-SI.
         FIN-SI.
         SI argc >= 4 TUNC
