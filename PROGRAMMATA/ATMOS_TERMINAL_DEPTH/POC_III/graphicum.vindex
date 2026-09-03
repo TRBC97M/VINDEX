@@ -41,28 +41,8 @@ FUNCTIO MEM_I32_LEGE REDDENS NUMERUS.
     ACCIPIT basis SICUT NUMERUS.
     ACCIPIT off SICUT NUMERUS.
     DECLARA v SICUT NUMERUS VALENS MEM_U32_LEGE(basis, off).
-    SI v >= 2147483648 TUNC
-        v = v - 4294967296.
-    FIN-SI.
+    SI v >= 2147483648 TUNC v = v - 4294967296. FIN-SI.
     REDDE v.
-FIN-FUNCTIO.
-
-FUNCTIO ATMOS_PIXEL_SCRIBE REDDENS NUMERUS.
-    ACCIPIT pixels SICUT NUMERUS.
-    ACCIPIT w SICUT NUMERUS.
-    ACCIPIT h SICUT NUMERUS.
-    ACCIPIT x SICUT NUMERUS.
-    ACCIPIT y SICUT NUMERUS.
-    ACCIPIT b SICUT NUMERUS.
-    ACCIPIT g SICUT NUMERUS.
-    ACCIPIT r SICUT NUMERUS.
-    SI x < 0 || y < 0 || x >= w || y >= h TUNC REDDE 0. FIN-SI.
-    DECLARA p SICUT NUMERUS VALENS ((y * w) + x) * 4.
-    SCRIBE_OCTETUM_AB(pixels + p, b).
-    SCRIBE_OCTETUM_AB(pixels + p + 1, g).
-    SCRIBE_OCTETUM_AB(pixels + p + 2, r).
-    SCRIBE_OCTETUM_AB(pixels + p + 3, 0).
-    REDDE 1.
 FIN-FUNCTIO.
 
 FUNCTIO ATMOS_FRAMEBUFFER_PINGE REDDENS NUMERUS.
@@ -95,12 +75,15 @@ FUNCTIO ATMOS_FRAMEBUFFER_PINGE REDDENS NUMERUS.
                 b = 28. g = 176. r = 32.
             FIN-SI.
 
-            // Status bars: oxygenium, energia, integritas.
             SI y >= 22 && y < 28 && x >= 22 && x < 112 TUNC b = 40. g = 188. r = 38. FIN-SI.
             SI y >= 34 && y < 40 && x >= 22 && x < 100 TUNC b = 36. g = 148. r = 30. FIN-SI.
             SI y >= 46 && y < 52 && x >= 22 && x < 116 TUNC b = 46. g = 210. r = 44. FIN-SI.
 
-            DECLARA ig SICUT NUMERUS VALENS ATMOS_PIXEL_SCRIBE(pixels, w, h, x, y, b, g, r).
+            DECLARA p SICUT NUMERUS VALENS ((y * w) + x) * 4.
+            SCRIBE_OCTETUM_AB(pixels + p, b).
+            SCRIBE_OCTETUM_AB(pixels + p + 1, g).
+            SCRIBE_OCTETUM_AB(pixels + p + 2, r).
+            SCRIBE_OCTETUM_AB(pixels + p + 3, 0).
             x = x + 1.
         FIN-DUM.
         y = y + 1.
@@ -118,8 +101,22 @@ FUNCTIO ATMOS_CURSOR_PINGE REDDENS NUMERUS.
 
     DECLARA i SICUT NUMERUS VALENS 0 - 5.
     DUM i <= 5 PERFICE
-        DECLARA ig SICUT NUMERUS VALENS ATMOS_PIXEL_SCRIBE(pixels, w, h, mx + i, my, 72, 242, 92).
-        ig = ATMOS_PIXEL_SCRIBE(pixels, w, h, mx, my + i, 72, 242, 92).
+        DECLARA xh SICUT NUMERUS VALENS mx + i.
+        SI xh >= 0 && xh < w TUNC
+            DECLARA ph SICUT NUMERUS VALENS ((my * w) + xh) * 4.
+            SCRIBE_OCTETUM_AB(pixels + ph, 72).
+            SCRIBE_OCTETUM_AB(pixels + ph + 1, 242).
+            SCRIBE_OCTETUM_AB(pixels + ph + 2, 92).
+            SCRIBE_OCTETUM_AB(pixels + ph + 3, 0).
+        FIN-SI.
+        DECLARA yv SICUT NUMERUS VALENS my + i.
+        SI yv >= 0 && yv < h TUNC
+            DECLARA pv SICUT NUMERUS VALENS ((yv * w) + mx) * 4.
+            SCRIBE_OCTETUM_AB(pixels + pv, 72).
+            SCRIBE_OCTETUM_AB(pixels + pv + 1, 242).
+            SCRIBE_OCTETUM_AB(pixels + pv + 2, 92).
+            SCRIBE_OCTETUM_AB(pixels + pv + 3, 0).
+        FIN-SI.
         i = i + 1.
     FIN-DUM.
     REDDE 1.
@@ -137,41 +134,12 @@ FUNCTIO ATMOS_BITMAPINFO_CREA REDDENS NUMERUS.
     FIN-DUM.
     DECLARA ig SICUT NUMERUS VALENS MEM_U32_SCRIBE(bmi, 0, 40).
     ig = MEM_U32_SCRIBE(bmi, 4, w).
-    // Altitudo negativa = DIB top-down.
     ig = MEM_U32_SCRIBE(bmi, 8, 0 - h).
     ig = MEM_U16_SCRIBE(bmi, 12, 1).
     ig = MEM_U16_SCRIBE(bmi, 14, 32).
     ig = MEM_U32_SCRIBE(bmi, 16, 0).
     ig = MEM_U32_SCRIBE(bmi, 20, w * h * 4).
     REDDE bmi.
-FIN-FUNCTIO.
-
-FUNCTIO ATMOS_PRAESENTA REDDENS NUMERUS.
-    ACCIPIT stretch_dibits SICUT NUMERUS.
-    ACCIPIT args SICUT NUMERUS.
-    ACCIPIT hdc SICUT NUMERUS.
-    ACCIPIT pixels SICUT NUMERUS.
-    ACCIPIT bmi SICUT NUMERUS.
-    ACCIPIT w SICUT NUMERUS.
-    ACCIPIT h SICUT NUMERUS.
-    ACCIPIT client_w SICUT NUMERUS.
-    ACCIPIT client_h SICUT NUMERUS.
-
-    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(args).
-    CONTENTUM(args + 0) = hdc.
-    CONTENTUM(args + 8) = 0.
-    CONTENTUM(args + 16) = 0.
-    CONTENTUM(args + 24) = client_w.
-    CONTENTUM(args + 32) = client_h.
-    CONTENTUM(args + 40) = 0.
-    CONTENTUM(args + 48) = 0.
-    CONTENTUM(args + 56) = w.
-    CONTENTUM(args + 64) = h.
-    CONTENTUM(args + 72) = pixels.
-    CONTENTUM(args + 80) = bmi.
-    CONTENTUM(args + 88) = 0.
-    CONTENTUM(args + 96) = 13369376.
-    REDDE MSX64_VOCA(stretch_dibits, args).
 FIN-FUNCTIO.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
@@ -201,9 +169,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA get_module SICUT NUMERUS VALENS WIN32_SYMBOLUM(kernel32, "GetModuleHandleA").
     DECLARA sleep_fn SICUT NUMERUS VALENS WIN32_SYMBOLUM(kernel32, "Sleep").
 
-    SI create_window == 0 || get_dc == 0 || release_dc == 0 || destroy_window == 0 || show_window == 0 || update_window == 0 || peek_message == 0 || translate_message == 0 || dispatch_message == 0 || get_async_key == 0 || get_cursor_pos == 0 || screen_to_client == 0 || get_client_rect == 0 || is_window == 0 || stretch_dibits == 0 || get_module == 0 || sleep_fn == 0 TUNC
-        REDDE 92.
-    FIN-SI.
+    SI create_window == 0 || get_dc == 0 || release_dc == 0 || destroy_window == 0 || show_window == 0 || update_window == 0 || peek_message == 0 || translate_message == 0 || dispatch_message == 0 || get_async_key == 0 || get_cursor_pos == 0 || screen_to_client == 0 || get_client_rect == 0 || is_window == 0 || stretch_dibits == 0 || get_module == 0 || sleep_fn == 0 TUNC REDDE 92. FIN-SI.
 
     DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
     DECLARA args SICUT NUMERUS VALENS SEDES(argumenta).
@@ -214,7 +180,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI hinstance == 0 TUNC REDDE 93. FIN-SI.
 
     DECLARA classis SICUT TEXTUS VALENS "STATIC".
-    // API A est ANSI; titulus POC manet ASCII donec pontem UTF-16 addamus.
     DECLARA titulus SICUT TEXTUS VALENS "ATMOS // TERMINAL DEPTH - VINDEX NATIVE".
 
     ig = MSX64_ARGUMENTA_VACUA(args).
@@ -239,7 +204,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI pixels <= 0 TUNC REDDE 95. FIN-SI.
     DECLARA bmi SICUT NUMERUS VALENS ATMOS_BITMAPINFO_CREA(w, h).
     SI bmi <= 0 TUNC REDDE 96. FIN-SI.
-
     DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
     DECLARA rect SICUT NUMERUS VALENS RESERVA_OCTETA(16).
     DECLARA msg SICUT NUMERUS VALENS RESERVA_OCTETA(48).
@@ -260,10 +224,24 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI client_w <= 0 || client_h <= 0 TUNC REDDE 100. FIN-SI.
 
     DECLARA pictum SICUT NUMERUS VALENS ATMOS_FRAMEBUFFER_PINGE(pixels, w, h).
-    DECLARA lineae SICUT NUMERUS VALENS ATMOS_PRAESENTA(stretch_dibits, args, hdc, pixels, bmi, w, h, client_w, client_h).
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = hdc.
+    CONTENTUM(args + 8) = 0.
+    CONTENTUM(args + 16) = 0.
+    CONTENTUM(args + 24) = client_w.
+    CONTENTUM(args + 32) = client_h.
+    CONTENTUM(args + 40) = 0.
+    CONTENTUM(args + 48) = 0.
+    CONTENTUM(args + 56) = w.
+    CONTENTUM(args + 64) = h.
+    CONTENTUM(args + 72) = pixels.
+    CONTENTUM(args + 80) = bmi.
+    CONTENTUM(args + 88) = 0.
+    CONTENTUM(args + 96) = 13369376.
+    DECLARA lineae SICUT NUMERUS VALENS MSX64_VOCA(stretch_dibits, args).
     SI lineae <= 0 TUNC REDDE 101. FIN-SI.
 
-    // Modus smoke: APIs inputus/eventorum etiam exercentur, sed fenestra non ostenditur.
+    // Smoke exercet etiam APIs inputus et eventorum sine fenestra visibili.
     SI argc >= 2 TUNC
         ig = MSX64_ARGUMENTA_VACUA(args).
         CONTENTUM(args) = point.
@@ -354,7 +332,22 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                             DECLARA radar_y SICUT NUMERUS VALENS (mouse_y * h) / client_h.
                             pictum = ATMOS_FRAMEBUFFER_PINGE(pixels, w, h).
                             DECLARA cursor_pictus SICUT NUMERUS VALENS ATMOS_CURSOR_PINGE(pixels, w, h, radar_x, radar_y).
-                            DECLARA frame_lineae SICUT NUMERUS VALENS ATMOS_PRAESENTA(stretch_dibits, args, hdc, pixels, bmi, w, h, client_w, client_h).
+
+                            ig = MSX64_ARGUMENTA_VACUA(args).
+                            CONTENTUM(args + 0) = hdc.
+                            CONTENTUM(args + 8) = 0.
+                            CONTENTUM(args + 16) = 0.
+                            CONTENTUM(args + 24) = client_w.
+                            CONTENTUM(args + 32) = client_h.
+                            CONTENTUM(args + 40) = 0.
+                            CONTENTUM(args + 48) = 0.
+                            CONTENTUM(args + 56) = w.
+                            CONTENTUM(args + 64) = h.
+                            CONTENTUM(args + 72) = pixels.
+                            CONTENTUM(args + 80) = bmi.
+                            CONTENTUM(args + 88) = 0.
+                            CONTENTUM(args + 96) = 13369376.
+                            DECLARA frame_lineae SICUT NUMERUS VALENS MSX64_VOCA(stretch_dibits, args).
                         FIN-SI.
                     FIN-SI.
 
