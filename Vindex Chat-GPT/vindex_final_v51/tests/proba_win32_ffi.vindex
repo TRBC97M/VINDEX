@@ -1,0 +1,38 @@
+// P11-C — FFI Win64 generalis: LoadLibraryA + GetProcAddress + vocatio indirecta.
+// Sub Windows vero user32.dll aperitur et GetSystemMetrics(SM_CXSCREEN) vocatur.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    DECLARA user32 SICUT NUMERUS VALENS WIN_DLL_APERI("user32.dll").
+    SI user32 == 0 TUNC
+        PROCLAMA "ERRATUM: user32.dll aperiri non potest".
+        REDDE 81.
+    FIN-SI.
+
+    DECLARA get_system_metrics SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(user32, "GetSystemMetrics").
+    SI get_system_metrics == 0 TUNC
+        PROCLAMA "ERRATUM: GetSystemMetrics non inventa est".
+        REDDE 82.
+    FIN-SI.
+
+    DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE
+        argumenta[i] = 0.
+        i = i + 1.
+    FIN-DUM.
+
+    // SM_CXSCREEN = 0.
+    argumenta[0] = 0.
+    DECLARA latitudo SICUT NUMERUS VALENS ABI_MSX64_VOCA16(get_system_metrics, SEDES(argumenta)).
+    SI latitudo <= 0 TUNC
+        PROCLAMA "ERRATUM: GetSystemMetrics latitudinem invalidam reddidit".
+        REDDE 83.
+    FIN-SI.
+
+    PROCLAMA "RECTE: WIN32 FFI VINDEX".
+    PROCLAMA latitudo.
+    REDDE 0.
+FIN-FUNCTIO.
