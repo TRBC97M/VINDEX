@@ -1,0 +1,415 @@
+// ATMOS // TERMINAL DEPTH — POC VII / Restitutio Sonar.
+// Finis: ad mores veri ludi HTML reverti sine HTML/JS runtime.
+// Sonar cliccatur, navis continue movetur, profunditas ex bathymetria mundi venit.
+
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex".
+IMPORTA "../COMMUNE/nucleus.vindex".
+IMPORTA "../COMMUNE/mundus.vindex".
+IMPORTA "../COMMUNE/interactio.vindex".
+IMPORTA "../COMMUNE/navigatio.vindex".
+IMPORTA "../COMMUNE/bathymetria.vindex".
+IMPORTA "../COMMUNE/win32_stabilitas.vindex".
+
+FUNCTIO MEM_I32_LEGE_VII REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS OCTETUS_AB(basis + off).
+    v = v | (OCTETUS_AB(basis + off + 1) << 8).
+    v = v | (OCTETUS_AB(basis + off + 2) << 16).
+    v = v | (OCTETUS_AB(basis + off + 3) << 24).
+    SI v >= 2147483648 TUNC v = v - 4294967296. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_PIXEL REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    SI x < 0 || y < 0 || x >= w || y >= h TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS ((y * w) + x) * 4.
+    SCRIBE_OCTETUM_AB(pixels + p, b & 255).
+    SCRIBE_OCTETUM_AB(pixels + p + 1, g & 255).
+    SCRIBE_OCTETUM_AB(pixels + p + 2, r & 255).
+    SCRIBE_OCTETUM_AB(pixels + p + 3, 0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_LINEA REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS.
+    ACCIPIT y0 SICUT NUMERUS.
+    ACCIPIT x1 SICUT NUMERUS.
+    ACCIPIT y1 SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA dx SICUT NUMERUS VALENS x1 - x0.
+    DECLARA dy SICUT NUMERUS VALENS y1 - y0.
+    DECLARA ax SICUT NUMERUS VALENS NAVIGATIO_ABS(dx).
+    DECLARA ay SICUT NUMERUS VALENS NAVIGATIO_ABS(dy).
+    DECLARA d SICUT NUMERUS VALENS NAVIGATIO_MAX(ax, ay).
+    SI d == 0 TUNC REDDE ATMOS_VII_PIXEL(pixels, w, h, x0, y0, 60, 240, 120). FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i <= d PERFICE
+        DECLARA x SICUT NUMERUS VALENS x0 + (dx * i) / d.
+        DECLARA y SICUT NUMERUS VALENS y0 + (dy * i) / d.
+        SI color == 1 TUNC DECLARA z1 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, x, y, 60, 220, 80). FIN-SI.
+        SI color == 2 TUNC DECLARA z2 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, x, y, 220, 210, 60). FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_CONTACTUS_NOMEN REDDENS TEXTUS.
+    ACCIPIT c SICUT NUMERUS.
+    SI c == 1 TUNC REDDE "MINERAL". FIN-SI.
+    SI c == 2 TUNC REDDE "STRUCTURE". FIN-SI.
+    SI c == 3 TUNC REDDE "CONVOY". FIN-SI.
+    SI c == 4 TUNC REDDE "THE BELOW". FIN-SI.
+    REDDE "NONE".
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_MUNDUS_SYNC REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT visita SICUT NUMERUS.
+    DECLARA x SICUT NUMERUS VALENS NAVIGATIO_X(n).
+    DECLARA y SICUT NUMERUS VALENS NAVIGATIO_Y(n).
+    DECLARA p SICUT NUMERUS VALENS BATHY_PROFUNDITAS(x, y, CONTENTUM(s + 56)).
+    CONTENTUM(s + 8) = p.
+    DECLARA sx SICUT NUMERUS VALENS BATHY_SECTOR(x).
+    DECLARA sy SICUT NUMERUS VALENS BATHY_SECTOR(y).
+    SI sx != CONTENTUM(m) || sy != CONTENTUM(m + 8) TUNC
+        CONTENTUM(m) = sx.
+        CONTENTUM(m + 8) = sy.
+        SI visita == 1 TUNC CONTENTUM(m + 16) = CONTENTUM(m + 16) + 1. FIN-SI.
+    FIN-SI.
+    DECLARA g SICUT NUMERUS VALENS MUNDUS_SECTOR_GENERA(m, CONTENTUM(s + 56), p).
+    CONTENTUM(s + 64) = CONTENTUM(m + 32).
+    REDDE g.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_CONTACT_X REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    REDDE 440 + (CONTENTUM(m + 40) - 233) * 2.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_CONTACT_Y REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    REDDE 220 + (CONTENTUM(m + 48) - 83) * 2.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_FRAME REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT mineratio SICUT NUMERUS.
+    DECLARA cx SICUT NUMERUS VALENS 440.
+    DECLARA cy SICUT NUMERUS VALENS 220.
+    DECLARA radius SICUT NUMERUS VALENS 170.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y < h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x < w PERFICE
+            DECLARA b SICUT NUMERUS VALENS 7.
+            DECLARA g SICUT NUMERUS VALENS 18.
+            DECLARA r SICUT NUMERUS VALENS 10.
+            SI x < 220 TUNC b = 9. g = 28. r = 14. FIN-SI.
+            SI (y % 4) == 0 TUNC g = g + 4. FIN-SI.
+            DECLARA p SICUT NUMERUS VALENS ((y * w) + x) * 4.
+            SCRIBE_OCTETUM_AB(pixels + p, b).
+            SCRIBE_OCTETUM_AB(pixels + p + 1, g).
+            SCRIBE_OCTETUM_AB(pixels + p + 2, r).
+            SCRIBE_OCTETUM_AB(pixels + p + 3, 0).
+            x = x + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+
+    DECLARA yy SICUT NUMERUS VALENS 40.
+    DUM yy <= 400 PERFICE
+        DECLARA z0 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, cx, yy, 24, 80, 35).
+        yy = yy + 1.
+    FIN-DUM.
+    DECLARA xx SICUT NUMERUS VALENS 260.
+    DUM xx <= 620 PERFICE
+        DECLARA z1 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, xx, cy, 24, 80, 35).
+        xx = xx + 1.
+    FIN-DUM.
+
+    y = 40.
+    DUM y <= 400 PERFICE
+        x = 260.
+        DUM x <= 620 PERFICE
+            DECLARA dx SICUT NUMERUS VALENS NAVIGATIO_ABS(x - cx).
+            DECLARA dy SICUT NUMERUS VALENS NAVIGATIO_ABS(y - cy).
+            DECLARA d SICUT NUMERUS VALENS dx + dy.
+            SI d == 80 || d == 120 || d == 160 TUNC
+                DECLARA zr SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, x, y, 20, 70, 28).
+            FIN-SI.
+            x = x + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+
+    // Navis semper in centro camerae, ut in ludo HTML.
+    DECLARA yp SICUT NUMERUS VALENS -5.
+    DUM yp <= 5 PERFICE
+        DECLARA xp SICUT NUMERUS VALENS -5.
+        DUM xp <= 5 PERFICE
+            SI NAVIGATIO_ABS(xp) + NAVIGATIO_ABS(yp) <= 6 TUNC
+                DECLARA zp SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, cx + xp, cy + yp, 230, 245, 90).
+            FIN-SI.
+            xp = xp + 1.
+        FIN-DUM.
+        yp = yp + 1.
+    FIN-DUM.
+
+    SI NAVIGATIO_ITER(n) == 1 TUNC
+        DECLARA dxm SICUT NUMERUS VALENS CONTENTUM(n + 16) - CONTENTUM(n + 0).
+        DECLARA dym SICUT NUMERUS VALENS CONTENTUM(n + 24) - CONTENTUM(n + 8).
+        DECLARA ex SICUT NUMERUS VALENS cx + (dxm * radius) / CONTENTUM(n + 56).
+        DECLARA ey SICUT NUMERUS VALENS cy + (dym * radius) / CONTENTUM(n + 56).
+        DECLARA linea SICUT NUMERUS VALENS ATMOS_VII_LINEA(pixels, w, h, cx, cy, ex, ey, 1).
+        DECLARA q SICUT NUMERUS VALENS -5.
+        DUM q <= 5 PERFICE
+            DECLARA zd0 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, ex + q, ey, 60, 220, 80).
+            DECLARA zd1 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, ex, ey + q, 60, 220, 80).
+            q = q + 1.
+        FIN-DUM.
+    FIN-SI.
+
+    DECLARA contactus SICUT NUMERUS VALENS CONTENTUM(m + 32).
+    SI contactus != 0 TUNC
+        DECLARA kx SICUT NUMERUS VALENS ATMOS_VII_CONTACT_X(m).
+        DECLARA ky SICUT NUMERUS VALENS ATMOS_VII_CONTACT_Y(m).
+        DECLARA q2 SICUT NUMERUS VALENS -6.
+        DUM q2 <= 6 PERFICE
+            DECLARA c0 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, kx + q2, ky, 70, 220, 80).
+            DECLARA c1 SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, kx, ky + q2, 70, 220, 80).
+            q2 = q2 + 1.
+        FIN-DUM.
+        SI contactus == 1 TUNC
+            DECLARA cm SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, kx, ky, 45, 230, 50).
+        FIN-SI.
+        SI contactus == 4 TUNC
+            DECLARA cb SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, kx, ky, 80, 40, 230).
+        FIN-SI.
+    FIN-SI.
+
+    SI mineratio == 1 TUNC
+        x = 8.
+        DUM x < 212 PERFICE
+            DECLARA zm SICUT NUMERUS VALENS ATMOS_VII_PIXEL(pixels, w, h, x, 406, 40, 170, 50).
+            x = x + 1.
+        FIN-DUM.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VII_HUD REDDENS NUMERUS.
+    ACCIPIT ctx SICUT NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT mineratio SICUT NUMERUS.
+    ACCIPIT cw SICUT NUMERUS.
+    ACCIPIT ch SICUT NUMERUS.
+    DECLARA ig SICUT NUMERUS VALENS WINAPP_TEXTUS_MODUS(ctx, hdc, 6091336).
+    DECLARA sx SICUT NUMERUS VALENS cw / 640.
+    DECLARA sy SICUT NUMERUS VALENS ch / 440.
+    SI sx < 1 TUNC sx = 1. FIN-SI.
+    SI sy < 1 TUNC sy = 1. FIN-SI.
+    DECLARA x0 SICUT NUMERUS VALENS (18 * cw) / 640.
+    DECLARA y0 SICUT NUMERUS VALENS (16 * ch) / 440.
+    ig = WINAPP_TEXTUS(ctx, hdc, x0, y0, "ATMOS // TERMINAL DEPTH — SONAR RESTITUTIO").
+    DECLARA t SICUT TEXTUS VALENS "POS X " + TEXTUS_EX_NUMERO_DECIMALI(NAVIGATIO_X(n)).
+    t = t + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(NAVIGATIO_Y(n)). ig = WINAPP_TEXTUS(ctx, hdc, x0, (48 * ch) / 440, t).
+    t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8)) + " m". ig = WINAPP_TEXTUS(ctx, hdc, x0, (72 * ch) / 440, t).
+    t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16)). ig = WINAPP_TEXTUS(ctx, hdc, x0, (104 * ch) / 440, t).
+    t = "ENERGY " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)). ig = WINAPP_TEXTUS(ctx, hdc, x0, (128 * ch) / 440, t).
+    t = "HULL " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)). ig = WINAPP_TEXTUS(ctx, hdc, x0, (152 * ch) / 440, t).
+    t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)). ig = WINAPP_TEXTUS(ctx, hdc, x0, (184 * ch) / 440, t).
+    t = "CONTACT " + ATMOS_VII_CONTACTUS_NOMEN(CONTENTUM(m + 32)). ig = WINAPP_TEXTUS(ctx, hdc, x0, (216 * ch) / 440, t).
+    SI NAVIGATIO_ITER(n) == 1 TUNC ig = WINAPP_TEXTUS(ctx, hdc, x0, (248 * ch) / 440, "STATUS EN ROUTE"). FIN-SI.
+    SI NAVIGATIO_ITER(n) == 0 TUNC ig = WINAPP_TEXTUS(ctx, hdc, x0, (248 * ch) / 440, "STATUS NAVIGATION READY"). FIN-SI.
+    SI mineratio == 1 TUNC ig = WINAPP_TEXTUS(ctx, hdc, x0, (280 * ch) / 440, "MINING ACTIVE"). FIN-SI.
+    ig = WINAPP_TEXTUS(ctx, hdc, (260 * cw) / 640, (18 * ch) / 440, "SONAR — CLICK TO NAVIGATE").
+    ig = WINAPP_TEXTUS(ctx, hdc, (250 * cw) / 640, (414 * ch) / 440, "CLICK MINERAL = APPROACH + EXTRACT   ESC = EXIT").
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+    DECLARA s SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    DECLARA m SICUT NUMERUS VALENS RESERVA_OCTETA(72).
+    DECLARA n SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI s <= 0 || m <= 0 || n <= 0 TUNC REDDE 70. FIN-SI.
+    SI ATMOS_CARICA(s) == 0 TUNC SI ATMOS_INIT(s) == 0 TUNC REDDE 71. FIN-SI. FIN-SI.
+    SI MUNDUS_CARICA(m) == 0 TUNC SI MUNDUS_INIT(m) == 0 TUNC REDDE 72. FIN-SI. FIN-SI.
+    SI NAVIGATIO_INIT(n) == 0 TUNC REDDE 73. FIN-SI.
+    CONTENTUM(n + 0) = CONTENTUM(m) * 560.
+    CONTENTUM(n + 8) = CONTENTUM(m + 8) * 560.
+    DECLARA syn SICUT NUMERUS VALENS ATMOS_VII_MUNDUS_SYNC(s, m, n, 0).
+    SI syn == 0 TUNC REDDE 74. FIN-SI.
+
+    DECLARA smoke SICUT NUMERUS VALENS 0.
+    SI argc >= 2 TUNC smoke = 1. FIN-SI.
+    SI smoke == 1 TUNC
+        DECLARA nd SICUT NUMERUS VALENS NAVIGATIO_SONAR_DESTINATIO(n, 610, 220, 440, 220, 170).
+        DECLARA g SICUT NUMERUS VALENS 0.
+        DECLARA mov SICUT NUMERUS VALENS 1.
+        DUM mov == 1 PERFICE mov = NAVIGATIO_GRADUS(n). g = g + 1. SI mov == 2 TUNC mov = 0. FIN-SI. FIN-DUM.
+        syn = ATMOS_VII_MUNDUS_SYNC(s, m, n, 1).
+        SI NAVIGATIO_X(n) <= 0 || CONTENTUM(s + 8) < 600 TUNC REDDE 75. FIN-SI.
+    FIN-SI.
+
+    DECLARA ctx SICUT NUMERUS VALENS WINAPP_CONTEXUS_CREA().
+    DECLARA stab SICUT NUMERUS VALENS ATMOS_WIN_STAB_CREA().
+    SI ctx == 0 || stab == 0 TUNC REDDE 80. FIN-SI.
+    DECLARA hwnd SICUT NUMERUS VALENS ATMOS_WIN_FENESTRA_VERA(stab, "ATMOS // TERMINAL DEPTH — SONAR RESTITUTIO", 920, 700).
+    SI hwnd == 0 TUNC REDDE 81. FIN-SI.
+    DECLARA hdc SICUT NUMERUS VALENS WINAPP_HDC_CAPE(ctx, hwnd).
+    SI hdc == 0 TUNC REDDE 82. FIN-SI.
+
+    DECLARA w SICUT NUMERUS VALENS 640.
+    DECLARA h SICUT NUMERUS VALENS 440.
+    DECLARA pixels SICUT NUMERUS VALENS RESERVA_OCTETA(w * h * 4).
+    DECLARA bmi SICUT NUMERUS VALENS WINAPP_BITMAPINFO_CREA(w, h).
+    DECLARA superficie SICUT NUMERUS VALENS WINAPP_SUPERFICIES_CREA(pixels, bmi, w, h).
+    DECLARA msg SICUT NUMERUS VALENS RESERVA_OCTETA(48).
+    DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    DECLARA rect SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    SI pixels <= 0 || bmi <= 0 || superficie <= 0 || msg <= 0 || point <= 0 || rect <= 0 TUNC REDDE 83. FIN-SI.
+
+    DECLARA cw SICUT NUMERUS VALENS 640.
+    DECLARA ch SICUT NUMERUS VALENS 440.
+    SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) != 0 TUNC
+        cw = MEM_I32_LEGE_VII(rect, 8).
+        ch = MEM_I32_LEGE_VII(rect, 12).
+    FIN-SI.
+    SI cw <= 0 TUNC cw = 640. FIN-SI. SI ch <= 0 TUNC ch = 440. FIN-SI.
+    DECLARA dest SICUT NUMERUS VALENS WINAPP_SUPERFICIES_DESTINATIO(superficie, hdc, cw, ch).
+    DECLARA mineratio SICUT NUMERUS VALENS 0.
+    DECLARA target SICUT NUMERUS VALENS 0.
+    DECLARA pictum SICUT NUMERUS VALENS ATMOS_VII_FRAME(pixels, w, h, s, m, n, mineratio).
+    DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficie).
+    DECLARA hud SICUT NUMERUS VALENS ATMOS_VII_HUD(ctx, hdc, s, m, n, mineratio, cw, ch).
+
+    SI smoke == 0 TUNC
+        DECLARA ost SICUT NUMERUS VALENS WINAPP_FENESTRA_OSTENDE(ctx, hwnd).
+        DECLARA currens SICUT NUMERUS VALENS 1.
+        DECLARA mus_ante SICUT NUMERUS VALENS 0.
+        DECLARA tick SICUT NUMERUS VALENS 0.
+        DUM currens == 1 PERFICE
+            DECLARA qmsg SICUT NUMERUS VALENS 1.
+            DUM qmsg != 0 PERFICE
+                qmsg = WINAPP_NUNTIUM_CAPE(ctx, msg).
+                SI qmsg != 0 TUNC DECLARA disp SICUT NUMERUS VALENS WINAPP_NUNTIUM_DISPATCH(ctx, msg). FIN-SI.
+            FIN-DUM.
+            SI WINAPP_VIVIT(ctx, hwnd) == 0 TUNC currens = 0. FIN-SI.
+            SI currens == 1 TUNC
+                SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) != 0 TUNC
+                    cw = MEM_I32_LEGE_VII(rect, 8).
+                    ch = MEM_I32_LEGE_VII(rect, 12).
+                    SI cw > 0 && ch > 0 TUNC dest = WINAPP_SUPERFICIES_DESTINATIO(superficie, hdc, cw, ch). FIN-SI.
+                FIN-SI.
+
+                SI ATMOS_WIN_ACTIVA(stab, hwnd) != 0 TUNC
+                    SI (WINAPP_CLAVIS(ctx, 27) & 32768) != 0 TUNC currens = 0. FIN-SI.
+                    DECLARA mus_nunc SICUT NUMERUS VALENS WINAPP_CLAVIS(ctx, 1) & 32768.
+                    SI mus_nunc != 0 && mus_ante == 0 TUNC
+                        SI WINAPP_CURSOR_CAPE(ctx, point) != 0 && WINAPP_SCREEN_AD_CLIENT(ctx, hwnd, point) != 0 TUNC
+                            DECLARA mx SICUT NUMERUS VALENS MEM_I32_LEGE_VII(point, 0).
+                            DECLARA my SICUT NUMERUS VALENS MEM_I32_LEGE_VII(point, 4).
+                            SI cw > 0 && ch > 0 TUNC
+                                DECLARA lx SICUT NUMERUS VALENS (mx * 640) / cw.
+                                DECLARA ly SICUT NUMERUS VALENS (my * 440) / ch.
+                                SI lx >= 260 && lx <= 620 && ly >= 40 && ly <= 400 TUNC
+                                    mineratio = 0.
+                                    target = 0.
+                                    DECLARA kx SICUT NUMERUS VALENS ATMOS_VII_CONTACT_X(m).
+                                    DECLARA ky SICUT NUMERUS VALENS ATMOS_VII_CONTACT_Y(m).
+                                    DECLARA ddx SICUT NUMERUS VALENS NAVIGATIO_ABS(lx - kx).
+                                    DECLARA ddy SICUT NUMERUS VALENS NAVIGATIO_ABS(ly - ky).
+                                    SI ddx <= 14 && ddy <= 14 && CONTENTUM(m + 32) != 0 TUNC
+                                        DECLARA wx SICUT NUMERUS VALENS NAVIGATIO_X(n) + ((kx - 440) * CONTENTUM(n + 56)) / 170.
+                                        DECLARA wy SICUT NUMERUS VALENS NAVIGATIO_Y(n) + ((ky - 220) * CONTENTUM(n + 56)) / 170.
+                                        DECLARA ndc SICUT NUMERUS VALENS NAVIGATIO_DESTINATIO(n, wx, wy).
+                                        target = CONTENTUM(m + 32).
+                                    ALITER
+                                        DECLARA nds SICUT NUMERUS VALENS NAVIGATIO_SONAR_DESTINATIO(n, lx, ly, 440, 220, 170).
+                                    FIN-SI.
+                                FIN-SI.
+                            FIN-SI.
+                        FIN-SI.
+                    FIN-SI.
+                    mus_ante = mus_nunc.
+                ALITER
+                    mus_ante = 0.
+                FIN-SI.
+
+                DECLARA gradus SICUT NUMERUS VALENS NAVIGATIO_GRADUS(n).
+                tick = tick + 1.
+                SI gradus == 1 && (tick % 8) == 0 TUNC
+                    SI CONTENTUM(s + 24) > 0 TUNC CONTENTUM(s + 24) = CONTENTUM(s + 24) - 1. FIN-SI.
+                    SI CONTENTUM(s + 16) > 0 TUNC CONTENTUM(s + 16) = CONTENTUM(s + 16) - 1. FIN-SI.
+                    CONTENTUM(s + 8) = BATHY_PROFUNDITAS(NAVIGATIO_X(n), NAVIGATIO_Y(n), CONTENTUM(s + 56)).
+                FIN-SI.
+                SI gradus == 2 TUNC
+                    CONTENTUM(s) = CONTENTUM(s) + 1.
+                    syn = ATMOS_VII_MUNDUS_SYNC(s, m, n, 1).
+                    SI target == 1 TUNC mineratio = 1. FIN-SI.
+                    target = 0.
+                    DECLARA sv0 SICUT NUMERUS VALENS ATMOS_SALVA(s).
+                    DECLARA sv1 SICUT NUMERUS VALENS MUNDUS_SALVA(m).
+                FIN-SI.
+
+                SI mineratio == 1 && (tick % 18) == 0 TUNC
+                    SI CONTENTUM(s + 24) >= 1 && CONTENTUM(s + 16) >= 1 TUNC
+                        CONTENTUM(s + 48) = CONTENTUM(s + 48) + 1.
+                        CONTENTUM(s + 24) = CONTENTUM(s + 24) - 1.
+                        CONTENTUM(s + 16) = CONTENTUM(s + 16) - 1.
+                        CONTENTUM(s) = CONTENTUM(s) + 1.
+                        DECLARA svm SICUT NUMERUS VALENS ATMOS_SALVA(s).
+                    ALITER
+                        mineratio = 0.
+                    FIN-SI.
+                FIN-SI.
+
+                pictum = ATMOS_VII_FRAME(pixels, w, h, s, m, n, mineratio).
+                lineae = WINAPP_PRAESENTA(ctx, superficie).
+                hud = ATMOS_VII_HUD(ctx, hdc, s, m, n, mineratio, cw, ch).
+                DECLARA sl SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 33).
+            FIN-SI.
+        FIN-DUM.
+    FIN-SI.
+
+    DECLARA fin0 SICUT NUMERUS VALENS ATMOS_SALVA(s).
+    DECLARA fin1 SICUT NUMERUS VALENS MUNDUS_SALVA(m).
+    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).
+    SI WINAPP_VIVIT(ctx, hwnd) != 0 TUNC DECLARA del SICUT NUMERUS VALENS WINAPP_FENESTRA_DELE(ctx, hwnd). FIN-SI.
+    PROCLAMA "RECTE: ATMOS POC VII SONAR RESTITUTIO WIN64".
+    PROCLAMA NAVIGATIO_X(n).
+    PROCLAMA NAVIGATIO_Y(n).
+    PROCLAMA CONTENTUM(s + 8).
+    PROCLAMA CONTENTUM(s + 48).
+    PROCLAMA cw.
+    PROCLAMA ch.
+    REDDE 0.
+FIN-FUNCTIO.
