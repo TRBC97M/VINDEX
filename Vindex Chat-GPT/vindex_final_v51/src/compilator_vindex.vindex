@@ -1705,18 +1705,19 @@ FUNCTIO SIGNUM_VERBI REDDENS NUMERUS.
     REDDE signum.
 FIN-FUNCTIO.
 
+// Signum identificatoris sine tampone computatur, littera post litteram.
+// Correctio ex opere Claude #168 adoptata: tampon historicus XXXII octetorum
+// memoriam corrumpere poterat et nomina longa male resolvebat.
 FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
     ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
-    DECLARA verbum SICUT ORDO DE LITTERA CAPACITAS 32.
-    DECLARA mensura SICUT NUMERUS VALENS 0.
+    DECLARA signum SICUT NUMERUS VALENS 0.
     DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
-        SCRIBE_OCTETUM_AB(verbum + mensura, fons[CONTENTUM(pos)]).
-        mensura = mensura + 1.
+        signum = signum * 31 + fons[CONTENTUM(pos)].
         CONTENTUM(pos) = CONTENTUM(pos) + 1.
     FIN-DUM.
-    REDDE SIGNUM_VERBI(verbum, mensura).
+    REDDE signum.
 FIN-FUNCTIO.
 
 FUNCTIO COMPONE_SHL REDDENS NUMERUS.
@@ -5584,6 +5585,7 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                                             FIN-SI.
                                         ALITER
                                             CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+                                            ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
                                             ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
                                             CONTENTUM(pos_codicis) = COMPONE_SERVA_PILA(codex, CONTENTUM(pos_codicis), intervallum_aff, 0).
                                         FIN-SI.
@@ -6246,6 +6248,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i < n PERFICE
+        SI i + 1 < n && fons[i] == 47 && fons[i+1] == 47 TUNC
+            DUM i < n && fons[i] != 10 PERFICE
+                i = i + 1.
+            FIN-DUM.
+        ALITER
         SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC
             i = i + 8.
             DUM i < n && fons[i] != 46 PERFICE
@@ -6253,7 +6260,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             FIN-DUM.
             i = i + 1.
         ALITER
-        SI fons[i] == 70 && i + 1 < n && fons[i+1] == 79 TUNC
+        SI fons[i] == 70 && i + 5 < n && fons[i+1] == 79 && fons[i+2] == 82 && fons[i+3] == 77 && fons[i+4] == 65 && fons[i+5] == 32 TUNC
             i = i + 6.
             DECLARA nomen_forma SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).
             DUM i < n && fons[i] != 46 PERFICE
@@ -6616,6 +6623,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             FIN-SI.
         ALITER
             i = i + 1.
+        FIN-SI.
         FIN-SI.
         FIN-SI.
         FIN-SI.
