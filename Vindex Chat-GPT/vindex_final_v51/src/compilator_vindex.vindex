@@ -2806,6 +2806,9 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
     SI fons[CONTENTUM(pos_fontis)] == 87 && fons[CONTENTUM(pos_fontis)+1] == 73 && fons[CONTENTUM(pos_fontis)+2] == 78 && fons[CONTENTUM(pos_fontis)+3] == 95 && fons[CONTENTUM(pos_fontis)+4] == 68 && fons[CONTENTUM(pos_fontis)+5] == 76 && fons[CONTENTUM(pos_fontis)+6] == 76 && fons[CONTENTUM(pos_fontis)+7] == 95 && fons[CONTENTUM(pos_fontis)+8] == 65 && fons[CONTENTUM(pos_fontis)+9] == 80 && fons[CONTENTUM(pos_fontis)+10] == 69 && fons[CONTENTUM(pos_fontis)+11] == 82 && fons[CONTENTUM(pos_fontis)+12] == 73 && fons[CONTENTUM(pos_fontis)+13] == 40 TUNC
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 14.
         DECLARA ig_dll SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        // P11-C — TEXTUS descriptor ad LPCSTR: basis octetorum est + XVI.
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 1, 16).
+        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 0, 1).
         ig_dll = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 1, 0).
@@ -2821,6 +2824,8 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         ig_sym = IGNORA_SPATIA(fons, pos_fontis, n).
         ig_sym = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_ONERA(codex, CONTENTUM(pos_codicis), 2, 16).
+        CONTENTUM(pos_codicis) = COMPONE_ADD(codex, CONTENTUM(pos_codicis), 0, 2).
         CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 2, 0).
         CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 1).
         ig_sym = IGNORA_SPATIA(fons, pos_fontis, n).
