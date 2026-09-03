@@ -54,6 +54,6 @@ jobs:
         run: |
           $ErrorActionPreference = 'Stop'
           Set-Location (Resolve-Path '.\atmos')
-          $p = Start-Process -FilePath '.\ATMOS_NATIVUM.exe' -ArgumentList 'smoke' -Wait -PassThru
+          $p = Start-Process -FilePath '.\ATMOS_NATIVUM.exe' -ArgumentList 'smoke','quiet' -Wait -PassThru
           if ($p.ExitCode -ne 0) { throw "ATMOS GUI exitus $($p.ExitCode)" }
           Write-Host 'RECTE: ATMOS NATIVUM GUI sub Windows sine processu console probatum est.'
