@@ -23,7 +23,8 @@ FUNCTIO MSX64_ARGUMENTA_VACUA REDDENS NUMERUS.
     ACCIPIT argumenta SICUT ACUS<NUMERUS>.
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i < 16 PERFICE
-        CONTENTUM(argumenta + i * 8) = 0.
+        // ACUS<NUMERUS> arithmeticam typatam habet: + i iam i * VIII octeta significat.
+        CONTENTUM(argumenta + i) = 0.
         i = i + 1.
     FIN-DUM.
     REDDE argumenta.
