@@ -1,5 +1,6 @@
 name: VINDEX — ATMOS Terminal Depth POC II
 
+# P11-B: una sessio stdin vera; hic workflow est auctoritas certificationis POC II.
 on:
   workflow_dispatch:
   pull_request:
