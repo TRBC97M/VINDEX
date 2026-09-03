@@ -1,22 +1,33 @@
 IMPORTA "bibliotheca/textus.vindex".
 IMPORTA "bibliotheca/conversio.vindex".
 
-// Regressio ex ATMOS POC V: descriptor TEXTUS ex concatenatione dynamica
-// debet manere validus sub ELF et PE Win64, etiam ut operandum alterius +.
+// Regressio ex ATMOS POC V: descriptor TEXTUS dynamicus debet non solum
+// longitudinem sed etiam octeta recta sub ELF et PE Win64 continere.
+FUNCTIO OSTENDE_PRIMUM REDDENS NUMERUS.
+    ACCIPIT t SICUT TEXTUS.
+    DECLARA b SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(t).
+    PROCLAMA LONGITUDO(t).
+    PROCLAMA OCTETUS_AB(b).
+    PROCLAMA OCTETUS_AB(b + 1).
+    PROCLAMA OCTETUS_AB(b + 2).
+    REDDE b.
+FIN-FUNCTIO.
+
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA numerus SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(120).
     PROCLAMA "N0".
-    PROCLAMA LONGITUDO(numerus).
-    PROCLAMA numerus.
+    DECLARA bn SICUT NUMERUS VALENS OSTENDE_PRIMUM(numerus).
 
     DECLARA primus SICUT TEXTUS VALENS "DEPTH " + numerus.
     PROCLAMA "C0".
-    PROCLAMA LONGITUDO(primus).
-    PROCLAMA primus.
+    DECLARA bp SICUT NUMERUS VALENS OSTENDE_PRIMUM(primus).
 
     DECLARA secundus SICUT TEXTUS VALENS primus + " m".
     PROCLAMA "C1".
-    PROCLAMA LONGITUDO(secundus).
-    PROCLAMA secundus.
+    DECLARA bs SICUT NUMERUS VALENS OSTENDE_PRIMUM(secundus).
+
+    PROCLAMA bn.
+    PROCLAMA bp.
+    PROCLAMA bs.
     REDDE 0.
 FIN-FUNCTIO.
