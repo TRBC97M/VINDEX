@@ -1,5 +1,6 @@
 // P11-E — regressio functionis ordinariae cum VIII argumentis.
 // Distinctio positionum: OCTO(1,2,3,4,5,6,7,8) = 87654321.
+// Custodit simul callerem et callee: VII est [rbp+16], VIII [rbp+24].
 
 FUNCTIO OCTO REDDENS NUMERUS.
     ACCIPIT a SICUT NUMERUS.
