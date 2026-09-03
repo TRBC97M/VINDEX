@@ -60,9 +60,9 @@ Versio interactiva addit:
 - cyclum circiter LX tabularum per secundum cum `Sleep(16)`.
 
 Mus in coordinatas framebuffer 320×180 convertitur et crucem viridem radarensem
-movet. Escape vel clausura fenestrae cyclum terminat. Modus `smoke` APIs inputus
-et eventorum sine interactione humana exercet, ideo CI regressiones huius
-contractus deprehendere potest.
+movet. Escape vel clausura fenestrae cyclum terminat. Modus `smoke` easdem APIs
+inputus/eventorum exercet; lectura cursoris vel conversio ad clientem si deficit,
+probatio statim cum statu non-nullo desinit.
 
 ## Significatio
 
