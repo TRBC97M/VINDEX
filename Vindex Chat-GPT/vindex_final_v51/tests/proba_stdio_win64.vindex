@@ -1,5 +1,6 @@
 // P11-B — probatio contractus stdio Win64.
 // Verificat descriptor 0 ad LEGE et descriptor 1 ad MITTE sub PE32+.
+// Contractus portabilis: 0 = stdin, 1 = stdout etiam sub Win64.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA n SICUT NUMERUS VALENS LEGE(0, 64).
