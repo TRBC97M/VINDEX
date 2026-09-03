@@ -279,10 +279,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             DESINE.
         FIN-SI.
         SI n < 0 TUNC PROCLAMA "ERRATUM: stdin lectio". REDDE 76. FIN-SI.
-        SI n == 0 TUNC PERGE. FIN-SI.
 
         DECLARA tractatum SICUT NUMERUS VALENS 0.
         DECLARA mutatum SICUT NUMERUS VALENS 0.
+        SI n == 0 TUNC tractatum = 1. FIN-SI.
 
         SI STDIO_AEQUA(linea, n, c_status, 6) == 1 TUNC
             DECLARA visus SICUT NUMERUS VALENS ATMOS2_STATUS(status).
