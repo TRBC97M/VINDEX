@@ -1,0 +1,442 @@
+// ATMOS // TERMINAL DEPTH — Probatio applicationis VINDEX I.
+//
+// Applicatio exemplaris ecosystematis VINDEX, non pars Sylvia OS.
+// Probat PE32+ Win64, argc/argv, memoriam directam, I/O fasciculorum,
+// simulationem determinatam et statum persistentem sine HTML/JavaScript.
+//
+// Forma memoriae status (X verba NUMERUS, LXXX octeta):
+// +0  cyclus
+// +8  profunditas metris
+// +16 oxygenium
+// +24 energia
+// +32 integritas
+// +40 credita
+// +48 minera
+// +56 semen
+// +64 x sectoris (reservatum ad motum futurum)
+// +72 y sectoris (reservatum ad motum futurum)
+//
+// Fasciculus atmos.sav:
+// 0..3  "ATD1"
+// 4     versio 1
+// 5..7  reservata
+// 8..47 decem valores u32 little-endian.
+
+FUNCTIO ATMOS_INIT REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(s) = 0.
+    CONTENTUM(s + 8) = 120.
+    CONTENTUM(s + 16) = 100.
+    CONTENTUM(s + 24) = 100.
+    CONTENTUM(s + 32) = 100.
+    CONTENTUM(s + 40) = 250.
+    CONTENTUM(s + 48) = 0.
+    CONTENTUM(s + 56) = 7319.
+    CONTENTUM(s + 64) = 0.
+    CONTENTUM(s + 72) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_CARICA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    DECLARA fd SICUT NUMERUS VALENS APERI_LEGERE("atmos.sav").
+    SI fd < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LEGE(fd, 48).
+    DECLARA clausum SICUT NUMERUS VALENS CLAUDE(fd).
+    SI n != 48 TUNC REDDE 0. FIN-SI.
+    SI OCTETUS(0) != 65 || OCTETUS(1) != 84 || OCTETUS(2) != 68 || OCTETUS(3) != 49 TUNC
+        REDDE 0.
+    FIN-SI.
+    SI OCTETUS(4) != 1 TUNC REDDE 0. FIN-SI.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 10 PERFICE
+        DECLARA p SICUT NUMERUS VALENS 8 + i * 4.
+        DECLARA v SICUT NUMERUS VALENS OCTETUS(p).
+        v = v + OCTETUS(p + 1) * 256.
+        v = v + OCTETUS(p + 2) * 65536.
+        v = v + OCTETUS(p + 3) * 16777216.
+        CONTENTUM(s + i * 8) = v.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_SALVA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    DECLARA salva SICUT ORDO DE LITTERA CAPACITAS 48.
+    salva[0] = 65.
+    salva[1] = 84.
+    salva[2] = 68.
+    salva[3] = 49.
+    salva[4] = 1.
+    salva[5] = 0.
+    salva[6] = 0.
+    salva[7] = 0.
+
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 10 PERFICE
+        DECLARA v SICUT NUMERUS VALENS CONTENTUM(s + i * 8).
+        DECLARA p SICUT NUMERUS VALENS 8 + i * 4.
+        salva[p] = v & 255.
+        salva[p + 1] = (v >> 8) & 255.
+        salva[p + 2] = (v >> 16) & 255.
+        salva[p + 3] = (v >> 24) & 255.
+        i = i + 1.
+    FIN-DUM.
+
+    DECLARA fd SICUT NUMERUS VALENS APERI_SCRIBERE("atmos.sav").
+    SI fd < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA scriptum SICUT NUMERUS VALENS MITTE(fd, salva, 48).
+    DECLARA clausum SICUT NUMERUS VALENS CLAUDE(fd).
+    SI scriptum != 48 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_STATUS REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    PROCLAMA "=== ATMOS // TERMINAL DEPTH ===".
+    PROCLAMA "VINDEX PROOF OF CONCEPT I".
+    PROCLAMA "CYCLE".
+    PROCLAMA CONTENTUM(s).
+    PROCLAMA "DEPTH_M".
+    PROCLAMA CONTENTUM(s + 8).
+    PROCLAMA "OXYGEN".
+    PROCLAMA CONTENTUM(s + 16).
+    PROCLAMA "ENERGY".
+    PROCLAMA CONTENTUM(s + 24).
+    PROCLAMA "HULL".
+    PROCLAMA CONTENTUM(s + 32).
+    PROCLAMA "CREDITS".
+    PROCLAMA CONTENTUM(s + 40).
+    PROCLAMA "ORE".
+    PROCLAMA CONTENTUM(s + 48).
+    PROCLAMA "WORLD_SEED".
+    PROCLAMA CONTENTUM(s + 56).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_AUXILIUM REDDENS NUMERUS.
+    PROCLAMA "COMMANDS".
+    PROCLAMA "  new      reset the expedition".
+    PROCLAMA "  status   show persistent state".
+    PROCLAMA "  scan     spend resources for a deterministic sonar contact".
+    PROCLAMA "  descend  go 150 m deeper".
+    PROCLAMA "  ascend   go 150 m toward the surface".
+    PROCLAMA "  mine     extract ore".
+    PROCLAMA "  trade    sell all ore near the surface".
+    PROCLAMA "  repair   spend credits to repair the hull".
+    PROCLAMA "  help     show this help".
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_NEW REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 110 && OCTETUS_AB(p + 1) == 101 && OCTETUS_AB(p + 2) == 119 && OCTETUS_AB(p + 3) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_STATUS REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 115 && OCTETUS_AB(p + 1) == 116 && OCTETUS_AB(p + 2) == 97 && OCTETUS_AB(p + 3) == 116 && OCTETUS_AB(p + 4) == 117 && OCTETUS_AB(p + 5) == 115 && OCTETUS_AB(p + 6) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_SCAN REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 115 && OCTETUS_AB(p + 1) == 99 && OCTETUS_AB(p + 2) == 97 && OCTETUS_AB(p + 3) == 110 && OCTETUS_AB(p + 4) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_DESCEND REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 100 && OCTETUS_AB(p + 1) == 101 && OCTETUS_AB(p + 2) == 115 && OCTETUS_AB(p + 3) == 99 && OCTETUS_AB(p + 4) == 101 && OCTETUS_AB(p + 5) == 110 && OCTETUS_AB(p + 6) == 100 && OCTETUS_AB(p + 7) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_ASCEND REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 97 && OCTETUS_AB(p + 1) == 115 && OCTETUS_AB(p + 2) == 99 && OCTETUS_AB(p + 3) == 101 && OCTETUS_AB(p + 4) == 110 && OCTETUS_AB(p + 5) == 100 && OCTETUS_AB(p + 6) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_MINE REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 109 && OCTETUS_AB(p + 1) == 105 && OCTETUS_AB(p + 2) == 110 && OCTETUS_AB(p + 3) == 101 && OCTETUS_AB(p + 4) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_TRADE REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 116 && OCTETUS_AB(p + 1) == 114 && OCTETUS_AB(p + 2) == 97 && OCTETUS_AB(p + 3) == 100 && OCTETUS_AB(p + 4) == 101 && OCTETUS_AB(p + 5) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_REPAIR REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 114 && OCTETUS_AB(p + 1) == 101 && OCTETUS_AB(p + 2) == 112 && OCTETUS_AB(p + 3) == 97 && OCTETUS_AB(p + 4) == 105 && OCTETUS_AB(p + 5) == 114 && OCTETUS_AB(p + 6) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ARG_HELP REDDENS NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    REDDE OCTETUS_AB(p) == 104 && OCTETUS_AB(p + 1) == 101 && OCTETUS_AB(p + 2) == 108 && OCTETUS_AB(p + 3) == 112 && OCTETUS_AB(p + 4) == 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_EVENTUM REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    DECLARA profunditas SICUT NUMERUS VALENS CONTENTUM(s + 8).
+    SI profunditas <= 300 TUNC REDDE 0. FIN-SI.
+    DECLARA semen SICUT NUMERUS VALENS CONTENTUM(s + 56).
+    DECLARA cyclus SICUT NUMERUS VALENS CONTENTUM(s).
+    DECLARA eventum SICUT NUMERUS VALENS (semen * 97 + cyclus * 31 + profunditas * 7) % 100.
+
+    SI eventum < 4 TUNC
+        DECLARA integritas SICUT NUMERUS VALENS CONTENTUM(s + 32) - 7.
+        SI integritas < 0 TUNC integritas = 0. FIN-SI.
+        CONTENTUM(s + 32) = integritas.
+        PROCLAMA "EVENT: PRESSURE FRACTURE".
+        REDDE 1.
+    FIN-SI.
+
+    SI eventum >= 4 && eventum < 8 TUNC
+        CONTENTUM(s + 40) = CONTENTUM(s + 40) + 25.
+        PROCLAMA "EVENT: SALVAGE CACHE".
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_SCAN REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 24) < 3 || CONTENTUM(s + 16) < 1 TUNC
+        PROCLAMA "SCAN DENIED: INSUFFICIENT ENERGY/OXYGEN".
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 3.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 1.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+
+    DECLARA signum SICUT NUMERUS VALENS (CONTENTUM(s + 56) + CONTENTUM(s) * 17 + CONTENTUM(s + 8) * 11) % 100.
+    SI signum < 35 TUNC
+        PROCLAMA "SONAR: MINERAL FIELD".
+    FIN-SI.
+    SI signum >= 35 && signum < 60 TUNC
+        PROCLAMA "SONAR: STRUCTURE ECHO".
+    FIN-SI.
+    SI signum >= 60 && signum < 85 TUNC
+        PROCLAMA "SONAR: CONVOY TRACE".
+    FIN-SI.
+    SI signum >= 85 TUNC
+        PROCLAMA "SONAR: THE BELOW NOISE".
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_DESCENDE REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 24) < 8 || CONTENTUM(s + 16) < 6 TUNC
+        PROCLAMA "DESCENT DENIED: INSUFFICIENT ENERGY/OXYGEN".
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(s + 8) = CONTENTUM(s + 8) + 150.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 8.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 6.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    PROCLAMA "DESCENT COMPLETE".
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_ASCENDE REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 24) < 5 || CONTENTUM(s + 16) < 3 TUNC
+        PROCLAMA "ASCENT DENIED: INSUFFICIENT ENERGY/OXYGEN".
+        REDDE 0.
+    FIN-SI.
+    DECLARA nova SICUT NUMERUS VALENS CONTENTUM(s + 8) - 150.
+    SI nova < 0 TUNC nova = 0. FIN-SI.
+    CONTENTUM(s + 8) = nova.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 5.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 3.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    SI nova == 0 TUNC
+        CONTENTUM(s + 16) = 100.
+        DECLARA energia SICUT NUMERUS VALENS CONTENTUM(s + 24) + 10.
+        SI energia > 100 TUNC energia = 100. FIN-SI.
+        CONTENTUM(s + 24) = energia.
+        PROCLAMA "SURFACE LINK RESTORED".
+    ALITER
+        PROCLAMA "ASCENT COMPLETE".
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_MINERA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 8) < 100 TUNC
+        PROCLAMA "MINING DENIED: DEPTH TOO LOW".
+        REDDE 0.
+    FIN-SI.
+    SI CONTENTUM(s + 24) < 12 || CONTENTUM(s + 16) < 4 TUNC
+        PROCLAMA "MINING DENIED: INSUFFICIENT ENERGY/OXYGEN".
+        REDDE 0.
+    FIN-SI.
+    DECLARA lucrum SICUT NUMERUS VALENS 5 + ((CONTENTUM(s + 56) + CONTENTUM(s) + CONTENTUM(s + 8)) % 11).
+    CONTENTUM(s + 48) = CONTENTUM(s + 48) + lucrum.
+    CONTENTUM(s + 24) = CONTENTUM(s + 24) - 12.
+    CONTENTUM(s + 16) = CONTENTUM(s + 16) - 4.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    PROCLAMA "ORE EXTRACTED".
+    PROCLAMA lucrum.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_MERCATURA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 8) > 150 TUNC
+        PROCLAMA "TRADE DENIED: RETURN NEAR THE SURFACE".
+        REDDE 0.
+    FIN-SI.
+    SI CONTENTUM(s + 48) <= 0 TUNC
+        PROCLAMA "TRADE DENIED: NO ORE".
+        REDDE 0.
+    FIN-SI.
+    DECLARA pretium SICUT NUMERUS VALENS 8 + ((CONTENTUM(s + 56) + CONTENTUM(s)) % 5).
+    DECLARA minera SICUT NUMERUS VALENS CONTENTUM(s + 48).
+    CONTENTUM(s + 40) = CONTENTUM(s + 40) + minera * pretium.
+    CONTENTUM(s + 48) = 0.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    PROCLAMA "TRADE COMPLETE".
+    PROCLAMA "PRICE_PER_ORE".
+    PROCLAMA pretium.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_REPARA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 32) >= 100 TUNC
+        PROCLAMA "REPAIR DENIED: HULL ALREADY NOMINAL".
+        REDDE 0.
+    FIN-SI.
+    SI CONTENTUM(s + 40) < 40 TUNC
+        PROCLAMA "REPAIR DENIED: INSUFFICIENT CREDITS".
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(s + 40) = CONTENTUM(s + 40) - 40.
+    DECLARA integritas SICUT NUMERUS VALENS CONTENTUM(s + 32) + 20.
+    SI integritas > 100 TUNC integritas = 100. FIN-SI.
+    CONTENTUM(s + 32) = integritas.
+    CONTENTUM(s) = CONTENTUM(s) + 1.
+    PROCLAMA "HULL REPAIRED".
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_FINIS REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI CONTENTUM(s + 16) <= 0 TUNC
+        PROCLAMA "MISSION LOST: OXYGEN DEPLETED".
+        REDDE 1.
+    FIN-SI.
+    SI CONTENTUM(s + 24) <= 0 TUNC
+        PROCLAMA "MISSION LOST: ENERGY DEPLETED".
+        REDDE 1.
+    FIN-SI.
+    SI CONTENTUM(s + 32) <= 0 TUNC
+        PROCLAMA "MISSION LOST: HULL FAILURE".
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    SI status <= 0 TUNC
+        PROCLAMA "ERRATUM: memoria status deest".
+        REDDE 71.
+    FIN-SI.
+
+    DECLARA caricum SICUT NUMERUS VALENS ATMOS_CARICA(status).
+    SI caricum == 0 TUNC
+        DECLARA initium_automaticum SICUT NUMERUS VALENS ATMOS_INIT(status).
+        SI initium_automaticum == 0 TUNC REDDE 72. FIN-SI.
+        SI ATMOS_SALVA(status) == 0 TUNC
+            PROCLAMA "ERRATUM: save initialis scribi non potest".
+            REDDE 74.
+        FIN-SI.
+        PROCLAMA "NEW EXPEDITION CREATED".
+    FIN-SI.
+
+    SI argc < 2 TUNC
+        DECLARA aux_nullum SICUT NUMERUS VALENS ATMOS_AUXILIUM().
+        DECLARA visus_nullum SICUT NUMERUS VALENS ATMOS_STATUS(status).
+        REDDE 0.
+    FIN-SI.
+
+    DECLARA argumentum SICUT NUMERUS VALENS CONTENTUM(argv + 1).
+
+    SI ATMOS_ARG_NEW(argumentum) == 1 TUNC
+        DECLARA initium_novum SICUT NUMERUS VALENS ATMOS_INIT(status).
+        SI initium_novum == 0 TUNC REDDE 72. FIN-SI.
+        SI ATMOS_SALVA(status) == 0 TUNC REDDE 74. FIN-SI.
+        PROCLAMA "NEW EXPEDITION CREATED".
+        DECLARA visus_novum SICUT NUMERUS VALENS ATMOS_STATUS(status).
+        REDDE 0.
+    FIN-SI.
+
+    SI ATMOS_ARG_STATUS(argumentum) == 1 TUNC
+        DECLARA visus_status SICUT NUMERUS VALENS ATMOS_STATUS(status).
+        REDDE 0.
+    FIN-SI.
+
+    SI ATMOS_ARG_HELP(argumentum) == 1 TUNC
+        DECLARA aux_help SICUT NUMERUS VALENS ATMOS_AUXILIUM().
+        REDDE 0.
+    FIN-SI.
+
+    DECLARA mutatum SICUT NUMERUS VALENS 0.
+
+    SI ATMOS_ARG_SCAN(argumentum) == 1 TUNC
+        mutatum = ATMOS_SCAN(status).
+    ALITER
+        SI ATMOS_ARG_DESCEND(argumentum) == 1 TUNC
+            mutatum = ATMOS_DESCENDE(status).
+        ALITER
+            SI ATMOS_ARG_ASCEND(argumentum) == 1 TUNC
+                mutatum = ATMOS_ASCENDE(status).
+            ALITER
+                SI ATMOS_ARG_MINE(argumentum) == 1 TUNC
+                    mutatum = ATMOS_MINERA(status).
+                ALITER
+                    SI ATMOS_ARG_TRADE(argumentum) == 1 TUNC
+                        mutatum = ATMOS_MERCATURA(status).
+                    ALITER
+                        SI ATMOS_ARG_REPAIR(argumentum) == 1 TUNC
+                            mutatum = ATMOS_REPARA(status).
+                        ALITER
+                            PROCLAMA "UNKNOWN COMMAND".
+                            DECLARA aux_ignotum SICUT NUMERUS VALENS ATMOS_AUXILIUM().
+                            REDDE 64.
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-SI.
+
+    SI mutatum == 1 TUNC
+        DECLARA eventum_ig SICUT NUMERUS VALENS ATMOS_EVENTUM(status).
+        SI ATMOS_SALVA(status) == 0 TUNC
+            PROCLAMA "ERRATUM: save scribi non potest".
+            REDDE 74.
+        FIN-SI.
+    FIN-SI.
+
+    DECLARA visus_finalis SICUT NUMERUS VALENS ATMOS_STATUS(status).
+    DECLARA finis_ig SICUT NUMERUS VALENS ATMOS_FINIS(status).
+    REDDE 0.
+FIN-FUNCTIO.
