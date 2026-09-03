@@ -6204,6 +6204,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         SI fons[i] == 79 TUNC
                             est_series_pp = 2.
                         FIN-SI.
+                        SI fons[i] == 79 && i + 14 < n && fons[i+1] == 82 && fons[i+2] == 68 && fons[i+3] == 79 && fons[i+4] == 32 && fons[i+5] == 68 && fons[i+6] == 69 && fons[i+7] == 32 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 84 && fons[i+11] == 84 && fons[i+12] == 69 && fons[i+13] == 82 && fons[i+14] == 65 TUNC
+                            magnitudo_pp = 1.
+                        FIN-SI.
                         SI fons[i] == 65 && i + 4 < n && fons[i+1] == 67 && fons[i+2] == 85 && fons[i+3] == 83 && fons[i+4] == 60 TUNC
                             SI fons[i+5] == 76 TUNC
                                 magnitudo_pp = 1.
@@ -6366,6 +6369,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         FIN-SI.
                         SI fons[i] == 79 TUNC
                             est_series_param = 2.
+                        FIN-SI.
+                        SI fons[i] == 79 && i + 14 < n && fons[i+1] == 82 && fons[i+2] == 68 && fons[i+3] == 79 && fons[i+4] == 32 && fons[i+5] == 68 && fons[i+6] == 69 && fons[i+7] == 32 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 84 && fons[i+11] == 84 && fons[i+12] == 69 && fons[i+13] == 82 && fons[i+14] == 65 TUNC
+                            magnitudo_param = 1.
                         FIN-SI.
                         SI fons[i] == 70 && i + 7 < n && fons[i+1] == 76 && fons[i+2] == 85 && fons[i+3] == 73 && fons[i+4] == 84 && fons[i+5] == 65 && fons[i+6] == 78 && fons[i+7] == 83 TUNC
                             es_flot_param = 1.
