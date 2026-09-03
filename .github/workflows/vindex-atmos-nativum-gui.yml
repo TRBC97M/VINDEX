@@ -1,0 +1,59 @@
+name: VINDEX — ATMOS NATIVUM GUI
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-atmos-nativum-gui.yml'
+
+jobs:
+  genera-gui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ATMOS GUI ex VINDEX compila et subsystema confirma
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" ludus.vindex /tmp/ATMOS_NATIVUM.exe gui
+          file /tmp/ATMOS_NATIVUM.exe
+          objdump -p /tmp/ATMOS_NATIVUM.exe > /tmp/gui-pe.txt
+          grep -E 'Subsystem.*Windows GUI' /tmp/gui-pe.txt
+          if grep -Eiq 'DLL Name:.*(msvcrt|ucrtbase|vcruntime|mscoree|libstdc\+\+|libgcc|python|node)' /tmp/gui-pe.txt; then
+            echo 'ERRATUM: runtime alienum in GUI repertum est.'
+            exit 1
+          fi
+          echo 'RECTE: ATMOS est PE Windows GUI, nulla consola postulatur.'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-nativum-gui-purum-vindex
+          path: /tmp/ATMOS_NATIVUM.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  windows-gui:
+    needs: genera-gui
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-nativum-gui-purum-vindex
+          path: atmos
+
+      - name: Executabile GUI sine consola sub Windows exerce
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Set-Location (Resolve-Path '.\atmos')
+          $p = Start-Process -FilePath '.\ATMOS_NATIVUM.exe' -ArgumentList 'smoke' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "ATMOS GUI exitus $($p.ExitCode)" }
+          Write-Host 'RECTE: ATMOS NATIVUM GUI sub Windows sine processu console probatum est.'
