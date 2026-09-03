@@ -1,0 +1,403 @@
+// ATMOS // TERMINAL DEPTH — POC VI / Stabilitas I.
+//
+// Finis huius incrementi non est contentum novum, sed ludus qui humanitus
+// tractari potest: input ad frontes, focus, fenestra fixa, canvas 1:1,
+// feedback actionum et mus ad actiones.
+
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex".
+IMPORTA "../COMMUNE/nucleus.vindex".
+IMPORTA "../COMMUNE/mundus.vindex".
+IMPORTA "../COMMUNE/interactio.vindex".
+IMPORTA "../COMMUNE/win32_stabilitas.vindex".
+
+FUNCTIO MEM_I32_LEGE_VI REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS OCTETUS_AB(basis + off).
+    v = v | (OCTETUS_AB(basis + off + 1) << 8).
+    v = v | (OCTETUS_AB(basis + off + 2) << 16).
+    v = v | (OCTETUS_AB(basis + off + 3) << 24).
+    SI v >= 2147483648 TUNC v = v - 4294967296. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_GENUS_NOMEN REDDENS TEXTUS.
+    ACCIPIT genus SICUT NUMERUS.
+    SI genus == 1 TUNC REDDE "MINERAL RIDGE". FIN-SI.
+    SI genus == 2 TUNC REDDE "THERMAL VENT". FIN-SI.
+    SI genus == 3 TUNC REDDE "RUIN FIELD". FIN-SI.
+    SI genus == 4 TUNC REDDE "CONVOY LANE". FIN-SI.
+    SI genus == 5 TUNC REDDE "BELOW ANOMALY". FIN-SI.
+    REDDE "ABYSS".
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_CONTACTUS_NOMEN REDDENS TEXTUS.
+    ACCIPIT genus SICUT NUMERUS.
+    SI genus == 1 TUNC REDDE "MINERAL". FIN-SI.
+    SI genus == 2 TUNC REDDE "STRUCTURE". FIN-SI.
+    SI genus == 3 TUNC REDDE "CONVOY". FIN-SI.
+    SI genus == 4 TUNC REDDE "THE BELOW". FIN-SI.
+    REDDE "NONE".
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_FEEDBACK REDDENS TEXTUS.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI ATMOS_FINIS(s) == 1 TUNC REDDE "MISSION FAILED — ESC TO EXIT". FIN-SI.
+    DECLARA a SICUT NUMERUS VALENS INTERACTIO_ACTIO(i).
+    DECLARA r SICUT NUMERUS VALENS INTERACTIO_EXITUS(i).
+    SI a == 0 TUNC REDDE "SYSTEM READY". FIN-SI.
+    SI r < 0 TUNC REDDE "SAVE ERROR". FIN-SI.
+    SI r == 0 TUNC REDDE "ACTION REJECTED". FIN-SI.
+    SI a == 1 TUNC REDDE "SONAR UPDATED". FIN-SI.
+    SI a == 2 TUNC REDDE "DESCENT COMPLETE". FIN-SI.
+    SI a == 3 TUNC REDDE "ASCENT COMPLETE". FIN-SI.
+    SI a == 4 TUNC REDDE "MINING COMPLETE". FIN-SI.
+    SI a == 5 TUNC REDDE "TRADE COMPLETE". FIN-SI.
+    SI a == 6 TUNC REDDE "REPAIR COMPLETE". FIN-SI.
+    SI a >= 10 TUNC REDDE "SECTOR CHANGED". FIN-SI.
+    REDDE "ACTION COMPLETE".
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_SCAN_NOMEN REDDENS TEXTUS.
+    ACCIPIT s SICUT NUMERUS.
+    DECLARA c SICUT NUMERUS VALENS CONTENTUM(s + 64).
+    SI c == 1 TUNC REDDE "MINERAL". FIN-SI.
+    SI c == 2 TUNC REDDE "STRUCTURE". FIN-SI.
+    SI c == 3 TUNC REDDE "CONVOY". FIN-SI.
+    SI c == 4 TUNC REDDE "THE BELOW". FIN-SI.
+    REDDE "NONE".
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_REGENERA REDDENS NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    REDDE MUNDUS_SECTOR_GENERA(m, CONTENTUM(s + 56), CONTENTUM(s + 8)).
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_ACTIO_EXEC REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA r SICUT NUMERUS VALENS ATMOS_ACTIO(s, codex).
+    DECLARA fb SICUT NUMERUS VALENS INTERACTIO_EVENTUM(i, codex, r).
+    SI r == 1 TUNC DECLARA g SICUT NUMERUS VALENS ATMOS_VI_REGENERA(m, s). FIN-SI.
+    REDDE r.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_NAVIGA_EXEC REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA r SICUT NUMERUS VALENS MUNDUS_NAVIGA(m, s, dx, dy).
+    DECLARA fb SICUT NUMERUS VALENS INTERACTIO_EVENTUM(i, codex, r).
+    REDDE r.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_FRAME_PINGE REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT ui SICUT NUMERUS.
+
+    DECLARA genus SICUT NUMERUS VALENS CONTENTUM(m + 24).
+    DECLARA contactus SICUT NUMERUS VALENS CONTENTUM(m + 32).
+    DECLARA cx SICUT NUMERUS VALENS 340 + ((CONTENTUM(m + 40) - 175) * 270) / 117.
+    DECLARA cy SICUT NUMERUS VALENS 80 + ((CONTENTUM(m + 48) - 26) * 210) / 114.
+    DECLARA divitiae SICUT NUMERUS VALENS CONTENTUM(m + 56).
+    DECLARA periculum SICUT NUMERUS VALENS CONTENTUM(m + 64).
+    DECLARA oxy SICUT NUMERUS VALENS CONTENTUM(s + 16).
+    DECLARA ene SICUT NUMERUS VALENS CONTENTUM(s + 24).
+    DECLARA hull SICUT NUMERUS VALENS CONTENTUM(s + 32).
+    SI oxy < 0 TUNC oxy = 0. FIN-SI. SI oxy > 100 TUNC oxy = 100. FIN-SI.
+    SI ene < 0 TUNC ene = 0. FIN-SI. SI ene > 100 TUNC ene = 100. FIN-SI.
+    SI hull < 0 TUNC hull = 0. FIN-SI. SI hull > 100 TUNC hull = 100. FIN-SI.
+    DECLARA lim_oxy SICUT NUMERUS VALENS 36 + (oxy * 224) / 100.
+    DECLARA lim_ene SICUT NUMERUS VALENS 36 + (ene * 224) / 100.
+    DECLARA lim_hull SICUT NUMERUS VALENS 36 + (hull * 224) / 100.
+    DECLARA lim_rich SICUT NUMERUS VALENS 352 + (divitiae * 232) / 100.
+    DECLARA ultima SICUT NUMERUS VALENS INTERACTIO_ACTIO(ui).
+    DECLARA exitus SICUT NUMERUS VALENS INTERACTIO_EXITUS(ui).
+
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y < h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x < w PERFICE
+            DECLARA b SICUT NUMERUS VALENS 7.
+            DECLARA g SICUT NUMERUS VALENS 17.
+            DECLARA r SICUT NUMERUS VALENS 6.
+            SI genus == 1 TUNC b = 10. g = 24. r = 8. FIN-SI.
+            SI genus == 2 TUNC b = 18. g = 19. r = 7. FIN-SI.
+            SI genus == 3 TUNC b = 13. g = 18. r = 13. FIN-SI.
+            SI genus == 4 TUNC b = 18. g = 22. r = 7. FIN-SI.
+            SI genus == 5 TUNC b = 21. g = 8. r = 22. FIN-SI.
+            SI (y % 4) == 0 TUNC g = g + 6. FIN-SI.
+
+            SI x == 316 && y >= 12 && y <= 386 TUNC b = 34. g = 90. r = 24. FIN-SI.
+
+            // Radar stabilis, sine scaling inter framebuffer et HUD.
+            SI x >= 332 && x <= 620 && y >= 80 && y <= 290 TUNC
+                SI x == 476 || y == 185 TUNC b = 26. g = 82. r = 18. FIN-SI.
+                DECLARA dx SICUT NUMERUS VALENS x - 476.
+                DECLARA dy SICUT NUMERUS VALENS y - 185.
+                SI dx < 0 TUNC dx = 0 - dx. FIN-SI.
+                SI dy < 0 TUNC dy = 0 - dy. FIN-SI.
+                DECLARA d SICUT NUMERUS VALENS dx + dy.
+                SI d == 72 || d == 112 TUNC b = 22. g = 66. r = 16. FIN-SI.
+            FIN-SI.
+
+            SI y >= 96 && y < 110 && x >= 36 && x < 260 TUNC
+                b = 16. g = 38. r = 12.
+                SI x < lim_oxy TUNC b = 42. g = 210. r = 40. FIN-SI.
+            FIN-SI.
+            SI y >= 138 && y < 152 && x >= 36 && x < 260 TUNC
+                b = 16. g = 38. r = 12.
+                SI x < lim_ene TUNC b = 35. g = 170. r = 38. FIN-SI.
+            FIN-SI.
+            SI y >= 180 && y < 194 && x >= 36 && x < 260 TUNC
+                b = 16. g = 38. r = 12.
+                SI x < lim_hull TUNC b = 48. g = 222. r = 46. FIN-SI.
+            FIN-SI.
+            SI y >= 322 && y < 336 && x >= 352 && x < 584 TUNC
+                b = 18. g = 38. r = 14.
+                SI x < lim_rich TUNC b = 32. g = 150. r = 35. FIN-SI.
+            FIN-SI.
+
+            SI contactus != 0 && x >= cx - 6 && x <= cx + 6 && y >= cy - 6 && y <= cy + 6 TUNC
+                b = 42. g = 230. r = 44.
+                SI contactus == 2 TUNC b = 185. g = 205. r = 46. FIN-SI.
+                SI contactus == 3 TUNC b = 225. g = 185. r = 40. FIN-SI.
+                SI contactus == 4 TUNC b = 72. g = 48. r = 230. FIN-SI.
+            FIN-SI.
+
+            // Sex bullae actionum, etiam mure cliccabiles.
+            SI y >= 396 && y < 434 TUNC
+                DECLARA act SICUT NUMERUS VALENS 0.
+                SI x >= 20 && x < 110 TUNC act = 1. FIN-SI.
+                SI x >= 120 && x < 210 TUNC act = 2. FIN-SI.
+                SI x >= 220 && x < 310 TUNC act = 3. FIN-SI.
+                SI x >= 330 && x < 420 TUNC act = 4. FIN-SI.
+                SI x >= 430 && x < 520 TUNC act = 5. FIN-SI.
+                SI x >= 530 && x < 620 TUNC act = 6. FIN-SI.
+                SI act != 0 TUNC
+                    b = 20. g = 52. r = 18.
+                    SI ultima == act && exitus == 1 TUNC b = 38. g = 122. r = 34. FIN-SI.
+                    SI ultima == act && exitus == 0 TUNC b = 30. g = 48. r = 145. FIN-SI.
+                    SI ultima == act && exitus < 0 TUNC b = 24. g = 28. r = 210. FIN-SI.
+                FIN-SI.
+            FIN-SI.
+
+            SI periculum >= 70 && (x <= 5 || x >= w - 6 || y <= 5 || y >= h - 6) TUNC
+                b = 24. g = 34. r = 215.
+            FIN-SI.
+
+            DECLARA p SICUT NUMERUS VALENS ((y * w) + x) * 4.
+            SCRIBE_OCTETUM_AB(pixels + p, b).
+            SCRIBE_OCTETUM_AB(pixels + p + 1, g).
+            SCRIBE_OCTETUM_AB(pixels + p + 2, r).
+            SCRIBE_OCTETUM_AB(pixels + p + 3, 0).
+            x = x + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_HUD REDDENS NUMERUS.
+    ACCIPIT ctx SICUT NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT m SICUT NUMERUS.
+    ACCIPIT ui SICUT NUMERUS.
+    DECLARA ig SICUT NUMERUS VALENS WINAPP_TEXTUS_MODUS(ctx, hdc, 6091336).
+    ig = WINAPP_TEXTUS(ctx, hdc, 24, 16, "ATMOS // TERMINAL DEPTH — STABILITAS I").
+
+    DECLARA t SICUT TEXTUS VALENS "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8)).
+    t = t + " m". ig = WINAPP_TEXTUS(ctx, hdc, 36, 50, t).
+    t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16)). ig = WINAPP_TEXTUS(ctx, hdc, 36, 76, t).
+    t = "ENERGY " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)). ig = WINAPP_TEXTUS(ctx, hdc, 36, 118, t).
+    t = "HULL " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)). ig = WINAPP_TEXTUS(ctx, hdc, 36, 160, t).
+    t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)). ig = WINAPP_TEXTUS(ctx, hdc, 36, 220, t).
+    t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)). ig = WINAPP_TEXTUS(ctx, hdc, 36, 244, t).
+    t = "CYCLE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s)). ig = WINAPP_TEXTUS(ctx, hdc, 36, 268, t).
+    t = "STATUS: " + ATMOS_VI_FEEDBACK(ui, s). ig = WINAPP_TEXTUS(ctx, hdc, 36, 300, t).
+    t = "LAST SCAN: " + ATMOS_VI_SCAN_NOMEN(s). ig = WINAPP_TEXTUS(ctx, hdc, 36, 324, t).
+
+    t = "SECTOR " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m)).
+    t = t + "," + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m + 8)). ig = WINAPP_TEXTUS(ctx, hdc, 340, 16, t).
+    t = "TYPE " + ATMOS_VI_GENUS_NOMEN(CONTENTUM(m + 24)). ig = WINAPP_TEXTUS(ctx, hdc, 340, 42, t).
+    t = "CONTACT " + ATMOS_VI_CONTACTUS_NOMEN(CONTENTUM(m + 32)). ig = WINAPP_TEXTUS(ctx, hdc, 340, 64, t).
+    t = "RICHNESS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m + 56)). ig = WINAPP_TEXTUS(ctx, hdc, 352, 342, t).
+    t = "DANGER " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m + 64)). ig = WINAPP_TEXTUS(ctx, hdc, 352, 362, t).
+    t = "TRAVEL " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(m + 16)). ig = WINAPP_TEXTUS(ctx, hdc, 352, 382, t).
+
+    ig = WINAPP_TEXTUS(ctx, hdc, 30, 406, "1 SCAN").
+    ig = WINAPP_TEXTUS(ctx, hdc, 130, 406, "2 DOWN").
+    ig = WINAPP_TEXTUS(ctx, hdc, 230, 406, "3 UP").
+    ig = WINAPP_TEXTUS(ctx, hdc, 340, 406, "4 MINE").
+    ig = WINAPP_TEXTUS(ctx, hdc, 440, 406, "5 TRADE").
+    ig = WINAPP_TEXTUS(ctx, hdc, 540, 406, "6 REPAIR").
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_VI_MOUSE_ACTIO REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    SI y < 396 || y >= 434 TUNC REDDE 0. FIN-SI.
+    SI x >= 20 && x < 110 TUNC REDDE 1. FIN-SI.
+    SI x >= 120 && x < 210 TUNC REDDE 2. FIN-SI.
+    SI x >= 220 && x < 310 TUNC REDDE 3. FIN-SI.
+    SI x >= 330 && x < 420 TUNC REDDE 4. FIN-SI.
+    SI x >= 430 && x < 520 TUNC REDDE 5. FIN-SI.
+    SI x >= 530 && x < 620 TUNC REDDE 6. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    DECLARA mundus SICUT NUMERUS VALENS RESERVA_OCTETA(72).
+    DECLARA ui SICUT NUMERUS VALENS INTERACTIO_CREA().
+    SI status <= 0 || mundus <= 0 || ui <= 0 TUNC REDDE 70. FIN-SI.
+
+    SI ATMOS_CARICA(status) == 0 TUNC
+        SI ATMOS_INIT(status) == 0 || ATMOS_SALVA(status) == 0 TUNC REDDE 71. FIN-SI.
+    FIN-SI.
+    SI MUNDUS_CARICA(mundus) == 0 TUNC
+        SI MUNDUS_INIT(mundus) == 0 TUNC REDDE 72. FIN-SI.
+        SI ATMOS_VI_REGENERA(mundus, status) == 0 || MUNDUS_SALVA(mundus) == 0 TUNC REDDE 73. FIN-SI.
+    ALITER
+        SI ATMOS_VI_REGENERA(mundus, status) == 0 TUNC REDDE 74. FIN-SI.
+    FIN-SI.
+
+    DECLARA smoke SICUT NUMERUS VALENS 0.
+    SI argc >= 2 TUNC smoke = 1. FIN-SI.
+    DECLARA edges SICUT NUMERUS VALENS 0.
+    SI smoke == 1 TUNC
+        SI ATMOS_INIT(status) == 0 || ATMOS_SALVA(status) == 0 TUNC REDDE 75. FIN-SI.
+        SI MUNDUS_INIT(mundus) == 0 || ATMOS_VI_REGENERA(mundus, status) == 0 || MUNDUS_SALVA(mundus) == 0 TUNC REDDE 76. FIN-SI.
+        edges = edges + INTERACTIO_ORA(ui, 1, 1).
+        edges = edges + INTERACTIO_ORA(ui, 1, 1).
+        edges = edges + INTERACTIO_ORA(ui, 1, 1).
+        edges = edges + INTERACTIO_ORA(ui, 1, 0).
+        edges = edges + INTERACTIO_ORA(ui, 1, 1).
+        SI edges != 2 TUNC REDDE 77. FIN-SI.
+        DECLARA rr SICUT NUMERUS VALENS INTERACTIO_CLAVES_RESETA(ui).
+        SI ATMOS_VI_NAVIGA_EXEC(status, mundus, ui, 1, 0, 11) != 1 TUNC REDDE 78. FIN-SI.
+        SI ATMOS_VI_ACTIO_EXEC(status, mundus, ui, 4) != 1 TUNC REDDE 79. FIN-SI.
+    FIN-SI.
+
+    DECLARA ctx SICUT NUMERUS VALENS WINAPP_CONTEXUS_CREA().
+    DECLARA stab SICUT NUMERUS VALENS ATMOS_WIN_STAB_CREA().
+    SI ctx == 0 || stab == 0 TUNC REDDE 80. FIN-SI.
+    DECLARA hwnd SICUT NUMERUS VALENS ATMOS_WIN_FENESTRA_FIXA(stab, "ATMOS // TERMINAL DEPTH — STABILITAS I", 680, 520).
+    SI hwnd == 0 TUNC REDDE 81. FIN-SI.
+    DECLARA hdc SICUT NUMERUS VALENS WINAPP_HDC_CAPE(ctx, hwnd).
+    SI hdc == 0 TUNC REDDE 82. FIN-SI.
+
+    DECLARA w SICUT NUMERUS VALENS 640.
+    DECLARA h SICUT NUMERUS VALENS 440.
+    DECLARA pixels SICUT NUMERUS VALENS RESERVA_OCTETA(w * h * 4).
+    DECLARA bmi SICUT NUMERUS VALENS WINAPP_BITMAPINFO_CREA(w, h).
+    DECLARA superficies SICUT NUMERUS VALENS WINAPP_SUPERFICIES_CREA(pixels, bmi, w, h).
+    DECLARA msg SICUT NUMERUS VALENS RESERVA_OCTETA(48).
+    DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    SI pixels <= 0 || bmi <= 0 || superficies <= 0 || msg <= 0 || point <= 0 TUNC REDDE 83. FIN-SI.
+    SI WINAPP_SUPERFICIES_DESTINATIO(superficies, hdc, w, h) == 0 TUNC REDDE 84. FIN-SI.
+
+    DECLARA pictum SICUT NUMERUS VALENS ATMOS_VI_FRAME_PINGE(pixels, w, h, status, mundus, ui).
+    DECLARA lineae SICUT NUMERUS VALENS WINAPP_PRAESENTA(ctx, superficies).
+    SI lineae != h TUNC REDDE 85. FIN-SI.
+    DECLARA hud SICUT NUMERUS VALENS ATMOS_VI_HUD(ctx, hdc, status, mundus, ui).
+
+    SI smoke == 0 TUNC
+        DECLARA ost SICUT NUMERUS VALENS WINAPP_FENESTRA_OSTENDE(ctx, hwnd).
+        DECLARA currens SICUT NUMERUS VALENS 1.
+        DUM currens == 1 PERFICE
+            DECLARA n SICUT NUMERUS VALENS 1.
+            DUM n != 0 PERFICE
+                n = WINAPP_NUNTIUM_CAPE(ctx, msg).
+                SI n != 0 TUNC DECLARA dis SICUT NUMERUS VALENS WINAPP_NUNTIUM_DISPATCH(ctx, msg). FIN-SI.
+            FIN-DUM.
+            SI WINAPP_VIVIT(ctx, hwnd) == 0 TUNC currens = 0. FIN-SI.
+
+            SI currens == 1 TUNC
+                SI ATMOS_WIN_ACTIVA(stab, hwnd) == 0 TUNC
+                    DECLARA res SICUT NUMERUS VALENS INTERACTIO_CLAVES_RESETA(ui).
+                ALITER
+                    DECLARA e_left SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 0, WINAPP_CLAVIS(ctx, 37) & 32768).
+                    DECLARA e_right SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 1, WINAPP_CLAVIS(ctx, 39) & 32768).
+                    DECLARA e_up SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 2, WINAPP_CLAVIS(ctx, 38) & 32768).
+                    DECLARA e_down SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 3, WINAPP_CLAVIS(ctx, 40) & 32768).
+                    DECLARA e1 SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 4, WINAPP_CLAVIS(ctx, 49) & 32768).
+                    DECLARA e2 SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 5, WINAPP_CLAVIS(ctx, 50) & 32768).
+                    DECLARA e3 SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 6, WINAPP_CLAVIS(ctx, 51) & 32768).
+                    DECLARA e4 SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 7, WINAPP_CLAVIS(ctx, 52) & 32768).
+                    DECLARA e5 SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 8, WINAPP_CLAVIS(ctx, 53) & 32768).
+                    DECLARA e6 SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 9, WINAPP_CLAVIS(ctx, 54) & 32768).
+                    DECLARA em SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 10, WINAPP_CLAVIS(ctx, 1) & 32768).
+                    DECLARA ee SICUT NUMERUS VALENS INTERACTIO_ORA(ui, 11, WINAPP_CLAVIS(ctx, 27) & 32768).
+                    SI ee == 1 TUNC currens = 0. FIN-SI.
+
+                    SI currens == 1 && ATMOS_FINIS(status) == 0 TUNC
+                        DECLARA actum SICUT NUMERUS VALENS 0.
+                        SI actum == 0 && e_left == 1 TUNC DECLARA q0 SICUT NUMERUS VALENS ATMOS_VI_NAVIGA_EXEC(status, mundus, ui, -1, 0, 10). actum = 1. FIN-SI.
+                        SI actum == 0 && e_right == 1 TUNC DECLARA q1 SICUT NUMERUS VALENS ATMOS_VI_NAVIGA_EXEC(status, mundus, ui, 1, 0, 11). actum = 1. FIN-SI.
+                        SI actum == 0 && e_up == 1 TUNC DECLARA q2 SICUT NUMERUS VALENS ATMOS_VI_NAVIGA_EXEC(status, mundus, ui, 0, -1, 12). actum = 1. FIN-SI.
+                        SI actum == 0 && e_down == 1 TUNC DECLARA q3 SICUT NUMERUS VALENS ATMOS_VI_NAVIGA_EXEC(status, mundus, ui, 0, 1, 13). actum = 1. FIN-SI.
+                        SI actum == 0 && e1 == 1 TUNC DECLARA a1 SICUT NUMERUS VALENS ATMOS_VI_ACTIO_EXEC(status, mundus, ui, 1). actum = 1. FIN-SI.
+                        SI actum == 0 && e2 == 1 TUNC DECLARA a2 SICUT NUMERUS VALENS ATMOS_VI_ACTIO_EXEC(status, mundus, ui, 2). actum = 1. FIN-SI.
+                        SI actum == 0 && e3 == 1 TUNC DECLARA a3 SICUT NUMERUS VALENS ATMOS_VI_ACTIO_EXEC(status, mundus, ui, 3). actum = 1. FIN-SI.
+                        SI actum == 0 && e4 == 1 TUNC DECLARA a4 SICUT NUMERUS VALENS ATMOS_VI_ACTIO_EXEC(status, mundus, ui, 4). actum = 1. FIN-SI.
+                        SI actum == 0 && e5 == 1 TUNC DECLARA a5 SICUT NUMERUS VALENS ATMOS_VI_ACTIO_EXEC(status, mundus, ui, 5). actum = 1. FIN-SI.
+                        SI actum == 0 && e6 == 1 TUNC DECLARA a6 SICUT NUMERUS VALENS ATMOS_VI_ACTIO_EXEC(status, mundus, ui, 6). actum = 1. FIN-SI.
+
+                        SI actum == 0 && em == 1 TUNC
+                            SI WINAPP_CURSOR_CAPE(ctx, point) != 0 && WINAPP_SCREEN_AD_CLIENT(ctx, hwnd, point) != 0 TUNC
+                                DECLARA mx SICUT NUMERUS VALENS MEM_I32_LEGE_VI(point, 0).
+                                DECLARA my SICUT NUMERUS VALENS MEM_I32_LEGE_VI(point, 4).
+                                DECLARA ma SICUT NUMERUS VALENS ATMOS_VI_MOUSE_ACTIO(mx, my).
+                                SI ma != 0 TUNC DECLARA am SICUT NUMERUS VALENS ATMOS_VI_ACTIO_EXEC(status, mundus, ui, ma). FIN-SI.
+                            FIN-SI.
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
+
+                pictum = ATMOS_VI_FRAME_PINGE(pixels, w, h, status, mundus, ui).
+                lineae = WINAPP_PRAESENTA(ctx, superficies).
+                hud = ATMOS_VI_HUD(ctx, hdc, status, mundus, ui).
+                DECLARA dormitum SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 33).
+            FIN-SI.
+        FIN-DUM.
+    FIN-SI.
+
+    DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).
+    DECLARA del SICUT NUMERUS VALENS WINAPP_FENESTRA_DELE(ctx, hwnd).
+
+    SI smoke == 1 TUNC
+        PROCLAMA "RECTE: ATMOS POC VI STABILITAS WIN64".
+        PROCLAMA edges.
+        PROCLAMA CONTENTUM(status).
+        PROCLAMA CONTENTUM(status + 8).
+        PROCLAMA CONTENTUM(status + 16).
+        PROCLAMA CONTENTUM(status + 24).
+        PROCLAMA CONTENTUM(status + 48).
+        PROCLAMA CONTENTUM(mundus).
+        PROCLAMA CONTENTUM(mundus + 8).
+        PROCLAMA CONTENTUM(mundus + 16).
+        PROCLAMA lineae.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
