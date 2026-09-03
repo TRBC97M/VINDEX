@@ -32,6 +32,26 @@ Workflow `VINDEX — ATMOS La Passe Genocidaire`:
 5. tabulam importationum PE inspicit et CRT, .NET vel runtime tertiae linguae reicit;
 6. executabile resultans sub Windows vero exercet.
 
+## Certificatio I
+
+PR #182, caput `03d8ba799e20aafc7652a9a89c3f4e14e751d85d`.
+
+Workflow `VINDEX — ATMOS La Passe Genocidaire`, cursus #1 (`33804569754`): **success**.
+
+Probata sunt:
+
+- nulla extensio fontis runtime alienae linguae in arbore canonica ATMOS;
+- clausura importationum applicationis tota `.vindex`;
+- compilator VINDEX auto-hospes regeneratus cum `G3 = G4`;
+- POC VI PE32+ generatus solo compilatore auto-hospite;
+- tabula PE directa: sola `kernel32.dll`;
+- nullum MSVCRT/UCRT/VCRUNTIME/.NET/libstdc++/libgcc/Python/Node;
+- executio eiusdem artefacti sub Windows Server 2025: success.
+
+Artefactum puritatis: `atmos-poc-vi-purus-vindex`, ID `9912378844`, ZIP SHA-256 `c3580895ed6fd05b6cc92afb9c47b52c34a206b9110057140cc89deec788f4ca`.
+
 ## Criterium
 
 Puritas declarari potest solum si tota catena supra viridis est. Simplex praesentia extensionis `.vindex` non sufficit: compilator auto-hospes, PE et executio vera simul probanda sunt.
+
+**Status: PROBATUM AUTOMATICE.** Fusio P11-F manet tamen suspensa donec Stabilitas I etiam probationem humanam usoris transeat.
