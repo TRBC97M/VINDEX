@@ -1,0 +1,59 @@
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex".
+IMPORTA "../COMMUNE/nucleus.vindex".
+IMPORTA "../COMMUNE/mundus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    DECLARA mundus SICUT NUMERUS VALENS RESERVA_OCTETA(72).
+    DECLARA alter SICUT NUMERUS VALENS RESERVA_OCTETA(72).
+    SI status <= 0 || mundus <= 0 || alter <= 0 TUNC REDDE 10. FIN-SI.
+
+    SI ATMOS_INIT(status) == 0 TUNC REDDE 11. FIN-SI.
+    SI MUNDUS_INIT(mundus) == 0 TUNC REDDE 12. FIN-SI.
+    SI MUNDUS_SECTOR_GENERA(mundus, CONTENTUM(status + 56), CONTENTUM(status + 8)) == 0 TUNC REDDE 13. FIN-SI.
+
+    DECLARA genus0 SICUT NUMERUS VALENS CONTENTUM(mundus + 24).
+    DECLARA contactus0 SICUT NUMERUS VALENS CONTENTUM(mundus + 32).
+    DECLARA cx0 SICUT NUMERUS VALENS CONTENTUM(mundus + 40).
+    DECLARA cy0 SICUT NUMERUS VALENS CONTENTUM(mundus + 48).
+    DECLARA div0 SICUT NUMERUS VALENS CONTENTUM(mundus + 56).
+    DECLARA per0 SICUT NUMERUS VALENS CONTENTUM(mundus + 64).
+
+    SI genus0 < 0 || genus0 > 5 TUNC REDDE 14. FIN-SI.
+    SI contactus0 < 0 || contactus0 > 4 TUNC REDDE 15. FIN-SI.
+    SI cx0 < 175 || cx0 > 292 || cy0 < 26 || cy0 > 140 TUNC REDDE 16. FIN-SI.
+    SI div0 < 0 || div0 > 100 || per0 < 0 || per0 > 100 TUNC REDDE 17. FIN-SI.
+
+    // Eadem coordinata + idem seed + eadem profunditas = idem sector.
+    SI MUNDUS_SECTOR_GENERA(mundus, CONTENTUM(status + 56), CONTENTUM(status + 8)) == 0 TUNC REDDE 18. FIN-SI.
+    SI CONTENTUM(mundus + 24) != genus0 || CONTENTUM(mundus + 32) != contactus0 || CONTENTUM(mundus + 40) != cx0 || CONTENTUM(mundus + 48) != cy0 || CONTENTUM(mundus + 56) != div0 || CONTENTUM(mundus + 64) != per0 TUNC REDDE 19. FIN-SI.
+
+    SI ATMOS_SALVA(status) == 0 TUNC REDDE 20. FIN-SI.
+    SI MUNDUS_SALVA(mundus) == 0 TUNC REDDE 21. FIN-SI.
+
+    // Oriens: x 0 -> 1, visitata 1 -> 2, energia 100 -> 98, oxygenium 100 -> 99.
+    SI MUNDUS_NAVIGA(mundus, status, 1, 0) != 1 TUNC REDDE 22. FIN-SI.
+    SI CONTENTUM(mundus) != 1 || CONTENTUM(mundus + 8) != 0 || CONTENTUM(mundus + 16) != 2 TUNC REDDE 23. FIN-SI.
+    SI CONTENTUM(status) != 1 || CONTENTUM(status + 16) != 99 || CONTENTUM(status + 24) != 98 TUNC REDDE 24. FIN-SI.
+
+    SI MUNDUS_INIT(alter) == 0 TUNC REDDE 25. FIN-SI.
+    SI MUNDUS_CARICA(alter) == 0 TUNC REDDE 26. FIN-SI.
+    SI CONTENTUM(alter) != 1 || CONTENTUM(alter + 8) != 0 || CONTENTUM(alter + 16) != 2 TUNC REDDE 27. FIN-SI.
+    SI MUNDUS_SECTOR_GENERA(alter, CONTENTUM(status + 56), CONTENTUM(status + 8)) == 0 TUNC REDDE 28. FIN-SI.
+    SI CONTENTUM(alter + 24) != CONTENTUM(mundus + 24) || CONTENTUM(alter + 32) != CONTENTUM(mundus + 32) || CONTENTUM(alter + 40) != CONTENTUM(mundus + 40) || CONTENTUM(alter + 48) != CONTENTUM(mundus + 48) || CONTENTUM(alter + 56) != CONTENTUM(mundus + 56) || CONTENTUM(alter + 64) != CONTENTUM(mundus + 64) TUNC REDDE 29. FIN-SI.
+
+    PROCLAMA "MUNDUS ATMOS RECTE".
+    PROCLAMA genus0.
+    PROCLAMA contactus0.
+    PROCLAMA cx0.
+    PROCLAMA cy0.
+    PROCLAMA div0.
+    PROCLAMA per0.
+    PROCLAMA CONTENTUM(mundus + 24).
+    PROCLAMA CONTENTUM(mundus + 32).
+    PROCLAMA CONTENTUM(mundus + 40).
+    PROCLAMA CONTENTUM(mundus + 48).
+    PROCLAMA CONTENTUM(mundus + 56).
+    PROCLAMA CONTENTUM(mundus + 64).
+    REDDE 0.
+FIN-FUNCTIO.
