@@ -1,12 +1,11 @@
 name: VINDEX — ATMOS Terminal Depth POC II
 
-# P11-B: una sessio stdin vera; hic workflow est auctoritas certificationis POC II.
+# P11-B: una sessio stdin vera; PROGRAMMATA est fons applicationis canonicus.
 on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/interactivum.vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/proiectum_interactivum_pe.vindex'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_II/**'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/stdio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
@@ -54,14 +53,15 @@ jobs:
           name: atmos2-compilator-win64
           path: instrumenta-atmos2
 
-      - name: ATMOS interactum compila
+      - name: ATMOS interactum ex PROGRAMMATA compila
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $compilator = (Resolve-Path '.\instrumenta-atmos2\compilator_vindex.exe').Path
           $radix = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51').Path
-          $fons = Join-Path $radix 'exempla\atmos_terminal_depth\interactivum.vindex'
-          $exe = Join-Path $radix 'exempla\atmos_terminal_depth\atmos_interactivum.exe'
+          $program = (Resolve-Path '.\PROGRAMMATA\ATMOS_TERMINAL_DEPTH\POC_II').Path
+          $fons = Join-Path $program 'interactivum.vindex'
+          $exe = Join-Path $program 'atmos_interactivum.exe'
           Push-Location $radix
           try {
             & $compilator $fons $exe pe
@@ -76,7 +76,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $dir = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\exempla\atmos_terminal_depth').Path
+          $dir = (Resolve-Path '.\PROGRAMMATA\ATMOS_TERMINAL_DEPTH\POC_II').Path
           $exe = Join-Path $dir 'atmos_interactivum.exe'
           $save = Join-Path $dir 'atmos.sav'
           Set-Location $dir
@@ -122,6 +122,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: atmos-terminal-depth-vindex-poc-ii
-          path: Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/atmos_interactivum.exe
+          path: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_II/atmos_interactivum.exe
           if-no-files-found: error
           retention-days: 14
