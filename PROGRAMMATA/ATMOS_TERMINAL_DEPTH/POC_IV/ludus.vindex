@@ -1,0 +1,624 @@
+// ATMOS // TERMINAL DEPTH — POC IV / ludus graphicus persistentis Win64.
+//
+// POC IV coniungit nucleum ludicum ATD1 cum fenestra/framebuffer/inputu POC III.
+// Nulla HTML, JavaScript, Electron, SDL, C aut C++ runtime ludi adhibetur.
+
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex".
+IMPORTA "../COMMUNE/nucleus.vindex".
+
+FUNCTIO MEM_U16_SCRIBE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(basis + off, valor & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 1, (valor >> 8) & 255).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MEM_U32_SCRIBE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(basis + off, valor & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 1, (valor >> 8) & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 2, (valor >> 16) & 255).
+    SCRIBE_OCTETUM_AB(basis + off + 3, (valor >> 24) & 255).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MEM_U32_LEGE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS OCTETUS_AB(basis + off).
+    v = v | (OCTETUS_AB(basis + off + 1) << 8).
+    v = v | (OCTETUS_AB(basis + off + 2) << 16).
+    v = v | (OCTETUS_AB(basis + off + 3) << 24).
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO MEM_I32_LEGE REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT off SICUT NUMERUS.
+    DECLARA v SICUT NUMERUS VALENS MEM_U32_LEGE(basis, off).
+    SI v >= 2147483648 TUNC v = v - 4294967296. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO GDI_TEXTUS_PINGE REDDENS NUMERUS.
+    ACCIPIT hdc SICUT NUMERUS.
+    ACCIPIT text_out SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA args SICUT NUMERUS VALENS SEDES(argumenta).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = hdc.
+    CONTENTUM(args + 8) = x.
+    CONTENTUM(args + 16) = y.
+    CONTENTUM(args + 24) = TEXTUS_BASIS_OCTETORUM(textus).
+    CONTENTUM(args + 32) = LONGITUDO(textus).
+    REDDE MSX64_VOCA(text_out, args).
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_FRAMEBUFFER_PINGE REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+
+    DECLARA oxygenium SICUT NUMERUS VALENS CONTENTUM(s + 16).
+    DECLARA energia SICUT NUMERUS VALENS CONTENTUM(s + 24).
+    DECLARA integritas SICUT NUMERUS VALENS CONTENTUM(s + 32).
+    SI oxygenium < 0 TUNC oxygenium = 0. FIN-SI.
+    SI energia < 0 TUNC energia = 0. FIN-SI.
+    SI integritas < 0 TUNC integritas = 0. FIN-SI.
+    SI oxygenium > 100 TUNC oxygenium = 100. FIN-SI.
+    SI energia > 100 TUNC energia = 100. FIN-SI.
+    SI integritas > 100 TUNC integritas = 100. FIN-SI.
+
+    DECLARA lim_oxy SICUT NUMERUS VALENS 22 + (oxygenium * 90) / 100.
+    DECLARA lim_ene SICUT NUMERUS VALENS 22 + (energia * 90) / 100.
+    DECLARA lim_hull SICUT NUMERUS VALENS 22 + (integritas * 90) / 100.
+    DECLARA profunditas SICUT NUMERUS VALENS CONTENTUM(s + 8).
+    DECLARA lim_depth SICUT NUMERUS VALENS 22 + ((profunditas % 1000) * 90) / 1000.
+    DECLARA contactus SICUT NUMERUS VALENS CONTENTUM(s + 64).
+    DECLARA eventum SICUT NUMERUS VALENS CONTENTUM(s + 72).
+
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y < h PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x < w PERFICE
+            DECLARA b SICUT NUMERUS VALENS 7.
+            DECLARA g SICUT NUMERUS VALENS 16.
+            DECLARA r SICUT NUMERUS VALENS 5.
+
+            SI x > 8 && x < w - 8 && y > 8 && y < h - 8 TUNC
+                b = 13. g = 29. r = 7.
+            FIN-SI.
+            SI (y % 4) == 0 TUNC g = g + 7. FIN-SI.
+
+            // Radar dexter.
+            DECLARA cx SICUT NUMERUS VALENS 230.
+            DECLARA cy SICUT NUMERUS VALENS 82.
+            SI x == cx || y == cy TUNC
+                SI x >= 165 && x <= 295 && y >= 18 && y <= 145 TUNC
+                    b = 28. g = 88. r = 18.
+                FIN-SI.
+            FIN-SI.
+            DECLARA dx SICUT NUMERUS VALENS x - cx.
+            DECLARA dy SICUT NUMERUS VALENS y - cy.
+            SI dx < 0 TUNC dx = 0 - dx. FIN-SI.
+            SI dy < 0 TUNC dy = 0 - dy. FIN-SI.
+            DECLARA d SICUT NUMERUS VALENS dx + dy.
+            SI d >= 47 && d <= 49 TUNC
+                b = 28. g = 160. r = 28.
+                SI contactus == 1 TUNC b = 40. g = 210. r = 36. FIN-SI.
+                SI contactus == 2 TUNC b = 120. g = 205. r = 40. FIN-SI.
+                SI contactus == 3 TUNC b = 210. g = 190. r = 35. FIN-SI.
+                SI contactus == 4 TUNC b = 70. g = 45. r = 220. FIN-SI.
+            FIN-SI.
+
+            // Barres status sinistrae.
+            SI y >= 42 && y < 49 && x >= 22 && x < 112 TUNC
+                b = 18. g = 42. r = 12.
+                SI x < lim_oxy TUNC b = 44. g = 202. r = 42. FIN-SI.
+            FIN-SI.
+            SI y >= 62 && y < 69 && x >= 22 && x < 112 TUNC
+                b = 18. g = 42. r = 12.
+                SI x < lim_ene TUNC b = 40. g = 170. r = 36. FIN-SI.
+            FIN-SI.
+            SI y >= 82 && y < 89 && x >= 22 && x < 112 TUNC
+                b = 18. g = 42. r = 12.
+                SI x < lim_hull TUNC b = 50. g = 220. r = 48. FIN-SI.
+            FIN-SI.
+            SI y >= 102 && y < 109 && x >= 22 && x < 112 TUNC
+                b = 20. g = 35. r = 15.
+                SI x < lim_depth TUNC b = 85. g = 135. r = 26. FIN-SI.
+            FIN-SI.
+
+            // Septem tesserae actionum in fundo.
+            SI y >= 149 && y < 173 && x >= 6 && x < w - 6 TUNC
+                DECLARA pars SICUT NUMERUS VALENS (x * 7) / w.
+                b = 18 + pars * 2.
+                g = 47 + pars * 3.
+                r = 11.
+                SI (x % 45) <= 1 || y == 149 || y == 172 TUNC
+                    b = 42. g = 112. r = 24.
+                FIN-SI.
+            FIN-SI.
+
+            // Eventum pressionis rubrum, inventarium cyan.
+            SI eventum == 1 && (x <= 4 || x >= w - 5 || y <= 4 || y >= h - 5) TUNC
+                b = 24. g = 32. r = 210.
+            FIN-SI.
+            SI eventum == 2 && (x <= 4 || x >= w - 5 || y <= 4 || y >= h - 5) TUNC
+                b = 185. g = 185. r = 30.
+            FIN-SI.
+
+            DECLARA p SICUT NUMERUS VALENS ((y * w) + x) * 4.
+            SCRIBE_OCTETUM_AB(pixels + p, b).
+            SCRIBE_OCTETUM_AB(pixels + p + 1, g).
+            SCRIBE_OCTETUM_AB(pixels + p + 2, r).
+            SCRIBE_OCTETUM_AB(pixels + p + 3, 0).
+            x = x + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_CURSOR_PINGE REDDENS NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT mx SICUT NUMERUS.
+    ACCIPIT my SICUT NUMERUS.
+    SI mx < 0 || my < 0 || mx >= w || my >= h TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0 - 4.
+    DUM i <= 4 PERFICE
+        DECLARA xh SICUT NUMERUS VALENS mx + i.
+        SI xh >= 0 && xh < w TUNC
+            DECLARA ph SICUT NUMERUS VALENS ((my * w) + xh) * 4.
+            SCRIBE_OCTETUM_AB(pixels + ph, 72).
+            SCRIBE_OCTETUM_AB(pixels + ph + 1, 242).
+            SCRIBE_OCTETUM_AB(pixels + ph + 2, 92).
+        FIN-SI.
+        DECLARA yv SICUT NUMERUS VALENS my + i.
+        SI yv >= 0 && yv < h TUNC
+            DECLARA pv SICUT NUMERUS VALENS ((yv * w) + mx) * 4.
+            SCRIBE_OCTETUM_AB(pixels + pv, 72).
+            SCRIBE_OCTETUM_AB(pixels + pv + 1, 242).
+            SCRIBE_OCTETUM_AB(pixels + pv + 2, 92).
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO ATMOS_BITMAPINFO_CREA REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    DECLARA bmi SICUT NUMERUS VALENS RESERVA_OCTETA(40).
+    SI bmi <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 40 PERFICE
+        SCRIBE_OCTETUM_AB(bmi + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    DECLARA ig SICUT NUMERUS VALENS MEM_U32_SCRIBE(bmi, 0, 40).
+    ig = MEM_U32_SCRIBE(bmi, 4, w).
+    ig = MEM_U32_SCRIBE(bmi, 8, 0 - h).
+    ig = MEM_U16_SCRIBE(bmi, 12, 1).
+    ig = MEM_U16_SCRIBE(bmi, 14, 32).
+    ig = MEM_U32_SCRIBE(bmi, 16, 0).
+    ig = MEM_U32_SCRIBE(bmi, 20, w * h * 4).
+    REDDE bmi.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    ACCIPIT argc SICUT NUMERUS.
+    ACCIPIT argv SICUT ACUS<NUMERUS>.
+
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    SI status <= 0 TUNC REDDE 71. FIN-SI.
+    DECLARA caricum SICUT NUMERUS VALENS ATMOS_CARICA(status).
+    SI caricum == 0 TUNC
+        SI ATMOS_INIT(status) == 0 TUNC REDDE 72. FIN-SI.
+        SI ATMOS_SALVA(status) == 0 TUNC REDDE 73. FIN-SI.
+    FIN-SI.
+
+    // Smoke semper statum determinatum incipit et nucleum POC I/II exercet.
+    SI argc >= 2 TUNC
+        SI ATMOS_INIT(status) == 0 TUNC REDDE 74. FIN-SI.
+        SI ATMOS_SALVA(status) == 0 TUNC REDDE 75. FIN-SI.
+        SI ATMOS_ACTIO(status, 2) != 1 TUNC REDDE 76. FIN-SI.
+        SI ATMOS_ACTIO(status, 4) != 1 TUNC REDDE 77. FIN-SI.
+        SI ATMOS_ACTIO(status, 3) != 1 TUNC REDDE 78. FIN-SI.
+        SI ATMOS_ACTIO(status, 5) != 1 TUNC REDDE 79. FIN-SI.
+    FIN-SI.
+
+    DECLARA user32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("user32.dll").
+    DECLARA gdi32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("gdi32.dll").
+    DECLARA kernel32 SICUT NUMERUS VALENS WIN32_MODULUM_APERI("kernel32.dll").
+    SI user32 == 0 || gdi32 == 0 || kernel32 == 0 TUNC REDDE 80. FIN-SI.
+
+    DECLARA create_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "CreateWindowExA").
+    DECLARA get_dc SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "GetDC").
+    DECLARA release_dc SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "ReleaseDC").
+    DECLARA destroy_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "DestroyWindow").
+    DECLARA show_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "ShowWindow").
+    DECLARA update_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "UpdateWindow").
+    DECLARA peek_message SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "PeekMessageA").
+    DECLARA translate_message SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "TranslateMessage").
+    DECLARA dispatch_message SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "DispatchMessageA").
+    DECLARA get_async_key SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "GetAsyncKeyState").
+    DECLARA get_cursor_pos SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "GetCursorPos").
+    DECLARA screen_to_client SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "ScreenToClient").
+    DECLARA get_client_rect SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "GetClientRect").
+    DECLARA is_window SICUT NUMERUS VALENS WIN32_SYMBOLUM(user32, "IsWindow").
+    DECLARA stretch_dibits SICUT NUMERUS VALENS WIN32_SYMBOLUM(gdi32, "StretchDIBits").
+    DECLARA text_out SICUT NUMERUS VALENS WIN32_SYMBOLUM(gdi32, "TextOutA").
+    DECLARA set_text_color SICUT NUMERUS VALENS WIN32_SYMBOLUM(gdi32, "SetTextColor").
+    DECLARA set_bk_mode SICUT NUMERUS VALENS WIN32_SYMBOLUM(gdi32, "SetBkMode").
+    DECLARA get_module SICUT NUMERUS VALENS WIN32_SYMBOLUM(kernel32, "GetModuleHandleA").
+    DECLARA sleep_fn SICUT NUMERUS VALENS WIN32_SYMBOLUM(kernel32, "Sleep").
+
+    SI create_window == 0 || get_dc == 0 || release_dc == 0 || destroy_window == 0 || show_window == 0 || update_window == 0 || peek_message == 0 || translate_message == 0 || dispatch_message == 0 || get_async_key == 0 || get_cursor_pos == 0 || screen_to_client == 0 || get_client_rect == 0 || is_window == 0 || stretch_dibits == 0 || text_out == 0 || set_text_color == 0 || set_bk_mode == 0 || get_module == 0 || sleep_fn == 0 TUNC REDDE 81. FIN-SI.
+
+    DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
+    DECLARA args SICUT NUMERUS VALENS SEDES(argumenta).
+    DECLARA ig SICUT NUMERUS VALENS MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = 0.
+    DECLARA hinstance SICUT NUMERUS VALENS MSX64_VOCA(get_module, args).
+    SI hinstance == 0 TUNC REDDE 82. FIN-SI.
+
+    DECLARA classis SICUT TEXTUS VALENS "STATIC".
+    DECLARA titulus SICUT TEXTUS VALENS "ATMOS // TERMINAL DEPTH - POC IV".
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = 0.
+    CONTENTUM(args + 8) = TEXTUS_BASIS_OCTETORUM(classis).
+    CONTENTUM(args + 16) = TEXTUS_BASIS_OCTETORUM(titulus).
+    CONTENTUM(args + 24) = 13565952.
+    CONTENTUM(args + 32) = 80.
+    CONTENTUM(args + 40) = 80.
+    CONTENTUM(args + 48) = 860.
+    CONTENTUM(args + 56) = 560.
+    CONTENTUM(args + 64) = 0.
+    CONTENTUM(args + 72) = 0.
+    CONTENTUM(args + 80) = hinstance.
+    CONTENTUM(args + 88) = 0.
+    DECLARA hwnd SICUT NUMERUS VALENS MSX64_VOCA(create_window, args).
+    SI hwnd == 0 TUNC REDDE 83. FIN-SI.
+
+    DECLARA w SICUT NUMERUS VALENS 320.
+    DECLARA h SICUT NUMERUS VALENS 180.
+    DECLARA pixels SICUT NUMERUS VALENS RESERVA_OCTETA(w * h * 4).
+    DECLARA bmi SICUT NUMERUS VALENS ATMOS_BITMAPINFO_CREA(w, h).
+    DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
+    DECLARA rect SICUT NUMERUS VALENS RESERVA_OCTETA(16).
+    DECLARA msg SICUT NUMERUS VALENS RESERVA_OCTETA(48).
+    SI pixels <= 0 || bmi <= 0 || point <= 0 || rect <= 0 || msg <= 0 TUNC REDDE 84. FIN-SI.
+
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    DECLARA hdc SICUT NUMERUS VALENS MSX64_VOCA(get_dc, args).
+    SI hdc == 0 TUNC REDDE 85. FIN-SI.
+
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hdc.
+    CONTENTUM(args + 8) = 1.
+    DECLARA bk SICUT NUMERUS VALENS MSX64_VOCA(set_bk_mode, args).
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hdc.
+    CONTENTUM(args + 8) = 6091336.
+    DECLARA color SICUT NUMERUS VALENS MSX64_VOCA(set_text_color, args).
+
+    DECLARA t_title SICUT TEXTUS VALENS "ATMOS // TERMINAL DEPTH".
+    DECLARA t_depth SICUT TEXTUS VALENS "DEPTH".
+    DECLARA t_oxygen SICUT TEXTUS VALENS "OXYGEN".
+    DECLARA t_energy SICUT TEXTUS VALENS "ENERGY".
+    DECLARA t_hull SICUT TEXTUS VALENS "HULL".
+    DECLARA t_credits SICUT TEXTUS VALENS "CREDITS".
+    DECLARA t_ore SICUT TEXTUS VALENS "ORE".
+    DECLARA t_cycle SICUT TEXTUS VALENS "CYCLE".
+    DECLARA t_scan SICUT TEXTUS VALENS "[S] SCAN".
+    DECLARA t_desc SICUT TEXTUS VALENS "[D] DESC".
+    DECLARA t_asc SICUT TEXTUS VALENS "[A] ASC".
+    DECLARA t_mine SICUT TEXTUS VALENS "[M] MINE".
+    DECLARA t_trade SICUT TEXTUS VALENS "[T] TRADE".
+    DECLARA t_repair SICUT TEXTUS VALENS "[R] REPAIR".
+    DECLARA t_new SICUT TEXTUS VALENS "[N] NEW".
+    DECLARA t_exit SICUT TEXTUS VALENS "ESC EXIT".
+    DECLARA t_none SICUT TEXTUS VALENS "SONAR: NO CONTACT".
+    DECLARA t_mineral SICUT TEXTUS VALENS "SONAR: MINERAL FIELD".
+    DECLARA t_structure SICUT TEXTUS VALENS "SONAR: STRUCTURE ECHO".
+    DECLARA t_convoy SICUT TEXTUS VALENS "SONAR: CONVOY TRACE".
+    DECLARA t_below SICUT TEXTUS VALENS "SONAR: THE BELOW".
+    DECLARA t_event_none SICUT TEXTUS VALENS "EVENT: NOMINAL".
+    DECLARA t_fracture SICUT TEXTUS VALENS "EVENT: PRESSURE FRACTURE".
+    DECLARA t_salvage SICUT TEXTUS VALENS "EVENT: SALVAGE CACHE".
+    DECLARA t_lost SICUT TEXTUS VALENS "MISSION LOST".
+
+    DECLARA v_depth SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 8)).
+    DECLARA v_oxygen SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 16)).
+    DECLARA v_energy SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 24)).
+    DECLARA v_hull SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 32)).
+    DECLARA v_credits SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 40)).
+    DECLARA v_ore SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 48)).
+    DECLARA v_cycle SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status)).
+
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    CONTENTUM(args + 8) = rect.
+    DECLARA rc_ok SICUT NUMERUS VALENS MSX64_VOCA(get_client_rect, args).
+    SI rc_ok == 0 TUNC REDDE 86. FIN-SI.
+    DECLARA client_w SICUT NUMERUS VALENS MEM_I32_LEGE(rect, 8).
+    DECLARA client_h SICUT NUMERUS VALENS MEM_I32_LEGE(rect, 12).
+
+    // Smoke: render, text, input APIs, et status determinatus certificantur.
+    SI argc >= 2 TUNC
+        DECLARA pictum SICUT NUMERUS VALENS ATMOS_FRAMEBUFFER_PINGE(pixels, w, h, status).
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args + 0) = hdc.
+        CONTENTUM(args + 8) = 0.
+        CONTENTUM(args + 16) = 0.
+        CONTENTUM(args + 24) = client_w.
+        CONTENTUM(args + 32) = client_h.
+        CONTENTUM(args + 40) = 0.
+        CONTENTUM(args + 48) = 0.
+        CONTENTUM(args + 56) = w.
+        CONTENTUM(args + 64) = h.
+        CONTENTUM(args + 72) = pixels.
+        CONTENTUM(args + 80) = bmi.
+        CONTENTUM(args + 88) = 0.
+        CONTENTUM(args + 96) = 13369376.
+        DECLARA lineae SICUT NUMERUS VALENS MSX64_VOCA(stretch_dibits, args).
+        SI lineae != 180 TUNC REDDE 87. FIN-SI.
+
+        DECLARA txt_ok SICUT NUMERUS VALENS GDI_TEXTUS_PINGE(hdc, text_out, 16, 12, t_title).
+        SI txt_ok == 0 TUNC REDDE 88. FIN-SI.
+        txt_ok = GDI_TEXTUS_PINGE(hdc, text_out, 92, 34, v_depth).
+        SI txt_ok == 0 TUNC REDDE 89. FIN-SI.
+
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = point.
+        DECLARA cp_ok SICUT NUMERUS VALENS MSX64_VOCA(get_cursor_pos, args).
+        SI cp_ok == 0 TUNC REDDE 90. FIN-SI.
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        CONTENTUM(args + 8) = point.
+        DECLARA stc_ok SICUT NUMERUS VALENS MSX64_VOCA(screen_to_client, args).
+        SI stc_ok == 0 TUNC REDDE 91. FIN-SI.
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = 27.
+        DECLARA esc_probe SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args).
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = msg.
+        CONTENTUM(args + 8) = 0.
+        CONTENTUM(args + 16) = 0.
+        CONTENTUM(args + 24) = 0.
+        CONTENTUM(args + 32) = 1.
+        DECLARA pm_probe SICUT NUMERUS VALENS MSX64_VOCA(peek_message, args).
+
+        PROCLAMA "RECTE: ATMOS POC IV WIN64".
+        PROCLAMA CONTENTUM(status).
+        PROCLAMA CONTENTUM(status + 8).
+        PROCLAMA CONTENTUM(status + 16).
+        PROCLAMA CONTENTUM(status + 24).
+        PROCLAMA CONTENTUM(status + 32).
+        PROCLAMA CONTENTUM(status + 40).
+        PROCLAMA CONTENTUM(status + 48).
+
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        CONTENTUM(args + 8) = hdc.
+        DECLARA rel SICUT NUMERUS VALENS MSX64_VOCA(release_dc, args).
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        DECLARA del SICUT NUMERUS VALENS MSX64_VOCA(destroy_window, args).
+        REDDE 0.
+    FIN-SI.
+
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    CONTENTUM(args + 8) = 5.
+    DECLARA visus SICUT NUMERUS VALENS MSX64_VOCA(show_window, args).
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    DECLARA renovatum SICUT NUMERUS VALENS MSX64_VOCA(update_window, args).
+
+    DECLARA prev_s SICUT NUMERUS VALENS 0.
+    DECLARA prev_d SICUT NUMERUS VALENS 0.
+    DECLARA prev_a SICUT NUMERUS VALENS 0.
+    DECLARA prev_m SICUT NUMERUS VALENS 0.
+    DECLARA prev_t SICUT NUMERUS VALENS 0.
+    DECLARA prev_r SICUT NUMERUS VALENS 0.
+    DECLARA prev_n SICUT NUMERUS VALENS 0.
+    DECLARA prev_click SICUT NUMERUS VALENS 0.
+    DECLARA radar_x SICUT NUMERUS VALENS 160.
+    DECLARA radar_y SICUT NUMERUS VALENS 90.
+    DECLARA currens SICUT NUMERUS VALENS 1.
+    DECLARA fatalis SICUT NUMERUS VALENS 0.
+
+    DUM currens == 1 PERFICE
+        DECLARA habet SICUT NUMERUS VALENS 1.
+        DUM habet != 0 PERFICE
+            ig = MSX64_ARGUMENTA_VACUA(args).
+            CONTENTUM(args) = msg.
+            CONTENTUM(args + 8) = 0.
+            CONTENTUM(args + 16) = 0.
+            CONTENTUM(args + 24) = 0.
+            CONTENTUM(args + 32) = 1.
+            habet = MSX64_VOCA(peek_message, args).
+            SI habet != 0 TUNC
+                ig = MSX64_ARGUMENTA_VACUA(args).
+                CONTENTUM(args) = msg.
+                DECLARA tr SICUT NUMERUS VALENS MSX64_VOCA(translate_message, args).
+                ig = MSX64_ARGUMENTA_VACUA(args).
+                CONTENTUM(args) = msg.
+                DECLARA di SICUT NUMERUS VALENS MSX64_VOCA(dispatch_message, args).
+            FIN-SI.
+        FIN-DUM.
+
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        DECLARA vivit SICUT NUMERUS VALENS MSX64_VOCA(is_window, args).
+        SI vivit == 0 TUNC
+            currens = 0.
+        ALITER
+            ig = MSX64_ARGUMENTA_VACUA(args).
+            CONTENTUM(args) = 27.
+            DECLARA esc SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args).
+            SI (esc & 32768) != 0 TUNC currens = 0. FIN-SI.
+        FIN-SI.
+
+        SI currens == 1 TUNC
+            ig = MSX64_ARGUMENTA_VACUA(args).
+            CONTENTUM(args) = hwnd.
+            CONTENTUM(args + 8) = rect.
+            rc_ok = MSX64_VOCA(get_client_rect, args).
+            SI rc_ok != 0 TUNC
+                client_w = MEM_I32_LEGE(rect, 8).
+                client_h = MEM_I32_LEGE(rect, 12).
+            FIN-SI.
+
+            ig = MSX64_ARGUMENTA_VACUA(args).
+            CONTENTUM(args) = point.
+            DECLARA cp SICUT NUMERUS VALENS MSX64_VOCA(get_cursor_pos, args).
+            SI cp != 0 TUNC
+                ig = MSX64_ARGUMENTA_VACUA(args).
+                CONTENTUM(args) = hwnd.
+                CONTENTUM(args + 8) = point.
+                DECLARA stc SICUT NUMERUS VALENS MSX64_VOCA(screen_to_client, args).
+                SI stc != 0 && client_w > 0 && client_h > 0 TUNC
+                    DECLARA mx SICUT NUMERUS VALENS MEM_I32_LEGE(point, 0).
+                    DECLARA my SICUT NUMERUS VALENS MEM_I32_LEGE(point, 4).
+                    radar_x = (mx * w) / client_w.
+                    radar_y = (my * h) / client_h.
+                FIN-SI.
+            FIN-SI.
+
+            DECLARA actio SICUT NUMERUS VALENS 0.
+
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 83.
+            DECLARA ks SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI ks != 0 && prev_s == 0 TUNC actio = 1. FIN-SI. prev_s = ks.
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 68.
+            DECLARA kd SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI actio == 0 && kd != 0 && prev_d == 0 TUNC actio = 2. FIN-SI. prev_d = kd.
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 65.
+            DECLARA ka SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI actio == 0 && ka != 0 && prev_a == 0 TUNC actio = 3. FIN-SI. prev_a = ka.
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 77.
+            DECLARA km SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI actio == 0 && km != 0 && prev_m == 0 TUNC actio = 4. FIN-SI. prev_m = km.
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 84.
+            DECLARA kt SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI actio == 0 && kt != 0 && prev_t == 0 TUNC actio = 5. FIN-SI. prev_t = kt.
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 82.
+            DECLARA kr SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI actio == 0 && kr != 0 && prev_r == 0 TUNC actio = 6. FIN-SI. prev_r = kr.
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 78.
+            DECLARA kn SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI actio == 0 && kn != 0 && prev_n == 0 TUNC actio = 7. FIN-SI. prev_n = kn.
+
+            ig = MSX64_ARGUMENTA_VACUA(args). CONTENTUM(args) = 1.
+            DECLARA click SICUT NUMERUS VALENS MSX64_VOCA(get_async_key, args) & 32768.
+            SI actio == 0 && click != 0 && prev_click == 0 && radar_y >= 149 && radar_y < 174 && radar_x >= 0 && radar_x < w TUNC
+                actio = ((radar_x * 7) / w) + 1.
+            FIN-SI.
+            prev_click = click.
+
+            SI actio > 0 TUNC
+                DECLARA actum SICUT NUMERUS VALENS ATMOS_ACTIO(status, actio).
+                SI actum < 0 TUNC
+                    fatalis = 110.
+                    currens = 0.
+                FIN-SI.
+                SI actum == 1 TUNC
+                    v_depth = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 8)).
+                    v_oxygen = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 16)).
+                    v_energy = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 24)).
+                    v_hull = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 32)).
+                    v_credits = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 40)).
+                    v_ore = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status + 48)).
+                    v_cycle = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(status)).
+                FIN-SI.
+            FIN-SI.
+
+            SI currens == 1 TUNC
+                DECLARA frame SICUT NUMERUS VALENS ATMOS_FRAMEBUFFER_PINGE(pixels, w, h, status).
+                DECLARA cur SICUT NUMERUS VALENS ATMOS_CURSOR_PINGE(pixels, w, h, radar_x, radar_y).
+                ig = MSX64_ARGUMENTA_VACUA(args).
+                CONTENTUM(args + 0) = hdc.
+                CONTENTUM(args + 8) = 0.
+                CONTENTUM(args + 16) = 0.
+                CONTENTUM(args + 24) = client_w.
+                CONTENTUM(args + 32) = client_h.
+                CONTENTUM(args + 40) = 0.
+                CONTENTUM(args + 48) = 0.
+                CONTENTUM(args + 56) = w.
+                CONTENTUM(args + 64) = h.
+                CONTENTUM(args + 72) = pixels.
+                CONTENTUM(args + 80) = bmi.
+                CONTENTUM(args + 88) = 0.
+                CONTENTUM(args + 96) = 13369376.
+                DECLARA frame_lineae SICUT NUMERUS VALENS MSX64_VOCA(stretch_dibits, args).
+
+                DECLARA tx SICUT NUMERUS VALENS GDI_TEXTUS_PINGE(hdc, text_out, 16, 10, t_title).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 20, 34, t_depth). tx = GDI_TEXTUS_PINGE(hdc, text_out, 94, 34, v_depth).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 20, 54, t_oxygen). tx = GDI_TEXTUS_PINGE(hdc, text_out, 94, 54, v_oxygen).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 20, 74, t_energy). tx = GDI_TEXTUS_PINGE(hdc, text_out, 94, 74, v_energy).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 20, 94, t_hull). tx = GDI_TEXTUS_PINGE(hdc, text_out, 94, 94, v_hull).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 20, 118, t_credits). tx = GDI_TEXTUS_PINGE(hdc, text_out, 94, 118, v_credits).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 20, 136, t_ore). tx = GDI_TEXTUS_PINGE(hdc, text_out, 94, 136, v_ore).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 20, 154, t_cycle). tx = GDI_TEXTUS_PINGE(hdc, text_out, 94, 154, v_cycle).
+
+                DECLARA sonar SICUT TEXTUS VALENS t_none.
+                SI CONTENTUM(status + 64) == 1 TUNC sonar = t_mineral. FIN-SI.
+                SI CONTENTUM(status + 64) == 2 TUNC sonar = t_structure. FIN-SI.
+                SI CONTENTUM(status + 64) == 3 TUNC sonar = t_convoy. FIN-SI.
+                SI CONTENTUM(status + 64) == 4 TUNC sonar = t_below. FIN-SI.
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 430, 28, sonar).
+                DECLARA evt SICUT TEXTUS VALENS t_event_none.
+                SI CONTENTUM(status + 72) == 1 TUNC evt = t_fracture. FIN-SI.
+                SI CONTENTUM(status + 72) == 2 TUNC evt = t_salvage. FIN-SI.
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 430, 48, evt).
+                SI ATMOS_FINIS(status) == 1 TUNC tx = GDI_TEXTUS_PINGE(hdc, text_out, 430, 70, t_lost). FIN-SI.
+
+                DECLARA by SICUT NUMERUS VALENS client_h - 26.
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 8, by, t_scan).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 105, by, t_desc).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 205, by, t_asc).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 300, by, t_mine).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 395, by, t_trade).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 500, by, t_repair).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, 620, by, t_new).
+                tx = GDI_TEXTUS_PINGE(hdc, text_out, client_w - 70, 8, t_exit).
+
+                ig = MSX64_ARGUMENTA_VACUA(args).
+                CONTENTUM(args) = 16.
+                DECLARA dormitum SICUT NUMERUS VALENS MSX64_VOCA(sleep_fn, args).
+            FIN-SI.
+        FIN-SI.
+    FIN-DUM.
+
+    ig = MSX64_ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    DECLARA adhuc SICUT NUMERUS VALENS MSX64_VOCA(is_window, args).
+    SI adhuc != 0 TUNC
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        CONTENTUM(args + 8) = hdc.
+        DECLARA liberatum SICUT NUMERUS VALENS MSX64_VOCA(release_dc, args).
+        ig = MSX64_ARGUMENTA_VACUA(args).
+        CONTENTUM(args) = hwnd.
+        DECLARA deletum SICUT NUMERUS VALENS MSX64_VOCA(destroy_window, args).
+    FIN-SI.
+
+    SI fatalis != 0 TUNC REDDE fatalis. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
