@@ -6,6 +6,40 @@ Non est portatio lineatim ludi HTML originalis. Finis huius incrementi est nucle
 ludicum parvum, persistentem et vere exsecutabilem construere, ut necessitates
 applicationum ordinariarum defectus vel facultates generales VINDEX detegant.
 
+## Status certificationis
+
+**PROBATUM sub Windows vero die III Septembris MMXXVI.**
+
+GitHub Actions cursus `33713788910` compilatorem VINDEX Win64 generavit, illum
+sub Microsoft Windows Server 2025 exsecutus est, `principalis.vindex` in
+`atmos.exe` compilavit atque ludum ipsum vere exsecutus est.
+
+Catena probata:
+
+```text
+new -> descend -> mine -> ascend -> trade -> status
+```
+
+Persistentia `atmos.sav` XLVIII octetorum, magia `ATD1`, versio I et valores
+status post singulas actiones byte per byte verificata sunt. Exitus finalis fuit:
+
+```text
+CYCLE 4
+DEPTH_M 120
+OXYGEN 87
+ENERGY 75
+HULL 100
+CREDITS 300
+ORE 0
+WORLD_SEED 7319
+```
+
+Workflow concluserat:
+
+```text
+RECTE: ATMOS VINDEX PE Win64 et persistentia sub Windows probata sunt.
+```
+
 ## Constructio
 
 Ex radice `Vindex Chat-GPT/vindex_final_v51`:
