@@ -1,0 +1,17 @@
+// VINDEX — canvas BGRA super memoriam externam.
+// Utile cum systema hospes (ex. Win32 CreateDIBSection) pixels possidet.
+// Dependit a canvas_bgra.vindex.
+
+FUNCTIO CBGRA_EX_PIXELS REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT pixels SICUT NUMERUS.
+    SI w <= 0 || h <= 0 || pixels <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA c SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    SI c <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(c + 0) = w.
+    CONTENTUM(c + 8) = h.
+    CONTENTUM(c + 16) = w.
+    CONTENTUM(c + 24) = pixels.
+    REDDE c.
+FIN-FUNCTIO.
