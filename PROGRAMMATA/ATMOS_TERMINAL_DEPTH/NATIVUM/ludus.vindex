@@ -75,20 +75,7 @@ FUNCTIO NAT_SMOKE REDDENS NUMERUS.
     DECLARA sx SICUT NUMERUS VALENS 10 * cw / 960.
     DECLARA sy SICUT NUMERUS VALENS 10 * ch / 720.
     DECLARA visus SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, sx, sy).
-    SI visus != 2107408 TUNC
-        PROCLAMA "ERRATUM: PIXEL PRAESENTATUS".
-        PROCLAMA visus.
-        REDDE 48.
-    FIN-SI.
-
-    PROCLAMA "RECTE: ATMOS NATIVUM DIB WIN64".
-    PROCLAMA CONTENTUM(s + 40).
-    PROCLAMA CONTENTUM(s + 48).
-    PROCLAMA CONTENTUM(s + 24).
-    PROCLAMA CONTENTUM(s + 0).
-    PROCLAMA cw.
-    PROCLAMA ch.
-    PROCLAMA visus.
+    SI visus != 2107408 TUNC REDDE 48. FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -127,6 +114,25 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     SI argc >= 2 TUNC
         DECLARA code SICUT NUMERUS VALENS NAT_SMOKE(s, canvas, ctx, dibctx, dib, hwnd, hdc, rect).
+        SI code == 0 && argc == 2 TUNC
+            DECLARA cw_smoke SICUT NUMERUS VALENS 0.
+            DECLARA ch_smoke SICUT NUMERUS VALENS 0.
+            SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) != 0 TUNC
+                cw_smoke = NAT_I32_LEGE(rect, 8) - NAT_I32_LEGE(rect, 0).
+                ch_smoke = NAT_I32_LEGE(rect, 12) - NAT_I32_LEGE(rect, 4).
+            FIN-SI.
+            DECLARA sx_smoke SICUT NUMERUS VALENS 10 * cw_smoke / 960.
+            DECLARA sy_smoke SICUT NUMERUS VALENS 10 * ch_smoke / 720.
+            DECLARA visus_smoke SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, sx_smoke, sy_smoke).
+            PROCLAMA "RECTE: ATMOS NATIVUM DIB WIN64".
+            PROCLAMA CONTENTUM(s + 40).
+            PROCLAMA CONTENTUM(s + 48).
+            PROCLAMA CONTENTUM(s + 24).
+            PROCLAMA CONTENTUM(s + 0).
+            PROCLAMA cw_smoke.
+            PROCLAMA ch_smoke.
+            PROCLAMA visus_smoke.
+        FIN-SI.
         DECLARA wd SICUT NUMERUS VALENS WDIB_DELE(dibctx, dib).
         DECLARA rel SICUT NUMERUS VALENS WINAPP_HDC_LIBERA(ctx, hwnd, hdc).
         DECLARA del SICUT NUMERUS VALENS WINAPP_FENESTRA_DELE(ctx, hwnd).
