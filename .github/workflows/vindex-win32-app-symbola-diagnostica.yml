@@ -16,26 +16,40 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
-      - name: Compilatorem correctum temporaliter genera
+      - name: Compilatorem instrumentatum temporaliter genera
         shell: bash
         run: |
           set -euo pipefail
           python3 instrumenta/corrige_identificatores_longi_poc_v.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          s = p.read_text(encoding='utf-8')
+          target = '-8428582279422563406'
+          reg = '                ig_fn_dyn = PARES_SCRIBE(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), idx_fn, 1, pos).\n'
+          reg_dbg = reg + f'''                SI nomen_adiutoris == {target} TUNC\n                    PROCLAMA "P11E REG TARGET".\n                    PROCLAMA idx_fn.\n                    PROCLAMA pos.\n                FIN-SI.\n'''
+          if reg not in s:
+              raise SystemExit('registration needle deest')
+          s = s.replace(reg, reg_dbg, 1)
+          start = s.index('FUNCTIO CERCA_FUNCTIONEM_DYNAMICAM REDDENS NUMERUS.')
+          pos = s.index('    DECLARA idx_fn_dyn SICUT NUMERUS VALENS 0.\n', start)
+          needle = '    DECLARA idx_fn_dyn SICUT NUMERUS VALENS 0.\n'
+          dbg = needle + f'''    SI nomen_fn_dyn == {target} TUNC\n        PROCLAMA "P11E LOOK TARGET".\n        PROCLAMA PARES_QUANTITAS(descriptor).\n        DECLARA dbg_i SICUT NUMERUS VALENS 0.\n        DUM dbg_i < PARES_QUANTITAS(descriptor) PERFICE\n            SI PARES_LEGE(descriptor, dbg_i, 0) == nomen_fn_dyn TUNC\n                PROCLAMA "P11E FOUND TARGET".\n                PROCLAMA dbg_i.\n                PROCLAMA PARES_LEGE(descriptor, dbg_i, 1).\n            FIN-SI.\n            dbg_i = dbg_i + 1.\n        FIN-DUM.\n    FIN-SI.\n'''
+          s = s[:pos] + s[pos:].replace(needle, dbg, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
           cd 'Vindex Chat-GPT/vindex_final_v51'
           chmod +x compilator_vindex
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
           chmod +x /tmp/g3
-          /tmp/g3 src/compilator_vindex.vindex /tmp/g4
-          chmod +x /tmp/g4
-          cmp /tmp/g3 /tmp/g4
-      - name: Symbolum CREA compila
+      - name: Testem Win32 App cum vestigiis compila
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
-        run: /tmp/g4 tests/casus/win32_app_symbola_superficiei.vindex /tmp/crea.exe pe
+        run: /tmp/g3 tests/casus/win32_app.vindex /tmp/win32.exe pe
       - name: Symbola post CREA compila
         if: always()
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
-        run: /tmp/g4 tests/casus/win32_app_symbola_post.vindex /tmp/post.exe pe
+        run: /tmp/g3 tests/casus/win32_app_symbola_post.vindex /tmp/post.exe pe
