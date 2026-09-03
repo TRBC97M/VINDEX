@@ -1,0 +1,33 @@
+// ATMOS // TERMINAL DEPTH — bathymetria deterministica continua, tota VINDEX.
+// Profunditas non est iam actio DOWN/UP: ex positione mundi derivatur.
+
+FUNCTIO BATHY_ABS REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    SI v < 0 TUNC REDDE 0 - v. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO BATHY_SECTOR REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    SI v >= 0 TUNC REDDE v / 560. FIN-SI.
+    REDDE (v - 559) / 560.
+FIN-FUNCTIO.
+
+// Bathymetria integer-only: basin centrale + declive + perturbatio deterministica.
+FUNCTIO BATHY_PROFUNDITAS REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    DECLARA ax SICUT NUMERUS VALENS BATHY_ABS(x).
+    DECLARA ay SICUT NUMERUS VALENS BATHY_ABS(y).
+    DECLARA d SICUT NUMERUS VALENS ax.
+    SI ay > d TUNC d = ay. FIN-SI.
+    DECLARA sx SICUT NUMERUS VALENS BATHY_SECTOR(x).
+    DECLARA sy SICUT NUMERUS VALENS BATHY_SECTOR(y).
+    DECLARA h SICUT NUMERUS VALENS ALEA_MISCE_U32(semen, sx, sy).
+    DECLARA locus SICUT NUMERUS VALENS h % 701.
+    DECLARA p SICUT NUMERUS VALENS 1800 + (d / 7) + locus.
+    SI p < 600 TUNC p = 600. FIN-SI.
+    SI p > 9000 TUNC p = 9000. FIN-SI.
+    REDDE p.
+FIN-FUNCTIO.
