@@ -30,6 +30,8 @@ Eadem applicatio nunc:
 - in modo visibili usque ad Escape vel clausuram fenestrae currit.
 
 Modus `smoke` easdem APIs inputus/eventorum sub CI exercet sine fenestra visibili.
+Quia via smoke statibus distinctis deficit si lectura cursoris aut conversio ad
+clientem fallit, exitus viridis contractum inputus quoque custodit.
 
 Nulla HTML, JavaScript, Electron, SDL, C aut C++ runtime ludi adhibetur.
 
