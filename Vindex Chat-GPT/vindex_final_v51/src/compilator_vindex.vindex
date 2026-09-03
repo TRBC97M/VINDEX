@@ -3505,7 +3505,13 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         FIN-DUM.
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
 
-        SI numerus_argumentorum == 7 TUNC
+        // P11-E — ABI ordinaria: sex argumenta prima in registris SysV,
+        // VII et VIII in pila. Casus VIII retinet ordinem ut [rbp+16]=VII,
+        // [rbp+24]=VIII apud callee; casus VII addit verbum alignmenti.
+        SI numerus_argumentorum == 8 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 11).
+        FIN-SI.
+        SI numerus_argumentorum >= 7 TUNC
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 10).
         FIN-SI.
         SI numerus_argumentorum >= 6 TUNC
@@ -3531,6 +3537,10 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 11).
             CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 10).
         FIN-SI.
+        SI numerus_argumentorum == 8 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 11).
+            CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 10).
+        FIN-SI.
 
         DECLARA loci_fn SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(contextus_parseris, nomen_fn).
         SI loci_fn != 0 TUNC
@@ -3543,7 +3553,7 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
             ig_pendens_dyn = PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_pendens, 1, nomen_fn).
             ig_pendens_dyn = PARES_SCRIBE(POSITIONES_PENDENTES_LEGE(contextus_parseris), idx_pendens, 0, positio_vocationis).
         FIN-SI.
-        SI numerus_argumentorum == 7 TUNC
+        SI numerus_argumentorum == 7 || numerus_argumentorum == 8 TUNC
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 10).
             CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 11).
         FIN-SI.
@@ -6579,7 +6589,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                             pos = COMPONE_SUME_PILA(codex, pos, 10, 16).
                             pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, 10).
                         ALITER
-                            pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).
+                            SI numerus_parametrorum == 7 TUNC
+                                pos = COMPONE_SUME_PILA(codex, pos, 10, 24).
+                                pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, 10).
+                            ALITER
+                                pos = COMPONE_SERVA_PILA(codex, pos, intervallum_param, registrum_param).
+                            FIN-SI.
                         FIN-SI.
 
                         numerus_parametrorum = numerus_parametrorum + 1.
