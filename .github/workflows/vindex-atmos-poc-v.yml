@@ -1,0 +1,86 @@
+name: VINDEX — ATMOS Terminal Depth POC V
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V/**'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/COMMUNE/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_app.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_ffi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-atmos-poc-v.yml'
+
+jobs:
+  genera:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ATMOS POC V ex VINDEX compila
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V
+        shell: bash
+        run: |
+          set -euo pipefail
+          COMP='../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x "$COMP"
+          "$COMP" ludus.vindex /tmp/atmos_poc_v.exe pe
+          file /tmp/atmos_poc_v.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-poc-v
+          path: /tmp/atmos_poc_v.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    needs: genera
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-poc-v
+          path: atmos
+      - name: Mundum, HUD, ATD1 et ATW1 sub Windows vero proba
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dir = (Resolve-Path '.\atmos').Path
+          $exe = Join-Path $dir 'atmos_poc_v.exe'
+          Set-Location $dir
+          Remove-Item '.\atmos.sav' -Force -ErrorAction SilentlyContinue
+          Remove-Item '.\atmos.world' -Force -ErrorAction SilentlyContinue
+
+          $out = & $exe smoke 2>&1
+          $code = $LASTEXITCODE
+          $text = ($out -join "`n")
+          Write-Host $text
+          if ($code -ne 0) { throw "atmos_poc_v exitus $code" }
+          if ($text -notmatch 'RECTE: ATMOS POC V WIN64') { throw 'confirmatio POC V deest' }
+
+          $numeri = @($out | Where-Object { $_ -match '^-?\d+$' } | ForEach-Object { [int64]$_ })
+          if ($numeri.Count -lt 15) { throw 'status POC V incompletus est' }
+          $finis = $numeri[($numeri.Count-15)..($numeri.Count-1)]
+          $expectata = @(2,120,95,86,9, 1,0,2,2,1,280,101,56,59,220)
+          for ($i=0; $i -lt $expectata.Count; $i++) {
+            if ($finis[$i] -ne $expectata[$i]) { throw "POC V index $i falsus: $($finis[$i]) != $($expectata[$i])" }
+          }
+
+          if (!(Test-Path '.\atmos.sav')) { throw 'atmos.sav deest' }
+          $s = [IO.File]::ReadAllBytes((Resolve-Path '.\atmos.sav'))
+          if ($s.Length -ne 48) { throw "ATD1 mensura falsa: $($s.Length)" }
+          if ($s[0] -ne 65 -or $s[1] -ne 84 -or $s[2] -ne 68 -or $s[3] -ne 49 -or $s[4] -ne 1) { throw 'ATD1 caput falsum' }
+          function SU32([int]$o) { return [BitConverter]::ToUInt32($s,$o) }
+          if ((SU32 8) -ne 2 -or (SU32 12) -ne 120 -or (SU32 16) -ne 95 -or (SU32 20) -ne 86 -or (SU32 24) -ne 100 -or (SU32 28) -ne 250 -or (SU32 32) -ne 9) {
+            throw 'ATD1 status POC V falsus est'
+          }
+
+          if (!(Test-Path '.\atmos.world')) { throw 'atmos.world deest' }
+          $w = [IO.File]::ReadAllBytes((Resolve-Path '.\atmos.world'))
+          if ($w.Length -ne 20) { throw "ATW1 mensura falsa: $($w.Length)" }
+          if ($w[0] -ne 65 -or $w[1] -ne 84 -or $w[2] -ne 87 -or $w[3] -ne 49 -or $w[4] -ne 1) { throw 'ATW1 caput falsum' }
+          if ([BitConverter]::ToInt32($w,8) -ne 1 -or [BitConverter]::ToInt32($w,12) -ne 0 -or [BitConverter]::ToUInt32($w,16) -ne 2) {
+            throw 'ATW1 positio falsa est'
+          }
+          Write-Host 'RECTE: POC V mundus proceduralis + HUD + ATD1 + ATW1 probata sunt.'

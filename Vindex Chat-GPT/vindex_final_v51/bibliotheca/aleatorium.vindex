@@ -1,0 +1,58 @@
+// ALEATORIUM — generator pseudo-aleatorius determinatus VINDEX.
+//
+// Contractus P11-E:
+// - status est unum verbum NUMERUS a cliente possessum;
+// - arithmeticam u32 explicitam servat per & 0xFFFFFFFF;
+// - eodem semine eadem series sub omnibus targetis redditur;
+// - nulla entropia OS aut tempus implicite adhibetur.
+
+FUNCTIO ALEA_SEMEN REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    SI status <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(status) = semen & 4294967295.
+    REDDE CONTENTUM(status).
+FIN-FUNCTIO.
+
+// LCG Numerical Recipes, modulo 2^32.
+FUNCTIO ALEA_PROXIMUM_U32 REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI status <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA prius SICUT NUMERUS VALENS CONTENTUM(status) & 4294967295.
+    DECLARA novum SICUT NUMERUS VALENS (prius * 1664525 + 1013904223) & 4294967295.
+    CONTENTUM(status) = novum.
+    REDDE novum.
+FIN-FUNCTIO.
+
+// Integer in [0, limen). Limen <= 0 reddit 0 sine mutando statum.
+FUNCTIO ALEA_INFRA REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT limen SICUT NUMERUS.
+    SI limen <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA v SICUT NUMERUS VALENS ALEA_PROXIMUM_U32(status).
+    REDDE v % limen.
+FIN-FUNCTIO.
+
+// Integer inclusivus in [minimum, maximum]. Intervallum invalidum reddit minimum.
+FUNCTIO ALEA_INTER REDDENS NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT minimum SICUT NUMERUS.
+    ACCIPIT maximum SICUT NUMERUS.
+    SI maximum <= minimum TUNC REDDE minimum. FIN-SI.
+    DECLARA spatium SICUT NUMERUS VALENS maximum - minimum + 1.
+    REDDE minimum + ALEA_INFRA(status, spatium).
+FIN-FUNCTIO.
+
+// Hash spatial u32 purus. Multiplicatores primi coordinatas separant;
+// unus passus LCG diffusionem addit. Ad mundum proceduralem reproducibilem utilis.
+FUNCTIO ALEA_MISCE_U32 REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    DECLARA aa SICUT NUMERUS VALENS a & 4294967295.
+    DECLARA bb SICUT NUMERUS VALENS b & 4294967295.
+    DECLARA cc SICUT NUMERUS VALENS c & 4294967295.
+    DECLARA x SICUT NUMERUS VALENS (aa * 73856093 + bb * 19349663 + cc * 83492791) & 4294967295.
+    x = (x * 1664525 + 1013904223) & 4294967295.
+    REDDE x.
+FIN-FUNCTIO.

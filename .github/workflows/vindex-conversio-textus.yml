@@ -6,6 +6,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/conversio_textus.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/tests/casus/textus_concatena_dynamicum.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
       - '.github/workflows/vindex-conversio-textus.yml'
 
@@ -14,22 +15,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Conversionem sub ELF proba et PE genera
+      - name: Conversionem et affectationem TEXTUS sub ELF proba; PE genera
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           set -euo pipefail
           chmod +x compilator_vindex
+
           ./compilator_vindex tests/casus/conversio_textus.vindex /tmp/proba_conversio
           chmod +x /tmp/proba_conversio
           /tmp/proba_conversio | tee /tmp/conversio.log
           grep -F 'CONVERSIO TEXTUS RECTE' /tmp/conversio.log
+
+          ./compilator_vindex tests/casus/textus_concatena_dynamicum.vindex /tmp/proba_affectatio_textus
+          chmod +x /tmp/proba_affectatio_textus
+          /tmp/proba_affectatio_textus | tee /tmp/affectatio.log
+          grep -F 'TEXTUS AFFECTATIO SPATIATA RECTE' /tmp/affectatio.log
+
           ./compilator_vindex tests/casus/conversio_textus.vindex /tmp/proba_conversio.exe pe
-          file /tmp/proba_conversio.exe
+          ./compilator_vindex tests/casus/textus_concatena_dynamicum.vindex /tmp/proba_affectatio_textus.exe pe
+          file /tmp/proba_conversio.exe /tmp/proba_affectatio_textus.exe
       - uses: actions/upload-artifact@v4
         with:
           name: proba-conversio-textus
-          path: /tmp/proba_conversio.exe
+          path: |
+            /tmp/proba_conversio.exe
+            /tmp/proba_affectatio_textus.exe
           if-no-files-found: error
           retention-days: 1
 
@@ -41,10 +52,11 @@ jobs:
         with:
           name: proba-conversio-textus
           path: proba
-      - name: Conversionem sub Windows vero proba
+      - name: Conversionem et affectationem TEXTUS sub Windows vero proba
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+
           $exe = (Resolve-Path '.\proba\proba_conversio.exe').Path
           $out = & $exe 2>&1
           $code = $LASTEXITCODE
@@ -52,3 +64,11 @@ jobs:
           Write-Host $text
           if ($code -ne 0) { throw "proba_conversio exitus $code" }
           if ($text -notmatch 'CONVERSIO TEXTUS RECTE') { throw 'confirmatio conversionis deest' }
+
+          $aff = (Resolve-Path '.\proba\proba_affectatio_textus.exe').Path
+          $outAff = & $aff 2>&1
+          $codeAff = $LASTEXITCODE
+          $textAff = ($outAff -join "`n")
+          Write-Host $textAff
+          if ($codeAff -ne 0) { throw "proba_affectatio_textus exitus $codeAff" }
+          if ($textAff -notmatch 'TEXTUS AFFECTATIO SPATIATA RECTE') { throw 'confirmatio affectationis TEXTUS deest' }

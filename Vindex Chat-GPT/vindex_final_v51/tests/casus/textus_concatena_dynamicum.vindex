@@ -1,0 +1,26 @@
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/conversio.vindex".
+
+// P11-E — regressio ex ATMOS POC V.
+// Affectatio ordinaria cum spatiis post signo '=' genus TEXTUS servare debet.
+// Ante correctionem `t = t + " m"` ut additio NUMERUS compilabatur et
+// duas sedes memoriae addebat, unde PE Win64 access violationem patiebatur.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA numerus SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(120).
+    DECLARA t SICUT TEXTUS VALENS "DEPTH " + numerus.
+    t = t + " m".
+
+    SI LONGITUDO(t) != 11 TUNC REDDE 1. FIN-SI.
+    DECLARA b SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(t).
+    SI OCTETUS_AB(b) != 68 TUNC REDDE 2. FIN-SI.
+    SI OCTETUS_AB(b + 1) != 69 TUNC REDDE 3. FIN-SI.
+    SI OCTETUS_AB(b + 2) != 80 TUNC REDDE 4. FIN-SI.
+    SI OCTETUS_AB(b + 3) != 84 TUNC REDDE 5. FIN-SI.
+    SI OCTETUS_AB(b + 4) != 72 TUNC REDDE 6. FIN-SI.
+    SI OCTETUS_AB(b + 5) != 32 TUNC REDDE 7. FIN-SI.
+    SI OCTETUS_AB(b + 6) != 49 || OCTETUS_AB(b + 7) != 50 || OCTETUS_AB(b + 8) != 48 TUNC REDDE 8. FIN-SI.
+    SI OCTETUS_AB(b + 9) != 32 || OCTETUS_AB(b + 10) != 109 TUNC REDDE 9. FIN-SI.
+
+    PROCLAMA "TEXTUS AFFECTATIO SPATIATA RECTE".
+    REDDE 0.
+FIN-FUNCTIO.

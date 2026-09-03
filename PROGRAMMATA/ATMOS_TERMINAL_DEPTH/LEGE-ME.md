@@ -7,7 +7,8 @@ ATMOS est primum programma maius in `PROGRAMMATA/`: ludus qui VINDEX sub usu app
 ```text
 PROGRAMMATA/ATMOS_TERMINAL_DEPTH/
 ├── COMMUNE/
-│   └── nucleus.vindex
+│   ├── nucleus.vindex
+│   └── mundus.vindex
 ├── POC_I/
 │   ├── principalis.vindex
 │   └── PROIECTUM.vindex
@@ -17,8 +18,12 @@ PROGRAMMATA/ATMOS_TERMINAL_DEPTH/
 ├── POC_III/
 │   ├── graphicum.vindex
 │   └── PROIECTUM.vindex
-└── POC_IV/
+├── POC_IV/
+│   ├── ludus.vindex
+│   └── PROIECTUM.vindex
+└── POC_V/
     ├── ludus.vindex
+    ├── mundus_smoke.vindex
     └── PROIECTUM.vindex
 ```
 
@@ -78,6 +83,27 @@ confirmat statum finalem `cycle=4`, `depth=120`, `oxygen=87`, `energy=75`,
 `hull=100`, `credits=300`, `ore=0` tam in memoria/output quam in `atmos.sav`.
 
 **Status:** probatum sub Windows vero.
+
+## POC V — mundus proceduralis persistentis
+
+Probatio quinta ludum e scena unica ad mundum determinatum extendit:
+
+- PRNG generalis `bibliotheca/aleatorium.vindex`;
+- API applicationis generalis `bibliotheca/win32_app.vindex`;
+- sectores ex semine et coordinatis regenerabiles;
+- contactus sonar, divitiae et periculum determinata;
+- navigatio sectorum per claves sagittarum;
+- persistentia mundi ATW1 iuxta statum expeditionis ATD1;
+- framebuffer et HUD dynamica in fenestra Win64 nativa.
+
+Opus POC V etiam defectus generales compilatoris detexit et correxit: nomina
+identificatorum longa, commentaria `//` in scanner top-level, recognitio plena
+`FORMA`, atque spatia post `=` ante deductionem generis expressionis.
+
+Workflow POC V #31 (`33786837915`) sub Microsoft Windows Server 2025 exitum `0`
+reddidit et ATD1, ATW1, mundum proceduralem atque HUD verificavit.
+
+**Status:** probatum sub Windows vero — III Septembris MMXXVI.
 
 ## Regula progressionis
 

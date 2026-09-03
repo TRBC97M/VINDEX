@@ -1,0 +1,20 @@
+// P11-E — regressio scanneris top-level.
+// Ante correctionem, scanner FORMA tantum per litteras "FO" agnoscebat.
+// Vocabulum BITMAPINFO in commentario ergo functionem sequentem devorabat.
+
+FUNCTIO PRIMA REDDENS NUMERUS.
+    REDDE 11.
+FIN-FUNCTIO.
+
+// Descriptor graphicus: BITMAPINFO, pixels, superficies.
+FUNCTIO POST_COMMENTUM REDDENS NUMERUS.
+    REDDE 31.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA r SICUT NUMERUS VALENS PRIMA() + POST_COMMENTUM().
+    PROCLAMA r.
+    SI r != 42 TUNC REDDE 95. FIN-SI.
+    PROCLAMA "FORMA COMMENTUM RECTE".
+    REDDE 0.
+FIN-FUNCTIO.
