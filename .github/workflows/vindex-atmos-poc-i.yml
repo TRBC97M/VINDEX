@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/**'
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_I/**'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
       - 'documenta/vindex/ATMOS_TERMINAL_DEPTH_POC_I.md'
@@ -51,12 +51,12 @@ jobs:
           name: atmos-compilator-win64
           path: instrumenta-atmos
 
-      - name: ATMOS ex fonte VINDEX construe
+      - name: ATMOS ex PROGRAMMATA construe
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $compilator = (Resolve-Path '.\instrumenta-atmos\compilator_vindex.exe').Path
-          $radix = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\exempla\atmos_terminal_depth').Path
+          $radix = (Resolve-Path '.\PROGRAMMATA\ATMOS_TERMINAL_DEPTH\POC_I').Path
           $fons = Join-Path $radix 'principalis.vindex'
           $productum = Join-Path $radix 'atmos.exe'
 
@@ -72,7 +72,7 @@ jobs:
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $radix = (Resolve-Path '.\Vindex Chat-GPT\vindex_final_v51\exempla\atmos_terminal_depth').Path
+          $radix = (Resolve-Path '.\PROGRAMMATA\ATMOS_TERMINAL_DEPTH\POC_I').Path
           $exe = Join-Path $radix 'atmos.exe'
           $save = Join-Path $radix 'atmos.sav'
           Set-Location $radix
@@ -146,6 +146,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: atmos-terminal-depth-vindex-poc-i
-          path: Vindex Chat-GPT/vindex_final_v51/exempla/atmos_terminal_depth/atmos.exe
+          path: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_I/atmos.exe
           if-no-files-found: error
           retention-days: 14
