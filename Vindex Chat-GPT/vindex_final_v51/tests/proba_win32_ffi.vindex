@@ -1,5 +1,16 @@
 // P11-C — FFI Win64 generalis: LoadLibraryA + GetProcAddress + vocatio indirecta.
-// Probatio exercet vocationem unius argumenti et ABI Microsoft x64 cum XIV argumentis.
+// Probatio exercet I, XII et XIV argumenta ABI Microsoft x64 sub Windows vero.
+IMPORTA "bibliotheca/textus.vindex".
+
+FUNCTIO ARGUMENTA_VACUA REDDENS NUMERUS.
+    ACCIPIT argumenta SICUT ACUS<NUMERUS>.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 16 PERFICE
+        CONTENTUM(argumenta + i * 8) = 0.
+        i = i + 1.
+    FIN-DUM.
+    REDDE argumenta.
+FIN-FUNCTIO.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argc SICUT NUMERUS.
@@ -13,46 +24,81 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     FIN-SI.
 
     DECLARA get_system_metrics SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(user32, "GetSystemMetrics").
+    DECLARA register_message SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(user32, "RegisterWindowMessageA").
+    DECLARA create_window SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(user32, "CreateWindowExA").
+    DECLARA destroy_window SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(user32, "DestroyWindow").
     DECLARA create_font SICUT NUMERUS VALENS WIN_DLL_SYMBOLUM(gdi32, "CreateFontA").
-    SI get_system_metrics == 0 || create_font == 0 TUNC
+    SI get_system_metrics == 0 || register_message == 0 || create_window == 0 || destroy_window == 0 || create_font == 0 TUNC
         PROCLAMA "ERRATUM: symbolum FFI non inventum est".
         REDDE 82.
     FIN-SI.
 
     DECLARA argumenta SICUT ORDO DE NUMERUS CAPACITAS 16.
-    DECLARA i SICUT NUMERUS VALENS 0.
-    DUM i < 16 PERFICE
-        argumenta[i] = 0.
-        i = i + 1.
-    FIN-DUM.
+    DECLARA args SICUT NUMERUS VALENS SEDES(argumenta).
+    DECLARA ig SICUT NUMERUS VALENS ARGUMENTA_VACUA(args).
 
-    // SM_CXSCREEN = 0: probatio argumenti primi in RCX.
-    argumenta[0] = 0.
-    DECLARA latitudo SICUT NUMERUS VALENS ABI_MSX64_VOCA16(get_system_metrics, SEDES(argumenta)).
+    // SM_CXSCREEN = 0: argumentum primum in RCX.
+    CONTENTUM(args) = 0.
+    DECLARA latitudo SICUT NUMERUS VALENS ABI_MSX64_VOCA16(get_system_metrics, args).
     SI latitudo <= 0 TUNC
         PROCLAMA "ERRATUM: GetSystemMetrics latitudinem invalidam reddidit".
         REDDE 83.
     FIN-SI.
     PROCLAMA "RECTE: MSX64 I".
 
-    // CreateFontA habet XIV argumenta. Facies NULL legitima est.
-    // Haec probatio argumenta V-XIV in pila Microsoft x64 exercet sine fenestra.
-    i = 0.
-    DUM i < 16 PERFICE
-        argumenta[i] = 0.
-        i = i + 1.
-    FIN-DUM.
-    argumenta[0] = 16.
-    argumenta[4] = 400.
-    DECLARA hfont SICUT NUMERUS VALENS ABI_MSX64_VOCA16(create_font, SEDES(argumenta)).
+    // XIV argumenta: argumenta V-XIV per pilam Microsoft x64.
+    ig = ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = 16.
+    CONTENTUM(args + 32) = 400.
+    DECLARA hfont SICUT NUMERUS VALENS ABI_MSX64_VOCA16(create_font, args).
     SI hfont == 0 TUNC
         PROCLAMA "ERRATUM: CreateFontA XIV argumenta recusavit".
         REDDE 84.
     FIN-SI.
     PROCLAMA "RECTE: MSX64 XIV".
-    PROCLAMA hfont.
+
+    // Punctator TEXTUS ad LPCSTR probatur ante CreateWindowExA.
+    DECLARA classis SICUT TEXTUS VALENS "STATIC".
+    DECLARA classis_c SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(classis).
+    ig = ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = classis_c.
+    DECLARA msg_id SICUT NUMERUS VALENS ABI_MSX64_VOCA16(register_message, args).
+    SI msg_id == 0 TUNC
+        PROCLAMA "ERRATUM: LPCSTR classis legi non potest".
+        REDDE 85.
+    FIN-SI.
+    PROCLAMA "RECTE: LPCSTR VINDEX".
+
+    // CreateWindowExA minimum: classe systemica STATIC, titulus NULL,
+    // WS_POPUP, fenestra occulta 64x64, parent/menu/hInstance/lpParam NULL.
+    ig = ARGUMENTA_VACUA(args).
+    CONTENTUM(args + 0) = 0.
+    CONTENTUM(args + 8) = classis_c.
+    CONTENTUM(args + 16) = 0.
+    CONTENTUM(args + 24) = 2147483648.
+    CONTENTUM(args + 32) = 0.
+    CONTENTUM(args + 40) = 0.
+    CONTENTUM(args + 48) = 64.
+    CONTENTUM(args + 56) = 64.
+    CONTENTUM(args + 64) = 0.
+    CONTENTUM(args + 72) = 0.
+    CONTENTUM(args + 80) = 0.
+    CONTENTUM(args + 88) = 0.
+    PROCLAMA "GRADUS: CREATEWINDOW ANTE".
+    DECLARA hwnd SICUT NUMERUS VALENS ABI_MSX64_VOCA16(create_window, args).
+    PROCLAMA "GRADUS: CREATEWINDOW POST".
+    SI hwnd == 0 TUNC
+        PROCLAMA "ERRATUM: CreateWindowExA minimum nullum reddidit".
+        REDDE 86.
+    FIN-SI.
+    PROCLAMA "RECTE: MSX64 XII / HWND".
+
+    ig = ARGUMENTA_VACUA(args).
+    CONTENTUM(args) = hwnd.
+    DECLARA deletum SICUT NUMERUS VALENS ABI_MSX64_VOCA16(destroy_window, args).
 
     PROCLAMA "RECTE: WIN32 FFI VINDEX".
+    PROCLAMA hwnd.
     PROCLAMA latitudo.
     REDDE 0.
 FIN-FUNCTIO.
