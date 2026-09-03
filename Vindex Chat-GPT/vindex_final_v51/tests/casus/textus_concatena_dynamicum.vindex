@@ -1,33 +1,28 @@
 IMPORTA "bibliotheca/textus.vindex".
 IMPORTA "bibliotheca/conversio.vindex".
 
-// Regressio ex ATMOS POC V: descriptor TEXTUS dynamicus debet non solum
-// longitudinem sed etiam octeta recta sub ELF et PE Win64 continere.
-FUNCTIO OSTENDE_PRIMUM REDDENS NUMERUS.
-    ACCIPIT t SICUT TEXTUS.
-    DECLARA b SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(t).
-    PROCLAMA LONGITUDO(t).
-    PROCLAMA OCTETUS_AB(b).
-    PROCLAMA OCTETUS_AB(b + 1).
-    PROCLAMA OCTETUS_AB(b + 2).
-    REDDE b.
-FIN-FUNCTIO.
-
+// Regressio ex ATMOS POC V: affectatio auto-referens TEXTUS
+// `t = t + suffixum` novum descriptorem integrum servare debet.
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA numerus SICUT TEXTUS VALENS TEXTUS_EX_NUMERO_DECIMALI(120).
-    PROCLAMA "N0".
-    DECLARA bn SICUT NUMERUS VALENS OSTENDE_PRIMUM(numerus).
-
     DECLARA primus SICUT TEXTUS VALENS "DEPTH " + numerus.
-    PROCLAMA "C0".
-    DECLARA bp SICUT NUMERUS VALENS OSTENDE_PRIMUM(primus).
+    DECLARA distinctus SICUT TEXTUS VALENS primus + " m".
 
-    DECLARA secundus SICUT TEXTUS VALENS primus + " m".
-    PROCLAMA "C1".
-    DECLARA bs SICUT NUMERUS VALENS OSTENDE_PRIMUM(secundus).
+    PROCLAMA "D0".
+    PROCLAMA TEXTUS_SEDES(primus).
+    PROCLAMA TEXTUS_SEDES(distinctus).
+    PROCLAMA LONGITUDO(distinctus).
+    PROCLAMA OCTETUS_AB(TEXTUS_BASIS_OCTETORUM(distinctus)).
 
-    PROCLAMA bn.
-    PROCLAMA bp.
-    PROCLAMA bs.
+    DECLARA t SICUT TEXTUS VALENS "DEPTH " + numerus.
+    PROCLAMA "S0".
+    PROCLAMA TEXTUS_SEDES(t).
+    t = t + " m".
+    PROCLAMA "S1".
+    // Prima probatio non dereferens: si haec sedes falsa est, affectatio ipsa culpatur.
+    PROCLAMA TEXTUS_SEDES(t).
+    PROCLAMA "S2".
+    PROCLAMA LONGITUDO(t).
+    PROCLAMA OCTETUS_AB(TEXTUS_BASIS_OCTETORUM(t)).
     REDDE 0.
 FIN-FUNCTIO.
