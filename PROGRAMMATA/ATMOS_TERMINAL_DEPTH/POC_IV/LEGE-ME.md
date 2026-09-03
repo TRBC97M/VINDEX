@@ -1,6 +1,6 @@
 # ATMOS // TERMINAL DEPTH — POC IV
 
-**Status: in probatione.**
+**Status: probatum sub Windows vero.**
 
 POC IV coniungit nucleum ludicum persistentem POC I/II cum frontend Win64
 nativo POC III.
@@ -29,8 +29,37 @@ Modus certificationis:
 atmos_poc_iv.exe smoke
 ```
 
-`smoke` statum novum creat, seriem `descend -> mine -> ascend -> trade`
-per nucleum communem exercet, HUD GDI praesentat et `atmos.sav` verificandum
-relinquit.
+## Certificatio
 
-Status mutabitur in **probatum** tantum post CI Windows viridem.
+GitHub Actions cursus `33754602955` sub Microsoft Windows Server 2025
+`atmos_poc_iv.exe` vere exsecutus est. Modus `smoke` statum novum creavit et
+seriem `descend -> mine -> ascend -> trade` per nucleum communem exercuit.
+
+Status finalis observatus et in output verificatus est:
+
+```text
+CYCLE   4
+DEPTH   120
+OXYGEN  87
+ENERGY  75
+HULL    100
+CREDITS 300
+ORE     0
+```
+
+Eadem CI `atmos.sav` byte per byte legit et confirmavit:
+
+- mensuram exactam XLVIII octetorum;
+- magiam `ATD1`;
+- versionem I;
+- eosdem valores status in campis `u32` persistentibus.
+
+Workflow conclusit:
+
+```text
+RECTE: POC IV HUD + nucleus + ATD1 sub Windows probata sunt.
+```
+
+Hoc significat unum `.exe` VINDEX iam logicam ludi, persistentiam, fenestram
+Win64, framebuffer, HUD textuale GDI atque inputum clavium/muris in eadem
+applicatione coniungere posse.
