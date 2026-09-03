@@ -17,9 +17,8 @@ def substitue_unum(vetus: str, novum: str, nomen: str) -> None:
     mutatum = True
 
 
-# Bootstrap internus: antequam semantica publica mutetur, compilator ipse
-# buffers LITTERA suos per octeta cruda tractat. Ita compilator vetus et novus
-# eundem fontem sine conflictu stride VIII/stride I compilare possunt.
+# Bootstrap internus: compilator ipse buffers LITTERA suos per octeta cruda
+# tractat, ne generatio vetus et nova de stride discordent.
 substitue_unum(
     "    ACCIPIT verbum SICUT ORDO DE LITTERA.\n",
     "    ACCIPIT verbum SICUT ACUS<LITTERA>.\n",
@@ -40,6 +39,38 @@ substitue_unum(
     "            SCRIBE_OCTETUM_AB(buffer + mensura, OCTETUS_AB(textus + positio + mensura)).\n",
     "buffer diagnostici scriptio",
 )
+
+# Parametri ORDO DE LITTERA sunt indices byte-addressati sicut loci ORDO.
+# Hoc utrique viae parseris additur: PRINCIPALIS et functiones ordinariae.
+vetus_param_pp = '''                        SI fons[i] == 79 TUNC
+                            est_series_pp = 2.
+                        FIN-SI.
+                        SI fons[i] == 65 && i + 4 < n && fons[i+1] == 67 && fons[i+2] == 85 && fons[i+3] == 83 && fons[i+4] == 60 TUNC
+'''
+novus_param_pp = '''                        SI fons[i] == 79 TUNC
+                            est_series_pp = 2.
+                        FIN-SI.
+                        SI fons[i] == 79 && i + 14 < n && fons[i+1] == 82 && fons[i+2] == 68 && fons[i+3] == 79 && fons[i+4] == 32 && fons[i+5] == 68 && fons[i+6] == 69 && fons[i+7] == 32 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 84 && fons[i+11] == 84 && fons[i+12] == 69 && fons[i+13] == 82 && fons[i+14] == 65 TUNC
+                            magnitudo_pp = 1.
+                        FIN-SI.
+                        SI fons[i] == 65 && i + 4 < n && fons[i+1] == 67 && fons[i+2] == 85 && fons[i+3] == 83 && fons[i+4] == 60 TUNC
+'''
+substitue_unum(vetus_param_pp, novus_param_pp, "parametrum PRINCIPALIS ORDO DE LITTERA")
+
+vetus_param = '''                        SI fons[i] == 79 TUNC
+                            est_series_param = 2.
+                        FIN-SI.
+                        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 76 && fons[i+2] == 85 && fons[i+3] == 73 && fons[i+4] == 84 && fons[i+5] == 65 && fons[i+6] == 78 && fons[i+7] == 83 TUNC
+'''
+novus_param = '''                        SI fons[i] == 79 TUNC
+                            est_series_param = 2.
+                        FIN-SI.
+                        SI fons[i] == 79 && i + 14 < n && fons[i+1] == 82 && fons[i+2] == 68 && fons[i+3] == 79 && fons[i+4] == 32 && fons[i+5] == 68 && fons[i+6] == 69 && fons[i+7] == 32 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 84 && fons[i+11] == 84 && fons[i+12] == 69 && fons[i+13] == 82 && fons[i+14] == 65 TUNC
+                            magnitudo_param = 1.
+                        FIN-SI.
+                        SI fons[i] == 70 && i + 7 < n && fons[i+1] == 76 && fons[i+2] == 85 && fons[i+3] == 73 && fons[i+4] == 84 && fons[i+5] == 65 && fons[i+6] == 78 && fons[i+7] == 83 TUNC
+'''
+substitue_unum(vetus_param, novus_param, "parametrum ordinarium ORDO DE LITTERA")
 
 MARCA = "// P9 — ORDO DE LITTERA elementa unius octeti sunt."
 if MARCA not in fons:
@@ -99,6 +130,6 @@ if MARCA not in fons:
 
 if mutatum:
     VIA.write_text(fons, encoding="utf-8")
-    print("RECTE: bootstrap internus et accessus ORDO DE LITTERA byte-addressati sunt.")
+    print("RECTE: ORDO DE LITTERA localia et parametri byte-addressati sunt.")
 else:
     print("RECTE: correctio ORDO DE LITTERA iam adest.")
