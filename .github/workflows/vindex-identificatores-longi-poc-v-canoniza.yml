@@ -69,10 +69,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          COMP='Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          "$COMP" 'Vindex Chat-GPT/vindex_final_v51/tests/casus/identificatores_longi.vindex' /tmp/identificatores_longi.exe pe
-          "$COMP" 'Vindex Chat-GPT/vindex_final_v51/tests/casus/win32_app.vindex' /tmp/proba_win32_app.exe pe
-          (cd 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V' && '../../../Vindex Chat-GPT/vindex_final_v51/compilator_vindex' ludus.vindex /tmp/atmos_poc_v.exe pe)
+          ROOT="$PWD"
+          VDX="$ROOT/Vindex Chat-GPT/vindex_final_v51"
+          COMP="$VDX/compilator_vindex"
+          (cd "$VDX" && ./compilator_vindex tests/casus/identificatores_longi.vindex /tmp/identificatores_longi.exe pe)
+          (cd "$VDX" && ./compilator_vindex tests/casus/win32_app.vindex /tmp/proba_win32_app.exe pe)
+          (cd "$ROOT/PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V" && "$COMP" ludus.vindex /tmp/atmos_poc_v.exe pe)
           file /tmp/identificatores_longi.exe /tmp/proba_win32_app.exe /tmp/atmos_poc_v.exe
 
       - name: Executabilia Windows conserva
