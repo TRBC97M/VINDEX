@@ -1,0 +1,16 @@
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/conversio.vindex".
+
+// Regressio ex ATMOS POC V: descriptor TEXTUS ex concatenatione dynamicum
+// debet manere validus sub ELF et PE Win64.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA t SICUT TEXTUS VALENS "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(120).
+    PROCLAMA "C0".
+    PROCLAMA LONGITUDO(t).
+    PROCLAMA t.
+    t = t + " m".
+    PROCLAMA "C1".
+    PROCLAMA LONGITUDO(t).
+    PROCLAMA t.
+    REDDE 0.
+FIN-FUNCTIO.
