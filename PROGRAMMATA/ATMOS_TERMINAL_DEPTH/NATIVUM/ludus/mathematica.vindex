@@ -1,4 +1,5 @@
 // ATMOS NATIVUM — mathematica integra minima.
+// Graphica VII: trigonometria fixed-point Q10 ad rotationes fluidas sine runtime externo.
 
 FUNCTIO NAT_ABS REDDENS NUMERUS.
     ACCIPIT v SICUT NUMERUS.
@@ -51,4 +52,31 @@ FUNCTIO NAT_DISTANTIA REDDENS NUMERUS.
     DECLARA dx SICUT NUMERUS VALENS x1 - x0.
     DECLARA dy SICUT NUMERUS VALENS y1 - y0.
     REDDE NAT_ISQRT(dx * dx + dy * dy).
+FIN-FUNCTIO.
+
+// Phase circulaire: 1024 unitates = unus circuitus completus.
+FUNCTIO NAT_PHASE_1024 REDDENS NUMERUS.
+    ACCIPIT phase SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS phase % 1024.
+    SI p < 0 TUNC p = p + 1024. FIN-SI.
+    REDDE p.
+FIN-FUNCTIO.
+
+// Sinus Q10 integer, approximatio parabolica continua.
+// Amplitudo 1024; 0,256,512,768 correspondent 0,+1,0,-1.
+FUNCTIO NAT_SIN_Q10 REDDENS NUMERUS.
+    ACCIPIT phase SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS NAT_PHASE_1024(phase).
+    DECLARA signum SICUT NUMERUS VALENS 1.
+    SI p >= 512 TUNC
+        p = p - 512.
+        signum = 0 - 1.
+    FIN-SI.
+    DECLARA v SICUT NUMERUS VALENS p * (512 - p) / 64.
+    REDDE v * signum.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_COS_Q10 REDDENS NUMERUS.
+    ACCIPIT phase SICUT NUMERUS.
+    REDDE NAT_SIN_Q10(phase + 256).
 FIN-FUNCTIO.
