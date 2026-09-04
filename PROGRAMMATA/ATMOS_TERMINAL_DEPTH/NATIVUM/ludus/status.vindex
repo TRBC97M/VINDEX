@@ -6,7 +6,7 @@
 // +40 player x, +48 player y, +56 semen mundi, +64 alive, +72 paused,
 // +80 traveling, +88 start x, +96 start y, +104 end x, +112 end y,
 // +120 gradus cursus, +128 gradus totales, +136 distantia cursus,
-// +144 accumulator drain frame, +152 distantia tota, +160 sonar range m,
+// +144 horologium frame continuum / phase drain, +152 distantia tota, +160 sonar range m,
 // +168 nodus mineralis x, +176 nodus mineralis y, +184 radius nodi,
 // +192 nodus selectus, +200 extractio activa, +208 accumulator extractionis,
 // +216 cargo mineralis, +224 copia residua depositi,
@@ -178,12 +178,14 @@ FUNCTIO NAT_CURSUS_GRADUS REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
+// Horologium + drain: frame counter non amplius ad 188 resetur.
+// Hoc idem horologium Graphica VII ad rotationem sonar fluidam utitur.
 FUNCTIO NAT_DRAIN_GRADUS REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI s <= 0 || CONTENTUM(s + 64) == 0 || CONTENTUM(s + 72) != 0 TUNC REDDE 0. FIN-SI.
     DECLARA a SICUT NUMERUS VALENS CONTENTUM(s + 144) + 1.
-    SI a < 188 TUNC CONTENTUM(s + 144) = a. REDDE 0. FIN-SI.
-    CONTENTUM(s + 144) = 0.
+    CONTENTUM(s + 144) = a.
+    SI a % 188 != 0 TUNC REDDE 0. FIN-SI.
     CONTENTUM(s + 0) = NAT_MAX(0, CONTENTUM(s + 0) - 4).
     CONTENTUM(s + 8) = NAT_MAX(0, CONTENTUM(s + 8) - 2).
     DECLARA v SICUT NUMERUS VALENS NAT_STATUS_VITA_RENOVA(s).
