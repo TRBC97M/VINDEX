@@ -1,5 +1,6 @@
 // ATMOS NATIVUM — renderer software resolutione independens.
 // Spatium logicum 960x720; graphica physica sequitur clientem 720p/1080p/4K.
+// Graphica VII: balayage sonar continuus + phosphor interior subtiliter viridior.
 
 FUNCTIO NAT_RENDE REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -12,6 +13,7 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     DECLARA edge SICUT NUMERUS VALENS CBGRA_COLOR(42, 119, 82).
     DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(119, 255, 188).
     DECLARA phosphor_d SICUT NUMERUS VALENS CBGRA_COLOR(48, 132, 86).
+    DECLARA phosphor_in SICUT NUMERUS VALENS CBGRA_COLOR(32, 104, 67).
     DECLARA echo SICUT NUMERUS VALENS CBGRA_COLOR(137, 241, 245).
     DECLARA amber SICUT NUMERUS VALENS CBGRA_COLOR(255, 201, 104).
     DECLARA text_d SICUT NUMERUS VALENS CBGRA_COLOR(176, 201, 187).
@@ -38,20 +40,28 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     DECLARA cx SICUT NUMERUS VALENS 324.
     DECLARA cy SICUT NUMERUS VALENS 374.
     DECLARA radius SICUT NUMERUS VALENS 270.
+
+    // Deux strates intercalees teintent l'interieur sans epaissir le bord.
+    f = NATG_SONAR_STRATA(c, cx, cy, radius - 8, phosphor_in, 8).
+    f = NATG_SONAR_STRATA(c, cx, cy, radius - 14, phosphor_in, 7).
+
     f = NATG_CIRCULUS(c, cx, cy, 90, phosphor_d).
     f = NATG_CIRCULUS(c, cx, cy, 180, phosphor_d).
     f = NATG_CIRCULUS_GLOW(c, cx, cy, radius, echo).
     f = NATG_LINEA(c, cx - radius, cy, cx + radius, cy, phosphor_d).
     f = NATG_LINEA(c, cx, cy - radius, cx, cy + radius, phosphor_d).
 
-    // Sweep stylise, utilisant accumulator visuel existant.
-    DECLARA sweep SICUT NUMERUS VALENS CONTENTUM(s + 144) % 188.
-    DECLARA sx2 SICUT NUMERUS VALENS cx.
-    DECLARA sy2 SICUT NUMERUS VALENS cy - radius.
-    SI sweep >= 47 && sweep < 94 TUNC sx2 = cx + radius. sy2 = cy. FIN-SI.
-    SI sweep >= 94 && sweep < 141 TUNC sx2 = cx. sy2 = cy + radius. FIN-SI.
-    SI sweep >= 141 TUNC sx2 = cx - radius. sy2 = cy. FIN-SI.
-    f = NATG_LINEA_GLOW(c, cx, cy, sx2, sy2, phosphor_d).
+    // Graphica VII: phase 0..1023, environ 5.7 s par tour a 60 FPS.
+    // Sin/cos Q10 sont calcules en VINDEX pur puis normalises sur le cercle.
+    DECLARA sweep SICUT NUMERUS VALENS (CONTENTUM(s + 144) * 3) % 1024.
+    DECLARA ux SICUT NUMERUS VALENS NAT_SIN_Q10(sweep).
+    DECLARA uy SICUT NUMERUS VALENS NAT_COS_Q10(sweep).
+    DECLARA norma SICUT NUMERUS VALENS NAT_ISQRT(ux * ux + uy * uy).
+    SI norma < 1 TUNC norma = 1024. FIN-SI.
+    DECLARA sx2 SICUT NUMERUS VALENS cx + ux * radius / norma.
+    DECLARA sy2 SICUT NUMERUS VALENS cy - uy * radius / norma.
+    f = NATG_SONAR_FAN(c, cx, cy, sx2, sy2, phosphor_d).
+    f = CBGRA_LINEA_GLOW(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, sx2), NATG_Y(c, sy2), phosphor_d).
 
     // Navis.
     f = NATG_LINEA_GLOW(c, cx, cy - 10, cx - 7, cy + 8, echo).
