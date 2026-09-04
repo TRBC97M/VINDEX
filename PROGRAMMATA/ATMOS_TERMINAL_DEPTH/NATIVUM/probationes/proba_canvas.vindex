@@ -3,13 +3,14 @@ IMPORTA "../../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra.vi
 IMPORTA "../../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra_fx.vindex".
 IMPORTA "../../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_bitmap_5x7.vindex".
 IMPORTA "../../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_stroke_5x7.vindex".
+IMPORTA "../../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_vector_terminal.vindex".
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argc SICUT NUMERUS.
     ACCIPIT argv SICUT ACUS<NUMERUS>.
 
     PROCLAMA "C0 CREA".
-    DECLARA c SICUT NUMERUS VALENS CBGRA_CREA(96, 64).
+    DECLARA c SICUT NUMERUS VALENS CBGRA_CREA(160, 96).
     SI c <= 0 TUNC REDDE 10. FIN-SI.
     DECLARA fundum SICUT NUMERUS VALENS CBGRA_COLOR(1, 2, 3).
     DECLARA rubrum SICUT NUMERUS VALENS CBGRA_COLOR(9, 8, 7).
@@ -20,34 +21,33 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI CBGRA_RECT(c, 2, 2, 10, 5, rubrum) == 0 TUNC REDDE 12. FIN-SI.
 
     PROCLAMA "C3 LEGE".
-    DECLARA p SICUT NUMERUS VALENS CBGRA_PIXELS(c) + (2 * 96 + 2) * 4.
+    DECLARA p SICUT NUMERUS VALENS CBGRA_PIXELS(c) + (2 * 160 + 2) * 4.
     SI OCTETUS_AB(p) != 7 || OCTETUS_AB(p + 1) != 8 || OCTETUS_AB(p + 2) != 9 TUNC REDDE 13. FIN-SI.
 
-    PROCLAMA "C4 LINEA".
-    SI CBGRA_LINEA(c, 0, 0, 12, 12, lux) == 0 TUNC REDDE 14. FIN-SI.
-    PROCLAMA "C5 CIRCULUS".
-    SI CBGRA_CIRCULUS(c, 48, 24, 10, lux) == 0 TUNC REDDE 15. FIN-SI.
-    PROCLAMA "C6 TEXTUS BITMAP".
-    SI FB5_TEXTUS(c, 16, 8, "ATMOS 123", 1, lux) == 0 TUNC REDDE 16. FIN-SI.
+    PROCLAMA "C4 LINEA MOLLIS".
+    SI CBGRA_LINEA_MOLLIS(c, 0, 0, 30, 20, 2, lux, 220) == 0 TUNC REDDE 14. FIN-SI.
+    PROCLAMA "C5 CIRCULUS MOLLIS".
+    SI CBGRA_CIRCULUS_MOLLIS(c, 120, 24, 12, lux) == 0 TUNC REDDE 15. FIN-SI.
 
-    PROCLAMA "C7 ALPHA".
-    SI CBGRA_PIXEL_ALPHA(c, 95, 63, lux, 128) == 0 TUNC REDDE 17. FIN-SI.
-    p = CBGRA_PIXELS(c) + (63 * 96 + 95) * 4.
-    SI OCTETUS_AB(p) != 98 || OCTETUS_AB(p + 1) != 129 || OCTETUS_AB(p + 2) != 63 TUNC REDDE 18. FIN-SI.
+    PROCLAMA "C6 ALPHA PANEL".
+    SI CBGRA_RECT_ALPHA(c, 4, 60, 50, 20, lux, 96) == 0 TUNC REDDE 16. FIN-SI.
+    SI CBGRA_RECT_DEGRADE_V(c, 60, 60, 48, 20, lux, 120, 20) == 0 TUNC REDDE 17. FIN-SI.
 
-    PROCLAMA "C8 GLOW".
-    SI CBGRA_LINEA_GLOW(c, 8, 52, 42, 52, lux) == 0 TUNC REDDE 19. FIN-SI.
-    SI CBGRA_CIRCULUS_GLOW(c, 70, 48, 8, lux) == 0 TUNC REDDE 20. FIN-SI.
+    PROCLAMA "C7 GLOW".
+    SI CBGRA_LINEA_GLOW(c, 8, 52, 42, 52, lux) == 0 TUNC REDDE 18. FIN-SI.
+    SI CBGRA_CIRCULUS_GLOW(c, 130, 50, 8, lux) == 0 TUNC REDDE 19. FIN-SI.
+    SI CBGRA_RECT_GLOW(c, 112, 65, 35, 18, lux) == 0 TUNC REDDE 20. FIN-SI.
 
-    PROCLAMA "C9 FONS STROKE".
-    SI FS5_TEXTUS_GLOW(c, 8, 36, "FX", 2, lux) == 0 TUNC REDDE 21. FIN-SI.
+    PROCLAMA "C8 FONS VECTOR".
+    SI FVT_TEXTUS(c, 8, 30, "ATMOS", 2, lux) == 0 TUNC REDDE 21. FIN-SI.
+    SI FVT_TEXTUS_GLOW(c, 8, 42, "DEPTH 2140 M", 1, lux) == 0 TUNC REDDE 22. FIN-SI.
 
-    PROCLAMA "C10 NUMERA".
+    PROCLAMA "C9 NUMERA".
     DECLARA basis SICUT NUMERUS VALENS CBGRA_PIXELS(c).
     DECLARA i SICUT NUMERUS VALENS 0.
     DECLARA pixela_lucida SICUT NUMERUS VALENS 0.
     DECLARA pixela_mixta SICUT NUMERUS VALENS 0.
-    DUM i < 96 * 64 PERFICE
+    DUM i < 160 * 96 PERFICE
         DECLARA q SICUT NUMERUS VALENS basis + i * 4.
         SI OCTETUS_AB(q) == 192 && OCTETUS_AB(q + 1) == 255 && OCTETUS_AB(q + 2) == 125 TUNC
             pixela_lucida = pixela_lucida + 1.
@@ -57,10 +57,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         FIN-SI.
         i = i + 1.
     FIN-DUM.
-    SI pixela_lucida < 80 TUNC REDDE 22. FIN-SI.
-    SI pixela_mixta <= pixela_lucida TUNC REDDE 23. FIN-SI.
+    SI pixela_lucida < 80 TUNC REDDE 23. FIN-SI.
+    SI pixela_mixta <= pixela_lucida TUNC REDDE 24. FIN-SI.
 
-    PROCLAMA "RECTE: CANVAS BGRA, ALPHA, GLOW ET FONS STROKE VINDEX".
+    PROCLAMA "RECTE: GRAPHICA II VINDEX — ALPHA, MOLLIS, GLOW, FONS VECTOR".
     PROCLAMA pixela_lucida.
     PROCLAMA pixela_mixta.
     REDDE 0.
