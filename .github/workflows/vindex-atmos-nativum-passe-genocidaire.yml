@@ -75,20 +75,22 @@ jobs:
           cmp /tmp/g3 /tmp/g4
           echo 'RECTE: compilator ipse VINDEX est et G3 = G4.'
 
-      - name: ATMOS NATIVUM solo compilatore auto-hospite genera
+      - name: ATMOS NATIVUM GUI solo compilatore auto-hospite genera
         working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM
         shell: bash
         run: |
           set -euo pipefail
-          /tmp/g4 ludus.vindex /tmp/atmos_nativum_purum.exe pe
+          /tmp/g4 ludus.vindex /tmp/atmos_nativum_purum.exe gui
           file /tmp/atmos_nativum_purum.exe
+          objdump -p /tmp/atmos_nativum_purum.exe | grep -E 'Subsystem.*Windows GUI'
 
-      - name: PE runtime alienum extermina
+      - name: PE GUI runtime alienum extermina
         shell: bash
         run: |
           set -euo pipefail
           objdump -p /tmp/atmos_nativum_purum.exe > /tmp/pe.txt
           grep -E 'DLL Name:' /tmp/pe.txt || true
+          grep -E 'Subsystem.*Windows GUI' /tmp/pe.txt
           if grep -Eiq 'DLL Name:.*(msvcrt|ucrtbase|vcruntime|mscoree|libstdc\+\+|libgcc|python|node)' /tmp/pe.txt; then
             echo 'ERRATUM: runtime alienum repertum est.'
             exit 1
@@ -100,7 +102,7 @@ jobs:
             printf '%s\n' "$extra"
             exit 1
           fi
-          echo 'RECTE: PE nullum CRT, .NET aut runtime tertiae linguae importat.'
+          echo 'RECTE: PE GUI nullum CRT, .NET aut runtime tertiae linguae importat.'
 
       - uses: actions/upload-artifact@v4
         with:
@@ -118,15 +120,11 @@ jobs:
         with:
           name: atmos-nativum-purum-vindex
           path: atmos
-      - name: Executabile ex catena VINDEX pura sub Windows exerce
+      - name: Executabile GUI ex catena VINDEX pura sub Windows exerce
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           Set-Location (Resolve-Path '.\atmos')
-          $out = & .\atmos_nativum_purum.exe smoke 2>&1
-          $code = $LASTEXITCODE
-          $text = ($out -join "`n")
-          Write-Host $text
-          if ($code -ne 0) { throw "ATMOS NATIVUM purus exitus $code" }
-          if ($text -notmatch 'RECTE: ATMOS NATIVUM DIB WIN64') { throw 'executio pura NATIVUM DIB non confirmata est' }
-          Write-Host 'RECTE: LA PASSE GENOCIDAIRE NATIVUM — runtime et codex applicationis C percentum VINDEX sunt.'
+          $p = Start-Process -FilePath '.\atmos_nativum_purum.exe' -ArgumentList 'smoke','quiet' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "ATMOS NATIVUM GUI purus exitus $($p.ExitCode)" }
+          Write-Host 'RECTE: LA PASSE GENOCIDAIRE NATIVUM GUI — runtime et codex applicationis C percentum VINDEX sunt.'
