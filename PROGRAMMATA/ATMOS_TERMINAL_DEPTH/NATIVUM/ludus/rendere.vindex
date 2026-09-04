@@ -1,5 +1,5 @@
 // ATMOS NATIVUM — renderer unicus in canvas BGRA.
-// Nullus TextOutA, nullus overlay GDI: omnia hic ante unicam praesentatiionem.
+// Nullus TextOutA, nullus overlay GDI.
 
 FUNCTIO NAT_UI_BAR REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -35,9 +35,7 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     f = CBGRA_RECT(c, 0, 50, 960, 2, edge).
     f = CBGRA_RECT(c, 648, 52, 2, 668, edge).
     f = CBGRA_RECT(c, 420, 78, 220, 188, panel).
-    f = CBGRA_RECT(c, 420, 78, 220, 1, edge).
 
-    // CRT manet tantum in strato fundi.
     DECLARA y SICUT NUMERUS VALENS 55.
     DUM y < 720 PERFICE
         f = CBGRA_RECT(c, 0, y, 960, 1, CBGRA_COLOR(8, 20, 15)).
@@ -56,7 +54,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     f = CBGRA_LINEA(c, cx - radius, cy, cx + radius, cy, phosphor_d).
     f = CBGRA_LINEA(c, cx, cy - radius, cx, cy + radius, phosphor_d).
 
-    // Navis in centro referentiae sonar.
     f = CBGRA_LINEA(c, cx, cy - 10, cx - 7, cy + 8, echo).
     f = CBGRA_LINEA(c, cx - 7, cy + 8, cx + 7, cy + 8, echo).
     f = CBGRA_LINEA(c, cx + 7, cy + 8, cx, cy - 10, echo).
@@ -64,8 +61,10 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
 
     DECLARA t SICUT TEXTUS VALENS "".
     DECLARA res_vis SICUT NUMERUS VALENS NAT_RES_VISIBILIS(s).
+    DECLARA stat_vis SICUT NUMERUS VALENS NAT_STAT_VISIBILIS(s).
+    DECLARA docked SICUT NUMERUS VALENS NAT_STAT_DOCKED(s).
+    DECLARA stat_course SICUT NUMERUS VALENS NAT_STAT_CURSUS_ACTIVUS(s).
 
-    // Contact mineralis in coordonnatis mundi relative ad player.
     SI res_vis != 0 TUNC
         DECLARA rr SICUT NUMERUS VALENS CONTENTUM(s + 160).
         DECLARA rx SICUT NUMERUS VALENS cx + (CONTENTUM(s + 168) - CONTENTUM(s + 40)) * radius / rr.
@@ -73,10 +72,18 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         f = CBGRA_CIRCULUS(c, rx, ry, 8, amber).
         f = CBGRA_LINEA(c, rx - 10, ry, rx + 10, ry, amber).
         f = CBGRA_LINEA(c, rx, ry - 10, rx, ry + 10, amber).
-        f = CBGRA_RECT(c, rx - 2, ry - 2, 5, 5, amber).
     FIN-SI.
 
-    // Cursus activus.
+    SI stat_vis != 0 TUNC
+        DECLARA sr SICUT NUMERUS VALENS CONTENTUM(s + 160).
+        DECLARA sx SICUT NUMERUS VALENS cx + (NAT_STAT_X(s) - CONTENTUM(s + 40)) * radius / sr.
+        DECLARA sy SICUT NUMERUS VALENS cy + (NAT_STAT_Y(s) - CONTENTUM(s + 48)) * radius / sr.
+        f = CBGRA_RECT(c, sx - 8, sy - 8, 17, 17, echo).
+        f = CBGRA_RECT(c, sx - 5, sy - 5, 11, 11, void).
+        f = CBGRA_LINEA(c, sx - 12, sy, sx + 12, sy, echo).
+        f = CBGRA_LINEA(c, sx, sy - 12, sx, sy + 12, echo).
+    FIN-SI.
+
     SI CONTENTUM(s + 80) != 0 TUNC
         DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
         DECLARA dx SICUT NUMERUS VALENS CONTENTUM(s + 104) - CONTENTUM(s + 40).
@@ -85,26 +92,35 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         DECLARA ty SICUT NUMERUS VALENS cy + dy * radius / range.
         f = CBGRA_LINEA(c, cx, cy, tx, ty, echo).
         f = CBGRA_CIRCULUS(c, tx, ty, 7, amber).
-        f = CBGRA_LINEA(c, tx - 10, ty, tx + 10, ty, amber).
-        f = CBGRA_LINEA(c, tx, ty - 10, tx, ty + 10, amber).
-        SI CONTENTUM(s + 192) != 0 TUNC
-            f = FB5_TEXTUS(c, 18, 58, "SONAR // MINERAL APPROACH", 2, amber).
+        SI stat_course != 0 TUNC
+            f = FB5_TEXTUS(c, 18, 58, "SONAR // STATION APPROACH", 2, echo).
         ALITER
-            f = FB5_TEXTUS(c, 18, 58, "SONAR // EN ROUTE", 2, echo).
+            SI CONTENTUM(s + 192) != 0 TUNC
+                f = FB5_TEXTUS(c, 18, 58, "SONAR // MINERAL APPROACH", 2, amber).
+            ALITER
+                f = FB5_TEXTUS(c, 18, 58, "SONAR // EN ROUTE", 2, echo).
+            FIN-SI.
         FIN-SI.
     ALITER
-        SI CONTENTUM(s + 200) != 0 TUNC
-            f = FB5_TEXTUS(c, 18, 58, "SONAR // EXTRACTION ACTIVE", 2, amber).
+        SI docked != 0 TUNC
+            f = FB5_TEXTUS(c, 18, 58, "SONAR // DOCKED HABITAT-01", 2, echo).
         ALITER
-            SI res_vis != 0 TUNC
-                f = FB5_TEXTUS(c, 18, 58, "SONAR // MINERAL CONTACT", 2, amber).
+            SI CONTENTUM(s + 200) != 0 TUNC
+                f = FB5_TEXTUS(c, 18, 58, "SONAR // EXTRACTION ACTIVE", 2, amber).
             ALITER
-                f = FB5_TEXTUS(c, 18, 58, "SONAR // READY - CLICK TO NAVIGATE", 2, echo).
+                SI CONTENTUM(s + 216) > 0 && stat_vis != 0 TUNC
+                    f = FB5_TEXTUS(c, 18, 58, "SONAR // CARGO READY - FIND STATION", 2, echo).
+                ALITER
+                    SI res_vis != 0 TUNC
+                        f = FB5_TEXTUS(c, 18, 58, "SONAR // MINERAL CONTACT", 2, amber).
+                    ALITER
+                        f = FB5_TEXTUS(c, 18, 58, "SONAR // READY - CLICK TO NAVIGATE", 2, echo).
+                    FIN-SI.
+                FIN-SI.
             FIN-SI.
         FIN-SI.
     FIN-SI.
 
-    // HUD.
     t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)).
     t = t + " M".
     f = FB5_TEXTUS(c, 432, 90, t, 2, echo).
@@ -120,7 +136,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
     f = FB5_TEXTUS(c, 432, 237, t, 2, amber).
 
-    // Coordonnatae + cargo.
     t = "X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)).
     t = t + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)).
     f = FB5_TEXTUS(c, 18, 680, t, 2, text_d).
@@ -145,65 +160,77 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
 
     f = FB5_TEXTUS(c, 660, 78, "DIVE CORE ONLINE", 2, phosphor).
 
-    SI CONTENTUM(s + 200) != 0 TUNC
-        f = FB5_TEXTUS(c, 660, 104, "EXTRACTION ACTIVE", 2, amber).
-        f = FB5_TEXTUS(c, 660, 130, "FERROUS NODULES", 2, echo).
-        t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)).
-        t = t + " / 40".
-        f = FB5_TEXTUS(c, 660, 156, t, 2, text_d).
-        t = "DEPOSIT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 224)).
+    SI docked != 0 TUNC
+        f = FB5_TEXTUS(c, 660, 104, "DOCKED // HABITAT-01", 2, echo).
+        f = FB5_TEXTUS(c, 660, 130, "ORE MARKET ONLINE", 2, phosphor).
+        f = FB5_TEXTUS(c, 660, 156, "PRICE 12 CR / UNIT", 2, text_d).
+        t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
         f = FB5_TEXTUS(c, 660, 182, t, 2, amber).
-        f = FB5_TEXTUS(c, 660, 208, "ENERGY -0.3 / TICK", 2, text_d).
-        t = "REGION " + nomen_regio.
-        f = FB5_TEXTUS(c, 660, 246, t, 2, echo).
-        t = "SEABED " + nomen_relief.
-        f = FB5_TEXTUS(c, 660, 272, t, 2, text_d).
+        f = FB5_TEXTUS(c, 660, 208, "CARGO SOLD ON DOCK", 2, text_d).
+        f = FB5_TEXTUS(c, 660, 234, "CLICK SONAR TO DEPART", 2, text_d).
     ALITER
-        SI CONTENTUM(s + 80) != 0 TUNC
-            SI CONTENTUM(s + 192) != 0 TUNC
-                f = FB5_TEXTUS(c, 660, 104, "MINERAL APPROACH", 2, amber).
-                f = FB5_TEXTUS(c, 660, 130, "FERROUS NODULES", 2, echo).
-            ALITER
-                f = FB5_TEXTUS(c, 660, 104, "COURSE ACTIVE", 2, echo).
-                t = "TARGET X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 104)).
-                f = FB5_TEXTUS(c, 660, 130, t, 2, text_d).
-            FIN-SI.
-            t = "TARGET Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 112)).
+        SI CONTENTUM(s + 200) != 0 TUNC
+            f = FB5_TEXTUS(c, 660, 104, "EXTRACTION ACTIVE", 2, amber).
+            f = FB5_TEXTUS(c, 660, 130, "FERROUS NODULES", 2, echo).
+            t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)).
+            t = t + " / 40".
             f = FB5_TEXTUS(c, 660, 156, t, 2, text_d).
-            t = "DIST " + TEXTUS_EX_NUMERO_DECIMALI(NAT_CURSUS_RELIQUUM(s)).
-            t = t + " M".
+            t = "DEPOSIT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 224)).
             f = FB5_TEXTUS(c, 660, 182, t, 2, amber).
-            DECLARA progressus SICUT NUMERUS VALENS NAT_CURSUS_PROGRESSUS(s).
-            t = "PROGRESS " + TEXTUS_EX_NUMERO_DECIMALI(progressus / 10).
-            t = t + "%".
-            f = FB5_TEXTUS(c, 660, 208, t, 2, text_d).
-            f = NAT_UI_BAR(c, 660, 230, 270, progressus, echo).
-            t = "REGION " + nomen_regio.
-            f = FB5_TEXTUS(c, 660, 258, t, 2, echo).
-            t = "SEABED " + nomen_relief.
-            f = FB5_TEXTUS(c, 660, 284, t, 2, text_d).
+            f = FB5_TEXTUS(c, 660, 208, "ENERGY -0.3 / TICK", 2, text_d).
         ALITER
-            SI res_vis != 0 TUNC
-                f = FB5_TEXTUS(c, 660, 104, "MINERAL CONTACT", 2, amber).
-                f = FB5_TEXTUS(c, 660, 130, "FERROUS NODULES", 2, echo).
-                f = FB5_TEXTUS(c, 660, 156, "CLICK AMBER CONTACT", 2, text_d).
-                t = "DEPOSIT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 224)).
-                f = FB5_TEXTUS(c, 660, 182, t, 2, amber).
-                t = "REGION " + nomen_regio.
-                f = FB5_TEXTUS(c, 660, 220, t, 2, echo).
-                t = "SEABED " + nomen_relief.
-                f = FB5_TEXTUS(c, 660, 246, t, 2, text_d).
+            SI CONTENTUM(s + 80) != 0 TUNC
+                SI stat_course != 0 TUNC
+                    f = FB5_TEXTUS(c, 660, 104, "DOCKING COURSE", 2, echo).
+                    f = FB5_TEXTUS(c, 660, 130, "HABITAT-01", 2, phosphor).
+                ALITER
+                    SI CONTENTUM(s + 192) != 0 TUNC
+                        f = FB5_TEXTUS(c, 660, 104, "MINERAL APPROACH", 2, amber).
+                        f = FB5_TEXTUS(c, 660, 130, "FERROUS NODULES", 2, echo).
+                    ALITER
+                        f = FB5_TEXTUS(c, 660, 104, "COURSE ACTIVE", 2, echo).
+                    FIN-SI.
+                FIN-SI.
+                t = "DIST " + TEXTUS_EX_NUMERO_DECIMALI(NAT_CURSUS_RELIQUUM(s)).
+                t = t + " M".
+                f = FB5_TEXTUS(c, 660, 156, t, 2, amber).
+                DECLARA progressus SICUT NUMERUS VALENS NAT_CURSUS_PROGRESSUS(s).
+                t = "PROGRESS " + TEXTUS_EX_NUMERO_DECIMALI(progressus / 10).
+                t = t + "%".
+                f = FB5_TEXTUS(c, 660, 182, t, 2, text_d).
+                f = NAT_UI_BAR(c, 660, 204, 270, progressus, echo).
             ALITER
-                f = FB5_TEXTUS(c, 660, 104, "CLICK SONAR TO SET COURSE", 2, text_d).
-                f = FB5_TEXTUS(c, 660, 130, "WORLD RADIUS 3000 KM", 2, text_d).
-                f = FB5_TEXTUS(c, 660, 156, "ESC OR WINDOW X TO EXIT", 2, text_d).
-                t = "REGION " + nomen_regio.
-                f = FB5_TEXTUS(c, 660, 194, t, 2, echo).
-                t = "SEABED " + nomen_relief.
-                f = FB5_TEXTUS(c, 660, 220, t, 2, text_d).
+                SI CONTENTUM(s + 216) > 0 && stat_vis != 0 TUNC
+                    f = FB5_TEXTUS(c, 660, 104, "CARGO READY FOR MARKET", 2, echo).
+                    t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)).
+                    t = t + " / 40".
+                    f = FB5_TEXTUS(c, 660, 130, t, 2, amber).
+                    f = FB5_TEXTUS(c, 660, 156, "CLICK CYAN STATION", 2, text_d).
+                    f = FB5_TEXTUS(c, 660, 182, "HABITAT-01", 2, phosphor).
+                    f = FB5_TEXTUS(c, 660, 208, "PRICE 12 CR / UNIT", 2, text_d).
+                ALITER
+                    SI res_vis != 0 TUNC
+                        f = FB5_TEXTUS(c, 660, 104, "MINERAL CONTACT", 2, amber).
+                        f = FB5_TEXTUS(c, 660, 130, "FERROUS NODULES", 2, echo).
+                        f = FB5_TEXTUS(c, 660, 156, "CLICK AMBER CONTACT", 2, text_d).
+                        SI stat_vis != 0 TUNC
+                            f = FB5_TEXTUS(c, 660, 182, "CYAN SQUARE = STATION", 2, echo).
+                        FIN-SI.
+                    ALITER
+                        f = FB5_TEXTUS(c, 660, 104, "CLICK SONAR TO SET COURSE", 2, text_d).
+                        SI stat_vis != 0 TUNC
+                            f = FB5_TEXTUS(c, 660, 130, "CYAN SQUARE = STATION", 2, echo).
+                        FIN-SI.
+                    FIN-SI.
+                FIN-SI.
             FIN-SI.
         FIN-SI.
     FIN-SI.
+
+    t = "REGION " + nomen_regio.
+    f = FB5_TEXTUS(c, 660, 272, t, 2, echo).
+    t = "SEABED " + nomen_relief.
+    f = FB5_TEXTUS(c, 660, 298, t, 2, text_d).
 
     SI CONTENTUM(s + 64) == 0 TUNC
         f = FB5_TEXTUS(c, 660, 330, "SIGNAL LOST", 2, danger).
