@@ -1974,6 +1974,9 @@ FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.
     SI genus == 8 TUNC
         PROCLAMA "ERRATUM: clavis clausurae sine initio suo".
     FIN-SI.
+    SI genus == 10 TUNC
+        PROCLAMA "ERRATUM: parenthesis non clauditur".
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -2035,6 +2038,30 @@ FUNCTIO DESCRIPTOR_PENDENTIUM_SCRIBE REDDENS NUMERUS.
     ACCIPIT valor SICUT NUMERUS.
     CONTENTUM(contextus_parseris + 32) = valor.
     REDDE 0.
+FIN-FUNCTIO.
+
+// Campus erroris profundus: primum erratum tantum servatur.
+// Offset 80 = genus; offset 88 = positio in fonte composito.
+FUNCTIO ERRATUM_GENUS_LEGE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT NUMERUS.
+    REDDE CONTENTUM(contextus_parseris + 80).
+FIN-FUNCTIO.
+
+FUNCTIO ERRATUM_PONE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    SI CONTENTUM(contextus_parseris + 80) != 0 TUNC
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(contextus_parseris + 80) = genus.
+    CONTENTUM(contextus_parseris + 88) = positio.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO ERRATUM_POSITIO_LEGE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT NUMERUS.
+    REDDE CONTENTUM(contextus_parseris + 88).
 FIN-FUNCTIO.
 
 FUNCTIO DESCRIPTOR_LOCALIUM_LEGE REDDENS NUMERUS.
@@ -2639,6 +2666,10 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         DECLARA r SICUT NUMERUS VALENS ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
         ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        SI CONTENTUM(pos_fontis) >= n || fons[CONTENTUM(pos_fontis)] != 41 TUNC
+            DECLARA ig_par SICUT NUMERUS VALENS ERRATUM_PONE(contextus_parseris, 10, CONTENTUM(pos_fontis)).
+            REDDE 0.
+        FIN-SI.
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         REDDE 0.
     FIN-SI.
@@ -6234,12 +6265,14 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA loci_iat_exitprocess SICUT NUMERUS VALENS 0.
     DECLARA loci_iat_virtualalloc SICUT NUMERUS VALENS 0.
 
-    DECLARA contextus_parseris SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    DECLARA contextus_parseris SICUT NUMERUS VALENS RESERVA_OCTETA(96).
     SI contextus_parseris < 0 TUNC
         PROCLAMA "ERRATUM: memoria contextus parseris reservata non est".
         REDDE 71.
     FIN-SI.
     CONTENTUM(contextus_parseris) = 0.
+    CONTENTUM(contextus_parseris + 80) = 0.
+    CONTENTUM(contextus_parseris + 88) = 0.
     DECLARA ign_mpe SICUT NUMERUS VALENS MODUS_PE_SCRIBE(contextus_parseris, modus_pe).
     DECLARA descriptor_iat_pe_contextus SICUT NUMERUS VALENS RESERVA_OCTETA(24).
     SI descriptor_iat_pe_contextus < 0 TUNC
@@ -6489,6 +6522,34 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).
+                SI ERRATUM_GENUS_LEGE(contextus_parseris) != 0 TUNC
+                    DECLARA genus_prop1 SICUT NUMERUS VALENS ERRATUM_GENUS_LEGE(contextus_parseris).
+                    DECLARA positio_prop1 SICUT NUMERUS VALENS ERRATUM_POSITIO_LEGE(contextus_parseris).
+                    DECLARA diag_prop_scriptum1 SICUT NUMERUS VALENS 0.
+                    SI positio_prop1 >= initium_fontis_principalis TUNC
+                        DECLARA pos_prop_main1 SICUT NUMERUS VALENS positio_prop1 - initium_fontis_principalis.
+                        DECLARA ig_prop_main1 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons_brut, pos_prop_main1, n_fons_principalis, genus_prop1).
+                        diag_prop_scriptum1 = 1.
+                    ALITER
+                        DECLARA idx_prop_imp1 SICUT NUMERUS VALENS 0.
+                        DUM idx_prop_imp1 < numerus_importorum PERFICE
+                            DECLARA init_prop_imp1 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_prop_imp1 * 32).
+                            DECLARA mens_prop_imp1 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_prop_imp1 * 32 + 8).
+                            SI diag_prop_scriptum1 == 0 && positio_prop1 >= init_prop_imp1 && positio_prop1 < init_prop_imp1 + mens_prop_imp1 TUNC
+                                DECLARA fons_prop_imp1 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_prop_imp1 * 32 + 16).
+                                DECLARA via_prop_imp1 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_prop_imp1 * 32 + 24).
+                                DECLARA pos_prop_imp1 SICUT NUMERUS VALENS positio_prop1 - init_prop_imp1.
+                                DECLARA ig_prop_imp1 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_prop_imp1, fons_prop_imp1, pos_prop_imp1, mens_prop_imp1, genus_prop1).
+                                diag_prop_scriptum1 = 1.
+                            FIN-SI.
+                            idx_prop_imp1 = idx_prop_imp1 + 1.
+                        FIN-DUM.
+                    FIN-SI.
+                    SI diag_prop_scriptum1 == 0 TUNC
+                        DECLARA ig_prop_fallback1 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons, positio_prop1, n, genus_prop1).
+                    FIN-SI.
+                    REDDE 65.
+                FIN-SI.
                 SI CLAVIS_CLAUSURAE_ORPHANA(fons, i, n) == 1 TUNC
                     DECLARA diag_orph_scriptum1 SICUT NUMERUS VALENS 0.
                     SI i >= initium_fontis_principalis TUNC
@@ -6716,6 +6777,34 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).
+                SI ERRATUM_GENUS_LEGE(contextus_parseris) != 0 TUNC
+                    DECLARA genus_prop2 SICUT NUMERUS VALENS ERRATUM_GENUS_LEGE(contextus_parseris).
+                    DECLARA positio_prop2 SICUT NUMERUS VALENS ERRATUM_POSITIO_LEGE(contextus_parseris).
+                    DECLARA diag_prop_scriptum2 SICUT NUMERUS VALENS 0.
+                    SI positio_prop2 >= initium_fontis_principalis TUNC
+                        DECLARA pos_prop_main2 SICUT NUMERUS VALENS positio_prop2 - initium_fontis_principalis.
+                        DECLARA ig_prop_main2 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons_brut, pos_prop_main2, n_fons_principalis, genus_prop2).
+                        diag_prop_scriptum2 = 1.
+                    ALITER
+                        DECLARA idx_prop_imp2 SICUT NUMERUS VALENS 0.
+                        DUM idx_prop_imp2 < numerus_importorum PERFICE
+                            DECLARA init_prop_imp2 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_prop_imp2 * 32).
+                            DECLARA mens_prop_imp2 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_prop_imp2 * 32 + 8).
+                            SI diag_prop_scriptum2 == 0 && positio_prop2 >= init_prop_imp2 && positio_prop2 < init_prop_imp2 + mens_prop_imp2 TUNC
+                                DECLARA fons_prop_imp2 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_prop_imp2 * 32 + 16).
+                                DECLARA via_prop_imp2 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_prop_imp2 * 32 + 24).
+                                DECLARA pos_prop_imp2 SICUT NUMERUS VALENS positio_prop2 - init_prop_imp2.
+                                DECLARA ig_prop_imp2 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_prop_imp2, fons_prop_imp2, pos_prop_imp2, mens_prop_imp2, genus_prop2).
+                                diag_prop_scriptum2 = 1.
+                            FIN-SI.
+                            idx_prop_imp2 = idx_prop_imp2 + 1.
+                        FIN-DUM.
+                    FIN-SI.
+                    SI diag_prop_scriptum2 == 0 TUNC
+                        DECLARA ig_prop_fallback2 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons, positio_prop2, n, genus_prop2).
+                    FIN-SI.
+                    REDDE 65.
+                FIN-SI.
                 SI CLAVIS_CLAUSURAE_ORPHANA(fons, i, n) == 1 TUNC
                     DECLARA diag_orph_scriptum2 SICUT NUMERUS VALENS 0.
                     SI i >= initium_fontis_principalis TUNC
