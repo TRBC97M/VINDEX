@@ -123,3 +123,88 @@ est ad hunc usum.
 Opus id non parvum est et compilatorem tangit; ideo hic **describitur
 tantum**, non fit. Quisquis id suscipiet hanc relationem pro fundamento
 habere poterit.
+
+---
+
+## VIII. Renovatio — quid factum sit, quid restet
+
+### Facta
+
+| Vitium | Status | Ubi |
+|---|---|---|
+| Chorda non clausa → compilator cadens | **solutum** | circuli iam limitati in `main` |
+| Claves clausurae orphanae → binarium cadens | **solutum** | #180 |
+| Parenthesis non clausa taciturna | **solutum** | #181, per campum erroris |
+| Operator `^` omissus (calculus falsus) | **solutum** | #184 |
+| Operator `~` absens (calculus falsus) | **solutum** | #185 |
+
+Campus erroris in contextu parseris (#181) mechanismum communem praebet:
+offset LXXX genus, offset LXXXVIII positio, `ERRATUM_PONE` primum erratum
+servans. Functiones profundae eo uti possunt sine accessu ad `via_fons`.
+
+### Restat: claves ignotae ad gradum supremum
+
+**Vitium.** Intra corpus functionis, verbum ignotum recte deprehenditur
+(exitus 65). Ad gradum supremum, nihil: quidquid non agnoscitur silenter
+transitur. Ideo hoc compilatur sine ullo monito:
+
+```vindex
+STRUCTURA P
+    x SICUT NUMERUS.
+FIN-STRUCTURA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    REDDE 0.
+FIN-FUNCTIO.
+```
+
+Gravitas: scriptor credit `STRUCTURA` exsistere. Me ipsum fefellit cum
+facultates linguae inspicerem — quod exemplum est vitii periculosissimi:
+non falsum resultatum sed **falsa persuasio de lingua ipsa**.
+
+**Causa, quam bis tentando inveni.** Fons vitii est ultimum `ALITER` circuli
+principalis (linea 6651-6652):
+
+```vindex
+ALITER
+    i = i + 1.
+FIN-SI.
+```
+
+Custodiam ibi ponere **non licet**, quamvis primo aspectu locus rectus
+videatur. Ratio: circulus principalis (linea 6277) gradum supremum NON
+fideliter repraesentat. Post `ANALYSA_BLOCUS`, linea 6646 hoc facit:
+
+```vindex
+DUM i < n && fons[i] != 46 PERFICE
+    i = i + 1.
+FIN-DUM.
+i = i + 1.
+```
+
+id est: **saltat ad punctum proximum et circulum principalem resumit**. Si
+`ANALYSA_BLOCUS` in medio corpore desiit — quod in constructionibus
+quibusdam fit — circulus principalis intra corpus resumitur, non inter
+definitiones.
+
+Probatio empirica: custodia ibi posita ATMOS POC III, IV, V frangit.
+`graphicum.vindex` linea 253 (`CONTENTUM(args + 8) = point.`) ut clavis
+ignota reicitur, cum codex perfecte validus sit.
+
+**Directio recta.** Custodia vexillo indiget:
+
+1. vexillum `inter_definitiones` in contextu parseris (offset XCVI liber);
+2. ad verum ponitur cum `FIN-FUNCTIO` revera consumitur;
+3. ad falsum cum corpus intratur;
+4. custodia clavium ignotarum tantum si vexillum verum est.
+
+**Probatio canonica mutanda.** `tests/run_tests.sh` linea 299 exspectat ut
+`erratum_principalis.vindex` (`HOC NON EST PROGRAMMA VINDEX.`) nuntium
+`FUNCTIO PRINCIPALIS deest` reddat. Custodia recta nuntium praecisiorem
+dabit (`clavis ignota ad gradum supremum`, linea I columna I). Probatio
+renovanda est, non custodia mollienda.
+
+**Quod probatum est et quod non.** Custodia inconditionalis scripta est,
+punctum fixum servavit, XXXV/XXXV transiit post probationem renovatam — sed
+ATMOS fregit. Ramus deletus est, nihil propositum. Sine vexillo, custodia
+recta esse non potest.
