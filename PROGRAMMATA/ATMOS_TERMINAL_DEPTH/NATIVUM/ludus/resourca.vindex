@@ -1,0 +1,119 @@
+// ATMOS NATIVUM — primus circuitus resource: detectio, appropinquatio, extractio.
+// Contractus HTML: nodus in sonar eligitur, navis ad zonam movetur, extractio
+// continua manet dum navis intra radium est; nova directio extractionem rumpit.
+
+FUNCTIO NAT_RES_DISTANTIA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 TUNC REDDE 0. FIN-SI.
+    REDDE NAT_DISTANTIA(CONTENTUM(s + 40), CONTENTUM(s + 48), CONTENTUM(s + 168), CONTENTUM(s + 176)).
+FIN-FUNCTIO.
+
+FUNCTIO NAT_RES_VISIBILIS REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 || CONTENTUM(s + 224) <= 0 TUNC REDDE 0. FIN-SI.
+    SI NAT_RES_DISTANTIA(s) > CONTENTUM(s + 160) TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_RES_ABRUMPE REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(s + 192) = 0.
+    CONTENTUM(s + 200) = 0.
+    CONTENTUM(s + 208) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Cursus ad punctum paulo intra radium depositi, non necessario ad centrum.
+FUNCTIO NAT_RES_CURSUS REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 || CONTENTUM(s + 64) == 0 || CONTENTUM(s + 72) != 0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(s + 224) <= 0 TUNC REDDE 0. FIN-SI.
+
+    CONTENTUM(s + 192) = 1.
+    CONTENTUM(s + 200) = 0.
+    CONTENTUM(s + 208) = 0.
+
+    DECLARA dist SICUT NUMERUS VALENS NAT_RES_DISTANTIA(s).
+    DECLARA r SICUT NUMERUS VALENS CONTENTUM(s + 184).
+    SI dist <= r TUNC
+        CONTENTUM(s + 200) = 1.
+        REDDE 1.
+    FIN-SI.
+
+    DECLARA px SICUT NUMERUS VALENS CONTENTUM(s + 40).
+    DECLARA py SICUT NUMERUS VALENS CONTENTUM(s + 48).
+    DECLARA dx SICUT NUMERUS VALENS CONTENTUM(s + 168) - px.
+    DECLARA dy SICUT NUMERUS VALENS CONTENTUM(s + 176) - py.
+    DECLARA aditus SICUT NUMERUS VALENS dist - (r - 4).
+    SI aditus < 1 TUNC aditus = 1. FIN-SI.
+    DECLARA tx SICUT NUMERUS VALENS px + dx * aditus / dist.
+    DECLARA ty SICUT NUMERUS VALENS py + dy * aditus / dist.
+    SI NAT_CURSUS_IMPONE(s, tx, ty) == 0 TUNC
+        DECLARA b SICUT NUMERUS VALENS NAT_RES_ABRUMPE(s).
+        REDDE 0.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Prioritas clic mineralis ante navigationem libera.
+FUNCTIO NAT_RES_CLIC REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    ACCIPIT mx SICUT NUMERUS.
+    ACCIPIT my SICUT NUMERUS.
+    SI NAT_RES_VISIBILIS(s) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA cx SICUT NUMERUS VALENS 324.
+    DECLARA cy SICUT NUMERUS VALENS 374.
+    DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
+    DECLARA sx SICUT NUMERUS VALENS cx + (CONTENTUM(s + 168) - CONTENTUM(s + 40)) * 270 / range.
+    DECLARA sy SICUT NUMERUS VALENS cy + (CONTENTUM(s + 176) - CONTENTUM(s + 48)) * 270 / range.
+    DECLARA dx SICUT NUMERUS VALENS mx - sx.
+    DECLARA dy SICUT NUMERUS VALENS my - sy.
+    SI dx * dx + dy * dy > 196 TUNC REDDE 0. FIN-SI.
+    SI NAT_RES_CURSUS(s) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// ~1 sec per tick a 16 ms. Chaque tick: +1 minerai, -0.3% energia.
+// 0 nihil; 1 unitas extracta; 2 depositum exhaustum; 3 cargo plenum; 4 energia insufficiens.
+FUNCTIO NAT_EXTRACTIO_GRADUS REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 || CONTENTUM(s + 192) == 0 || CONTENTUM(s + 64) == 0 || CONTENTUM(s + 72) != 0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(s + 224) <= 0 TUNC
+        DECLARA b0 SICUT NUMERUS VALENS NAT_RES_ABRUMPE(s).
+        REDDE 2.
+    FIN-SI.
+    SI CONTENTUM(s + 80) != 0 TUNC
+        CONTENTUM(s + 200) = 0.
+        REDDE 0.
+    FIN-SI.
+    SI NAT_RES_DISTANTIA(s) > CONTENTUM(s + 184) + 2 TUNC
+        DECLARA b1 SICUT NUMERUS VALENS NAT_RES_ABRUMPE(s).
+        REDDE 0.
+    FIN-SI.
+    SI CONTENTUM(s + 216) >= 40 TUNC
+        CONTENTUM(s + 200) = 0.
+        REDDE 3.
+    FIN-SI.
+    SI CONTENTUM(s + 8) < 3 TUNC
+        CONTENTUM(s + 200) = 0.
+        REDDE 4.
+    FIN-SI.
+
+    CONTENTUM(s + 200) = 1.
+    DECLARA a SICUT NUMERUS VALENS CONTENTUM(s + 208) + 1.
+    SI a < 63 TUNC
+        CONTENTUM(s + 208) = a.
+        REDDE 0.
+    FIN-SI.
+    CONTENTUM(s + 208) = 0.
+    CONTENTUM(s + 216) = CONTENTUM(s + 216) + 1.
+    CONTENTUM(s + 224) = CONTENTUM(s + 224) - 1.
+    CONTENTUM(s + 8) = NAT_MAX(0, CONTENTUM(s + 8) - 3).
+    SI CONTENTUM(s + 224) <= 0 TUNC
+        CONTENTUM(s + 200) = 0.
+        CONTENTUM(s + 192) = 0.
+        REDDE 2.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.

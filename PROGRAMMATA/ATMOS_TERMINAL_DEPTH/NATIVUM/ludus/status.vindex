@@ -1,12 +1,15 @@
-// ATMOS NATIVUM — status ludicus et navigatio continua.
+// ATMOS NATIVUM — status ludicus, navigatio continua et cargo initialis.
 // Resources oxygen/energia/hull in decimis centesimae servantur: 1000 = 100.0%.
 //
-// Descriptor CLXVIII octeta:
+// Descriptor CCXXXII octeta:
 // +0 O2x10, +8 energiax10, +16 hullx10, +24 profunditas m, +32 credita,
 // +40 player x, +48 player y, +56 semen mundi, +64 alive, +72 paused,
 // +80 traveling, +88 start x, +96 start y, +104 end x, +112 end y,
 // +120 gradus cursus, +128 gradus totales, +136 distantia cursus,
-// +144 accumulator drain frame, +152 distantia tota, +160 sonar range m.
+// +144 accumulator drain frame, +152 distantia tota, +160 sonar range m,
+// +168 nodus mineralis x, +176 nodus mineralis y, +184 radius nodi,
+// +192 nodus selectus, +200 extractio activa, +208 accumulator extractionis,
+// +216 cargo mineralis, +224 copia residua depositi.
 
 FUNCTIO NAT_STATUS_INIT REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
@@ -33,12 +36,23 @@ FUNCTIO NAT_STATUS_INIT REDDENS NUMERUS.
     CONTENTUM(s + 144) = 0.
     CONTENTUM(s + 152) = 0.
     CONTENTUM(s + 160) = 280.
+
+    // Primus contactus mineralis determinatus a semine, intra sonar initialem.
+    DECLARA semabs SICUT NUMERUS VALENS NAT_ABS(semen).
+    CONTENTUM(s + 168) = 120 + semabs % 61.
+    CONTENTUM(s + 176) = 0 - (70 + (semabs / 61) % 91).
+    CONTENTUM(s + 184) = 28.
+    CONTENTUM(s + 192) = 0.
+    CONTENTUM(s + 200) = 0.
+    CONTENTUM(s + 208) = 0.
+    CONTENTUM(s + 216) = 0.
+    CONTENTUM(s + 224) = 60.
     REDDE 1.
 FIN-FUNCTIO.
 
 FUNCTIO NAT_STATUS_CREA REDDENS NUMERUS.
     ACCIPIT semen SICUT NUMERUS.
-    DECLARA s SICUT NUMERUS VALENS RESERVA_OCTETA(168).
+    DECLARA s SICUT NUMERUS VALENS RESERVA_OCTETA(232).
     SI s <= 0 TUNC REDDE 0. FIN-SI.
     SI NAT_STATUS_INIT(s, semen) == 0 TUNC REDDE 0. FIN-SI.
     REDDE s.
@@ -60,7 +74,6 @@ FUNCTIO NAT_STATUS_VITA_RENOVA REDDENS NUMERUS.
     REDDE CONTENTUM(s + 64).
 FIN-FUNCTIO.
 
-// Distantia adhuc naviganda ad destinationem activam.
 FUNCTIO NAT_CURSUS_RELIQUUM REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI s <= 0 || CONTENTUM(s + 80) == 0 TUNC REDDE 0. FIN-SI.
@@ -69,7 +82,6 @@ FUNCTIO NAT_CURSUS_RELIQUUM REDDENS NUMERUS.
     REDDE NAT_ISQRT(dx * dx + dy * dy).
 FIN-FUNCTIO.
 
-// Progressus cursus in millesimis: 0..1000.
 FUNCTIO NAT_CURSUS_PROGRESSUS REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI s <= 0 || CONTENTUM(s + 80) == 0 TUNC REDDE 0. FIN-SI.
@@ -98,7 +110,6 @@ FUNCTIO NAT_CURSUS_IMPONE REDDENS NUMERUS.
         ty = y + dy * range / dist.
     FIN-SI.
 
-    // Clamp finalis ad circulum mundi.
     DECLARA radius_mundi SICUT NUMERUS VALENS NAT_MUNDUS_RADIUS().
     DECLARA dist_origine SICUT NUMERUS VALENS NAT_ISQRT(tx * tx + ty * ty).
     SI dist_origine > radius_mundi TUNC
@@ -138,7 +149,6 @@ FUNCTIO NAT_CURSUS_GRADUS REDDENS NUMERUS.
         CONTENTUM(s + 120) = total.
         CONTENTUM(s + 80) = 0.
         CONTENTUM(s + 152) = CONTENTUM(s + 152) + CONTENTUM(s + 136).
-        // Costum arrival HTML ~round(dist/28), cap 55%.
         DECLARA cost SICUT NUMERUS VALENS (CONTENTUM(s + 136) + 14) / 28.
         SI CONTENTUM(s + 136) > 5000 TUNC
             cost = (5000 + 14) / 28 + (CONTENTUM(s + 136) - 5000 + 60) / 120.
@@ -162,13 +172,10 @@ FUNCTIO NAT_CURSUS_GRADUS REDDENS NUMERUS.
     DECLARA sy SICUT NUMERUS VALENS CONTENTUM(s + 96).
     CONTENTUM(s + 40) = sx + (CONTENTUM(s + 104) - sx) * ease / 1000.
     CONTENTUM(s + 48) = sy + (CONTENTUM(s + 112) - sy) * ease / 1000.
-    // Bathymetria sequitur positionem navis durante motu, non solum adventum.
     DECLARA d_live SICUT NUMERUS VALENS NAT_STATUS_PROFUNDITAS_RENOVA(s).
     REDDE 1.
 FIN-FUNCTIO.
 
-// Cadentia HTML: -0.4 O2 et -0.2 energia singulis 3000ms.
-// Loop visualis ~16ms => 188 frames proxime 3008ms.
 FUNCTIO NAT_DRAIN_GRADUS REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI s <= 0 || CONTENTUM(s + 64) == 0 || CONTENTUM(s + 72) != 0 TUNC REDDE 0. FIN-SI.

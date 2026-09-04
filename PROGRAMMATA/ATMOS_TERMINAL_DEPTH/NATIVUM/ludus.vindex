@@ -14,6 +14,7 @@ IMPORTA "machina/platforma_win32.vindex".
 IMPORTA "ludus/mathematica.vindex".
 IMPORTA "ludus/mundus.vindex".
 IMPORTA "ludus/status.vindex".
+IMPORTA "ludus/resourca.vindex".
 IMPORTA "ludus/rendere.vindex".
 
 FUNCTIO NAT_I32_LEGE REDDENS NUMERUS.
@@ -37,6 +38,12 @@ FUNCTIO NAT_SONAR_CLIC REDDENS NUMERUS.
     DECLARA dx SICUT NUMERUS VALENS mx - cx.
     DECLARA dy SICUT NUMERUS VALENS my - cy.
     SI dx * dx + dy * dy > radius * radius TUNC REDDE 0. FIN-SI.
+
+    // Contact mineralis habet prioritatem supra navigationem liberam.
+    SI NAT_RES_CLIC(s, mx, my) != 0 TUNC REDDE 2. FIN-SI.
+
+    // Nova directio libera rumpit extractionem/contactum selectum.
+    DECLARA abruptum SICUT NUMERUS VALENS NAT_RES_ABRUMPE(s).
     DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
     DECLARA tx SICUT NUMERUS VALENS CONTENTUM(s + 40) + dx * range / radius.
     DECLARA ty SICUT NUMERUS VALENS CONTENTUM(s + 48) + dy * range / radius.
@@ -176,6 +183,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 mouse_prius = mouse_nunc.
 
                 DECLARA mov SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(s).
+                DECLARA extractio SICUT NUMERUS VALENS NAT_EXTRACTIO_GRADUS(s).
                 DECLARA drain SICUT NUMERUS VALENS NAT_DRAIN_GRADUS(s).
                 DECLARA pictum SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
                 DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
