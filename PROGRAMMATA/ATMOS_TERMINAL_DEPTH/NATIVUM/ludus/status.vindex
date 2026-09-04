@@ -60,7 +60,26 @@ FUNCTIO NAT_STATUS_VITA_RENOVA REDDENS NUMERUS.
     REDDE CONTENTUM(s + 64).
 FIN-FUNCTIO.
 
+// Distantia adhuc naviganda ad destinationem activam.
+FUNCTIO NAT_CURSUS_RELIQUUM REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 || CONTENTUM(s + 80) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA dx SICUT NUMERUS VALENS CONTENTUM(s + 104) - CONTENTUM(s + 40).
+    DECLARA dy SICUT NUMERUS VALENS CONTENTUM(s + 112) - CONTENTUM(s + 48).
+    REDDE NAT_ISQRT(dx * dx + dy * dy).
+FIN-FUNCTIO.
+
+// Progressus cursus in millesimis: 0..1000.
+FUNCTIO NAT_CURSUS_PROGRESSUS REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI s <= 0 || CONTENTUM(s + 80) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA total SICUT NUMERUS VALENS CONTENTUM(s + 128).
+    SI total <= 0 TUNC REDDE 0. FIN-SI.
+    REDDE NAT_CLAMPA(CONTENTUM(s + 120) * 1000 / total, 0, 1000).
+FIN-FUNCTIO.
+
 // Directio sonar: destination ad radium detectionis clampatur.
+// Finis mundi quoque servatur: navis extra radium 3,000 km ire non potest.
 // Duratio HTML: max(500ms, distantia*14ms); loop NATIVUM ~16ms.
 FUNCTIO NAT_CURSUS_IMPONE REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
@@ -77,10 +96,21 @@ FUNCTIO NAT_CURSUS_IMPONE REDDENS NUMERUS.
     SI dist > range TUNC
         tx = x + dx * range / dist.
         ty = y + dy * range / dist.
-        dx = tx - x.
-        dy = ty - y.
-        dist = NAT_ISQRT(dx * dx + dy * dy).
     FIN-SI.
+
+    // Clamp finalis ad circulum mundi.
+    DECLARA radius_mundi SICUT NUMERUS VALENS NAT_MUNDUS_RADIUS().
+    DECLARA dist_origine SICUT NUMERUS VALENS NAT_ISQRT(tx * tx + ty * ty).
+    SI dist_origine > radius_mundi TUNC
+        tx = tx * radius_mundi / dist_origine.
+        ty = ty * radius_mundi / dist_origine.
+    FIN-SI.
+
+    dx = tx - x.
+    dy = ty - y.
+    dist = NAT_ISQRT(dx * dx + dy * dy).
+    SI dist <= 1 TUNC REDDE 0. FIN-SI.
+
     DECLARA duratio SICUT NUMERUS VALENS dist * 14.
     SI duratio < 500 TUNC duratio = 500. FIN-SI.
     DECLARA gradus SICUT NUMERUS VALENS (duratio + 15) / 16.
@@ -132,6 +162,8 @@ FUNCTIO NAT_CURSUS_GRADUS REDDENS NUMERUS.
     DECLARA sy SICUT NUMERUS VALENS CONTENTUM(s + 96).
     CONTENTUM(s + 40) = sx + (CONTENTUM(s + 104) - sx) * ease / 1000.
     CONTENTUM(s + 48) = sy + (CONTENTUM(s + 112) - sy) * ease / 1000.
+    // Bathymetria sequitur positionem navis durante motu, non solum adventum.
+    DECLARA d_live SICUT NUMERUS VALENS NAT_STATUS_PROFUNDITAS_RENOVA(s).
     REDDE 1.
 FIN-FUNCTIO.
 

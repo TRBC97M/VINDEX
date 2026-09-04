@@ -67,7 +67,10 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     f = CBGRA_LINEA(c, cx + 7, cy + 8, cx, cy - 10, echo).
     f = CBGRA_CIRCULUS(c, cx, cy, 14, echo).
 
-    // Cursus: destinatio relative ad navem, appropinquans centro dum movetur.
+    DECLARA t SICUT TEXTUS VALENS "".
+
+    // Cursus activus: destinatio mundi apparet relative ad navem.
+    // Cum navis procedit, signum destinationis appropinquat centro.
     SI CONTENTUM(s + 80) != 0 TUNC
         DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
         DECLARA dx SICUT NUMERUS VALENS CONTENTUM(s + 104) - CONTENTUM(s + 40).
@@ -75,14 +78,16 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         DECLARA tx SICUT NUMERUS VALENS cx + dx * radius / range.
         DECLARA ty SICUT NUMERUS VALENS cy + dy * radius / range.
         f = CBGRA_LINEA(c, cx, cy, tx, ty, echo).
-        f = CBGRA_CIRCULUS(c, tx, ty, 6, amber).
+        f = CBGRA_CIRCULUS(c, tx, ty, 7, amber).
+        f = CBGRA_LINEA(c, tx - 10, ty, tx + 10, ty, amber).
+        f = CBGRA_LINEA(c, tx, ty - 10, tx, ty + 10, amber).
         f = FB5_TEXTUS(c, 18, 58, "SONAR // EN ROUTE", 2, echo).
     ALITER
         f = FB5_TEXTUS(c, 18, 58, "SONAR // READY - CLICK TO NAVIGATE", 2, echo).
     FIN-SI.
 
     // Resource HUD unicus intra canvas, typographia scala II.
-    DECLARA t SICUT TEXTUS VALENS "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)).
+    t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)).
     t = t + " M".
     f = FB5_TEXTUS(c, 432, 90, t, 2, echo).
     t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10).
@@ -97,7 +102,7 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
     f = FB5_TEXTUS(c, 432, 237, t, 2, amber).
 
-    // Coordonnatae et range infra sonar.
+    // Coordonnatae monde et portee sonar infra instrumentum.
     t = "X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)).
     t = t + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)).
     f = FB5_TEXTUS(c, 18, 680, t, 2, text_d).
@@ -105,13 +110,29 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     t = t + " M".
     f = FB5_TEXTUS(c, 270, 680, t, 2, text_d).
 
-    // Journal minimal, eiusdem framebuffer pars.
+    // Journal contextuel. En navigation il devient instrument de route.
     f = FB5_TEXTUS(c, 660, 78, "DIVE CORE ONLINE", 2, phosphor).
-    f = FB5_TEXTUS(c, 660, 104, "CLICK SONAR TO SET COURSE", 2, text_d).
-    f = FB5_TEXTUS(c, 660, 130, "WORLD RADIUS 3000 KM", 2, text_d).
-    f = FB5_TEXTUS(c, 660, 156, "ESC OR WINDOW X TO EXIT", 2, text_d).
+    SI CONTENTUM(s + 80) != 0 TUNC
+        f = FB5_TEXTUS(c, 660, 104, "COURSE ACTIVE", 2, echo).
+        t = "TARGET X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 104)).
+        f = FB5_TEXTUS(c, 660, 130, t, 2, text_d).
+        t = "TARGET Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 112)).
+        f = FB5_TEXTUS(c, 660, 156, t, 2, text_d).
+        t = "DIST " + TEXTUS_EX_NUMERO_DECIMALI(NAT_CURSUS_RELIQUUM(s)).
+        t = t + " M".
+        f = FB5_TEXTUS(c, 660, 182, t, 2, amber).
+        DECLARA progressus SICUT NUMERUS VALENS NAT_CURSUS_PROGRESSUS(s).
+        t = "PROGRESS " + TEXTUS_EX_NUMERO_DECIMALI(progressus / 10).
+        t = t + "%".
+        f = FB5_TEXTUS(c, 660, 208, t, 2, text_d).
+        f = NAT_UI_BAR(c, 660, 230, 270, progressus, echo).
+    ALITER
+        f = FB5_TEXTUS(c, 660, 104, "CLICK SONAR TO SET COURSE", 2, text_d).
+        f = FB5_TEXTUS(c, 660, 130, "WORLD RADIUS 3000 KM", 2, text_d).
+        f = FB5_TEXTUS(c, 660, 156, "ESC OR WINDOW X TO EXIT", 2, text_d).
+    FIN-SI.
     SI CONTENTUM(s + 64) == 0 TUNC
-        f = FB5_TEXTUS(c, 660, 198, "SIGNAL LOST", 2, danger).
+        f = FB5_TEXTUS(c, 660, 270, "SIGNAL LOST", 2, danger).
     FIN-SI.
 
     REDDE 1.
