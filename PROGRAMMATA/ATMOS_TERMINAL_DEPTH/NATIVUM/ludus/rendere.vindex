@@ -110,6 +110,19 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     t = t + " M".
     f = FB5_TEXTUS(c, 270, 680, t, 2, text_d).
 
+    // Bathymetria contextualis: regio lata + textura loci.
+    DECLARA regio SICUT NUMERUS VALENS NAT_MUNDUS_REGIO(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
+    DECLARA relief SICUT NUMERUS VALENS NAT_MUNDUS_RELIEF(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
+    DECLARA nomen_regio SICUT TEXTUS VALENS "UPPER SLOPE".
+    SI regio == 2 TUNC nomen_regio = "LOWER SLOPE". FIN-SI.
+    SI regio == 3 TUNC nomen_regio = "ABYSSAL PLAIN". FIN-SI.
+    SI regio == 4 TUNC nomen_regio = "DEEP BASIN". FIN-SI.
+    SI regio == 5 TUNC nomen_regio = "HADAL TRENCH". FIN-SI.
+    DECLARA nomen_relief SICUT TEXTUS VALENS "SMOOTH".
+    SI relief == 2 TUNC nomen_relief = "ROLLING". FIN-SI.
+    SI relief == 3 TUNC nomen_relief = "BROKEN". FIN-SI.
+    SI relief == 4 TUNC nomen_relief = "ESCARPMENT". FIN-SI.
+
     // Journal contextuel. En navigation il devient instrument de route.
     f = FB5_TEXTUS(c, 660, 78, "DIVE CORE ONLINE", 2, phosphor).
     SI CONTENTUM(s + 80) != 0 TUNC
@@ -126,13 +139,21 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         t = t + "%".
         f = FB5_TEXTUS(c, 660, 208, t, 2, text_d).
         f = NAT_UI_BAR(c, 660, 230, 270, progressus, echo).
+        t = "REGION " + nomen_regio.
+        f = FB5_TEXTUS(c, 660, 258, t, 2, echo).
+        t = "SEABED " + nomen_relief.
+        f = FB5_TEXTUS(c, 660, 284, t, 2, text_d).
     ALITER
         f = FB5_TEXTUS(c, 660, 104, "CLICK SONAR TO SET COURSE", 2, text_d).
         f = FB5_TEXTUS(c, 660, 130, "WORLD RADIUS 3000 KM", 2, text_d).
         f = FB5_TEXTUS(c, 660, 156, "ESC OR WINDOW X TO EXIT", 2, text_d).
+        t = "REGION " + nomen_regio.
+        f = FB5_TEXTUS(c, 660, 194, t, 2, echo).
+        t = "SEABED " + nomen_relief.
+        f = FB5_TEXTUS(c, 660, 220, t, 2, text_d).
     FIN-SI.
     SI CONTENTUM(s + 64) == 0 TUNC
-        f = FB5_TEXTUS(c, 660, 270, "SIGNAL LOST", 2, danger).
+        f = FB5_TEXTUS(c, 660, 330, "SIGNAL LOST", 2, danger).
     FIN-SI.
 
     REDDE 1.
