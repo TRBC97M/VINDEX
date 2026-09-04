@@ -232,3 +232,66 @@ FUNCTIO CBGRA_RECT_GLOW REDDENS NUMERUS.
     FIN-DUM.
     REDDE 1.
 FIN-FUNCTIO.
+
+// Graphica VIII: color + alpha compactantur in uno NUMERUS, ut triangulum
+// octo argumenta exacta servet (limen compilatoris hodierni).
+FUNCTIO CBGRA_COLOR_ALPHA REDDENS NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI alpha < 0 TUNC alpha = 0. FIN-SI.
+    SI alpha > 255 TUNC alpha = 255. FIN-SI.
+    REDDE (color & 16777215) + ((alpha & 255) << 24).
+FIN-FUNCTIO.
+
+// Triangulum alpha impletum per scanlines. Primitive generalis VINDEX:
+// utile sonaribus, HUD, iconibus vectorialibus et compositoribus futuris.
+FUNCTIO CBGRA_TRIANGULUM_ALPHA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS.
+    ACCIPIT y0 SICUT NUMERUS.
+    ACCIPIT x1 SICUT NUMERUS.
+    ACCIPIT y1 SICUT NUMERUS.
+    ACCIPIT x2 SICUT NUMERUS.
+    ACCIPIT y2 SICUT NUMERUS.
+    ACCIPIT color_alpha SICUT NUMERUS.
+    SI c <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA tx SICUT NUMERUS VALENS 0.
+    DECLARA ty SICUT NUMERUS VALENS 0.
+    SI y1 < y0 TUNC
+        tx = x0. x0 = x1. x1 = tx.
+        ty = y0. y0 = y1. y1 = ty.
+    FIN-SI.
+    SI y2 < y0 TUNC
+        tx = x0. x0 = x2. x2 = tx.
+        ty = y0. y0 = y2. y2 = ty.
+    FIN-SI.
+    SI y2 < y1 TUNC
+        tx = x1. x1 = x2. x2 = tx.
+        ty = y1. y1 = y2. y2 = ty.
+    FIN-SI.
+
+    DECLARA color SICUT NUMERUS VALENS color_alpha & 16777215.
+    DECLARA alpha SICUT NUMERUS VALENS (color_alpha >> 24) & 255.
+    SI alpha <= 0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA yy SICUT NUMERUS VALENS y0.
+    DUM yy <= y2 PERFICE
+        DECLARA xa SICUT NUMERUS VALENS x0.
+        SI y2 != y0 TUNC xa = x0 + (x2 - x0) * (yy - y0) / (y2 - y0). FIN-SI.
+
+        DECLARA xb SICUT NUMERUS VALENS x1.
+        SI yy <= y1 && y1 != y0 TUNC
+            xb = x0 + (x1 - x0) * (yy - y0) / (y1 - y0).
+        ALITER
+            SI y2 != y1 TUNC xb = x1 + (x2 - x1) * (yy - y1) / (y2 - y1). FIN-SI.
+        FIN-SI.
+
+        DECLARA xl SICUT NUMERUS VALENS xa.
+        DECLARA xr SICUT NUMERUS VALENS xb.
+        SI xl > xr TUNC tx = xl. xl = xr. xr = tx. FIN-SI.
+        DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA(c, xl, yy, xr - xl + 1, 1, color, alpha).
+        yy = yy + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
