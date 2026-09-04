@@ -1,6 +1,6 @@
 // ATMOS NATIVUM — pont Graphica resolutione independens.
 // Spatium logicum UI manet 960x720; canvas physicus potest esse 720p, 1080p, 4K, etc.
-// Graphica VI: sonar humaniter visibilis — conus densior, strata clariora, margines perceptibiles.
+// Graphica VIII: sector sonar plenus, phosphor graduatus et velum interius subtile.
 
 FUNCTIO NATG_X REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -36,7 +36,8 @@ FUNCTIO NATG_ABS REDDENS NUMERUS.
     REDDE v.
 FIN-FUNCTIO.
 
-// Velum circulare impletum pro contactibus localibus.
+// Velum circulare impletum pro contactibus et phosphore sonar.
+// Scanlines evitant unam invocationem per punctum ad eligendam latitudinem.
 FUNCTIO NATG_DISC_ALPHA REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT cx SICUT NUMERUS.
@@ -50,20 +51,15 @@ FUNCTIO NATG_DISC_ALPHA REDDENS NUMERUS.
     DECLARA pr SICUT NUMERUS VALENS NATG_R(c, radius).
     DECLARA yy SICUT NUMERUS VALENS 0 - pr.
     DUM yy <= pr PERFICE
-        DECLARA xx SICUT NUMERUS VALENS 0 - pr.
-        DUM xx <= pr PERFICE
-            SI xx * xx + yy * yy <= pr * pr TUNC
-                DECLARA q SICUT NUMERUS VALENS CBGRA_PIXEL_ALPHA(c, pcx + xx, pcy + yy, color, alpha).
-            FIN-SI.
-            xx = xx + 1.
-        FIN-DUM.
+        DECLARA rest SICUT NUMERUS VALENS pr * pr - yy * yy.
+        DECLARA ext SICUT NUMERUS VALENS NAT_ISQRT(rest).
+        DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA(c, pcx - ext, pcy + yy, ext * 2 + 1, 1, color, alpha).
         yy = yy + 1.
     FIN-DUM.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Graphica VI: strates réellement perceptibles dans le grand sonar.
-// On garde un coût borné : lignes espacées, jamais de remplissage plein du disque.
+// Strates horizontales CRT/sonar legeres.
 FUNCTIO NATG_SONAR_STRATA REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT cx SICUT NUMERUS.
@@ -86,8 +82,9 @@ FUNCTIO NATG_SONAR_STRATA REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Graphica VI: éventail sonar visible à l'oeil humain.
-// 33 rayons, centre plus lumineux et deux limites latérales nettes.
+// Graphica VIII: non iam "fan" linearis sed sector phosphore plenus.
+// Tres triangula translucida se superponunt: cauda lata, corpus, frons.
+// x1/y1 est frons scan; cauda rotatur retro circa 55 gradus.
 FUNCTIO NATG_SONAR_FAN REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT cx SICUT NUMERUS.
@@ -98,28 +95,30 @@ FUNCTIO NATG_SONAR_FAN REDDENS NUMERUS.
     SI c <= 0 TUNC REDDE 0. FIN-SI.
     DECLARA dx SICUT NUMERUS VALENS x1 - cx.
     DECLARA dy SICUT NUMERUS VALENS y1 - cy.
-    DECLARA den SICUT NUMERUS VALENS NATG_ABS(dx).
-    SI NATG_ABS(dy) > den TUNC den = NATG_ABS(dy). FIN-SI.
-    SI den < 1 TUNC REDDE 1. FIN-SI.
-    DECLARA px SICUT NUMERUS VALENS (0 - dy) * 92 / den.
-    DECLARA py SICUT NUMERUS VALENS dx * 92 / den.
-    DECLARA ax SICUT NUMERUS VALENS x1 + px.
-    DECLARA ay SICUT NUMERUS VALENS y1 + py.
-    DECLARA bx SICUT NUMERUS VALENS x1 - px.
-    DECLARA by SICUT NUMERUS VALENS y1 - py.
-    DECLARA k SICUT NUMERUS VALENS 0.
-    DUM k <= 32 PERFICE
-        DECLARA ex SICUT NUMERUS VALENS ax + (bx - ax) * k / 32.
-        DECLARA ey SICUT NUMERUS VALENS ay + (by - ay) * k / 32.
-        DECLARA a SICUT NUMERUS VALENS 16.
-        SI k >= 7 && k <= 25 TUNC a = 22. FIN-SI.
-        SI k >= 12 && k <= 20 TUNC a = 31. FIN-SI.
-        SI k >= 15 && k <= 17 TUNC a = 43. FIN-SI.
-        DECLARA q SICUT NUMERUS VALENS CBGRA_LINEA_ALPHA(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, ex), NATG_Y(c, ey), color, a).
-        k = k + 1.
-    FIN-DUM.
-    DECLARA edgea SICUT NUMERUS VALENS CBGRA_LINEA_MOLLIS(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, ax), NATG_Y(c, ay), NATG_CRASSITUDO(c,1), color, 72).
-    edgea = CBGRA_LINEA_MOLLIS(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, bx), NATG_Y(c, by), NATG_CRASSITUDO(c,1), color, 72).
+    SI dx == 0 && dy == 0 TUNC REDDE 1. FIN-SI.
+
+    // Rotation retro in coordinatis ecran: x'=x*c+y*s, y'=-x*s+y*c.
+    DECLARA x55 SICUT NUMERUS VALENS cx + (dx * 574 + dy * 819) / 1000.
+    DECLARA y55 SICUT NUMERUS VALENS cy + ((0 - dx) * 819 + dy * 574) / 1000.
+    DECLARA x34 SICUT NUMERUS VALENS cx + (dx * 829 + dy * 559) / 1000.
+    DECLARA y34 SICUT NUMERUS VALENS cy + ((0 - dx) * 559 + dy * 829) / 1000.
+    DECLARA x17 SICUT NUMERUS VALENS cx + (dx * 956 + dy * 292) / 1000.
+    DECLARA y17 SICUT NUMERUS VALENS cy + ((0 - dx) * 292 + dy * 956) / 1000.
+
+    DECLARA pcx SICUT NUMERUS VALENS NATG_X(c, cx).
+    DECLARA pcy SICUT NUMERUS VALENS NATG_Y(c, cy).
+    DECLARA phx SICUT NUMERUS VALENS NATG_X(c, x1).
+    DECLARA phy SICUT NUMERUS VALENS NATG_Y(c, y1).
+
+    DECLARA rgba SICUT NUMERUS VALENS CBGRA_COLOR_ALPHA(color, 13).
+    DECLARA q SICUT NUMERUS VALENS CBGRA_TRIANGULUM_ALPHA(c, pcx, pcy, phx, phy, NATG_X(c, x55), NATG_Y(c, y55), rgba).
+    rgba = CBGRA_COLOR_ALPHA(color, 22).
+    q = CBGRA_TRIANGULUM_ALPHA(c, pcx, pcy, phx, phy, NATG_X(c, x34), NATG_Y(c, y34), rgba).
+    rgba = CBGRA_COLOR_ALPHA(color, 34).
+    q = CBGRA_TRIANGULUM_ALPHA(c, pcx, pcy, phx, phy, NATG_X(c, x17), NATG_Y(c, y17), rgba).
+
+    // Bord arriere discret seulement; la frons brillante est dessinee par le renderer.
+    q = CBGRA_LINEA_ALPHA(c, pcx, pcy, NATG_X(c, x55), NATG_Y(c, y55), color, 28).
     REDDE 1.
 FIN-FUNCTIO.
 
@@ -242,7 +241,7 @@ FUNCTIO NATG_LINEA_GLOW REDDENS NUMERUS.
     ACCIPIT x1 SICUT NUMERUS.
     ACCIPIT y1 SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
-    // Le faisceau de balayage ATMOS utilise le phosphore sombre et part du centre sonar.
+    // Compatibilitas: longus radius sonar per hanc API sector plenus quoque accipit.
     SI x0 == 324 && y0 == 374 && color == CBGRA_COLOR(48, 132, 86) TUNC
         DECLARA d SICUT NUMERUS VALENS NATG_ABS(x1 - x0).
         SI NATG_ABS(y1 - y0) > d TUNC d = NATG_ABS(y1 - y0). FIN-SI.
@@ -268,7 +267,11 @@ FUNCTIO NATG_CIRCULUS_GLOW REDDENS NUMERUS.
     ACCIPIT radius SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
     SI radius <= 36 TUNC DECLARA v SICUT NUMERUS VALENS NATG_DISC_ALPHA(c, cx, cy, radius, color, 26). FIN-SI.
-    SI radius >= 180 TUNC DECLARA strata SICUT NUMERUS VALENS NATG_SONAR_STRATA(c, cx, cy, radius - 3, color, 12). FIN-SI.
+    SI radius >= 180 TUNC
+        // Un vrai bain de phosphore interieur, tres faible mais continu.
+        DECLARA velum SICUT NUMERUS VALENS NATG_DISC_ALPHA(c, cx, cy, radius - 6, CBGRA_COLOR(12, 78, 38), 5).
+        DECLARA strata SICUT NUMERUS VALENS NATG_SONAR_STRATA(c, cx, cy, radius - 3, color, 12).
+    FIN-SI.
     REDDE CBGRA_CIRCULUS_GLOW(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_R(c, radius), color).
 FIN-FUNCTIO.
 
