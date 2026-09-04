@@ -1,6 +1,6 @@
 // ATMOS NATIVUM — renderer software resolutione independens.
 // Spatium logicum 960x720; graphica physica sequitur clientem 720p/1080p/4K.
-// Graphica XI: sonar X servatur; HUD navis profundior sine mutatione gameplay.
+// Stabilitas I: sonar Graphica X servatur, sed sector scanline O(r) fit.
 
 FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -14,31 +14,58 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
     SI c <= 0 || radius <= 0 || alpha <= 0 TUNC REDDE 0. FIN-SI.
     SI fx == 0 && fy == 0 TUNC REDDE 0. FIN-SI.
 
+    // Cauda a 40 gradibus retro a fronte.
     DECLARA tx SICUT NUMERUS VALENS (fx * 766 + fy * 643) / 1000.
     DECLARA ty SICUT NUMERUS VALENS ((0 - fx) * 643 + fy * 766) / 1000.
 
+    // Intersectio scanline cum disco et duobus semiplanis radialis.
+    // Nulla iteratio per pixel: tantum duo limites lineares per ordinem.
     DECLARA yy SICUT NUMERUS VALENS 0 - radius.
     DUM yy <= radius PERFICE
         DECLARA rest SICUT NUMERUS VALENS radius * radius - yy * yy.
         DECLARA ext SICUT NUMERUS VALENS NAT_ISQRT(rest).
-        DECLARA dx SICUT NUMERUS VALENS 0 - ext.
-        DECLARA inventum SICUT NUMERUS VALENS 0.
-        DECLARA primum SICUT NUMERUS VALENS 0.
-        DECLARA ultimum SICUT NUMERUS VALENS 0.
-        DUM dx <= ext PERFICE
-            DECLARA cr0 SICUT NUMERUS VALENS tx * yy - ty * dx.
-            DECLARA cr1 SICUT NUMERUS VALENS dx * fy - yy * fx.
-            SI cr0 >= 0 && cr1 >= 0 TUNC
-                SI inventum == 0 TUNC
-                    primum = dx.
-                    inventum = 1.
-                FIN-SI.
-                ultimum = dx.
+        DECLARA lo SICUT NUMERUS VALENS 0 - ext.
+        DECLARA hi SICUT NUMERUS VALENS ext.
+        DECLARA validus SICUT NUMERUS VALENS 1.
+
+        // cr0 = tx*y - ty*x >= 0.
+        SI ty > 0 TUNC
+            DECLARA num0 SICUT NUMERUS VALENS tx * yy.
+            DECLARA lim0 SICUT NUMERUS VALENS num0 / ty.
+            SI num0 < 0 && num0 % ty != 0 TUNC lim0 = lim0 - 1. FIN-SI.
+            SI lim0 < hi TUNC hi = lim0. FIN-SI.
+        ALITER
+            SI ty < 0 TUNC
+                DECLARA den0 SICUT NUMERUS VALENS 0 - ty.
+                DECLARA num0b SICUT NUMERUS VALENS 0 - tx * yy.
+                DECLARA lim0b SICUT NUMERUS VALENS num0b / den0.
+                SI num0b > 0 && num0b % den0 != 0 TUNC lim0b = lim0b + 1. FIN-SI.
+                SI lim0b > lo TUNC lo = lim0b. FIN-SI.
+            ALITER
+                SI tx * yy < 0 TUNC validus = 0. FIN-SI.
             FIN-SI.
-            dx = dx + 1.
-        FIN-DUM.
-        SI inventum != 0 TUNC
-            DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA(c, pcx + primum, pcy + yy, ultimum - primum + 1, 1, color, alpha).
+        FIN-SI.
+
+        // cr1 = x*fy - y*fx >= 0.
+        SI fy > 0 TUNC
+            DECLARA num1 SICUT NUMERUS VALENS fx * yy.
+            DECLARA lim1 SICUT NUMERUS VALENS num1 / fy.
+            SI num1 > 0 && num1 % fy != 0 TUNC lim1 = lim1 + 1. FIN-SI.
+            SI lim1 > lo TUNC lo = lim1. FIN-SI.
+        ALITER
+            SI fy < 0 TUNC
+                DECLARA den1 SICUT NUMERUS VALENS 0 - fy.
+                DECLARA num1b SICUT NUMERUS VALENS 0 - fx * yy.
+                DECLARA lim1b SICUT NUMERUS VALENS num1b / den1.
+                SI num1b < 0 && num1b % den1 != 0 TUNC lim1b = lim1b - 1. FIN-SI.
+                SI lim1b < hi TUNC hi = lim1b. FIN-SI.
+            ALITER
+                SI (0 - fx * yy) < 0 TUNC validus = 0. FIN-SI.
+            FIN-SI.
+        FIN-SI.
+
+        SI validus != 0 && lo <= hi TUNC
+            DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA(c, pcx + lo, pcy + yy, hi - lo + 1, 1, color, alpha).
         FIN-SI.
         yy = yy + 1.
     FIN-DUM.
@@ -170,7 +197,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         FIN-SI.
     FIN-SI.
 
-    // Graphica XI: seul le HUD navis change dans cette sous-passe certifiee.
     f = NATG_RECT(c, 420, 78, 220, 188, panel).
     f = NATG_RECT(c, 422, 80, 216, 184, panel2).
     f = NATG_RECT_ALPHA(c, 430, 84, 200, 18, phosphor_d, 26).
@@ -191,7 +217,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
     f = NATG_TEXT_GLOW(c, 432, 244, t, 1, amber).
 
-    // Footer de navigation original, conserve pour isoler la passe visuelle.
     t = "X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)) + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)).
     f = NATG_TEXT(c, 18, 680, t, 1, text_d).
     t = "RANGE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 160)) + " M".
