@@ -1,0 +1,13 @@
+// P9: claves clausurae sine initio suo.
+//
+// Ante correctionem: quattuor claves (FIN-SI, FIN-DUM, FIN-PER, ALITER)
+// compilationem transibant sed BINARIUM CADENS producebant (SIGSEGV,
+// exitus 139), quia ANALYSA_BLOCUS eas videns terminabat sed nemo eas
+// consumebat; reliquum corpus numquam analysabatur.
+//
+// Post correctionem: diagnosticum rectum cum linea et columna.
+// Hic casus ergo compilari NON debet; exitus 65 exspectatur.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    FIN-SI.
+    REDDE 7.
+FIN-FUNCTIO.

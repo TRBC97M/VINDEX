@@ -1971,6 +1971,9 @@ FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.
     SI genus == 7 TUNC
         PROCLAMA "ERRATUM: clavis ignota ad gradum supremum est".
     FIN-SI.
+    SI genus == 8 TUNC
+        PROCLAMA "ERRATUM: clavis clausurae sine initio suo".
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -6031,6 +6034,24 @@ FUNCTIO ASSECURA_BUFFERUM REDDENS NUMERUS.
     REDDE nova_basis.
 FIN-FUNCTIO.
 
+// Agnoscit clavem clausurae quae sine initio suo corpus abrumpere potest.
+// FIN-FUNCTIO excluditur quia terminator legitimus functionis est.
+FUNCTIO CLAVIS_CLAUSURAE_ORPHANA REDDENS NUMERUS.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    SI i + 5 < n && fons[i] == 65 && fons[i+1] == 76 && fons[i+2] == 73 && fons[i+3] == 84 && fons[i+4] == 69 && fons[i+5] == 82 TUNC
+        REDDE 1.
+    FIN-SI.
+    SI i + 3 < n && fons[i] == 70 && fons[i+1] == 73 && fons[i+2] == 78 && fons[i+3] == 45 TUNC
+        SI i + 10 < n && fons[i+4] == 70 && fons[i+5] == 85 && fons[i+6] == 78 && fons[i+7] == 67 && fons[i+8] == 84 && fons[i+9] == 73 && fons[i+10] == 79 TUNC
+            REDDE 0.
+        FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argc SICUT NUMERUS.
     ACCIPIT argv SICUT ACUS<NUMERUS>.
@@ -6468,6 +6489,32 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).
+                SI CLAVIS_CLAUSURAE_ORPHANA(fons, i, n) == 1 TUNC
+                    DECLARA diag_orph_scriptum1 SICUT NUMERUS VALENS 0.
+                    SI i >= initium_fontis_principalis TUNC
+                        DECLARA pos_orph_main1 SICUT NUMERUS VALENS i - initium_fontis_principalis.
+                        DECLARA ig_orph_main1 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons_brut, pos_orph_main1, n_fons_principalis, 8).
+                        diag_orph_scriptum1 = 1.
+                    ALITER
+                        DECLARA idx_orph_imp1 SICUT NUMERUS VALENS 0.
+                        DUM idx_orph_imp1 < numerus_importorum PERFICE
+                            DECLARA init_orph_imp1 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_orph_imp1 * 32).
+                            DECLARA mens_orph_imp1 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_orph_imp1 * 32 + 8).
+                            SI diag_orph_scriptum1 == 0 && i >= init_orph_imp1 && i < init_orph_imp1 + mens_orph_imp1 TUNC
+                                DECLARA fons_orph_imp1 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_orph_imp1 * 32 + 16).
+                                DECLARA via_orph_imp1 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_orph_imp1 * 32 + 24).
+                                DECLARA pos_orph_imp1 SICUT NUMERUS VALENS i - init_orph_imp1.
+                                DECLARA ig_orph_imp1 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_orph_imp1, fons_orph_imp1, pos_orph_imp1, mens_orph_imp1, 8).
+                                diag_orph_scriptum1 = 1.
+                            FIN-SI.
+                            idx_orph_imp1 = idx_orph_imp1 + 1.
+                        FIN-DUM.
+                    FIN-SI.
+                    SI diag_orph_scriptum1 == 0 TUNC
+                        DECLARA ig_orph_fallback1 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons, i, n, 8).
+                    FIN-SI.
+                    REDDE 65.
+                FIN-SI.
                 DECLARA spatium_necessarium1 SICUT NUMERUS VALENS (((0 - CURSOR_PILAE_LEGE(contextus_parseris)) + 15) / 16) * 16.
                 DECLARA ig_corr1 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis1, spatium_necessarium1).
 
@@ -6669,6 +6716,32 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).
+                SI CLAVIS_CLAUSURAE_ORPHANA(fons, i, n) == 1 TUNC
+                    DECLARA diag_orph_scriptum2 SICUT NUMERUS VALENS 0.
+                    SI i >= initium_fontis_principalis TUNC
+                        DECLARA pos_orph_main2 SICUT NUMERUS VALENS i - initium_fontis_principalis.
+                        DECLARA ig_orph_main2 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons_brut, pos_orph_main2, n_fons_principalis, 8).
+                        diag_orph_scriptum2 = 1.
+                    ALITER
+                        DECLARA idx_orph_imp2 SICUT NUMERUS VALENS 0.
+                        DUM idx_orph_imp2 < numerus_importorum PERFICE
+                            DECLARA init_orph_imp2 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_orph_imp2 * 32).
+                            DECLARA mens_orph_imp2 SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_orph_imp2 * 32 + 8).
+                            SI diag_orph_scriptum2 == 0 && i >= init_orph_imp2 && i < init_orph_imp2 + mens_orph_imp2 TUNC
+                                DECLARA fons_orph_imp2 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_orph_imp2 * 32 + 16).
+                                DECLARA via_orph_imp2 SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_orph_imp2 * 32 + 24).
+                                DECLARA pos_orph_imp2 SICUT NUMERUS VALENS i - init_orph_imp2.
+                                DECLARA ig_orph_imp2 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_orph_imp2, fons_orph_imp2, pos_orph_imp2, mens_orph_imp2, 8).
+                                diag_orph_scriptum2 = 1.
+                            FIN-SI.
+                            idx_orph_imp2 = idx_orph_imp2 + 1.
+                        FIN-DUM.
+                    FIN-SI.
+                    SI diag_orph_scriptum2 == 0 TUNC
+                        DECLARA ig_orph_fallback2 SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons, i, n, 8).
+                    FIN-SI.
+                    REDDE 65.
+                FIN-SI.
                 DECLARA spatium_necessarium2 SICUT NUMERUS VALENS (((0 - CURSOR_PILAE_LEGE(contextus_parseris)) + 15) / 16) * 16.
                 DECLARA ig_corr2 SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reservationis2, spatium_necessarium2).
 
