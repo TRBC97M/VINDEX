@@ -1,0 +1,17 @@
+// P0: operator XOR (^).
+//
+// Ante correctionem: signum ^ a parsere non agnoscebatur, ergo
+// taciturne omittebatur. '12 ^ 10' valorem 12 reddebat (operandum
+// sinistrum solum), non 6. Vitium calculi silens, gravius quam casus.
+//
+// COMPONE_XOR iam in compilatore aderat et interne adhibebatur
+// (lineae 3725, 3788, 3791); sola coniunctio ad parserem deerat.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI (12 ^ 10) != 6 TUNC REDDE 1. FIN-SI.
+    SI (255 ^ 15) != 240 TUNC REDDE 2. FIN-SI.
+    SI (7 ^ 7) != 0 TUNC REDDE 3. FIN-SI.
+    SI (12 & 10) != 8 TUNC REDDE 4. FIN-SI.
+    SI (12 | 10) != 14 TUNC REDDE 5. FIN-SI.
+    PROCLAMA "XOR RECTE".
+    REDDE 0.
+FIN-FUNCTIO.

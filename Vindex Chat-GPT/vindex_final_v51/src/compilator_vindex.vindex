@@ -4323,7 +4323,7 @@ FUNCTIO ANALYSA_EXPRESSIO REDDENS NUMERUS.
     DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_TERMINUM(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
 
     ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
-    DUM CONTENTUM(pos_fontis) < n && (fons[CONTENTUM(pos_fontis)] == 43 || fons[CONTENTUM(pos_fontis)] == 45 || (fons[CONTENTUM(pos_fontis)] == 38 && (CONTENTUM(pos_fontis)+1 >= n || fons[CONTENTUM(pos_fontis)+1] != 38)) || (fons[CONTENTUM(pos_fontis)] == 124 && (CONTENTUM(pos_fontis)+1 >= n || fons[CONTENTUM(pos_fontis)+1] != 124))) PERFICE
+    DUM CONTENTUM(pos_fontis) < n && (fons[CONTENTUM(pos_fontis)] == 43 || fons[CONTENTUM(pos_fontis)] == 45 || (fons[CONTENTUM(pos_fontis)] == 38 && (CONTENTUM(pos_fontis)+1 >= n || fons[CONTENTUM(pos_fontis)+1] != 38)) || (fons[CONTENTUM(pos_fontis)] == 124 && (CONTENTUM(pos_fontis)+1 >= n || fons[CONTENTUM(pos_fontis)+1] != 124)) || fons[CONTENTUM(pos_fontis)] == 94) PERFICE
         DECLARA operatio SICUT NUMERUS VALENS fons[CONTENTUM(pos_fontis)].
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
@@ -4352,6 +4352,9 @@ FUNCTIO ANALYSA_EXPRESSIO REDDENS NUMERUS.
         FIN-SI.
         SI operatio == 124 TUNC
             CONTENTUM(pos_codicis) = COMPONE_OR(codex, CONTENTUM(pos_codicis), 0, 3).
+        FIN-SI.
+        SI operatio == 94 TUNC
+            CONTENTUM(pos_codicis) = COMPONE_XOR(codex, CONTENTUM(pos_codicis), 0, 3).
         FIN-SI.
         FIN-SI.
         FIN-SI.
