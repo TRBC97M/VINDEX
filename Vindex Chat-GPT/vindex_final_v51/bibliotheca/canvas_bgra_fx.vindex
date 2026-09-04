@@ -1,0 +1,137 @@
+// VINDEX — effectus software pro canvas BGRA.
+// Alpha, lineae crassae et glow sine runtime graphico tertio.
+
+FUNCTIO CBGRA_PIXEL_ALPHA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI c <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CBGRA_W(c).
+    DECLARA h SICUT NUMERUS VALENS CBGRA_H(c).
+    SI x < 0 || y < 0 || x >= w || y >= h TUNC REDDE 0. FIN-SI.
+    SI alpha <= 0 TUNC REDDE 1. FIN-SI.
+    SI alpha >= 255 TUNC REDDE CBGRA_PIXEL(c, x, y, color). FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS CBGRA_PIXELS(c) + (y * CONTENTUM(c + 16) + x) * 4.
+    DECLARA db SICUT NUMERUS VALENS OCTETUS_AB(p + 0).
+    DECLARA dg SICUT NUMERUS VALENS OCTETUS_AB(p + 1).
+    DECLARA dr SICUT NUMERUS VALENS OCTETUS_AB(p + 2).
+    DECLARA sb SICUT NUMERUS VALENS color & 255.
+    DECLARA sg SICUT NUMERUS VALENS (color >> 8) & 255.
+    DECLARA sr SICUT NUMERUS VALENS (color >> 16) & 255.
+    DECLARA inv SICUT NUMERUS VALENS 255 - alpha.
+    SCRIBE_OCTETUM_AB(p + 0, (sb * alpha + db * inv + 127) / 255).
+    SCRIBE_OCTETUM_AB(p + 1, (sg * alpha + dg * inv + 127) / 255).
+    SCRIBE_OCTETUM_AB(p + 2, (sr * alpha + dr * inv + 127) / 255).
+    SCRIBE_OCTETUM_AB(p + 3, 0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CBGRA_LINEA_ALPHA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS.
+    ACCIPIT y0 SICUT NUMERUS.
+    ACCIPIT x1 SICUT NUMERUS.
+    ACCIPIT y1 SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    DECLARA dx SICUT NUMERUS VALENS NAT_ABS(x1 - x0).
+    DECLARA sx SICUT NUMERUS VALENS 1.
+    SI x0 > x1 TUNC sx = -1. FIN-SI.
+    DECLARA dy SICUT NUMERUS VALENS 0 - NAT_ABS(y1 - y0).
+    DECLARA sy SICUT NUMERUS VALENS 1.
+    SI y0 > y1 TUNC sy = -1. FIN-SI.
+    DECLARA err SICUT NUMERUS VALENS dx + dy.
+    DECLARA currens SICUT NUMERUS VALENS 1.
+    DUM currens == 1 PERFICE
+        DECLARA q SICUT NUMERUS VALENS CBGRA_PIXEL_ALPHA(c, x0, y0, color, alpha).
+        SI x0 == x1 && y0 == y1 TUNC currens = 0. FIN-SI.
+        SI currens == 1 TUNC
+            DECLARA e2 SICUT NUMERUS VALENS err * 2.
+            SI e2 >= dy TUNC err = err + dy. x0 = x0 + sx. FIN-SI.
+            SI e2 <= dx TUNC err = err + dx. y0 = y0 + sy. FIN-SI.
+        FIN-SI.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CBGRA_LINEA_GROSSA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS.
+    ACCIPIT y0 SICUT NUMERUS.
+    ACCIPIT x1 SICUT NUMERUS.
+    ACCIPIT y1 SICUT NUMERUS.
+    ACCIPIT crassitudo SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI crassitudo < 1 TUNC crassitudo = 1. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS crassitudo / 2.
+    DECLARA o SICUT NUMERUS VALENS 0 - r.
+    DUM o <= r PERFICE
+        DECLARA a SICUT NUMERUS VALENS CBGRA_LINEA_ALPHA(c, x0 + o, y0, x1 + o, y1, color, alpha).
+        a = CBGRA_LINEA_ALPHA(c, x0, y0 + o, x1, y1 + o, color, alpha).
+        o = o + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CBGRA_CIRCULUS_ALPHA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT cx SICUT NUMERUS.
+    ACCIPIT cy SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI c <= 0 || radius <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS radius.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DECLARA err SICUT NUMERUS VALENS 1 - x.
+    DUM x >= y PERFICE
+        DECLARA p SICUT NUMERUS VALENS CBGRA_PIXEL_ALPHA(c, cx + x, cy + y, color, alpha).
+        p = CBGRA_PIXEL_ALPHA(c, cx + y, cy + x, color, alpha).
+        p = CBGRA_PIXEL_ALPHA(c, cx - y, cy + x, color, alpha).
+        p = CBGRA_PIXEL_ALPHA(c, cx - x, cy + y, color, alpha).
+        p = CBGRA_PIXEL_ALPHA(c, cx - x, cy - y, color, alpha).
+        p = CBGRA_PIXEL_ALPHA(c, cx - y, cy - x, color, alpha).
+        p = CBGRA_PIXEL_ALPHA(c, cx + y, cy - x, color, alpha).
+        p = CBGRA_PIXEL_ALPHA(c, cx + x, cy - y, color, alpha).
+        y = y + 1.
+        SI err < 0 TUNC
+            err = err + 2 * y + 1.
+        ALITER
+            x = x - 1.
+            err = err + 2 * (y - x) + 1.
+        FIN-SI.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CBGRA_CIRCULUS_GLOW REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT cx SICUT NUMERUS.
+    ACCIPIT cy SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA k SICUT NUMERUS VALENS 5.
+    DUM k >= 1 PERFICE
+        DECLARA a SICUT NUMERUS VALENS 20 + (5 - k) * 8.
+        DECLARA q SICUT NUMERUS VALENS CBGRA_CIRCULUS_ALPHA(c, cx, cy, radius - k, color, a).
+        q = CBGRA_CIRCULUS_ALPHA(c, cx, cy, radius + k, color, a).
+        k = k - 1.
+    FIN-DUM.
+    REDDE CBGRA_CIRCULUS_ALPHA(c, cx, cy, radius, color, 255).
+FIN-FUNCTIO.
+
+FUNCTIO CBGRA_LINEA_GLOW REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS.
+    ACCIPIT y0 SICUT NUMERUS.
+    ACCIPIT x1 SICUT NUMERUS.
+    ACCIPIT y1 SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    DECLARA q SICUT NUMERUS VALENS CBGRA_LINEA_GROSSA(c, x0, y0, x1, y1, 9, color, 20).
+    q = CBGRA_LINEA_GROSSA(c, x0, y0, x1, y1, 5, color, 45).
+    q = CBGRA_LINEA_GROSSA(c, x0, y0, x1, y1, 2, color, 180).
+    REDDE CBGRA_LINEA_ALPHA(c, x0, y0, x1, y1, color, 255).
+FIN-FUNCTIO.
