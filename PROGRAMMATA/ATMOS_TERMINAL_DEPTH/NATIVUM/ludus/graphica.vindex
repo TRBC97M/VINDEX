@@ -58,7 +58,6 @@ FUNCTIO NATG_DISC_ALPHA REDDENS NUMERUS.
 FIN-FUNCTIO.
 
 // Graphica IV: pannellus vitream simulat margine chamferato.
-// Margo in spatio logico datur et ad resolutionem physicam convertitur.
 FUNCTIO NATG_RECT_CHAMFER REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS.
@@ -112,8 +111,8 @@ FUNCTIO NATG_RECT REDDENS NUMERUS.
     SI ww < 1 TUNC ww = 1. FIN-SI.
     SI hh < 1 TUNC hh = 1. FIN-SI.
     SI hh <= 2 TUNC REDDE CBGRA_RECT(c, x0, y0, ww, hh, color). FIN-SI.
-    // Les grandes surfaces deviennent des panneaux vitres/chamferes.
-    SI w >= 90 && h >= 26 TUNC REDDE NATG_RECT_CHAMFER(c, x, y, w, h, color, 235, 7). FIN-SI.
+    // Fasciae plenae latitudinis (header/footer) servant angulos exactos.
+    SI w >= 90 && h >= 26 && w < 900 TUNC REDDE NATG_RECT_CHAMFER(c, x, y, w, h, color, 235, 7). FIN-SI.
     REDDE CBGRA_RECT_DEGRADE_V(c, x0, y0, ww, hh, color, 255, 218).
 FIN-FUNCTIO.
 
@@ -133,7 +132,7 @@ FUNCTIO NATG_RECT_ALPHA REDDENS NUMERUS.
     DECLARA hh SICUT NUMERUS VALENS y1 - y0.
     SI ww < 1 TUNC ww = 1. FIN-SI.
     SI hh < 1 TUNC hh = 1. FIN-SI.
-    SI w >= 90 && h >= 26 TUNC REDDE NATG_RECT_CHAMFER(c, x, y, w, h, color, alpha, 7). FIN-SI.
+    SI w >= 90 && h >= 26 && w < 900 TUNC REDDE NATG_RECT_CHAMFER(c, x, y, w, h, color, alpha, 7). FIN-SI.
     DECLARA bas SICUT NUMERUS VALENS alpha * 3 / 5.
     SI hh <= 2 TUNC REDDE CBGRA_RECT_ALPHA(c, x0, y0, ww, hh, color, alpha). FIN-SI.
     REDDE CBGRA_RECT_DEGRADE_V(c, x0, y0, ww, hh, color, alpha, bas).
@@ -186,7 +185,6 @@ FUNCTIO NATG_CIRCULUS REDDENS NUMERUS.
     ACCIPIT cy SICUT NUMERUS.
     ACCIPIT radius SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
-    // Petites zones deviennent des nappes translucides, comme dans le prototype HTML.
     SI radius <= 72 TUNC DECLARA v SICUT NUMERUS VALENS NATG_DISC_ALPHA(c, cx, cy, radius, color, 12). FIN-SI.
     REDDE CBGRA_CIRCULUS_MOLLIS(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_R(c, radius), color).
 FIN-FUNCTIO.
