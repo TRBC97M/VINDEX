@@ -1,5 +1,6 @@
 // ATMOS // TERMINAL DEPTH — NATIVUM.
 // Reconstructionis linea activa: HTML mores refert, runtime totus VINDEX.
+// Stabilitas I: docking probatur et una tantum scena per frame redditur.
 
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex".
@@ -54,6 +55,27 @@ FUNCTIO NAT_SONAR_CLIC REDDENS NUMERUS.
     REDDE NAT_CURSUS_IMPONE(s, tx, ty).
 FIN-FUNCTIO.
 
+// Regression Windows/ELF: approche reelle, transition docking, deux tabs et undock.
+FUNCTIO NAT_SMOKE_STATIO REDDENS NUMERUS.
+    ACCIPIT canvas SICUT NUMERUS.
+    DECLARA sd SICUT NUMERUS VALENS NAT_STATUS_CREA(7319).
+    SI sd <= 0 TUNC REDDE 49. FIN-SI.
+    SI NAT_STAT_CURSUS(sd) == 0 TUNC REDDE 50. FIN-SI.
+    DECLARA guard SICUT NUMERUS VALENS 0.
+    DUM CONTENTUM(sd + 80) != 0 && guard < 1000 PERFICE
+        DECLARA g SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(sd).
+        guard = guard + 1.
+    FIN-DUM.
+    SI CONTENTUM(sd + 80) != 0 || NAT_STAT_DOCKED(sd) == 0 TUNC REDDE 51. FIN-SI.
+    SI NAT_STAT_UI_RENDE(canvas, sd) == 0 TUNC REDDE 52. FIN-SI.
+    CONTENTUM(sd + 232) = 2.
+    CONTENTUM(sd + 216) = 5.
+    SI NAT_STAT_UI_RENDE(canvas, sd) == 0 TUNC REDDE 53. FIN-SI.
+    SI NAT_STAT_UNDOCK(sd) == 0 TUNC REDDE 54. FIN-SI.
+    SI NAT_STAT_DOCKED(sd) != 0 TUNC REDDE 55. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
 FUNCTIO NAT_SMOKE REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     ACCIPIT canvas SICUT NUMERUS.
@@ -87,6 +109,9 @@ FUNCTIO NAT_SMOKE REDDENS NUMERUS.
     DECLARA sy SICUT NUMERUS VALENS 10 * ch / 720.
     DECLARA visus SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, sx, sy).
     SI visus != 1778955 TUNC REDDE 48. FIN-SI.
+
+    DECLARA stationis SICUT NUMERUS VALENS NAT_SMOKE_STATIO(canvas).
+    SI stationis != 0 TUNC REDDE stationis. FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -102,7 +127,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA dibctx SICUT NUMERUS VALENS WDIB_CONTEXUS_CREA().
     SI plat == 0 || ctx == 0 || dibctx == 0 TUNC REDDE 71. FIN-SI.
 
-    // Fenestram PC modernam petimus; backbuffer postea clientem realem sequitur.
     DECLARA hwnd SICUT NUMERUS VALENS NATWIN_FENESTRA(plat, "ATMOS // TERMINAL DEPTH", 1920, 1080).
     SI hwnd == 0 TUNC REDDE 72. FIN-SI.
 
@@ -128,8 +152,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA canvas SICUT NUMERUS VALENS CBGRA_EX_PIXELS(render_w, render_h, WDIB_PIXELS(dib)).
     SI canvas == 0 TUNC REDDE 76. FIN-SI.
 
-    DECLARA pictum_init SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
-    SI NAT_STAT_DOCKED(s) != 0 TUNC pictum_init = NAT_STAT_UI_RENDE(canvas, s). FIN-SI.
+    DECLARA pictum_init SICUT NUMERUS VALENS 0.
+    SI NAT_STAT_DOCKED(s) != 0 TUNC
+        pictum_init = NAT_STAT_UI_RENDE(canvas, s).
+    ALITER
+        pictum_init = NAT_RENDE(canvas, s).
+    FIN-SI.
     DECLARA ip SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, render_w, render_h).
 
     SI argc >= 2 TUNC
@@ -183,7 +211,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             FIN-SI.
 
             SI cw > 0 && ch > 0 TUNC
-                // Backbuffer nativus: recreate tantum cum clientis resolutio mutatur.
                 SI cw != render_w || ch != render_h TUNC
                     DECLARA novum_dib SICUT NUMERUS VALENS WDIB_CREA(dibctx, hdc, cw, ch).
                     SI novum_dib != 0 TUNC
@@ -213,14 +240,18 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 mouse_prius = mouse_nunc.
 
                 DECLARA mov SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(s).
-                DECLARA statio SICUT NUMERUS VALENS NAT_STAT_GRADUS(s).
-                SI NAT_STAT_DOCKED(s) == 0 TUNC
+                DECLARA docked_nunc SICUT NUMERUS VALENS NAT_STAT_DOCKED(s).
+                SI docked_nunc == 0 TUNC
                     DECLARA extractio SICUT NUMERUS VALENS NAT_EXTRACTIO_GRADUS(s).
                     DECLARA drain SICUT NUMERUS VALENS NAT_DRAIN_GRADUS(s).
                 FIN-SI.
 
-                DECLARA pictum SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
-                SI NAT_STAT_DOCKED(s) != 0 TUNC pictum = NAT_STAT_UI_RENDE(canvas, s). FIN-SI.
+                DECLARA pictum SICUT NUMERUS VALENS 0.
+                SI docked_nunc != 0 TUNC
+                    pictum = NAT_STAT_UI_RENDE(canvas, s).
+                ALITER
+                    pictum = NAT_RENDE(canvas, s).
+                FIN-SI.
                 DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
             FIN-SI.
             DECLARA dorm SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 16).
