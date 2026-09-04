@@ -1,10 +1,7 @@
 // ATMOS NATIVUM — renderer software resolutione independens.
 // Spatium logicum 960x720; graphica physica sequitur clientem 720p/1080p/4K.
-// Graphica XI: sonar X servatur; cockpit HUD, hierarchia et pannelli profundiores.
+// Graphica XI: sonar X servatur; HUD navis profundior sine mutatione gameplay.
 
-// Sector circulaire lisse, directement en espace physique.
-// Le secteur est l'intersection d'un disque parfait et de deux demi-plans radiaux.
-// La largeur reste fixe a 40 degres car la cauda est une rotation constante de la frons.
 FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT pcx SICUT NUMERUS.
@@ -81,6 +78,7 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     DECLARA pcx SICUT NUMERUS VALENS NATG_X(c, cx).
     DECLARA pcy SICUT NUMERUS VALENS NATG_Y(c, cy).
     DECLARA pr SICUT NUMERUS VALENS NATG_R(c, radius).
+
     f = NATG_DISC_ALPHA(c, cx, cy, radius - 6, phosphor_in, 11).
 
     DECLARA sweep SICUT NUMERUS VALENS (CONTENTUM(s + 144) * 3) % 1024.
@@ -172,7 +170,7 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         FIN-SI.
     FIN-SI.
 
-    // HUD vitreatus construit uniquement avec primitives deja certifiees.
+    // Graphica XI: seul le HUD navis change dans cette sous-passe certifiee.
     f = NATG_RECT(c, 420, 78, 220, 188, panel).
     f = NATG_RECT(c, 422, 80, 216, 184, panel2).
     f = NATG_RECT_ALPHA(c, 430, 84, 200, 18, phosphor_d, 26).
@@ -193,50 +191,13 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
     f = NATG_TEXT_GLOW(c, 432, 244, t, 1, amber).
 
-    // Journal cockpit: double couche sans wrapper experimental.
-    f = NATG_RECT(c, 656, 68, 286, 270, panel).
-    f = NATG_RECT(c, 658, 70, 282, 266, panel2).
-    f = NATG_RECT_ALPHA(c, 666, 76, 266, 24, phosphor_d, 22).
-    f = NATG_RECT(c, 664, 74, 270, 1, edge).
-    f = NATG_TEXT_GLOW(c, 670, 82, "DIVE CORE ONLINE", 1, phosphor).
-    SI CONTENTUM(s + 200) != 0 TUNC
-        f = NATG_TEXT_GLOW(c, 670, 116, "EXTRACTION ACTIVE", 1, amber).
-        f = NATG_TEXT(c, 670, 144, "FERROUS NODULES", 1, echo).
-        t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
-        f = NATG_TEXT(c, 670, 172, t, 1, text_d).
-        t = "DEPOSIT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 224)).
-        f = NATG_TEXT_GLOW(c, 670, 200, t, 1, amber).
-    ALITER
-        SI CONTENTUM(s + 80) != 0 TUNC
-            SI stat_course != 0 TUNC
-                f = NATG_TEXT_GLOW(c, 670, 116, "DOCKING COURSE", 1, echo).
-                f = NATG_TEXT(c, 670, 144, "HABITAT-01", 1, phosphor).
-            ALITER
-                SI CONTENTUM(s + 192) != 0 TUNC
-                    f = NATG_TEXT_GLOW(c, 670, 116, "MINERAL APPROACH", 1, amber).
-                    f = NATG_TEXT(c, 670, 144, "FERROUS NODULES", 1, echo).
-                ALITER
-                    f = NATG_TEXT_GLOW(c, 670, 116, "COURSE ACTIVE", 1, echo).
-                FIN-SI.
-            FIN-SI.
-            t = "DIST " + TEXTUS_EX_NUMERO_DECIMALI(NAT_CURSUS_RELIQUUM(s)) + " M".
-            f = NATG_TEXT_GLOW(c, 670, 172, t, 1, amber).
-            DECLARA progressus SICUT NUMERUS VALENS NAT_CURSUS_PROGRESSUS(s).
-            t = "PROGRESS " + TEXTUS_EX_NUMERO_DECIMALI(progressus / 10) + "%".
-            f = NATG_TEXT(c, 670, 200, t, 1, text_d).
-            f = NATG_BAR(c, 670, 226, 250, progressus, echo).
-        ALITER
-            SI CONTENTUM(s + 216) > 0 && stat_vis != 0 TUNC
-                f = NATG_TEXT_GLOW(c, 670, 116, "CARGO READY FOR MARKET", 1, echo).
-                t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
-                f = NATG_TEXT(c, 670, 144, t, 1, amber).
-                f = NATG_TEXT(c, 670, 172, "CYAN SQUARE = STATION", 1, echo).
-            ALITER
-                f = NATG_TEXT(c, 670, 116, "CLICK SONAR TO SET COURSE", 1, text_d).
-                SI stat_vis != 0 TUNC f = NATG_TEXT(c, 670, 144, "CYAN SQUARE = STATION", 1, echo). FIN-SI.
-            FIN-SI.
-        FIN-SI.
-    FIN-SI.
+    // Footer de navigation original, conserve pour isoler la passe visuelle.
+    t = "X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)) + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)).
+    f = NATG_TEXT(c, 18, 680, t, 1, text_d).
+    t = "RANGE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 160)) + " M".
+    f = NATG_TEXT(c, 270, 680, t, 1, text_d).
+    t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + "/40".
+    f = NATG_TEXT_GLOW(c, 500, 680, t, 1, amber).
 
     DECLARA regio SICUT NUMERUS VALENS NAT_MUNDUS_REGIO(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
     DECLARA relief SICUT NUMERUS VALENS NAT_MUNDUS_RELIEF(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
@@ -250,30 +211,54 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     SI relief == 3 TUNC nomen_relief = "BROKEN". FIN-SI.
     SI relief == 4 TUNC nomen_relief = "ESCARPMENT". FIN-SI.
 
-    f = NATG_RECT_ALPHA(c, 666, 258, 266, 68, panel, 128).
-    f = NATG_RECT(c, 670, 260, 258, 1, edge).
-    t = "REGION " + nomen_regio.
-    f = NATG_TEXT_GLOW(c, 670, 270, t, 1, echo).
-    t = "SEABED " + nomen_relief.
-    f = NATG_TEXT(c, 670, 298, t, 1, text_d).
-
-    SI CONTENTUM(s + 64) == 0 TUNC
-        f = NATG_TEXT_GLOW(c, 670, 350, "SIGNAL LOST", 2, danger).
+    f = NATG_TEXT_GLOW(c, 660, 78, "DIVE CORE ONLINE", 1, phosphor).
+    SI CONTENTUM(s + 200) != 0 TUNC
+        f = NATG_TEXT_GLOW(c, 660, 108, "EXTRACTION ACTIVE", 1, amber).
+        f = NATG_TEXT(c, 660, 136, "FERROUS NODULES", 1, echo).
+        t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
+        f = NATG_TEXT(c, 660, 164, t, 1, text_d).
+        t = "DEPOSIT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 224)).
+        f = NATG_TEXT_GLOW(c, 660, 192, t, 1, amber).
+    ALITER
+        SI CONTENTUM(s + 80) != 0 TUNC
+            SI stat_course != 0 TUNC
+                f = NATG_TEXT_GLOW(c, 660, 108, "DOCKING COURSE", 1, echo).
+                f = NATG_TEXT(c, 660, 136, "HABITAT-01", 1, phosphor).
+            ALITER
+                SI CONTENTUM(s + 192) != 0 TUNC
+                    f = NATG_TEXT_GLOW(c, 660, 108, "MINERAL APPROACH", 1, amber).
+                    f = NATG_TEXT(c, 660, 136, "FERROUS NODULES", 1, echo).
+                ALITER
+                    f = NATG_TEXT_GLOW(c, 660, 108, "COURSE ACTIVE", 1, echo).
+                FIN-SI.
+            FIN-SI.
+            t = "DIST " + TEXTUS_EX_NUMERO_DECIMALI(NAT_CURSUS_RELIQUUM(s)) + " M".
+            f = NATG_TEXT_GLOW(c, 660, 164, t, 1, amber).
+            DECLARA progressus SICUT NUMERUS VALENS NAT_CURSUS_PROGRESSUS(s).
+            t = "PROGRESS " + TEXTUS_EX_NUMERO_DECIMALI(progressus / 10) + "%".
+            f = NATG_TEXT(c, 660, 192, t, 1, text_d).
+            f = NATG_BAR(c, 660, 218, 270, progressus, echo).
+        ALITER
+            SI CONTENTUM(s + 216) > 0 && stat_vis != 0 TUNC
+                f = NATG_TEXT_GLOW(c, 660, 108, "CARGO READY FOR MARKET", 1, echo).
+                t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
+                f = NATG_TEXT(c, 660, 136, t, 1, amber).
+                f = NATG_TEXT(c, 660, 164, "CYAN SQUARE = STATION", 1, echo).
+            ALITER
+                f = NATG_TEXT(c, 660, 108, "CLICK SONAR TO SET COURSE", 1, text_d).
+                SI stat_vis != 0 TUNC f = NATG_TEXT(c, 660, 136, "CYAN SQUARE = STATION", 1, echo). FIN-SI.
+            FIN-SI.
+        FIN-SI.
     FIN-SI.
 
-    // Footer segmente en trois instruments.
-    f = NATG_RECT_ALPHA(c, 14, 656, 202, 50, panel, 150).
-    f = NATG_RECT_ALPHA(c, 230, 656, 202, 50, panel, 150).
-    f = NATG_RECT_ALPHA(c, 446, 656, 186, 50, panel, 150).
-    f = NATG_TEXT(c, 26, 662, "POSITION", 1, edge).
-    t = "X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)) + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)).
-    f = NATG_TEXT(c, 26, 682, t, 1, text_d).
-    f = NATG_TEXT(c, 242, 662, "SONAR RANGE", 1, edge).
-    t = TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 160)) + " M".
-    f = NATG_TEXT(c, 242, 682, t, 1, text_d).
-    f = NATG_TEXT(c, 458, 662, "CARGO", 1, edge).
-    t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + "/40".
-    f = NATG_TEXT_GLOW(c, 458, 682, t, 1, amber).
+    t = "REGION " + nomen_regio.
+    f = NATG_TEXT_GLOW(c, 660, 272, t, 1, echo).
+    t = "SEABED " + nomen_relief.
+    f = NATG_TEXT(c, 660, 300, t, 1, text_d).
+
+    SI CONTENTUM(s + 64) == 0 TUNC
+        f = NATG_TEXT_GLOW(c, 660, 338, "SIGNAL LOST", 2, danger).
+    FIN-SI.
 
     REDDE 1.
 FIN-FUNCTIO.
