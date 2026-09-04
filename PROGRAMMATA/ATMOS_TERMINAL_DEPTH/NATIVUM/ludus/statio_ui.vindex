@@ -1,0 +1,153 @@
+// ATMOS NATIVUM — interface docking separata, ex contractu HTML.
+// Stationis modus est locus decisionum: tabs, actiones manuales, undock voluntarium.
+
+FUNCTIO NAT_STAT_UI_TAB REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT nomen SICUT TEXTUS.
+    ACCIPIT activa SICUT NUMERUS.
+    DECLARA panel SICUT NUMERUS VALENS CBGRA_COLOR(16, 40, 32).
+    DECLARA panel2 SICUT NUMERUS VALENS CBGRA_COLOR(20, 54, 41).
+    DECLARA edge SICUT NUMERUS VALENS CBGRA_COLOR(45, 107, 78).
+    DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(125, 255, 192).
+    DECLARA text_d SICUT NUMERUS VALENS CBGRA_COLOR(176, 196, 184).
+    DECLARA f SICUT NUMERUS VALENS CBGRA_RECT(c, x, 94, w, 34, panel).
+    SI activa != 0 TUNC f = CBGRA_RECT(c, x, 94, w, 34, panel2). FIN-SI.
+    f = CBGRA_RECT(c, x, 127, w, 1, edge).
+    SI activa != 0 TUNC
+        f = FB5_TEXTUS(c, x + 8, 106, nomen, 1, phosphor).
+    ALITER
+        f = FB5_TEXTUS(c, x + 8, 106, nomen, 1, text_d).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_STAT_UI_BUTON REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT text SICUT TEXTUS.
+    DECLARA fundum SICUT NUMERUS VALENS CBGRA_COLOR(12, 32, 24).
+    DECLARA edge SICUT NUMERUS VALENS CBGRA_COLOR(45, 107, 78).
+    DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(125, 255, 192).
+    DECLARA f SICUT NUMERUS VALENS CBGRA_RECT(c, x, y, w, h, fundum).
+    f = CBGRA_RECT(c, x, y, w, 1, edge).
+    f = CBGRA_RECT(c, x, y + h - 1, w, 1, edge).
+    f = CBGRA_RECT(c, x, y, 1, h, edge).
+    f = CBGRA_RECT(c, x + w - 1, y, 1, h, edge).
+    f = FB5_TEXTUS(c, x + 8, y + 12, text, 1, phosphor).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_STAT_UI_RENDE REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI c <= 0 || s <= 0 || NAT_STAT_DOCKED(s) == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA void SICUT NUMERUS VALENS CBGRA_COLOR(7, 21, 15).
+    DECLARA panel SICUT NUMERUS VALENS CBGRA_COLOR(12, 34, 25).
+    DECLARA panel2 SICUT NUMERUS VALENS CBGRA_COLOR(15, 43, 31).
+    DECLARA edge SICUT NUMERUS VALENS CBGRA_COLOR(45, 107, 78).
+    DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(125, 255, 192).
+    DECLARA echo SICUT NUMERUS VALENS CBGRA_COLOR(143, 245, 246).
+    DECLARA amber SICUT NUMERUS VALENS CBGRA_COLOR(255, 208, 128).
+    DECLARA text_d SICUT NUMERUS VALENS CBGRA_COLOR(176, 196, 184).
+
+    DECLARA f SICUT NUMERUS VALENS CBGRA_LIMPA(c, void).
+    f = CBGRA_RECT(c, 0, 0, 960, 52, panel).
+    f = CBGRA_RECT(c, 0, 50, 960, 2, edge).
+    f = FB5_TEXTUS(c, 18, 17, "ATMOS // TERMINAL DEPTH", 2, phosphor).
+    DECLARA t SICUT TEXTUS VALENS "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
+    f = FB5_TEXTUS(c, 790, 19, t, 1, amber).
+
+    f = FB5_TEXTUS(c, 18, 64, "HABITAT-01", 2, amber).
+    f = NAT_STAT_UI_BUTON(c, 842, 56, 100, 32, "UNDOCK").
+
+    DECLARA tab SICUT NUMERUS VALENS CONTENTUM(s + 232).
+    f = NAT_STAT_UI_TAB(c, 18, 88, "REPAIR", tab == 1).
+    f = NAT_STAT_UI_TAB(c, 110, 88, "MARKET", tab == 2).
+    f = NAT_STAT_UI_TAB(c, 202, 104, "FABRICATE", tab == 3).
+    f = NAT_STAT_UI_TAB(c, 310, 72, "REFIT", tab == 4).
+    f = NAT_STAT_UI_TAB(c, 386, 104, "CONTRACTS", tab == 5).
+    f = NAT_STAT_UI_TAB(c, 494, 116, "REPUTATION", tab == 6).
+
+    f = CBGRA_RECT(c, 18, 148, 924, 500, panel).
+    f = CBGRA_RECT(c, 18, 148, 924, 1, edge).
+
+    SI tab == 1 TUNC
+        f = FB5_TEXTUS(c, 30, 166, "REPAIR // MANUAL SERVICE", 2, phosphor).
+        f = FB5_TEXTUS(c, 30, 190, "CHOOSE WHAT TO RESTORE. NOTHING IS AUTOMATIC.", 1, text_d).
+
+        // Hull.
+        f = CBGRA_RECT(c, 30, 202, 902, 58, panel2).
+        f = FB5_TEXTUS(c, 42, 214, "HULL", 2, echo).
+        t = "CURRENT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16) / 10) + "%".
+        f = FB5_TEXTUS(c, 42, 240, t, 1, text_d).
+        t = TEXTUS_EX_NUMERO_DECIMALI(NAT_STAT_PRETIUM_HULL(s)) + " CR".
+        f = NAT_STAT_UI_BUTON(c, 812, 202, 120, 42, t).
+
+        // Oxygen.
+        f = CBGRA_RECT(c, 30, 282, 902, 58, panel2).
+        f = FB5_TEXTUS(c, 42, 294, "OXYGEN", 2, echo).
+        t = "CURRENT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10) + "%".
+        f = FB5_TEXTUS(c, 42, 320, t, 1, text_d).
+        t = TEXTUS_EX_NUMERO_DECIMALI(NAT_STAT_PRETIUM_O2(s)) + " CR".
+        f = NAT_STAT_UI_BUTON(c, 812, 282, 120, 42, t).
+
+        // Energy.
+        f = CBGRA_RECT(c, 30, 362, 902, 58, panel2).
+        f = FB5_TEXTUS(c, 42, 374, "ENERGY", 2, echo).
+        t = "CURRENT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8) / 10) + "%".
+        f = FB5_TEXTUS(c, 42, 400, t, 1, text_d).
+        t = TEXTUS_EX_NUMERO_DECIMALI(NAT_STAT_PRETIUM_ENERGIA(s)) + " CR".
+        f = NAT_STAT_UI_BUTON(c, 812, 362, 120, 42, t).
+    FIN-SI.
+
+    SI tab == 2 TUNC
+        f = FB5_TEXTUS(c, 30, 166, "MARKET // HABITAT-01", 2, phosphor).
+        f = FB5_TEXTUS(c, 30, 190, "LOCAL BUY ORDER // FERROUS NODULES", 1, text_d).
+        f = CBGRA_RECT(c, 30, 214, 902, 86, panel2).
+        t = "CARGO " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
+        f = FB5_TEXTUS(c, 42, 228, t, 2, amber).
+        t = "PRICE " + TEXTUS_EX_NUMERO_DECIMALI(NAT_STAT_PRETIUM()) + " CR / UNIT".
+        f = FB5_TEXTUS(c, 42, 258, t, 1, text_d).
+        t = "VALUE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216) * NAT_STAT_PRETIUM()) + " CR".
+        f = FB5_TEXTUS(c, 350, 258, t, 1, echo).
+        f = NAT_STAT_UI_BUTON(c, 782, 238, 150, 44, "SELL ALL ORE").
+        f = FB5_TEXTUS(c, 30, 326, "SELLING REQUIRES YOUR CLICK. DOCKING NEVER SELLS CARGO.", 1, phosphor).
+    FIN-SI.
+
+    SI tab == 3 TUNC
+        f = FB5_TEXTUS(c, 30, 166, "FABRICATE", 2, phosphor).
+        f = FB5_TEXTUS(c, 30, 202, "FABRICATION SYSTEM RESERVED FOR NEXT GAMEPLAY PASS.", 1, text_d).
+    FIN-SI.
+    SI tab == 4 TUNC
+        f = FB5_TEXTUS(c, 30, 166, "REFIT", 2, phosphor).
+        f = FB5_TEXTUS(c, 30, 202, "SHIP MODULE REFIT SYSTEM RESERVED FOR NEXT GAMEPLAY PASS.", 1, text_d).
+    FIN-SI.
+    SI tab == 5 TUNC
+        f = FB5_TEXTUS(c, 30, 166, "CONTRACTS", 2, phosphor).
+        f = FB5_TEXTUS(c, 30, 202, "CONTRACT BOARD RESERVED FOR NEXT GAMEPLAY PASS.", 1, text_d).
+    FIN-SI.
+    SI tab == 6 TUNC
+        f = FB5_TEXTUS(c, 30, 166, "REPUTATION", 2, phosphor).
+        f = FB5_TEXTUS(c, 30, 202, "FACTION REPUTATION RESERVED FOR NEXT GAMEPLAY PASS.", 1, text_d).
+    FIN-SI.
+
+    // Footer persistens, sicut HTML docking screen.
+    f = CBGRA_RECT(c, 0, 666, 960, 54, panel).
+    f = CBGRA_RECT(c, 0, 666, 960, 1, edge).
+    t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)) + " M".
+    f = FB5_TEXTUS(c, 18, 688, t, 1, echo).
+    t = "HULL " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16) / 10) + "%".
+    f = FB5_TEXTUS(c, 240, 688, t, 1, text_d).
+    t = "ENERGY " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8) / 10) + "%".
+    f = FB5_TEXTUS(c, 450, 688, t, 1, text_d).
+    t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10) + "%".
+    f = FB5_TEXTUS(c, 680, 688, t, 1, text_d).
+
+    REDDE 1.
+FIN-FUNCTIO.
