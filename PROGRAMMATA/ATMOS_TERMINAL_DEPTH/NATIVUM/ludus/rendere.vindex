@@ -1,6 +1,6 @@
 // ATMOS NATIVUM — renderer software resolutione independens.
-// Spatium logicum 960x720; graphica physica sequitur clientem 720p/1080p/4K.
-// Stabilitas I: sonar Graphica X servatur, sed sector scanline O(r) fit.
+// Spatium logicum 960x720; praesentatio ad fenestram manet scalabilis.
+// Stabilitas II: sector sonar servat geometriam Graphica X, sed span alpha bulk via celeri miscetur.
 
 FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -19,7 +19,6 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
     DECLARA ty SICUT NUMERUS VALENS ((0 - fx) * 643 + fy * 766) / 1000.
 
     // Intersectio scanline cum disco et duobus semiplanis radialis.
-    // Nulla iteratio per pixel: tantum duo limites lineares per ordinem.
     DECLARA yy SICUT NUMERUS VALENS 0 - radius.
     DUM yy <= radius PERFICE
         DECLARA rest SICUT NUMERUS VALENS radius * radius - yy * yy.
@@ -28,7 +27,6 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
         DECLARA hi SICUT NUMERUS VALENS ext.
         DECLARA validus SICUT NUMERUS VALENS 1.
 
-        // cr0 = tx*y - ty*x >= 0.
         SI ty > 0 TUNC
             DECLARA num0 SICUT NUMERUS VALENS tx * yy.
             DECLARA lim0 SICUT NUMERUS VALENS num0 / ty.
@@ -46,7 +44,6 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
             FIN-SI.
         FIN-SI.
 
-        // cr1 = x*fy - y*fx >= 0.
         SI fy > 0 TUNC
             DECLARA num1 SICUT NUMERUS VALENS fx * yy.
             DECLARA lim1 SICUT NUMERUS VALENS num1 / fy.
@@ -65,7 +62,7 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
         FIN-SI.
 
         SI validus != 0 && lo <= hi TUNC
-            DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA(c, pcx + lo, pcy + yy, hi - lo + 1, 1, color, alpha).
+            DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA_CELER(c, pcx + lo, pcy + yy, hi - lo + 1, 1, color, alpha).
         FIN-SI.
         yy = yy + 1.
     FIN-DUM.
