@@ -1,0 +1,124 @@
+ATMOS // TERMINAL DEPTH — PREUVE DE PURETÉ VINDEX
+=====================================================
+
+Dépôt : TRBC97M/VINDEX
+PR : #183 — ATMOS NATIVUM
+Commit certifié par cette preuve : c3f870581afb64b0eb30e7992224c3e1163fa66e
+Run de certification : VINDEX — ATMOS NATIVUM Passe Genocidaire #31
+Run ID : 33826227172
+
+CONCLUSION
+----------
+Le code applicatif et le runtime propre à ATMOS NATIVUM sont écrits en VINDEX.
+Le jeu final n’est ni un wrapper HTML/JavaScript, ni une application C/C++/C#/.NET,
+ni un programme Python/Java/Rust/Go. C’est un PE32+ Windows GUI généré depuis
+ludus.vindex par le compilateur VINDEX auto-hébergé.
+
+Les fichiers YAML/Bash/PowerShell utilisés par GitHub Actions servent uniquement
+à TESTER cette propriété. Ils ne sont ni embarqués dans l’EXE, ni utilisés comme
+runtime du jeu. Windows est naturellement la plateforme hôte du .exe.
+
+1. SOURCES DU JEU
+-----------------
+Point d’entrée : ludus.vindex
+Sous-systèmes NATIVUM :
+- ludus/mathematica.vindex
+- ludus/mundus.vindex
+- ludus/status.vindex
+- ludus/rendere.vindex
+- machina/platforma_win32.vindex
+
+Tests du jeu également en VINDEX :
+- probationes/proba_canvas.vindex
+- probationes/proba_nucleus.vindex
+
+Le jeu importe des bibliothèques VINDEX pour le texte, les conversions, Win32 FFI,
+le framebuffer BGRA, la DIB Windows, le hasard et la police bitmap.
+
+2. GARDE-FOU ANTI-LANGAGES ÉTRANGERS
+------------------------------------
+Le workflow .github/workflows/vindex-atmos-nativum-passe-genocidaire.yml échoue
+si NATIVUM contient une source runtime portant une extension de C, C++, Rust,
+C#, F#, VB, JavaScript, TypeScript, Python, Go, Java, Kotlin, assembleur, HTML ou CSS.
+
+Résultat réel du run 33826227172 :
+RECTE: NATIVUM nullum fontem runtime alienae linguae continet.
+
+Le workflow vérifie aussi que tous les IMPORTA de NATIVUM pointent vers des
+fichiers .vindex et que l’ancien gameplay POC n’est pas réintroduit.
+
+Résultat :
+RECTE: NATIVUM nullum POC gameplay importat.
+
+3. RENDU TEXTE ET FRAMEBUFFER
+-----------------------------
+La CI interdit TextOutA et le rendu texte GDI direct dans NATIVUM.
+
+Résultat :
+RECTE: omnis textus ludi in framebuffer VINDEX componitur.
+
+Donc le texte visible, le sonar et le HUD sont composés par le renderer VINDEX
+avant présentation de la DIB Windows.
+
+4. COMPILATEUR AUTO-HÉBERGÉ
+---------------------------
+La source du compilateur est :
+Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex
+
+La CI reconstruit le compilateur plusieurs fois : G2, puis G3, puis G4,
+et compare G3 et G4 bit à bit.
+
+Résultat :
+RECTE: compilator ipse VINDEX est et G3 = G4.
+
+C’est le point fixe d’auto-hébergement utilisé pour certifier la chaîne.
+
+5. COMPILATION D’ATMOS PAR VINDEX
+---------------------------------
+La commande de certification est :
+/tmp/g4 ludus.vindex /tmp/atmos_nativum_purum.exe gui
+
+Résultat :
+PE32+ executable (GUI) x86-64, for MS Windows
+Subsystem: Windows GUI
+
+6. AUCUN RUNTIME DE LANGAGE TIERS
+---------------------------------
+La table d’import du PE est inspectée. La seule DLL directement importée est :
+kernel32.dll
+
+Le test rejette explicitement notamment msvcrt, ucrtbase, vcruntime, mscoree,
+libstdc++, libgcc, Python et Node.
+
+Résultat :
+RECTE: PE GUI nullum CRT, .NET aut runtime tertiae linguae importat.
+
+Kernel32.dll est une API système Windows, pas un moteur ni un runtime de langage.
+
+7. TEST DU MÊME EXE SUR WINDOWS
+-------------------------------
+L’artefact produit par la chaîne pure est transféré vers un runner Microsoft
+Windows Server 2025 puis exécuté directement.
+
+Résultat final réel :
+RECTE: LA PASSE GENOCIDAIRE NATIVUM GUI — runtime et codex applicationis C percentum VINDEX sunt.
+
+Le programme termine avec le code 0.
+
+8. EMPREINTE DE L’ARTEFACT CERTIFIÉ
+-----------------------------------
+Artifact ID : 9920045501
+Nom : atmos-nativum-purum-vindex
+SHA-256 du ZIP :
+8fc4b1b4b528b9e1fbecfdb6f9fb815d6648dd5a0c1edf1718d037054bb97059
+
+VERDICT
+-------
+ATMOS // TERMINAL DEPTH — NATIVUM démontre actuellement qu’un jeu Windows natif,
+interactif, redimensionnable, avec renderer logiciel, typographie, sonar,
+navigation et monde procédural peut être écrit et compilé en VINDEX sans moteur
+de jeu ni runtime de langage tiers.
+
+La formulation précise est donc :
+« Le code applicatif et le runtime propre au jeu sont 100 % VINDEX ; Windows est
+la plateforme hôte, et les scripts GitHub Actions ne sont que le banc de test. »
