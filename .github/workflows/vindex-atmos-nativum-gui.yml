@@ -31,6 +31,8 @@ jobs:
           FIN-FUNCTIO.
           EOF
           "$COMP" /tmp/gui_min.vindex /tmp/GUI_MIN.exe gui
+          "$COMP" /tmp/gui_min.vindex /tmp/CONSOLE_MIN.exe pe
+
           for exe in /tmp/ATMOS_NATIVUM.exe /tmp/GUI_MIN.exe; do
             file "$exe"
             objdump -p "$exe" > /tmp/gui-pe.txt
@@ -40,7 +42,8 @@ jobs:
               exit 1
             fi
           done
-          echo 'RECTE: bina PE Windows GUI sine CRT generata sunt.'
+          objdump -p /tmp/CONSOLE_MIN.exe | grep -E 'Subsystem.*Windows CUI'
+          echo 'RECTE: GUI=2 et console=3 distincta manent; bina GUI sine CRT generata sunt.'
 
       - uses: actions/upload-artifact@v4
         with:
