@@ -1,6 +1,6 @@
 // ATMOS // TERMINAL DEPTH — NATIVUM.
 // Reconstructionis linea activa: HTML mores refert, runtime totus VINDEX.
-// Stabilitas I: docking probatur et una tantum scena per frame redditur.
+// Stabilitas II: simulatio LX Hz manet; raster software ad 1280x720 capitur et XXX Hz praesentatur.
 
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex".
@@ -11,6 +11,7 @@ IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra_externus.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra_fx.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra_celer.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_bitmap_5x7.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_stroke_5x7.vindex".
 IMPORTA "machina/platforma_win32.vindex".
@@ -139,13 +140,20 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
     SI rect == 0 || msg == 0 || point == 0 TUNC REDDE 74. FIN-SI.
 
-    DECLARA render_w SICUT NUMERUS VALENS 1280.
-    DECLARA render_h SICUT NUMERUS VALENS 720.
+    // Raster internus software non crescit ultra 1280x720. StretchBlt praesentat ad 1080p/4K.
+    DECLARA client_w SICUT NUMERUS VALENS 1280.
+    DECLARA client_h SICUT NUMERUS VALENS 720.
     SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) != 0 TUNC
         DECLARA iw SICUT NUMERUS VALENS NAT_I32_LEGE(rect, 8) - NAT_I32_LEGE(rect, 0).
         DECLARA ih SICUT NUMERUS VALENS NAT_I32_LEGE(rect, 12) - NAT_I32_LEGE(rect, 4).
-        SI iw > 0 && ih > 0 TUNC render_w = iw. render_h = ih. FIN-SI.
+        SI iw > 0 && ih > 0 TUNC client_w = iw. client_h = ih. FIN-SI.
     FIN-SI.
+    DECLARA render_w SICUT NUMERUS VALENS client_w.
+    DECLARA render_h SICUT NUMERUS VALENS client_h.
+    SI render_w > 1280 TUNC render_h = render_h * 1280 / render_w. render_w = 1280. FIN-SI.
+    SI render_h > 720 TUNC render_w = render_w * 720 / render_h. render_h = 720. FIN-SI.
+    SI render_w < 1 TUNC render_w = 1. FIN-SI.
+    SI render_h < 1 TUNC render_h = 1. FIN-SI.
 
     DECLARA dib SICUT NUMERUS VALENS WDIB_CREA(dibctx, hdc, render_w, render_h).
     SI dib == 0 TUNC REDDE 75. FIN-SI.
@@ -158,7 +166,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ALITER
         pictum_init = NAT_RENDE(canvas, s).
     FIN-SI.
-    DECLARA ip SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, render_w, render_h).
+    DECLARA ip SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, client_w, client_h).
 
     SI argc >= 2 TUNC
         DECLARA code SICUT NUMERUS VALENS NAT_SMOKE(s, canvas, ctx, dibctx, dib, hwnd, hdc, rect).
@@ -189,6 +197,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     DECLARA currens SICUT NUMERUS VALENS 1.
     DECLARA mouse_prius SICUT NUMERUS VALENS 0.
+    DECLARA render_phase SICUT NUMERUS VALENS 0.
 
     DUM currens == 1 PERFICE
         DECLARA n SICUT NUMERUS VALENS 1.
@@ -211,13 +220,19 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             FIN-SI.
 
             SI cw > 0 && ch > 0 TUNC
-                SI cw != render_w || ch != render_h TUNC
-                    DECLARA novum_dib SICUT NUMERUS VALENS WDIB_CREA(dibctx, hdc, cw, ch).
+                DECLARA vult_w SICUT NUMERUS VALENS cw.
+                DECLARA vult_h SICUT NUMERUS VALENS ch.
+                SI vult_w > 1280 TUNC vult_h = vult_h * 1280 / vult_w. vult_w = 1280. FIN-SI.
+                SI vult_h > 720 TUNC vult_w = vult_w * 720 / vult_h. vult_h = 720. FIN-SI.
+                SI vult_w < 1 TUNC vult_w = 1. FIN-SI.
+                SI vult_h < 1 TUNC vult_h = 1. FIN-SI.
+                SI vult_w != render_w || vult_h != render_h TUNC
+                    DECLARA novum_dib SICUT NUMERUS VALENS WDIB_CREA(dibctx, hdc, vult_w, vult_h).
                     SI novum_dib != 0 TUNC
                         DECLARA vetus_del SICUT NUMERUS VALENS WDIB_DELE(dibctx, dib).
                         dib = novum_dib.
-                        render_w = cw.
-                        render_h = ch.
+                        render_w = vult_w.
+                        render_h = vult_h.
                         DECLARA rp SICUT NUMERUS VALENS CBGRA_EX_REPONE(canvas, render_w, render_h, WDIB_PIXELS(dib)).
                     FIN-SI.
                 FIN-SI.
@@ -239,6 +254,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 FIN-SI.
                 mouse_prius = mouse_nunc.
 
+                // Simulatio manet ad cadence principali (~60 Hz).
                 DECLARA mov SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(s).
                 DECLARA docked_nunc SICUT NUMERUS VALENS NAT_STAT_DOCKED(s).
                 SI docked_nunc == 0 TUNC
@@ -246,13 +262,18 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     DECLARA drain SICUT NUMERUS VALENS NAT_DRAIN_GRADUS(s).
                 FIN-SI.
 
-                DECLARA pictum SICUT NUMERUS VALENS 0.
-                SI docked_nunc != 0 TUNC
-                    pictum = NAT_STAT_UI_RENDE(canvas, s).
-                ALITER
-                    pictum = NAT_RENDE(canvas, s).
+                // Raster/presentatio tantum alternis ticks (~30 Hz): gameplay non tardatur a graphics.
+                render_phase = render_phase + 1.
+                SI render_phase >= 2 TUNC render_phase = 0. FIN-SI.
+                SI render_phase == 0 TUNC
+                    DECLARA pictum SICUT NUMERUS VALENS 0.
+                    SI docked_nunc != 0 TUNC
+                        pictum = NAT_STAT_UI_RENDE(canvas, s).
+                    ALITER
+                        pictum = NAT_RENDE(canvas, s).
+                    FIN-SI.
+                    DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
                 FIN-SI.
-                DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
             FIN-SI.
             DECLARA dorm SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 16).
         FIN-SI.
