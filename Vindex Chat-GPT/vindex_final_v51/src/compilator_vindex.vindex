@@ -1784,6 +1784,23 @@ FUNCTIO COMPONE_OR REDDENS NUMERUS.
     REDDE indice + 3.
 FIN-FUNCTIO.
 
+// Negatio bitwise: not r/m64. Opcode REX.W + F7 /2.
+// Ante hanc functionem operator ~ a parsere omittebatur, ergo '~0'
+// valorem 0 reddebat loco -1 -- vitium calculi silens.
+FUNCTIO COMPONE_NOT REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    DECLARA rex SICUT NUMERUS VALENS 72.
+    SI destinatio >= 8 TUNC
+        rex = rex | 1.
+    FIN-SI.
+    CODEX_SCRIBE(codex, indice, rex).
+    CODEX_SCRIBE(codex, indice + 1, 247).
+    CODEX_SCRIBE(codex, indice + 2, 208 + (destinatio & 7)).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
 FUNCTIO COMPONE_XOR REDDENS NUMERUS.
     ACCIPIT codex SICUT NUMERUS.
     ACCIPIT indice SICUT NUMERUS.
@@ -2591,6 +2608,13 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
     ACCIPIT contextus_parseris SICUT NUMERUS.
 
     DECLARA ignoratum SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+
+    SI fons[CONTENTUM(pos_fontis)] == 126 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        DECLARA r_non SICUT NUMERUS VALENS ANALYSA_FACTOR(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_NOT(codex, CONTENTUM(pos_codicis), 0).
+        REDDE 0.
+    FIN-SI.
 
     SI fons[CONTENTUM(pos_fontis)] == 34 TUNC
         REDDE COMPONE_LITTERALE_TEXTUS(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).

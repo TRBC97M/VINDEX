@@ -1,0 +1,18 @@
+// P0: operator ~ (negatio bitwise).
+//
+// Ante correctionem: signum ~ a parsere non agnoscebatur et
+// COMPONE_NOT non exsistebat. '~0' valorem 0 reddebat loco -1.
+// Vitium calculi silens, eiusdem generis ac XOR omissus.
+//
+// Larvae bitorum inversae sunt usus communissimus: sine ~, scriptor
+// valorem 18446744073709551615 manu scribere debet.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI ~0 != 0 - 1 TUNC REDDE 1. FIN-SI.
+    SI ~5 != 0 - 6 TUNC REDDE 2. FIN-SI.
+    SI ~255 != 0 - 256 TUNC REDDE 3. FIN-SI.
+    SI ~(12 ^ 10) != 0 - 7 TUNC REDDE 4. FIN-SI.
+    SI (12 ^ 10) != 6 TUNC REDDE 5. FIN-SI.
+    SI (12 & 10) != 8 TUNC REDDE 6. FIN-SI.
+    PROCLAMA "NEGATIO RECTE".
+    REDDE 0.
+FIN-FUNCTIO.
