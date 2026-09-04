@@ -1,6 +1,7 @@
 // VINDEX — fons stroke scalabilis ex topologia 5x7.
 // Non sunt quadrata bitmap directa: glyphi componuntur lineis crassis,
 // diagonalis ubi opus est, et possunt glow accipere.
+// Graphica II: lineae nunc margines translucidos habent.
 // Dependit a fons_bitmap_5x7.vindex et canvas_bgra_fx.vindex.
 
 FUNCTIO FS5_ON REDDENS NUMERUS.
@@ -32,16 +33,16 @@ FUNCTIO FS5_CHAR_ALPHA REDDENS NUMERUS.
             SI FS5_ON(glyph, gx, gy) != 0 TUNC
                 DECLARA px SICUT NUMERUS VALENS x + gx * gradus.
                 DECLARA py SICUT NUMERUS VALENS y + gy * gradus.
-                DECLARA node SICUT NUMERUS VALENS CBGRA_LINEA_GROSSA(canvas, px, py, px, py, crassitudo + 1, color, alpha).
+                DECLARA node SICUT NUMERUS VALENS CBGRA_LINEA_MOLLIS(canvas, px, py, px, py, crassitudo + 1, color, alpha).
 
                 SI gx < 4 TUNC
                     SI FS5_ON(glyph, gx + 1, gy) != 0 TUNC
-                        node = CBGRA_LINEA_GROSSA(canvas, px, py, px + gradus, py, crassitudo, color, alpha).
+                        node = CBGRA_LINEA_MOLLIS(canvas, px, py, px + gradus, py, crassitudo, color, alpha).
                     FIN-SI.
                 FIN-SI.
                 SI gy < 6 TUNC
                     SI FS5_ON(glyph, gx, gy + 1) != 0 TUNC
-                        node = CBGRA_LINEA_GROSSA(canvas, px, py, px, py + gradus, crassitudo, color, alpha).
+                        node = CBGRA_LINEA_MOLLIS(canvas, px, py, px, py + gradus, crassitudo, color, alpha).
                     FIN-SI.
                 FIN-SI.
 
@@ -51,7 +52,7 @@ FUNCTIO FS5_CHAR_ALPHA REDDENS NUMERUS.
                     DECLARA down SICUT NUMERUS VALENS FS5_ON(glyph, gx, gy + 1).
                     DECLARA diag SICUT NUMERUS VALENS FS5_ON(glyph, gx + 1, gy + 1).
                     SI diag != 0 && right == 0 && down == 0 TUNC
-                        node = CBGRA_LINEA_GROSSA(canvas, px, py, px + gradus, py + gradus, crassitudo, color, alpha).
+                        node = CBGRA_LINEA_MOLLIS(canvas, px, py, px + gradus, py + gradus, crassitudo, color, alpha).
                     FIN-SI.
                 FIN-SI.
                 SI gx > 0 && gy < 6 TUNC
@@ -59,7 +60,7 @@ FUNCTIO FS5_CHAR_ALPHA REDDENS NUMERUS.
                     DECLARA down2 SICUT NUMERUS VALENS FS5_ON(glyph, gx, gy + 1).
                     DECLARA diag2 SICUT NUMERUS VALENS FS5_ON(glyph, gx - 1, gy + 1).
                     SI diag2 != 0 && left == 0 && down2 == 0 TUNC
-                        node = CBGRA_LINEA_GROSSA(canvas, px, py, px - gradus, py + gradus, crassitudo, color, alpha).
+                        node = CBGRA_LINEA_MOLLIS(canvas, px, py, px - gradus, py + gradus, crassitudo, color, alpha).
                     FIN-SI.
                 FIN-SI.
             FIN-SI.
@@ -115,10 +116,10 @@ FUNCTIO FS5_TEXTUS_GLOW REDDENS NUMERUS.
     DUM i < n PERFICE
         DECLARA codex SICUT NUMERUS VALENS OCTETUS_AB(basis + i).
         DECLARA gx SICUT NUMERUS VALENS x + i * 7 * gradus.
-        DECLARA thick SICUT NUMERUS VALENS gradus + 3.
-        DECLARA q SICUT NUMERUS VALENS FS5_CHAR_ALPHA(canvas, gx, y, codex, gradus, thick, color, 24).
-        thick = gradus.
-        q = FS5_CHAR_ALPHA(canvas, gx, y, codex, gradus, thick, color, 55).
+        DECLARA thick SICUT NUMERUS VALENS gradus + 4.
+        DECLARA q SICUT NUMERUS VALENS FS5_CHAR_ALPHA(canvas, gx, y, codex, gradus, thick, color, 14).
+        thick = gradus + 1.
+        q = FS5_CHAR_ALPHA(canvas, gx, y, codex, gradus, thick, color, 38).
         q = FS5_CHAR(canvas, gx, y, codex, gradus, color).
         i = i + 1.
     FIN-DUM.
