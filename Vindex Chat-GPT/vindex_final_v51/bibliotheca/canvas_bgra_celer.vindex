@@ -1,0 +1,73 @@
+// VINDEX — via celeris pro raster BGRA software.
+// Bulk alpha clipping semel facit et pixels directe miscet: nulla functio per pixel.
+// Formula /256 per bit-shift adhibetur; alpha 255 ad CBGRA_RECT delegatur.
+
+FUNCTIO CBGRA_RECT_ALPHA_CELER REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI c <= 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    SI alpha <= 0 TUNC REDDE 1. FIN-SI.
+
+    DECLARA cw SICUT NUMERUS VALENS CONTENTUM(c + 0).
+    DECLARA ch SICUT NUMERUS VALENS CONTENTUM(c + 8).
+    SI x < 0 TUNC w = w + x. x = 0. FIN-SI.
+    SI y < 0 TUNC h = h + y. y = 0. FIN-SI.
+    SI x >= cw || y >= ch || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    SI x + w > cw TUNC w = cw - x. FIN-SI.
+    SI y + h > ch TUNC h = ch - y. FIN-SI.
+    SI alpha >= 255 TUNC REDDE CBGRA_RECT(c, x, y, w, h, color). FIN-SI.
+
+    DECLARA basis SICUT NUMERUS VALENS CONTENTUM(c + 24).
+    DECLARA stride SICUT NUMERUS VALENS CONTENTUM(c + 16).
+    DECLARA sb SICUT NUMERUS VALENS color & 255.
+    DECLARA sg SICUT NUMERUS VALENS (color >> 8) & 255.
+    DECLARA sr SICUT NUMERUS VALENS (color >> 16) & 255.
+    DECLARA inv SICUT NUMERUS VALENS 256 - alpha.
+    DECLARA sba SICUT NUMERUS VALENS sb * alpha.
+    DECLARA sga SICUT NUMERUS VALENS sg * alpha.
+    DECLARA sra SICUT NUMERUS VALENS sr * alpha.
+
+    DECLARA yy SICUT NUMERUS VALENS 0.
+    DUM yy < h PERFICE
+        DECLARA p SICUT NUMERUS VALENS basis + ((y + yy) * stride + x) * 4.
+        DECLARA xx SICUT NUMERUS VALENS 0.
+        DUM xx < w PERFICE
+            DECLARA db SICUT NUMERUS VALENS OCTETUS_AB(p + 0).
+            DECLARA dg SICUT NUMERUS VALENS OCTETUS_AB(p + 1).
+            DECLARA dr SICUT NUMERUS VALENS OCTETUS_AB(p + 2).
+            SCRIBE_OCTETUM_AB(p + 0, (sba + db * inv) >> 8).
+            SCRIBE_OCTETUM_AB(p + 1, (sga + dg * inv) >> 8).
+            SCRIBE_OCTETUM_AB(p + 2, (sra + dr * inv) >> 8).
+            SCRIBE_OCTETUM_AB(p + 3, 0).
+            p = p + 4.
+            xx = xx + 1.
+        FIN-DUM.
+        yy = yy + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO CBGRA_RECT_DEGRADE_V_CELER REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha_haut SICUT NUMERUS.
+    ACCIPIT alpha_bas SICUT NUMERUS.
+    SI c <= 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA yy SICUT NUMERUS VALENS 0.
+    DUM yy < h PERFICE
+        DECLARA a SICUT NUMERUS VALENS alpha_haut.
+        SI h > 1 TUNC a = alpha_haut + (alpha_bas - alpha_haut) * yy / (h - 1). FIN-SI.
+        DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA_CELER(c, x, y + yy, w, 1, color, a).
+        yy = yy + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
