@@ -1,6 +1,6 @@
 // ATMOS NATIVUM — renderer software resolutione independens.
 // Spatium logicum 960x720; graphica physica sequitur clientem 720p/1080p/4K.
-// Graphica VII: balayage sonar continuus + phosphor interior subtiliter viridior.
+// Graphica IX: sector sonar circularis tessellatus, cauda graduata et HUD supra sonar.
 
 FUNCTIO NAT_RENDE REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -14,6 +14,7 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(119, 255, 188).
     DECLARA phosphor_d SICUT NUMERUS VALENS CBGRA_COLOR(48, 132, 86).
     DECLARA phosphor_in SICUT NUMERUS VALENS CBGRA_COLOR(32, 104, 67).
+    DECLARA scan SICUT NUMERUS VALENS CBGRA_COLOR(68, 220, 116).
     DECLARA echo SICUT NUMERUS VALENS CBGRA_COLOR(137, 241, 245).
     DECLARA amber SICUT NUMERUS VALENS CBGRA_COLOR(255, 201, 104).
     DECLARA text_d SICUT NUMERUS VALENS CBGRA_COLOR(176, 201, 187).
@@ -31,37 +32,57 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     f = NATG_TEXT_GLOW(c, 18, 16, "ATMOS // TERMINAL DEPTH", 2, phosphor).
     f = NATG_TEXT_GLOW(c, 720, 16, "SYSTEM LOG", 2, phosphor).
 
-    // HUD central subtilis.
-    f = NATG_RECT(c, 420, 78, 220, 188, panel).
-    f = NATG_RECT(c, 422, 80, 216, 184, panel2).
-    f = NATG_RECT(c, 420, 78, 220, 1, edge).
-
     // Sonar.
     DECLARA cx SICUT NUMERUS VALENS 324.
     DECLARA cy SICUT NUMERUS VALENS 374.
     DECLARA radius SICUT NUMERUS VALENS 270.
 
-    // Deux strates intercalees teintent l'interieur sans epaissir le bord.
+    // Bain interieur tres leger: plus vert que le fond sans alourdir le contour.
     f = NATG_SONAR_STRATA(c, cx, cy, radius - 8, phosphor_in, 8).
     f = NATG_SONAR_STRATA(c, cx, cy, radius - 14, phosphor_in, 7).
 
+    // Graphica IX: vrai secteur circulaire tesselle.
+    // 15 tranches adjacentes suivent l'arc externe; aucune corde geante ni peigne de rayons.
+    DECLARA sweep SICUT NUMERUS VALENS (CONTENTUM(s + 144) * 3) % 1024.
+    DECLARA kscan SICUT NUMERUS VALENS 0.
+    DUM kscan < 15 PERFICE
+        DECLARA p0 SICUT NUMERUS VALENS sweep - 120 + kscan * 8.
+        DECLARA p1 SICUT NUMERUS VALENS p0 + 8.
+        DECLARA ux0 SICUT NUMERUS VALENS NAT_SIN_Q10(p0).
+        DECLARA uy0 SICUT NUMERUS VALENS NAT_COS_Q10(p0).
+        DECLARA ux1 SICUT NUMERUS VALENS NAT_SIN_Q10(p1).
+        DECLARA uy1 SICUT NUMERUS VALENS NAT_COS_Q10(p1).
+        DECLARA n0 SICUT NUMERUS VALENS NAT_ISQRT(ux0 * ux0 + uy0 * uy0).
+        DECLARA n1 SICUT NUMERUS VALENS NAT_ISQRT(ux1 * ux1 + uy1 * uy1).
+        SI n0 < 1 TUNC n0 = 1024. FIN-SI.
+        SI n1 < 1 TUNC n1 = 1024. FIN-SI.
+        DECLARA ex0 SICUT NUMERUS VALENS cx + ux0 * radius / n0.
+        DECLARA ey0 SICUT NUMERUS VALENS cy - uy0 * radius / n0.
+        DECLARA ex1 SICUT NUMERUS VALENS cx + ux1 * radius / n1.
+        DECLARA ey1 SICUT NUMERUS VALENS cy - uy1 * radius / n1.
+        DECLARA ascan SICUT NUMERUS VALENS 5 + kscan * 2.
+        SI kscan >= 11 TUNC ascan = 29 + (kscan - 11) * 5. FIN-SI.
+        DECLARA rgba_scan SICUT NUMERUS VALENS CBGRA_COLOR_ALPHA(scan, ascan).
+        f = CBGRA_TRIANGULUM_ALPHA(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, ex0), NATG_Y(c, ey0), NATG_X(c, ex1), NATG_Y(c, ey1), rgba_scan).
+        kscan = kscan + 1.
+    FIN-DUM.
+
+    // Anneaux et grille passent AU-DESSUS de la nappe, comme un vrai afficheur radar.
     f = NATG_CIRCULUS(c, cx, cy, 90, phosphor_d).
     f = NATG_CIRCULUS(c, cx, cy, 180, phosphor_d).
     f = NATG_CIRCULUS_GLOW(c, cx, cy, radius, echo).
     f = NATG_LINEA(c, cx - radius, cy, cx + radius, cy, phosphor_d).
     f = NATG_LINEA(c, cx, cy - radius, cx, cy + radius, phosphor_d).
 
-    // Graphica VII: phase 0..1023, environ 5.7 s par tour a 60 FPS.
-    // Sin/cos Q10 sont calcules en VINDEX pur puis normalises sur le cercle.
-    DECLARA sweep SICUT NUMERUS VALENS (CONTENTUM(s + 144) * 3) % 1024.
+    // Frons brillante du balayage: nette, mince, avec un halo doux.
     DECLARA ux SICUT NUMERUS VALENS NAT_SIN_Q10(sweep).
     DECLARA uy SICUT NUMERUS VALENS NAT_COS_Q10(sweep).
     DECLARA norma SICUT NUMERUS VALENS NAT_ISQRT(ux * ux + uy * uy).
     SI norma < 1 TUNC norma = 1024. FIN-SI.
     DECLARA sx2 SICUT NUMERUS VALENS cx + ux * radius / norma.
     DECLARA sy2 SICUT NUMERUS VALENS cy - uy * radius / norma.
-    f = NATG_SONAR_FAN(c, cx, cy, sx2, sy2, phosphor_d).
-    f = CBGRA_LINEA_GLOW(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, sx2), NATG_Y(c, sy2), phosphor_d).
+    f = CBGRA_LINEA_GROSSA(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, sx2), NATG_Y(c, sy2), NATG_CRASSITUDO(c, 5), scan, 18).
+    f = CBGRA_LINEA_MOLLIS(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_X(c, sx2), NATG_Y(c, sy2), NATG_CRASSITUDO(c, 1), scan, 235).
 
     // Navis.
     f = NATG_LINEA_GLOW(c, cx, cy - 10, cx - 7, cy + 8, echo).
@@ -136,6 +157,11 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
             FIN-SI.
         FIN-SI.
     FIN-SI.
+
+    // HUD central supra sonar: le faisceau ne traverse plus le panneau.
+    f = NATG_RECT(c, 420, 78, 220, 188, panel).
+    f = NATG_RECT(c, 422, 80, 216, 184, panel2).
+    f = NATG_RECT(c, 420, 78, 220, 1, edge).
 
     // Status navis.
     t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)) + " M".
