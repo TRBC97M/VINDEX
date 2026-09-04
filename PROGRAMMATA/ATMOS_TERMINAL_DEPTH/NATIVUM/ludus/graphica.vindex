@@ -1,6 +1,6 @@
 // ATMOS NATIVUM — pont Graphica resolutione independens.
 // Spatium logicum UI manet 960x720; canvas physicus potest esse 720p, 1080p, 4K, etc.
-// Graphica III: pannelli translucidi, gradientes, lineae molliores et glow localis.
+// Graphica IV: pannelli chamferati, velamina alpha, halos impleti et profunditas CRT.
 
 FUNCTIO NATG_X REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -30,6 +30,72 @@ FUNCTIO NATG_CRASSITUDO REDDENS NUMERUS.
     REDDE t.
 FIN-FUNCTIO.
 
+// Graphica IV: velum circulare impletum. Usatur tantum pro radiis parvis
+// ne superficies magnae sonar sumptum inutilem imponant.
+FUNCTIO NATG_DISC_ALPHA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT cx SICUT NUMERUS.
+    ACCIPIT cy SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI c <= 0 || radius <= 0 || alpha <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pcx SICUT NUMERUS VALENS NATG_X(c, cx).
+    DECLARA pcy SICUT NUMERUS VALENS NATG_Y(c, cy).
+    DECLARA pr SICUT NUMERUS VALENS NATG_R(c, radius).
+    DECLARA yy SICUT NUMERUS VALENS 0 - pr.
+    DUM yy <= pr PERFICE
+        DECLARA xx SICUT NUMERUS VALENS 0 - pr.
+        DUM xx <= pr PERFICE
+            SI xx * xx + yy * yy <= pr * pr TUNC
+                DECLARA q SICUT NUMERUS VALENS CBGRA_PIXEL_ALPHA(c, pcx + xx, pcy + yy, color, alpha).
+            FIN-SI.
+            xx = xx + 1.
+        FIN-DUM.
+        yy = yy + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Graphica IV: pannellus vitream simulat margine chamferato.
+// Margo in spatio logico datur et ad resolutionem physicam convertitur.
+FUNCTIO NATG_RECT_CHAMFER REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    ACCIPIT margo SICUT NUMERUS.
+    SI c <= 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA x0 SICUT NUMERUS VALENS NATG_X(c, x).
+    DECLARA y0 SICUT NUMERUS VALENS NATG_Y(c, y).
+    DECLARA x1 SICUT NUMERUS VALENS NATG_X(c, x + w).
+    DECLARA y1 SICUT NUMERUS VALENS NATG_Y(c, y + h).
+    DECLARA ww SICUT NUMERUS VALENS x1 - x0.
+    DECLARA hh SICUT NUMERUS VALENS y1 - y0.
+    DECLARA rr SICUT NUMERUS VALENS NATG_R(c, margo).
+    SI rr < 1 TUNC rr = 1. FIN-SI.
+    DECLARA row SICUT NUMERUS VALENS 0.
+    DUM row < hh PERFICE
+        DECLARA d SICUT NUMERUS VALENS row.
+        SI hh - 1 - row < d TUNC d = hh - 1 - row. FIN-SI.
+        DECLARA inset SICUT NUMERUS VALENS 0.
+        SI d < rr TUNC
+            DECLARA qd SICUT NUMERUS VALENS rr - d.
+            inset = qd * qd / (rr * 2 + 1).
+        FIN-SI.
+        DECLARA a SICUT NUMERUS VALENS alpha.
+        SI hh > 1 TUNC a = alpha - alpha * row / (hh * 3). FIN-SI.
+        SI a < 24 TUNC a = 24. FIN-SI.
+        DECLARA span SICUT NUMERUS VALENS ww - inset * 2.
+        SI span > 0 TUNC DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA(c, x0 + inset, y0 + row, span, 1, color, a). FIN-SI.
+        row = row + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
 FUNCTIO NATG_RECT REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS.
@@ -46,7 +112,8 @@ FUNCTIO NATG_RECT REDDENS NUMERUS.
     SI ww < 1 TUNC ww = 1. FIN-SI.
     SI hh < 1 TUNC hh = 1. FIN-SI.
     SI hh <= 2 TUNC REDDE CBGRA_RECT(c, x0, y0, ww, hh, color). FIN-SI.
-    // Prima linea servat colorem exactum; pars inferior miscetur subtiliter cum fundo.
+    // Les grandes surfaces deviennent des panneaux vitres/chamferes.
+    SI w >= 90 && h >= 26 TUNC REDDE NATG_RECT_CHAMFER(c, x, y, w, h, color, 235, 7). FIN-SI.
     REDDE CBGRA_RECT_DEGRADE_V(c, x0, y0, ww, hh, color, 255, 218).
 FIN-FUNCTIO.
 
@@ -66,6 +133,7 @@ FUNCTIO NATG_RECT_ALPHA REDDENS NUMERUS.
     DECLARA hh SICUT NUMERUS VALENS y1 - y0.
     SI ww < 1 TUNC ww = 1. FIN-SI.
     SI hh < 1 TUNC hh = 1. FIN-SI.
+    SI w >= 90 && h >= 26 TUNC REDDE NATG_RECT_CHAMFER(c, x, y, w, h, color, alpha, 7). FIN-SI.
     DECLARA bas SICUT NUMERUS VALENS alpha * 3 / 5.
     SI hh <= 2 TUNC REDDE CBGRA_RECT_ALPHA(c, x0, y0, ww, hh, color, alpha). FIN-SI.
     REDDE CBGRA_RECT_DEGRADE_V(c, x0, y0, ww, hh, color, alpha, bas).
@@ -85,10 +153,10 @@ FUNCTIO NATG_PANEL REDDENS NUMERUS.
     DECLARA y1 SICUT NUMERUS VALENS NATG_Y(c, y + h).
     DECLARA ww SICUT NUMERUS VALENS x1 - x0.
     DECLARA hh SICUT NUMERUS VALENS y1 - y0.
-    DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_DEGRADE_V(c, x0, y0, ww, hh, color, 205, 92).
+    DECLARA q SICUT NUMERUS VALENS NATG_RECT_CHAMFER(c, x, y, w, h, color, 205, 8).
     q = CBGRA_RECT_GLOW(c, x0, y0, ww, hh, edge).
-    q = CBGRA_LINEA_MOLLIS(c, x0, y0, x1 - 1, y0, NATG_CRASSITUDO(c,1), edge, 180).
-    q = CBGRA_LINEA_MOLLIS(c, x0, y1 - 1, x1 - 1, y1 - 1, NATG_CRASSITUDO(c,1), edge, 80).
+    q = CBGRA_LINEA_MOLLIS(c, x0 + NATG_R(c,8), y0, x1 - NATG_R(c,8), y0, NATG_CRASSITUDO(c,1), edge, 180).
+    q = CBGRA_LINEA_MOLLIS(c, x0 + NATG_R(c,8), y1 - 1, x1 - NATG_R(c,8), y1 - 1, NATG_CRASSITUDO(c,1), edge, 70).
     REDDE 1.
 FIN-FUNCTIO.
 
@@ -118,6 +186,8 @@ FUNCTIO NATG_CIRCULUS REDDENS NUMERUS.
     ACCIPIT cy SICUT NUMERUS.
     ACCIPIT radius SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
+    // Petites zones deviennent des nappes translucides, comme dans le prototype HTML.
+    SI radius <= 72 TUNC DECLARA v SICUT NUMERUS VALENS NATG_DISC_ALPHA(c, cx, cy, radius, color, 12). FIN-SI.
     REDDE CBGRA_CIRCULUS_MOLLIS(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_R(c, radius), color).
 FIN-FUNCTIO.
 
@@ -127,6 +197,7 @@ FUNCTIO NATG_CIRCULUS_GLOW REDDENS NUMERUS.
     ACCIPIT cy SICUT NUMERUS.
     ACCIPIT radius SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
+    SI radius <= 36 TUNC DECLARA v SICUT NUMERUS VALENS NATG_DISC_ALPHA(c, cx, cy, radius, color, 16). FIN-SI.
     REDDE CBGRA_CIRCULUS_GLOW(c, NATG_X(c, cx), NATG_Y(c, cy), NATG_R(c, radius), color).
 FIN-FUNCTIO.
 
@@ -167,10 +238,9 @@ FUNCTIO NATG_BAR REDDENS NUMERUS.
     ACCIPIT color SICUT NUMERUS.
     DECLARA fundum SICUT NUMERUS VALENS CBGRA_COLOR(7, 27, 20).
     DECLARA lim SICUT NUMERUS VALENS NAT_CLAMPA(valor_x10, 0, 1000) * w / 1000.
-    DECLARA f SICUT NUMERUS VALENS NATG_RECT_ALPHA(c, x, y, w, 7, fundum, 165).
+    DECLARA f SICUT NUMERUS VALENS NATG_RECT_ALPHA(c, x, y, w, 7, fundum, 150).
     SI lim > 0 TUNC
-        f = NATG_RECT_ALPHA(c, x, y, lim, 7, color, 205).
-        // reflet superieur fin + phosphore au bord actif.
+        f = NATG_RECT_ALPHA(c, x, y, lim, 7, color, 195).
         f = NATG_LINEA(c, x, y, x + lim, y, color).
         f = NATG_LINEA_GLOW(c, x + lim, y, x + lim, y + 6, color).
     FIN-SI.
@@ -183,7 +253,7 @@ FUNCTIO NATG_SCANLINES REDDENS NUMERUS.
     DECLARA dark SICUT NUMERUS VALENS CBGRA_COLOR(0, 7, 4).
     DECLARA y SICUT NUMERUS VALENS y0.
     DUM y < 720 PERFICE
-        DECLARA f SICUT NUMERUS VALENS NATG_RECT_ALPHA(c, 0, y, 960, 1, dark, 34).
+        DECLARA f SICUT NUMERUS VALENS NATG_RECT_ALPHA(c, 0, y, 960, 1, dark, 24).
         y = y + 5.
     FIN-DUM.
     REDDE 1.
