@@ -1,0 +1,66 @@
+name: Sylvia OS — PCI BAR canonizatio
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_pontes.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_bar.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_pontes_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/pci_bar_calculi.vindex'
+      - '.github/workflows/sylvia-pci-bar-canonizatio.yml'
+      - 'CONSILIUM.md'
+
+permissions:
+  contents: read
+
+jobs:
+  pci-bar:
+    name: Pontes, BAR XXXII/LXIV et restauratio probantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Instrumenta para
+        shell: bash
+        run: chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: Puritatem verifica
+        shell: bash
+        run: python3 instrumenta/verifica_puritatem_sylviae.py
+
+      - name: Calculi BAR XXXII et LXIV bitorum
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/pci_bar_calculi.vindex /tmp/pci-bar-calculi
+          chmod +x /tmp/pci-bar-calculi
+          /tmp/pci-bar-calculi
+          printf '%s\n' 'RECTE: calculi BAR XXXII/LXIV probati sunt.'
+
+      - name: Regressionem canonicam exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash tests/run_tests.sh
+
+      - name: Pontes PCI sub QEMU
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash ./instrumenta/proba_pci_pontes_053.sh
+
+      - name: BAR tutos sub QEMU
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash ./instrumenta/proba_pci_bar_053.sh
