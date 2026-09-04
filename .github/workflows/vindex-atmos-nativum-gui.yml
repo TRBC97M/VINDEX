@@ -64,14 +64,14 @@ jobs:
           name: atmos-nativum-gui-purum-vindex
           path: atmos
 
-      - name: Bootstrap GUI minimum exerce
+      - name: Bootstrap GUI minimum et ExitProcess exerce
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           Set-Location (Resolve-Path '.\atmos')
           $m = Start-Process -FilePath '.\GUI_MIN.exe' -Wait -PassThru
           if ($m.ExitCode -ne 0) { throw "GUI minimum exitus $($m.ExitCode)" }
-          Write-Host 'RECTE: bootstrap VINDEX Windows GUI minimum currit.'
+          Write-Host 'RECTE: bootstrap VINDEX Windows GUI minimum per ExitProcess(0) terminat.'
 
       - name: ATMOS GUI sine consola exerce
         shell: pwsh
