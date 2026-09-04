@@ -1,0 +1,286 @@
+// ATMOS NATIVUM — renderer software resolutione independens.
+// Spatium logicum 960x720; praesentatio ad fenestram manet scalabilis.
+// Stabilitas II: sector sonar servat geometriam Graphica X, sed span alpha bulk via celeri miscetur.
+
+FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT pcx SICUT NUMERUS.
+    ACCIPIT pcy SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT fx SICUT NUMERUS.
+    ACCIPIT fy SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI c <= 0 || radius <= 0 || alpha <= 0 TUNC REDDE 0. FIN-SI.
+    SI fx == 0 && fy == 0 TUNC REDDE 0. FIN-SI.
+
+    // Cauda a 40 gradibus retro a fronte.
+    DECLARA tx SICUT NUMERUS VALENS (fx * 766 + fy * 643) / 1000.
+    DECLARA ty SICUT NUMERUS VALENS ((0 - fx) * 643 + fy * 766) / 1000.
+
+    // Intersectio scanline cum disco et duobus semiplanis radialis.
+    DECLARA yy SICUT NUMERUS VALENS 0 - radius.
+    DUM yy <= radius PERFICE
+        DECLARA rest SICUT NUMERUS VALENS radius * radius - yy * yy.
+        DECLARA ext SICUT NUMERUS VALENS NAT_ISQRT(rest).
+        DECLARA lo SICUT NUMERUS VALENS 0 - ext.
+        DECLARA hi SICUT NUMERUS VALENS ext.
+        DECLARA validus SICUT NUMERUS VALENS 1.
+
+        SI ty > 0 TUNC
+            DECLARA num0 SICUT NUMERUS VALENS tx * yy.
+            DECLARA lim0 SICUT NUMERUS VALENS num0 / ty.
+            SI num0 < 0 && num0 % ty != 0 TUNC lim0 = lim0 - 1. FIN-SI.
+            SI lim0 < hi TUNC hi = lim0. FIN-SI.
+        ALITER
+            SI ty < 0 TUNC
+                DECLARA den0 SICUT NUMERUS VALENS 0 - ty.
+                DECLARA num0b SICUT NUMERUS VALENS 0 - tx * yy.
+                DECLARA lim0b SICUT NUMERUS VALENS num0b / den0.
+                SI num0b > 0 && num0b % den0 != 0 TUNC lim0b = lim0b + 1. FIN-SI.
+                SI lim0b > lo TUNC lo = lim0b. FIN-SI.
+            ALITER
+                SI tx * yy < 0 TUNC validus = 0. FIN-SI.
+            FIN-SI.
+        FIN-SI.
+
+        SI fy > 0 TUNC
+            DECLARA num1 SICUT NUMERUS VALENS fx * yy.
+            DECLARA lim1 SICUT NUMERUS VALENS num1 / fy.
+            SI num1 > 0 && num1 % fy != 0 TUNC lim1 = lim1 + 1. FIN-SI.
+            SI lim1 > lo TUNC lo = lim1. FIN-SI.
+        ALITER
+            SI fy < 0 TUNC
+                DECLARA den1 SICUT NUMERUS VALENS 0 - fy.
+                DECLARA num1b SICUT NUMERUS VALENS 0 - fx * yy.
+                DECLARA lim1b SICUT NUMERUS VALENS num1b / den1.
+                SI num1b < 0 && num1b % den1 != 0 TUNC lim1b = lim1b - 1. FIN-SI.
+                SI lim1b < hi TUNC hi = lim1b. FIN-SI.
+            ALITER
+                SI (0 - fx * yy) < 0 TUNC validus = 0. FIN-SI.
+            FIN-SI.
+        FIN-SI.
+
+        SI validus != 0 && lo <= hi TUNC
+            DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA_CELER(c, pcx + lo, pcy + yy, hi - lo + 1, 1, color, alpha).
+        FIN-SI.
+        yy = yy + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_RENDE REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI c <= 0 || s <= 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA void SICUT NUMERUS VALENS CBGRA_COLOR(7, 22, 16).
+    DECLARA panel SICUT NUMERUS VALENS CBGRA_COLOR(11, 37, 27).
+    DECLARA panel2 SICUT NUMERUS VALENS CBGRA_COLOR(14, 47, 34).
+    DECLARA edge SICUT NUMERUS VALENS CBGRA_COLOR(42, 119, 82).
+    DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(119, 255, 188).
+    DECLARA phosphor_d SICUT NUMERUS VALENS CBGRA_COLOR(48, 132, 86).
+    DECLARA phosphor_in SICUT NUMERUS VALENS CBGRA_COLOR(32, 104, 67).
+    DECLARA scan SICUT NUMERUS VALENS CBGRA_COLOR(68, 220, 116).
+    DECLARA echo SICUT NUMERUS VALENS CBGRA_COLOR(137, 241, 245).
+    DECLARA amber SICUT NUMERUS VALENS CBGRA_COLOR(255, 201, 104).
+    DECLARA text_d SICUT NUMERUS VALENS CBGRA_COLOR(176, 201, 187).
+    DECLARA danger SICUT NUMERUS VALENS CBGRA_COLOR(255, 112, 136).
+
+    DECLARA f SICUT NUMERUS VALENS CBGRA_LIMPA(c, void).
+    f = NATG_SCANLINES(c, 54).
+
+    f = NATG_RECT(c, 0, 0, 960, 52, panel).
+    f = NATG_RECT(c, 0, 50, 960, 2, edge).
+    f = NATG_RECT(c, 648, 52, 2, 668, edge).
+    f = NATG_TEXT_GLOW(c, 18, 16, "ATMOS // TERMINAL DEPTH", 2, phosphor).
+    f = NATG_TEXT_GLOW(c, 720, 16, "SYSTEM LOG", 2, phosphor).
+
+    DECLARA cx SICUT NUMERUS VALENS 324.
+    DECLARA cy SICUT NUMERUS VALENS 374.
+    DECLARA radius SICUT NUMERUS VALENS 270.
+    DECLARA pcx SICUT NUMERUS VALENS NATG_X(c, cx).
+    DECLARA pcy SICUT NUMERUS VALENS NATG_Y(c, cy).
+    DECLARA pr SICUT NUMERUS VALENS NATG_R(c, radius).
+
+    f = NATG_DISC_ALPHA(c, cx, cy, radius - 6, phosphor_in, 11).
+
+    DECLARA sweep SICUT NUMERUS VALENS (CONTENTUM(s + 144) * 3) % 1024.
+    DECLARA ux SICUT NUMERUS VALENS NAT_SIN_Q10(sweep).
+    DECLARA uy SICUT NUMERUS VALENS NAT_COS_Q10(sweep).
+    DECLARA fy_scan SICUT NUMERUS VALENS 0 - uy.
+    f = NAT_RENDE_SECTOR_ALPHA(c, pcx, pcy, pr - 2, ux, fy_scan, scan, 34).
+
+    f = NATG_CIRCULUS(c, cx, cy, 90, phosphor_d).
+    f = NATG_CIRCULUS(c, cx, cy, 180, phosphor_d).
+    f = NATG_CIRCULUS_GLOW(c, cx, cy, radius, echo).
+    f = CBGRA_LINEA_MOLLIS(c, pcx - pr, pcy, pcx + pr, pcy, NATG_CRASSITUDO(c, 1), phosphor_d, 170).
+    f = CBGRA_LINEA_MOLLIS(c, pcx, pcy - pr, pcx, pcy + pr, NATG_CRASSITUDO(c, 1), phosphor_d, 170).
+
+    DECLARA norma SICUT NUMERUS VALENS NAT_ISQRT(ux * ux + uy * uy).
+    SI norma < 1 TUNC norma = 1024. FIN-SI.
+    DECLARA pfx SICUT NUMERUS VALENS pcx + ux * pr / norma.
+    DECLARA pfy SICUT NUMERUS VALENS pcy - uy * pr / norma.
+    f = CBGRA_LINEA_GROSSA(c, pcx, pcy, pfx, pfy, NATG_CRASSITUDO(c, 5), scan, 16).
+    f = CBGRA_LINEA_MOLLIS(c, pcx, pcy, pfx, pfy, NATG_CRASSITUDO(c, 1), scan, 235).
+
+    f = NATG_LINEA_GLOW(c, cx, cy - 10, cx - 7, cy + 8, echo).
+    f = NATG_LINEA_GLOW(c, cx - 7, cy + 8, cx + 7, cy + 8, echo).
+    f = NATG_LINEA_GLOW(c, cx + 7, cy + 8, cx, cy - 10, echo).
+    f = NATG_CIRCULUS_GLOW(c, cx, cy, 14, echo).
+
+    DECLARA t SICUT TEXTUS VALENS "".
+    DECLARA res_vis SICUT NUMERUS VALENS NAT_RES_VISIBILIS(s).
+    DECLARA stat_vis SICUT NUMERUS VALENS NAT_STAT_VISIBILIS(s).
+    DECLARA docked SICUT NUMERUS VALENS NAT_STAT_DOCKED(s).
+    DECLARA stat_course SICUT NUMERUS VALENS NAT_STAT_CURSUS_ACTIVUS(s).
+
+    SI res_vis != 0 TUNC
+        DECLARA rr SICUT NUMERUS VALENS CONTENTUM(s + 160).
+        DECLARA rx SICUT NUMERUS VALENS cx + (CONTENTUM(s + 168) - CONTENTUM(s + 40)) * radius / rr.
+        DECLARA ry SICUT NUMERUS VALENS cy + (CONTENTUM(s + 176) - CONTENTUM(s + 48)) * radius / rr.
+        DECLARA rzone SICUT NUMERUS VALENS CONTENTUM(s + 184) * radius / rr.
+        SI rzone < 8 TUNC rzone = 8. FIN-SI.
+        f = NATG_CIRCULUS(c, rx, ry, rzone, CBGRA_COLOR(108, 88, 42)).
+        f = NATG_CIRCULUS_GLOW(c, rx, ry, 8, amber).
+        f = NATG_LINEA_GLOW(c, rx - 10, ry, rx + 10, ry, amber).
+        f = NATG_LINEA_GLOW(c, rx, ry - 10, rx, ry + 10, amber).
+    FIN-SI.
+
+    SI stat_vis != 0 TUNC
+        DECLARA sr SICUT NUMERUS VALENS CONTENTUM(s + 160).
+        DECLARA stx SICUT NUMERUS VALENS cx + (NAT_STAT_X(s) - CONTENTUM(s + 40)) * radius / sr.
+        DECLARA sty SICUT NUMERUS VALENS cy + (NAT_STAT_Y(s) - CONTENTUM(s + 48)) * radius / sr.
+        f = NATG_RECT(c, stx - 10, sty - 10, 21, 21, echo).
+        f = NATG_RECT(c, stx - 6, sty - 6, 13, 13, void).
+        f = NATG_LINEA_GLOW(c, stx - 13, sty, stx + 13, sty, echo).
+        f = NATG_LINEA_GLOW(c, stx, sty - 13, stx, sty + 13, echo).
+    FIN-SI.
+
+    SI CONTENTUM(s + 80) != 0 TUNC
+        DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
+        DECLARA dx SICUT NUMERUS VALENS CONTENTUM(s + 104) - CONTENTUM(s + 40).
+        DECLARA dy SICUT NUMERUS VALENS CONTENTUM(s + 112) - CONTENTUM(s + 48).
+        DECLARA tx SICUT NUMERUS VALENS cx + dx * radius / range.
+        DECLARA ty SICUT NUMERUS VALENS cy + dy * radius / range.
+        f = NATG_LINEA_GLOW(c, cx, cy, tx, ty, echo).
+        f = NATG_CIRCULUS_GLOW(c, tx, ty, 7, amber).
+        SI stat_course != 0 TUNC
+            f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // STATION APPROACH", 1, echo).
+        ALITER
+            SI CONTENTUM(s + 192) != 0 TUNC
+                f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // MINERAL APPROACH", 1, amber).
+            ALITER
+                f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // EN ROUTE", 1, echo).
+            FIN-SI.
+        FIN-SI.
+    ALITER
+        SI docked != 0 TUNC
+            f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // DOCKED HABITAT-01", 1, echo).
+        ALITER
+            SI CONTENTUM(s + 200) != 0 TUNC
+                f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // EXTRACTION ACTIVE", 1, amber).
+            ALITER
+                SI CONTENTUM(s + 216) > 0 && stat_vis != 0 TUNC
+                    f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // CARGO READY - FIND STATION", 1, echo).
+                ALITER
+                    SI res_vis != 0 TUNC
+                        f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // MINERAL CONTACT", 1, amber).
+                    ALITER
+                        f = NATG_TEXT_GLOW(c, 18, 58, "SONAR // READY - CLICK TO NAVIGATE", 1, echo).
+                    FIN-SI.
+                FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-SI.
+
+    f = NATG_RECT(c, 420, 78, 220, 188, panel).
+    f = NATG_RECT(c, 422, 80, 216, 184, panel2).
+    f = NATG_RECT_ALPHA(c, 430, 84, 200, 18, phosphor_d, 26).
+    f = NATG_RECT(c, 426, 82, 208, 1, edge).
+    f = NATG_TEXT(c, 432, 88, "VESSEL STATUS", 1, edge).
+
+    t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)) + " M".
+    f = NATG_TEXT_GLOW(c, 432, 108, t, 1, echo).
+    t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10) + "%".
+    f = NATG_TEXT(c, 432, 132, t, 1, text_d).
+    f = NATG_BAR(c, 432, 150, 196, CONTENTUM(s + 0), phosphor).
+    t = "ENERGY " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8) / 10) + "%".
+    f = NATG_TEXT(c, 432, 168, t, 1, text_d).
+    f = NATG_BAR(c, 432, 186, 196, CONTENTUM(s + 8), phosphor).
+    t = "HULL " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16) / 10) + "%".
+    f = NATG_TEXT(c, 432, 204, t, 1, text_d).
+    f = NATG_BAR(c, 432, 222, 196, CONTENTUM(s + 16), phosphor).
+    t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
+    f = NATG_TEXT_GLOW(c, 432, 244, t, 1, amber).
+
+    t = "X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)) + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)).
+    f = NATG_TEXT(c, 18, 680, t, 1, text_d).
+    t = "RANGE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 160)) + " M".
+    f = NATG_TEXT(c, 270, 680, t, 1, text_d).
+    t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + "/40".
+    f = NATG_TEXT_GLOW(c, 500, 680, t, 1, amber).
+
+    DECLARA regio SICUT NUMERUS VALENS NAT_MUNDUS_REGIO(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
+    DECLARA relief SICUT NUMERUS VALENS NAT_MUNDUS_RELIEF(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
+    DECLARA nomen_regio SICUT TEXTUS VALENS "UPPER SLOPE".
+    SI regio == 2 TUNC nomen_regio = "LOWER SLOPE". FIN-SI.
+    SI regio == 3 TUNC nomen_regio = "ABYSSAL PLAIN". FIN-SI.
+    SI regio == 4 TUNC nomen_regio = "DEEP BASIN". FIN-SI.
+    SI regio == 5 TUNC nomen_regio = "HADAL TRENCH". FIN-SI.
+    DECLARA nomen_relief SICUT TEXTUS VALENS "SMOOTH".
+    SI relief == 2 TUNC nomen_relief = "ROLLING". FIN-SI.
+    SI relief == 3 TUNC nomen_relief = "BROKEN". FIN-SI.
+    SI relief == 4 TUNC nomen_relief = "ESCARPMENT". FIN-SI.
+
+    f = NATG_TEXT_GLOW(c, 660, 78, "DIVE CORE ONLINE", 1, phosphor).
+    SI CONTENTUM(s + 200) != 0 TUNC
+        f = NATG_TEXT_GLOW(c, 660, 108, "EXTRACTION ACTIVE", 1, amber).
+        f = NATG_TEXT(c, 660, 136, "FERROUS NODULES", 1, echo).
+        t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
+        f = NATG_TEXT(c, 660, 164, t, 1, text_d).
+        t = "DEPOSIT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 224)).
+        f = NATG_TEXT_GLOW(c, 660, 192, t, 1, amber).
+    ALITER
+        SI CONTENTUM(s + 80) != 0 TUNC
+            SI stat_course != 0 TUNC
+                f = NATG_TEXT_GLOW(c, 660, 108, "DOCKING COURSE", 1, echo).
+                f = NATG_TEXT(c, 660, 136, "HABITAT-01", 1, phosphor).
+            ALITER
+                SI CONTENTUM(s + 192) != 0 TUNC
+                    f = NATG_TEXT_GLOW(c, 660, 108, "MINERAL APPROACH", 1, amber).
+                    f = NATG_TEXT(c, 660, 136, "FERROUS NODULES", 1, echo).
+                ALITER
+                    f = NATG_TEXT_GLOW(c, 660, 108, "COURSE ACTIVE", 1, echo).
+                FIN-SI.
+            FIN-SI.
+            t = "DIST " + TEXTUS_EX_NUMERO_DECIMALI(NAT_CURSUS_RELIQUUM(s)) + " M".
+            f = NATG_TEXT_GLOW(c, 660, 164, t, 1, amber).
+            DECLARA progressus SICUT NUMERUS VALENS NAT_CURSUS_PROGRESSUS(s).
+            t = "PROGRESS " + TEXTUS_EX_NUMERO_DECIMALI(progressus / 10) + "%".
+            f = NATG_TEXT(c, 660, 192, t, 1, text_d).
+            f = NATG_BAR(c, 660, 218, 270, progressus, echo).
+        ALITER
+            SI CONTENTUM(s + 216) > 0 && stat_vis != 0 TUNC
+                f = NATG_TEXT_GLOW(c, 660, 108, "CARGO READY FOR MARKET", 1, echo).
+                t = "ORE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
+                f = NATG_TEXT(c, 660, 136, t, 1, amber).
+                f = NATG_TEXT(c, 660, 164, "CYAN SQUARE = STATION", 1, echo).
+            ALITER
+                f = NATG_TEXT(c, 660, 108, "CLICK SONAR TO SET COURSE", 1, text_d).
+                SI stat_vis != 0 TUNC f = NATG_TEXT(c, 660, 136, "CYAN SQUARE = STATION", 1, echo). FIN-SI.
+            FIN-SI.
+        FIN-SI.
+    FIN-SI.
+
+    t = "REGION " + nomen_regio.
+    f = NATG_TEXT_GLOW(c, 660, 272, t, 1, echo).
+    t = "SEABED " + nomen_relief.
+    f = NATG_TEXT(c, 660, 300, t, 1, text_d).
+
+    SI CONTENTUM(s + 64) == 0 TUNC
+        f = NATG_TEXT_GLOW(c, 660, 338, "SIGNAL LOST", 2, danger).
+    FIN-SI.
+
+    REDDE 1.
+FIN-FUNCTIO.

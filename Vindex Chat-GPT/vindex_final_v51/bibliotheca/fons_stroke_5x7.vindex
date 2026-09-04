@@ -1,0 +1,181 @@
+// VINDEX — fons geometricus scalabilis, API historica FS5.
+// Graphica III: ATMOS servat nomina FS5_TEXTUS/FS5_TEXTUS_GLOW,
+// sed glyphi non amplius e matrice 5x7 pinguntur: segmentis geometricis construuntur.
+// Hoc permittit migrationem sine mutando omnem UI clientem.
+// Dependit a canvas_bgra_fx.vindex et textus.vindex.
+
+FUNCTIO FS5_GLYPH REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    SI c >= 97 && c <= 122 TUNC c = c - 32. FIN-SI.
+    SI c == 32 TUNC REDDE 0. FIN-SI.
+    SI c == 65 TUNC REDDE 63. FIN-SI.
+    SI c == 66 TUNC REDDE 127. FIN-SI.
+    SI c == 67 TUNC REDDE 83. FIN-SI.
+    SI c == 68 TUNC REDDE 119. FIN-SI.
+    SI c == 69 TUNC REDDE 91. FIN-SI.
+    SI c == 70 TUNC REDDE 27. FIN-SI.
+    SI c == 71 TUNC REDDE 123. FIN-SI.
+    SI c == 72 TUNC REDDE 62. FIN-SI.
+    SI c == 73 TUNC REDDE 6209. FIN-SI.
+    SI c == 74 TUNC REDDE 116. FIN-SI.
+    SI c == 75 TUNC REDDE 1298. FIN-SI.
+    SI c == 76 TUNC REDDE 82. FIN-SI.
+    SI c == 77 TUNC REDDE 438. FIN-SI.
+    SI c == 78 TUNC REDDE 65590. FIN-SI.
+    SI c == 79 TUNC REDDE 119. FIN-SI.
+    SI c == 80 TUNC REDDE 31. FIN-SI.
+    SI c == 81 TUNC REDDE 1143. FIN-SI.
+    SI c == 82 TUNC REDDE 1055. FIN-SI.
+    SI c == 83 TUNC REDDE 107. FIN-SI.
+    SI c == 84 TUNC REDDE 6145. FIN-SI.
+    SI c == 85 TUNC REDDE 118. FIN-SI.
+    SI c == 86 TUNC REDDE 393216. FIN-SI.
+    SI c == 87 TUNC REDDE 1590. FIN-SI.
+    SI c == 88 TUNC REDDE 98304. FIN-SI.
+    SI c == 89 TUNC REDDE 4480. FIN-SI.
+    SI c == 90 TUNC REDDE 32833. FIN-SI.
+    SI c == 48 TUNC REDDE 119. FIN-SI.
+    SI c == 49 TUNC REDDE 36. FIN-SI.
+    SI c == 50 TUNC REDDE 93. FIN-SI.
+    SI c == 51 TUNC REDDE 109. FIN-SI.
+    SI c == 52 TUNC REDDE 46. FIN-SI.
+    SI c == 53 TUNC REDDE 107. FIN-SI.
+    SI c == 54 TUNC REDDE 123. FIN-SI.
+    SI c == 55 TUNC REDDE 37. FIN-SI.
+    SI c == 56 TUNC REDDE 127. FIN-SI.
+    SI c == 57 TUNC REDDE 111. FIN-SI.
+    SI c == 45 TUNC REDDE 8. FIN-SI.
+    SI c == 95 TUNC REDDE 64. FIN-SI.
+    SI c == 47 TUNC REDDE 32768. FIN-SI.
+    SI c == 92 TUNC REDDE 65536. FIN-SI.
+    SI c == 43 TUNC REDDE 6152. FIN-SI.
+    SI c == 61 TUNC REDDE 24576. FIN-SI.
+    SI c == 58 TUNC REDDE 1048576. FIN-SI.
+    SI c == 46 TUNC REDDE 524288. FIN-SI.
+    SI c == 33 TUNC REDDE 526336. FIN-SI.
+    SI c == 37 TUNC REDDE 360448. FIN-SI.
+    SI c == 40 TUNC REDDE 131584. FIN-SI.
+    SI c == 41 TUNC REDDE 263168. FIN-SI.
+    SI c == 91 TUNC REDDE 81. FIN-SI.
+    SI c == 93 TUNC REDDE 100. FIN-SI.
+    REDDE 98304.
+FIN-FUNCTIO.
+
+FUNCTIO FS5_SEGMENTUM REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    ACCIPIT seg SICUT NUMERUS.
+    DECLARA cr SICUT NUMERUS VALENS g / 2.
+    SI cr < 1 TUNC cr = 1. FIN-SI.
+    SI seg == 0 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y,x+5*g,y,cr,color,alpha). FIN-SI.
+    SI seg == 1 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y+g,x,y+3*g,cr,color,alpha). FIN-SI.
+    SI seg == 2 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y+g,x+6*g,y+3*g,cr,color,alpha). FIN-SI.
+    SI seg == 3 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+4*g,x+5*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 4 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y+5*g,x,y+7*g,cr,color,alpha). FIN-SI.
+    SI seg == 5 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y+5*g,x+6*g,y+7*g,cr,color,alpha). FIN-SI.
+    SI seg == 6 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+8*g,x+5*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 7 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y,x+3*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 8 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y,x+3*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 9 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+4*g,x,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 10 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+4*g,x+6*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 11 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y,x+3*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 12 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+4*g,x+3*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 13 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+2*g,x+5*g,y+2*g,cr,color,alpha). FIN-SI.
+    SI seg == 14 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+6*g,x+5*g,y+6*g,cr,color,alpha). FIN-SI.
+    SI seg == 15 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y+8*g,x+6*g,y,cr,color,alpha). FIN-SI.
+    SI seg == 16 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y,x+6*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 17 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y,x+3*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 18 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y,x+3*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 19 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+8*g,x+3*g,y+8*g,cr+1,color,alpha). FIN-SI.
+    SI seg == 20 TUNC
+        DECLARA q SICUT NUMERUS VALENS CBGRA_LINEA_MOLLIS(c,x+3*g,y+2*g,x+3*g,y+2*g,cr+1,color,alpha).
+        REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+6*g,x+3*g,y+6*g,cr+1,color,alpha).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS5_CHAR_ALPHA REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI c <= 0 || g <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mask SICUT NUMERUS VALENS FS5_GLYPH(codex).
+    SI mask == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA seg SICUT NUMERUS VALENS 0.
+    DUM seg <= 20 PERFICE
+        SI ((mask >> seg) & 1) != 0 TUNC
+            DECLARA q SICUT NUMERUS VALENS FS5_SEGMENTUM(c,x,y,g,color,alpha,seg).
+        FIN-SI.
+        seg = seg + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS5_CHAR REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    REDDE FS5_CHAR_ALPHA(c,x,y,codex,g,color,245).
+FIN-FUNCTIO.
+
+FUNCTIO FS5_TEXTUS REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    SI c <= 0 || g <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA basis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(textus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < n PERFICE
+        DECLARA codex SICUT NUMERUS VALENS OCTETUS_AB(basis + i).
+        DECLARA q SICUT NUMERUS VALENS FS5_CHAR(c,x+i*8*g,y,codex,g,color).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS5_TEXTUS_GLOW REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    SI c <= 0 || g <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    DECLARA basis SICUT NUMERUS VALENS TEXTUS_BASIS_OCTETORUM(textus).
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < n PERFICE
+        DECLARA codex SICUT NUMERUS VALENS OCTETUS_AB(basis + i).
+        DECLARA gx SICUT NUMERUS VALENS x + i * 8 * g.
+        DECLARA q SICUT NUMERUS VALENS FS5_CHAR_ALPHA(c,gx-g,y,codex,g,color,12).
+        q = FS5_CHAR_ALPHA(c,gx+g,y,codex,g,color,12).
+        q = FS5_CHAR_ALPHA(c,gx,y-g,codex,g,color,12).
+        q = FS5_CHAR_ALPHA(c,gx,y+g,codex,g,color,12).
+        q = FS5_CHAR_ALPHA(c,gx,y,codex,g,color,245).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS5_LATITUDO REDDENS NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT g SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS LONGITUDO(textus).
+    SI n <= 0 || g <= 0 TUNC REDDE 0. FIN-SI.
+    REDDE n * 8 * g - 2 * g.
+FIN-FUNCTIO.

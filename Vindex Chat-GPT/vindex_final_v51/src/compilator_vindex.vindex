@@ -459,6 +459,9 @@ FUNCTIO CONSTRUE_CAPUT_PE REDDENS NUMERUS.
     DECLARA igac SICUT NUMERUS VALENS SCRIBE_U32(codex, 148, capita_mensura).
     DECLARA igad SICUT NUMERUS VALENS SCRIBE_U32(codex, 152, 0).
     DECLARA subsystema_pe SICUT NUMERUS VALENS 3.
+    SI MODUS_PE_LEGE(contextus_parseris) == 3 TUNC
+        subsystema_pe = 2.
+    FIN-SI.
     SI MODUS_PE_LEGE(contextus_parseris) == 2 TUNC
         subsystema_pe = 10.
     FIN-SI.
@@ -2335,7 +2338,7 @@ FUNCTIO COMPONE_RESERVA_OCTETA_DYNAMICA REDDENS NUMERUS.
         p_mem_dyn = COMPONE_SERVA_INDIRECTUM(codex, p_mem_dyn, 1, 12).
         REDDE p_mem_dyn.
     FIN-SI.
-    SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
+    SI MODUS_PE_LEGE(contextus_parseris) == 1 || MODUS_PE_LEGE(contextus_parseris) == 3 TUNC
         p_mem_dyn = COMPONE_TRANSCRIBE(codex, p_mem_dyn, 12, 0).
         CODEX_SCRIBE(codex, p_mem_dyn, 73).
         CODEX_SCRIBE(codex, p_mem_dyn + 1, 137).
@@ -6007,7 +6010,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
 
     SI argc < 3 TUNC
         PROCLAMA "USUS: compilator_vindex PROIECTUM <proiectum.vindex>".
-        PROCLAMA "USUS: compilator_vindex <fons.vindex> <exsecutabile> [pe|uefi]".
+        PROCLAMA "USUS: compilator_vindex <fons.vindex> <exsecutabile> [pe|gui|uefi]".
         REDDE 64.
     FIN-SI.
 
@@ -6029,6 +6032,24 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             DECLARA arg3 SICUT ACUS<LITTERA> VALENS argv[3].
             SI arg3[0] == 112 && arg3[1] == 101 && arg3[2] == 0 TUNC
                 modus_pe = 1.
+            FIN-SI.
+        FIN-SI.
+        SI argc >= 4 TUNC
+            DECLARA arg3_gui SICUT ACUS<LITTERA> VALENS argv[3].
+            SI arg3_gui[0] == 103 && arg3_gui[1] == 117 && arg3_gui[2] == 105 && arg3_gui[3] == 0 TUNC
+                modus_pe = 3.
+            FIN-SI.
+        FIN-SI.
+        SI argc >= 4 TUNC
+            DECLARA arg3_gui SICUT ACUS<LITTERA> VALENS argv[3].
+            SI arg3_gui[0] == 103 && arg3_gui[1] == 117 && arg3_gui[2] == 105 && arg3_gui[3] == 0 TUNC
+                modus_pe = 3.
+            FIN-SI.
+        FIN-SI.
+        SI argc >= 4 TUNC
+            DECLARA arg3_gui SICUT ACUS<LITTERA> VALENS argv[3].
+            SI arg3_gui[0] == 103 && arg3_gui[1] == 117 && arg3_gui[2] == 105 && arg3_gui[3] == 0 TUNC
+                modus_pe = 3.
             FIN-SI.
         FIN-SI.
         SI argc >= 4 TUNC
@@ -6440,7 +6461,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     pos = COMPONE_ONERA(codex, pos, 0, 33554448).
                     pos = COMPONE_SERVA_INDIRECTUM(codex, pos, 2, 0).
                 FIN-SI.
-                SI modus_pe == 1 TUNC
+                SI modus_pe == 1 || modus_pe == 3 TUNC
                     CODEX_SCRIBE(codex, pos, 72).
                     CODEX_SCRIBE(codex, pos + 1, 131).
                     CODEX_SCRIBE(codex, pos + 2, 236).
@@ -6492,7 +6513,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     CODEX_SCRIBE(codex, pos, 195).
                     pos = pos + 1.
                 FIN-SI.
-                SI modus_pe == 1 TUNC
+                SI modus_pe == 1 || modus_pe == 3 TUNC
                     pos = COMPONE_TRANSCRIBE(codex, pos, 1, 0).
                     pos = COMPONE_VOCA_IAT_DYNAMICA(codex, pos, contextus_parseris, 0).
                     pos = COMPONE_HLT(codex, pos).

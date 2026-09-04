@@ -1,0 +1,130 @@
+name: VINDEX — ATMOS NATIVUM Passe Genocidaire
+
+on:
+  pull_request:
+    paths:
+      - 'PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/**'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - '.github/workflows/vindex-atmos-nativum-passe-genocidaire.yml'
+
+jobs:
+  puritas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fontes runtime alienos extermina
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT='PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM'
+          aliena=$(git ls-files "$ROOT/**" | grep -Ei '\.(c|h|cc|cpp|cxx|rs|cs|fs|vb|js|jsx|ts|tsx|py|go|java|kt|kts|asm|s|html|css)$' || true)
+          if [ -n "$aliena" ]; then
+            echo 'ERRATUM: La Passe Genocidaire invenit fontes runtime non-VINDEX:'
+            printf '%s\n' "$aliena"
+            exit 1
+          fi
+          echo 'RECTE: NATIVUM nullum fontem runtime alienae linguae continet.'
+
+      - name: Importa VINDEX pura et POC vetita confirma
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT='PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM'
+          bad=$(grep -RnhE '^IMPORTA ' "$ROOT" --include='*.vindex' | grep -Ev '\.vindex"\.$' || true)
+          if [ -n "$bad" ]; then
+            echo 'ERRATUM: importatio non-VINDEX inventa est:'
+            printf '%s\n' "$bad"
+            exit 1
+          fi
+          pocs=$(grep -RniE '^IMPORTA .*POC_|^IMPORTA .*COMMUNE/' "$ROOT" --include='*.vindex' || true)
+          if [ -n "$pocs" ]; then
+            echo 'ERRATUM: gameplay historicum POC in NATIVUM revixit:'
+            printf '%s\n' "$pocs"
+            exit 1
+          fi
+          echo 'RECTE: NATIVUM nullum POC gameplay importat.'
+
+      - name: Nullum textum GDI extra framebuffer admitte
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT='PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM'
+          directum=$(grep -RniE 'WINAPP_TEXTUS[[:space:]]*\(|"TextOutA"' "$ROOT" --include='*.vindex' || true)
+          if [ -n "$directum" ]; then
+            echo 'ERRATUM: pictura textus extra compositorem unicum inventa est:'
+            printf '%s\n' "$directum"
+            exit 1
+          fi
+          echo 'RECTE: omnis textus ludi in framebuffer VINDEX componitur.'
+
+      - name: Compilatorem VINDEX ex VINDEX ad punctum fixum regenera
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+          chmod +x /tmp/g2
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          chmod +x /tmp/g3
+          /tmp/g3 src/compilator_vindex.vindex /tmp/g4
+          chmod +x /tmp/g4
+          cmp /tmp/g3 /tmp/g4
+          echo 'RECTE: compilator ipse VINDEX est et G3 = G4.'
+
+      - name: ATMOS NATIVUM GUI solo compilatore auto-hospite genera
+        working-directory: PROGRAMMATA/ATMOS_TERMINAL_DEPTH/NATIVUM
+        shell: bash
+        run: |
+          set -euo pipefail
+          /tmp/g4 ludus.vindex /tmp/atmos_nativum_purum.exe gui
+          file /tmp/atmos_nativum_purum.exe
+          objdump -p /tmp/atmos_nativum_purum.exe | grep -E 'Subsystem.*Windows GUI'
+
+      - name: PE GUI runtime alienum extermina
+        shell: bash
+        run: |
+          set -euo pipefail
+          objdump -p /tmp/atmos_nativum_purum.exe > /tmp/pe.txt
+          grep -E 'DLL Name:' /tmp/pe.txt || true
+          grep -E 'Subsystem.*Windows GUI' /tmp/pe.txt
+          if grep -Eiq 'DLL Name:.*(msvcrt|ucrtbase|vcruntime|mscoree|libstdc\+\+|libgcc|python|node)' /tmp/pe.txt; then
+            echo 'ERRATUM: runtime alienum repertum est.'
+            exit 1
+          fi
+          dlls=$(grep -E 'DLL Name:' /tmp/pe.txt | sed 's/.*DLL Name: *//' | tr '[:lower:]' '[:upper:]' | sort -u)
+          extra=$(printf '%s\n' "$dlls" | grep -Ev '^(KERNEL32\.DLL)?$' || true)
+          if [ -n "$extra" ]; then
+            echo 'ERRATUM: importatio PE directa praeter KERNEL32 inventa est:'
+            printf '%s\n' "$extra"
+            exit 1
+          fi
+          echo 'RECTE: PE GUI nullum CRT, .NET aut runtime tertiae linguae importat.'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: atmos-nativum-purum-vindex
+          path: /tmp/atmos_nativum_purum.exe
+          if-no-files-found: error
+          retention-days: 14
+
+  windows:
+    needs: puritas
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: atmos-nativum-purum-vindex
+          path: atmos
+      - name: Executabile GUI ex catena VINDEX pura sub Windows exerce
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Set-Location (Resolve-Path '.\atmos')
+          $p = Start-Process -FilePath '.\atmos_nativum_purum.exe' -ArgumentList 'smoke','quiet' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "ATMOS NATIVUM GUI purus exitus $($p.ExitCode)" }
+          Write-Host 'RECTE: LA PASSE GENOCIDAIRE NATIVUM GUI — runtime et codex applicationis C percentum VINDEX sunt.'

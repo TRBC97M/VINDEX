@@ -1,0 +1,26 @@
+// VINDEX — via celeris raster BGRA, quarantenata Stabilitas II-R.
+// Implementatio directa experimentalis corruptelam horizontalem sub Windows produxit.
+// API servatur, sed nunc ad primitive alpha certificata delegat dum radix investigatur.
+
+FUNCTIO CBGRA_RECT_ALPHA_CELER REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    REDDE CBGRA_RECT_ALPHA(c, x, y, w, h, color, alpha).
+FIN-FUNCTIO.
+
+FUNCTIO CBGRA_RECT_DEGRADE_V_CELER REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha_haut SICUT NUMERUS.
+    ACCIPIT alpha_bas SICUT NUMERUS.
+    REDDE CBGRA_RECT_DEGRADE_V(c, x, y, w, h, color, alpha_haut, alpha_bas).
+FIN-FUNCTIO.
