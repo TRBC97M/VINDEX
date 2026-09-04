@@ -1,5 +1,6 @@
 // ATMOS NATIVUM — interface docking separata, resolutione independens.
 // Stationis modus est locus decisionum: tabs, actiones manuales, undock voluntarium.
+// Graphica XI: pannelli vitrei, tabs hierarchicae et botones cockpit.
 
 FUNCTIO NAT_STAT_UI_TAB REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -12,9 +13,12 @@ FUNCTIO NAT_STAT_UI_TAB REDDENS NUMERUS.
     DECLARA edge SICUT NUMERUS VALENS CBGRA_COLOR(45, 117, 81).
     DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(119, 255, 188).
     DECLARA text_d SICUT NUMERUS VALENS CBGRA_COLOR(176, 201, 187).
-    DECLARA f SICUT NUMERUS VALENS NATG_RECT(c, x, 94, w, 34, panel).
-    SI activa != 0 TUNC f = NATG_RECT(c, x, 94, w, 34, panel2). FIN-SI.
-    f = NATG_RECT(c, x, 127, w, 1, edge).
+    DECLARA f SICUT NUMERUS VALENS NATG_RECT_ALPHA(c, x, 94, w, 34, panel, 172).
+    SI activa != 0 TUNC
+        f = NATG_PANEL(c, x, 94, w, 34, panel2, edge).
+        f = NATG_RECT_ALPHA(c, x + 5, 98, w - 10, 4, phosphor, 46).
+    FIN-SI.
+    f = NATG_RECT_ALPHA(c, x, 127, w, 1, edge, 150).
     SI activa != 0 TUNC
         f = NATG_TEXT_GLOW(c, x + 8, 105, nomen, 1, phosphor).
     ALITER
@@ -33,11 +37,8 @@ FUNCTIO NAT_STAT_UI_BUTON REDDENS NUMERUS.
     DECLARA fundum SICUT NUMERUS VALENS CBGRA_COLOR(8, 29, 21).
     DECLARA edge SICUT NUMERUS VALENS CBGRA_COLOR(45, 117, 81).
     DECLARA phosphor SICUT NUMERUS VALENS CBGRA_COLOR(119, 255, 188).
-    DECLARA f SICUT NUMERUS VALENS NATG_RECT(c, x, y, w, h, fundum).
-    f = NATG_RECT(c, x, y, w, 1, edge).
-    f = NATG_RECT(c, x, y + h - 1, w, 1, edge).
-    f = NATG_RECT(c, x, y, 1, h, edge).
-    f = NATG_RECT(c, x + w - 1, y, 1, h, edge).
+    DECLARA f SICUT NUMERUS VALENS NATG_PANEL(c, x, y, w, h, fundum, edge).
+    f = NATG_RECT_ALPHA(c, x + 5, y + 5, w - 10, 4, phosphor, 30).
     f = NATG_TEXT_GLOW(c, x + 8, y + 11, text, 1, phosphor).
     REDDE 1.
 FIN-FUNCTIO.
@@ -64,7 +65,9 @@ FUNCTIO NAT_STAT_UI_RENDE REDDENS NUMERUS.
     DECLARA t SICUT TEXTUS VALENS "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
     f = NATG_TEXT_GLOW(c, 790, 18, t, 1, amber).
 
-    f = NATG_TEXT_GLOW(c, 18, 63, "HABITAT-01", 2, amber).
+    // En-tete de station plus structure.
+    f = NATG_RECT_ALPHA(c, 14, 58, 810, 30, panel2, 142).
+    f = NATG_TEXT_GLOW(c, 24, 64, "HABITAT-01 // DOCKING SERVICES", 2, amber).
     f = NAT_STAT_UI_BUTON(c, 842, 56, 100, 32, "UNDOCK").
 
     DECLARA tab SICUT NUMERUS VALENS CONTENTUM(s + 232).
@@ -87,28 +90,29 @@ FUNCTIO NAT_STAT_UI_RENDE REDDENS NUMERUS.
     f = NAT_STAT_UI_TAB(c, 386, 104, "CONTRACTS", a5).
     f = NAT_STAT_UI_TAB(c, 494, 116, "REPUTATION", a6).
 
-    f = NATG_RECT(c, 18, 148, 924, 500, panel).
-    f = NATG_RECT(c, 18, 148, 924, 1, edge).
+    // Grand panneau station: verre sombre avec halo discret.
+    f = NATG_PANEL(c, 18, 148, 924, 500, panel, edge).
+    f = NATG_RECT_ALPHA(c, 28, 158, 904, 30, panel2, 92).
 
     SI tab == 1 TUNC
         f = NATG_TEXT_GLOW(c, 30, 166, "REPAIR // MANUAL SERVICE", 2, phosphor).
         f = NATG_TEXT(c, 30, 194, "CHOOSE WHAT TO RESTORE. NOTHING IS AUTOMATIC.", 1, text_d).
 
-        f = NATG_RECT(c, 30, 214, 902, 64, panel2).
+        f = NATG_PANEL(c, 30, 214, 902, 64, panel2, edge).
         f = NATG_TEXT_GLOW(c, 42, 226, "HULL", 2, echo).
         t = "CURRENT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16) / 10) + "%".
         f = NATG_TEXT(c, 42, 252, t, 1, text_d).
         t = TEXTUS_EX_NUMERO_DECIMALI(NAT_STAT_PRETIUM_HULL(s)) + " CR".
         f = NAT_STAT_UI_BUTON(c, 812, 222, 120, 44, t).
 
-        f = NATG_RECT(c, 30, 300, 902, 64, panel2).
+        f = NATG_PANEL(c, 30, 300, 902, 64, panel2, edge).
         f = NATG_TEXT_GLOW(c, 42, 312, "OXYGEN", 2, echo).
         t = "CURRENT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10) + "%".
         f = NATG_TEXT(c, 42, 338, t, 1, text_d).
         t = TEXTUS_EX_NUMERO_DECIMALI(NAT_STAT_PRETIUM_O2(s)) + " CR".
         f = NAT_STAT_UI_BUTON(c, 812, 308, 120, 44, t).
 
-        f = NATG_RECT(c, 30, 386, 902, 64, panel2).
+        f = NATG_PANEL(c, 30, 386, 902, 64, panel2, edge).
         f = NATG_TEXT_GLOW(c, 42, 398, "ENERGY", 2, echo).
         t = "CURRENT " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8) / 10) + "%".
         f = NATG_TEXT(c, 42, 424, t, 1, text_d).
@@ -119,7 +123,7 @@ FUNCTIO NAT_STAT_UI_RENDE REDDENS NUMERUS.
     SI tab == 2 TUNC
         f = NATG_TEXT_GLOW(c, 30, 166, "MARKET // HABITAT-01", 2, phosphor).
         f = NATG_TEXT(c, 30, 194, "LOCAL BUY ORDER // FERROUS NODULES", 1, text_d).
-        f = NATG_RECT(c, 30, 224, 902, 100, panel2).
+        f = NATG_PANEL(c, 30, 224, 902, 100, panel2, edge).
         t = "CARGO " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 216)) + " / 40".
         f = NATG_TEXT_GLOW(c, 42, 240, t, 2, amber).
         t = "PRICE " + TEXTUS_EX_NUMERO_DECIMALI(NAT_STAT_PRETIUM()) + " CR / UNIT".
@@ -147,16 +151,16 @@ FUNCTIO NAT_STAT_UI_RENDE REDDENS NUMERUS.
         f = NATG_TEXT(c, 30, 206, "FACTION REPUTATION RESERVED FOR NEXT GAMEPLAY PASS.", 1, text_d).
     FIN-SI.
 
-    f = NATG_RECT(c, 0, 666, 960, 54, panel).
-    f = NATG_RECT(c, 0, 666, 960, 1, edge).
+    // Footer station devient un instrument continu.
+    f = NATG_PANEL(c, 12, 664, 936, 48, panel, edge).
     t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)) + " M".
-    f = NATG_TEXT_GLOW(c, 18, 688, t, 1, echo).
+    f = NATG_TEXT_GLOW(c, 24, 681, t, 1, echo).
     t = "HULL " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16) / 10) + "%".
-    f = NATG_TEXT(c, 240, 688, t, 1, text_d).
+    f = NATG_TEXT(c, 246, 681, t, 1, text_d).
     t = "ENERGY " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8) / 10) + "%".
-    f = NATG_TEXT(c, 450, 688, t, 1, text_d).
+    f = NATG_TEXT(c, 456, 681, t, 1, text_d).
     t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10) + "%".
-    f = NATG_TEXT(c, 680, 688, t, 1, text_d).
+    f = NATG_TEXT(c, 686, 681, t, 1, text_d).
 
     REDDE 1.
 FIN-FUNCTIO.
