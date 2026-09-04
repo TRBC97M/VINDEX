@@ -1,0 +1,11 @@
+// P9: parenthesis non clausa.
+//
+// Ante correctionem: acceptata taciturne. Valor rectus reddebatur, sed
+// error scriptoris tacebatur, quia ANALYSA_FACTOR positionem post
+// ANALYSA_COMPARATIO augebat sine ulla probatione clausurae.
+//
+// Post correctionem: diagnosticum per campum erroris in contextu
+// parseris propagatum. Hic casus compilari NON debet; exitus 65.
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    REDDE (1 + 2.
+FIN-FUNCTIO.
