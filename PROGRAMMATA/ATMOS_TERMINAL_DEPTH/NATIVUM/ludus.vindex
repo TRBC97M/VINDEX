@@ -9,13 +9,16 @@ IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/win32_dib.vindex"
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/aleatorium.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra_externus.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/canvas_bgra_fx.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_bitmap_5x7.vindex".
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_stroke_5x7.vindex".
 IMPORTA "machina/platforma_win32.vindex".
 IMPORTA "ludus/mathematica.vindex".
 IMPORTA "ludus/mundus.vindex".
 IMPORTA "ludus/status.vindex".
 IMPORTA "ludus/resourca.vindex".
 IMPORTA "ludus/statio.vindex".
+IMPORTA "ludus/graphica.vindex".
 IMPORTA "ludus/statio_ui.vindex".
 IMPORTA "ludus/rendere.vindex".
 
@@ -72,7 +75,7 @@ FUNCTIO NAT_SMOKE REDDENS NUMERUS.
 
     DECLARA r SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
     DECLARA pix SICUT NUMERUS VALENS CBGRA_PIXELS(canvas).
-    SI OCTETUS_AB(pix + 0) != 32 || OCTETUS_AB(pix + 1) != 40 || OCTETUS_AB(pix + 2) != 16 TUNC REDDE 44. FIN-SI.
+    SI OCTETUS_AB(pix + 0) != 27 || OCTETUS_AB(pix + 1) != 37 || OCTETUS_AB(pix + 2) != 11 TUNC REDDE 44. FIN-SI.
 
     SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) == 0 TUNC REDDE 45. FIN-SI.
     DECLARA cw SICUT NUMERUS VALENS NAT_I32_LEGE(rect, 8) - NAT_I32_LEGE(rect, 0).
@@ -83,7 +86,7 @@ FUNCTIO NAT_SMOKE REDDENS NUMERUS.
     DECLARA sx SICUT NUMERUS VALENS 10 * cw / 960.
     DECLARA sy SICUT NUMERUS VALENS 10 * ch / 720.
     DECLARA visus SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, sx, sy).
-    SI visus != 2107408 TUNC REDDE 48. FIN-SI.
+    SI visus != 1778955 TUNC REDDE 48. FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -98,27 +101,36 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA ctx SICUT NUMERUS VALENS WINAPP_CONTEXUS_CREA().
     DECLARA dibctx SICUT NUMERUS VALENS WDIB_CONTEXUS_CREA().
     SI plat == 0 || ctx == 0 || dibctx == 0 TUNC REDDE 71. FIN-SI.
-    DECLARA hwnd SICUT NUMERUS VALENS NATWIN_FENESTRA(plat, "ATMOS // TERMINAL DEPTH", 1100, 800).
+
+    // Fenestram PC modernam petimus; backbuffer postea clientem realem sequitur.
+    DECLARA hwnd SICUT NUMERUS VALENS NATWIN_FENESTRA(plat, "ATMOS // TERMINAL DEPTH", 1920, 1080).
     SI hwnd == 0 TUNC REDDE 72. FIN-SI.
 
     DECLARA ost SICUT NUMERUS VALENS WINAPP_FENESTRA_OSTENDE(ctx, hwnd).
     DECLARA hdc SICUT NUMERUS VALENS WINAPP_HDC_CAPE(ctx, hwnd).
     SI hdc == 0 TUNC REDDE 73. FIN-SI.
 
-    DECLARA dib SICUT NUMERUS VALENS WDIB_CREA(dibctx, hdc, 960, 720).
-    SI dib == 0 TUNC REDDE 74. FIN-SI.
-    DECLARA canvas SICUT NUMERUS VALENS CBGRA_EX_PIXELS(960, 720, WDIB_PIXELS(dib)).
     DECLARA rect SICUT NUMERUS VALENS RESERVA_OCTETA(16).
     DECLARA msg SICUT NUMERUS VALENS RESERVA_OCTETA(48).
     DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
-    SI canvas == 0 || rect == 0 || msg == 0 || point == 0 TUNC REDDE 75. FIN-SI.
+    SI rect == 0 || msg == 0 || point == 0 TUNC REDDE 74. FIN-SI.
 
-    DECLARA pictum_init SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
+    DECLARA render_w SICUT NUMERUS VALENS 1280.
+    DECLARA render_h SICUT NUMERUS VALENS 720.
     SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) != 0 TUNC
         DECLARA iw SICUT NUMERUS VALENS NAT_I32_LEGE(rect, 8) - NAT_I32_LEGE(rect, 0).
         DECLARA ih SICUT NUMERUS VALENS NAT_I32_LEGE(rect, 12) - NAT_I32_LEGE(rect, 4).
-        SI iw > 0 && ih > 0 TUNC DECLARA ip SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, iw, ih). FIN-SI.
+        SI iw > 0 && ih > 0 TUNC render_w = iw. render_h = ih. FIN-SI.
     FIN-SI.
+
+    DECLARA dib SICUT NUMERUS VALENS WDIB_CREA(dibctx, hdc, render_w, render_h).
+    SI dib == 0 TUNC REDDE 75. FIN-SI.
+    DECLARA canvas SICUT NUMERUS VALENS CBGRA_EX_PIXELS(render_w, render_h, WDIB_PIXELS(dib)).
+    SI canvas == 0 TUNC REDDE 76. FIN-SI.
+
+    DECLARA pictum_init SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
+    SI NAT_STAT_DOCKED(s) != 0 TUNC pictum_init = NAT_STAT_UI_RENDE(canvas, s). FIN-SI.
+    DECLARA ip SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, render_w, render_h).
 
     SI argc >= 2 TUNC
         DECLARA code SICUT NUMERUS VALENS NAT_SMOKE(s, canvas, ctx, dibctx, dib, hwnd, hdc, rect).
@@ -132,7 +144,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             DECLARA sx_smoke SICUT NUMERUS VALENS 10 * cw_smoke / 960.
             DECLARA sy_smoke SICUT NUMERUS VALENS 10 * ch_smoke / 720.
             DECLARA visus_smoke SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, sx_smoke, sy_smoke).
-            PROCLAMA "RECTE: ATMOS NATIVUM DIB WIN64".
+            PROCLAMA "RECTE: ATMOS NATIVUM GRAPHICA SCALABILIS".
             PROCLAMA CONTENTUM(s + 40).
             PROCLAMA CONTENTUM(s + 48).
             PROCLAMA CONTENTUM(s + 24).
@@ -171,6 +183,18 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             FIN-SI.
 
             SI cw > 0 && ch > 0 TUNC
+                // Backbuffer nativus: recreate tantum cum clientis resolutio mutatur.
+                SI cw != render_w || ch != render_h TUNC
+                    DECLARA novum_dib SICUT NUMERUS VALENS WDIB_CREA(dibctx, hdc, cw, ch).
+                    SI novum_dib != 0 TUNC
+                        DECLARA vetus_del SICUT NUMERUS VALENS WDIB_DELE(dibctx, dib).
+                        dib = novum_dib.
+                        render_w = cw.
+                        render_h = ch.
+                        DECLARA rp SICUT NUMERUS VALENS CBGRA_EX_REPONE(canvas, render_w, render_h, WDIB_PIXELS(dib)).
+                    FIN-SI.
+                FIN-SI.
+
                 DECLARA mouse_nunc SICUT NUMERUS VALENS WINAPP_CLAVIS(ctx, 1) & 32768.
                 SI mouse_nunc != 0 && mouse_prius == 0 TUNC
                     SI WINAPP_CURSOR_CAPE(ctx, point) != 0 && WINAPP_SCREEN_AD_CLIENT(ctx, hwnd, point) != 0 TUNC
@@ -196,9 +220,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 FIN-SI.
 
                 DECLARA pictum SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
-                SI NAT_STAT_DOCKED(s) != 0 TUNC
-                    pictum = NAT_STAT_UI_RENDE(canvas, s).
-                FIN-SI.
+                SI NAT_STAT_DOCKED(s) != 0 TUNC pictum = NAT_STAT_UI_RENDE(canvas, s). FIN-SI.
                 DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
             FIN-SI.
             DECLARA dorm SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 16).
