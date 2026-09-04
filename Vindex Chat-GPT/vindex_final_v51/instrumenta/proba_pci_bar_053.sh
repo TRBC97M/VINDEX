@@ -5,8 +5,9 @@
 #   I.   BAR memoriae et portuum recte distinguuntur;
 #   II.  adressae regionum verae sunt (collatio cum framebuffer firmware);
 #   III. mensurae regionum recte explorantur;
-#   IV.  BAR LXIV bitorum agnoscuntur ubi adsunt;
-#   V.   valores originales post explorationem restituuntur.
+#   IV.  BAR LXIV bitorum ambae partes tractantur;
+#   V.   valores et commandum originale post explorationem restituuntur;
+#   VI.  soli BAR a genere capitis permissi explorantur.
 #
 # Exitus 0 si omnia recta; aliter numerus gradus qui defecit.
 
@@ -69,23 +70,31 @@ nuntia "   RECTE: $NUM BAR lecti."
 
 # --- III. Genera distincta: memoria et portus ---
 nuntia 'III. Distinctio memoriae et portuum...'
-grep -qE ' M ' "$TEMPORARIUM/bar.txt" || defecit 'nullum BAR memoriae agnitum' 3
-grep -qE ' P ' "$TEMPORARIUM/bar.txt" || defecit 'nullum BAR portuum agnitum' 3
+grep -qE ' M(32|64) ' "$TEMPORARIUM/bar.txt" || defecit 'nullum BAR memoriae agnitum' 3
+grep -qE ' P32 ' "$TEMPORARIUM/bar.txt" || defecit 'nullum BAR portuum agnitum' 3
 nuntia '   RECTE: BAR memoriae et portuum ambo agniti.'
+
+# Omnis linea R terminari debet: BAR inferior/superior et commandum restituta.
+SI_NON_RESTITUTA="$(grep -cvE ' R$' "$TEMPORARIUM/bar.txt" || true)"
+[ "$SI_NON_RESTITUTA" -eq 0 ] || {
+    cat "$TEMPORARIUM/bar.txt" >&2
+    defecit "$SI_NON_RESTITUTA BAR post explorationem non restituta" 3
+}
+nuntia '   RECTE: omnes BAR et commanda PCI restituta.'
 
 # --- IV. Framebuffer apparatus graphici ---
 # QEMU VGA (1234:1111) framebuffer per BAR 0 exponit, ad 0x80000000,
 # mensura pluribus megabytis. Haec adressa cum ea quam firmware per
 # protocollum graphicum reddit congruere DEBET.
 nuntia 'IV. Regio framebuffer apparatus graphici...'
-LINEA_FB="$(grep -E '^1234:1111 B00 M ' "$TEMPORARIUM/bar.txt" | head -1 || true)"
+LINEA_FB="$(grep -E '^1234:1111 B00 M(32|64) ' "$TEMPORARIUM/bar.txt" | head -1 || true)"
 [ -n "$LINEA_FB" ] || {
     cat "$TEMPORARIUM/bar.txt" >&2
     defecit 'BAR 0 apparatus graphici non inventus' 4
 }
 ADR_FB="$(printf '%s\n' "$LINEA_FB" | awk '{print $4}')"
 MENS_FB="$(printf '%s\n' "$LINEA_FB" | awk '{print $5}')"
-[ "$ADR_FB" = "80000000" ] || defecit "adressa framebuffer inexpectata: $ADR_FB" 4
+[ "$ADR_FB" = "0000000080000000" ] || defecit "adressa framebuffer inexpectata: $ADR_FB" 4
 MENS_DEC="$((16#${MENS_FB}))"
 [ "$MENS_DEC" -ge 1048576 ] || defecit "mensura framebuffer nimis parva: $MENS_FB" 4
 nuntia "   RECTE: framebuffer ad 0x$ADR_FB, mensura 0x$MENS_FB ($((MENS_DEC/1048576)) MiB)."
@@ -93,7 +102,7 @@ nuntia "   RECTE: framebuffer ad 0x$ADR_FB, mensura 0x$MENS_FB ($((MENS_DEC/1048
 # --- V. Mensurae explorationis validae ---
 # Omnis mensura potentia duorum esse debet (regula PCI).
 nuntia 'V. Validitas mensurarum exploratarum...'
-while read -r _ _ _ _ mens; do
+while read -r _ _ _ _ mens _; do
     [ -n "$mens" ] || continue
     d="$((16#${mens}))"
     [ "$d" -gt 0 ] || continue
@@ -103,14 +112,21 @@ done <"$TEMPORARIUM/bar.txt"
 nuntia '   RECTE: omnes mensurae potentiae duorum sunt.'
 
 # --- VI. BAR LXIV bitorum in topologia moderna ---
-nuntia 'VI. BAR LXIV bitorum (q35 cum e1000e)...'
+nuntia 'VI. BAR LXIV bitorum (q35 cum virtio moderno)...'
 exsequere "$TEMPORARIUM/lxiv.log" -M q35 \
     -device pcie-root-port,id=rp0,bus=pcie.0,chassis=1 \
-    -device e1000e,bus=rp0
+    -device virtio-serial-pci,bus=rp0,disable-legacy=on
 strings "$TEMPORARIUM/lxiv.log" | grep -E '^[0-9A-F]{4}:[0-9A-F]{4} B' \
     >"$TEMPORARIUM/lxiv.txt" || true
 [ -s "$TEMPORARIUM/lxiv.txt" ] || defecit 'nullum BAR in topologia q35' 6
+grep -qE ' M64 ' "$TEMPORARIUM/lxiv.txt" || {
+    cat "$TEMPORARIUM/lxiv.txt" >&2
+    defecit 'nullum BAR LXIV bitorum in topologia moderna' 6
+}
+SI_NON_RESTITUTA64="$(grep -cvE ' R$' "$TEMPORARIUM/lxiv.txt" || true)"
+[ "$SI_NON_RESTITUTA64" -eq 0 ] || defecit 'BAR LXIV post explorationem non restitutum' 6
 nuntia "   RECTE: $(wc -l <"$TEMPORARIUM/lxiv.txt") BAR in topologia q35."
+nuntia '   RECTE: BAR LXIV bitorum inventum et integre restitutum.'
 
 nuntia ''
 nuntia '=== BAR ET REGIONES MMIO PROBATA ==='

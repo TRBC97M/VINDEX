@@ -55,6 +55,15 @@ FUNCTIO HEX32_SCRIBE REDDENS NUMERUS.
     REDDE 16.
 FIN-FUNCTIO.
 
+FUNCTIO HEX64_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA ig1 SICUT NUMERUS VALENS HEX32_SCRIBE(buf, positio, (valor / 4294967296) & 4294967295).
+    DECLARA ig2 SICUT NUMERUS VALENS HEX32_SCRIBE(buf, positio + 16, valor & 4294967295).
+    REDDE 32.
+FIN-FUNCTIO.
+
 FUNCTIO SCRIBE_CATENAM REDDENS NUMERUS.
     ACCIPIT conout SICUT NUMERUS.
     ACCIPIT catena SICUT NUMERUS.
@@ -79,12 +88,21 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         DECLARA app SICUT NUMERUS VALENS CONTENTUM(sedes + 8).
         DECLARA fn SICUT NUMERUS VALENS CONTENTUM(sedes + 16).
         DECLARA nbar SICUT NUMERUS VALENS PCI_BAR_NUMERUS(bus, app, fn).
+        DECLARA limen SICUT NUMERUS VALENS PCI_BAR_LIMES(bus, app, fn).
 
         SI nbar > 0 TUNC
             DECLARA b SICUT NUMERUS VALENS 0.
-            DUM b < 6 PERFICE
+            DUM b < limen PERFICE
                 DECLARA v SICUT NUMERUS VALENS PCI_BAR_LEGE(bus, app, fn, b).
-                SI v != 0 TUNC
+                DECLARA altum SICUT NUMERUS VALENS 0.
+                SI PCI_BAR_EST_LXIV(v) == 1 && b + 1 < limen TUNC altum = PCI_BAR_LEGE(bus, app, fn, b + 1). FIN-SI.
+                DECLARA commandum SICUT NUMERUS VALENS PCI_LEGE(bus, app, fn, 4) & 65535.
+                DECLARA mensura SICUT NUMERUS VALENS PCI_BAR_MENSURA(bus, app, fn, b).
+                DECLARA restitutum SICUT NUMERUS VALENS 1.
+                SI PCI_BAR_LEGE(bus, app, fn, b) != v TUNC restitutum = 0. FIN-SI.
+                SI PCI_BAR_EST_LXIV(v) == 1 && PCI_BAR_LEGE(bus, app, fn, b + 1) != altum TUNC restitutum = 0. FIN-SI.
+                SI (PCI_LEGE(bus, app, fn, 4) & 65535) != commandum TUNC restitutum = 0. FIN-SI.
+                SI mensura != 0 TUNC
                     DECLARA ig_v SICUT NUMERUS VALENS MEMORIA_VACUA(buf, 256).
                     DECLARA p SICUT NUMERUS VALENS 0.
                     // venditor:apparatus
@@ -107,20 +125,25 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         SCRIBE_OCTETUM_AB(buf + p, 54).
                         SCRIBE_OCTETUM_AB(buf + p + 2, 52).
                         p = p + 4.
+                    ALITER
+                        SCRIBE_OCTETUM_AB(buf + p, 51).
+                        SCRIBE_OCTETUM_AB(buf + p + 2, 50).
+                        p = p + 4.
                     FIN-SI.
                     SCRIBE_OCTETUM_AB(buf + p, 32). p = p + 2.
                     // adressa
-                    p = p + HEX32_SCRIBE(buf, p, PCI_BAR_ADRESSA(v)).
+                    p = p + HEX64_SCRIBE(buf, p, PCI_BAR_ADRESSA_PLENA(bus, app, fn, b)).
                     SCRIBE_OCTETUM_AB(buf + p, 32). p = p + 2.
                     // mensura
-                    p = p + HEX32_SCRIBE(buf, p, PCI_BAR_MENSURA(bus, app, fn, b)).
+                    p = p + HEX64_SCRIBE(buf, p, mensura).
+                    SCRIBE_OCTETUM_AB(buf + p, 32). p = p + 2.
+                    SI restitutum == 1 TUNC SCRIBE_OCTETUM_AB(buf + p, 82). ALITER SCRIBE_OCTETUM_AB(buf + p, 88). FIN-SI.
+                    p = p + 2.
                     SCRIBE_OCTETUM_AB(buf + p, 13).
                     SCRIBE_OCTETUM_AB(buf + p + 2, 10).
                     DECLARA ig_s SICUT NUMERUS VALENS SCRIBE_CATENAM(co, buf).
-                    SI PCI_BAR_EST_LXIV(v) == 1 TUNC
-                        b = b + 1.
-                    FIN-SI.
                 FIN-SI.
+                SI PCI_BAR_EST_LXIV(v) == 1 TUNC b = b + 1. FIN-SI.
                 b = b + 1.
             FIN-DUM.
         FIN-SI.
