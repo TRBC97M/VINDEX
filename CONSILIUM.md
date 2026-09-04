@@ -99,7 +99,9 @@ Historia servatur, sed `main`, `ARCHITECTURA.md` et haec tabula auctoritatem pra
 
 Iam canonica sunt collectiones dynamicae, series contiguae, segmenta mutuata, UTF-8 strictum, scalaria Unicode, reditus `TEXTUS`, `SUBTEXTUS_SCALARUM` et structurae internae byte-addressatae.
 
-**Debitum apertum #134:** `EXTRAHE_ET_SIGNA` tamponem historicum identificatorum XXXII octetorum habet. Graphica VIII/IX nomen publicum tutum adhibet; correctio compilatoris separatim fieri debet, cum regressione >XXXII litterarum, puncto fixo, ELF, Win64 et UEFI. Renderer visualis ad hoc debitum miscendum non est nisi vere impeditur.
+Robustitas parseris etiam canonica est pro defectibus P9 nuper repertis: #180 claves clausurae orphanas reicit, #181 campum generalem propagationis erroris et parenthesim non clausam instituit, atque #187 `FUNCTIO PRINCIPALIS` duplicatam et `FIN-FUNCTIO` absentem reicit. Diagnostica originem veram inter fontem principalem et `IMPORTA` servant.
+
+**Debitum historicum #134 non iam reproducitur.** Probatio die IV mensis Septembris MMXXVI contra `main` post #187 identificatores longitudinum XXXII, C, CCL, CCC, D et MM litterarum recte compilavit atque executa est. Duo nomina circiter CDV litterarum, quorum primae CD litterae communes erant, distincta manserunt (`11`, `22`). #168 ideo sine fusione clausa est: patch vetus et eius limites mensurati statui compilatoris hodierno non iam respondent.
 
 Candidata futura: typi maturiores, structurae/uniones/enumerationes, functiones ut valores, moduli, ABI explicitius, ELF multi-`PT_LOAD`, graphemata et normalizatio Unicode.
 
@@ -123,11 +125,13 @@ Destinatio continet compilatorem, linker, bibliothecam standardem, debugger, pro
 
 ## P12 — Infrastructura gubernatorum
 
-**Status:** `RESERVATUM CLAUDE`; incrementa I et II in `main`; incrementum III in #122 **synchronizatum et recertificatum**, canonizationem exspectans.
+**Status:** incrementa I–IV `PERFECTUM` in `main`; pila V `PROBATA / CANONIZANDA` in ramis empilatis.
 
-ChatGPT hoc opus non duplicat dum reservatio valet. Postea directio probabilis: BAR/MMIO → interruptiones → ACPI/USB/HID.
+P12-III (pontes PCI, #122) et P12-IV (BAR et regiones MMIO, #156) sunt canonica. Super ea, P12-V1–V4 (#161, #164, #166, #167) MMIO typatum, paginas DMA, interruptiones MSI et transportum VirtIO PCI modernum probant; hae PR adhuc empilatae sunt et separatim canonizandae sunt, non simul temere mergendae.
 
-### P12-III — pontes PCI (in #122)
+Directio post canonizationem pilae V: rector GPU/retis super contractus P12, deinde ACPI/USB/HID ubi opus est.
+
+### P12-III — pontes PCI (canonicum, #122)
 
 Enumeratio pontes PCI-ad-PCI agnoscit (classis 06, subclassis 04) et bus secundarios percurrit. Registrum vere dynamicum: capacitas duplicatur cum impletur, nulla limitatio artificialis. Custodia contra circulos duplex: tabula bus visitatorum (CCLVI octeta — ipsa architectura PCI) et reiectio pontium ad bus suum ipsum vel ad bus zero mittentium. Profunditas vera arboris servatur (cauda paria `(bus, profunditas)` continet), non index codae.
 
@@ -142,7 +146,7 @@ Probatio `instrumenta/proba_pci_pontes_053.sh` (septem gradus, in CI), topologia
 
 Topologia per configurationem QEMU construitur (q35, `x3130-upstream`, `xio3130-downstream`): nihil in runtime fingitur.
 
-### P12-IV — BAR et regiones MMIO
+### P12-IV — BAR et regiones MMIO (canonicum, #156)
 
 Sex BAR (registra 16..36) leguntur; genus (memoria vel portus), adressa, mensura et praefetchabilitas agnoscuntur. BAR LXIV bitorum tractantur (duos indices occupant). Mensura per explorationem canonicam invenitur (scriptio omnium unitatum, relectio, inversio), valore originali semper restituto.
 
