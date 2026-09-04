@@ -1,7 +1,7 @@
 // ATMOS NATIVUM — status ludicus, navigatio continua et cargo initialis.
 // Resources oxygen/energia/hull in decimis centesimae servantur: 1000 = 100.0%.
 //
-// Descriptor CCXXXII octeta:
+// Descriptor CCXL octeta:
 // +0 O2x10, +8 energiax10, +16 hullx10, +24 profunditas m, +32 credita,
 // +40 player x, +48 player y, +56 semen mundi, +64 alive, +72 paused,
 // +80 traveling, +88 start x, +96 start y, +104 end x, +112 end y,
@@ -9,7 +9,8 @@
 // +144 accumulator drain frame, +152 distantia tota, +160 sonar range m,
 // +168 nodus mineralis x, +176 nodus mineralis y, +184 radius nodi,
 // +192 nodus selectus, +200 extractio activa, +208 accumulator extractionis,
-// +216 cargo mineralis, +224 copia residua depositi.
+// +216 cargo mineralis, +224 copia residua depositi,
+// +232 tab stationis (1 repair, 2 market, 3 fabricate, 4 refit, 5 contracts, 6 reputation).
 
 FUNCTIO NAT_STATUS_INIT REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
@@ -47,12 +48,13 @@ FUNCTIO NAT_STATUS_INIT REDDENS NUMERUS.
     CONTENTUM(s + 208) = 0.
     CONTENTUM(s + 216) = 0.
     CONTENTUM(s + 224) = 60.
+    CONTENTUM(s + 232) = 1.
     REDDE 1.
 FIN-FUNCTIO.
 
 FUNCTIO NAT_STATUS_CREA REDDENS NUMERUS.
     ACCIPIT semen SICUT NUMERUS.
-    DECLARA s SICUT NUMERUS VALENS RESERVA_OCTETA(232).
+    DECLARA s SICUT NUMERUS VALENS RESERVA_OCTETA(240).
     SI s <= 0 TUNC REDDE 0. FIN-SI.
     SI NAT_STATUS_INIT(s, semen) == 0 TUNC REDDE 0. FIN-SI.
     REDDE s.
