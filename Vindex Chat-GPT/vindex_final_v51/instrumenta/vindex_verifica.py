@@ -280,7 +280,7 @@ class Verifier:
                     else:
                         stack.pop()
             elif not stack:
-                self.error(unit.path, number, location.column, "praeceptum in gradu supremo inexspectatum")
+                self.error(unit.path, number, location.column, "clavis ignota ad gradum supremum")
 
             opener_without_period = (
                 stripped == "ALITER"

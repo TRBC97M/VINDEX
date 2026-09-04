@@ -69,17 +69,59 @@ class Diagnostica053(unittest.TestCase):
             "ERRATUM: functio vocata non inventa est",
         )
 
-    def test_principalis_deest(self) -> None:
+    def test_clavis_ignota_gradus_supremi(self) -> None:
         fons = CASUS / "erratum_principalis.vindex"
         status, textus = self.compila(fons)
-        self.assertNotEqual(0, status)
+        self.assertEqual(65, status)
         self.exige_structuram(
             textus,
             str(fons),
             1,
             1,
-            "ERRATUM: FUNCTIO PRINCIPALIS deest",
+            "ERRATUM: clavis ignota ad gradum supremum est",
         )
+
+    def test_structura_ignota_ante_principalem(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="vindex-p0-top-ante-") as temporarium:
+            fons = Path(temporarium) / "structura_ignota.vindex"
+            fons.write_text(
+                "STRUCTURA P\n"
+                "    x SICUT NUMERUS.\n"
+                "FIN-STRUCTURA.\n\n"
+                "FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n"
+                "    REDDE 0.\n"
+                "FIN-FUNCTIO.\n",
+                encoding="utf-8",
+            )
+            status, textus = self.compila(fons)
+            self.assertEqual(65, status)
+            self.exige_structuram(
+                textus,
+                str(fons),
+                1,
+                1,
+                "ERRATUM: clavis ignota ad gradum supremum est",
+            )
+
+    def test_clavis_ignota_post_principalem(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="vindex-p0-top-post-") as temporarium:
+            fons = Path(temporarium) / "post_principalem.vindex"
+            fons.write_text(
+                "FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n"
+                "    REDDE 0.\n"
+                "FIN-FUNCTIO.\n"
+                "STRUCTURA P.\n",
+                encoding="utf-8",
+            )
+            status, textus = self.compila(fons)
+            self.assertEqual(65, status)
+            self.exige_structuram(
+                textus,
+                str(fons),
+                4,
+                1,
+                "ERRATUM: clavis ignota ad gradum supremum est",
+            )
 
     def test_error_importatus_ad_fontem_verum_refertur(self) -> None:
         fons = CASUS / "erratum_importatum.vindex"
