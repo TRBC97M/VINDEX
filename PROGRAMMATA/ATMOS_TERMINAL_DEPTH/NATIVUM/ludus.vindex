@@ -106,9 +106,7 @@ FUNCTIO NAT_SMOKE REDDENS NUMERUS.
     SI cw <= 0 || ch <= 0 TUNC REDDE 46. FIN-SI.
     DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
     SI praes == 0 TUNC REDDE 47. FIN-SI.
-    DECLARA sx SICUT NUMERUS VALENS 10 * cw / 960.
-    DECLARA sy SICUT NUMERUS VALENS 10 * ch / 720.
-    DECLARA visus SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, sx, sy).
+    DECLARA visus SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, 0, 0).
     SI visus != 1778955 TUNC REDDE 48. FIN-SI.
 
     DECLARA stationis SICUT NUMERUS VALENS NAT_SMOKE_STATIO(canvas).
@@ -177,9 +175,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 cw_smoke = NAT_I32_LEGE(rect, 8) - NAT_I32_LEGE(rect, 0).
                 ch_smoke = NAT_I32_LEGE(rect, 12) - NAT_I32_LEGE(rect, 4).
             FIN-SI.
-            DECLARA sx_smoke SICUT NUMERUS VALENS 10 * cw_smoke / 960.
-            DECLARA sy_smoke SICUT NUMERUS VALENS 10 * ch_smoke / 720.
-            DECLARA visus_smoke SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, sx_smoke, sy_smoke).
+            DECLARA visus_smoke SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, 0, 0).
             PROCLAMA "RECTE: ATMOS NATIVUM GRAPHICA SCALABILIS".
             PROCLAMA CONTENTUM(s + 40).
             PROCLAMA CONTENTUM(s + 48).
@@ -254,7 +250,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 FIN-SI.
                 mouse_prius = mouse_nunc.
 
-                // Simulatio manet ad cadence principali (~60 Hz).
                 DECLARA mov SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(s).
                 DECLARA docked_nunc SICUT NUMERUS VALENS NAT_STAT_DOCKED(s).
                 SI docked_nunc == 0 TUNC
@@ -262,7 +257,6 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     DECLARA drain SICUT NUMERUS VALENS NAT_DRAIN_GRADUS(s).
                 FIN-SI.
 
-                // Raster/presentatio tantum alternis ticks (~30 Hz): gameplay non tardatur a graphics.
                 render_phase = render_phase + 1.
                 SI render_phase >= 2 TUNC render_phase = 0. FIN-SI.
                 SI render_phase == 0 TUNC
