@@ -1,21 +1,99 @@
-// VINDEX — fons vectorialis terminalis.
-// Glyphi non sunt bitmap: singulae litterae definiuntur segmentis geometricis
-// et rasterizantur per canvas_bgra_fx cum margine molli.
-// Pro ATMOS nascitur, sed bibliotheca generalis VINDEX manet.
+// VINDEX — fons vectorialis terminalis, generatio II.
+// Alphabetum e segmentis geometricis construitur; nullus bitmap glyphorum.
+// Omnes functiones servant limitem VIII argumentorum compilatoris hodierni.
 
-FUNCTIO FVT_SEG REDDENS NUMERUS.
+FUNCTIO FVT_GLYPH REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    SI c >= 97 && c <= 122 TUNC c = c - 32. FIN-SI.
+    SI c == 32 TUNC REDDE 0. FIN-SI.
+    SI c == 65 TUNC REDDE 63. FIN-SI.
+    SI c == 66 TUNC REDDE 127. FIN-SI.
+    SI c == 67 TUNC REDDE 83. FIN-SI.
+    SI c == 68 TUNC REDDE 119. FIN-SI.
+    SI c == 69 TUNC REDDE 91. FIN-SI.
+    SI c == 70 TUNC REDDE 27. FIN-SI.
+    SI c == 71 TUNC REDDE 123. FIN-SI.
+    SI c == 72 TUNC REDDE 62. FIN-SI.
+    SI c == 73 TUNC REDDE 6209. FIN-SI.
+    SI c == 74 TUNC REDDE 116. FIN-SI.
+    SI c == 75 TUNC REDDE 1298. FIN-SI.
+    SI c == 76 TUNC REDDE 82. FIN-SI.
+    SI c == 77 TUNC REDDE 438. FIN-SI.
+    SI c == 78 TUNC REDDE 65590. FIN-SI.
+    SI c == 79 TUNC REDDE 119. FIN-SI.
+    SI c == 80 TUNC REDDE 31. FIN-SI.
+    SI c == 81 TUNC REDDE 1143. FIN-SI.
+    SI c == 82 TUNC REDDE 1055. FIN-SI.
+    SI c == 83 TUNC REDDE 107. FIN-SI.
+    SI c == 84 TUNC REDDE 6145. FIN-SI.
+    SI c == 85 TUNC REDDE 118. FIN-SI.
+    SI c == 86 TUNC REDDE 393216. FIN-SI.
+    SI c == 87 TUNC REDDE 1590. FIN-SI.
+    SI c == 88 TUNC REDDE 98304. FIN-SI.
+    SI c == 89 TUNC REDDE 4480. FIN-SI.
+    SI c == 90 TUNC REDDE 32833. FIN-SI.
+    SI c == 48 TUNC REDDE 119. FIN-SI.
+    SI c == 49 TUNC REDDE 36. FIN-SI.
+    SI c == 50 TUNC REDDE 93. FIN-SI.
+    SI c == 51 TUNC REDDE 109. FIN-SI.
+    SI c == 52 TUNC REDDE 46. FIN-SI.
+    SI c == 53 TUNC REDDE 107. FIN-SI.
+    SI c == 54 TUNC REDDE 123. FIN-SI.
+    SI c == 55 TUNC REDDE 37. FIN-SI.
+    SI c == 56 TUNC REDDE 127. FIN-SI.
+    SI c == 57 TUNC REDDE 111. FIN-SI.
+    SI c == 45 TUNC REDDE 8. FIN-SI.
+    SI c == 95 TUNC REDDE 64. FIN-SI.
+    SI c == 47 TUNC REDDE 32768. FIN-SI.
+    SI c == 92 TUNC REDDE 65536. FIN-SI.
+    SI c == 43 TUNC REDDE 6152. FIN-SI.
+    SI c == 61 TUNC REDDE 24576. FIN-SI.
+    SI c == 58 TUNC REDDE 1048576. FIN-SI.
+    SI c == 46 TUNC REDDE 524288. FIN-SI.
+    SI c == 33 TUNC REDDE 526336. FIN-SI.
+    SI c == 37 TUNC REDDE 360448. FIN-SI.
+    SI c == 40 TUNC REDDE 131584. FIN-SI.
+    SI c == 41 TUNC REDDE 263168. FIN-SI.
+    SI c == 91 TUNC REDDE 81. FIN-SI.
+    SI c == 93 TUNC REDDE 100. FIN-SI.
+    REDDE 98304.
+FIN-FUNCTIO.
+
+FUNCTIO FVT_SEGMENTUM REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS.
     ACCIPIT y SICUT NUMERUS.
     ACCIPIT g SICUT NUMERUS.
-    ACCIPIT cr SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
     ACCIPIT alpha SICUT NUMERUS.
-    ACCIPIT x0 SICUT NUMERUS.
-    ACCIPIT y0 SICUT NUMERUS.
-    ACCIPIT x1 SICUT NUMERUS.
-    ACCIPIT y1 SICUT NUMERUS.
-    REDDE CBGRA_LINEA_MOLLIS(c, x + x0 * g, y + y0 * g, x + x1 * g, y + y1 * g, cr, color, alpha).
+    ACCIPIT seg SICUT NUMERUS.
+    DECLARA cr SICUT NUMERUS VALENS g / 2.
+    SI cr < 1 TUNC cr = 1. FIN-SI.
+    SI seg == 0 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y,x+5*g,y,cr,color,alpha). FIN-SI.
+    SI seg == 1 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y+g,x,y+3*g,cr,color,alpha). FIN-SI.
+    SI seg == 2 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y+g,x+6*g,y+3*g,cr,color,alpha). FIN-SI.
+    SI seg == 3 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+4*g,x+5*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 4 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y+5*g,x,y+7*g,cr,color,alpha). FIN-SI.
+    SI seg == 5 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y+5*g,x+6*g,y+7*g,cr,color,alpha). FIN-SI.
+    SI seg == 6 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+8*g,x+5*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 7 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y,x+3*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 8 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y,x+3*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 9 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+4*g,x,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 10 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+4*g,x+6*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 11 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y,x+3*g,y+4*g,cr,color,alpha). FIN-SI.
+    SI seg == 12 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+4*g,x+3*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 13 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+2*g,x+5*g,y+2*g,cr,color,alpha). FIN-SI.
+    SI seg == 14 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+g,y+6*g,x+5*g,y+6*g,cr,color,alpha). FIN-SI.
+    SI seg == 15 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y+8*g,x+6*g,y,cr,color,alpha). FIN-SI.
+    SI seg == 16 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y,x+6*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 17 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x,y,x+3*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 18 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+6*g,y,x+3*g,y+8*g,cr,color,alpha). FIN-SI.
+    SI seg == 19 TUNC REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+8*g,x+3*g,y+8*g,cr+1,color,alpha). FIN-SI.
+    SI seg == 20 TUNC
+        DECLARA q SICUT NUMERUS VALENS CBGRA_LINEA_MOLLIS(c,x+3*g,y+2*g,x+3*g,y+2*g,cr+1,color,alpha).
+        REDDE CBGRA_LINEA_MOLLIS(c,x+3*g,y+6*g,x+3*g,y+6*g,cr+1,color,alpha).
+    FIN-SI.
+    REDDE 1.
 FIN-FUNCTIO.
 
 FUNCTIO FVT_CHAR_ALPHA REDDENS NUMERUS.
@@ -24,123 +102,18 @@ FUNCTIO FVT_CHAR_ALPHA REDDENS NUMERUS.
     ACCIPIT y SICUT NUMERUS.
     ACCIPIT codex SICUT NUMERUS.
     ACCIPIT g SICUT NUMERUS.
-    ACCIPIT cr SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
     ACCIPIT alpha SICUT NUMERUS.
     SI c <= 0 || g <= 0 TUNC REDDE 0. FIN-SI.
-    SI codex >= 97 && codex <= 122 TUNC codex = codex - 32. FIN-SI.
-    SI codex == 32 TUNC REDDE 1. FIN-SI.
-    SI cr < 1 TUNC cr = 1. FIN-SI.
-    DECLARA q SICUT NUMERUS VALENS 1.
-
-    SI codex == 65 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,3,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,0,6,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,5,5,5). REDDE 1.
-    FIN-SI.
-    SI codex == 66 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,4,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,4,0,6,2). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,2,4,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,4,4,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,4,4,6,6). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,6,4,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,4,8). REDDE 1.
-    FIN-SI.
-    SI codex == 67 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,6,1,5,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,1,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,0,0,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,1,0,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,7,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,5,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,8,6,7). REDDE 1.
-    FIN-SI.
-    SI codex == 68 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,4,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,4,0,6,2). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,2,6,6). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,6,4,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,4,8,0,8). REDDE 1.
-    FIN-SI.
-    SI codex == 69 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,4,5,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,8). REDDE 1.
-    FIN-SI.
-    SI codex == 70 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,4,5,4). REDDE 1.
-    FIN-SI.
-    SI codex == 71 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,6,1,5,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,1,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,0,0,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,1,0,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,7,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,6,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,8,6,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,4,3,4). REDDE 1.
-    FIN-SI.
-    SI codex == 72 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,0,6,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,4,6,4). REDDE 1.
-    FIN-SI.
-    SI codex == 73 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,0,3,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,8). REDDE 1.
-    FIN-SI.
-    SI codex == 74 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,5,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,7,4,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,4,8,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,0,7). REDDE 1.
-    FIN-SI.
-    SI codex == 75 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,0,0,5). q = FVT_SEG(c,x,y,g,cr,color,alpha,2,3,6,8). REDDE 1.
-    FIN-SI.
-    SI codex == 76 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,8). REDDE 1.
-    FIN-SI.
-    SI codex == 77 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,0,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,3,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,4,6,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,0,6,8). REDDE 1.
-    FIN-SI.
-    SI codex == 78 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,0,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,8,6,0). REDDE 1.
-    FIN-SI.
-    SI codex == 79 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,1,0,5,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,7,5,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,8,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,0,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,7,0,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,1,1,0). REDDE 1.
-    FIN-SI.
-    SI codex == 80 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,5,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,3). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,3,5,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,4,0,4). REDDE 1.
-    FIN-SI.
-    SI codex == 81 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,1,0,5,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,7,5,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,8,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,0,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,7,0,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,1,1,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,4,6,7,9). REDDE 1.
-    FIN-SI.
-    SI codex == 82 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,5,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,3). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,3,5,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,4,0,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,4,6,8). REDDE 1.
-    FIN-SI.
-    SI codex == 83 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,6,1,5,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,0,1,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,0,0,1). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,1,0,3). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,3,1,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,4,5,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,4,6,5). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,5,6,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,7,5,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,8,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,0,7). REDDE 1.
-    FIN-SI.
-    SI codex == 84 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,0,3,8). REDDE 1.
-    FIN-SI.
-    SI codex == 85 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,7,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,5,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,8,6,7). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,7,6,0). REDDE 1.
-    FIN-SI.
-    SI codex == 86 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,3,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,8,6,0). REDDE 1.
-    FIN-SI.
-    SI codex == 87 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,1,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,1,8,3,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,4,5,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,5,8,6,0). REDDE 1.
-    FIN-SI.
-    SI codex == 88 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,0,0,8). REDDE 1.
-    FIN-SI.
-    SI codex == 89 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,3,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,0,3,4). q = FVT_SEG(c,x,y,g,cr,color,alpha,3,4,3,8). REDDE 1.
-    FIN-SI.
-    SI codex == 90 TUNC
-        q = FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q = FVT_SEG(c,x,y,g,cr,color,alpha,6,0,0,8). q = FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,8). REDDE 1.
-    FIN-SI.
-
-    SI codex == 48 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,1,0,5,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,7,5,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,8,1,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,8,0,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,7,0,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,1,1,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,7,5,1). REDDE 1. FIN-SI.
-    SI codex == 49 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,2,1,3,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,0,3,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,8,5,8). REDDE 1. FIN-SI.
-    SI codex == 50 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,1,1,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,0,5,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,3). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,3,0,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,8). REDDE 1. FIN-SI.
-    SI codex == 51 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,0,3,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,4,6,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,4,6,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,7,5,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,8,0,8). REDDE 1. FIN-SI.
-    SI codex == 52 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,4,6,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,0,6,8). REDDE 1. FIN-SI.
-    SI codex == 53 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,6,0,0,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,0,0,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,4,5,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,4,6,5). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,5,6,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,7,5,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,8,0,8). REDDE 1. FIN-SI.
-    SI codex == 54 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,6,0,1,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,0,0,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,1,0,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,4,5,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,4,6,5). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,5,6,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,7,5,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,8,1,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,8,0,7). REDDE 1. FIN-SI.
-    SI codex == 55 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,0,6,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,0,2,8). REDDE 1. FIN-SI.
-    SI codex == 56 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,1,0,5,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,3). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,3,5,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,4,1,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,4,0,3). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,3,0,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,1,1,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,4,0,5). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,5,0,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,7,1,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,8,5,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,8,6,7). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,7,6,5). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,5,5,4). REDDE 1. FIN-SI.
-    SI codex == 57 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,1,0,5,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,1,6,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,1,1,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,1,0,3). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,3,1,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,4,6,4). REDDE 1. FIN-SI.
-
-    SI codex == 45 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,1,4,5,4). REDDE 1. FIN-SI.
-    SI codex == 95 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,8). REDDE 1. FIN-SI.
-    SI codex == 47 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,0). REDDE 1. FIN-SI.
-    SI codex == 43 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,1,4,5,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,2,3,6). REDDE 1. FIN-SI.
-    SI codex == 61 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,1,3,5,3). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,5,5,5). REDDE 1. FIN-SI.
-    SI codex == 58 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,3,2,3,2). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,6,3,6). REDDE 1. FIN-SI.
-    SI codex == 46 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,3,8,3,8). REDDE 1. FIN-SI.
-    SI codex == 44 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,3,7,2,9). REDDE 1. FIN-SI.
-    SI codex == 33 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,3,0,3,5). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,8,3,8). REDDE 1. FIN-SI.
-    SI codex == 63 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,1,1,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,0,5,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,0,6,1). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,1,3,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,4,3,5). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,8,3,8). REDDE 1. FIN-SI.
-    SI codex == 37 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,0,8,6,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,1,1,2). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,6,5,7). REDDE 1. FIN-SI.
-    SI codex == 40 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,4,0,2,2). q=FVT_SEG(c,x,y,g,cr,color,alpha,2,2,2,6). q=FVT_SEG(c,x,y,g,cr,color,alpha,2,6,4,8). REDDE 1. FIN-SI.
-    SI codex == 41 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,2,0,4,2). q=FVT_SEG(c,x,y,g,cr,color,alpha,4,2,4,6). q=FVT_SEG(c,x,y,g,cr,color,alpha,4,6,2,8). REDDE 1. FIN-SI.
-    SI codex == 91 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,4,0,1,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,0,1,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,1,8,4,8). REDDE 1. FIN-SI.
-    SI codex == 93 TUNC q=FVT_SEG(c,x,y,g,cr,color,alpha,2,0,5,0). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,0,5,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,5,8,2,8). REDDE 1. FIN-SI.
-
-    // Caractere inconnu: losange discret plutot qu'un bloc bitmap.
-    q=FVT_SEG(c,x,y,g,cr,color,alpha,3,0,6,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,6,4,3,8). q=FVT_SEG(c,x,y,g,cr,color,alpha,3,8,0,4). q=FVT_SEG(c,x,y,g,cr,color,alpha,0,4,3,0).
+    DECLARA mask SICUT NUMERUS VALENS FVT_GLYPH(codex).
+    SI mask == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA seg SICUT NUMERUS VALENS 0.
+    DUM seg <= 20 PERFICE
+        SI ((mask >> seg) & 1) != 0 TUNC
+            DECLARA q SICUT NUMERUS VALENS FVT_SEGMENTUM(c,x,y,g,color,alpha,seg).
+        FIN-SI.
+        seg = seg + 1.
+    FIN-DUM.
     REDDE 1.
 FIN-FUNCTIO.
 
@@ -151,9 +124,7 @@ FUNCTIO FVT_CHAR REDDENS NUMERUS.
     ACCIPIT codex SICUT NUMERUS.
     ACCIPIT g SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
-    DECLARA cr SICUT NUMERUS VALENS g / 2.
-    SI cr < 1 TUNC cr = 1. FIN-SI.
-    REDDE FVT_CHAR_ALPHA(c,x,y,codex,g,cr,color,245).
+    REDDE FVT_CHAR_ALPHA(c,x,y,codex,g,color,245).
 FIN-FUNCTIO.
 
 FUNCTIO FVT_TEXTUS REDDENS NUMERUS.
@@ -169,7 +140,7 @@ FUNCTIO FVT_TEXTUS REDDENS NUMERUS.
     DECLARA i SICUT NUMERUS VALENS 0.
     DUM i < n PERFICE
         DECLARA codex SICUT NUMERUS VALENS OCTETUS_AB(basis + i).
-        DECLARA q SICUT NUMERUS VALENS FVT_CHAR(c, x + i * 8 * g, y, codex, g, color).
+        DECLARA q SICUT NUMERUS VALENS FVT_CHAR(c,x+i*8*g,y,codex,g,color).
         i = i + 1.
     FIN-DUM.
     REDDE 1.
@@ -189,11 +160,11 @@ FUNCTIO FVT_TEXTUS_GLOW REDDENS NUMERUS.
     DUM i < n PERFICE
         DECLARA codex SICUT NUMERUS VALENS OCTETUS_AB(basis + i).
         DECLARA gx SICUT NUMERUS VALENS x + i * 8 * g.
-        DECLARA cr SICUT NUMERUS VALENS g + 3.
-        DECLARA q SICUT NUMERUS VALENS FVT_CHAR_ALPHA(c,gx,y,codex,g,cr,color,16).
-        cr = g + 1.
-        q = FVT_CHAR_ALPHA(c,gx,y,codex,g,cr,color,40).
-        q = FVT_CHAR(c,gx,y,codex,g,color).
+        DECLARA q SICUT NUMERUS VALENS FVT_CHAR_ALPHA(c,gx-g,y,codex,g,color,14).
+        q = FVT_CHAR_ALPHA(c,gx+g,y,codex,g,color,14).
+        q = FVT_CHAR_ALPHA(c,gx,y-g,codex,g,color,14).
+        q = FVT_CHAR_ALPHA(c,gx,y+g,codex,g,color,14).
+        q = FVT_CHAR_ALPHA(c,gx,y,codex,g,color,245).
         i = i + 1.
     FIN-DUM.
     REDDE 1.
