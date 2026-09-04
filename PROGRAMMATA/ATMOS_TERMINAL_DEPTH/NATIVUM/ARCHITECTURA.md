@@ -19,13 +19,13 @@ Contractus fundamentales observati:
 - nodus resource est zona spatialis: APPROACH → ingressus in zonam → extractio continua;
 - contactus, stationes et bases sunt entia in coordinatis mundi;
 - mundus sistitur dum menu/overlay qui simulationem suspendit apertus est;
-- resource drain, simulation mundi et rendering cadentias separatas habent.
+- resource drain, simulatio mundi et rendering cadentias separatas habent.
 
 ## III. Renderer
 
 ### Una compositio
 
-Omnia elementa visualia fiunt in superficie BGRA VINDEX:
+Omnia elementa visualia fiunt in una superficie BGRA cuius memoria est **DIB Section Win32**, sed cuius pixela directe a codice VINDEX scribuntur:
 
 - background;
 - sonar;
@@ -36,9 +36,13 @@ Omnia elementa visualia fiunt in superficie BGRA VINDEX:
 - menus/overlays;
 - cursor/selectiones ludicas si necessarium.
 
-Post compositionem fit **una** praesentatio `StretchDIBits` ad client rect actualem.
+Canvas VINDEX descriptor externum super bits DIB constituit. Post compositionem fit **una** praesentatio bitmap ad client rect actualem.
 
-Nulla API GDI textus directe in fenestra scribit. HDC est solum destinatio finalis praesentandi.
+Nulla API GDI textus directe in fenestra scribit. `TextOutA` vetitum est in NATIVUM. GDI/Win32 solum bitmap finalem fenestrae praesentant.
+
+### Verificatio pixelis
+
+Probatio Windows non iam sufficit si functio praesentandi numerum linearum reddit. Smoke DIB pixelum e fenestra reali post praesentatiionem legit et colorem determinatum ex compositore VINDEX exspectat. Sic superficies alba/vacua non potest pro successu haberi tantum quia vocatio GDI rediit.
 
 ### Resize
 
@@ -50,7 +54,19 @@ Fenestra vera classe propria Win32 utitur (`RegisterClassExA`, `DefWindowProcA`,
 
 Windows administrat non-client area: move, resize, minimize, maximize et close. Ludus pumpam nuntiorum exercet et exit si fenestra destructa est.
 
-## V. Tempus et simulation
+### Exsecutabile GUI
+
+NATIVUM compilatur targeto VINDEX `gui`, non targeto console `pe`.
+
+Contractus PE:
+
+- `pe` → Subsystem 3 / Windows CUI;
+- `gui` → Subsystem 2 / Windows GUI;
+- `uefi` → Subsystem 10 / EFI application.
+
+`gui` et `pe` eundem runtime Win64 habent: allocator `VirtualAlloc`, prologum ABI Microsoft x64 et terminationem `ExitProcess`. Solum subsystema Windows differunt. Ergo ATMOS a Windows ut applicatio graphicalis ordinaria incipit et nullam fenestram CMD creat.
+
+## V. Tempus et simulatio
 
 Loop visualis et simulationis distinguuntur. Cadentiae primae:
 
@@ -69,7 +85,8 @@ CI debet probare:
 2. nulla importatio ad HTML/JS/C/C++/C#/Rust/Python/ASM;
 3. nulla importatio ad gameplay POC historicum;
 4. compilator auto-hospes VINDEX NATIVUM compilare posse;
-5. PE nullum CRT/.NET/runtime alienum importare;
-6. executabile idem sub Windows vero currere.
+5. productum esse PE **Windows GUI**;
+6. PE nullum CRT/.NET/runtime alienum importare;
+7. executabile idem sub Windows vero currere.
 
 YAML, shell et PowerShell CI instrumenta sunt, non runtime ludi, et in artefacto usuario non includuntur.
