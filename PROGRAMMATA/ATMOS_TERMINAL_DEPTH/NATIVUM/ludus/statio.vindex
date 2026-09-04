@@ -1,6 +1,7 @@
-// ATMOS NATIVUM — station, docking et premier marche mineral.
+// ATMOS NATIVUM — station, docking, mercatus et servitia navis.
 // Contractus HTML: statio est entitas mundi; clic -> course; intra radium -> docking.
-// Prima economia NATIVUM: noduli ferrosi venduntur XII credita per unitatem.
+// Economia NATIVUM: noduli ferrosi venduntur XII credita per unitatem.
+// Servitia docking: oxygenium X CR, energia VIII CR, hull XXV CR.
 
 FUNCTIO NAT_STAT_X REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
@@ -40,7 +41,6 @@ FUNCTIO NAT_STAT_DOCKED REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Verum si finis cursus activi intra zonam docking stationis iacet.
 FUNCTIO NAT_STAT_CURSUS_ACTIVUS REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI s <= 0 || CONTENTUM(s + 80) == 0 TUNC REDDE 0. FIN-SI.
@@ -49,7 +49,6 @@ FUNCTIO NAT_STAT_CURSUS_ACTIVUS REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Approche stationis: destination paulo intra docking radius.
 FUNCTIO NAT_STAT_CURSUS REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI s <= 0 || CONTENTUM(s + 64) == 0 || CONTENTUM(s + 72) != 0 TUNC REDDE 0. FIN-SI.
@@ -85,14 +84,50 @@ FUNCTIO NAT_STAT_CLIC REDDENS NUMERUS.
     REDDE NAT_STAT_CURSUS(s).
 FIN-FUNCTIO.
 
-// 0 non docked; 1 docked sine venditione; 2 cargo venditus.
+// Servitium fit tantum si valor infra 99% est, ne stationis drain lentus
+// idem pretium iterum statim imponat. Hull reparatur quotiens laesus est.
+// Reditus: numerus servitiorum factorum (0..3).
+FUNCTIO NAT_STAT_SERVITIA REDDENS NUMERUS.
+    ACCIPIT s SICUT NUMERUS.
+    SI NAT_STAT_DOCKED(s) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS 0.
+
+    SI CONTENTUM(s + 0) < 990 && CONTENTUM(s + 32) >= 10 TUNC
+        CONTENTUM(s + 32) = CONTENTUM(s + 32) - 10.
+        CONTENTUM(s + 0) = 1000.
+        n = n + 1.
+    FIN-SI.
+
+    SI CONTENTUM(s + 8) < 990 && CONTENTUM(s + 32) >= 8 TUNC
+        CONTENTUM(s + 32) = CONTENTUM(s + 32) - 8.
+        CONTENTUM(s + 8) = 1000.
+        n = n + 1.
+    FIN-SI.
+
+    SI CONTENTUM(s + 16) < 1000 && CONTENTUM(s + 32) >= 25 TUNC
+        CONTENTUM(s + 32) = CONTENTUM(s + 32) - 25.
+        CONTENTUM(s + 16) = 1000.
+        n = n + 1.
+    FIN-SI.
+
+    REDDE n.
+FIN-FUNCTIO.
+
+// 0 non docked; 1 docked sine mutatione; 2 cargo venditus; 3+ servitia facta.
+// Venditio habet prioritatem: servitia incipiunt a gradu sequente, ut pretium
+// stationis non obscuretur a valore cargo venditi.
 FUNCTIO NAT_STAT_GRADUS REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI NAT_STAT_DOCKED(s) == 0 TUNC REDDE 0. FIN-SI.
     DECLARA cargo SICUT NUMERUS VALENS CONTENTUM(s + 216).
-    SI cargo <= 0 TUNC REDDE 1. FIN-SI.
-    DECLARA pretium SICUT NUMERUS VALENS NAT_STAT_PRETIUM().
-    CONTENTUM(s + 32) = CONTENTUM(s + 32) + cargo * pretium.
-    CONTENTUM(s + 216) = 0.
-    REDDE 2.
+    SI cargo > 0 TUNC
+        DECLARA pretium SICUT NUMERUS VALENS NAT_STAT_PRETIUM().
+        CONTENTUM(s + 32) = CONTENTUM(s + 32) + cargo * pretium.
+        CONTENTUM(s + 216) = 0.
+        REDDE 2.
+    FIN-SI.
+
+    DECLARA serv SICUT NUMERUS VALENS NAT_STAT_SERVITIA(s).
+    SI serv > 0 TUNC REDDE 2 + serv. FIN-SI.
+    REDDE 1.
 FIN-FUNCTIO.
