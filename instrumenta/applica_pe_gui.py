@@ -21,8 +21,17 @@ if old_cli in s:
 elif new_cli not in s:
     raise SystemExit('ancora targeti GUI non inventa est')
 
+# PE console et PE GUI utuntur eodem allocatore VirtualAlloc Win64.
+# UEFI (modus 2) suum allocatorem distinctum retinet.
+old_alloc = '    SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC\n'
+new_alloc = '    SI MODUS_PE_LEGE(contextus_parseris) == 1 || MODUS_PE_LEGE(contextus_parseris) == 3 TUNC\n'
+if old_alloc in s:
+    s = s.replace(old_alloc, new_alloc, 1)
+elif new_alloc not in s:
+    raise SystemExit('ancora allocatoris PE Win64 non inventa est')
+
 if s != orig:
     p.write_text(s, encoding='utf-8')
-    print('RECTE: target GUI PE applicatus est')
+    print('RECTE: target GUI PE et runtime Win64 applicati sunt')
 else:
-    print('RECTE: target GUI PE iam adest')
+    print('RECTE: target GUI PE et runtime Win64 iam adsunt')
