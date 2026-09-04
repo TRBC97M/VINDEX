@@ -2,6 +2,8 @@
 // Spatium logicum UI manet 960x720; canvas physicus potest esse 720p, 1080p, 4K, etc.
 // Graphica II adicit margines molles, alpha et fontem vectorialem terminalem.
 
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_vector_terminal.vindex".
+
 FUNCTIO NATG_X REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS.
