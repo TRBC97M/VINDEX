@@ -1968,6 +1968,9 @@ FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.
     SI genus == 6 TUNC
         PROCLAMA "ERRATUM: proiectum VINDEX invalidum est".
     FIN-SI.
+    SI genus == 7 TUNC
+        PROCLAMA "ERRATUM: clavis ignota ad gradum supremum est".
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -6281,11 +6284,27 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             FIN-DUM.
         ALITER
         SI fons[i] == 73 && i + 7 < n && fons[i+1] == 77 && fons[i+2] == 80 && fons[i+3] == 79 && fons[i+4] == 82 && fons[i+5] == 84 && fons[i+6] == 65 && fons[i+7] == 32 TUNC
+            // Directiva importationis continet cathenam cui puncta viae licent.
+            // Punctum sententiae tantum post clausuram cathenae quaeritur.
             i = i + 8.
+            DUM i < n && fons[i] != 34 PERFICE
+                i = i + 1.
+            FIN-DUM.
+            SI i < n TUNC
+                i = i + 1.
+            FIN-SI.
+            DUM i < n && fons[i] != 34 PERFICE
+                i = i + 1.
+            FIN-DUM.
+            SI i < n TUNC
+                i = i + 1.
+            FIN-SI.
             DUM i < n && fons[i] != 46 PERFICE
                 i = i + 1.
             FIN-DUM.
-            i = i + 1.
+            SI i < n TUNC
+                i = i + 1.
+            FIN-SI.
         ALITER
         SI fons[i] == 70 && i + 5 < n && fons[i+1] == 79 && fons[i+2] == 82 && fons[i+3] == 77 && fons[i+4] == 65 && fons[i+5] == 32 TUNC
             i = i + 6.
@@ -6362,6 +6381,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 ALITER
                     ig_fm = IGNORA_SPATIA(fons, SEDES(i), n).
                     i = i + 9.
+                    SI i < n && fons[i] == 46 TUNC
+                        i = i + 1.
+                    FIN-SI.
                     continua_forma = 0.
                 FIN-SI.
             FIN-DUM.
@@ -6531,7 +6553,14 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     FIN-SI.
                 FIN-SI.
 
-                i = n.
+                // PRINCIPALIS, sicut functio ordinaria, terminatorem suum
+                // consumit et analysam top-level prosequi sinit.
+                DUM i < n && fons[i] != 46 PERFICE
+                    i = i + 1.
+                FIN-DUM.
+                SI i < n TUNC
+                    i = i + 1.
+                FIN-SI.
             ALITER
                 DECLARA nomen_adiutoris SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).
                 DUM i < n && fons[i] != 46 PERFICE
@@ -6649,7 +6678,36 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 i = i + 1.
             FIN-SI.
         ALITER
-            i = i + 1.
+            SI fons[i] == 32 || fons[i] == 10 || fons[i] == 13 || fons[i] == 9 TUNC
+                i = i + 1.
+            ALITER
+                // Omne octetum non-spatiale quod nulli constructioni top-level
+                // convenit est error linguae, non materia silentio devoranda.
+                DECLARA diagnosticum_top_scriptum SICUT NUMERUS VALENS 0.
+                SI i >= initium_fontis_principalis TUNC
+                    DECLARA positio_top_principalis SICUT NUMERUS VALENS i - initium_fontis_principalis.
+                    DECLARA ign_diag_top_principalis SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons_brut, positio_top_principalis, n_fons_principalis, 7).
+                    diagnosticum_top_scriptum = 1.
+                ALITER
+                    DECLARA idx_importi_top SICUT NUMERUS VALENS 0.
+                    DUM idx_importi_top < numerus_importorum PERFICE
+                        DECLARA initium_importi_top SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_importi_top * 32).
+                        DECLARA mensura_importi_top SICUT NUMERUS VALENS CONTENTUM(tabula_importorum + idx_importi_top * 32 + 8).
+                        SI diagnosticum_top_scriptum == 0 && i >= initium_importi_top && i < initium_importi_top + mensura_importi_top TUNC
+                            DECLARA fons_importi_top SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_importi_top * 32 + 16).
+                            DECLARA via_importi_top SICUT ACUS<LITTERA> VALENS CONTENTUM(tabula_importorum + idx_importi_top * 32 + 24).
+                            DECLARA positio_importi_top SICUT NUMERUS VALENS i - initium_importi_top.
+                            DECLARA ign_diag_top_importi SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_importi_top, fons_importi_top, positio_importi_top, mensura_importi_top, 7).
+                            diagnosticum_top_scriptum = 1.
+                        FIN-SI.
+                        idx_importi_top = idx_importi_top + 1.
+                    FIN-DUM.
+                FIN-SI.
+                SI diagnosticum_top_scriptum == 0 TUNC
+                    DECLARA ign_diag_top_unum SICUT NUMERUS VALENS DIAGNOSTICUM_FONTIS(via_fons, fons, i, n, 7).
+                FIN-SI.
+                REDDE 65.
+            FIN-SI.
         FIN-SI.
         FIN-SI.
         FIN-SI.

@@ -296,7 +296,7 @@ respice_reiectionem "erratum-punctum" "tests/casus/erratum_punctum.vindex" "punc
 respice_reiectionem "erratum-importa" "tests/casus/erratum_importa.vindex" "archivum non inventum"
 respice_reiectionem "erratum-importa-imbrique" "tests/casus/erratum_importa_imbrique.vindex" "IMPORTA inclusum"
 
-respice_reiectionem_nativam "nativum-principalis" "tests/casus/erratum_principalis.vindex" "FUNCTIO PRINCIPALIS deest"
+respice_reiectionem_nativam "nativum-principalis" "tests/casus/erratum_principalis.vindex" "clavis ignota ad gradum supremum"
 respice_reiectionem_nativam "nativum-functio" "tests/casus/erratum_functio.vindex" "functio vocata non inventa est"
 respice_reiectionem_nativam "nativum-importa" "tests/casus/erratum_importa.vindex" "fons importatus aperiri non potest"
 
