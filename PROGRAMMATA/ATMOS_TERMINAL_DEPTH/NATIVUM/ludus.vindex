@@ -16,6 +16,7 @@ IMPORTA "ludus/mundus.vindex".
 IMPORTA "ludus/status.vindex".
 IMPORTA "ludus/resourca.vindex".
 IMPORTA "ludus/statio.vindex".
+IMPORTA "ludus/statio_ui.vindex".
 IMPORTA "ludus/rendere.vindex".
 
 FUNCTIO NAT_I32_LEGE REDDENS NUMERUS.
@@ -40,11 +41,9 @@ FUNCTIO NAT_SONAR_CLIC REDDENS NUMERUS.
     DECLARA dy SICUT NUMERUS VALENS my - cy.
     SI dx * dx + dy * dy > radius * radius TUNC REDDE 0. FIN-SI.
 
-    // Statio et contactus minerales habent prioritatem supra navigationem liberam.
     SI NAT_STAT_CLIC(s, mx, my) != 0 TUNC REDDE 3. FIN-SI.
     SI NAT_RES_CLIC(s, mx, my) != 0 TUNC REDDE 2. FIN-SI.
 
-    // Nova directio libera rumpit extractionem.
     DECLARA abruptum SICUT NUMERUS VALENS NAT_RES_ABRUMPE(s).
     DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
     DECLARA tx SICUT NUMERUS VALENS CONTENTUM(s + 40) + dx * range / radius.
@@ -179,16 +178,27 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                         DECLARA my SICUT NUMERUS VALENS NAT_I32_LEGE(point, 4).
                         DECLARA lx SICUT NUMERUS VALENS mx * 960 / cw.
                         DECLARA ly SICUT NUMERUS VALENS my * 720 / ch.
-                        DECLARA cclick SICUT NUMERUS VALENS NAT_SONAR_CLIC(s, lx, ly).
+                        DECLARA cclick SICUT NUMERUS VALENS 0.
+                        SI NAT_STAT_DOCKED(s) != 0 TUNC
+                            cclick = NAT_STAT_UI_CLIC(s, lx, ly).
+                        ALITER
+                            cclick = NAT_SONAR_CLIC(s, lx, ly).
+                        FIN-SI.
                     FIN-SI.
                 FIN-SI.
                 mouse_prius = mouse_nunc.
 
                 DECLARA mov SICUT NUMERUS VALENS NAT_CURSUS_GRADUS(s).
                 DECLARA statio SICUT NUMERUS VALENS NAT_STAT_GRADUS(s).
-                DECLARA extractio SICUT NUMERUS VALENS NAT_EXTRACTIO_GRADUS(s).
-                DECLARA drain SICUT NUMERUS VALENS NAT_DRAIN_GRADUS(s).
+                SI NAT_STAT_DOCKED(s) == 0 TUNC
+                    DECLARA extractio SICUT NUMERUS VALENS NAT_EXTRACTIO_GRADUS(s).
+                    DECLARA drain SICUT NUMERUS VALENS NAT_DRAIN_GRADUS(s).
+                FIN-SI.
+
                 DECLARA pictum SICUT NUMERUS VALENS NAT_RENDE(canvas, s).
+                SI NAT_STAT_DOCKED(s) != 0 TUNC
+                    pictum = NAT_STAT_UI_RENDE(canvas, s).
+                FIN-SI.
                 DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
             FIN-SI.
             DECLARA dorm SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 16).
