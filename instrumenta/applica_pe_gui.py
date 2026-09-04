@@ -30,8 +30,22 @@ if old_alloc in s:
 elif new_alloc not in s:
     raise SystemExit('ancora allocatoris PE Win64 non inventa est')
 
+# Bootstrap Win64 et terminatio ExitProcess idem contractum habent
+# sive PE console (1) sive PE GUI (3). In fonte canonico duae sunt
+# portae exactae `SI modus_pe == 1 TUNC`: prologus ABI et ExitProcess.
+old_gate = '                SI modus_pe == 1 TUNC\n'
+new_gate = '                SI modus_pe == 1 || modus_pe == 3 TUNC\n'
+count_old = s.count(old_gate)
+count_new = s.count(new_gate)
+if count_old == 2:
+    s = s.replace(old_gate, new_gate)
+elif count_old == 0 and count_new == 2:
+    pass
+else:
+    raise SystemExit(f'ancorae bootstrap/ExitProcess PE Win64 inattentae sunt: old={count_old} new={count_new}')
+
 if s != orig:
     p.write_text(s, encoding='utf-8')
-    print('RECTE: target GUI PE et runtime Win64 applicati sunt')
+    print('RECTE: target GUI PE, allocator, bootstrap et ExitProcess Win64 applicati sunt')
 else:
     print('RECTE: target GUI PE et runtime Win64 iam adsunt')
