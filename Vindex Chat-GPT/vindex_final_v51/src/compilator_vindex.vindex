@@ -1977,6 +1977,12 @@ FUNCTIO DIAGNOSTICUM_FONTIS REDDENS NUMERUS.
     SI genus == 10 TUNC
         PROCLAMA "ERRATUM: parenthesis non clauditur".
     FIN-SI.
+    SI genus == 11 TUNC
+        PROCLAMA "ERRATUM: FUNCTIO PRINCIPALIS bis definita est".
+    FIN-SI.
+    SI genus == 12 TUNC
+        PROCLAMA "ERRATUM: FIN-FUNCTIO deest".
+    FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -5034,6 +5040,10 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
         DECLARA ignoratum SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
         DECLARA i SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
 
+        SI i + 7 < n && fons[i] == 70 && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC
+            REDDE 0.
+        FIN-SI.
+
         SI i >= n TUNC
             continua = 0.
         ALITER
@@ -6083,6 +6093,16 @@ FUNCTIO CLAVIS_CLAUSURAE_ORPHANA REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO EST_FIN_FUNCTIO REDDENS NUMERUS.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
+    ACCIPIT i SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    SI i + 10 < n && fons[i] == 70 && fons[i+1] == 73 && fons[i+2] == 78 && fons[i+3] == 45 && fons[i+4] == 70 && fons[i+5] == 85 && fons[i+6] == 78 && fons[i+7] == 67 && fons[i+8] == 84 && fons[i+9] == 73 && fons[i+10] == 79 TUNC
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ACCIPIT argc SICUT NUMERUS.
     ACCIPIT argv SICUT ACUS<NUMERUS>.
@@ -6446,8 +6466,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             FORMA_ULTIMA_SCRIBE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), idx_registrum_forma).
         ALITER
         SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC
+            DECLARA positio_declarationis_functionis SICUT NUMERUS VALENS i.
             i = i + 8.
             SI fons[i] == 80 && i + 10 < n && fons[i+1] == 82 && fons[i+2] == 73 && fons[i+3] == 78 && fons[i+4] == 67 && fons[i+5] == 73 && fons[i+6] == 80 && fons[i+7] == 65 && fons[i+8] == 76 && fons[i+9] == 73 && fons[i+10] == 83 TUNC
+                SI inventa_principalis != 0 TUNC
+                    DECLARA ig_principalis_dup SICUT NUMERUS VALENS ERRATUM_PONE(contextus_parseris, 11, positio_declarationis_functionis).
+                FIN-SI.
                 inventa_principalis = 1.
                 i = i + 11.
                 DUM i < n && fons[i] != 46 PERFICE
@@ -6522,6 +6546,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).
+                SI ERRATUM_GENUS_LEGE(contextus_parseris) == 0 && CLAVIS_CLAUSURAE_ORPHANA(fons, i, n) == 0 && EST_FIN_FUNCTIO(fons, i, n) == 0 TUNC
+                    DECLARA ig_fin_functio_deest1 SICUT NUMERUS VALENS ERRATUM_PONE(contextus_parseris, 12, positio_declarationis_functionis).
+                FIN-SI.
                 SI ERRATUM_GENUS_LEGE(contextus_parseris) != 0 TUNC
                     DECLARA genus_prop1 SICUT NUMERUS VALENS ERRATUM_GENUS_LEGE(contextus_parseris).
                     DECLARA positio_prop1 SICUT NUMERUS VALENS ERRATUM_POSITIO_LEGE(contextus_parseris).
@@ -6777,6 +6804,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 CONTENTUM(contextus_parseris) = 0.
                 CONTENTUM(contextus_parseris + 8) = 0.
                 DECLARA ignoratum4 SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).
+                SI ERRATUM_GENUS_LEGE(contextus_parseris) == 0 && CLAVIS_CLAUSURAE_ORPHANA(fons, i, n) == 0 && EST_FIN_FUNCTIO(fons, i, n) == 0 TUNC
+                    DECLARA ig_fin_functio_deest2 SICUT NUMERUS VALENS ERRATUM_PONE(contextus_parseris, 12, positio_declarationis_functionis).
+                FIN-SI.
                 SI ERRATUM_GENUS_LEGE(contextus_parseris) != 0 TUNC
                     DECLARA genus_prop2 SICUT NUMERUS VALENS ERRATUM_GENUS_LEGE(contextus_parseris).
                     DECLARA positio_prop2 SICUT NUMERUS VALENS ERRATUM_POSITIO_LEGE(contextus_parseris).
