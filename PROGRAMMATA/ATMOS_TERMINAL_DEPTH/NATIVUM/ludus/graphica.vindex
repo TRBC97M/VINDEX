@@ -1,8 +1,6 @@
 // ATMOS NATIVUM — pont Graphica resolutione independens.
 // Spatium logicum UI manet 960x720; canvas physicus potest esse 720p, 1080p, 4K, etc.
-// Graphica II adicit margines molles, alpha et fontem vectorialem terminalem.
-
-IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/fons_vector_terminal.vindex".
+// Graphica II adicit margines molles et alpha; fons vectorialis generalis est testatus separatim.
 
 FUNCTIO NATG_X REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
@@ -142,7 +140,7 @@ FUNCTIO NATG_TEXT REDDENS NUMERUS.
     ACCIPIT textus SICUT TEXTUS.
     ACCIPIT scala SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
-    REDDE FVT_TEXTUS(c, NATG_X(c, x), NATG_Y(c, y), textus, NATG_TEXT_GRADUS(c, scala), color).
+    REDDE FS5_TEXTUS(c, NATG_X(c, x), NATG_Y(c, y), textus, NATG_TEXT_GRADUS(c, scala), color).
 FIN-FUNCTIO.
 
 FUNCTIO NATG_TEXT_GLOW REDDENS NUMERUS.
@@ -152,7 +150,7 @@ FUNCTIO NATG_TEXT_GLOW REDDENS NUMERUS.
     ACCIPIT textus SICUT TEXTUS.
     ACCIPIT scala SICUT NUMERUS.
     ACCIPIT color SICUT NUMERUS.
-    REDDE FVT_TEXTUS_GLOW(c, NATG_X(c, x), NATG_Y(c, y), textus, NATG_TEXT_GRADUS(c, scala), color).
+    REDDE FS5_TEXTUS_GLOW(c, NATG_X(c, x), NATG_Y(c, y), textus, NATG_TEXT_GRADUS(c, scala), color).
 FIN-FUNCTIO.
 
 FUNCTIO NATG_BAR REDDENS NUMERUS.
