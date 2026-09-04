@@ -1,0 +1,73 @@
+name: P9 — identificatores longi probatio
+
+on:
+  push:
+    branches:
+      - chatgpt/p9-identificatores-longi-canon
+    paths:
+      - '.github/workflows/p9-identificatores-longi-probe.yml'
+
+jobs:
+  metire:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: chatgpt/p9-identificatores-longi-canon
+      - name: Longitudines et collisionem metire
+        shell: bash
+        run: |
+          set -euo pipefail
+          comp="$PWD/Vindex Chat-GPT/vindex_final_v51/compilator_vindex"
+          chmod +x "$comp"
+          mkdir -p /tmp/idprobe
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/idprobe')
+          for n in (32,100,250,300,500,2000):
+              name='F'+('A'*(n-1))
+              (p/f'id-{n}.vindex').write_text(
+                  f'FUNCTIO {name} REDDENS NUMERUS.\n    REDDE 7.\nFIN-FUNCTIO.\n'
+                  f'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    REDDE {name}().\nFIN-FUNCTIO.\n')
+          prefix='P'+('Q'*399)
+          a=prefix+'ALPHA'
+          b=prefix+'BETA'
+          (p/'collision.vindex').write_text(
+              f'FUNCTIO {a} REDDENS NUMERUS.\n    REDDE 11.\nFIN-FUNCTIO.\n'
+              f'FUNCTIO {b} REDDENS NUMERUS.\n    REDDE 22.\nFIN-FUNCTIO.\n'
+              f'FUNCTIO PRINCIPALIS REDDENS NUMERUS.\n    PROCLAMA {a}().\n    PROCLAMA {b}().\n    REDDE 0.\nFIN-FUNCTIO.\n')
+          PY
+          cd /tmp/idprobe
+          for n in 32 100 250 300 500 2000; do
+            f="id-${n}.vindex"; out="id-${n}.elf"
+            rm -f "$out"
+            set +e
+            "$comp" "$f" "$out" >/tmp/id-${n}.out 2>/tmp/id-${n}.err
+            cs=$?
+            set -e
+            echo "LEN=$n compile=$cs output=$([ -e "$out" ] && echo yes || echo no)"
+            cat /tmp/id-${n}.out /tmp/id-${n}.err || true
+            if [ "$cs" -eq 0 ] && [ -e "$out" ]; then
+              chmod +x "$out"
+              set +e
+              "./$out" >/tmp/run-${n}.out 2>/tmp/run-${n}.err
+              rs=$?
+              set -e
+              echo "LEN=$n runtime=$rs"
+            fi
+          done
+          set +e
+          "$comp" collision.vindex collision.elf >collision.out 2>collision.err
+          cs=$?
+          set -e
+          echo "COLLISION compile=$cs output=$([ -e collision.elf ] && echo yes || echo no)"
+          cat collision.out collision.err || true
+          if [ "$cs" -eq 0 ] && [ -e collision.elf ]; then
+            chmod +x collision.elf
+            set +e
+            ./collision.elf >collision.run 2>&1
+            rs=$?
+            set -e
+            echo "COLLISION runtime=$rs"
+            cat collision.run
+          fi
