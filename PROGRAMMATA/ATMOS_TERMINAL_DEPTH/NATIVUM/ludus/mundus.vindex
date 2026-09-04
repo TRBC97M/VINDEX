@@ -1,0 +1,112 @@
+// ATMOS NATIVUM — mundus abyssalis et bathymetria.
+// Referentia HTML: WORLD_RADIUS = 3,000,000 m;
+// depth ~= 1800 + rim*9000 + local*1200 + sin(x*0.00001)*200,
+// clampata 900..12000 m.
+//
+// P11-F4: variatio localis non iam hash per pixel/meter est. Nodi procedurales
+// in reticulo 4096 m interpolantur, ita profunditas fit superficies continua.
+
+FUNCTIO NAT_MUNDUS_RADIUS REDDENS NUMERUS.
+    REDDE 3000000.
+FIN-FUNCTIO.
+
+// Approximatio periodica [-200,200] periodi ~628,318 m,
+// eidem periodo ac sin(x*0.00001) proxima.
+FUNCTIO NAT_MUNDUS_UNDA REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    DECLARA periodus SICUT NUMERUS VALENS 628318.
+    DECLARA q SICUT NUMERUS VALENS 157079.
+    DECLARA p SICUT NUMERUS VALENS x % periodus.
+    SI p < 0 TUNC p = p + periodus. FIN-SI.
+    SI p < q TUNC REDDE p * 200 / q. FIN-SI.
+    SI p < q * 2 TUNC REDDE 200 - (p - q) * 200 / q. FIN-SI.
+    SI p < q * 3 TUNC REDDE 0 - (p - q * 2) * 200 / q. FIN-SI.
+    REDDE -200 + (p - q * 3) * 200 / q.
+FIN-FUNCTIO.
+
+// Altitudo procedurali unius nodi reticuli: 0..1199.
+FUNCTIO NAT_MUNDUS_NODUS REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT gx SICUT NUMERUS.
+    ACCIPIT gy SICUT NUMERUS.
+    DECLARA h SICUT NUMERUS VALENS ALEA_MISCE_U32(semen, gx, gy).
+    h = ALEA_MISCE_U32(h, 307, 0).
+    REDDE h % 1200.
+FIN-FUNCTIO.
+
+// Interpolatio bilinearis in reticulo 4096 m. Coordinatae transferuntur in
+// spatium positivum mundi ut divisio/modulus circa axem zero continuus maneat.
+FUNCTIO NAT_MUNDUS_LOCAL_RAW REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA radius SICUT NUMERUS VALENS NAT_MUNDUS_RADIUS().
+    DECLARA cella SICUT NUMERUS VALENS 4096.
+    DECLARA ax SICUT NUMERUS VALENS NAT_CLAMPA(x + radius, 0, radius * 2).
+    DECLARA ay SICUT NUMERUS VALENS NAT_CLAMPA(y + radius, 0, radius * 2).
+    DECLARA gx SICUT NUMERUS VALENS ax / cella.
+    DECLARA gy SICUT NUMERUS VALENS ay / cella.
+    DECLARA rx SICUT NUMERUS VALENS ax % cella.
+    DECLARA ry SICUT NUMERUS VALENS ay % cella.
+
+    DECLARA v00 SICUT NUMERUS VALENS NAT_MUNDUS_NODUS(semen, gx, gy).
+    DECLARA v10 SICUT NUMERUS VALENS NAT_MUNDUS_NODUS(semen, gx + 1, gy).
+    DECLARA v01 SICUT NUMERUS VALENS NAT_MUNDUS_NODUS(semen, gx, gy + 1).
+    DECLARA v11 SICUT NUMERUS VALENS NAT_MUNDUS_NODUS(semen, gx + 1, gy + 1).
+    DECLARA a SICUT NUMERUS VALENS v00 + (v10 - v00) * rx / cella.
+    DECLARA b SICUT NUMERUS VALENS v01 + (v11 - v01) * rx / cella.
+    REDDE a + (b - a) * ry / cella.
+FIN-FUNCTIO.
+
+// Originem ad 340 calibramus ut initium historicum 2140 m servetur,
+// dum reliquus mundus e superficie procedurali continua derivatur.
+FUNCTIO NAT_MUNDUS_LOCAL REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA raw SICUT NUMERUS VALENS NAT_MUNDUS_LOCAL_RAW(semen, x, y).
+    DECLARA origo SICUT NUMERUS VALENS NAT_MUNDUS_LOCAL_RAW(semen, 0, 0).
+    REDDE NAT_CLAMPA(340 + raw - origo, 0, 1199).
+FIN-FUNCTIO.
+
+FUNCTIO NAT_MUNDUS_PROFUNDITAS REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA d SICUT NUMERUS VALENS NAT_ISQRT(x * x + y * y).
+    DECLARA radius SICUT NUMERUS VALENS NAT_MUNDUS_RADIUS().
+    SI d > radius TUNC d = radius. FIN-SI.
+    DECLARA local SICUT NUMERUS VALENS NAT_MUNDUS_LOCAL(semen, x, y).
+    DECLARA profunditas SICUT NUMERUS VALENS 1800 + d * 9000 / radius + local + NAT_MUNDUS_UNDA(x).
+    REDDE NAT_CLAMPA(profunditas, 900, 12000).
+FIN-FUNCTIO.
+
+// Regiones bathymetricae latae. Id numerica servantur ut renderer/autres
+// subsystemata eas sine TEXTUS in nucleo ludico uti possint.
+// 1 UPPER SLOPE, 2 LOWER SLOPE, 3 ABYSSAL PLAIN, 4 DEEP BASIN, 5 HADAL TRENCH.
+FUNCTIO NAT_MUNDUS_REGIO REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA d SICUT NUMERUS VALENS NAT_MUNDUS_PROFUNDITAS(semen, x, y).
+    SI d < 3000 TUNC REDDE 1. FIN-SI.
+    SI d < 5000 TUNC REDDE 2. FIN-SI.
+    SI d < 7000 TUNC REDDE 3. FIN-SI.
+    SI d < 9000 TUNC REDDE 4. FIN-SI.
+    REDDE 5.
+FIN-FUNCTIO.
+
+// Relief local ex differentia profunditatis trans 512 m.
+// 1 SMOOTH, 2 ROLLING, 3 BROKEN, 4 ESCARPMENT.
+FUNCTIO NAT_MUNDUS_RELIEF REDDENS NUMERUS.
+    ACCIPIT semen SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    DECLARA dx SICUT NUMERUS VALENS NAT_ABS(NAT_MUNDUS_PROFUNDITAS(semen, x + 256, y) - NAT_MUNDUS_PROFUNDITAS(semen, x - 256, y)).
+    DECLARA dy SICUT NUMERUS VALENS NAT_ABS(NAT_MUNDUS_PROFUNDITAS(semen, x, y + 256) - NAT_MUNDUS_PROFUNDITAS(semen, x, y - 256)).
+    DECLARA p SICUT NUMERUS VALENS NAT_MAX(dx, dy).
+    SI p < 80 TUNC REDDE 1. FIN-SI.
+    SI p < 180 TUNC REDDE 2. FIN-SI.
+    SI p < 350 TUNC REDDE 3. FIN-SI.
+    REDDE 4.
+FIN-FUNCTIO.

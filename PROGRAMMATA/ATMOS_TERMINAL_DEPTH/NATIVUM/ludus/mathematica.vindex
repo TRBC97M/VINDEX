@@ -1,0 +1,82 @@
+// ATMOS NATIVUM — mathematica integra minima.
+// Graphica VII: trigonometria fixed-point Q10 ad rotationes fluidas sine runtime externo.
+
+FUNCTIO NAT_ABS REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    SI v < 0 TUNC REDDE 0 - v. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_MIN REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    SI a < b TUNC REDDE a. FIN-SI.
+    REDDE b.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_MAX REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    SI a > b TUNC REDDE a. FIN-SI.
+    REDDE b.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_CLAMPA REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    ACCIPIT minimum SICUT NUMERUS.
+    ACCIPIT maximum SICUT NUMERUS.
+    SI v < minimum TUNC REDDE minimum. FIN-SI.
+    SI v > maximum TUNC REDDE maximum. FIN-SI.
+    REDDE v.
+FIN-FUNCTIO.
+
+// Radix quadrata integra Newtoniana; input non-negativus 64-bit.
+FUNCTIO NAT_ISQRT REDDENS NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    SI n <= 0 TUNC REDDE 0. FIN-SI.
+    SI n <= 3 TUNC REDDE 1. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS n.
+    DECLARA y SICUT NUMERUS VALENS (x + 1) / 2.
+    DUM y < x PERFICE
+        x = y.
+        y = (x + n / x) / 2.
+    FIN-DUM.
+    REDDE x.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_DISTANTIA REDDENS NUMERUS.
+    ACCIPIT x0 SICUT NUMERUS.
+    ACCIPIT y0 SICUT NUMERUS.
+    ACCIPIT x1 SICUT NUMERUS.
+    ACCIPIT y1 SICUT NUMERUS.
+    DECLARA dx SICUT NUMERUS VALENS x1 - x0.
+    DECLARA dy SICUT NUMERUS VALENS y1 - y0.
+    REDDE NAT_ISQRT(dx * dx + dy * dy).
+FIN-FUNCTIO.
+
+// Phase circulaire: 1024 unitates = unus circuitus completus.
+FUNCTIO NAT_PHASE_1024 REDDENS NUMERUS.
+    ACCIPIT phase SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS phase % 1024.
+    SI p < 0 TUNC p = p + 1024. FIN-SI.
+    REDDE p.
+FIN-FUNCTIO.
+
+// Sinus Q10 integer, approximatio parabolica continua.
+// Amplitudo 1024; 0,256,512,768 correspondent 0,+1,0,-1.
+FUNCTIO NAT_SIN_Q10 REDDENS NUMERUS.
+    ACCIPIT phase SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS NAT_PHASE_1024(phase).
+    DECLARA signum SICUT NUMERUS VALENS 1.
+    SI p >= 512 TUNC
+        p = p - 512.
+        signum = 0 - 1.
+    FIN-SI.
+    DECLARA v SICUT NUMERUS VALENS p * (512 - p) / 64.
+    REDDE v * signum.
+FIN-FUNCTIO.
+
+FUNCTIO NAT_COS_Q10 REDDENS NUMERUS.
+    ACCIPIT phase SICUT NUMERUS.
+    REDDE NAT_SIN_Q10(phase + 256).
+FIN-FUNCTIO.

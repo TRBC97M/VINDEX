@@ -208,3 +208,70 @@ renovanda est, non custodia mollienda.
 punctum fixum servavit, XXXV/XXXV transiit post probationem renovatam — sed
 ATMOS fregit. Ramus deletus est, nihil propositum. Sine vexillo, custodia
 recta esse non potest.
+
+---
+
+## IX. Claves ignotae — investigatio secunda, vias falsas excludens
+
+Sectio VIII vexillum `inter_definitiones` ut solutionem proposuit. Vexillum
+scriptum est et in casibus simplicibus recte operatur, sed **non sufficit**.
+Haec sectio quid probatum sit describit, ne quis easdem vias falsas iteret.
+
+### Reproductio minima — quinque lineae
+
+```vindex
+IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    REDDE 0.
+FIN-FUNCTIO.
+```
+
+Cum custodia clavium ignotarum activa: `ERRATUM: clavis ignota ad gradum
+supremum`, **LINEA variabilis, COLUMNA XIX**.
+
+Nullo importo, nullum erratum. Importo praesente, semper erratum.
+
+### Constantia columnae XIX — signum decisivum
+
+Columna XIX **immutata manet** per omnes tentationes correctionis. Hoc
+maximi momenti est: significat parserem ad illam positionem **non ea via
+pervenire quam supposui**.
+
+Tres correctiones tentatae, omnes sine effectu super columnam XIX:
+
+| Tentatio | Ratio | Effectus |
+|---|---|---|
+| `IMPORTA` per formam exempta | ne clavis vera reiceretur | nullus |
+| Chordae et commentarii saltati | ne `V` in semita `"../../../Vindex…"` legeretur | nullus |
+| `IMPORTA` in capite circuli tractata, linea tota ad punctum salsa | ne umquam in `ALITER` caderet | nullus |
+
+Quaeque correctio punctum fixum servavit (`05adff10`, `e1bc7c50`) et
+compilator se ipsum compilare perrexit. Ergo mutationes revera applicatae
+sunt; simpliciter positionem fautricem non attingunt.
+
+**Conclusio: familia solutionum quae `ALITER` circuli principalis emendant
+tota excludenda est.** Parser ad columnam XIX aliunde pervenit.
+
+### Quid probatum est praeterea
+
+- Nullus fasciculus bibliothecae solus custodiam declanchat, etiam cum
+  `PRINCIPALIS` minimo additus (probati: textus, conversio, win32_ffi,
+  win32_app, win32_dib, aleatorium, canvas_bgra et variantes, fontes 5x7,
+  platforma_win32);
+- `textus.vindex` integer per `cat` concatenatus cum corpore `ludus.vindex`
+  **non** declanchat — sola resolutio vera per `IMPORTA` declanchat;
+- imports resolvuntur **ante** analysim (linea 6180): contentum importatum
+  ante fontem principalem in `basis_fons` conseritur, fonte principali
+  integro cum sua linea `IMPORTA` servato.
+
+### Gradus proximus rectus
+
+Non quarta correctio caeca. Instrumentatio: compilatorem instruere ut
+positionem `i` et vexillum in singulis gyris circuli principalis emittat,
+deinde legere unde `i` ad columnam XIX perveniat. Sine hoc, quaeque
+correctio coniectura est.
+
+ATMOS NATIVUM (#183) probatione decisiva est: si custodia NATIVUM frangit,
+falsa est, quaecumque ratio afferatur. POC I–V eodem modo valent: non ut
+producta, sed ut deprehensores regressionum.
