@@ -2338,7 +2338,7 @@ FUNCTIO COMPONE_RESERVA_OCTETA_DYNAMICA REDDENS NUMERUS.
         p_mem_dyn = COMPONE_SERVA_INDIRECTUM(codex, p_mem_dyn, 1, 12).
         REDDE p_mem_dyn.
     FIN-SI.
-    SI MODUS_PE_LEGE(contextus_parseris) == 1 TUNC
+    SI MODUS_PE_LEGE(contextus_parseris) == 1 || MODUS_PE_LEGE(contextus_parseris) == 3 TUNC
         p_mem_dyn = COMPONE_TRANSCRIBE(codex, p_mem_dyn, 12, 0).
         CODEX_SCRIBE(codex, p_mem_dyn, 73).
         CODEX_SCRIBE(codex, p_mem_dyn + 1, 137).
@@ -6032,6 +6032,12 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             DECLARA arg3 SICUT ACUS<LITTERA> VALENS argv[3].
             SI arg3[0] == 112 && arg3[1] == 101 && arg3[2] == 0 TUNC
                 modus_pe = 1.
+            FIN-SI.
+        FIN-SI.
+        SI argc >= 4 TUNC
+            DECLARA arg3_gui SICUT ACUS<LITTERA> VALENS argv[3].
+            SI arg3_gui[0] == 103 && arg3_gui[1] == 117 && arg3_gui[2] == 105 && arg3_gui[3] == 0 TUNC
+                modus_pe = 3.
             FIN-SI.
         FIN-SI.
         SI argc >= 4 TUNC
