@@ -17,7 +17,6 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
     SI c <= 0 || radius <= 0 || alpha <= 0 TUNC REDDE 0. FIN-SI.
     SI fx == 0 && fy == 0 TUNC REDDE 0. FIN-SI.
 
-    // Rotation arriere constante de 40 degres: cos=0.766, sin=0.643.
     DECLARA tx SICUT NUMERUS VALENS (fx * 766 + fy * 643) / 1000.
     DECLARA ty SICUT NUMERUS VALENS ((0 - fx) * 643 + fy * 766) / 1000.
 
@@ -29,9 +28,7 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
         DECLARA inventum SICUT NUMERUS VALENS 0.
         DECLARA primum SICUT NUMERUS VALENS 0.
         DECLARA ultimum SICUT NUMERUS VALENS 0.
-
         DUM dx <= ext PERFICE
-            // Entre la cauda et la frons, dans le sens horaire du balayage.
             DECLARA cr0 SICUT NUMERUS VALENS tx * yy - ty * dx.
             DECLARA cr1 SICUT NUMERUS VALENS dx * fy - yy * fx.
             SI cr0 >= 0 && cr1 >= 0 TUNC
@@ -43,7 +40,6 @@ FUNCTIO NAT_RENDE_SECTOR_ALPHA REDDENS NUMERUS.
             FIN-SI.
             dx = dx + 1.
         FIN-DUM.
-
         SI inventum != 0 TUNC
             DECLARA q SICUT NUMERUS VALENS CBGRA_RECT_ALPHA(c, pcx + primum, pcy + yy, ultimum - primum + 1, 1, color, alpha).
         FIN-SI.
@@ -71,43 +67,34 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     DECLARA danger SICUT NUMERUS VALENS CBGRA_COLOR(255, 112, 136).
 
     DECLARA f SICUT NUMERUS VALENS CBGRA_LIMPA(c, void).
-
-    // CRT discretum in fundo tantum: numquam textum tegit.
     f = NATG_SCANLINES(c, 54).
 
-    // Header et columna log.
     f = NATG_RECT(c, 0, 0, 960, 52, panel).
     f = NATG_RECT(c, 0, 50, 960, 2, edge).
     f = NATG_RECT(c, 648, 52, 2, 668, edge).
     f = NATG_TEXT_GLOW(c, 18, 16, "ATMOS // TERMINAL DEPTH", 2, phosphor).
     f = NATG_TEXT_GLOW(c, 720, 16, "SYSTEM LOG", 2, phosphor).
 
-    // Sonar.
     DECLARA cx SICUT NUMERUS VALENS 324.
     DECLARA cy SICUT NUMERUS VALENS 374.
     DECLARA radius SICUT NUMERUS VALENS 270.
     DECLARA pcx SICUT NUMERUS VALENS NATG_X(c, cx).
     DECLARA pcy SICUT NUMERUS VALENS NATG_Y(c, cy).
     DECLARA pr SICUT NUMERUS VALENS NATG_R(c, radius).
-
-    // Bain interieur continu: aucune strate horizontale specifique au sonar.
     f = NATG_DISC_ALPHA(c, cx, cy, radius - 6, phosphor_in, 11).
 
-    // Graphica X: un seul secteur rasterise, sans triangles ni coutures internes.
     DECLARA sweep SICUT NUMERUS VALENS (CONTENTUM(s + 144) * 3) % 1024.
     DECLARA ux SICUT NUMERUS VALENS NAT_SIN_Q10(sweep).
     DECLARA uy SICUT NUMERUS VALENS NAT_COS_Q10(sweep).
     DECLARA fy_scan SICUT NUMERUS VALENS 0 - uy.
     f = NAT_RENDE_SECTOR_ALPHA(c, pcx, pcy, pr - 2, ux, fy_scan, scan, 34).
 
-    // Anneaux et grille passent AU-DESSUS de la nappe.
     f = NATG_CIRCULUS(c, cx, cy, 90, phosphor_d).
     f = NATG_CIRCULUS(c, cx, cy, 180, phosphor_d).
     f = NATG_CIRCULUS_GLOW(c, cx, cy, radius, echo).
     f = CBGRA_LINEA_MOLLIS(c, pcx - pr, pcy, pcx + pr, pcy, NATG_CRASSITUDO(c, 1), phosphor_d, 170).
     f = CBGRA_LINEA_MOLLIS(c, pcx, pcy - pr, pcx, pcy + pr, NATG_CRASSITUDO(c, 1), phosphor_d, 170).
 
-    // Frons brillante: son extremite est calculee dans le meme cercle physique.
     DECLARA norma SICUT NUMERUS VALENS NAT_ISQRT(ux * ux + uy * uy).
     SI norma < 1 TUNC norma = 1024. FIN-SI.
     DECLARA pfx SICUT NUMERUS VALENS pcx + ux * pr / norma.
@@ -115,7 +102,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     f = CBGRA_LINEA_GROSSA(c, pcx, pcy, pfx, pfy, NATG_CRASSITUDO(c, 5), scan, 16).
     f = CBGRA_LINEA_MOLLIS(c, pcx, pcy, pfx, pfy, NATG_CRASSITUDO(c, 1), scan, 235).
 
-    // Navis.
     f = NATG_LINEA_GLOW(c, cx, cy - 10, cx - 7, cy + 8, echo).
     f = NATG_LINEA_GLOW(c, cx - 7, cy + 8, cx + 7, cy + 8, echo).
     f = NATG_LINEA_GLOW(c, cx + 7, cy + 8, cx, cy - 10, echo).
@@ -127,7 +113,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     DECLARA docked SICUT NUMERUS VALENS NAT_STAT_DOCKED(s).
     DECLARA stat_course SICUT NUMERUS VALENS NAT_STAT_CURSUS_ACTIVUS(s).
 
-    // Contact mineral: halo + radius extractionis.
     SI res_vis != 0 TUNC
         DECLARA rr SICUT NUMERUS VALENS CONTENTUM(s + 160).
         DECLARA rx SICUT NUMERUS VALENS cx + (CONTENTUM(s + 168) - CONTENTUM(s + 40)) * radius / rr.
@@ -140,7 +125,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         f = NATG_LINEA_GLOW(c, rx, ry - 10, rx, ry + 10, amber).
     FIN-SI.
 
-    // Statio cyan.
     SI stat_vis != 0 TUNC
         DECLARA sr SICUT NUMERUS VALENS CONTENTUM(s + 160).
         DECLARA stx SICUT NUMERUS VALENS cx + (NAT_STAT_X(s) - CONTENTUM(s + 40)) * radius / sr.
@@ -151,7 +135,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         f = NATG_LINEA_GLOW(c, stx, sty - 13, stx, sty + 13, echo).
     FIN-SI.
 
-    // Route actuelle.
     SI CONTENTUM(s + 80) != 0 TUNC
         DECLARA range SICUT NUMERUS VALENS CONTENTUM(s + 160).
         DECLARA dx SICUT NUMERUS VALENS CONTENTUM(s + 104) - CONTENTUM(s + 40).
@@ -189,12 +172,13 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         FIN-SI.
     FIN-SI.
 
-    // Graphica XI: HUD navis vitreatus, hiérarchie interne claire.
-    f = NATG_PANEL(c, 420, 78, 220, 188, panel2, edge).
+    // HUD vitreatus construit uniquement avec primitives deja certifiees.
+    f = NATG_RECT(c, 420, 78, 220, 188, panel).
+    f = NATG_RECT(c, 422, 80, 216, 184, panel2).
     f = NATG_RECT_ALPHA(c, 430, 84, 200, 18, phosphor_d, 26).
+    f = NATG_RECT(c, 426, 82, 208, 1, edge).
     f = NATG_TEXT(c, 432, 88, "VESSEL STATUS", 1, edge).
 
-    // Status navis.
     t = "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)) + " M".
     f = NATG_TEXT_GLOW(c, 432, 108, t, 1, echo).
     t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10) + "%".
@@ -209,9 +193,11 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
     f = NATG_TEXT_GLOW(c, 432, 244, t, 1, amber).
 
-    // Graphica XI: journal de droite devient un vrai panneau cockpit.
-    f = NATG_PANEL(c, 656, 68, 286, 270, panel, edge).
+    // Journal cockpit: double couche sans wrapper experimental.
+    f = NATG_RECT(c, 656, 68, 286, 270, panel).
+    f = NATG_RECT(c, 658, 70, 282, 266, panel2).
     f = NATG_RECT_ALPHA(c, 666, 76, 266, 24, phosphor_d, 22).
+    f = NATG_RECT(c, 664, 74, 270, 1, edge).
     f = NATG_TEXT_GLOW(c, 670, 82, "DIVE CORE ONLINE", 1, phosphor).
     SI CONTENTUM(s + 200) != 0 TUNC
         f = NATG_TEXT_GLOW(c, 670, 116, "EXTRACTION ACTIVE", 1, amber).
@@ -252,7 +238,6 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         FIN-SI.
     FIN-SI.
 
-    // Region / relief dans un sous-panneau distinct.
     DECLARA regio SICUT NUMERUS VALENS NAT_MUNDUS_REGIO(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
     DECLARA relief SICUT NUMERUS VALENS NAT_MUNDUS_RELIEF(CONTENTUM(s + 56), CONTENTUM(s + 40), CONTENTUM(s + 48)).
     DECLARA nomen_regio SICUT TEXTUS VALENS "UPPER SLOPE".
@@ -265,7 +250,8 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     SI relief == 3 TUNC nomen_relief = "BROKEN". FIN-SI.
     SI relief == 4 TUNC nomen_relief = "ESCARPMENT". FIN-SI.
 
-    f = NATG_RECT_ALPHA(c, 666, 258, 266, 68, panel2, 128).
+    f = NATG_RECT_ALPHA(c, 666, 258, 266, 68, panel, 128).
+    f = NATG_RECT(c, 670, 260, 258, 1, edge).
     t = "REGION " + nomen_regio.
     f = NATG_TEXT_GLOW(c, 670, 270, t, 1, echo).
     t = "SEABED " + nomen_relief.
@@ -275,7 +261,7 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         f = NATG_TEXT_GLOW(c, 670, 350, "SIGNAL LOST", 2, danger).
     FIN-SI.
 
-    // Graphica XI: footer segmente en instruments au lieu de texte flottant.
+    // Footer segmente en trois instruments.
     f = NATG_RECT_ALPHA(c, 14, 656, 202, 50, panel, 150).
     f = NATG_RECT_ALPHA(c, 230, 656, 202, 50, panel, 150).
     f = NATG_RECT_ALPHA(c, 446, 656, 186, 50, panel, 150).
