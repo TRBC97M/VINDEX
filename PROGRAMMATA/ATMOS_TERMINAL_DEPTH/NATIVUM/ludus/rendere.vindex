@@ -31,12 +31,25 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
     DECLARA danger SICUT NUMERUS VALENS CBGRA_COLOR(255, 128, 144).
 
     DECLARA f SICUT NUMERUS VALENS CBGRA_LIMPA(c, void).
-    // Header et separatio desktop sicut layout HTML.
+
+    // Structura UI. Fundum ante effectum CRT pingitur.
     f = CBGRA_RECT(c, 0, 0, 960, 52, panel).
     f = CBGRA_RECT(c, 0, 50, 960, 2, edge).
     f = CBGRA_RECT(c, 648, 52, 2, 668, edge).
+    f = CBGRA_RECT(c, 420, 78, 220, 188, panel).
+    f = CBGRA_RECT(c, 420, 78, 220, 1, edge).
+
+    // CRT: scanlines tantum in strato fundi. Elementa foreground postea
+    // pinguntur ne scanline opaca ordines glyphorum 5x7 deleat.
+    DECLARA y SICUT NUMERUS VALENS 55.
+    DUM y < 720 PERFICE
+        f = CBGRA_RECT(c, 0, y, 960, 1, CBGRA_COLOR(8, 20, 15)).
+        y = y + 4.
+    FIN-DUM.
+
+    // Tituli et textus UI: scala II ad legibilitatem in resize/stretch.
     f = FB5_TEXTUS(c, 18, 17, "ATMOS // TERMINAL DEPTH", 2, phosphor).
-    f = FB5_TEXTUS(c, 690, 19, "SYSTEM LOG", 1, phosphor).
+    f = FB5_TEXTUS(c, 720, 17, "SYSTEM LOG", 2, phosphor).
 
     // Sonar 600x600 logicum intra tabulam sinistram.
     DECLARA cx SICUT NUMERUS VALENS 324.
@@ -63,51 +76,43 @@ FUNCTIO NAT_RENDE REDDENS NUMERUS.
         DECLARA ty SICUT NUMERUS VALENS cy + dy * radius / range.
         f = CBGRA_LINEA(c, cx, cy, tx, ty, echo).
         f = CBGRA_CIRCULUS(c, tx, ty, 6, amber).
-        f = FB5_TEXTUS(c, 18, 62, "SONAR // EN ROUTE", 1, echo).
+        f = FB5_TEXTUS(c, 18, 58, "SONAR // EN ROUTE", 2, echo).
     ALITER
-        f = FB5_TEXTUS(c, 18, 62, "SONAR // READY - CLICK TO NAVIGATE", 1, echo).
+        f = FB5_TEXTUS(c, 18, 58, "SONAR // READY - CLICK TO NAVIGATE", 2, echo).
     FIN-SI.
 
-    // Resource HUD unicus intra canvas.
-    f = CBGRA_RECT(c, 425, 72, 205, 178, panel).
-    f = CBGRA_RECT(c, 425, 72, 205, 1, edge).
+    // Resource HUD unicus intra canvas, typographia scala II.
     DECLARA t SICUT TEXTUS VALENS "DEPTH " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 24)).
     t = t + " M".
-    f = FB5_TEXTUS(c, 438, 85, t, 1, echo).
+    f = FB5_TEXTUS(c, 432, 90, t, 2, echo).
     t = "OXYGEN " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 0) / 10).
-    f = FB5_TEXTUS(c, 438, 112, t, 1, text_d).
-    f = NAT_UI_BAR(c, 438, 126, 178, CONTENTUM(s + 0), phosphor).
+    f = FB5_TEXTUS(c, 432, 118, t, 2, text_d).
+    f = NAT_UI_BAR(c, 432, 136, 196, CONTENTUM(s + 0), phosphor).
     t = "ENERGY " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 8) / 10).
-    f = FB5_TEXTUS(c, 438, 147, t, 1, text_d).
-    f = NAT_UI_BAR(c, 438, 161, 178, CONTENTUM(s + 8), phosphor).
+    f = FB5_TEXTUS(c, 432, 157, t, 2, text_d).
+    f = NAT_UI_BAR(c, 432, 175, 196, CONTENTUM(s + 8), phosphor).
     t = "HULL " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 16) / 10).
-    f = FB5_TEXTUS(c, 438, 182, t, 1, text_d).
-    f = NAT_UI_BAR(c, 438, 196, 178, CONTENTUM(s + 16), phosphor).
+    f = FB5_TEXTUS(c, 432, 196, t, 2, text_d).
+    f = NAT_UI_BAR(c, 432, 214, 196, CONTENTUM(s + 16), phosphor).
     t = "CREDITS " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 32)).
-    f = FB5_TEXTUS(c, 438, 220, t, 1, amber).
+    f = FB5_TEXTUS(c, 432, 237, t, 2, amber).
 
     // Coordonnatae et range infra sonar.
     t = "X " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 40)).
     t = t + "  Y " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 48)).
-    f = FB5_TEXTUS(c, 18, 688, t, 1, text_d).
+    f = FB5_TEXTUS(c, 18, 680, t, 2, text_d).
     t = "RANGE " + TEXTUS_EX_NUMERO_DECIMALI(CONTENTUM(s + 160)).
     t = t + " M".
-    f = FB5_TEXTUS(c, 250, 688, t, 1, text_d).
+    f = FB5_TEXTUS(c, 270, 680, t, 2, text_d).
 
     // Journal minimal, eiusdem framebuffer pars.
-    f = FB5_TEXTUS(c, 670, 72, "DIVE CORE ONLINE", 1, phosphor).
-    f = FB5_TEXTUS(c, 670, 94, "CLICK SONAR TO SET COURSE", 1, text_d).
-    f = FB5_TEXTUS(c, 670, 116, "WORLD RADIUS 3000 KM", 1, text_d).
-    f = FB5_TEXTUS(c, 670, 138, "ESC OR WINDOW X TO EXIT", 1, text_d).
+    f = FB5_TEXTUS(c, 660, 78, "DIVE CORE ONLINE", 2, phosphor).
+    f = FB5_TEXTUS(c, 660, 104, "CLICK SONAR TO SET COURSE", 2, text_d).
+    f = FB5_TEXTUS(c, 660, 130, "WORLD RADIUS 3000 KM", 2, text_d).
+    f = FB5_TEXTUS(c, 660, 156, "ESC OR WINDOW X TO EXIT", 2, text_d).
     SI CONTENTUM(s + 64) == 0 TUNC
-        f = FB5_TEXTUS(c, 670, 184, "SIGNAL LOST", 2, danger).
+        f = FB5_TEXTUS(c, 660, 198, "SIGNAL LOST", 2, danger).
     FIN-SI.
 
-    // Scanlines simulatae in ipso canvas, non overlay alterius API.
-    DECLARA y SICUT NUMERUS VALENS 55.
-    DUM y < 720 PERFICE
-        f = CBGRA_RECT(c, 0, y, 960, 1, CBGRA_COLOR(8, 20, 15)).
-        y = y + 4.
-    FIN-DUM.
     REDDE 1.
 FIN-FUNCTIO.
