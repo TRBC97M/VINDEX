@@ -1,6 +1,6 @@
 // ATMOS // TERMINAL DEPTH — NATIVUM.
 // Reconstructionis linea activa: HTML mores refert, runtime totus VINDEX.
-// Stabilitas II: simulatio LX Hz manet; raster software ad 1280x720 capitur et XXX Hz praesentatur.
+// Stabilitas III: raster 1280x720/XXX Hz manet; HALFTONE presentationem mollit sine raster software maiore.
 
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/textus.vindex".
 IMPORTA "../../../Vindex Chat-GPT/vindex_final_v51/bibliotheca/conversio.vindex".
@@ -108,6 +108,8 @@ FUNCTIO NAT_SMOKE REDDENS NUMERUS.
     SI praes == 0 TUNC REDDE 47. FIN-SI.
     DECLARA visus SICUT NUMERUS VALENS WDIB_PIXEL_ECRAN(dibctx, hdc, 0, 0).
     SI visus != 1778955 TUNC REDDE 48. FIN-SI.
+    DECLARA mollis SICUT NUMERUS VALENS WDIB_PRAESENTA_MOLLIS(dibctx, dib, hdc, cw, ch).
+    SI mollis == 0 TUNC REDDE 56. FIN-SI.
 
     DECLARA stationis SICUT NUMERUS VALENS NAT_SMOKE_STATIO(canvas).
     SI stationis != 0 TUNC REDDE stationis. FIN-SI.
@@ -138,7 +140,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA point SICUT NUMERUS VALENS RESERVA_OCTETA(8).
     SI rect == 0 || msg == 0 || point == 0 TUNC REDDE 74. FIN-SI.
 
-    // Raster internus software non crescit ultra 1280x720. StretchBlt praesentat ad 1080p/4K.
+    // Raster internus software non crescit ultra 1280x720. HALFTONE praesentat molliter ad 1080p/4K.
     DECLARA client_w SICUT NUMERUS VALENS 1280.
     DECLARA client_h SICUT NUMERUS VALENS 720.
     SI WINAPP_CLIENT_RECT(ctx, hwnd, rect) != 0 TUNC
@@ -164,7 +166,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     ALITER
         pictum_init = NAT_RENDE(canvas, s).
     FIN-SI.
-    DECLARA ip SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, client_w, client_h).
+    DECLARA ip SICUT NUMERUS VALENS WDIB_PRAESENTA_MOLLIS(dibctx, dib, hdc, client_w, client_h).
 
     SI argc >= 2 TUNC
         DECLARA code SICUT NUMERUS VALENS NAT_SMOKE(s, canvas, ctx, dibctx, dib, hwnd, hdc, rect).
@@ -266,7 +268,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                     ALITER
                         pictum = NAT_RENDE(canvas, s).
                     FIN-SI.
-                    DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA(dibctx, dib, hdc, cw, ch).
+                    DECLARA praes SICUT NUMERUS VALENS WDIB_PRAESENTA_MOLLIS(dibctx, dib, hdc, cw, ch).
                 FIN-SI.
             FIN-SI.
             DECLARA dorm SICUT NUMERUS VALENS WINAPP_DORMI(ctx, 16).
