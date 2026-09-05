@@ -6,7 +6,7 @@
 // 32 primum stratum, 40 numerus,
 // 48/56/64/72 damage x/y/w/h, 80 vexillum damage,
 // 88 generatio, 96 pixela ultimi renderis, 104 pixela ultimae praesentiae,
-// 112 reservata, 120 reservata.
+// 112 backend BX, 120 fence ultima completa.
 //
 // Stratum XCVI octeta:
 //  0 id, 8 superficies GX, 16 x, 24 y, 32 z,
@@ -30,6 +30,21 @@ FUNCTIO CX_SCENA_BACK REDDENS NUMERUS.
     ACCIPIT scena SICUT NUMERUS.
     SI scena==0 TUNC REDDE 0. FIN-SI.
     REDDE CONTENTUM(scena+24).
+FIN-FUNCTIO.
+
+FUNCTIO CX_SCENA_BACKEND REDDENS NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    SI scena==0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(scena+112).
+FIN-FUNCTIO.
+
+FUNCTIO CX_SCENA_BACKEND_PONE REDDENS NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    ACCIPIT backend SICUT NUMERUS.
+    SI scena==0 || BX_PARATUS(backend)==0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(backend+32)!=0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(scena+112)=backend. CONTENTUM(scena+120)=0.
+    REDDE CX_DAMNA_NOTA(scena,GVIII_RECT_CREA(0,0,CX_SCENA_W(scena),CX_SCENA_H(scena))).
 FIN-FUNCTIO.
 
 FUNCTIO CX_STRATUM_RECT REDDENS NUMERUS.
@@ -92,10 +107,11 @@ FUNCTIO CX_SCENA_CREA REDDENS NUMERUS.
     SI scena<=0 TUNC REDDE 0. FIN-SI.
     DECLARA f SICUT NUMERUS VALENS GX_MEM_PURA(scena,128).
     DECLARA back SICUT NUMERUS VALENS GX_CREA(w,h).
-    SI back==0 TUNC REDDE 0. FIN-SI.
+    DECLARA backend SICUT NUMERUS VALENS BX_ELIGE(0,64).
+    SI back==0 || backend==0 TUNC REDDE 0. FIN-SI.
     CONTENTUM(scena)=w. CONTENTUM(scena+8)=h.
     CONTENTUM(scena+16)=fundum. CONTENTUM(scena+24)=back.
-    CONTENTUM(scena+88)=1.
+    CONTENTUM(scena+88)=1. CONTENTUM(scena+112)=backend.
     f=CX_DAMNA_NOTA(scena,GVIII_RECT_CREA(0,0,w,h)).
     REDDE scena.
 FIN-FUNCTIO.
@@ -109,10 +125,11 @@ FUNCTIO CX_SCENA_CREA_UEFI REDDENS NUMERUS.
     SI scena<=0 TUNC REDDE 0. FIN-SI.
     DECLARA f SICUT NUMERUS VALENS GX_MEM_PURA(scena,128).
     DECLARA back SICUT NUMERUS VALENS GX_CREA_UEFI(w,h).
-    SI back==0 TUNC REDDE 0. FIN-SI.
+    DECLARA backend SICUT NUMERUS VALENS BX_ELIGE(0,64).
+    SI back==0 || backend==0 TUNC REDDE 0. FIN-SI.
     CONTENTUM(scena)=w. CONTENTUM(scena+8)=h.
     CONTENTUM(scena+16)=fundum. CONTENTUM(scena+24)=back.
-    CONTENTUM(scena+88)=1.
+    CONTENTUM(scena+88)=1. CONTENTUM(scena+112)=backend.
     f=CX_DAMNA_NOTA(scena,GVIII_RECT_CREA(0,0,w,h)).
     REDDE scena.
 FIN-FUNCTIO.
@@ -460,50 +477,14 @@ FUNCTIO CX_PRAESENTA_FB REDDENS NUMERUS.
     DECLARA back SICUT NUMERUS VALENS CONTENTUM(scena+24).
     DECLARA x0 SICUT NUMERUS VALENS GVIII_RECT_X(damnum). DECLARA y0 SICUT NUMERUS VALENS GVIII_RECT_Y(damnum).
     DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(damnum). DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(damnum).
-    DECLARA forma SICUT NUMERUS VALENS CONTENTUM(50333744).
-    DECLARA basis_fb SICUT NUMERUS VALENS CONTENTUM(50333712). DECLARA linea_fb SICUT NUMERUS VALENS CONTENTUM(50333720).
-    DECLARA basis_back SICUT NUMERUS VALENS GX_BASIS(back). DECLARA linea_back SICUT NUMERUS VALENS CONTENTUM(back+16).
-    DECLARA y SICUT NUMERUS VALENS 0.
-    DUM y<h PERFICE
-        DECLARA x SICUT NUMERUS VALENS 0.
-        DUM x+1<w PERFICE
-            DECLARA bp SICUT NUMERUS VALENS basis_back+((y0+y)*linea_back+x0+x)*4.
-            DECLARA fp SICUT NUMERUS VALENS basis_fb+((y0+y)*linea_fb+x0+x)*4.
-            DECLARA duo SICUT NUMERUS VALENS CONTENTUM(bp).
-            DECLARA a0 SICUT NUMERUS VALENS (duo>>24)&255. DECLARA a1 SICUT NUMERUS VALENS (duo>>56)&255.
-            SI a0==255 && a1==255 TUNC
-                SI forma==0 TUNC
-                    CONTENTUM(fp)=duo&72057589759737855.
-                ALITER
-                    DECLARA q0 SICUT NUMERUS VALENS duo&4294967295. DECLARA q1 SICUT NUMERUS VALENS (duo>>32)&4294967295.
-                    DECLARA c0 SICUT NUMERUS VALENS ((q0&255)<<16)|(q0&65280)|((q0>>16)&255).
-                    DECLARA c1 SICUT NUMERUS VALENS ((q1&255)<<16)|(q1&65280)|((q1>>16)&255).
-                    CONTENTUM(fp)=c0+c1*4294967296.
-                FIN-SI.
-            ALITER
-                DECLARA j SICUT NUMERUS VALENS 0.
-                DUM j<2 PERFICE
-                    DECLARA q SICUT NUMERUS VALENS (duo>>(j*32))&4294967295.
-                    DECLARA a SICUT NUMERUS VALENS (q>>24)&255.
-                    DECLARA r SICUT NUMERUS VALENS q&255. DECLARA g SICUT NUMERUS VALENS (q>>8)&255. DECLARA b SICUT NUMERUS VALENS (q>>16)&255.
-                    SI a>0 && a<255 TUNC r=GVIII_CLAMPA((r*255+a/2)/a,0,255). g=GVIII_CLAMPA((g*255+a/2)/a,0,255). b=GVIII_CLAMPA((b*255+a/2)/a,0,255). FIN-SI.
-                    SI forma!=0 TUNC DECLARA t SICUT NUMERUS VALENS r. r=b. b=t. FIN-SI.
-                    DECLARA f SICUT NUMERUS VALENS FV_PIXEL_COLOR(x0+x+j,y0+y,r|(g<<8)|(b<<16)).
-                    j=j+1.
-                FIN-DUM.
-            FIN-SI.
-            x=x+2.
-        FIN-DUM.
-        SI x<w TUNC
-            DECLARA q2 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(back,x0+x,y0+y). DECLARA a2 SICUT NUMERUS VALENS (q2>>24)&255.
-            DECLARA r2 SICUT NUMERUS VALENS q2&255. DECLARA g2 SICUT NUMERUS VALENS (q2>>8)&255. DECLARA b2 SICUT NUMERUS VALENS (q2>>16)&255.
-            SI a2>0 && a2<255 TUNC r2=GVIII_CLAMPA((r2*255+a2/2)/a2,0,255). g2=GVIII_CLAMPA((g2*255+a2/2)/a2,0,255). b2=GVIII_CLAMPA((b2*255+a2/2)/a2,0,255). FIN-SI.
-            SI forma!=0 TUNC DECLARA t2 SICUT NUMERUS VALENS r2. r2=b2. b2=t2. FIN-SI.
-            DECLARA f3 SICUT NUMERUS VALENS FV_PIXEL_COLOR(x0+x,y0+y,r2|(g2<<8)|(b2<<16)).
-        FIN-SI.
-        y=y+1.
-    FIN-DUM.
+    DECLARA backend SICUT NUMERUS VALENS CONTENTUM(scena+112).
+    SI BX_PARATUS(backend)==0 TUNC CONTENTUM(scena+104)=0. REDDE 0. FIN-SI.
+    SI BX_FRAME_INCIPE(backend)==0 TUNC CONTENTUM(scena+104)=0. REDDE 0. FIN-SI.
+    SI BX_PRAESENTA_ADDE(backend,back,damnum)==0 TUNC DECLARA ig SICUT NUMERUS VALENS BX_FRAME_ABICE(backend). CONTENTUM(scena+104)=0. REDDE 0. FIN-SI.
+    DECLARA fence SICUT NUMERUS VALENS BX_FRAME_COMMITTE(backend).
+    SI fence==0 TUNC CONTENTUM(scena+104)=0. REDDE 0. FIN-SI.
     CONTENTUM(scena+104)=w*h.
+    CONTENTUM(scena+120)=fence.
     DECLARA f2 SICUT NUMERUS VALENS CX_DAMNA_PURA(scena).
     REDDE 1.
 FIN-FUNCTIO.

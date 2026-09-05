@@ -1,7 +1,7 @@
 # JL-UX — FUNDAMENTUM GRAPHICUM MODERNUM
 
 **Sylvia OS — P16-XII**  
-Status: **P16-XII-A, B et C PERFECTA; P16-XII-D PROBATUM / CANONIZANDUM**
+Status: **P16-XII-A–D PERFECTA; P16-XII-E PROBATUM / CANONIZANDUM; P16-XII-F ACTIVUM**
 
 ## I. Propositum
 
@@ -188,6 +188,8 @@ C2 instituit:
 
 ### P16-XII-E — Migratio shellis
 
+**Status: PROBATUM / CANONIZANDUM per #155.**
+
 - fenestrae in strata composita;
 - chrome JL-UX;
 - INITIUM;
@@ -198,8 +200,12 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
+**Status: ACTIVUM; incrementum F1 contractum et codam instituit.**
+
 - contractus backend explicatus;
-- batching/coda;
+- batching/coda communis Graphica VIII/X;
+- fences et damnum post successum tantum purgatum;
+- backend software ut referentia et target injectabile probationum;
 - texturarum cache;
 - via GPU cum infrastructura hardware id sinit.
 
@@ -356,7 +362,38 @@ Catena certificata:
 OVMF → VINDEX → EFI timer pacer → TSC calibratum → TX → MX → scena GX → damage-only → framebuffer
 ```
 
-## XVI. Invarianta
+## XVI. Contractus P16-XII-F1
+
+Prima pars XII-F limitem inter compositionem scenae et praesentiam physicam
+explicat. `CX_SCENA_RENDE` backbuffer RGBA praemultiplicatum adhuc secundum
+eandem semanticam software componit; `CX_PRAESENTA_FB` autem pixela GOP iam
+non directe scribit.
+
+Nova structura continet:
+
+- nucleum `QVIII_*` in `fenestrale_coda_graphica.vindex`, communem executoribus
+  Graphica VIII et Graphica X, sine mutatione opcodum historicorum `1..9`;
+- descriptorem `BX_*` ABI versione `1`, genere, capacitatibus, statu framei,
+  erroribus, numeris mandatorum et fences;
+- electionem `BX_ELIGE` quae candidatum non paratum ad backend software
+  referentiae reicit et fallback numerat;
+- opcode `256` ad praesentiam regionalem superficiei GX;
+- transactionem `FRAME_INCIPE → PRAESENTA_ADDE → FRAME_COMMITTE` quae plura
+  recta in uno batch condere potest;
+- target software injectabile ad probationes RGB/BGR sine firmware;
+- backend software GOP ut referentiam semanticam productionis;
+- sedes backendis et fence completa in descriptoribus scenae CX.
+
+Genus GPU in ABI reservatur sed `BX_PARATUS` eum recusat donec executor verus
+adsit. Ita P16-XII-F P12 non duplicat neque accelerationem fictam nuntiat.
+Si submit vel praesentia deficit, damage scenae **non purgatur**: idem rectum
+post backend validum restitutum iterum praesentari potest.
+
+Probatio VINDEX nativa confirmat batch duo-mandatorum, ordinem canalium amborum
+formatorum GOP, fences monotonas, overflow codae, electionem backendis scenae,
+recusationem GPU ficti et conservationem damni post defectum.
+
+## XVII. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -375,6 +412,6 @@ OVMF → VINDEX → EFI timer pacer → TSC calibratum → TX → MX → scena G
 - retargetatio semper ex statu composito praesenti incipit;
 - horologium UI non obstruit ansam input.
 
-## XVII. Sententia
+## XVIII. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**

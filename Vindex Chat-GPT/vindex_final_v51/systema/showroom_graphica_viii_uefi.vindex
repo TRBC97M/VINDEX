@@ -12,6 +12,7 @@ IMPORTA "bibliotheca/fenestrale_graphica_viii_superficies.vindex".
 IMPORTA "bibliotheca/fenestrale_interpolatio_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_damage_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_typographia_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
 IMPORTA "bibliotheca/fenestrale_commandos_viii.vindex".
 IMPORTA "bibliotheca/fons_ui_viii.vindex".
 IMPORTA "bibliotheca/materia_ui_viii.vindex".
