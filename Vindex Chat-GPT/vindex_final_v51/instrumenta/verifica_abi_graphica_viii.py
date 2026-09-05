@@ -17,6 +17,8 @@ ARCHIVA = [
     RADIX / "bibliotheca/fenestrale_commandos_viii.vindex",
     RADIX / "bibliotheca/fenestrale_cache_texturarum_x.vindex",
     RADIX / "bibliotheca/fenestrale_backend_x.vindex",
+    RADIX / "bibliotheca/fenestrale_backend_virtio_x.vindex",
+    RADIX / "systema/rectores/virtio_gpu_2d.vindex",
 ]
 LIMEN = 7
 FUNCTIO = re.compile(r"\bFUNCTIO\s+([A-Z0-9_]+)\b(.*?)\bFIN-FUNCTIO\.", re.S)

@@ -29,8 +29,10 @@
 // 80 fence ultima completa, 88 vexilla.
 // Status 0 est inactivus, 1 paratus, 2 agens.
 //
-// Coda et executor sunt contractus, non promissum GPU fictum. Executor GPU
-// describi potest, sed software manet sola implementatio parata donec P12 id sinit.
+// Coda et executor sunt contractus, non promissum GPU fictum. Executor
+// software manet oracle semanticum. F7 eundem executorem compositionis cum
+// target DMA et praesentatore VirtIO GPU coniungit; descriptor GPU tantum
+// paratus fit post transportum, resource et scanout hardware consummata.
 
 FUNCTIO BX_ABI REDDENS NUMERUS. REDDE 1. FIN-FUNCTIO.
 FUNCTIO BX_EX_ABI REDDENS NUMERUS. REDDE 1. FIN-FUNCTIO.
@@ -91,8 +93,7 @@ FIN-FUNCTIO.
 FUNCTIO BX_EXECUTOR_PARATUS_EST REDDENS NUMERUS.
     ACCIPIT executor SICUT NUMERUS.
     SI BX_EXECUTOR_COMPATIBILIS(executor)==0 || CONTENTUM(executor+32)!=BX_EX_PARATUS() || (CONTENTUM(executor+88)&1)==0 TUNC REDDE 0. FIN-SI.
-    SI CONTENTUM(executor+8)==BX_GENUS_SOFTWARE() TUNC REDDE 1. FIN-SI.
-    REDDE 0.
+    REDDE 1.
 FIN-FUNCTIO.
 
 FUNCTIO BX_CREA_CUM_EXECUTORE REDDENS NUMERUS.
@@ -720,7 +721,7 @@ FUNCTIO BX_EXECUTOR_SUBMITTE REDDENS NUMERUS.
     CONTENTUM(executor+32)=BX_EX_AGENS(). CONTENTUM(executor+40)=0.
     CONTENTUM(executor+48)=CONTENTUM(executor+48)+1. CONTENTUM(executor+72)=QVIII_NUMERUS(CONTENTUM(b+24)).
     DECLARA rectum SICUT NUMERUS VALENS 0.
-    SI CONTENTUM(executor+8)==BX_GENUS_SOFTWARE() TUNC rectum=BX_CODA_EXSEQUERE_SW(b). FIN-SI.
+    SI CONTENTUM(executor+8)==BX_GENUS_SOFTWARE() || CONTENTUM(executor+8)==BX_GENUS_GPU() TUNC rectum=BX_CODA_EXSEQUERE_SW(b). FIN-SI.
     SI rectum==0 TUNC
         SI CONTENTUM(b+40)==0 TUNC CONTENTUM(b+40)=4. FIN-SI.
         CONTENTUM(executor+40)=CONTENTUM(b+40). CONTENTUM(executor+64)=CONTENTUM(executor+64)+1.

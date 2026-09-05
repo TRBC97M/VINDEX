@@ -1,0 +1,63 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "systema/rectores/pci.vindex".
+IMPORTA "systema/rectores/mmio.vindex".
+IMPORTA "systema/rectores/paginae_dma.vindex".
+IMPORTA "systema/rectores/virtio_pci.vindex".
+IMPORTA "systema/rectores/virtio_gpu.vindex".
+IMPORTA "systema/rectores/virtio_gpu_2d.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_virtio_x.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI VG2D_CMD_CREA()!=257 || VG2D_CMD_TRANSFER()!=261 || VG2D_CMD_SEPARA()!=263 TUNC REDDE 1. FIN-SI.
+    SI VG2D_RESP_NODATA()!=4352 || VG2D_FORMATUM_RGBA_X()!=134 TUNC REDDE 2. FIN-SI.
+    DECLARA rudis SICUT NUMERUS VALENS RESERVA_OCTETA(8192).
+    SI rudis==0 TUNC REDDE 3. FIN-SI.
+    DECLARA memoria SICUT NUMERUS VALENS ((rudis+4095)/4096)*4096.
+    DECLARA vexilla SICUT NUMERUS VALENS DMA_X86_COHERENS()|DMA_APPARATUS_LEGE()|DMA_APPARATUS_SCRIBE().
+    DECLARA regio SICUT NUMERUS VALENS DMA_REGIO_ADOPTA(memoria,memoria,4096,4096,vexilla).
+    DECLARA coda SICUT NUMERUS VALENS VQ_CREA(regio,8).
+    SI regio==0 || coda==0 || VG2D_TERMINI(coda,256,56)==0 TUNC REDDE 4. FIN-SI.
+    SI VG2D_TERMINI(coda,200,24)!=0 || VG2D_TERMINI(coda,4080,24)!=0 TUNC REDDE 5. FIN-SI.
+    SI VG2D_CAPUT_PRAEPARA(coda,256,56,VG2D_CMD_TRANSFER())==0 TUNC REDDE 6. FIN-SI.
+    SI DMA_LEGE32(regio,256)!=261 || DMA_LEGE32(regio,260)!=1 || DMA_LEGE64(regio,264)!=1 TUNC REDDE 7. FIN-SI.
+    DECLARA rectum SICUT NUMERUS VALENS GVIII_RECT_CREA(13,17,29,31).
+    SI VG2D_RECTUM_SCRIBE(coda,280,rectum)==0 TUNC REDDE 8. FIN-SI.
+    SI DMA_LEGE32(regio,280)!=13 || DMA_LEGE32(regio,284)!=17 || DMA_LEGE32(regio,288)!=29 || DMA_LEGE32(regio,292)!=31 TUNC REDDE 9. FIN-SI.
+
+    DECLARA src SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA target_mem SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    DECLARA contextus SICUT NUMERUS VALENS RESERVA_OCTETA(168).
+    SI src==0 || target_mem==0 || contextus==0 TUNC REDDE 10. FIN-SI.
+    DECLARA purum SICUT NUMERUS VALENS GX_MEM_PURA(target_mem,64).
+    purum=GX_MEM_PURA(contextus,168).
+    DECLARA color SICUT NUMERUS VALENS 3351057.
+    purum=GX_RECT_ALPHA(src,GVIII_RECT_CREA(0,0,4,4),color,255).
+    CONTENTUM(contextus)=target_mem. CONTENTUM(contextus+8)=4.
+    CONTENTUM(contextus+16)=4. CONTENTUM(contextus+24)=4. CONTENTUM(contextus+32)=0.
+    DECLARA caps SICUT NUMERUS VALENS BX_CAP_MINIMUM()|BX_CAP_COMPOSITIO()|BX_CAP_NOVEM()|BX_CAP_VITA_TEXTURE().
+    DECLARA executor SICUT NUMERUS VALENS BX_EXECUTOR_CREA(BX_GENUS_GPU(),caps,contextus).
+    SI executor==0 TUNC REDDE 11. FIN-SI.
+    CONTENTUM(executor+32)=BX_EX_PARATUS(). CONTENTUM(executor+88)=1.
+    DECLARA backend SICUT NUMERUS VALENS BX_CREA_CUM_EXECUTORE(4,executor).
+    SI backend==0 || BX_PARATUS(backend)==0 || CONTENTUM(backend+8)!=BX_GENUS_GPU() TUNC REDDE 12. FIN-SI.
+    SI BX_FRAME_INCIPE(backend)==0 || BX_PRAESENTA_ADDE(backend,src,GVIII_RECT_CREA(0,0,4,4))==0 TUNC REDDE 13. FIN-SI.
+    SI BX_FRAME_COMMITTE(backend)!=1 || BX_EXECUTOR_COMPLETIONES(executor)!=1 TUNC REDDE 14. FIN-SI.
+    SI OCTETUS_AB(target_mem)!=17 || OCTETUS_AB(target_mem+1)!=34 || OCTETUS_AB(target_mem+2)!=51 || OCTETUS_AB(target_mem+3)!=0 TUNC REDDE 15. FIN-SI.
+    SI BGVX_ACTIVUS(contextus)!=0 TUNC REDDE 16. FIN-SI.
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(4,4,src).
+    SI scena==0 || CX_SCENA_BACKEND_PONE(scena,backend)==0 TUNC REDDE 17. FIN-SI.
+    CONTENTUM(contextus+88)=backend.
+    SI BGVX_SCENAE_RESTITUE(contextus,scena)==0 TUNC REDDE 18. FIN-SI.
+    SI CX_SCENA_BACKEND(scena)==backend || CONTENTUM(CX_SCENA_BACKEND(scena)+8)!=BX_GENUS_SOFTWARE() TUNC REDDE 19. FIN-SI.
+    SI CX_DAMNA_RECT(scena)==0 TUNC REDDE 20. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
