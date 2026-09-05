@@ -41,12 +41,16 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_pontes_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_paginae_dma_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/pci_bar_calculi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_primitivae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_regiones.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/paginae_dma.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/paginae_dma.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_paginae_dma.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
@@ -105,12 +109,16 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_pontes_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_paginae_dma_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/pci_bar_calculi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_primitivae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_regiones.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/paginae_dma.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/paginae_dma.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_paginae_dma.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
@@ -329,3 +337,13 @@ jobs:
         shell: bash
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         run: bash ./instrumenta/proba_pci_mmio_053.sh
+
+      - name: Paginas DMA posside et libera (P12-V2)
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/paginae_dma.vindex /tmp/paginae-dma
+          chmod +x /tmp/paginae-dma
+          /tmp/paginae-dma
+          bash ./instrumenta/proba_paginae_dma_053.sh
