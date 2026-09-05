@@ -96,6 +96,24 @@ FIN-FUNCTIO.
 
 Win64 proprium ABI adhibet; eius correctiones per probationes Windows R4 muniuntur.
 
+## Interruptiones externae x86-64
+
+P12-V3 addit tractatores externos sine codice erroris:
+
+```vindex
+INTERRUPTIO TRACTATOR.
+    REDDE 0.
+FIN-INTERRUPTIO.
+```
+
+`INTERRUPTIO` argumenta non accipit. Compilator omnia registra generalia
+servat, pilam coaequat et per `IRETQ` redit. `SEDES_FUNCTIONIS(TRACTATOR)`
+adressam RIP-relativam reddit, etiam si tractator post vocantem declaratur.
+Primitivae privilegiatae `IDTR_LEGE`, `INTERRUPTIONES_STATUS`,
+`INTERRUPTIONES_CLAUDE`, `INTERRUPTIONES_APERI` et `CODICIS_SELECTOR` rectoribus
+systematis reservantur. Contractus, limites SIMD/FPU atque probatio MSI in
+`documenta/vindex/INTERRUPTIONES.md` describuntur.
+
 ---
 
 # IV. Typi canonici

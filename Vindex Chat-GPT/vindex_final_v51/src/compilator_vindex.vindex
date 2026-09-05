@@ -1290,6 +1290,116 @@ FUNCTIO COMPONE_REVERTE REDDENS NUMERUS.
     REDDE indice + 1.
 FIN-FUNCTIO.
 
+FUNCTIO COMPONE_SEDES_RELATIVA REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    CODEX_SCRIBE(codex, indice, 72).
+    CODEX_SCRIBE(codex, indice + 1, 141).
+    CODEX_SCRIBE(codex, indice + 2, 5).
+    DECLARA relatio SICUT NUMERUS VALENS destinatio - (indice + 7).
+    CODEX_SCRIBE(codex, indice + 3, relatio & 255).
+    CODEX_SCRIBE(codex, indice + 4, (relatio >> 8) & 255).
+    CODEX_SCRIBE(codex, indice + 5, (relatio >> 16) & 255).
+    CODEX_SCRIBE(codex, indice + 6, (relatio >> 24) & 255).
+    REDDE indice + 7.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_IDTR_LEGE REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    CODEX_SCRIBE(codex, indice, 15).
+    CODEX_SCRIBE(codex, indice + 1, 1).
+    CODEX_SCRIBE(codex, indice + 2, 8).
+    CODEX_SCRIBE(codex, indice + 3, 49).
+    CODEX_SCRIBE(codex, indice + 4, 192).
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_INTERRUPTIONES_STATUS REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    CODEX_SCRIBE(codex, indice, 156).
+    CODEX_SCRIBE(codex, indice + 1, 88).
+    REDDE indice + 2.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_INTERRUPTIONES_MUTA REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT aperi SICUT NUMERUS.
+    SI aperi == 0 TUNC
+        CODEX_SCRIBE(codex, indice, 250).
+    ALITER
+        CODEX_SCRIBE(codex, indice, 251).
+    FIN-SI.
+    CODEX_SCRIBE(codex, indice + 1, 49).
+    CODEX_SCRIBE(codex, indice + 2, 192).
+    REDDE indice + 3.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_CODICIS_SELECTOR REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    CODEX_SCRIBE(codex, indice, 49).
+    CODEX_SCRIBE(codex, indice + 1, 192).
+    CODEX_SCRIBE(codex, indice + 2, 102).
+    CODEX_SCRIBE(codex, indice + 3, 140).
+    CODEX_SCRIBE(codex, indice + 4, 200).
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_INTERRUPTIONIS_PROLOGUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS indice.
+    p = COMPONE_IMPONE(codex, p, 0).
+    p = COMPONE_IMPONE(codex, p, 1).
+    p = COMPONE_IMPONE(codex, p, 2).
+    p = COMPONE_IMPONE(codex, p, 3).
+    p = COMPONE_IMPONE(codex, p, 5).
+    p = COMPONE_IMPONE(codex, p, 6).
+    p = COMPONE_IMPONE(codex, p, 7).
+    p = COMPONE_IMPONE(codex, p, 8).
+    p = COMPONE_IMPONE(codex, p, 9).
+    p = COMPONE_IMPONE(codex, p, 10).
+    p = COMPONE_IMPONE(codex, p, 11).
+    p = COMPONE_IMPONE(codex, p, 12).
+    p = COMPONE_IMPONE(codex, p, 13).
+    p = COMPONE_IMPONE(codex, p, 14).
+    p = COMPONE_IMPONE(codex, p, 15).
+    p = COMPONE_TRANSCRIBE(codex, p, 5, 4).
+    CODEX_SCRIBE(codex, p, 72).
+    CODEX_SCRIBE(codex, p + 1, 131).
+    CODEX_SCRIBE(codex, p + 2, 228).
+    CODEX_SCRIBE(codex, p + 3, 240).
+    REDDE p + 4.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_INTERRUPTIONIS_FINEM REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    ACCIPIT indice SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS COMPONE_TRANSCRIBE(codex, indice, 4, 5).
+    p = COMPONE_AUFER(codex, p, 15).
+    p = COMPONE_AUFER(codex, p, 14).
+    p = COMPONE_AUFER(codex, p, 13).
+    p = COMPONE_AUFER(codex, p, 12).
+    p = COMPONE_AUFER(codex, p, 11).
+    p = COMPONE_AUFER(codex, p, 10).
+    p = COMPONE_AUFER(codex, p, 9).
+    p = COMPONE_AUFER(codex, p, 8).
+    p = COMPONE_AUFER(codex, p, 7).
+    p = COMPONE_AUFER(codex, p, 6).
+    p = COMPONE_AUFER(codex, p, 5).
+    p = COMPONE_AUFER(codex, p, 3).
+    p = COMPONE_AUFER(codex, p, 2).
+    p = COMPONE_AUFER(codex, p, 1).
+    p = COMPONE_AUFER(codex, p, 0).
+    CODEX_SCRIBE(codex, p, 72).
+    CODEX_SCRIBE(codex, p + 1, 207).
+    REDDE p + 2.
+FIN-FUNCTIO.
+
 FUNCTIO COMPONE_VOCA_NUCLEUM REDDENS NUMERUS.
     ACCIPIT codex SICUT NUMERUS.
     ACCIPIT indice SICUT NUMERUS.
@@ -1947,6 +2057,23 @@ FUNCTIO IGNORA_SPATIA REDDENS NUMERUS.
     REDDE 0.
 FIN-FUNCTIO.
 
+FUNCTIO CONGRUIT_SIGNO REDDENS NUMERUS.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT signum SICUT NUMERUS.
+    SI positio + mensura > n TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA inventum SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        inventum = inventum * 31 + OCTETUS_AB(fons + positio + i).
+        i = i + 1.
+    FIN-DUM.
+    SI inventum != signum TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
 FUNCTIO EXHIBE_CATHENAM_DIAGNOSTICI REDDENS NUMERUS.
     ACCIPIT textus SICUT ACUS<LITTERA>.
     DECLARA buffer SICUT ORDO DE LITTERA CAPACITAS 256.
@@ -2184,6 +2311,18 @@ FUNCTIO POSITIONES_PENDENTES_SCRIBE REDDENS NUMERUS.
     ACCIPIT contextus_parseris SICUT NUMERUS.
     ACCIPIT valor SICUT NUMERUS.
     CONTENTUM(contextus_parseris + 72) = valor.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO MODUS_INTERRUPTIONIS_LEGE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT NUMERUS.
+    REDDE CONTENTUM(contextus_parseris + 80).
+FIN-FUNCTIO.
+
+FUNCTIO MODUS_INTERRUPTIONIS_SCRIBE REDDENS NUMERUS.
+    ACCIPIT contextus_parseris SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    CONTENTUM(contextus_parseris + 80) = valor.
     REDDE 0.
 FIN-FUNCTIO.
 
@@ -2867,6 +3006,68 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
                 FIN-SI.
             FIN-SI.
         FIN-SI.
+        REDDE 0.
+    FIN-SI.
+
+    SI CONGRUIT_SIGNO(fons, CONTENTUM(pos_fontis), n, 17, 986483996804897799) == 1 TUNC
+        DECLARA positio_sf SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 17.
+        DECLARA ign_sf SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        DECLARA nomen_sf SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+        DECLARA locus_sf SICUT NUMERUS VALENS CERCA_FUNCTIONEM_DYNAMICAM(contextus_parseris, nomen_sf).
+        ign_sf = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        SI locus_sf == 0 TUNC
+            DECLARA loci_sf_pendens SICUT NUMERUS VALENS CONTENTUM(pos_codicis) + 3.
+            CONTENTUM(pos_codicis) = COMPONE_SEDES_RELATIVA(codex, CONTENTUM(pos_codicis), CONTENTUM(pos_codicis)).
+            DECLARA idx_sf_pendens SICUT NUMERUS VALENS PARES_QUANTITAS(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris)).
+            DECLARA ig_sf_pendens SICUT NUMERUS VALENS PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_sf_pendens, 0, loci_sf_pendens).
+            ig_sf_pendens = PARES_SCRIBE(DESCRIPTOR_PENDENTIUM_LEGE(contextus_parseris), idx_sf_pendens, 1, nomen_sf).
+            ig_sf_pendens = PARES_SCRIBE(POSITIONES_PENDENTES_LEGE(contextus_parseris), idx_sf_pendens, 0, positio_sf).
+        ALITER
+            CONTENTUM(pos_codicis) = COMPONE_SEDES_RELATIVA(codex, CONTENTUM(pos_codicis), locus_sf).
+        FIN-SI.
+        REDDE 0.
+    FIN-SI.
+
+    SI CONGRUIT_SIGNO(fons, CONTENTUM(pos_fontis), n, 10, 1990475635245067) == 1 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 10.
+        DECLARA ign_idtr SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        ign_idtr = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_IDTR_LEGE(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI CONGRUIT_SIGNO(fons, CONTENTUM(pos_fontis), n, 22, 4318293085005905002) == 1 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 22.
+        DECLARA ign_is SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_INTERRUPTIONES_STATUS(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI CONGRUIT_SIGNO(fons, CONTENTUM(pos_fontis), n, 22, 4318293070576825918) == 1 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 22.
+        DECLARA ign_ic SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_INTERRUPTIONES_MUTA(codex, CONTENTUM(pos_codicis), 0).
+        REDDE 0.
+    FIN-SI.
+
+    SI CONGRUIT_SIGNO(fons, CONTENTUM(pos_fontis), n, 21, 0 - 4026094046678932825) == 1 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 21.
+        DECLARA ign_ia SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_INTERRUPTIONES_MUTA(codex, CONTENTUM(pos_codicis), 1).
+        REDDE 0.
+    FIN-SI.
+
+    SI CONGRUIT_SIGNO(fons, CONTENTUM(pos_fontis), n, 17, 3618749789835472070) == 1 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 17.
+        DECLARA ign_cs SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_CODICIS_SELECTOR(codex, CONTENTUM(pos_codicis)).
         REDDE 0.
     FIN-SI.
 
@@ -5359,9 +5560,13 @@ FUNCTIO ANALYSA_BLOCUS REDDENS NUMERUS.
                         SI fons[i] == 82 && i + 5 < n && fons[i+1] == 69 && fons[i+2] == 68 && fons[i+3] == 68 && fons[i+4] == 69 && fons[i+5] == 32 TUNC
                             CONTENTUM(pos_fontis) = i + 6.
                             ignoratum = ANALYSA_COMPARATIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
-                            CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 4, 5).
-                            CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 5).
-                            CONTENTUM(pos_codicis) = COMPONE_REVERTE(codex, CONTENTUM(pos_codicis)).
+                            SI MODUS_INTERRUPTIONIS_LEGE(contextus_parseris) == 1 TUNC
+                                CONTENTUM(pos_codicis) = COMPONE_INTERRUPTIONIS_FINEM(codex, CONTENTUM(pos_codicis)).
+                            ALITER
+                                CONTENTUM(pos_codicis) = COMPONE_TRANSCRIBE(codex, CONTENTUM(pos_codicis), 4, 5).
+                                CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 5).
+                                CONTENTUM(pos_codicis) = COMPONE_REVERTE(codex, CONTENTUM(pos_codicis)).
+                            FIN-SI.
                             DUM CONTENTUM(pos_fontis) < n && fons[CONTENTUM(pos_fontis)] != 46 PERFICE
                                 CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
                             FIN-DUM.
@@ -6622,6 +6827,37 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
             status_formae = FORMA_SCRIBE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), idx_registrum_forma, 2, numerus_campi).
             FORMA_ULTIMA_SCRIBE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), idx_registrum_forma).
         ALITER
+        SI CONGRUIT_SIGNO(fons, i, n, 12, 1921031928884728471) == 1 TUNC
+            i = i + 12.
+            DECLARA nomen_interruptio SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).
+            DUM i < n && fons[i] != 46 PERFICE
+                i = i + 1.
+            FIN-DUM.
+            i = i + 1.
+
+            DECLARA idx_interruptio SICUT NUMERUS VALENS PARES_QUANTITAS(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris)).
+            DECLARA ig_interruptio SICUT NUMERUS VALENS PARES_SCRIBE(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), idx_interruptio, 0, nomen_interruptio).
+            ig_interruptio = PARES_SCRIBE(DESCRIPTOR_FUNCTIONUM_LEGE(contextus_parseris), idx_interruptio, 1, pos).
+
+            pos = COMPONE_INTERRUPTIONIS_PROLOGUM(codex, pos).
+            DECLARA positio_reserv_interruptio SICUT NUMERUS VALENS pos + 2.
+            pos = COMPONE_RESERVA_PILA_PROBATA(codex, pos, 0).
+            DECLARA k_clear_interruptio SICUT NUMERUS VALENS RESTITUE_LOCA_DYNAMICA(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris)).
+            CURSOR_PILAE_SCRIBE(contextus_parseris, 0 - 8).
+            CONTENTUM(contextus_parseris) = 0.
+            CONTENTUM(contextus_parseris + 8) = 0.
+            DECLARA ig_modus_interruptio SICUT NUMERUS VALENS MODUS_INTERRUPTIONIS_SCRIBE(contextus_parseris, 1).
+            DECLARA ign_interruptio SICUT NUMERUS VALENS ANALYSA_BLOCUS(codex, SEDES(pos), fons, SEDES(i), n, contextus_parseris).
+            DECLARA spatium_interruptio SICUT NUMERUS VALENS (((0 - CURSOR_PILAE_LEGE(contextus_parseris)) + 15) / 16) * 16.
+            DECLARA ig_corr_interruptio SICUT NUMERUS VALENS CORRIGE_PILA(codex, positio_reserv_interruptio, spatium_interruptio).
+            pos = COMPONE_INTERRUPTIONIS_FINEM(codex, pos).
+            ig_modus_interruptio = MODUS_INTERRUPTIONIS_SCRIBE(contextus_parseris, 0).
+
+            DUM i < n && fons[i] != 46 PERFICE
+                i = i + 1.
+            FIN-DUM.
+            i = i + 1.
+        ALITER
         SI fons[i] == 70 && i + 7 < n && fons[i+1] == 85 && fons[i+2] == 78 && fons[i+3] == 67 && fons[i+4] == 84 && fons[i+5] == 73 && fons[i+6] == 79 && fons[i+7] == 32 TUNC
             DECLARA positio_declarationis_functionis SICUT NUMERUS VALENS i.
             i = i + 8.
@@ -7057,6 +7293,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
                 FIN-SI.
                 REDDE 65.
             FIN-SI.
+        FIN-SI.
         FIN-SI.
         FIN-SI.
         FIN-SI.

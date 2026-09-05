@@ -96,6 +96,28 @@ FUNCTIO PCI_ADEST REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
+FUNCTIO PCI_CAPACITAS_INVENI REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT identificator SICUT NUMERUS.
+    SI (PCI_LEGE(bus, apparatus, functio, 4) & 1048576) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS PCI_GENUS_CAPITIS(bus, apparatus, functio) & 127.
+    DECLARA registrum SICUT NUMERUS VALENS 52.
+    SI genus == 2 TUNC registrum = 20. FIN-SI.
+    DECLARA cursor SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, registrum) & 252.
+    DECLARA visitationes SICUT NUMERUS VALENS 0.
+    DUM cursor >= 64 && cursor <= 252 && visitationes < 48 PERFICE
+        DECLARA caput SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, cursor).
+        SI (caput & 255) == identificator TUNC REDDE cursor. FIN-SI.
+        DECLARA proximus SICUT NUMERUS VALENS (caput / 256) & 252.
+        SI proximus == cursor TUNC REDDE 0. FIN-SI.
+        cursor = proximus.
+        visitationes = visitationes + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
 // --- Descriptio pontium PCI-ad-PCI ---
 // Pons habet classem 6 (pons) et subclassem 4 (PCI-ad-PCI).
 // Registrum 24 continet: bus primarius (bits 0-7), secundarius (8-15),

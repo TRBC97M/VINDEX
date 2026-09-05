@@ -42,15 +42,20 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_paginae_dma_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_interruptiones_abi_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_interruptiones_msi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/pci_bar_calculi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_primitivae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_regiones.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/paginae_dma.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/interruptiones_abi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/paginae_dma.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/interruptiones.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_mmio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_paginae_dma.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_interruptiones_msi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
@@ -110,15 +115,20 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_paginae_dma_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_interruptiones_abi_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_interruptiones_msi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/pci_bar_calculi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_primitivae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_regiones.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/paginae_dma.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/interruptiones_abi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/paginae_dma.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/interruptiones.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_mmio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_paginae_dma.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_interruptiones_msi.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
@@ -347,3 +357,13 @@ jobs:
           chmod +x /tmp/paginae-dma
           /tmp/paginae-dma
           bash ./instrumenta/proba_paginae_dma_053.sh
+
+      - name: ABI interruptionum x86-64 (P12-V3)
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: bash ./instrumenta/proba_interruptiones_abi_053.sh
+
+      - name: Interruptio MSI vera (P12-V3)
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: bash ./instrumenta/proba_interruptiones_msi_053.sh

@@ -1,0 +1,211 @@
+// Sylvia OS — P12-V3: interruptiones x86-64 et MSI PCI possessae.
+// Rector PCI et primitivae MMIO_* compilatoris ante hoc folium adsint.
+//
+// Contextus communis unam paginam ad 0x3002000 possidet. Hic locus intra
+// regionem COMMUNIS Sylviae reservatur et sub probatione UEFI per
+// AllocateAddress vere possidetur. Structura:
+//   +0 signum, +8 basis MMIO, +16 numerus IRQ, +24 causa,
+//   +32 valor agnitionis, +40 vector, +48/+56 porta IDT pristina,
+//   +64 descriptor IDTR, +80 RFLAGS pristina, +88 selector codicis,
+//   +96 porta activa, +104 descriptor MSI, +112 pagina possessa.
+
+FUNCTIO IN_CONTEXTUS REDDENS NUMERUS.
+    REDDE 50339840.
+FIN-FUNCTIO.
+
+FUNCTIO IN_SIGNUM REDDENS NUMERUS.
+    REDDE 23463565254728787.
+FIN-FUNCTIO.
+
+FUNCTIO IN_MEMORIA_PURGA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        CONTENTUM(basis + i) = 0.
+        i = i + 8.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO IN_CONTEXTUM_POSSEDE REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI bs == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA alloca SICUT NUMERUS VALENS CONTENTUM(bs + 40).
+    SI alloca == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA locus SICUT NUMERUS VALENS IN_CONTEXTUS().
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(alloca, 2, 2, 1, SEDES(locus), 0, 0).
+    SI status != 0 || locus != IN_CONTEXTUS() TUNC REDDE 0. FIN-SI.
+    DECLARA purgatum SICUT NUMERUS VALENS IN_MEMORIA_PURGA(locus, 4096).
+    CONTENTUM(locus) = IN_SIGNUM().
+    CONTENTUM(locus + 112) = 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IN_CONTEXTUM_LIBERA REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    DECLARA ctx SICUT NUMERUS VALENS IN_CONTEXTUS().
+    SI systema == 0 || CONTENTUM(ctx) != IN_SIGNUM() || CONTENTUM(ctx + 112) != 1 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(ctx + 96) != 0 || CONTENTUM(ctx + 104) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    DECLARA libera SICUT NUMERUS VALENS CONTENTUM(bs + 48).
+    SI libera == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(ctx + 112) = 0.
+    CONTENTUM(ctx) = 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(libera, ctx, 1, 0, 0, 0, 0).
+    SI status != 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IN_PORTA_INFERIOR REDDENS NUMERUS.
+    ACCIPIT tractator SICUT NUMERUS.
+    ACCIPIT selector SICUT NUMERUS.
+    DECLARA porta SICUT NUMERUS VALENS tractator & 65535.
+    porta = porta | ((selector & 65535) * 65536).
+    porta = porta | (142 * 1099511627776).
+    porta = porta | (((tractator / 65536) & 65535) * 281474976710656).
+    REDDE porta.
+FIN-FUNCTIO.
+
+FUNCTIO IN_PORTA_SUPERIOR REDDENS NUMERUS.
+    ACCIPIT tractator SICUT NUMERUS.
+    REDDE (tractator / 4294967296) & 4294967295.
+FIN-FUNCTIO.
+
+FUNCTIO IN_IDT_INSTALLE REDDENS NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    ACCIPIT tractator SICUT NUMERUS.
+    DECLARA ctx SICUT NUMERUS VALENS IN_CONTEXTUS().
+    SI CONTENTUM(ctx) != IN_SIGNUM() || CONTENTUM(ctx + 96) != 0 TUNC REDDE 0. FIN-SI.
+    SI (INTERRUPTIONES_STATUS() & 512) != 0 TUNC REDDE 0. FIN-SI.
+    SI vector < 32 || vector > 255 || tractator == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA lectus SICUT NUMERUS VALENS IDTR_LEGE(ctx + 64).
+    DECLARA limes SICUT NUMERUS VALENS MMIO_LEGE16(ctx + 64).
+    DECLARA basis SICUT NUMERUS VALENS MMIO_LEGE64(ctx + 66).
+    SI basis == 0 || vector * 16 + 15 > limes TUNC REDDE 0. FIN-SI.
+    DECLARA porta SICUT NUMERUS VALENS basis + vector * 16.
+    CONTENTUM(ctx + 40) = vector.
+    CONTENTUM(ctx + 48) = MMIO_LEGE64(porta).
+    CONTENTUM(ctx + 56) = MMIO_LEGE64(porta + 8).
+    CONTENTUM(ctx + 88) = CODICIS_SELECTOR().
+    MMIO_SCRIBE64(porta, IN_PORTA_INFERIOR(tractator, CONTENTUM(ctx + 88))).
+    MMIO_SCRIBE64(porta + 8, IN_PORTA_SUPERIOR(tractator)).
+    MMIO_SEPES().
+    CONTENTUM(ctx + 96) = 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IN_IDT_RESTITUE REDDENS NUMERUS.
+    DECLARA ctx SICUT NUMERUS VALENS IN_CONTEXTUS().
+    SI CONTENTUM(ctx) != IN_SIGNUM() || CONTENTUM(ctx + 96) != 1 TUNC REDDE 0. FIN-SI.
+    SI (INTERRUPTIONES_STATUS() & 512) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS MMIO_LEGE64(ctx + 66).
+    DECLARA porta SICUT NUMERUS VALENS basis + CONTENTUM(ctx + 40) * 16.
+    MMIO_SCRIBE64(porta, CONTENTUM(ctx + 48)).
+    MMIO_SCRIBE64(porta + 8, CONTENTUM(ctx + 56)).
+    MMIO_SEPES().
+    CONTENTUM(ctx + 96) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IN_MSI_CAPUT_INACTIVUM REDDENS NUMERUS.
+    ACCIPIT caput SICUT NUMERUS.
+    REDDE caput & 4287561727.
+FIN-FUNCTIO.
+
+FUNCTIO IN_MSI_CAPUT_ACTIVUM REDDENS NUMERUS.
+    ACCIPIT caput SICUT NUMERUS.
+    REDDE IN_MSI_CAPUT_INACTIVUM(caput) | 65536.
+FIN-FUNCTIO.
+
+FUNCTIO IN_MSI_DATUM REDDENS NUMERUS.
+    ACCIPIT pristinum SICUT NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    REDDE (pristinum & 4294901760) | (vector & 255).
+FIN-FUNCTIO.
+
+FUNCTIO IN_MSI_ACTIVA REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT vector SICUT NUMERUS.
+    DECLARA ctx SICUT NUMERUS VALENS IN_CONTEXTUS().
+    SI CONTENTUM(ctx) != IN_SIGNUM() || CONTENTUM(ctx + 104) != 0 TUNC REDDE 0. FIN-SI.
+    SI (INTERRUPTIONES_STATUS() & 512) != 0 TUNC REDDE 0. FIN-SI.
+    SI vector < 32 || vector > 255 TUNC REDDE 0. FIN-SI.
+    DECLARA cap SICUT NUMERUS VALENS PCI_CAPACITAS_INVENI(bus, apparatus, functio, 5).
+    SI cap == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA descriptor SICUT NUMERUS VALENS RESERVA_OCTETA(96).
+    SI descriptor == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA caput SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, cap).
+    DECLARA control SICUT NUMERUS VALENS (caput / 65536) & 65535.
+    DECLARA est_lxiv SICUT NUMERUS VALENS (control / 128) & 1.
+    DECLARA habet_larvam SICUT NUMERUS VALENS (control / 256) & 1.
+    DECLARA intervallum_dati SICUT NUMERUS VALENS 8.
+    SI est_lxiv == 1 TUNC intervallum_dati = 12. FIN-SI.
+    CONTENTUM(descriptor) = bus.
+    CONTENTUM(descriptor + 8) = apparatus.
+    CONTENTUM(descriptor + 16) = functio.
+    CONTENTUM(descriptor + 24) = cap.
+    CONTENTUM(descriptor + 32) = caput.
+    CONTENTUM(descriptor + 40) = PCI_LEGE(bus, apparatus, functio, cap + 4).
+    CONTENTUM(descriptor + 48) = 0.
+    SI est_lxiv == 1 TUNC CONTENTUM(descriptor + 48) = PCI_LEGE(bus, apparatus, functio, cap + 8). FIN-SI.
+    CONTENTUM(descriptor + 56) = PCI_LEGE(bus, apparatus, functio, cap + intervallum_dati).
+    CONTENTUM(descriptor + 64) = 0.
+    SI habet_larvam == 1 TUNC CONTENTUM(descriptor + 64) = PCI_LEGE(bus, apparatus, functio, cap + intervallum_dati + 4). FIN-SI.
+    CONTENTUM(descriptor + 72) = est_lxiv.
+    CONTENTUM(descriptor + 80) = habet_larvam.
+    CONTENTUM(descriptor + 88) = 0.
+    CONTENTUM(ctx + 104) = descriptor.
+
+    DECLARA inactivum SICUT NUMERUS VALENS IN_MSI_CAPUT_INACTIVUM(caput).
+    DECLARA scriptum SICUT NUMERUS VALENS PCI_SCRIBE(bus, apparatus, functio, cap, inactivum).
+    scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + 4, 4276092928).
+    SI est_lxiv == 1 TUNC scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + 8, 0). FIN-SI.
+    scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + intervallum_dati, IN_MSI_DATUM(CONTENTUM(descriptor + 56), vector)).
+    SI habet_larvam == 1 TUNC scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + intervallum_dati + 4, CONTENTUM(descriptor + 64) & 4294967294). FIN-SI.
+    scriptum = PCI_SCRIBE(bus, apparatus, functio, cap, IN_MSI_CAPUT_ACTIVUM(caput)).
+    CONTENTUM(descriptor + 88) = 1.
+    SI (PCI_LEGE(bus, apparatus, functio, cap) & 65536) == 0 TUNC
+        DECLARA restitutum SICUT NUMERUS VALENS IN_MSI_RESTITUE(descriptor).
+        REDDE 0.
+    FIN-SI.
+    REDDE descriptor.
+FIN-FUNCTIO.
+
+FUNCTIO IN_MSI_RESTITUE REDDENS NUMERUS.
+    ACCIPIT descriptor SICUT NUMERUS.
+    DECLARA ctx SICUT NUMERUS VALENS IN_CONTEXTUS().
+    SI descriptor == 0 || CONTENTUM(descriptor + 88) != 1 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(ctx) != IN_SIGNUM() || CONTENTUM(ctx + 104) != descriptor TUNC REDDE 0. FIN-SI.
+    SI (INTERRUPTIONES_STATUS() & 512) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA bus SICUT NUMERUS VALENS CONTENTUM(descriptor).
+    DECLARA apparatus SICUT NUMERUS VALENS CONTENTUM(descriptor + 8).
+    DECLARA functio SICUT NUMERUS VALENS CONTENTUM(descriptor + 16).
+    DECLARA cap SICUT NUMERUS VALENS CONTENTUM(descriptor + 24).
+    DECLARA est_lxiv SICUT NUMERUS VALENS CONTENTUM(descriptor + 72).
+    DECLARA habet_larvam SICUT NUMERUS VALENS CONTENTUM(descriptor + 80).
+    DECLARA intervallum_dati SICUT NUMERUS VALENS 8.
+    SI est_lxiv == 1 TUNC intervallum_dati = 12. FIN-SI.
+    DECLARA inactivum SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, cap) & 4294901759.
+    DECLARA scriptum SICUT NUMERUS VALENS PCI_SCRIBE(bus, apparatus, functio, cap, inactivum).
+    SI habet_larvam == 1 TUNC scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + intervallum_dati + 4, CONTENTUM(descriptor + 64)). FIN-SI.
+    scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + intervallum_dati, CONTENTUM(descriptor + 56)).
+    SI est_lxiv == 1 TUNC scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + 8, CONTENTUM(descriptor + 48)). FIN-SI.
+    scriptum = PCI_SCRIBE(bus, apparatus, functio, cap + 4, CONTENTUM(descriptor + 40)).
+    scriptum = PCI_SCRIBE(bus, apparatus, functio, cap, CONTENTUM(descriptor + 32)).
+    CONTENTUM(descriptor + 88) = 0.
+    CONTENTUM(ctx + 104) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO IN_STATUS_RESTITUE REDDENS NUMERUS.
+    ACCIPIT vexilla SICUT NUMERUS.
+    SI (vexilla & 512) != 0 TUNC
+        REDDE INTERRUPTIONES_APERI().
+    FIN-SI.
+    REDDE INTERRUPTIONES_CLAUDE().
+FIN-FUNCTIO.
