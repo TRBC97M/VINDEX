@@ -1,0 +1,242 @@
+// P12-V4 — transportus VirtIO PCI et GET_DISPLAY_INFO sub UEFI/QEMU.
+
+IMPORTA "rectores/pci.vindex".
+IMPORTA "rectores/mmio.vindex".
+IMPORTA "rectores/paginae_dma.vindex".
+IMPORTA "rectores/virtio_pci.vindex".
+IMPORTA "rectores/virtio_gpu.vindex".
+
+FUNCTIO VT_MEMORIA_VACUA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(basis + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO VT_CIFRA_HEX REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI valor < 10 TUNC REDDE 48 + valor. FIN-SI.
+    REDDE 55 + valor.
+FIN-FUNCTIO.
+
+FUNCTIO VT_HEX8_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, VT_CIFRA_HEX((valor / 16) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 2, VT_CIFRA_HEX(valor & 15)).
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO VT_HEX16_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA f1 SICUT NUMERUS VALENS VT_HEX8_SCRIBE(buf, positio, (valor / 256) & 255).
+    DECLARA f2 SICUT NUMERUS VALENS VT_HEX8_SCRIBE(buf, positio + 4, valor & 255).
+    REDDE 8.
+FIN-FUNCTIO.
+
+FUNCTIO VT_HEX32_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA f1 SICUT NUMERUS VALENS VT_HEX16_SCRIBE(buf, positio, (valor / 65536) & 65535).
+    DECLARA f2 SICUT NUMERUS VALENS VT_HEX16_SCRIBE(buf, positio + 8, valor & 65535).
+    REDDE 16.
+FIN-FUNCTIO.
+
+FUNCTIO VT_HEX64_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA f1 SICUT NUMERUS VALENS VT_HEX32_SCRIBE(buf, positio, (valor / 4294967296) & 4294967295).
+    DECLARA f2 SICUT NUMERUS VALENS VT_HEX32_SCRIBE(buf, positio + 16, valor & 4294967295).
+    REDDE 32.
+FIN-FUNCTIO.
+
+FUNCTIO VT_LITTERA REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT littera SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, littera).
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO VT_SERIALEM_EXSPECTA REDDENS NUMERUS.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS PORTUS_LEGE(1021).
+    DECLARA transmittens SICUT NUMERUS VALENS status & 32.
+    DUM transmittens == 0 && mora < 100000 PERFICE
+        mora = mora + 1.
+        status = PORTUS_LEGE(1021).
+        transmittens = status & 32.
+    FIN-DUM.
+    SI transmittens == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VT_CATENAM_SCRIBE REDDENS NUMERUS.
+    ACCIPIT conout SICUT NUMERUS.
+    ACCIPIT catena SICUT NUMERUS.
+    SI catena == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM OCTETUS_AB(catena + i) != 0 PERFICE
+        DECLARA paratus SICUT NUMERUS VALENS VT_SERIALEM_EXSPECTA().
+        SI paratus == 0 TUNC REDDE 0. FIN-SI.
+        PORTUS_SCRIBE(1016, OCTETUS_AB(catena + i)).
+        i = i + 2.
+    FIN-DUM.
+    REDDE i / 2.
+FIN-FUNCTIO.
+
+FUNCTIO VT_ERRATUM REDDENS NUMERUS.
+    ACCIPIT conout SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    SI buf != 0 && conout != 0 TUNC
+        DECLARA vacuum SICUT NUMERUS VALENS VT_MEMORIA_VACUA(buf, 32).
+        DECLARA p SICUT NUMERUS VALENS 0.
+        p = p + VT_LITTERA(buf, p, 86). p = p + VT_LITTERA(buf, p, 73). p = p + VT_LITTERA(buf, p, 79). p = p + VT_LITTERA(buf, p, 52). p = p + VT_LITTERA(buf, p, 32).
+        p = p + VT_LITTERA(buf, p, 69). p = p + VT_LITTERA(buf, p, 82). p = p + VT_LITTERA(buf, p, 82). p = p + VT_HEX8_SCRIBE(buf, p, codex).
+        p = p + VT_LITTERA(buf, p, 13). p = p + VT_LITTERA(buf, p, 10).
+        DECLARA scriptum SICUT NUMERUS VALENS VT_CATENAM_SCRIBE(conout, buf).
+    FIN-SI.
+    REDDE codex.
+FIN-FUNCTIO.
+
+FUNCTIO VT_PASSUS REDDENS NUMERUS.
+    ACCIPIT conout SICUT NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    SI buf != 0 && conout != 0 TUNC
+        DECLARA vacuum SICUT NUMERUS VALENS VT_MEMORIA_VACUA(buf, 32).
+        DECLARA p SICUT NUMERUS VALENS 0.
+        p = p + VT_LITTERA(buf, p, 86). p = p + VT_LITTERA(buf, p, 73). p = p + VT_LITTERA(buf, p, 79). p = p + VT_LITTERA(buf, p, 52). p = p + VT_LITTERA(buf, p, 32).
+        p = p + VT_LITTERA(buf, p, 80). p = p + VT_LITTERA(buf, p, 65). p = p + VT_LITTERA(buf, p, 83). p = p + VT_HEX8_SCRIBE(buf, p, codex).
+        p = p + VT_LITTERA(buf, p, 13). p = p + VT_LITTERA(buf, p, 10).
+        DECLARA scriptum SICUT NUMERUS VALENS VT_CATENAM_SCRIBE(conout, buf).
+    FIN-SI.
+    REDDE codex.
+FIN-FUNCTIO.
+
+FUNCTIO VT_ERRATUM_VP REDDENS NUMERUS.
+    ACCIPIT conout SICUT NUMERUS.
+    ACCIPIT diagnosticum SICUT NUMERUS.
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(320).
+    SI buf != 0 && conout != 0 && diagnosticum != 0 TUNC
+        DECLARA vacuum SICUT NUMERUS VALENS VT_MEMORIA_VACUA(buf, 320).
+        DECLARA p SICUT NUMERUS VALENS 0.
+        p = p + VT_LITTERA(buf, p, 86). p = p + VT_LITTERA(buf, p, 73). p = p + VT_LITTERA(buf, p, 79). p = p + VT_LITTERA(buf, p, 52). p = p + VT_LITTERA(buf, p, 32).
+        p = p + VT_LITTERA(buf, p, 69). p = p + VT_LITTERA(buf, p, 82). p = p + VT_LITTERA(buf, p, 82). p = p + VT_HEX8_SCRIBE(buf, p, CONTENTUM(diagnosticum)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 65). p = p + VT_HEX32_SCRIBE(buf, p, CONTENTUM(diagnosticum + 8)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 77). p = p + VT_HEX32_SCRIBE(buf, p, CONTENTUM(diagnosticum + 16)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 83). p = p + VT_HEX32_SCRIBE(buf, p, CONTENTUM(diagnosticum + 24)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 80). p = p + VT_HEX8_SCRIBE(buf, p, CONTENTUM(diagnosticum + 32)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 66). p = p + VT_HEX8_SCRIBE(buf, p, CONTENTUM(diagnosticum + 40)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 79). p = p + VT_HEX32_SCRIBE(buf, p, CONTENTUM(diagnosticum + 48)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 76). p = p + VT_HEX32_SCRIBE(buf, p, CONTENTUM(diagnosticum + 56)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 90). p = p + VT_HEX64_SCRIBE(buf, p, CONTENTUM(diagnosticum + 64)).
+        p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 68). p = p + VT_HEX64_SCRIBE(buf, p, CONTENTUM(diagnosticum + 72)).
+        p = p + VT_LITTERA(buf, p, 13). p = p + VT_LITTERA(buf, p, 10).
+        DECLARA scriptum SICUT NUMERUS VALENS VT_CATENAM_SCRIBE(conout, buf).
+    FIN-SI.
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI systema == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA conout SICUT NUMERUS VALENS CONTENTUM(systema + 64).
+    DECLARA registrum SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI PCI_REGISTRUM_INITIA(registrum, 4) != 0 TUNC REDDE VT_ERRATUM(conout, 2). FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS PCI_ENUMERA_PER_PONTES(registrum).
+    DECLARA sedes_gpu SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        DECLARA sedes SICUT NUMERUS VALENS PCI_REGISTRUM_SEDES(registrum, i).
+        SI CONTENTUM(sedes + 24) == 6900 && CONTENTUM(sedes + 32) == 4176 TUNC sedes_gpu = sedes. FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI sedes_gpu == 0 TUNC REDDE VT_ERRATUM(conout, 3). FIN-SI.
+    DECLARA bus SICUT NUMERUS VALENS CONTENTUM(sedes_gpu).
+    DECLARA apparatus SICUT NUMERUS VALENS CONTENTUM(sedes_gpu + 8).
+    DECLARA functio SICUT NUMERUS VALENS CONTENTUM(sedes_gpu + 16).
+    DECLARA diagnosticum SICUT NUMERUS VALENS RESERVA_OCTETA(80).
+    SI diagnosticum == 0 TUNC REDDE VT_ERRATUM(conout, 4). FIN-SI.
+    DECLARA vp SICUT NUMERUS VALENS VP_CREA_EX(bus, apparatus, functio, diagnosticum).
+    SI vp == 0 TUNC REDDE VT_ERRATUM_VP(conout, diagnosticum). FIN-SI.
+    DECLARA pas04 SICUT NUMERUS VALENS VT_PASSUS(conout, 4).
+    SI CONTENTUM(vp + 40) == 0 || CONTENTUM(vp + 56) == 0 || CONTENTUM(vp + 80) == 0 || CONTENTUM(vp + 96) == 0 TUNC REDDE VT_ERRATUM(conout, 5). FIN-SI.
+    SI VP_INITIALIZA(vp, 0, 1) == 0 TUNC REDDE VT_ERRATUM(conout, 6). FIN-SI.
+    DECLARA pas06 SICUT NUMERUS VALENS VT_PASSUS(conout, 6).
+    DECLARA coda SICUT NUMERUS VALENS VP_CODAM_CONFIGURA(vp, systema, 0, 8).
+    SI coda == 0 TUNC DECLARA r7 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE VT_ERRATUM(conout, 7). FIN-SI.
+    DECLARA pas07 SICUT NUMERUS VALENS VT_PASSUS(conout, 7).
+    SI VG_DISPLAY_INFO_PRAEPARA(coda, 256, 512) == 0 TUNC DECLARA r8 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE VT_ERRATUM(conout, 8). FIN-SI.
+    DECLARA pas08 SICUT NUMERUS VALENS VT_PASSUS(conout, 8).
+    SI VP_DRIVER_PARATUS(vp) == 0 TUNC DECLARA r9 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE VT_ERRATUM(conout, 9). FIN-SI.
+    DECLARA pas09 SICUT NUMERUS VALENS VT_PASSUS(conout, 9).
+    SI VP_NOTIFICA(vp, coda) == 0 TUNC DECLARA r10 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE VT_ERRATUM(conout, 10). FIN-SI.
+    DECLARA pas10 SICUT NUMERUS VALENS VT_PASSUS(conout, 10).
+    DECLARA completum SICUT NUMERUS VALENS 0.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DUM completum == 0 && mora < 20000000 PERFICE
+        completum = VQ_COMPLETUM(coda).
+        mora = mora + 1.
+    FIN-DUM.
+    SI completum == 0 TUNC DECLARA r11 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE VT_ERRATUM(conout, 11). FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG_RESPONSUM_GENUS(coda, 512).
+    DECLARA scanout SICUT NUMERUS VALENS 0.
+    DECLARA activus SICUT NUMERUS VALENS 0.
+    i = 0.
+    DUM i < 16 && activus == 0 PERFICE
+        SI VG_SCANOUT_ACTIVUS(coda, 512, i) != 0 TUNC scanout = i. activus = 1. FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    DECLARA latitudo SICUT NUMERUS VALENS VG_SCANOUT_LATITUDO(coda, 512, scanout).
+    DECLARA altitudo SICUT NUMERUS VALENS VG_SCANOUT_ALTITUDO(coda, 512, scanout).
+    DECLARA adhibitus SICUT NUMERUS VALENS CONTENTUM(coda + 48).
+    DECLARA ultimus_id SICUT NUMERUS VALENS CONTENTUM(coda + 56).
+    DECLARA ultima_longitudo SICUT NUMERUS VALENS CONTENTUM(coda + 64).
+    DECLARA isr SICUT NUMERUS VALENS VP_ISR_AGNOSCE(vp).
+    DECLARA oblatae_superiores SICUT NUMERUS VALENS CONTENTUM(vp + 120).
+    DECLARA communis_bar SICUT NUMERUS VALENS CONTENTUM(vp + 48).
+    DECLARA notify_bar SICUT NUMERUS VALENS CONTENTUM(vp + 64).
+    DECLARA commandum_pristinum SICUT NUMERUS VALENS CONTENTUM(vp + 152).
+    DECLARA restitutum SICUT NUMERUS VALENS VP_RESTITUE(vp).
+    DECLARA commandum_integrum SICUT NUMERUS VALENS 0.
+    SI (PCI_LEGE(bus, apparatus, functio, 4) & 65535) == commandum_pristinum TUNC commandum_integrum = 1. FIN-SI.
+    DECLARA rectum SICUT NUMERUS VALENS 1.
+    SI genus != 4353 || adhibitus != 1 || ultimus_id != 0 TUNC rectum = 0. FIN-SI.
+    SI ultima_longitudo < 24 || ultima_longitudo > 408 || activus == 0 || latitudo == 0 || altitudo == 0 TUNC rectum = 0. FIN-SI.
+    SI (oblatae_superiores & 1) == 0 || restitutum == 0 || commandum_integrum == 0 TUNC rectum = 0. FIN-SI.
+
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(384).
+    DECLARA vacuum SICUT NUMERUS VALENS VT_MEMORIA_VACUA(buf, 384).
+    DECLARA p SICUT NUMERUS VALENS 0.
+    p = p + VT_LITTERA(buf, p, 86). p = p + VT_LITTERA(buf, p, 73). p = p + VT_LITTERA(buf, p, 79). p = p + VT_LITTERA(buf, p, 52). p = p + VT_LITTERA(buf, p, 32).
+    p = p + VT_HEX16_SCRIBE(buf, p, 6900). p = p + VT_LITTERA(buf, p, 58). p = p + VT_HEX16_SCRIBE(buf, p, 4176).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 66). p = p + VT_HEX8_SCRIBE(buf, p, bus).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 68). p = p + VT_HEX8_SCRIBE(buf, p, apparatus).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 80). p = p + VT_HEX8_SCRIBE(buf, p, functio).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 67). p = p + VT_HEX8_SCRIBE(buf, p, communis_bar).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 78). p = p + VT_HEX8_SCRIBE(buf, p, notify_bar).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 79). p = p + VT_HEX32_SCRIBE(buf, p, oblatae_superiores).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 81). p = p + VT_HEX16_SCRIBE(buf, p, 8).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 85). p = p + VT_HEX16_SCRIBE(buf, p, adhibitus).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 84). p = p + VT_HEX32_SCRIBE(buf, p, genus).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 87). p = p + VT_HEX32_SCRIBE(buf, p, latitudo).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 72). p = p + VT_HEX32_SCRIBE(buf, p, altitudo).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 69). p = p + VT_HEX32_SCRIBE(buf, p, activus).
+    p = p + VT_LITTERA(buf, p, 32). p = p + VT_LITTERA(buf, p, 73). p = p + VT_HEX8_SCRIBE(buf, p, isr).
+    p = p + VT_LITTERA(buf, p, 32). SI rectum == 1 TUNC p = p + VT_LITTERA(buf, p, 82). ALITER p = p + VT_LITTERA(buf, p, 88). FIN-SI.
+    p = p + VT_LITTERA(buf, p, 13). p = p + VT_LITTERA(buf, p, 10).
+    DECLARA scriptum SICUT NUMERUS VALENS VT_CATENAM_SCRIBE(conout, buf).
+    SI rectum == 0 TUNC REDDE 12. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

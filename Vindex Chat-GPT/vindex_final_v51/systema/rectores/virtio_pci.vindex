@@ -1,0 +1,484 @@
+// Sylvia OS — P12-V4: transportus VirtIO PCI modernus et coda divisa.
+// Rectores PCI, MMIO et paginarum DMA ante hoc folium adsint.
+//
+// Coda divisa in una regione DMA continetur:
+//   descriptoria ad +0, annulus praebitus post descriptoria,
+//   annulus adhibitus ad quattuor octeta conformatus.
+// Descriptor codae CXXVIII octeta:
+//   +0 regio DMA, +8 magnitudo, +16/+24/+32 intervalla trium partium,
+//   +40 index praebitus, +48 index adhibitus visus,
+//   +56 ultimus id, +64 ultima longitudo, +72 activa, +80 erratum,
+//   +88 generatio, +96 notify_off, +104 numerus codae,
+//   +112 catenae expositae, +120 spatium occupatum.
+//
+// Descriptor transportus CCXL octeta:
+//   +0/+8/+16 BDF, +24 venditor, +32 apparatus,
+//   +40 regio communis, +48 bar communis,
+//   +56 regio notificationis, +64 bar notificationis,
+//   +72 multiplicator notificationis,
+//   +80 regio ISR, +88 bar ISR,
+//   +96 regio configurationis apparatus, +104 bar eius,
+//   +112/+120 facultates oblatae, +128/+136 acceptae,
+//   +144 status, +152 commandum PCI pristinum, +160 activa,
+//   +168 erratum, +176 coda principis, +184 generationes,
+//   +192 caput commune, +200 caput notify, +208 caput ISR,
+//   +216 caput apparatus, +224 status pristinus, +232 reservatum.
+
+FUNCTIO VQ_DESCRIPTORES_MENSURA REDDENS NUMERUS.
+    ACCIPIT magnitudo SICUT NUMERUS.
+    REDDE magnitudo * 16.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_PRAEBITA_MENSURA REDDENS NUMERUS.
+    ACCIPIT magnitudo SICUT NUMERUS.
+    REDDE 6 + magnitudo * 2.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_ADHIBITA_MENSURA REDDENS NUMERUS.
+    ACCIPIT magnitudo SICUT NUMERUS.
+    REDDE 6 + magnitudo * 8.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_CONFORMA REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    ACCIPIT conformatio SICUT NUMERUS.
+    SI valor < 0 || conformatio <= 0 || valor + conformatio - 1 < valor TUNC REDDE 0. FIN-SI.
+    REDDE ((valor + conformatio - 1) / conformatio) * conformatio.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_POTENTIA_DUORUM REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI valor <= 0 || valor > 32768 TUNC REDDE 0. FIN-SI.
+    SI (valor & (valor - 1)) != 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_SPATIUM REDDENS NUMERUS.
+    ACCIPIT magnitudo SICUT NUMERUS.
+    SI VQ_POTENTIA_DUORUM(magnitudo) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA praebita SICUT NUMERUS VALENS VQ_DESCRIPTORES_MENSURA(magnitudo).
+    DECLARA adhibita SICUT NUMERUS VALENS VQ_CONFORMA(praebita + VQ_PRAEBITA_MENSURA(magnitudo), 4).
+    REDDE VQ_CONFORMA(adhibita + VQ_ADHIBITA_MENSURA(magnitudo), 16).
+FIN-FUNCTIO.
+
+FUNCTIO VQ_CREA REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    ACCIPIT magnitudo SICUT NUMERUS.
+    SI regio == 0 || VQ_POTENTIA_DUORUM(magnitudo) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA praebita SICUT NUMERUS VALENS VQ_DESCRIPTORES_MENSURA(magnitudo).
+    DECLARA adhibita SICUT NUMERUS VALENS VQ_CONFORMA(praebita + VQ_PRAEBITA_MENSURA(magnitudo), 4).
+    DECLARA spatium SICUT NUMERUS VALENS VQ_CONFORMA(adhibita + VQ_ADHIBITA_MENSURA(magnitudo), 16).
+    SI spatium <= 0 || spatium > CONTENTUM(regio + 16) TUNC REDDE 0. FIN-SI.
+    DECLARA coda SICUT NUMERUS VALENS RESERVA_OCTETA(128).
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda) = regio.
+    CONTENTUM(coda + 8) = magnitudo.
+    CONTENTUM(coda + 16) = 0.
+    CONTENTUM(coda + 24) = praebita.
+    CONTENTUM(coda + 32) = adhibita.
+    CONTENTUM(coda + 40) = 0.
+    CONTENTUM(coda + 48) = 0.
+    CONTENTUM(coda + 56) = 0.
+    CONTENTUM(coda + 64) = 0.
+    CONTENTUM(coda + 72) = 1.
+    CONTENTUM(coda + 80) = 0.
+    CONTENTUM(coda + 88) = 1.
+    CONTENTUM(coda + 96) = 0.
+    CONTENTUM(coda + 104) = 0.
+    CONTENTUM(coda + 112) = 0.
+    CONTENTUM(coda + 120) = spatium.
+    REDDE coda.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_ERRATUM REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 1. FIN-SI.
+    REDDE CONTENTUM(coda + 80).
+FIN-FUNCTIO.
+
+FUNCTIO VQ_DESCRIPTOR_SCRIBE REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT physica SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS.
+    ACCIPIT vexilla SICUT NUMERUS.
+    ACCIPIT proximus SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda + 80) = 0.
+    SI CONTENTUM(coda + 72) == 0 TUNC CONTENTUM(coda + 80) = 2. REDDE 0. FIN-SI.
+    DECLARA magnitudo SICUT NUMERUS VALENS CONTENTUM(coda + 8).
+    SI index < 0 || index >= magnitudo || physica <= 0 || longitudo <= 0 || longitudo > 4294967295 TUNC CONTENTUM(coda + 80) = 3. REDDE 0. FIN-SI.
+    SI (vexilla & 65532) != 0 TUNC CONTENTUM(coda + 80) = 4. REDDE 0. FIN-SI.
+    SI (vexilla & 1) != 0 && (proximus < 0 || proximus >= magnitudo || proximus == index) TUNC CONTENTUM(coda + 80) = 5. REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    DECLARA locus SICUT NUMERUS VALENS CONTENTUM(coda + 16) + index * 16.
+    SI DMA_SCRIBE64(regio, locus, physica) == 0 TUNC CONTENTUM(coda + 80) = 6. REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, locus + 8, longitudo) == 0 TUNC CONTENTUM(coda + 80) = 6. REDDE 0. FIN-SI.
+    SI DMA_SCRIBE16(regio, locus + 12, vexilla) == 0 TUNC CONTENTUM(coda + 80) = 6. REDDE 0. FIN-SI.
+    SI DMA_SCRIBE16(regio, locus + 14, proximus) == 0 TUNC CONTENTUM(coda + 80) = 6. REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_PRAEBE REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT caput SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda + 80) = 0.
+    SI CONTENTUM(coda + 72) == 0 TUNC CONTENTUM(coda + 80) = 2. REDDE 0. FIN-SI.
+    DECLARA magnitudo SICUT NUMERUS VALENS CONTENTUM(coda + 8).
+    SI caput < 0 || caput >= magnitudo TUNC CONTENTUM(coda + 80) = 7. REDDE 0. FIN-SI.
+    SI CONTENTUM(coda + 112) >= magnitudo TUNC CONTENTUM(coda + 80) = 8. REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    DECLARA index SICUT NUMERUS VALENS CONTENTUM(coda + 40) & 65535.
+    DECLARA sedes SICUT NUMERUS VALENS CONTENTUM(coda + 24) + 4 + (index % magnitudo) * 2.
+    SI DMA_SCRIBE16(regio, sedes, caput) == 0 TUNC CONTENTUM(coda + 80) = 9. REDDE 0. FIN-SI.
+    SI DMA_SYNCHRONIZA(regio, DMA_AD_APPARATUM()) == 0 TUNC CONTENTUM(coda + 80) = 10. REDDE 0. FIN-SI.
+    DECLARA novus SICUT NUMERUS VALENS (index + 1) & 65535.
+    SI DMA_SCRIBE16(regio, CONTENTUM(coda + 24) + 2, novus) == 0 TUNC CONTENTUM(coda + 80) = 9. REDDE 0. FIN-SI.
+    SI DMA_SYNCHRONIZA(regio, DMA_AD_APPARATUM()) == 0 TUNC CONTENTUM(coda + 80) = 10. REDDE 0. FIN-SI.
+    CONTENTUM(coda + 40) = novus.
+    CONTENTUM(coda + 112) = CONTENTUM(coda + 112) + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VQ_COMPLETUM REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda + 80) = 0.
+    SI CONTENTUM(coda + 72) == 0 TUNC CONTENTUM(coda + 80) = 2. REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SYNCHRONIZA(regio, DMA_AB_APPARATU()) == 0 TUNC CONTENTUM(coda + 80) = 10. REDDE 0. FIN-SI.
+    DECLARA productus SICUT NUMERUS VALENS DMA_LEGE16(regio, CONTENTUM(coda + 32) + 2).
+    DECLARA visus SICUT NUMERUS VALENS CONTENTUM(coda + 48) & 65535.
+    SI productus == visus TUNC REDDE 0. FIN-SI.
+    DECLARA magnitudo SICUT NUMERUS VALENS CONTENTUM(coda + 8).
+    DECLARA locus SICUT NUMERUS VALENS CONTENTUM(coda + 32) + 4 + (visus % magnitudo) * 8.
+    CONTENTUM(coda + 56) = DMA_LEGE32(regio, locus).
+    CONTENTUM(coda + 64) = DMA_LEGE32(regio, locus + 4).
+    CONTENTUM(coda + 48) = (visus + 1) & 65535.
+    SI CONTENTUM(coda + 112) > 0 TUNC CONTENTUM(coda + 112) = CONTENTUM(coda + 112) - 1. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_PCI_LEGE8 REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT registrum SICUT NUMERUS.
+    DECLARA valor SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, registrum & 252).
+    DECLARA pars SICUT NUMERUS VALENS registrum & 3.
+    SI pars == 1 TUNC valor = valor / 256. FIN-SI.
+    SI pars == 2 TUNC valor = valor / 65536. FIN-SI.
+    SI pars == 3 TUNC valor = valor / 16777216. FIN-SI.
+    REDDE valor & 255.
+FIN-FUNCTIO.
+
+FUNCTIO VP_CAP_TERMINI REDDENS NUMERUS.
+    ACCIPIT bar_mensura SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT minima SICUT NUMERUS.
+    SI bar_mensura <= 0 || intervallum < 0 || mensura < minima TUNC REDDE 0. FIN-SI.
+    SI intervallum + mensura < intervallum || intervallum + mensura > bar_mensura TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_CAP_ADRESSA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    SI basis <= 0 || intervallum < 0 TUNC REDDE 0. FIN-SI.
+    DECLARA adressa SICUT NUMERUS VALENS basis + intervallum.
+    SI adressa < basis TUNC REDDE 0. FIN-SI.
+    REDDE adressa.
+FIN-FUNCTIO.
+
+FUNCTIO VP_CAP_REGIO_CREA REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT caput SICUT NUMERUS.
+    ACCIPIT minima SICUT NUMERUS.
+    ACCIPIT vexilla SICUT NUMERUS.
+    DECLARA bar SICUT NUMERUS VALENS VP_PCI_LEGE8(bus, apparatus, functio, caput + 4).
+    SI bar >= PCI_BAR_LIMES(bus, apparatus, functio) TUNC REDDE 0. FIN-SI.
+    DECLARA bar_valor SICUT NUMERUS VALENS PCI_BAR_LEGE(bus, apparatus, functio, bar).
+    SI PCI_BAR_EST_MEMORIA(bar_valor) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA intervallum SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, caput + 8).
+    DECLARA mensura SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, caput + 12).
+    DECLARA bar_mensura SICUT NUMERUS VALENS PCI_BAR_MENSURA(bus, apparatus, functio, bar).
+    SI VP_CAP_TERMINI(bar_mensura, intervallum, mensura, minima) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS PCI_BAR_ADRESSA_PLENA(bus, apparatus, functio, bar).
+    DECLARA adressa SICUT NUMERUS VALENS VP_CAP_ADRESSA(basis, intervallum).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI.
+    REDDE MMIO_REGIO_CREA(adressa, mensura, vexilla | MMIO_APPARATUS()).
+FIN-FUNCTIO.
+
+// Descriptor diagnosticus LXXX octeta, optionalis:
+//  +0 codex creationis, +8 genera facultatum visa, +16 genera mappata,
+//  +24 status PCI, +32 caput facultatis quae mappationem recusavit,
+//  +40 BAR, +48 intervallum, +56 mensura, +64 mensura BAR, +72 basis BAR.
+FUNCTIO VP_DIAGNOSTICUM_CAP REDDENS NUMERUS.
+    ACCIPIT diagnosticum SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT caput SICUT NUMERUS.
+    SI diagnosticum == 0 || caput == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA bar SICUT NUMERUS VALENS VP_PCI_LEGE8(bus, apparatus, functio, caput + 4).
+    CONTENTUM(diagnosticum + 32) = caput. CONTENTUM(diagnosticum + 40) = bar.
+    CONTENTUM(diagnosticum + 48) = PCI_LEGE(bus, apparatus, functio, caput + 8).
+    CONTENTUM(diagnosticum + 56) = PCI_LEGE(bus, apparatus, functio, caput + 12).
+    CONTENTUM(diagnosticum + 64) = PCI_BAR_MENSURA(bus, apparatus, functio, bar).
+    CONTENTUM(diagnosticum + 72) = PCI_BAR_ADRESSA_PLENA(bus, apparatus, functio, bar).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_CREA_EX REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT diagnosticum SICUT NUMERUS.
+    SI diagnosticum != 0 TUNC
+        CONTENTUM(diagnosticum) = 0. CONTENTUM(diagnosticum + 8) = 0.
+        CONTENTUM(diagnosticum + 16) = 0. CONTENTUM(diagnosticum + 24) = 0.
+        CONTENTUM(diagnosticum + 32) = 0. CONTENTUM(diagnosticum + 40) = 0.
+        CONTENTUM(diagnosticum + 48) = 0. CONTENTUM(diagnosticum + 56) = 0.
+        CONTENTUM(diagnosticum + 64) = 0. CONTENTUM(diagnosticum + 72) = 0.
+    FIN-SI.
+    SI PCI_VENDITOR(bus, apparatus, functio) != 6900 TUNC SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum) = 1. FIN-SI. REDDE 0. FIN-SI.
+    DECLARA identitas SICUT NUMERUS VALENS PCI_APPARATUS_ID(bus, apparatus, functio).
+    SI identitas < 4160 || identitas > 4223 TUNC SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum) = 2. FIN-SI. REDDE 0. FIN-SI.
+    DECLARA vp SICUT NUMERUS VALENS RESERVA_OCTETA(240).
+    SI vp == 0 TUNC SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum) = 3. FIN-SI. REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 240 PERFICE CONTENTUM(vp + i) = 0. i = i + 8. FIN-DUM.
+    CONTENTUM(vp) = bus.
+    CONTENTUM(vp + 8) = apparatus.
+    CONTENTUM(vp + 16) = functio.
+    CONTENTUM(vp + 24) = 6900.
+    CONTENTUM(vp + 32) = identitas.
+    CONTENTUM(vp + 184) = 1.
+    DECLARA commandum_pristinum SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, 4) & 65535.
+    CONTENTUM(vp + 152) = commandum_pristinum.
+    DECLARA cohibitum SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum_pristinum & 65528).
+    DECLARA status_pci SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, 4).
+    SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum + 24) = status_pci. FIN-SI.
+    SI (status_pci & 1048576) == 0 TUNC CONTENTUM(vp + 168) = 1. SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum) = 4. FIN-SI. DECLARA rc0 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum_pristinum). REDDE 0. FIN-SI.
+    DECLARA cursor SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, 52) & 252.
+    DECLARA visitationes SICUT NUMERUS VALENS 0.
+    DUM cursor >= 64 && cursor <= 252 && visitationes < 48 PERFICE
+        DECLARA caput SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, cursor).
+        SI (caput & 255) == 9 TUNC
+            DECLARA cap_len SICUT NUMERUS VALENS VP_PCI_LEGE8(bus, apparatus, functio, cursor + 2).
+            DECLARA genus SICUT NUMERUS VALENS VP_PCI_LEGE8(bus, apparatus, functio, cursor + 3).
+            SI diagnosticum != 0 && genus >= 1 && genus <= 4 TUNC CONTENTUM(diagnosticum + 8) = CONTENTUM(diagnosticum + 8) | (1 << (genus - 1)). FIN-SI.
+            SI cap_len >= 16 && genus == 1 && CONTENTUM(vp + 40) == 0 TUNC
+                CONTENTUM(vp + 40) = VP_CAP_REGIO_CREA(bus, apparatus, functio, cursor, 56, MMIO_LECTIO() | MMIO_SCRIPTIO()).
+                CONTENTUM(vp + 48) = VP_PCI_LEGE8(bus, apparatus, functio, cursor + 4).
+                CONTENTUM(vp + 192) = cursor.
+                SI diagnosticum != 0 && CONTENTUM(vp + 40) != 0 TUNC CONTENTUM(diagnosticum + 16) = CONTENTUM(diagnosticum + 16) | 1. FIN-SI.
+                SI diagnosticum != 0 && CONTENTUM(vp + 40) == 0 && CONTENTUM(diagnosticum + 32) == 0 TUNC DECLARA d1 SICUT NUMERUS VALENS VP_DIAGNOSTICUM_CAP(diagnosticum, bus, apparatus, functio, cursor). FIN-SI.
+            FIN-SI.
+            SI cap_len >= 20 && genus == 2 && CONTENTUM(vp + 56) == 0 TUNC
+                CONTENTUM(vp + 56) = VP_CAP_REGIO_CREA(bus, apparatus, functio, cursor, 2, MMIO_SCRIPTIO()).
+                CONTENTUM(vp + 64) = VP_PCI_LEGE8(bus, apparatus, functio, cursor + 4).
+                CONTENTUM(vp + 72) = PCI_LEGE(bus, apparatus, functio, cursor + 16).
+                CONTENTUM(vp + 200) = cursor.
+                SI diagnosticum != 0 && CONTENTUM(vp + 56) != 0 TUNC CONTENTUM(diagnosticum + 16) = CONTENTUM(diagnosticum + 16) | 2. FIN-SI.
+                SI diagnosticum != 0 && CONTENTUM(vp + 56) == 0 && CONTENTUM(diagnosticum + 32) == 0 TUNC DECLARA d2 SICUT NUMERUS VALENS VP_DIAGNOSTICUM_CAP(diagnosticum, bus, apparatus, functio, cursor). FIN-SI.
+            FIN-SI.
+            SI cap_len >= 16 && genus == 3 && CONTENTUM(vp + 80) == 0 TUNC
+                CONTENTUM(vp + 80) = VP_CAP_REGIO_CREA(bus, apparatus, functio, cursor, 1, MMIO_LECTIO()).
+                CONTENTUM(vp + 88) = VP_PCI_LEGE8(bus, apparatus, functio, cursor + 4).
+                CONTENTUM(vp + 208) = cursor.
+                SI diagnosticum != 0 && CONTENTUM(vp + 80) != 0 TUNC CONTENTUM(diagnosticum + 16) = CONTENTUM(diagnosticum + 16) | 4. FIN-SI.
+                SI diagnosticum != 0 && CONTENTUM(vp + 80) == 0 && CONTENTUM(diagnosticum + 32) == 0 TUNC DECLARA d3 SICUT NUMERUS VALENS VP_DIAGNOSTICUM_CAP(diagnosticum, bus, apparatus, functio, cursor). FIN-SI.
+            FIN-SI.
+            SI cap_len >= 16 && genus == 4 && CONTENTUM(vp + 96) == 0 TUNC
+                CONTENTUM(vp + 96) = VP_CAP_REGIO_CREA(bus, apparatus, functio, cursor, 16, MMIO_LECTIO()).
+                CONTENTUM(vp + 104) = VP_PCI_LEGE8(bus, apparatus, functio, cursor + 4).
+                CONTENTUM(vp + 216) = cursor.
+                SI diagnosticum != 0 && CONTENTUM(vp + 96) != 0 TUNC CONTENTUM(diagnosticum + 16) = CONTENTUM(diagnosticum + 16) | 8. FIN-SI.
+                SI diagnosticum != 0 && CONTENTUM(vp + 96) == 0 && CONTENTUM(diagnosticum + 32) == 0 TUNC DECLARA d4 SICUT NUMERUS VALENS VP_DIAGNOSTICUM_CAP(diagnosticum, bus, apparatus, functio, cursor). FIN-SI.
+            FIN-SI.
+        FIN-SI.
+        DECLARA proximus SICUT NUMERUS VALENS (caput / 256) & 252.
+        SI proximus == cursor TUNC cursor = 0. ALITER cursor = proximus. FIN-SI.
+        visitationes = visitationes + 1.
+    FIN-DUM.
+    SI CONTENTUM(vp + 40) == 0 || CONTENTUM(vp + 56) == 0 TUNC CONTENTUM(vp + 168) = 2. SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum) = 5. FIN-SI. DECLARA rc1 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum_pristinum). REDDE 0. FIN-SI.
+    DECLARA memoria_sola SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, (commandum_pristinum | 2) & 65530).
+    CONTENTUM(vp + 224) = MR_LEGE8(CONTENTUM(vp + 40), 20).
+    SI MR_SCRIBE8(CONTENTUM(vp + 40), 20, 0) == 0 TUNC CONTENTUM(vp + 168) = 3. SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum) = 6. FIN-SI. DECLARA rc2 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum_pristinum). REDDE 0. FIN-SI.
+    DECLARA mora_resetus SICUT NUMERUS VALENS 0.
+    DUM MR_LEGE8(CONTENTUM(vp + 40), 20) != 0 && mora_resetus < 10000000 PERFICE mora_resetus = mora_resetus + 1. FIN-DUM.
+    SI MR_LEGE8(CONTENTUM(vp + 40), 20) != 0 TUNC CONTENTUM(vp + 168) = 4. SI diagnosticum != 0 TUNC CONTENTUM(diagnosticum) = 7. FIN-SI. DECLARA rc3 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum_pristinum). REDDE 0. FIN-SI.
+    DECLARA restitutum_pci SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum_pristinum).
+    REDDE vp.
+FIN-FUNCTIO.
+
+FUNCTIO VP_CREA REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    REDDE VP_CREA_EX(bus, apparatus, functio, 0).
+FIN-FUNCTIO.
+
+FUNCTIO VP_STATUS_SCRIBE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI vp == 0 || CONTENTUM(vp + 40) == 0 TUNC REDDE 0. FIN-SI.
+    SI MR_SCRIBE8(CONTENTUM(vp + 40), 20, status) == 0 TUNC CONTENTUM(vp + 168) = 3. REDDE 0. FIN-SI.
+    CONTENTUM(vp + 144) = status & 255.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_RESET REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    SI VP_STATUS_SCRIBE(vp, 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DUM MR_LEGE8(CONTENTUM(vp + 40), 20) != 0 && mora < 10000000 PERFICE mora = mora + 1. FIN-DUM.
+    SI MR_LEGE8(CONTENTUM(vp + 40), 20) != 0 TUNC CONTENTUM(vp + 168) = 4. REDDE 0. FIN-SI.
+    CONTENTUM(vp + 144) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_COMMUNE_SCRIBE64 REDDENS NUMERUS.
+    ACCIPIT commune SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI commune == 0 || intervallum < 0 || intervallum % 4 != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA inferior SICUT NUMERUS VALENS valor & 4294967295.
+    DECLARA superior SICUT NUMERUS VALENS (valor / 4294967296) & 4294967295.
+    SI MR_SCRIBE32(commune, intervallum, inferior) == 0 TUNC REDDE 0. FIN-SI.
+    SI MR_SCRIBE32(commune, intervallum + 4, superior) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_INITIALIZA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT facultates_inferiores SICUT NUMERUS.
+    ACCIPIT facultates_superiores SICUT NUMERUS.
+    SI vp == 0 || CONTENTUM(vp + 160) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA bus SICUT NUMERUS VALENS CONTENTUM(vp).
+    DECLARA apparatus SICUT NUMERUS VALENS CONTENTUM(vp + 8).
+    DECLARA functio SICUT NUMERUS VALENS CONTENTUM(vp + 16).
+    DECLARA commandum SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, 4) & 65535.
+    CONTENTUM(vp + 152) = commandum.
+    DECLARA scriptum_pci SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum | 6).
+    SI VP_RESET(vp) == 0 TUNC DECLARA r0 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum). REDDE 0. FIN-SI.
+    SI VP_STATUS_SCRIBE(vp, 1) == 0 || VP_STATUS_SCRIBE(vp, 3) == 0 TUNC DECLARA rr SICUT NUMERUS VALENS VP_RESET(vp). DECLARA r1 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum). REDDE 0. FIN-SI.
+    DECLARA commune SICUT NUMERUS VALENS CONTENTUM(vp + 40).
+    DECLARA f0 SICUT NUMERUS VALENS MR_SCRIBE32(commune, 0, 0).
+    CONTENTUM(vp + 112) = MR_LEGE32(commune, 4).
+    f0 = MR_SCRIBE32(commune, 0, 1).
+    CONTENTUM(vp + 120) = MR_LEGE32(commune, 4).
+    SI (CONTENTUM(vp + 120) & 1) == 0 TUNC CONTENTUM(vp + 168) = 5. DECLARA rf SICUT NUMERUS VALENS VP_RESET(vp). DECLARA r2 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum). REDDE 0. FIN-SI.
+    SI (facultates_inferiores & (4294967295 - CONTENTUM(vp + 112))) != 0 || (facultates_superiores & (4294967295 - CONTENTUM(vp + 120))) != 0 TUNC CONTENTUM(vp + 168) = 6. DECLARA rs SICUT NUMERUS VALENS VP_RESET(vp). DECLARA r3 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum). REDDE 0. FIN-SI.
+    SI (facultates_superiores & 1) == 0 TUNC CONTENTUM(vp + 168) = 7. DECLARA rv SICUT NUMERUS VALENS VP_RESET(vp). DECLARA r4 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum). REDDE 0. FIN-SI.
+    f0 = MR_SCRIBE32(commune, 8, 0). f0 = MR_SCRIBE32(commune, 12, facultates_inferiores).
+    f0 = MR_SCRIBE32(commune, 8, 1). f0 = MR_SCRIBE32(commune, 12, facultates_superiores).
+    CONTENTUM(vp + 128) = facultates_inferiores.
+    CONTENTUM(vp + 136) = facultates_superiores.
+    SI VP_STATUS_SCRIBE(vp, 11) == 0 || (MR_LEGE8(commune, 20) & 8) == 0 TUNC CONTENTUM(vp + 168) = 8. DECLARA rn SICUT NUMERUS VALENS VP_RESET(vp). DECLARA r5 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum). REDDE 0. FIN-SI.
+    CONTENTUM(vp + 160) = 1.
+    CONTENTUM(vp + 184) = CONTENTUM(vp + 184) + 1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_CODAM_CONFIGURA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    ACCIPIT numerus_codae SICUT NUMERUS.
+    ACCIPIT magnitudo SICUT NUMERUS.
+    SI vp == 0 || systema == 0 || CONTENTUM(vp + 160) != 1 || CONTENTUM(vp + 176) != 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_POTENTIA_DUORUM(magnitudo) == 0 TUNC CONTENTUM(vp + 168) = 9. REDDE 0. FIN-SI.
+    DECLARA commune SICUT NUMERUS VALENS CONTENTUM(vp + 40).
+    SI numerus_codae < 0 || numerus_codae >= MR_LEGE16(commune, 18) TUNC CONTENTUM(vp + 168) = 10. REDDE 0. FIN-SI.
+    DECLARA s SICUT NUMERUS VALENS MR_SCRIBE16(commune, 22, numerus_codae).
+    DECLARA maxima SICUT NUMERUS VALENS MR_LEGE16(commune, 24).
+    SI maxima == 0 || magnitudo > maxima TUNC CONTENTUM(vp + 168) = 11. REDDE 0. FIN-SI.
+    SI MR_LEGE16(commune, 28) != 0 TUNC CONTENTUM(vp + 168) = 12. REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS DMA_UEFI_ALLOCA(systema, 4096, 0, DMA_APPARATUS_LEGE() | DMA_APPARATUS_SCRIBE()).
+    SI regio == 0 TUNC CONTENTUM(vp + 168) = 13. REDDE 0. FIN-SI.
+    DECLARA coda SICUT NUMERUS VALENS VQ_CREA(regio, magnitudo).
+    SI coda == 0 TUNC DECLARA l0 SICUT NUMERUS VALENS DMA_UEFI_LIBERA(regio). CONTENTUM(vp + 168) = 14. REDDE 0. FIN-SI.
+    CONTENTUM(coda + 96) = MR_LEGE16(commune, 30).
+    CONTENTUM(coda + 104) = numerus_codae.
+    DECLARA phys_descriptores SICUT NUMERUS VALENS DMA_PHYSICA(regio, CONTENTUM(coda + 16), VQ_DESCRIPTORES_MENSURA(magnitudo)).
+    DECLARA phys_praebita SICUT NUMERUS VALENS DMA_PHYSICA(regio, CONTENTUM(coda + 24), VQ_PRAEBITA_MENSURA(magnitudo)).
+    DECLARA phys_adhibita SICUT NUMERUS VALENS DMA_PHYSICA(regio, CONTENTUM(coda + 32), VQ_ADHIBITA_MENSURA(magnitudo)).
+    DECLARA recta SICUT NUMERUS VALENS 1.
+    SI phys_descriptores == 0 || phys_praebita == 0 || phys_adhibita == 0 TUNC recta = 0. FIN-SI.
+    SI MR_SCRIBE16(commune, 24, magnitudo) == 0 TUNC recta = 0. FIN-SI.
+    SI MR_SCRIBE16(commune, 26, 65535) == 0 TUNC recta = 0. FIN-SI.
+    SI VP_COMMUNE_SCRIBE64(commune, 32, phys_descriptores) == 0 TUNC recta = 0. FIN-SI.
+    SI VP_COMMUNE_SCRIBE64(commune, 40, phys_praebita) == 0 TUNC recta = 0. FIN-SI.
+    SI VP_COMMUNE_SCRIBE64(commune, 48, phys_adhibita) == 0 TUNC recta = 0. FIN-SI.
+    SI recta == 0 TUNC DECLARA l1 SICUT NUMERUS VALENS DMA_UEFI_LIBERA(regio). CONTENTUM(vp + 168) = 15. REDDE 0. FIN-SI.
+    SI DMA_SYNCHRONIZA(regio, DMA_BIDIRECTA()) == 0 TUNC DECLARA l2 SICUT NUMERUS VALENS DMA_UEFI_LIBERA(regio). CONTENTUM(vp + 168) = 16. REDDE 0. FIN-SI.
+    s = MR_SCRIBE16(commune, 28, 1).
+    SI MR_LEGE16(commune, 28) != 1 TUNC DECLARA resetum SICUT NUMERUS VALENS VP_RESET(vp). DECLARA l3 SICUT NUMERUS VALENS DMA_UEFI_LIBERA(regio). CONTENTUM(vp + 168) = 17. REDDE 0. FIN-SI.
+    CONTENTUM(vp + 176) = coda.
+    REDDE coda.
+FIN-FUNCTIO.
+
+FUNCTIO VP_DRIVER_PARATUS REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    SI vp == 0 || CONTENTUM(vp + 160) != 1 || CONTENTUM(vp + 176) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS CONTENTUM(vp + 144) | 4.
+    SI VP_STATUS_SCRIBE(vp, status) == 0 TUNC REDDE 0. FIN-SI.
+    SI (MR_LEGE8(CONTENTUM(vp + 40), 20) & 4) == 0 TUNC CONTENTUM(vp + 168) = 18. REDDE 0. FIN-SI.
+    CONTENTUM(vp + 160) = 2.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_NOTIFICATIONIS_INTERVALLUM REDDENS NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT notify_off SICUT NUMERUS.
+    ACCIPIT multiplicator SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    SI mensura <= 0 || notify_off < 0 || multiplicator < 0 || latitudo <= 0 TUNC REDDE -1. FIN-SI.
+    SI notify_off != 0 && multiplicator > 9223372036854775807 / notify_off TUNC REDDE -1. FIN-SI.
+    DECLARA intervallum SICUT NUMERUS VALENS notify_off * multiplicator.
+    SI intervallum + latitudo < intervallum || intervallum + latitudo > mensura TUNC REDDE -1. FIN-SI.
+    REDDE intervallum.
+FIN-FUNCTIO.
+
+FUNCTIO VP_NOTIFICA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    SI vp == 0 || coda == 0 || CONTENTUM(vp + 160) != 2 || coda != CONTENTUM(vp + 176) TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(vp + 56).
+    DECLARA intervallum SICUT NUMERUS VALENS VP_NOTIFICATIONIS_INTERVALLUM(CONTENTUM(regio + 16), CONTENTUM(coda + 96), CONTENTUM(vp + 72), 2).
+    SI intervallum < 0 TUNC CONTENTUM(vp + 168) = 19. REDDE 0. FIN-SI.
+    SI MR_SCRIBE16(regio, intervallum, CONTENTUM(coda + 104)) == 0 TUNC CONTENTUM(vp + 168) = 20. REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VP_ISR_AGNOSCE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    SI vp == 0 || CONTENTUM(vp + 80) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE MR_LEGE8(CONTENTUM(vp + 80), 0).
+FIN-FUNCTIO.
+
+FUNCTIO VP_RESTITUE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    SI vp == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA bus SICUT NUMERUS VALENS CONTENTUM(vp).
+    DECLARA apparatus SICUT NUMERUS VALENS CONTENTUM(vp + 8).
+    DECLARA functio SICUT NUMERUS VALENS CONTENTUM(vp + 16).
+    DECLARA rectum SICUT NUMERUS VALENS 1.
+    SI CONTENTUM(vp + 40) != 0 && VP_RESET(vp) == 0 TUNC rectum = 0. FIN-SI.
+    DECLARA coda SICUT NUMERUS VALENS CONTENTUM(vp + 176).
+    SI coda != 0 TUNC
+        CONTENTUM(coda + 72) = 0.
+        SI DMA_UEFI_LIBERA(CONTENTUM(coda)) == 0 TUNC rectum = 0. FIN-SI.
+        CONTENTUM(vp + 176) = 0.
+    FIN-SI.
+    DECLARA s SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, CONTENTUM(vp + 152)).
+    SI (PCI_LEGE(bus, apparatus, functio, 4) & 65535) != CONTENTUM(vp + 152) TUNC rectum = 0. FIN-SI.
+    CONTENTUM(vp + 160) = 0.
+    CONTENTUM(vp + 184) = CONTENTUM(vp + 184) + 1.
+    REDDE rectum.
+FIN-FUNCTIO.

@@ -1,0 +1,104 @@
+// Sylvia OS — P12-V4: mandatum primum GPU super transportum VirtIO.
+// Rector virtio_pci.vindex ante hoc folium adsit.
+//
+// GET_DISPLAY_INFO mittitur ut duo descriptoria: caput XXIV octetorum ab
+// apparatu lectum, responsum CCCCVIII octetorum ab apparatu scriptum.
+// Nulla memoria graphica nec acceleratio hic fingitur; hic gradus solum
+// transportum, ordinem DMA et responsum scanout verum certificat.
+
+FUNCTIO VG_CMD_DISPLAY_INFO REDDENS NUMERUS.
+    REDDE 256.
+FIN-FUNCTIO.
+
+FUNCTIO VG_RESP_DISPLAY_INFO REDDENS NUMERUS.
+    REDDE 4353.
+FIN-FUNCTIO.
+
+FUNCTIO VG_CAPUT_MENSURA REDDENS NUMERUS.
+    REDDE 24.
+FIN-FUNCTIO.
+
+FUNCTIO VG_DISPLAY_INFO_MENSURA REDDENS NUMERUS.
+    REDDE 408.
+FIN-FUNCTIO.
+
+FUNCTIO VG_MEMORIA_VACUA REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI regio == 0 || mensura < 0 || mensura % 8 != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SI DMA_SCRIBE64(regio, intervallum + i, 0) == 0 TUNC REDDE 0. FIN-SI.
+        i = i + 8.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG_DISPLAY_INFO_PRAEPARA REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI mandatum < CONTENTUM(coda + 120) || responsum < mandatum + VG_CAPUT_MENSURA() TUNC REDDE 0. FIN-SI.
+    SI responsum + VG_DISPLAY_INFO_MENSURA() < responsum || responsum + VG_DISPLAY_INFO_MENSURA() > CONTENTUM(regio + 16) TUNC REDDE 0. FIN-SI.
+    SI mandatum % 8 != 0 || responsum % 8 != 0 TUNC REDDE 0. FIN-SI.
+    SI VG_MEMORIA_VACUA(regio, mandatum, VG_CAPUT_MENSURA()) == 0 TUNC REDDE 0. FIN-SI.
+    SI VG_MEMORIA_VACUA(regio, responsum, VG_DISPLAY_INFO_MENSURA()) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum, 256) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA phys_mandatum SICUT NUMERUS VALENS DMA_PHYSICA(regio, mandatum, VG_CAPUT_MENSURA()).
+    DECLARA phys_responsum SICUT NUMERUS VALENS DMA_PHYSICA(regio, responsum, VG_DISPLAY_INFO_MENSURA()).
+    SI phys_mandatum == 0 || phys_responsum == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_DESCRIPTOR_SCRIBE(coda, 0, phys_mandatum, VG_CAPUT_MENSURA(), 1, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_DESCRIPTOR_SCRIBE(coda, 1, phys_responsum, VG_DISPLAY_INFO_MENSURA(), 2, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE16(regio, CONTENTUM(coda + 24), 1) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VQ_PRAEBE(coda, 0).
+FIN-FUNCTIO.
+
+FUNCTIO VG_RESPONSUM_GENUS REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    SI coda == 0 TUNC REDDE 0. FIN-SI.
+    REDDE DMA_LEGE32(CONTENTUM(coda), responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG_SCANOUT_X REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT scanout SICUT NUMERUS.
+    SI coda == 0 || scanout < 0 || scanout >= 16 TUNC REDDE 0. FIN-SI.
+    REDDE DMA_LEGE32(CONTENTUM(coda), responsum + 24 + scanout * 24).
+FIN-FUNCTIO.
+
+FUNCTIO VG_SCANOUT_Y REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT scanout SICUT NUMERUS.
+    SI coda == 0 || scanout < 0 || scanout >= 16 TUNC REDDE 0. FIN-SI.
+    REDDE DMA_LEGE32(CONTENTUM(coda), responsum + 28 + scanout * 24).
+FIN-FUNCTIO.
+
+FUNCTIO VG_SCANOUT_LATITUDO REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT scanout SICUT NUMERUS.
+    SI coda == 0 || scanout < 0 || scanout >= 16 TUNC REDDE 0. FIN-SI.
+    REDDE DMA_LEGE32(CONTENTUM(coda), responsum + 32 + scanout * 24).
+FIN-FUNCTIO.
+
+FUNCTIO VG_SCANOUT_ALTITUDO REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT scanout SICUT NUMERUS.
+    SI coda == 0 || scanout < 0 || scanout >= 16 TUNC REDDE 0. FIN-SI.
+    REDDE DMA_LEGE32(CONTENTUM(coda), responsum + 36 + scanout * 24).
+FIN-FUNCTIO.
+
+FUNCTIO VG_SCANOUT_ACTIVUS REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT scanout SICUT NUMERUS.
+    SI coda == 0 || scanout < 0 || scanout >= 16 TUNC REDDE 0. FIN-SI.
+    REDDE DMA_LEGE32(CONTENTUM(coda), responsum + 40 + scanout * 24).
+FIN-FUNCTIO.

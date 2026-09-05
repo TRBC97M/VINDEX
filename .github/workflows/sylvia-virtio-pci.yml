@@ -1,0 +1,80 @@
+name: Sylvia OS — Transportus VirtIO PCI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/vindex_verifica.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/paginae_dma.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/virtio_pci.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/virtio_gpu.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/virtio_pci.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_virtio_gpu_053.sh'
+      - 'documenta/vindex/VIRTIO_PCI.md'
+      - 'CONSILIUM.md'
+      - '.github/workflows/sylvia-virtio-pci.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  virtio-pci:
+    name: Facultates, coda DMA et GPU QEMU probantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Instrumenta para
+        shell: bash
+        run: |
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_virtio_gpu_053.sh'
+
+      - name: Puritatem, fontes et coda nativa verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          python3 instrumenta/vindex_verifica.py probationes/virtio_pci.vindex
+          ( cd systema && python3 ../instrumenta/vindex_verifica.py proba_virtio_gpu.vindex )
+          ./compilator_vindex probationes/virtio_pci.vindex /tmp/virtio-pci
+          chmod +x /tmp/virtio-pci
+          /tmp/virtio-pci
+
+      - name: Auto-hospitium punctum fixum
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/gen2
+          chmod +x /tmp/gen2
+          /tmp/gen2 src/compilator_vindex.vindex /tmp/gen3
+          chmod +x /tmp/gen3
+          cmp -s /tmp/gen2 /tmp/gen3
+          cmp -s ./compilator_vindex /tmp/gen3
+          printf '%s\n' 'RECTE: compilator canonicus = G2 = G3.'
+
+      - name: Regressiones canonicas exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash tests/run_tests.sh
+
+      - name: Transportum VirtIO GPU sub firmware exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash ./instrumenta/proba_virtio_gpu_053.sh
