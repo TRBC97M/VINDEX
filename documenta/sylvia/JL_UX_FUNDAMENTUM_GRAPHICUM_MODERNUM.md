@@ -200,13 +200,13 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
-**Status: ACTIVUM; incrementum F1 contractum et codam instituit.**
+**Status: ACTIVUM; F1 contractum et codam instituit, F2 cache texturarum construit.**
 
 - contractus backend explicatus;
 - batching/coda communis Graphica VIII/X;
 - fences et damnum post successum tantum purgatum;
 - backend software ut referentia et target injectabile probationum;
-- texturarum cache;
+- cache texturarum per generationem GX, cum residentia et LRU;
 - via GPU cum infrastructura hardware id sinit.
 
 ## X. Criterium Vista-class
@@ -393,7 +393,44 @@ Probatio VINDEX nativa confirmat batch duo-mandatorum, ordinem canalium amborum
 formatorum GOP, fences monotonas, overflow codae, electionem backendis scenae,
 recusationem GPU ficti et conservationem damni post defectum.
 
-## XVII. Invarianta
+## XVII. Contractus P16-XII-F2
+
+Secunda pars XII-F vitam texturarum a memoria physica backendis separat.
+Gestor `TXC_*` superficiem GX cum generatione contenti coniungit et recordum
+residentiae LXXX-octetorum reddit. Recordum identitatem monotonicam,
+generationem, pondus octetorum, tempus ultimi usus, fibulas et manubrium
+backendis futurum continet.
+
+Leges cache sunt:
+
+- hit tantum si sedes superficiei **et** generatio GX conveniunt;
+- mutatio GX vetus recordum invalidat et novam residentiam poscit;
+- duo limites simul valent: numerus recordorum et summa octetorum logicorum;
+- victima est recordum non fibulatum minime recens; aequalitas per identitatem
+  minorem determinatur;
+- recordum fibulatum numquam evincitur;
+- invalidatio recordi fibulati differtur usque ad ultimam relaxationem;
+- nodi evicti reutilizantur, ne acervus singulis generationibus crescat;
+- res maior toto budget recusatur sine defectu compositionis software.
+
+`BX_CACHE_INSTITUE` cache in offset `112` descriptoris backendis alligat.
+`BX_CAP_TEXTURE` ante hanc institutionem non publicatur. Capacitas significat
+contractum residentiae praesentem, non memoriam GPU fictam. Backend software
+servat solum metadata et superficiem GX auctoritatem pixelorum; backend GPU
+futurus eidem nodo manubrium reale in campo iam reservato alligare poterit.
+
+Compositor cache tangit ubi texturae re vera consumuntur: fundum et unumquodque
+stratum visibile quod damage secat. Petere et relaxare compositionem CPU non
+mutat. Superficies immotae hits reddunt; renovatio clientis per generationem
+miss et invalidationem reddit. Backbuffer semper post compositionem per
+contractum F1 praesentatur et non pro textura statica falso cacheatur.
+
+Probatio VINDEX nativa confirmat hit/miss, identitatem per generationem,
+evictionem LRU, budget, saturitatem omnibus recordis fibulatis, invalidationem
+dilatam, reusum nodorum, publicationem capacitatis BX et hits reales inter duas
+recompositiones eiusdem scenae.
+
+## XVIII. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -404,6 +441,8 @@ recusationem GPU ficti et conservationem damni post defectum.
 - effectus non iustificant input lentum;
 - memoria GX semper RGBA canonica manet; conversio GOP tantum in limite framebufferis fit;
 - effectus cacheatus non iterum calculatur nisi clavis vel generatio fontis mutatur;
+- textura fibulata non evincitur et capacitas texture sine cache non publicatur;
+- residentia software metadata est, non affirmatio memoriae GPU;
 - rastera Graphica IX in GX tantum per conversionem recti→praemultiplicati intrat;
 - 9-slice margines materialis non cum dimensione destinationis extenduntur;
 - eventus timeris non definit tempus animationis;
@@ -412,6 +451,6 @@ recusationem GPU ficti et conservationem damni post defectum.
 - retargetatio semper ex statu composito praesenti incipit;
 - horologium UI non obstruit ansam input.
 
-## XVIII. Sententia
+## XIX. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**

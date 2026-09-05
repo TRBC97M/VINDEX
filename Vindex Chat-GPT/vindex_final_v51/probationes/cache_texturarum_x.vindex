@@ -1,0 +1,101 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+
+FUNCTIO PTX_HABET REDDENS NUMERUS.
+    ACCIPIT cache SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT generatio SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(cache).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n+8)==superficies && CONTENTUM(n+16)==generatio && (CONTENTUM(n+56)&1)==0 TUNC REDDE 1. FIN-SI.
+        n=CONTENTUM(n+48).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA a SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA b SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA c SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA d SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA e SICUT NUMERUS VALENS GX_CREA(8,8).
+    SI a==0 || b==0 || c==0 || d==0 || e==0 TUNC REDDE 1. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(a,GVIII_RECT_CREA(0,0,4,4),255,255).
+    f=GX_RECT_ALPHA(b,GVIII_RECT_CREA(0,0,4,4),65280,255).
+    f=GX_RECT_ALPHA(c,GVIII_RECT_CREA(0,0,4,4),16711680,255).
+    f=GX_RECT_ALPHA(d,GVIII_RECT_CREA(0,0,4,4),16777215,255).
+
+    DECLARA cache SICUT NUMERUS VALENS TXC_CREA(2,128).
+    SI cache==0 || TXC_NUMERUS(cache)!=0 || TXC_OCTETA(cache)!=0 TUNC REDDE 2. FIN-SI.
+    DECLARA na SICUT NUMERUS VALENS TXC_PETE(cache,a).
+    SI na==0 || TXC_MISSES(cache)!=1 || TXC_NUMERUS(cache)!=1 || TXC_OCTETA(cache)!=64 || TXC_FIBULAE(na)!=1 TUNC REDDE 3. FIN-SI.
+    DECLARA ida SICUT NUMERUS VALENS TXC_ID(na).
+    SI TXC_RELAXA(cache,na)==0 TUNC REDDE 4. FIN-SI.
+    DECLARA na2 SICUT NUMERUS VALENS TXC_PETE(cache,a).
+    SI na2!=na || TXC_ID(na2)!=ida || TXC_HITS(cache)!=1 TUNC REDDE 5. FIN-SI.
+    f=TXC_RELAXA(cache,na2).
+
+    DECLARA nb SICUT NUMERUS VALENS TXC_PETE(cache,b).
+    SI nb==0 || TXC_RELAXA(cache,nb)==0 TUNC REDDE 6. FIN-SI.
+    na=TXC_PETE(cache,a). f=TXC_RELAXA(cache,na).
+    DECLARA nc SICUT NUMERUS VALENS TXC_PETE(cache,c).
+    SI nc==0 || TXC_EVICTIONES(cache)!=1 || PTX_HABET(cache,b,CONTENTUM(b+72))!=0 TUNC REDDE 7. FIN-SI.
+    SI PTX_HABET(cache,a,CONTENTUM(a+72))==0 || PTX_HABET(cache,c,CONTENTUM(c+72))==0 TUNC REDDE 8. FIN-SI.
+    f=TXC_RELAXA(cache,nc).
+
+    DECLARA gen_a SICUT NUMERUS VALENS CONTENTUM(a+72).
+    f=GX_PIX_PONE(a,0,0,65280,255).
+    SI CONTENTUM(a+72)<=gen_a TUNC REDDE 9. FIN-SI.
+    DECLARA na3 SICUT NUMERUS VALENS TXC_PETE(cache,a).
+    SI na3==0 || TXC_ID(na3)==ida || TXC_GENERATIO(na3)!=CONTENTUM(a+72) TUNC REDDE 10. FIN-SI.
+    SI TXC_MISSES(cache)!=4 || TXC_INVALIDATIONES(cache)!=1 TUNC REDDE 11. FIN-SI.
+    f=TXC_RELAXA(cache,na3).
+
+    nc=TXC_PETE(cache,c). na3=TXC_PETE(cache,a).
+    SI nc==0 || na3==0 || TXC_PETE(cache,d)!=0 || TXC_MISSES(cache)!=5 TUNC REDDE 12. FIN-SI.
+    f=TXC_RELAXA(cache,nc).
+    DECLARA nd SICUT NUMERUS VALENS TXC_PETE(cache,d).
+    SI nd==0 || TXC_EVICTIONES(cache)!=2 || TXC_MISSES(cache)!=6 TUNC REDDE 13. FIN-SI.
+    f=TXC_RELAXA(cache,nd). f=TXC_RELAXA(cache,na3).
+    nd=TXC_PETE(cache,d).
+    SI nd==0 || TXC_INVALIDA(cache,d)!=1 || TXC_NUMERUS(cache)!=2 TUNC REDDE 14. FIN-SI.
+    SI TXC_RELAXA(cache,nd)==0 || TXC_NUMERUS(cache)!=1 || TXC_INVALIDATIONES(cache)!=2 TUNC REDDE 15. FIN-SI.
+    SI TXC_PETE(cache,e)!=0 || TXC_MISSES(cache)!=7 || TXC_NUMERUS(cache)!=1 TUNC REDDE 16. FIN-SI.
+    SI TXC_PURGA(cache)!=1 || TXC_NUMERUS(cache)!=0 || TXC_OCTETA(cache)!=0 || TXC_INVALIDATIONES(cache)!=3 TUNC REDDE 17. FIN-SI.
+    SI TXC_HITS(cache)!=5 TUNC REDDE 18. FIN-SI.
+
+    DECLARA backend SICUT NUMERUS VALENS BX_CREA_SW(4).
+    SI backend==0 || BX_CACHE(backend)!=0 || (CONTENTUM(backend+16)&BX_CAP_TEXTURE())!=0 TUNC REDDE 19. FIN-SI.
+    DECLARA cache_b SICUT NUMERUS VALENS BX_CACHE_INSTITUE(backend,2,128).
+    SI cache_b==0 || BX_CACHE(backend)!=cache_b || (CONTENTUM(backend+16)&BX_CAP_TEXTURE())==0 TUNC REDDE 20. FIN-SI.
+    SI BX_CACHE_INSTITUE(backend,8,1024)!=cache_b TUNC REDDE 21. FIN-SI.
+    na=BX_TEXTURE_PETE(backend,a).
+    SI na==0 || BX_TEXTURE_RELAXA(backend,na)==0 TUNC REDDE 22. FIN-SI.
+
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(6,4).
+    DECLARA tabula SICUT NUMERUS VALENS GX_CREA(2,2).
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,6,4),2105376,255).
+    f=GX_RECT_ALPHA(tabula,GVIII_RECT_CREA(0,0,2,2),255,255).
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(6,4,fundum).
+    SI scena==0 || CX_STRATUM_ADDE(scena,1,tabula,1,1,10,255)==0 TUNC REDDE 23. FIN-SI.
+    DECLARA cache_s SICUT NUMERUS VALENS BX_CACHE(CX_SCENA_BACKEND(scena)).
+    SI cache_s==0 || (CONTENTUM(CX_SCENA_BACKEND(scena)+16)&BX_CAP_TEXTURE())==0 TUNC REDDE 24. FIN-SI.
+    SI CX_SCENA_RENDE(scena)==0 || TXC_MISSES(cache_s)!=2 || TXC_HITS(cache_s)!=0 TUNC REDDE 25. FIN-SI.
+    SI CX_SCENA_RENDE(scena)==0 || TXC_MISSES(cache_s)!=2 || TXC_HITS(cache_s)!=2 TUNC REDDE 26. FIN-SI.
+    DECLARA misses SICUT NUMERUS VALENS TXC_MISSES(cache_s).
+    DECLARA invalidationes SICUT NUMERUS VALENS TXC_INVALIDATIONES(cache_s).
+    f=GX_PIX_PONE(tabula,0,0,65280,255).
+    SI CX_SCENA_RENDE(scena)==0 TUNC REDDE 27. FIN-SI.
+    SI TXC_MISSES(cache_s)!=misses+1 || TXC_INVALIDATIONES(cache_s)!=invalidationes+1 TUNC REDDE 28. FIN-SI.
+    SI GX_PIX_PM_LEGE(CX_SCENA_BACK(scena),1,1)!=4278255360 TUNC REDDE 29. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.

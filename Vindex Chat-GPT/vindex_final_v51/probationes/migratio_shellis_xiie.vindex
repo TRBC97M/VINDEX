@@ -11,6 +11,7 @@ IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
 IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
 IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
 IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".

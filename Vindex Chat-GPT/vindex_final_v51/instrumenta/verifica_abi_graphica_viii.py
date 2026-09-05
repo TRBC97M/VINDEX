@@ -15,6 +15,7 @@ ARCHIVA = [
     RADIX / "bibliotheca/fenestrale_typographia_viii.vindex",
     RADIX / "bibliotheca/fenestrale_coda_graphica.vindex",
     RADIX / "bibliotheca/fenestrale_commandos_viii.vindex",
+    RADIX / "bibliotheca/fenestrale_cache_texturarum_x.vindex",
     RADIX / "bibliotheca/fenestrale_backend_x.vindex",
 ]
 LIMEN = 7
