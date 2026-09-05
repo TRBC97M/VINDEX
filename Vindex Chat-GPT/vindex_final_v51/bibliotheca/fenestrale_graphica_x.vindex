@@ -296,6 +296,141 @@ FUNCTIO GX_COMPOSITA_S REDDENS NUMERUS.
     REDDE GX_DAMNA_NOTA(dst,GVIII_RECT_CREA(dx,dy,sw,sh)).
 FIN-FUNCTIO.
 
+FUNCTIO GX_REGION_COPIA REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT src SICUT NUMERUS.
+    ACCIPIT src_rect SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    SI dst==0 || src==0 || src_rect==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sx0 SICUT NUMERUS VALENS GVIII_RECT_X(src_rect). DECLARA sy0 SICUT NUMERUS VALENS GVIII_RECT_Y(src_rect).
+    DECLARA sw SICUT NUMERUS VALENS GVIII_RECT_W(src_rect). DECLARA sh SICUT NUMERUS VALENS GVIII_RECT_H(src_rect).
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<sh PERFICE
+        DECLARA yy SICUT NUMERUS VALENS dy+y.
+        DECLARA sy SICUT NUMERUS VALENS sy0+y.
+        SI yy>=0 && yy<GX_H(dst) && sy>=0 && sy<GX_H(src) TUNC
+            DECLARA x SICUT NUMERUS VALENS 0.
+            SI dx>=0 && dx+sw<=GX_W(dst) && sx0>=0 && sx0+sw<=GX_W(src) TUNC
+                DUM x+1<sw PERFICE
+                    DECLARA xx SICUT NUMERUS VALENS dx+x. DECLARA sx SICUT NUMERUS VALENS sx0+x.
+                    DECLARA sp SICUT NUMERUS VALENS GX_BASIS(src)+(sy*CONTENTUM(src+16)+sx)*4.
+                    DECLARA dp SICUT NUMERUS VALENS GX_BASIS(dst)+(yy*CONTENTUM(dst+16)+xx)*4.
+                    CONTENTUM(dp)=CONTENTUM(sp).
+                    x=x+2.
+                FIN-DUM.
+                SI x<sw TUNC DECLARA f1 SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,dx+x,yy,GX_PIX_PM_LEGE(src,sx0+x,sy)). FIN-SI.
+            ALITER
+                DUM x<sw PERFICE
+                    DECLARA xx1 SICUT NUMERUS VALENS dx+x. DECLARA sx1 SICUT NUMERUS VALENS sx0+x.
+                    SI xx1>=0 && xx1<GX_W(dst) && sx1>=0 && sx1<GX_W(src) TUNC DECLARA f2 SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,xx1,yy,GX_PIX_PM_LEGE(src,sx1,sy)). FIN-SI.
+                    x=x+1.
+                FIN-DUM.
+            FIN-SI.
+        FIN-SI.
+        y=y+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GX_REGION_COMPONE REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT src SICUT NUMERUS.
+    ACCIPIT src_rect SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT alpha_globalis SICUT NUMERUS.
+    SI dst==0 || src==0 || src_rect==0 || alpha_globalis<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA sx0 SICUT NUMERUS VALENS GVIII_RECT_X(src_rect). DECLARA sy0 SICUT NUMERUS VALENS GVIII_RECT_Y(src_rect).
+    DECLARA sw SICUT NUMERUS VALENS GVIII_RECT_W(src_rect). DECLARA sh SICUT NUMERUS VALENS GVIII_RECT_H(src_rect).
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<sh PERFICE
+        DECLARA yy SICUT NUMERUS VALENS dy+y. DECLARA sy SICUT NUMERUS VALENS sy0+y.
+        SI yy>=0 && yy<GX_H(dst) && sy>=0 && sy<GX_H(src) TUNC
+            DECLARA x SICUT NUMERUS VALENS 0.
+            SI dx>=0 && dx+sw<=GX_W(dst) && sx0>=0 && sx0+sw<=GX_W(src) TUNC
+                DUM x+1<sw PERFICE
+                    DECLARA xx SICUT NUMERUS VALENS dx+x. DECLARA sx SICUT NUMERUS VALENS sx0+x.
+                    DECLARA sp SICUT NUMERUS VALENS GX_BASIS(src)+(sy*CONTENTUM(src+16)+sx)*4.
+                    DECLARA dp SICUT NUMERUS VALENS GX_BASIS(dst)+(yy*CONTENTUM(dst+16)+xx)*4.
+                    DECLARA duo SICUT NUMERUS VALENS CONTENTUM(sp).
+                    DECLARA a0 SICUT NUMERUS VALENS (duo>>24)&255. DECLARA a1 SICUT NUMERUS VALENS (duo>>56)&255.
+                    SI alpha_globalis==255 && a0==255 && a1==255 TUNC
+                        CONTENTUM(dp)=duo.
+                    ALITER
+                        SI a0>0 TUNC
+                            DECLARA sup0 SICUT NUMERUS VALENS duo&4294967295.
+                            DECLARA sub0 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,xx,yy).
+                            DECLARA f0 SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,xx,yy,GX_PM_SUPER(sub0,sup0,alpha_globalis)).
+                        FIN-SI.
+                        SI a1>0 TUNC
+                            DECLARA sup1 SICUT NUMERUS VALENS (duo>>32)&4294967295.
+                            DECLARA sub1 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,xx+1,yy).
+                            DECLARA f1 SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,xx+1,yy,GX_PM_SUPER(sub1,sup1,alpha_globalis)).
+                        FIN-SI.
+                    FIN-SI.
+                    x=x+2.
+                FIN-DUM.
+                SI x<sw TUNC
+                    DECLARA xx2 SICUT NUMERUS VALENS dx+x. DECLARA sx2 SICUT NUMERUS VALENS sx0+x.
+                    DECLARA sup2 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(src,sx2,sy).
+                    SI ((sup2>>24)&255)>0 TUNC DECLARA sub2 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,xx2,yy). DECLARA f2 SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,xx2,yy,GX_PM_SUPER(sub2,sup2,alpha_globalis)). FIN-SI.
+                FIN-SI.
+            ALITER
+                DUM x<sw PERFICE
+                    DECLARA xx3 SICUT NUMERUS VALENS dx+x. DECLARA sx3 SICUT NUMERUS VALENS sx0+x.
+                    SI xx3>=0 && xx3<GX_W(dst) && sx3>=0 && sx3<GX_W(src) TUNC
+                        DECLARA sup3 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(src,sx3,sy).
+                        SI ((sup3>>24)&255)>0 TUNC DECLARA sub3 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,xx3,yy). DECLARA f3 SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,xx3,yy,GX_PM_SUPER(sub3,sup3,alpha_globalis)). FIN-SI.
+                    FIN-SI.
+                    x=x+1.
+                FIN-DUM.
+            FIN-SI.
+        FIN-SI.
+        y=y+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO GX_NOVEM_COMPONE REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT src SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT sectio SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI dst==0 || src==0 || destinatio==0 || sectio==0 || alpha<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS GX_W(src). DECLARA sh SICUT NUMERUS VALENS GX_H(src).
+    DECLARA tw SICUT NUMERUS VALENS GVIII_RECT_W(destinatio). DECLARA th SICUT NUMERUS VALENS GVIII_RECT_H(destinatio).
+    SI sw<3 || sh<3 || tw<1 || th<1 TUNC REDDE 0. FIN-SI.
+    DECLARA inter SICUT NUMERUS VALENS GVIII_RECT_SECA(sectio,destinatio).
+    SI inter!=0 TUNC inter=GVIII_RECT_SECA(inter,GVIII_RECT_CREA(0,0,GX_W(dst),GX_H(dst))). FIN-SI.
+    SI inter==0 TUNC REDDE 0. FIN-SI.
+    DECLARA cutx SICUT NUMERUS VALENS (sw-1)/2. DECLARA cuty SICUT NUMERUS VALENS (sh-1)/2.
+    DECLARA ix SICUT NUMERUS VALENS GVIII_RECT_X(inter). DECLARA iy SICUT NUMERUS VALENS GVIII_RECT_Y(inter).
+    DECLARA iw SICUT NUMERUS VALENS GVIII_RECT_W(inter). DECLARA ih SICUT NUMERUS VALENS GVIII_RECT_H(inter).
+    DECLARA ox SICUT NUMERUS VALENS GVIII_RECT_X(destinatio). DECLARA oy SICUT NUMERUS VALENS GVIII_RECT_Y(destinatio).
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<ih PERFICE
+        DECLARA py SICUT NUMERUS VALENS iy+y. DECLARA ly SICUT NUMERUS VALENS py-oy.
+        DECLARA sy SICUT NUMERUS VALENS cuty.
+        SI cuty*2>=th TUNC sy=ly*sh/th. ALITER SI ly<cuty TUNC sy=ly. ALITER SI ly>=th-cuty TUNC sy=sh-(th-ly). FIN-SI. FIN-SI. FIN-SI.
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<iw PERFICE
+            DECLARA px SICUT NUMERUS VALENS ix+x. DECLARA lx SICUT NUMERUS VALENS px-ox.
+            DECLARA sx SICUT NUMERUS VALENS cutx.
+            SI cutx*2>=tw TUNC sx=lx*sw/tw. ALITER SI lx<cutx TUNC sx=lx. ALITER SI lx>=tw-cutx TUNC sx=sw-(tw-lx). FIN-SI. FIN-SI. FIN-SI.
+            DECLARA sup SICUT NUMERUS VALENS GX_PIX_PM_LEGE(src,sx,sy).
+            SI ((sup>>24)&255)>0 TUNC
+                DECLARA sub SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,px,py).
+                DECLARA f SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,px,py,GX_PM_SUPER(sub,sup,alpha)).
+            FIN-SI.
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
 FUNCTIO GX_CAPTURA_FB REDDENS NUMERUS.
     ACCIPIT rectum SICUT NUMERUS.
     SI rectum==0 TUNC REDDE 0. FIN-SI.
