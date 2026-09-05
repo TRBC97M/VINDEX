@@ -535,7 +535,7 @@ FUNCTIO PCI_BAR_MENSURA REDDENS NUMERUS.
     DECLARA est_lxiv SICUT NUMERUS VALENS PCI_BAR_EST_LXIV(originalis_inferior).
     SI est_lxiv == 1 && index + 1 >= limen TUNC REDDE 0. FIN-SI.
     DECLARA originalis_superior SICUT NUMERUS VALENS 0.
-    SI est_lxiv == 1 TUNC originalis_superior = PCI_BAR_LEGE(bus, apparatus, functio, reg + 4). FIN-SI.
+    SI est_lxiv == 1 TUNC originalis_superior = PCI_BAR_LEGE(bus, apparatus, functio, index + 1). FIN-SI.
     DECLARA commandum SICUT NUMERUS VALENS PCI_LEGE(bus, apparatus, functio, 4) & 65535.
     DECLARA ig_c0 SICUT NUMERUS VALENS PCI_COMMANDUM_SCRIBE(bus, apparatus, functio, commandum & 65532).
     DECLARA ig_s0 SICUT NUMERUS VALENS PCI_SCRIBE(bus, apparatus, functio, reg, 4294967295).
