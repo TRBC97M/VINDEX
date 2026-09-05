@@ -1,0 +1,43 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/raster_rle_vii.vindex".
+IMPORTA "bibliotheca/iconae_sylviae_vii.vindex".
+IMPORTA "bibliotheca/simg_ii.vindex".
+IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
+IMPORTA "bibliotheca/simg_ii_assetum.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_productio_x.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x_asseta.vindex".
+IMPORTA "bibliotheca/fenestrale_tempus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_motus_x.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
+IMPORTA "bibliotheca/fenestrale_eventa_g.vindex".
+IMPORTA "bibliotheca/clientia_registrum_h.vindex".
+IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
+IMPORTA "bibliotheca/applicationes_registrum_iv.vindex".
+IMPORTA "bibliotheca/fenestrale_gestor_i.vindex".
+IMPORTA "bibliotheca/fenestrale_applicationes_iv.vindex".
+IMPORTA "bibliotheca/fenestrale_iconographia_xib.vindex".
+IMPORTA "bibliotheca/fenestrale_shell_xiie.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA forma SICUT NUMERUS VALENS RESERVA_OCTETA(2048). SI forma<=0 TUNC REDDE 1. FIN-SI.
+    DECLARA purum SICUT NUMERUS VALENS GX_MEM_PURA(forma,2048).
+    SCRIBE_OCTETUM_AB(forma+65*8,129).
+    DECLARA dst SICUT NUMERUS VALENS GX_CREA(20,12). SI dst==0 TUNC REDDE 2. FIN-SI.
+    DECLARA color SICUT NUMERUS VALENS XIIE_COLOR(40,80,120).
+    SI XIIE_TEXTUM_GX_FONTE(dst,2,2,"A",color,1,forma)==0 TUNC REDDE 3. FIN-SI.
+    DECLARA q SICUT NUMERUS VALENS GX_PIX_PM_LEGE(dst,2,2).
+    SI (q&255)!=40 || ((q>>8)&255)!=80 || ((q>>16)&255)!=120 || ((q>>24)&255)!=255 TUNC REDDE 4. FIN-SI.
+    SI GX_PIX_PM_LEGE(dst,3,2)!=0 TUNC REDDE 5. FIN-SI.
+    q=GX_PIX_PM_LEGE(dst,9,2).
+    SI ((q>>24)&255)!=255 TUNC REDDE 6. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

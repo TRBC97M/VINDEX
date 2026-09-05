@@ -1,5 +1,7 @@
-// Sylvia OS — Fenestrale II Purus I, facies P16-XI-B / P17-II / P19-II.
+// Sylvia OS — Fenestrale II Purus I, facies P16-XII-E / P17-II / P19-II.
 // Fenestrae, clientes et applicationes in registris dynamicis VINDEX vivunt.
+// P16-XII-E testam realem super scenam persistentem Graphica X componit;
+// clientia FS_* manent compatibilia per pontem explicitum FS -> GX.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
@@ -17,6 +19,13 @@ IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
 IMPORTA "bibliotheca/simg_ii_assetum.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_productio_x.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x_asseta.vindex".
+IMPORTA "bibliotheca/fenestrale_tempus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_motus_x.vindex".
 IMPORTA "bibliotheca/programmata_clientis_e.vindex".
 IMPORTA "bibliotheca/tabula_clientis_f.vindex".
 IMPORTA "bibliotheca/terminale_clientis_i.vindex".
@@ -36,6 +45,7 @@ IMPORTA "bibliotheca/fenestrale_chrome_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_shell_ix.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_shell_xiie.vindex".
 
 // Rector PS/2 historice hanc functionem vocat. Fenestrale coordinatas suas
 // ex dx/dy crudis legit; hic adaptor tantum contractum rectoris implet.
@@ -51,7 +61,8 @@ FIN-FUNCTIO.
 // 27 margines resize; 28 murus relativus; 29 murus absolutus.
 // 34 coda eventuum; 35 eventa perdita; 36 clientes; 37 fenestrae;
 // 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG; 41 atlas P16-VII;
-// 42 gestor assetorum premium P16-XI-B, vel 0 si familia runtime deest.
+// 42 gestor assetorum premium P16-XI-B, vel 0 si familia runtime deest;
+// 43 scena CX; 44 cache XP; 45 motus MX; 46 horologium TX; 47 gestor XII-E.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
@@ -60,6 +71,7 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA utilis_h SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
     s[11]=w/2. s[12]=h/2. s[13]=0. s[14]=0. s[15]=0. s[16]=0. s[27]=0.
     s[28]=0. s[29]=0. s[35]=0. s[38]=0. s[40]=0. s[41]=0. s[42]=0.
+    s[43]=0. s[44]=0. s[45]=0. s[46]=0. s[47]=0.
     s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
     s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
     s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
@@ -132,10 +144,19 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     // OFFICINA manet utilis etiam si backend non adest aut lectio errat.
     DECLARA init_o SICUT NUMERUS VALENS OP_INIT(status_o).
     ro=OP_RENDE(superficies_o,status_o).
-    DECLARA f SICUT NUMERUS VALENS IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+
+    // P16-XII-E: scena moderna temptatur semel. Si firmware/horologium vel
+    // aliqua allocatio deficit, renderer IX historicus manet fallback verus.
+    DECLARA modernum SICUT NUMERUS VALENS XIIE_SCENA_INIT(s,s[37],s[36],s[39]).
+    DECLARA f SICUT NUMERUS VALENS 0.
+    SI modernum==0 TUNC
+        f=IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+    FIN-SI.
+
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
         DECLARA redde SICUT NUMERUS VALENS 0.
+        DECLARA renova_clientes SICUT NUMERUS VALENS 0.
         // AUX/PS2 ante claviaturam firmware pollitur.
         DECLARA muris SICUT NUMERUS VALENS IN_MURUS(s).
         DECLARA q SICUT NUMERUS VALENS IN_CLAVIS().
@@ -145,16 +166,35 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         FIN-SI.
         SI muris!=0 TUNC
             DECLARA bullae SICUT NUMERUS VALENS muris-1.
-            SI (bullae&1)!=0 && (s[13]&1)==0 TUNC DECLARA md SICUT NUMERUS VALENS IV_MOUSE_DOWN(s,s[37],s[34],s[39]). FIN-SI.
+            SI (bullae&1)!=0 && (s[13]&1)==0 TUNC
+                DECLARA md SICUT NUMERUS VALENS IV_MOUSE_DOWN(s,s[37],s[34],s[39]).
+            FIN-SI.
             SI (bullae&1)!=0 && s[14]!=0 TUNC DECLARA dr SICUT NUMERUS VALENS GI_DRAG(s,s[37]). FIN-SI.
             SI (bullae&1)==0 && (s[13]&1)!=0 TUNC s[14]=0. s[27]=0. FIN-SI.
             s[13]=bullae. redde=1.
         FIN-SI.
         DECLARA acta SICUT NUMERUS VALENS CI_EVENTA_AGE(s[36],s[37],s[34]).
-        SI acta>0 TUNC redde=1. FIN-SI.
+        SI acta>0 TUNC redde=1. renova_clientes=1. FIN-SI.
+
         SI redde==1 TUNC
-            f=IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+            SI modernum!=0 TUNC
+                DECLARA sync SICUT NUMERUS VALENS XIIE_UI_SYNC(s,s[37],s[36],s[39],renova_clientes).
+                SI sync!=0 TUNC f=CX_PRAESENTA_FB(s[43]). FIN-SI.
+                DECLARA status_pendens SICUT NUMERUS VALENS OP_RENDE_PENDENS(superficies_o,status_o).
+                SI status_pendens!=0 TUNC
+                    DECLARA sync_status SICUT NUMERUS VALENS XIIE_UI_SYNC(s,s[37],s[36],s[39],1).
+                    SI sync_status!=0 TUNC f=CX_PRAESENTA_FB(s[43]). FIN-SI.
+                FIN-SI.
+            ALITER
+                DECLARA status_pendens_vetus SICUT NUMERUS VALENS OP_RENDE_PENDENS(superficies_o,status_o).
+                f=IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
+            FIN-SI.
         FIN-SI.
+
+        // Motus XII-D numquam input expectat: si tick realis advenit, tantum
+        // strata mutata componuntur et praesentantur. Renderer IX fallback
+        // hunc ramum omnino non attingit.
+        SI modernum!=0 TUNC DECLARA anima SICUT NUMERUS VALENS XIIE_PULSA(s). FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
     FIN-DUM.
     REDDE 0.

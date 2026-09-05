@@ -1,0 +1,851 @@
+// Sylvia OS — P16-XII-E: migratio shellis I ad scenam Graphica X.
+//
+// Propositum huius incrementi est testam Fenestralis II ad strata persistenta
+// GX/CX migrare sine ruptura clientium FS_* historicorum. Geometria hitbox,
+// registra FI/CH/AI et semantica input manent auctoritas. Clientia FS in RGBA
+// canonicum convertuntur tantum in limite XIIE_FS_IN_GX_*.
+//
+// s[43] scena CX; s[44] cache XP; s[45] motus MX; s[46] horologium TX;
+// s[47] gestor fenestrarum XII-E.
+//
+// ID strata reservata:
+//   10 bureau; 20 taskbar; 30 INITIUM; 40 cursor;
+//   1000 + id*2 = corpus fenestrae; +1 = umbra.
+
+FUNCTIO XIIE_COLOR REDDENS NUMERUS.
+    ACCIPIT r SICUT NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    REDDE (r&255)|((g&255)<<8)|((b&255)<<16).
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_GX_PURA REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI superficies==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS GX_W(superficies)*GX_H(superficies)*4.
+    DECLARA f SICUT NUMERUS VALENS GX_MEM_PURA(GX_BASIS(superficies),n).
+    f=GX_DAMNA_NOTA(superficies,GVIII_RECT_CREA(0,0,GX_W(superficies),GX_H(superficies))).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_GRADUS_V REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    ACCIPIT color_summus SICUT NUMERUS.
+    ACCIPIT color_inferus SICUT NUMERUS.
+    SI superficies==0 || rectum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS GVIII_RECT_X(rectum).
+    DECLARA y SICUT NUMERUS VALENS GVIII_RECT_Y(rectum).
+    DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(rectum).
+    DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(rectum).
+    SI w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<h PERFICE
+        DECLARA c SICUT NUMERUS VALENS color_summus.
+        SI h>1 TUNC c=GVII_COLOR_INTERPOLA(color_summus,color_inferus,i,h-1). FIN-SI.
+        DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(superficies,GVIII_RECT_CREA(x,y+i,w,1),c,255).
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Regionem FS opacam in GX convertit; forma=0 RGB, forma!=0 BGR in FS.
+FUNCTIO XIIE_FS_REGION_IN_GX_FORMA REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT fs SICUT NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT forma SICUT NUMERUS.
+    SI dst==0 || fs==0 || regio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sx SICUT NUMERUS VALENS GVIII_RECT_X(regio). DECLARA sy SICUT NUMERUS VALENS GVIII_RECT_Y(regio).
+    DECLARA w SICUT NUMERUS VALENS GVIII_RECT_W(regio). DECLARA h SICUT NUMERUS VALENS GVIII_RECT_H(regio).
+    SI sx<0 TUNC dx=dx-sx. w=w+sx. sx=0. FIN-SI. SI sy<0 TUNC dy=dy-sy. h=h+sy. sy=0. FIN-SI.
+    SI sx+w>CONTENTUM(fs) TUNC w=CONTENTUM(fs)-sx. FIN-SI. SI sy+h>CONTENTUM(fs+8) TUNC h=CONTENTUM(fs+8)-sy. FIN-SI.
+    SI dx<0 TUNC sx=sx-dx. w=w+dx. dx=0. FIN-SI. SI dy<0 TUNC sy=sy-dy. h=h+dy. dy=0. FIN-SI.
+    SI dx+w>GX_W(dst) TUNC w=GX_W(dst)-dx. FIN-SI. SI dy+h>GX_H(dst) TUNC h=GX_H(dst)-dy. FIN-SI.
+    SI w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA src SICUT NUMERUS VALENS CONTENTUM(fs+24).
+    DECLARA stride SICUT NUMERUS VALENS CONTENTUM(fs+16).
+    DECLARA masca SICUT NUMERUS VALENS 72057589759737855.
+    DECLARA masca_alpha SICUT NUMERUS VALENS (255<<24)+(255<<24)*4294967296.
+    DECLARA py SICUT NUMERUS VALENS 0.
+    DUM py<h PERFICE
+        DECLARA px SICUT NUMERUS VALENS 0.
+        DUM px+1<w PERFICE
+            DECLARA sp SICUT NUMERUS VALENS src+((sy+py)*stride+sx+px)*4.
+            DECLARA dp SICUT NUMERUS VALENS GX_BASIS(dst)+((dy+py)*CONTENTUM(dst+16)+dx+px)*4.
+            DECLARA duo SICUT NUMERUS VALENS CONTENTUM(sp).
+            SI forma==0 TUNC
+                CONTENTUM(dp)=(duo&masca)|masca_alpha.
+            ALITER
+                DECLARA q0 SICUT NUMERUS VALENS duo&4294967295. DECLARA q1 SICUT NUMERUS VALENS (duo>>32)&4294967295.
+                DECLARA c0 SICUT NUMERUS VALENS ((q0&255)<<16)|(q0&65280)|((q0>>16)&255)|(255<<24).
+                DECLARA c1 SICUT NUMERUS VALENS ((q1&255)<<16)|(q1&65280)|((q1>>16)&255)|(255<<24).
+                CONTENTUM(dp)=c0+c1*4294967296.
+            FIN-SI.
+            px=px+2.
+        FIN-DUM.
+        SI px<w TUNC
+            DECLARA p SICUT NUMERUS VALENS src+((sy+py)*stride+sx+px)*4.
+            DECLARA r SICUT NUMERUS VALENS OCTETUS_AB(p). DECLARA g SICUT NUMERUS VALENS OCTETUS_AB(p+1). DECLARA b SICUT NUMERUS VALENS OCTETUS_AB(p+2).
+            SI forma!=0 TUNC DECLARA t SICUT NUMERUS VALENS r. r=b. b=t. FIN-SI.
+            DECLARA q SICUT NUMERUS VALENS GX_PIX_PM_PONE(dst,dx+px,dy+py,r|(g<<8)|(b<<16)|(255<<24)).
+        FIN-SI.
+        py=py+1.
+    FIN-DUM.
+    DECLARA damnum SICUT NUMERUS VALENS GVIII_RECT_CREA(dx,dy,w,h).
+    DECLARA nota SICUT NUMERUS VALENS GX_DAMNA_NOTA(dst,damnum).
+    REDDE damnum.
+FIN-FUNCTIO.
+
+// Forma explicita ad probationem nativam; contractum historicum booleanum manet.
+FUNCTIO XIIE_FS_IN_GX_FORMA REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS. ACCIPIT fs SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS. ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT maxw SICUT NUMERUS. ACCIPIT maxh SICUT NUMERUS. ACCIPIT forma SICUT NUMERUS.
+    SI dst==0 || fs==0 || maxw<=0 || maxh<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(fs). DECLARA h SICUT NUMERUS VALENS CONTENTUM(fs+8).
+    SI w>maxw TUNC w=maxw. FIN-SI. SI h>maxh TUNC h=maxh. FIN-SI.
+    SI XIIE_FS_REGION_IN_GX_FORMA(dst,fs,GVIII_RECT_CREA(0,0,w,h),dx,dy,forma)==0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_FS_DAMNA_IN_GX REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS. ACCIPIT fs SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS. ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT maxw SICUT NUMERUS. ACCIPIT maxh SICUT NUMERUS.
+    SI dst==0 || fs==0 || CONTENTUM(fs+48)<=0 || CONTENTUM(fs+56)<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS GVIII_RECT_CREA(CONTENTUM(fs+32),CONTENTUM(fs+40),CONTENTUM(fs+48),CONTENTUM(fs+56)).
+    regio=GVIII_RECT_SECA(regio,GVIII_RECT_CREA(0,0,maxw,maxh)). SI regio==0 TUNC REDDE 0. FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS XIIE_FS_REGION_IN_GX_FORMA(dst,fs,regio,dx+GVIII_RECT_X(regio),dy+GVIII_RECT_Y(regio),CONTENTUM(50333744)).
+    SI r!=0 TUNC DECLARA purum SICUT NUMERUS VALENS FS_DAMNA_PURA(fs). FIN-SI.
+    REDDE r.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_FS_IN_GX REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT fs SICUT NUMERUS.
+    ACCIPIT dx SICUT NUMERUS.
+    ACCIPIT dy SICUT NUMERUS.
+    ACCIPIT maxw SICUT NUMERUS.
+    ACCIPIT maxh SICUT NUMERUS.
+    REDDE XIIE_FS_IN_GX_FORMA(dst,fs,dx,dy,maxw,maxh,CONTENTUM(50333744)).
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_TEXTUM_GX_FONTE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    ACCIPIT forma SICUT NUMERUS.
+    SI superficies==0 || forma==0 TUNC REDDE 0. FIN-SI.
+    DECLARA sc SICUT NUMERUS VALENS scala. SI sc<1 TUNC sc=1. FIN-SI. SI sc>3 TUNC sc=3. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(textus).
+    DECLARA descriptor SICUT NUMERUS VALENS FV_TEXTUS_SEDES(textus).
+    SI descriptor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DECLARA pixel SICUT NUMERUS VALENS color|(255<<24).
+    DUM i<n PERFICE
+        DECLARA littera SICUT NUMERUS VALENS OCTETUS_AB(descriptor+16+i).
+        DECLARA py SICUT NUMERUS VALENS 0.
+        DUM py<8 PERFICE
+            DECLARA bits SICUT NUMERUS VALENS OCTETUS_AB(forma+littera*8+py).
+            DECLARA px SICUT NUMERUS VALENS 0.
+            DUM px<8 PERFICE
+                SI (bits&(128>>px))!=0 TUNC
+                    DECLARA sy SICUT NUMERUS VALENS 0.
+                    DUM sy<sc PERFICE
+                        DECLARA sx SICUT NUMERUS VALENS 0.
+                        DUM sx<sc PERFICE
+                            DECLARA f SICUT NUMERUS VALENS GX_PIX_PM_PONE(superficies,x+i*8*sc+px*sc+sx,y+py*sc+sy,pixel).
+                            sx=sx+1.
+                        FIN-DUM.
+                        sy=sy+1.
+                    FIN-DUM.
+                FIN-SI.
+                px=px+1.
+            FIN-DUM.
+            py=py+1.
+        FIN-DUM.
+        i=i+1.
+    FIN-DUM.
+    DECLARA nota SICUT NUMERUS VALENS GX_DAMNA_NOTA(superficies,GVIII_RECT_CREA(x,y,n*8*sc,8*sc)).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_TEXTUM_GX REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT textus SICUT TEXTUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT scala SICUT NUMERUS.
+    REDDE XIIE_TEXTUM_GX_FONTE(superficies,x,y,textus,color,scala,CONTENTUM(50333784)).
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_FUNDUM_CREA REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    DECLARA s SICUT NUMERUS VALENS GX_CREA_UEFI(w,h). SI s==0 TUNC REDDE 0. FIN-SI.
+    DECLARA nox SICUT NUMERUS VALENS XIIE_COLOR(18,22,27).
+    DECLARA altum SICUT NUMERUS VALENS XIIE_COLOR(28,48,61).
+    DECLARA linea SICUT NUMERUS VALENS XIIE_COLOR(76,112,125).
+    DECLARA aqua SICUT NUMERUS VALENS XIIE_COLOR(0,198,255).
+    DECLARA bronzeum SICUT NUMERUS VALENS XIIE_COLOR(181,138,84).
+    DECLARA f SICUT NUMERUS VALENS XIIE_GRADUS_V(s,GVIII_RECT_CREA(0,0,w,h),altum,nox).
+    DECLARA x SICUT NUMERUS VALENS 0.
+    DUM x<w PERFICE
+        f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(x,112,1,h-190),linea,14).
+        x=x+48.
+    FIN-DUM.
+    f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(0,h*38/100,w,1),aqua,42).
+    f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(0,h*68/100,w,1),bronzeum,48).
+    f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(0,0,w,96),XIIE_COLOR(14,24,31),34).
+    REDDE s.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_BUREAU_W REDDENS NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS 0.
+    DECLARA q SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM q!=0 PERFICE
+        SI AI_NODUS_IN_BUREAU(q)!=0 TUNC n=n+1. FIN-SI.
+        q=AI_PROXIMUS(q).
+    FIN-DUM.
+    DECLARA rows SICUT NUMERUS VALENS IV_BUREAU_ROWS().
+    DECLARA cols SICUT NUMERUS VALENS 1.
+    SI n>0 TUNC cols=(n+rows-1)/rows. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS FV_METRUM_BUREAU_X()+cols*(FV_METRUM_BUREAU_LATITUDO()+16)+20.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(50333728).
+    SI w>sw TUNC w=sw. FIN-SI. SI w<180 TUNC w=180. FIN-SI.
+    REDDE w.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_ICONA_FALLBACK REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    DECLARA bronzeum SICUT NUMERUS VALENS XIIE_COLOR(181,138,84).
+    DECLARA aqua SICUT NUMERUS VALENS XIIE_COLOR(104,202,210).
+    DECLARA ebur SICUT NUMERUS VALENS XIIE_COLOR(242,244,247).
+    DECLARA nox SICUT NUMERUS VALENS XIIE_COLOR(24,30,35).
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(x,y,48,48),10,nox,245).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+4,y+4,40,2),bronzeum,255).
+    SI genus==1 TUNC
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+10,y+13,28,23),ebur,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+15,y+17,4,15),bronzeum,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+23,y+17,4,15),aqua,255).
+    FIN-SI.
+    SI genus==2 TUNC
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+10,y+12,28,24),ebur,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+19,y+12,2,24),bronzeum,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+28,y+12,2,24),bronzeum,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+10,y+20,28,2),bronzeum,255).
+    FIN-SI.
+    SI genus==3 TUNC
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+8,y+12,32,24),XIIE_COLOR(86,98,108),255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+12,y+16,24,16),nox,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+15,y+21,7,2),aqua,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+24,y+27,8,2),bronzeum,255).
+    FIN-SI.
+    SI genus==4 TUNC
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+13,y+8,24,32),ebur,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+13,y+8,4,32),bronzeum,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+21,y+17,11,2),aqua,255).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+21,y+24,10,2),XIIE_COLOR(120,132,142),255).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_XIB_ASSET_GX REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    SI dst==0 || gestor==0 || id==0 || destinatio==0 TUNC REDDE 0. FIN-SI.
+    SI XIB_ATLAS_EST(gestor)!=0 TUNC
+        DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(dst,destinatio,XIIE_COLOR(28,31,32),255).
+        SI f==0 TUNC REDDE 0. FIN-SI.
+        REDDE GXX_ASSET_OPACUM_GX(dst,gestor,id,destinatio,255).
+    FIN-SI.
+    REDDE GXX_ASSET_LINEAR_GX(dst,gestor,id,destinatio,255).
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_BUREAU_RENDE REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI dst==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS XIIE_GX_PURA(dst).
+    DECLARA ebur SICUT NUMERUS VALENS XIIE_COLOR(242,244,247).
+    DECLARA bronzeum SICUT NUMERUS VALENS XIIE_COLOR(181,138,84).
+    DECLARA aqua SICUT NUMERUS VALENS XIIE_COLOR(104,202,210).
+    DECLARA corpus SICUT NUMERUS VALENS XIIE_COLOR(21,29,34).
+    DECLARA hoverc SICUT NUMERUS VALENS XIIE_COLOR(48,66,73).
+    f=XIIE_TEXTUM_GX(dst,18,18,"SYLVIA",ebur,2).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(20,48,132,1),bronzeum,240).
+    f=XIIE_TEXTUM_GX(dst,20,54,"SYSTEMA VINDEX",aqua,1).
+    SI gestor!=0 TUNC DECLARA p SICUT NUMERUS VALENS XIB_SCALA_PARA(gestor). FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        SI AI_NODUS_IN_BUREAU(nodus)!=0 TUNC
+            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index).
+            DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
+            DECLARA c SICUT NUMERUS VALENS corpus.
+            SI s[11]>=x && s[11]<x+FV_METRUM_BUREAU_LATITUDO() && s[12]>=y && s[12]<y+FV_METRUM_BUREAU_ALTITUDO() TUNC c=hoverc. FIN-SI.
+            f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(x,y,FV_METRUM_BUREAU_LATITUDO(),FV_METRUM_BUREAU_ALTITUDO()),12,c,218).
+            f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(x+6,y+FV_METRUM_BUREAU_ALTITUDO()-3,FV_METRUM_BUREAU_LATITUDO()-12,1),bronzeum,210).
+            DECLARA id SICUT NUMERUS VALENS XIB_ASSET_ID(AI_NODUS_GENUS(nodus)).
+            SI gestor!=0 && id!=0 TUNC
+                f=XIIE_XIB_ASSET_GX(dst,gestor,id,GVIII_RECT_CREA(x+30,y+8,48,48)).
+            ALITER
+                f=XIIE_ICONA_FALLBACK(dst,x+30,y+8,AI_NODUS_GENUS(nodus)).
+            FIN-SI.
+            f=XIIE_TEXTUM_GX(dst,x+8,y+67,AI_NODUS_NOMEN(nodus),ebur,1).
+            index=index+1.
+        FIN-SI.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_TASKBAR_RENDE REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    ACCIPIT clientes SICUT NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    SI dst==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS XIIE_GX_PURA(dst).
+    DECLARA w SICUT NUMERUS VALENS GX_W(dst). DECLARA th SICUT NUMERUS VALENS GX_H(dst).
+    DECLARA screen_h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA top SICUT NUMERUS VALENS screen_h-th.
+    DECLARA graphite SICUT NUMERUS VALENS XIIE_COLOR(22,29,34).
+    DECLARA metallum SICUT NUMERUS VALENS XIIE_COLOR(58,70,77).
+    DECLARA activa SICUT NUMERUS VALENS XIIE_COLOR(57,94,103).
+    DECLARA hover SICUT NUMERUS VALENS XIIE_COLOR(74,101,108).
+    DECLARA ebur SICUT NUMERUS VALENS XIIE_COLOR(242,244,247).
+    DECLARA bronzeum SICUT NUMERUS VALENS XIIE_COLOR(181,138,84).
+    DECLARA aqua SICUT NUMERUS VALENS XIIE_COLOR(104,202,210).
+    DECLARA viride SICUT NUMERUS VALENS XIIE_COLOR(104,177,123).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(0,0,w,th),graphite,236).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(0,0,w,1),bronzeum,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(0,1,w,1),aqua,120).
+    DECLARA initc SICUT NUMERUS VALENS metallum.
+    SI s[38]==1 TUNC initc=activa. ALITER
+        SI s[11]>=6 && s[11]<110 && s[12]>=top+6 && s[12]<top+th-6 TUNC initc=hover. FIN-SI.
+    FIN-SI.
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(6,6,104,th-12),9,initc,245).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(9,7,3,th-14),bronzeum,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(17,13,13,13),bronzeum,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(21,16,5,7),graphite,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(22,13,2,13),viride,255).
+    f=XIIE_TEXTUM_GX(dst,36,16,"INITIUM",ebur,1).
+
+    DECLARA tray SICUT NUMERUS VALENS w-126.
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(tray,6,120,th-12),9,metallum,230).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(tray+4,8,2,th-16),bronzeum,180).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(tray+12,14,10,10),bronzeum,255).
+    f=XIIE_TEXTUM_GX(dst,tray+32,16,"SYLVIA",ebur,1).
+
+    DECLARA numerus SICUT NUMERUS VALENS FI_APERTA_NUM(fenestrae).
+    SI numerus<=0 TUNC REDDE 1. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS 118.
+    DECLARA spatium SICUT NUMERUS VALENS tray-basis-6.
+    SI spatium<=0 TUNC REDDE 1. FIN-SI.
+    DECLARA bw SICUT NUMERUS VALENS spatium/numerus. SI bw>196 TUNC bw=196. FIN-SI. SI bw<1 TUNC bw=1. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i<numerus PERFICE
+        DECLARA bx SICUT NUMERUS VALENS basis+i*bw.
+        SI bx>=tray-6 TUNC DESINE. FIN-SI.
+        DECLARA id SICUT NUMERUS VALENS FI_APERTA_N(fenestrae,i).
+        DECLARA n SICUT NUMERUS VALENS FI_QUAERE(fenestrae,id).
+        SI n!=0 TUNC
+            DECLARA tc SICUT NUMERUS VALENS metallum.
+            SI FI_FOCUS_ID(fenestrae)==id && CONTENTUM(n+48)==0 TUNC tc=activa. FIN-SI.
+            DECLARA lat SICUT NUMERUS VALENS bw-8. SI lat<1 TUNC lat=1. FIN-SI.
+            f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(bx,6,lat,th-12),7,tc,238).
+            SI FI_FOCUS_ID(fenestrae)==id && CONTENTUM(n+48)==0 TUNC f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(bx+4,7,lat-8,1),bronzeum,255). FIN-SI.
+            DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(n+8).
+            DECLARA app SICUT NUMERUS VALENS AI_CLIENTIS(applicationes,cliens).
+            DECLARA genus SICUT NUMERUS VALENS CH_GENUS(clientes,cliens).
+            SI app!=0 && bw>=104 TUNC f=XIIE_TEXTUM_GX(dst,bx+10,16,AI_NODUS_NOMEN(app),ebur,1). FIN-SI.
+            SI bw<104 && bw>=28 && genus==1 TUNC f=XIIE_TEXTUM_GX(dst,bx+10,16,"P",ebur,1). FIN-SI.
+            SI bw<104 && bw>=28 && genus==2 TUNC f=XIIE_TEXTUM_GX(dst,bx+10,16,"T",ebur,1). FIN-SI.
+            SI bw<104 && bw>=28 && genus==3 TUNC f=XIIE_TEXTUM_GX(dst,bx+10,16,">",viride,1). FIN-SI.
+            SI bw<104 && bw>=28 && genus==4 TUNC f=XIIE_TEXTUM_GX(dst,bx+10,16,"O",bronzeum,1). FIN-SI.
+        FIN-SI.
+        i=i+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_INITIUM_RENDE REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI dst==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS XIIE_GX_PURA(dst).
+    DECLARA w SICUT NUMERUS VALENS GX_W(dst). DECLARA h SICUT NUMERUS VALENS GX_H(dst).
+    DECLARA menu_y SICUT NUMERUS VALENS CONTENTUM(50333736)-FV_METRUM_TASKBAR()-h.
+    DECLARA nox SICUT NUMERUS VALENS XIIE_COLOR(24,30,35).
+    DECLARA ebur SICUT NUMERUS VALENS XIIE_COLOR(242,244,247).
+    DECLARA papyrus SICUT NUMERUS VALENS XIIE_COLOR(224,226,221).
+    DECLARA graphite SICUT NUMERUS VALENS XIIE_COLOR(35,47,53).
+    DECLARA aqua SICUT NUMERUS VALENS XIIE_COLOR(104,202,210).
+    DECLARA bronzeum SICUT NUMERUS VALENS XIIE_COLOR(181,138,84).
+    DECLARA viride SICUT NUMERUS VALENS XIIE_COLOR(104,177,123).
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(0,0,w,h),14,ebur,248).
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(2,2,w-4,64),12,graphite,245).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(2,2,w-4,2),bronzeum,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(4,4,w-8,1),aqua,135).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(13,14,4,34),bronzeum,255).
+    f=XIIE_TEXTUM_GX(dst,26,14,"SYLVIA",ebur,2).
+    f=XIIE_TEXTUM_GX(dst,26,44,"SYSTEMA VINDEX",aqua,1).
+    f=XIIE_TEXTUM_GX(dst,18,74,"APPLICATIONES",XIIE_COLOR(105,76,49),1).
+    SI gestor!=0 TUNC DECLARA p SICUT NUMERUS VALENS XIB_SCALA_PARA(gestor). FIN-SI.
+    DECLARA item_h SICUT NUMERUS VALENS FV_METRUM_INITIUM_ITEM().
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        DECLARA absx SICUT NUMERUS VALENS IV_INITIUM_ITEM_X(index).
+        DECLARA absy SICUT NUMERUS VALENS IV_INITIUM_ITEM_Y(applicationes,index).
+        DECLARA ix SICUT NUMERUS VALENS absx-6.
+        DECLARA iy SICUT NUMERUS VALENS absy-menu_y.
+        DECLARA ic SICUT NUMERUS VALENS papyrus.
+        SI s[11]>=absx && s[11]<absx+300 && s[12]>=absy && s[12]<absy+item_h TUNC ic=XIIE_COLOR(207,219,215). FIN-SI.
+        f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(ix,iy,300,item_h),8,ic,242).
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(ix+2,iy+2,2,item_h-4),bronzeum,220).
+        DECLARA id SICUT NUMERUS VALENS XIB_ASSET_ID(AI_NODUS_GENUS(nodus)).
+        SI gestor!=0 && id!=0 TUNC
+            f=XIIE_XIB_ASSET_GX(dst,gestor,id,GVIII_RECT_CREA(ix+8,iy+6,32,32)).
+        ALITER
+            f=XIIE_ICONA_FALLBACK(dst,ix+4,iy+3,AI_NODUS_GENUS(nodus)).
+        FIN-SI.
+        f=XIIE_TEXTUM_GX(dst,ix+54,iy+18,AI_NODUS_NOMEN(nodus),nox,1).
+        index=index+1.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(10,h-48,w-20,1),XIIE_COLOR(100,108,112),150).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(4,h-46,54,1),viride,220).
+    f=XIIE_TEXTUM_GX(dst,18,h-31,"VINDEX 0.53",viride,1).
+    f=XIIE_TEXTUM_GX(dst,w-78,h-31,"P16-XII",bronzeum,1).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_CURSOR_CREA REDDENS NUMERUS.
+    DECLARA s SICUT NUMERUS VALENS GX_CREA(24,32). SI s==0 TUNC REDDE 0. FIN-SI.
+    DECLARA ebur SICUT NUMERUS VALENS XIIE_COLOR(242,244,247).
+    DECLARA aqua SICUT NUMERUS VALENS XIIE_COLOR(104,202,210).
+    DECLARA umbra SICUT NUMERUS VALENS XIIE_COLOR(5,10,14).
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<18 PERFICE
+        DECLARA lat SICUT NUMERUS VALENS 1+y/2.
+        DECLARA f0 SICUT NUMERUS VALENS GX_RECT_ALPHA(s,GVIII_RECT_CREA(2,y+2,lat+2,1),umbra,120).
+        DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(s,GVIII_RECT_CREA(1,y,lat,1),ebur,255).
+        SI y<12 TUNC f=GX_RECT_ALPHA(s,GVIII_RECT_CREA(1+lat,y,1,1),aqua,230). FIN-SI.
+        y=y+1.
+    FIN-DUM.
+    DECLARA f2 SICUT NUMERUS VALENS GX_RECT_ALPHA(s,GVIII_RECT_CREA(7,16,3,10),ebur,255).
+    f2=GX_RECT_ALPHA(s,GVIII_RECT_CREA(10,23,6,3),ebur,255).
+    REDDE s.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_FENESTRA_RENDE REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT fs SICUT NUMERUS.
+    ACCIPIT titulus SICUT TEXTUS.
+    ACCIPIT activa SICUT NUMERUS.
+    SI dst==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS XIIE_GX_PURA(dst).
+    DECLARA w SICUT NUMERUS VALENS GX_W(dst). DECLARA h SICUT NUMERUS VALENS GX_H(dst).
+    DECLARA clientis_y SICUT NUMERUS VALENS FV_METRUM_CLIENTIS().
+    DECLARA ebur SICUT NUMERUS VALENS XIIE_COLOR(242,244,247).
+    DECLARA papyrus SICUT NUMERUS VALENS XIIE_COLOR(224,226,221).
+    DECLARA bronzeum SICUT NUMERUS VALENS XIIE_COLOR(181,138,84).
+    DECLARA aqua SICUT NUMERUS VALENS XIIE_COLOR(104,202,210).
+    DECLARA graphite SICUT NUMERUS VALENS XIIE_COLOR(28,38,44).
+    DECLARA titc SICUT NUMERUS VALENS XIIE_COLOR(58,96,104).
+    DECLARA closec SICUT NUMERUS VALENS XIIE_COLOR(168,70,67).
+    SI activa==0 TUNC titc=XIIE_COLOR(68,78,82). FIN-SI.
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(0,0,w,h),12,ebur,252).
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(1,1,w-2,40),11,titc,246).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(1,20,w-2,21),titc,246).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(3,2,w-6,2),aqua,activa*90+70).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(4,39,w-8,1),bronzeum,230).
+    f=XP_GLOSS(dst,GVIII_RECT_CREA(3,3,w-6,16),ebur,34).
+    f=XIIE_TEXTUM_GX(dst,12,11,titulus,ebur,2).
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(w-92,8,22,22),6,graphite,235).
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(w-62,8,22,22),6,graphite,235).
+    f=GX_RECT_ROT_ALPHA(dst,GVIII_RECT_CREA(w-32,8,22,22),6,closec,245).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(w-86,23,10,2),ebur,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(w-56,13,10,2),ebur,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(w-56,13,2,10),ebur,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(w-48,13,2,10),ebur,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(w-56,21,10,2),ebur,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(w-26,14,10,2),ebur,255).
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(w-22,10,2,10),ebur,255).
+    SI clientis_y<h-20 TUNC
+        f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(8,clientis_y-2,w-16,h-clientis_y-18),papyrus,255).
+        SI fs!=0 TUNC
+            DECLARA maxw SICUT NUMERUS VALENS w-20.
+            DECLARA maxh SICUT NUMERUS VALENS h-clientis_y-22.
+            SI maxw>0 && maxh>0 TUNC f=XIIE_FS_IN_GX(dst,fs,10,clientis_y,maxw,maxh). FIN-SI.
+        FIN-SI.
+    FIN-SI.
+    f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(8,h-19,w-16,1),XIIE_COLOR(113,122,125),130).
+    SI activa!=0 TUNC f=GX_RECT_ALPHA(dst,GVIII_RECT_CREA(8,h-18,54,1),bronzeum,230). FIN-SI.
+    SI fs!=0 TUNC DECLARA purum_fs SICUT NUMERUS VALENS FS_DAMNA_PURA(fs). FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Gestor: 0 scena, 8 cache, 16 motus, 24 primus nodus, 32 generatio;
+// 40 hover bureau, 48 hover INITIUM, 56 signum taskbar, 64 initium visum.
+// Nodus: 0 id FI, 8 id frame, 16 id umbra, 24 w, 32 h, 40 activa,
+// 48 superficies clientis, 56 status visibilitatis, 64 proximus, 72 generatio.
+FUNCTIO XIIE_GESTOR_CREA REDDENS NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    ACCIPIT cache SICUT NUMERUS.
+    ACCIPIT motus SICUT NUMERUS.
+    SI scena==0 || cache==0 || motus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA g SICUT NUMERUS VALENS RESERVA_OCTETA(72). SI g<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_MEM_PURA(g,72).
+    CONTENTUM(g)=scena. CONTENTUM(g+8)=cache. CONTENTUM(g+16)=motus. CONTENTUM(g+32)=1.
+    CONTENTUM(g+40)=-1. CONTENTUM(g+48)=-1. CONTENTUM(g+56)=-1. CONTENTUM(g+64)=-1.
+    REDDE g.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_BUREAU_HOVER REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DUM nodus!=0 PERFICE
+        SI AI_NODUS_IN_BUREAU(nodus)!=0 TUNC
+            DECLARA x SICUT NUMERUS VALENS IV_BUREAU_X(index). DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
+            SI s[11]>=x && s[11]<x+FV_METRUM_BUREAU_LATITUDO() && s[12]>=y && s[12]<y+FV_METRUM_BUREAU_ALTITUDO() TUNC REDDE index+1. FIN-SI.
+            index=index+1.
+        FIN-SI.
+        nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_INITIUM_HOVER REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    SI s[38]==0 TUNC REDDE 0. FIN-SI.
+    DECLARA index SICUT NUMERUS VALENS 0.
+    DECLARA nodus SICUT NUMERUS VALENS AI_PRIMUS(applicationes).
+    DECLARA item_h SICUT NUMERUS VALENS FV_METRUM_INITIUM_ITEM().
+    DUM nodus!=0 PERFICE
+        DECLARA x SICUT NUMERUS VALENS IV_INITIUM_ITEM_X(index). DECLARA y SICUT NUMERUS VALENS IV_INITIUM_ITEM_Y(applicationes,index).
+        SI s[11]>=x && s[11]<x+300 && s[12]>=y && s[12]<y+item_h TUNC REDDE index+1. FIN-SI.
+        index=index+1. nodus=AI_PROXIMUS(nodus).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_TASKBAR_SIGNUM REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    DECLARA signum SICUT NUMERUS VALENS FI_FOCUS_ID(fenestrae)*131+s[38].
+    SI s[38]==0 && s[11]>=6 && s[11]<110 && s[12]>=CONTENTUM(50333736)-FV_METRUM_TASKBAR()+6 && s[12]<CONTENTUM(50333736)-6 TUNC signum=signum+17. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
+    DUM n!=0 PERFICE
+        signum=signum*131+CONTENTUM(n)*5+CONTENTUM(n+48).
+        n=FI_PROXIMUS(n).
+    FIN-DUM.
+    REDDE signum.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_NODUS_QUAERE REDDENS NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    SI g==0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(g+24).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n)==id TUNC REDDE n. FIN-SI.
+        n=CONTENTUM(n+64).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_NODUS REDDENS NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS XIIE_NODUS_QUAERE(g,id). SI n!=0 TUNC REDDE n. FIN-SI.
+    n=RESERVA_OCTETA(80). SI n<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_MEM_PURA(n,80).
+    CONTENTUM(n)=id. CONTENTUM(n+8)=1000+id*2. CONTENTUM(n+16)=1001+id*2.
+    CONTENTUM(n+64)=CONTENTUM(g+24). CONTENTUM(g+24)=n. CONTENTUM(g+32)=CONTENTUM(g+32)+1.
+    REDDE n.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_Z_FENESTRA REDDENS NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    DECLARA z SICUT NUMERUS VALENS 100.
+    DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n)==id TUNC REDDE z. FIN-SI.
+        z=z+4. n=FI_PROXIMUS(n).
+    FIN-DUM.
+    REDDE z.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_LAYER_SUPERFICIES REDDENS NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    DECLARA l SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,id).
+    SI l==0 || superficies==0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(l+48)!=0 TUNC DECLARA f SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena,CX_STRATUM_RECT(l)). FIN-SI.
+    CONTENTUM(l+8)=superficies. CONTENTUM(l+64)=CONTENTUM(l+64)+1.
+    SI CONTENTUM(l+48)!=0 TUNC DECLARA f2 SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena,CX_STRATUM_RECT(l)). FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_ANIMA_AD REDDENS NUMERUS.
+    ACCIPIT motus SICUT NUMERUS.
+    ACCIPIT id SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    ACCIPIT duratio SICUT NUMERUS.
+    DECLARA n SICUT NUMERUS VALENS MX_QUAERE(motus,id).
+    SI n!=0 && CONTENTUM(n+8)!=0 && CONTENTUM(n+56)==x && CONTENTUM(n+64)==y && CONTENTUM(n+72)==alpha TUNC REDDE 1. FIN-SI.
+    REDDE MX_ANIMA(motus,id,x,y,alpha,duratio,2).
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_FENESTRA_SYNC REDDENS NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    ACCIPIT clientes SICUT NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT fi SICUT NUMERUS.
+    ACCIPIT renova SICUT NUMERUS.
+    SI g==0 || fi==0 TUNC REDDE 0. FIN-SI.
+    DECLARA id SICUT NUMERUS VALENS CONTENTUM(fi).
+    DECLARA status SICUT NUMERUS VALENS CONTENTUM(fi+48).
+    DECLARA meta SICUT NUMERUS VALENS XIIE_NODUS_QUAERE(g,id).
+    DECLARA scena SICUT NUMERUS VALENS CONTENTUM(g).
+    DECLARA motus SICUT NUMERUS VALENS CONTENTUM(g+16).
+    SI status!=0 TUNC
+        SI meta!=0 && CONTENTUM(meta+56)==1 TUNC
+            DECLARA h1 SICUT NUMERUS VALENS CX_STRATUM_VISIBILIS(scena,CONTENTUM(meta+8),0).
+            DECLARA h2 SICUT NUMERUS VALENS CX_STRATUM_VISIBILIS(scena,CONTENTUM(meta+16),0).
+            CONTENTUM(meta+56)=status+1.
+        FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    SI meta==0 TUNC meta=XIIE_NODUS(g,id). FIN-SI. SI meta==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA cliens SICUT NUMERUS VALENS CONTENTUM(fi+8).
+    DECLARA fs SICUT NUMERUS VALENS CH_SUPERFICIES(clientes,cliens).
+    DECLARA app SICUT NUMERUS VALENS AI_CLIENTIS(applicationes,cliens).
+    DECLARA titulus SICUT TEXTUS VALENS "APPLICATIO". SI app!=0 TUNC titulus=AI_NODUS_NOMEN(app). FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(fi+16). DECLARA y SICUT NUMERUS VALENS CONTENTUM(fi+24).
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(fi+32). DECLARA h SICUT NUMERUS VALENS CONTENTUM(fi+40).
+    DECLARA activa SICUT NUMERUS VALENS 0. SI FI_FOCUS_ID(fenestrae)==id TUNC activa=1. FIN-SI.
+    DECLARA frame_id SICUT NUMERUS VALENS CONTENTUM(meta+8). DECLARA umbra_id SICUT NUMERUS VALENS CONTENTUM(meta+16).
+    DECLARA frame_l SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,frame_id).
+    DECLARA umbra_l SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,umbra_id).
+    DECLARA novum SICUT NUMERUS VALENS 0. DECLARA resize SICUT NUMERUS VALENS 0.
+    DECLARA z SICUT NUMERUS VALENS XIIE_Z_FENESTRA(fenestrae,id).
+
+    // Fenestra interactiva statim praesens esse debet. Motus ingressus
+    // positionem tantum polit; alpha numquam tick temporis exspectat.
+    SI frame_l==0 TUNC
+        DECLARA frame_s SICUT NUMERUS VALENS GX_CREA_UEFI(w,h). SI frame_s==0 TUNC REDDE 0. FIN-SI.
+        DECLARA rf SICUT NUMERUS VALENS XIIE_FENESTRA_RENDE(frame_s,fs,titulus,activa).
+        frame_l=CX_STRATUM_ADDE(scena,frame_id,frame_s,x,y+8,z+1,255). SI frame_l==0 TUNC REDDE 0. FIN-SI.
+        DECLARA umb_s SICUT NUMERUS VALENS XP_UMBRA_NOVEM_CACHE(CONTENTUM(g+8),12,8,0,132). SI umb_s==0 TUNC REDDE 0. FIN-SI.
+        DECLARA m SICUT NUMERUS VALENS 16.
+        umbra_l=CX_STRATUM_UMBRA_ADDE(scena,umbra_id,umb_s,GVIII_RECT_CREA(x,y+8,w,h),z,m,210). SI umbra_l==0 TUNC REDDE 0. FIN-SI.
+        novum=1.
+    FIN-SI.
+
+    SI CONTENTUM(meta+24)!=w || CONTENTUM(meta+32)!=h TUNC
+        SI novum==0 TUNC
+            DECLARA ns SICUT NUMERUS VALENS CONTENTUM(frame_l+8).
+            DECLARA vetus_rectum SICUT NUMERUS VALENS CX_STRATUM_RECT(frame_l).
+            DECLARA vetus_damnum SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena,vetus_rectum).
+            SI GX_REFORMA_UEFI(ns,w,h)==0 TUNC REDDE 0. FIN-SI.
+            DECLARA rr SICUT NUMERUS VALENS XIIE_FENESTRA_RENDE(ns,fs,titulus,activa).
+            DECLARA rp SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena,CX_STRATUM_RECT(frame_l)).
+            DECLARA margin_r SICUT NUMERUS VALENS (CONTENTUM(umbra_l+72)>>8)&255.
+            SI CX_STRATUM_UMBRA_FORMA(scena,umbra_id,GVIII_RECT_CREA(x,y,w,h),margin_r)==0 TUNC REDDE 0. FIN-SI.
+            resize=1.
+        FIN-SI.
+        CONTENTUM(meta+24)=w. CONTENTUM(meta+32)=h.
+    FIN-SI.
+
+    frame_l=CX_STRATUM_QUAERE(scena,frame_id). umbra_l=CX_STRATUM_QUAERE(scena,umbra_id).
+    SI frame_l==0 || umbra_l==0 TUNC REDDE 0. FIN-SI.
+    SI novum==0 && resize==0 TUNC
+        SI CONTENTUM(meta+40)!=activa || CONTENTUM(meta+48)!=fs TUNC
+            DECLARA rr2 SICUT NUMERUS VALENS XIIE_FENESTRA_RENDE(CONTENTUM(frame_l+8),fs,titulus,activa).
+            DECLARA nota SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena,CX_STRATUM_RECT(frame_l)).
+        ALITER SI renova!=0 && fs!=0 TUNC
+            DECLARA maxw_d SICUT NUMERUS VALENS w-20. DECLARA maxh_d SICUT NUMERUS VALENS h-FV_METRUM_CLIENTIS()-22.
+            DECLARA dr SICUT NUMERUS VALENS XIIE_FS_DAMNA_IN_GX(CONTENTUM(frame_l+8),fs,10,FV_METRUM_CLIENTIS(),maxw_d,maxh_d).
+            SI dr!=0 TUNC
+                DECLARA globalis SICUT NUMERUS VALENS GVIII_RECT_CREA(CONTENTUM(frame_l+16)+GVIII_RECT_X(dr),CONTENTUM(frame_l+24)+GVIII_RECT_Y(dr),GVIII_RECT_W(dr),GVIII_RECT_H(dr)).
+                DECLARA nota2 SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena,globalis).
+            FIN-SI.
+        FIN-SI.
+        FIN-SI.
+    FIN-SI.
+
+    SI CONTENTUM(frame_l+32)!=z+1 TUNC DECLARA z1 SICUT NUMERUS VALENS CX_STRATUM_Z(scena,frame_id,z+1). FIN-SI.
+    SI CONTENTUM(umbra_l+32)!=z TUNC DECLARA z2 SICUT NUMERUS VALENS CX_STRATUM_Z(scena,umbra_id,z). FIN-SI.
+
+    DECLARA margin SICUT NUMERUS VALENS (CONTENTUM(umbra_l+72)>>8)&255.
+    SI CONTENTUM(meta+56)!=1 TUNC
+        DECLARA v1 SICUT NUMERUS VALENS CX_STRATUM_VISIBILIS(scena,frame_id,1).
+        DECLARA v2 SICUT NUMERUS VALENS CX_STRATUM_VISIBILIS(scena,umbra_id,1).
+        DECLARA aa1 SICUT NUMERUS VALENS CX_STRATUM_ALPHA(scena,frame_id,255).
+        DECLARA aa2 SICUT NUMERUS VALENS CX_STRATUM_ALPHA(scena,umbra_id,210).
+        DECLARA mm1 SICUT NUMERUS VALENS CX_STRATUM_MOVE(scena,frame_id,x,y+8).
+        DECLARA mm2 SICUT NUMERUS VALENS CX_STRATUM_MOVE(scena,umbra_id,x-margin,y-margin+8).
+        aa1=MX_ANIMA(motus,frame_id,x,y,255,8,1).
+        aa2=MX_ANIMA(motus,umbra_id,x-margin,y-margin,210,8,1).
+    ALITER
+        SI s[14]==id TUNC
+            DECLARA d1 SICUT NUMERUS VALENS MX_ANIMA(motus,frame_id,x,y,255,0,0).
+            DECLARA d2 SICUT NUMERUS VALENS MX_ANIMA(motus,umbra_id,x-margin,y-margin,210,0,0).
+        ALITER
+            SI CONTENTUM(frame_l+16)!=x || CONTENTUM(frame_l+24)!=y TUNC DECLARA m1 SICUT NUMERUS VALENS XIIE_ANIMA_AD(motus,frame_id,x,y,255,8). FIN-SI.
+            SI CONTENTUM(umbra_l+16)!=x-margin || CONTENTUM(umbra_l+24)!=y-margin TUNC DECLARA m2 SICUT NUMERUS VALENS XIIE_ANIMA_AD(motus,umbra_id,x-margin,y-margin,210,8). FIN-SI.
+        FIN-SI.
+    FIN-SI.
+
+    CONTENTUM(meta+40)=activa. CONTENTUM(meta+48)=fs. CONTENTUM(meta+56)=1. CONTENTUM(meta+72)=CONTENTUM(meta+72)+1.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_UI_SYNC REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    ACCIPIT clientes SICUT NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    ACCIPIT renova_clientes SICUT NUMERUS.
+    DECLARA scena SICUT NUMERUS VALENS s[43]. SI scena==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS FI_RELEGE_FOCUS(fenestrae).
+    DECLARA gestor SICUT NUMERUS VALENS s[47]. SI gestor==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA bureau_l SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,10).
+    DECLARA bureau_hover SICUT NUMERUS VALENS XIIE_BUREAU_HOVER(s,applicationes).
+    SI bureau_l!=0 && CONTENTUM(gestor+40)!=bureau_hover TUNC
+        f=XIIE_BUREAU_RENDE(CONTENTUM(bureau_l+8),s,applicationes,s[42]).
+        f=CX_DAMNA_NOTA(scena,CX_STRATUM_RECT(bureau_l)).
+        CONTENTUM(gestor+40)=bureau_hover.
+    FIN-SI.
+
+    DECLARA task_l SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,20).
+    DECLARA task_signum SICUT NUMERUS VALENS XIIE_TASKBAR_SIGNUM(s,fenestrae).
+    SI task_l!=0 && CONTENTUM(gestor+56)!=task_signum TUNC
+        f=XIIE_TASKBAR_RENDE(CONTENTUM(task_l+8),s,fenestrae,clientes,applicationes).
+        f=CX_DAMNA_NOTA(scena,CX_STRATUM_RECT(task_l)).
+        CONTENTUM(gestor+56)=task_signum.
+    FIN-SI.
+
+    DECLARA init_l SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,30).
+    SI init_l!=0 TUNC
+        SI s[38]==1 TUNC
+            DECLARA init_hover SICUT NUMERUS VALENS XIIE_INITIUM_HOVER(s,applicationes).
+            DECLARA renova_init SICUT NUMERUS VALENS 0.
+            SI CONTENTUM(gestor+48)!=init_hover || CONTENTUM(gestor+64)!=1 TUNC
+                f=XIIE_INITIUM_RENDE(CONTENTUM(init_l+8),s,applicationes,s[42]).
+                CONTENTUM(gestor+48)=init_hover.
+                renova_init=1.
+            FIN-SI.
+            SI CONTENTUM(init_l+48)==0 TUNC
+                DECLARA ih SICUT NUMERUS VALENS GX_H(CONTENTUM(init_l+8)).
+                DECLARA iy SICUT NUMERUS VALENS CONTENTUM(50333736)-FV_METRUM_TASKBAR()-ih.
+                f=CX_STRATUM_VISIBILIS(scena,30,1).
+                f=CX_STRATUM_ALPHA(scena,30,0).
+                f=CX_STRATUM_MOVE(scena,30,6,iy+10).
+                f=MX_ANIMA(s[45],30,6,iy,255,8,1).
+            ALITER SI renova_init!=0 TUNC
+                f=CX_DAMNA_NOTA(scena,CX_STRATUM_RECT(init_l)).
+            FIN-SI.
+            FIN-SI.
+            CONTENTUM(gestor+64)=1.
+        ALITER
+            SI CONTENTUM(init_l+48)!=0 TUNC f=CX_STRATUM_VISIBILIS(scena,30,0). FIN-SI.
+            CONTENTUM(gestor+48)=0. CONTENTUM(gestor+64)=0.
+        FIN-SI.
+    FIN-SI.
+
+    DECLARA n SICUT NUMERUS VALENS FI_PRIMUS(fenestrae).
+    DUM n!=0 PERFICE
+        DECLARA sync_f SICUT NUMERUS VALENS XIIE_FENESTRA_SYNC(s[47],s,fenestrae,clientes,applicationes,n,renova_clientes).
+        SI sync_f==0 TUNC REDDE 0. FIN-SI.
+        n=FI_PROXIMUS(n).
+    FIN-DUM.
+
+    DECLARA cursor SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,40).
+    SI cursor!=0 TUNC
+        SI CONTENTUM(cursor+16)!=s[11] || CONTENTUM(cursor+24)!=s[12] TUNC f=CX_STRATUM_MOVE(scena,40,s[11],s[12]). FIN-SI.
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_SCENA_INIT REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    ACCIPIT fenestrae SICUT NUMERUS.
+    ACCIPIT clientes SICUT NUMERUS.
+    ACCIPIT applicationes SICUT NUMERUS.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
+    DECLARA fundum SICUT NUMERUS VALENS XIIE_FUNDUM_CREA(w,h). SI fundum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA_UEFI(w,h,fundum). SI scena==0 TUNC REDDE 0. FIN-SI.
+    DECLARA cache SICUT NUMERUS VALENS XP_CACHE_CREA(96). SI cache==0 TUNC REDDE 0. FIN-SI.
+    DECLARA motus SICUT NUMERUS VALENS MX_CREA(scena). SI motus==0 TUNC REDDE 0. FIN-SI.
+    DECLARA hor SICUT NUMERUS VALENS TX_CREA_UEFI(166667). SI hor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS XIIE_GESTOR_CREA(scena,cache,motus). SI gestor==0 TUNC REDDE 0. FIN-SI.
+    s[43]=scena. s[44]=cache. s[45]=motus. s[46]=hor. s[47]=gestor.
+
+    DECLARA bw SICUT NUMERUS VALENS XIIE_BUREAU_W(applicationes).
+    DECLARA bh SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
+    DECLARA bureau SICUT NUMERUS VALENS GX_CREA_UEFI(bw,bh). SI bureau==0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS XIIE_BUREAU_RENDE(bureau,s,applicationes,s[42]).
+    SI CX_STRATUM_ADDE(scena,10,bureau,0,0,10,255)==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA th SICUT NUMERUS VALENS FV_METRUM_TASKBAR().
+    DECLARA task SICUT NUMERUS VALENS GX_CREA_UEFI(w,th). SI task==0 TUNC REDDE 0. FIN-SI.
+    f=XIIE_TASKBAR_RENDE(task,s,fenestrae,clientes,applicationes).
+    SI CX_STRATUM_ADDE(scena,20,task,0,h-th,10000,255)==0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA iw SICUT NUMERUS VALENS IV_INITIUM_LATITUDO(applicationes).
+    DECLARA ih SICUT NUMERUS VALENS IV_INITIUM_ALTITUDO(applicationes).
+    DECLARA init SICUT NUMERUS VALENS GX_CREA_UEFI(iw,ih). SI init==0 TUNC REDDE 0. FIN-SI.
+    f=XIIE_INITIUM_RENDE(init,s,applicationes,s[42]).
+    DECLARA il SICUT NUMERUS VALENS CX_STRATUM_ADDE(scena,30,init,6,h-th-ih,9000,255). SI il==0 TUNC REDDE 0. FIN-SI.
+    SI s[38]==0 TUNC f=CX_STRATUM_VISIBILIS(scena,30,0). FIN-SI.
+
+    DECLARA cur SICUT NUMERUS VALENS XIIE_CURSOR_CREA(). SI cur==0 TUNC REDDE 0. FIN-SI.
+    SI CX_STRATUM_ADDE(scena,40,cur,s[11],s[12],20000,255)==0 TUNC REDDE 0. FIN-SI.
+
+    f=XIIE_UI_SYNC(s,fenestrae,clientes,applicationes,1).
+    REDDE CX_PRAESENTA_FB(scena).
+FIN-FUNCTIO.
+
+FUNCTIO XIIE_PULSA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI s[43]==0 || s[45]==0 || s[46]==0 TUNC REDDE 0. FIN-SI.
+    DECLARA signum SICUT NUMERUS VALENS TX_CONSULE(s[46]).
+    SI signum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA mut SICUT NUMERUS VALENS MX_PULSA(s[45],TX_FRAME(s[46])).
+    SI mut>0 TUNC REDDE CX_PRAESENTA_FB(s[43]). FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

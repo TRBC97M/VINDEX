@@ -471,3 +471,80 @@ FUNCTIO OE_RENDE REDDENS NUMERUS.
     f=FS_TEXTUM(superficies,w-176,h-20,"FASCICULI: NONDUM",chalybs).
     REDDE 1.
 FIN-FUNCTIO.
+
+FUNCTIO OE_LINEA_VISIBILIS_Y REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT status SICUT NUMERUS. ACCIPIT petita SICUT NUMERUS.
+    SI superficies==0 || status==0 || petita==0 TUNC REDDE 0-1. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 68. DECLARA y_fin SICUT NUMERUS VALENS CONTENTUM(superficies+8)-32.
+    DECLARA index SICUT NUMERUS VALENS 0. DECLARA nodus SICUT NUMERUS VALENS CONTENTUM(status).
+    DUM nodus!=0 && index<CONTENTUM(status+48) PERFICE nodus=CONTENTUM(nodus+16). index=index+1. FIN-DUM.
+    DUM nodus!=0 && y+14<=y_fin PERFICE
+        SI nodus==petita TUNC REDDE y. FIN-SI.
+        nodus=CONTENTUM(nodus+16). y=y+14.
+    FIN-DUM.
+    REDDE 0-1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_LINEAM_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT status SICUT NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS. ACCIPIT y SICUT NUMERUS. ACCIPIT activa SICUT NUMERUS.
+    SI superficies==0 || status==0 || nodus==0 || y<0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(superficies). DECLARA line_h SICUT NUMERUS VALENS 14.
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(28,31,32). DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(92,99,96).
+    DECLARA papyrus SICUT NUMERUS VALENS FV_COLOR(219,211,196). DECLARA charta SICUT NUMERUS VALENS FV_COLOR(250,249,245).
+    DECLARA selectum SICUT NUMERUS VALENS FV_COLOR(238,232,219). DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA viride SICUT NUMERUS VALENS FV_COLOR(71,118,111).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,y,48,line_h,papyrus).
+    f=FS_RECT(superficies,47,y,1,line_h,chalybs).
+    DECLARA color_lineae SICUT NUMERUS VALENS charta. SI activa!=0 TUNC color_lineae=selectum. FIN-SI.
+    f=FS_RECT(superficies,48,y,w-48,line_h,color_lineae).
+    SI activa!=0 TUNC
+        f=FS_RECT(superficies,4,y+2,36,line_h-4,bronzeum). f=FS_TEXTUM(superficies,16,y+3,">",nox).
+    FIN-SI.
+    DECLARA d SICUT NUMERUS VALENS CONTENTUM(nodus).
+    SI d!=0 && CONTENTUM(d)>0 TUNC f=FS_TEXTUM(superficies,56,y+3,OE_TEXTUS_EX_SEDE(d),nox). FIN-SI.
+    SI activa!=0 TUNC
+        DECLARA col SICUT NUMERUS VALENS OE_COLUMNA(d,CONTENTUM(status+24)).
+        DECLARA cx SICUT NUMERUS VALENS 56+col*8. SI cx>w-8 TUNC cx=w-8. FIN-SI.
+        f=FS_RECT(superficies,cx,y+2,2,line_h-2,viride).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OE_STATUM_RENDE REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS. ACCIPIT status SICUT NUMERUS.
+    SI superficies==0 || status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    DECLARA nox SICUT NUMERUS VALENS FV_COLOR(28,31,32). DECLARA chalybs SICUT NUMERUS VALENS FV_COLOR(92,99,96).
+    DECLARA bronzeum SICUT NUMERUS VALENS FV_COLOR(185,138,82).
+    DECLARA f SICUT NUMERUS VALENS FS_RECT(superficies,0,h-32,112,32,nox).
+    f=FS_RECT(superficies,0,h-32,52,1,bronzeum).
+    SI CONTENTUM(status+40)!=0 TUNC
+        f=FS_TEXTUM(superficies,12,h-20,"MODIFICATUM",bronzeum).
+    ALITER
+        f=FS_TEXTUM(superficies,12,h-20,"IMMUTATUM",chalybs).
+    FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Scriptio et sagittae lineas cursoris tantum reficiunt; paginae et lineae
+// structurales renderer plenum servant.
+FUNCTIO OE_RENDE_CURSOR REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT scan SICUT NUMERUS.
+    SI superficies==0 || status==0 TUNC REDDE 0. FIN-SI.
+    DECLARA purum SICUT NUMERUS VALENS FS_DAMNA_PURA(superficies).
+    DECLARA cursor SICUT NUMERUS VALENS CONTENTUM(status+16).
+    DECLARA y SICUT NUMERUS VALENS OE_LINEA_VISIBILIS_Y(superficies,status,cursor). SI y<0 TUNC REDDE 0. FIN-SI.
+    SI scan==1 TUNC
+        DECLARA vetus1 SICUT NUMERUS VALENS CONTENTUM(cursor+16). DECLARA yv1 SICUT NUMERUS VALENS OE_LINEA_VISIBILIS_Y(superficies,status,vetus1).
+        SI yv1>=0 TUNC DECLARA rv1 SICUT NUMERUS VALENS OE_LINEAM_RENDE(superficies,status,vetus1,yv1,0). FIN-SI.
+    FIN-SI.
+    SI scan==2 TUNC
+        DECLARA vetus2 SICUT NUMERUS VALENS CONTENTUM(cursor+8). DECLARA yv2 SICUT NUMERUS VALENS OE_LINEA_VISIBILIS_Y(superficies,status,vetus2).
+        SI yv2>=0 TUNC DECLARA rv2 SICUT NUMERUS VALENS OE_LINEAM_RENDE(superficies,status,vetus2,yv2,0). FIN-SI.
+    FIN-SI.
+    DECLARA r SICUT NUMERUS VALENS OE_LINEAM_RENDE(superficies,status,cursor,y,1).
+    REDDE 1.
+FIN-FUNCTIO.

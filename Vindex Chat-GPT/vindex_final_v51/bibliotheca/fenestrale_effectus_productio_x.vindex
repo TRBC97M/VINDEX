@@ -85,6 +85,36 @@ FUNCTIO XP_UMBRA_CACHE REDDENS NUMERUS.
     REDDE s.
 FIN-FUNCTIO.
 
+// Umbra novem-partita magnitudinem fenestrae non duplicat. Una tessera
+// angulos et margines canonicos servat; compositor centrum et latera extendit.
+FUNCTIO XP_UMBRA_NOVEM_CACHE REDDENS NUMERUS.
+    ACCIPIT g SICUT NUMERUS.
+    ACCIPIT radius SICUT NUMERUS.
+    ACCIPIT blur SICUT NUMERUS.
+    ACCIPIT color SICUT NUMERUS.
+    ACCIPIT alpha SICUT NUMERUS.
+    SI g==0 || radius<1 || blur<1 || alpha<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(g).
+    DUM n!=0 PERFICE
+        SI CONTENTUM(n)==3 && CONTENTUM(n+8)==radius && CONTENTUM(n+16)==blur && CONTENTUM(n+24)==color && CONTENTUM(n+32)==alpha TUNC
+            CONTENTUM(g+16)=CONTENTUM(g+16)+1.
+            REDDE CONTENTUM(n+72).
+        FIN-SI.
+        n=CONTENTUM(n+80).
+    FIN-DUM.
+    CONTENTUM(g+24)=CONTENTUM(g+24)+1.
+    DECLARA nucleus SICUT NUMERUS VALENS radius*2+1.
+    DECLARA s SICUT NUMERUS VALENS GX_UMBRA_CREA(nucleus,nucleus,radius,blur,color,alpha).
+    SI s==0 TUNC REDDE 0. FIN-SI.
+    DECLARA novus SICUT NUMERUS VALENS XP_NODUM_ADDE(g,3).
+    SI novus!=0 TUNC
+        CONTENTUM(novus+8)=radius. CONTENTUM(novus+16)=blur.
+        CONTENTUM(novus+24)=color. CONTENTUM(novus+32)=alpha.
+        CONTENTUM(novus+72)=s.
+    FIN-SI.
+    REDDE s.
+FIN-FUNCTIO.
+
 FUNCTIO XP_BACKDROP_CACHE REDDENS NUMERUS.
     ACCIPIT g SICUT NUMERUS.
     ACCIPIT src SICUT NUMERUS.

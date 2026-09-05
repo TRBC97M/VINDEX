@@ -1,0 +1,56 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/raster_rle_vii.vindex".
+IMPORTA "bibliotheca/iconae_sylviae_vii.vindex".
+IMPORTA "bibliotheca/simg_ii.vindex".
+IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
+IMPORTA "bibliotheca/simg_ii_assetum.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_productio_x.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x_asseta.vindex".
+IMPORTA "bibliotheca/fenestrale_tempus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_motus_x.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
+IMPORTA "bibliotheca/fenestrale_eventa_g.vindex".
+IMPORTA "bibliotheca/clientia_registrum_h.vindex".
+IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
+IMPORTA "bibliotheca/applicationes_registrum_iv.vindex".
+IMPORTA "bibliotheca/fenestrale_gestor_i.vindex".
+IMPORTA "bibliotheca/fenestrale_applicationes_iv.vindex".
+IMPORTA "bibliotheca/fenestrale_iconographia_xib.vindex".
+IMPORTA "bibliotheca/fenestrale_shell_xiie.vindex".
+
+FUNCTIO MSEP_PONE REDDENS NUMERUS.
+    ACCIPIT fs SICUT NUMERUS. ACCIPIT x SICUT NUMERUS. ACCIPIT y SICUT NUMERUS.
+    ACCIPIT a SICUT NUMERUS. ACCIPIT b SICUT NUMERUS. ACCIPIT c SICUT NUMERUS.
+    DECLARA p SICUT NUMERUS VALENS CONTENTUM(fs+24)+(y*CONTENTUM(fs+16)+x)*4.
+    SCRIBE_OCTETUM_AB(p,a). SCRIBE_OCTETUM_AB(p+1,b). SCRIBE_OCTETUM_AB(p+2,c). SCRIBE_OCTETUM_AB(p+3,0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fs SICUT NUMERUS VALENS FS_CREA(2,1).
+    DECLARA gx SICUT NUMERUS VALENS GX_CREA(4,3).
+    SI fs==0 || gx==0 TUNC REDDE 1. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS MSEP_PONE(fs,0,0,10,20,30).
+    f=MSEP_PONE(fs,1,0,90,80,70).
+    SI XIIE_FS_IN_GX_FORMA(gx,fs,1,1,2,1,0)==0 TUNC REDDE 2. FIN-SI.
+    DECLARA q SICUT NUMERUS VALENS GX_PIX_PM_LEGE(gx,1,1).
+    SI (q&255)!=10 || ((q>>8)&255)!=20 || ((q>>16)&255)!=30 || ((q>>24)&255)!=255 TUNC REDDE 3. FIN-SI.
+    q=GX_PIX_PM_LEGE(gx,2,1).
+    SI (q&255)!=90 || ((q>>8)&255)!=80 || ((q>>16)&255)!=70 || ((q>>24)&255)!=255 TUNC REDDE 4. FIN-SI.
+    SI GX_PIX_PM_LEGE(gx,0,0)!=0 TUNC REDDE 5. FIN-SI.
+
+    DECLARA gx2 SICUT NUMERUS VALENS GX_CREA(2,1). SI gx2==0 TUNC REDDE 6. FIN-SI.
+    SI XIIE_FS_IN_GX_FORMA(gx2,fs,0,0,2,1,1)==0 TUNC REDDE 7. FIN-SI.
+    q=GX_PIX_PM_LEGE(gx2,0,0).
+    SI (q&255)!=30 || ((q>>8)&255)!=20 || ((q>>16)&255)!=10 || ((q>>24)&255)!=255 TUNC REDDE 8. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

@@ -69,7 +69,7 @@ boot() {
     local pid=$!
 
     # Capturae directe in TEMPORARIUM ponuntur ut etiam defectus praecox eas servet.
-    if ! python3 "$RADIX/instrumenta/proba_officinam_persistentem_ii.py" \
+    if ! python3 "$RADIX/instrumenta/proba_officinam_persistentem_ii_sync.py" \
         "$monitor" "$qmp" "$TEMPORARIUM" "$MORA" "$modus"; then
         kill "$pid" 2>/dev/null || true
         wait "$pid" 2>/dev/null || true

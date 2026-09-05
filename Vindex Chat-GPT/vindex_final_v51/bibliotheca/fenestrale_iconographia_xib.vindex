@@ -1,6 +1,7 @@
-// Sylvia OS — P16-XI-B: iconographia premium in Bureau et INITIUM.
-// Familia completa e fasciculis SIMG II legitur. Si quid deest, compositor
-// ad atlas P16-VII redit; semantica, hitbox et geometria non mutantur.
+// Sylvia OS — P16-XI-B / P16-XII-E: iconographia premium in Bureau et INITIUM.
+// Familia completa e fasciculis SIMG II legitur. Si quid deest, quattuor tesserae
+// canonicae atlas P16-VII in asseta SIMG II memoriae convertuntur. Sic compositor
+// modernus et compositor historicus eodem contractu assetorum utuntur.
 
 FUNCTIO XIB_ASSET_ID REDDENS NUMERUS.
     ACCIPIT genus SICUT NUMERUS.
@@ -27,10 +28,66 @@ FUNCTIO XIB_ADDE REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-FUNCTIO XIB_CREA REDDENS NUMERUS.
-    SI FS_DISPONIBILIS()==0 TUNC REDDE 0. FIN-SI.
+// Unam tesseram XLVIII×XLVIII ex atlas P16-VII in SIMG II RAW transfert.
+FUNCTIO XIB_ATLAS_TESSERA REDDENS TEXTUS.
+    ACCIPIT atlas SICUT TEXTUS.
+    ACCIPIT genus SICUT NUMERUS.
+    SI IR_VALIDUS(atlas)==0 || genus<1 || genus>4 TUNC REDDE 0. FIN-SI.
+    DECLARA sx SICUT NUMERUS VALENS ICVII_FONS_X(genus).
+    DECLARA sy SICUT NUMERUS VALENS ICVII_FONS_Y(genus).
+    DECLARA pix SICUT TEXTUS VALENS SII_TEXTUS_CREA(48*48*4).
+    DECLARA pb SICUT NUMERUS VALENS SII_CORPUS(pix).
+    SI pb==0 TUNC REDDE 0. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<48 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<48 PERFICE
+            DECLARA rgba SICUT NUMERUS VALENS IR_PIXEL_RGBA(atlas,sx+x,sy+y).
+            SI rgba<0 TUNC REDDE 0. FIN-SI.
+            DECLARA p SICUT NUMERUS VALENS pb+(y*48+x)*4.
+            SCRIBE_OCTETUM_AB(p,rgba&255).
+            SCRIBE_OCTETUM_AB(p+1,(rgba>>8)&255).
+            SCRIBE_OCTETUM_AB(p+2,(rgba>>16)&255).
+            SCRIBE_OCTETUM_AB(p+3,(rgba>>24)&255).
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE SII_CREA_RGBA(48,48,pix,0,2,1000).
+FIN-FUNCTIO.
+
+FUNCTIO XIB_ATLAS_GESTOR_CREA REDDENS NUMERUS.
+    DECLARA atlas SICUT TEXTUS VALENS ICVII_CREA().
+    SI IR_VALIDUS(atlas)==0 TUNC REDDE 0. FIN-SI.
     DECLARA gestor SICUT NUMERUS VALENS AII_CREA(1000).
     SI gestor==0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS 1.
+    DUM genus<=4 PERFICE
+        DECLARA imago SICUT TEXTUS VALENS XIB_ATLAS_TESSERA(atlas,genus).
+        SI SII_VALIDUS(imago)==0 TUNC REDDE 0. FIN-SI.
+        SI AII_ADDE(gestor,XIB_ASSET_ID(genus),imago)==0 TUNC REDDE 0. FIN-SI.
+        genus=genus+1.
+    FIN-DUM.
+    SI AII_NUMERUS(gestor)!=4 TUNC REDDE 0. FIN-SI.
+    REDDE gestor.
+FIN-FUNCTIO.
+
+FUNCTIO XIB_ATLAS_EST REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor==0 || AII_NUMERUS(gestor)!=4 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS 1.
+    DUM genus<=4 PERFICE
+        SI AII_VARIANS_EXACTA(gestor,XIB_ASSET_ID(genus),1000)==0 TUNC REDDE 0. FIN-SI.
+        genus=genus+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO XIB_CREA REDDENS NUMERUS.
+    // Volumine absente, atlas incorporatum statim fit familia fallback.
+    SI FS_DISPONIBILIS()==0 TUNC REDDE XIB_ATLAS_GESTOR_CREA(). FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS AII_CREA(1000).
+    SI gestor==0 TUNC REDDE XIB_ATLAS_GESTOR_CREA(). FIN-SI.
     DECLARA recta SICUT NUMERUS VALENS 0.
 
     recta=recta+XIB_ADDE(gestor,101,"PRG1.SMG",1000).
@@ -46,8 +103,8 @@ FUNCTIO XIB_CREA REDDENS NUMERUS.
     recta=recta+XIB_ADDE(gestor,104,"OFF15.SMG",1500).
     recta=recta+XIB_ADDE(gestor,104,"OFF2.SMG",2000).
 
-    // Familia partialis numquam picturam mixtam fingit: atlas vetus fallback est.
-    SI recta!=12 || AII_NUMERUS(gestor)!=12 TUNC REDDE 0. FIN-SI.
+    // Familia partialis numquam picturam mixtam fingit: atlas VII tota substituitur.
+    SI recta!=12 || AII_NUMERUS(gestor)!=12 TUNC REDDE XIB_ATLAS_GESTOR_CREA(). FIN-SI.
     REDDE gestor.
 FIN-FUNCTIO.
 
@@ -78,12 +135,9 @@ FUNCTIO XIB_BUREAU_ICONAE REDDENS NUMERUS.
             DECLARA y SICUT NUMERUS VALENS IV_BUREAU_Y(index).
             DECLARA corpus SICUT NUMERUS VALENS nox.
             SI s[11]>=x && s[11]<x+FV_METRUM_BUREAU_LATITUDO() && s[12]>=y && s[12]<y+FV_METRUM_BUREAU_ALTITUDO() TUNC corpus=lapis. FIN-SI.
-            // Pictogramma vectoriale P16-VI deletur, cardo et nomen intacta manent.
             DECLARA f SICUT NUMERUS VALENS FV_RECT(x+24,y+6,60,54,corpus).
             DECLARA id SICUT NUMERUS VALENS XIB_ASSET_ID(AI_NODUS_GENUS(nodus)).
-            SI id!=0 TUNC
-                f=GIX_ASSET_LINEAR_FB(gestor,id,GVIII_RECT_CREA(x+30,y+8,48,48),255).
-            FIN-SI.
+            SI id!=0 TUNC f=GIX_ASSET_LINEAR_FB(gestor,id,GVIII_RECT_CREA(x+30,y+8,48,48),255). FIN-SI.
             index=index+1.
         FIN-SI.
         nodus=AI_PROXIMUS(nodus).

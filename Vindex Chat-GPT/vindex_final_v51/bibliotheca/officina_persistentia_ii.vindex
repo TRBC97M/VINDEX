@@ -3,12 +3,12 @@
 //
 // Status persistentiae:
 // +0 editor OE_*; +8 via activa TEXTUS; +16 status I/O; +24 FS disponibilis;
-// +32 mensura ultima; +40 numerus conservationum.
+// +32 mensura ultima; +40 numerus conservationum; +48 status visualis pendens.
 // Status I/O: 0 initium; 1 novum; 2 apertum; 3 servatum;
 //             4 lectio erravit; 5 scriptura erravit; 6 fasciculi absunt.
 
 FUNCTIO OP_CREA REDDENS NUMERUS.
-    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(48).
+    DECLARA status SICUT NUMERUS VALENS RESERVA_OCTETA(56).
     SI status<=0 TUNC REDDE 0. FIN-SI.
     DECLARA editor SICUT NUMERUS VALENS OE_CREA().
     SI editor==0 TUNC REDDE 0. FIN-SI.
@@ -18,6 +18,7 @@ FUNCTIO OP_CREA REDDENS NUMERUS.
     CONTENTUM(status+24)=0.
     CONTENTUM(status+32)=0.
     CONTENTUM(status+40)=0.
+    CONTENTUM(status+48)=0.
     REDDE status.
 FIN-FUNCTIO.
 
@@ -276,5 +277,30 @@ FUNCTIO OP_RENDE REDDENS NUMERUS.
     SI io==4 TUNC f=FS_TEXTUM(superficies,w-156,h-20,"LECTIO ERRAT",rubrum). FIN-SI.
     SI io==5 TUNC f=FS_TEXTUM(superficies,w-180,h-20,"SCRIPTURA ERRAT",rubrum). FIN-SI.
     SI io==6 TUNC f=FS_TEXTUM(superficies,w-188,h-20,"FASCICULI ABSUNT",bronzeum). FIN-SI.
+    CONTENTUM(status+48)=0.
     REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OP_RENDE_CLAVIS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    ACCIPIT scan SICUT NUMERUS.
+    ACCIPIT unicode SICUT NUMERUS.
+    SI unicode<32 || unicode>126 TUNC
+        SI unicode!=0 || scan<1 || scan>4 TUNC REDDE OP_RENDE(superficies,status). FIN-SI.
+    FIN-SI.
+    DECLARA brevis SICUT NUMERUS VALENS OE_RENDE_CURSOR(superficies,OP_EDITOR(status),scan).
+    SI brevis==0 TUNC REDDE OP_RENDE(superficies,status). FIN-SI.
+    SI unicode>=32 && unicode<=126 TUNC CONTENTUM(status+48)=1. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO OP_RENDE_PENDENS REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT status SICUT NUMERUS.
+    SI superficies==0 || status==0 || CONTENTUM(status+48)==0 TUNC REDDE 0. FIN-SI.
+    DECLARA purum SICUT NUMERUS VALENS FS_DAMNA_PURA(superficies).
+    DECLARA r SICUT NUMERUS VALENS OE_STATUM_RENDE(superficies,OP_EDITOR(status)).
+    CONTENTUM(status+48)=0.
+    REDDE r.
 FIN-FUNCTIO.
