@@ -1,0 +1,69 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA src SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA dst SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA fragilis SICUT NUMERUS VALENS GX_CREA(3,3).
+    SI src==0 || dst==0 || fragilis==0 TUNC REDDE 1. FIN-SI.
+    DECLARA rectum SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,4,4).
+    DECLARA novem SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,3,3).
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(src,rectum,3351057,255).
+    f=GX_RECT_ALPHA(fragilis,novem,16777215,192).
+
+    DECLARA memoria SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI memoria==0 TUNC REDDE 2. FIN-SI.
+    f=GX_MEM_PURA(memoria,64).
+    DECLARA target SICUT NUMERUS VALENS BX_TARGET_CREA(memoria,4,4,4,0).
+    DECLARA b SICUT NUMERUS VALENS BX_CREA_SW_TARGET(8,target).
+    DECLARA executor SICUT NUMERUS VALENS BX_EXECUTOR(b).
+    SI target==0 || b==0 || executor==0 TUNC REDDE 3. FIN-SI.
+    SI BX_EXECUTOR_COMPATIBILIS(executor)==0 || BX_COMPATIBILIS(b)==0 || BX_PARATUS(b)==0 TUNC REDDE 4. FIN-SI.
+    SI CONTENTUM(b+96)!=executor || CONTENTUM(b+120)!=target || CONTENTUM(executor+24)!=target TUNC REDDE 5. FIN-SI.
+    SI CONTENTUM(executor)!=BX_EX_ABI() || CONTENTUM(executor+8)!=BX_GENUS_SOFTWARE() || BX_EXECUTOR_STATUS(executor)!=BX_EX_PARATUS() TUNC REDDE 6. FIN-SI.
+
+    SI BX_FRAME_INCIPE(b)!=1 || BX_PRAESENTA_ADDE(b,src,rectum)==0 || BX_FRAME_COMMITTE(b)!=1 TUNC REDDE 7. FIN-SI.
+    SI BX_EXECUTOR_SUBMISSIONES(executor)!=1 || BX_EXECUTOR_COMPLETIONES(executor)!=1 || BX_EXECUTOR_DEFECTUS(executor)!=0 TUNC REDDE 8. FIN-SI.
+    SI BX_EXECUTOR_MANDATA_ULTIMA(executor)!=1 || BX_EXECUTOR_FENCE_ULTIMA(executor)!=1 || BX_EXECUTOR_ERRATUM(executor)!=0 TUNC REDDE 9. FIN-SI.
+    SI BX_EXECUTOR_STATUS(executor)!=BX_EX_PARATUS() || BX_FENCE_COMPLETA(b)!=1 TUNC REDDE 10. FIN-SI.
+    SI OCTETUS_AB(memoria)!=17 || OCTETUS_AB(memoria+1)!=34 || OCTETUS_AB(memoria+2)!=51 TUNC REDDE 11. FIN-SI.
+
+    SI BX_FRAME_INCIPE(b)!=2 || BX_COMPONE_ADDE(b,dst,src,rectum,rectum,255)==0 || BX_NOVEM_ADDE(b,dst,fragilis,novem,novem,255)==0 TUNC REDDE 12. FIN-SI.
+    CONTENTUM(fragilis)=2.
+    SI BX_FRAME_COMMITTE(b)!=0 TUNC REDDE 13. FIN-SI.
+    SI BX_EXECUTOR_SUBMISSIONES(executor)!=2 || BX_EXECUTOR_COMPLETIONES(executor)!=1 || BX_EXECUTOR_DEFECTUS(executor)!=1 TUNC REDDE 14. FIN-SI.
+    SI BX_EXECUTOR_MANDATA_ULTIMA(executor)!=2 || BX_EXECUTOR_FENCE_ULTIMA(executor)!=1 || BX_EXECUTOR_ERRATUM(executor)!=6 TUNC REDDE 15. FIN-SI.
+    SI BX_EXECUTOR_STATUS(executor)!=BX_EX_PARATUS() || BX_PARATUS(b)==0 || BX_FENCE_COMPLETA(b)!=1 TUNC REDDE 16. FIN-SI.
+    SI QVIII_NUMERUS(BX_CODA(b))!=0 || BX_ERRATUM(b)!=6 TUNC REDDE 17. FIN-SI.
+
+    CONTENTUM(fragilis)=3.
+    SI BX_FRAME_INCIPE(b)!=2 || BX_NOVEM_ADDE(b,dst,fragilis,novem,novem,255)==0 || BX_FRAME_COMMITTE(b)!=2 TUNC REDDE 18. FIN-SI.
+    SI BX_EXECUTOR_SUBMISSIONES(executor)!=3 || BX_EXECUTOR_COMPLETIONES(executor)!=2 || BX_EXECUTOR_DEFECTUS(executor)!=1 TUNC REDDE 19. FIN-SI.
+    SI BX_EXECUTOR_MANDATA_ULTIMA(executor)!=1 || BX_EXECUTOR_FENCE_ULTIMA(executor)!=2 || BX_EXECUTOR_ERRATUM(executor)!=0 TUNC REDDE 20. FIN-SI.
+    SI BX_EXECUTOR_STATUS(executor)!=BX_EX_PARATUS() || BX_FENCE_COMPLETA(b)!=2 TUNC REDDE 21. FIN-SI.
+
+    DECLARA capacitates SICUT NUMERUS VALENS BX_CAP_MINIMUM()|BX_CAP_COMPOSITIO()|BX_CAP_NOVEM()|BX_CAP_VITA_TEXTURE().
+    DECLARA executor_gpu SICUT NUMERUS VALENS BX_EXECUTOR_CREA(BX_GENUS_GPU(),capacitates,target).
+    DECLARA gpu SICUT NUMERUS VALENS BX_CREA_CUM_EXECUTORE(4,executor_gpu).
+    SI executor_gpu==0 || gpu==0 || BX_EXECUTOR_COMPATIBILIS(executor_gpu)==0 || BX_COMPATIBILIS(gpu)==0 TUNC REDDE 22. FIN-SI.
+    SI BX_EXECUTOR_STATUS(executor_gpu)!=BX_EX_INACTIVUS() || BX_EXECUTOR_PARATUS_EST(executor_gpu)!=0 || BX_PARATUS(gpu)!=0 TUNC REDDE 23. FIN-SI.
+    SI BX_FRAME_INCIPE(gpu)!=0 || BX_ERRATUM(gpu)!=4 || BX_EXECUTOR_SUBMISSIONES(executor_gpu)!=0 TUNC REDDE 24. FIN-SI.
+    DECLARA fallback SICUT NUMERUS VALENS BX_ELIGE(gpu,4).
+    SI fallback==0 || CONTENTUM(fallback+8)!=BX_GENUS_SOFTWARE() || CONTENTUM(fallback+88)!=1 || BX_PARATUS(fallback)==0 TUNC REDDE 25. FIN-SI.
+    SI BX_EXECUTOR_CREA(BX_GENUS_GPU(),BX_CAP_CODA(),target)!=0 TUNC REDDE 26. FIN-SI.
+    SI BX_EXECUTOR_SUBMITTE(b)!=0 || BX_ERRATUM(b)!=2 || BX_EXECUTOR_SUBMISSIONES(executor)!=3 TUNC REDDE 27. FIN-SI.
+
+    DECLARA executor_cache SICUT NUMERUS VALENS BX_EXECUTOR_CREA(BX_GENUS_SOFTWARE(),capacitates|BX_CAP_TEXTURE(),0).
+    DECLARA b_cache SICUT NUMERUS VALENS BX_CREA_CUM_EXECUTORE(2,executor_cache).
+    SI executor_cache==0 || b_cache==0 || (CONTENTUM(executor_cache+16)&BX_CAP_TEXTURE())!=0 || (CONTENTUM(b_cache+16)&BX_CAP_TEXTURE())!=0 TUNC REDDE 28. FIN-SI.
+    SI BX_CACHE_INSTITUE(b_cache,1,64)==0 || (CONTENTUM(executor_cache+16)&BX_CAP_TEXTURE())==0 || (CONTENTUM(b_cache+16)&BX_CAP_TEXTURE())==0 TUNC REDDE 29. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.

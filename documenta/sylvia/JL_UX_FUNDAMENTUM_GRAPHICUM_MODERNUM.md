@@ -200,7 +200,7 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
-**Status: ACTIVUM; F1 contractum, F2 cache texturarum, F3 codam compositionis, F4 vitam resource et F5 coniunctionem automaticam instituunt.**
+**Status: ACTIVUM; F1 contractum, F2 cache texturarum, F3 codam compositionis, F4 vitam resource, F5 coniunctionem automaticam et F6 contractum exsecutoris instituunt.**
 
 - contractus backend explicatus;
 - batching/coda communis Graphica VIII/X;
@@ -210,6 +210,7 @@ C2 instituit:
 - copia, compositio source-over et 9-slice per codam BX;
 - creatio, renovatio et liberatio resource texturarum in eadem coda;
 - cache et vita resource per frame transactionaliter coniunctae;
+- descriptor exsecutoris cum submissionibus, completionibus, defectibus et contextu;
 - via GPU cum infrastructura hardware id sinit.
 
 ## X. Criterium Vista-class
@@ -514,7 +515,35 @@ renovationem, evictionem LRU, liberationem dilatam, resurrectionem eiusdem
 resource, tutelam resource manualis, codam nimis parvam et rollback plenum
 exercet.
 
-## XXI. Invarianta
+## XXI. Contractus P16-XII-F6
+
+Sexta pars XII-F exsecutionem codae ab ipsa transactione framei separat.
+Descriptor `BX_EXECUTOR_*` XCVI octeta continet ABI, genus, capacitates,
+contextum, statum, erratum ultimum, submissiones, completiones, defectus,
+numerum mandatorum batchis ultimi et fence ultimam completam. Backend BX
+exsecutorem in offset `96` et contextum eius in offset `120` explicite tenet.
+
+`BX_FRAME_COMMITTE` resource adhuc reconciliat et deinde unum limen
+`BX_EXECUTOR_SUBMITTE` transit. Executor software solus nunc paratus est; is
+eandem `BX_CODA_EXSEQUERE_SW` et easdem primitivas GX adhibet, ideo pixela,
+ordo resource et rollback F1–F5 non mutantur. Successus completionem numerat
+et fence post exsecutionem tantum publicat. Defectus submissionem et
+diagnosticum numerat, nullam fence fingit, pendentia/fibulas/codam purgat et
+statum `paratus` statim restituit.
+
+Executor generis GPU cum capacitatibus et contextu legitimo describi potest,
+sed constructor eum `inactivus` relinquit. `BX_PARATUS` talem candidatum
+recusat et `BX_ELIGE` fallback software mensurabile eligit. Hoc punctum est
+sedes futura rectoris VirtIO-GPU: P12-V2 contextui memoriam DMA praebere
+poterit, sed sola memoria DMA neque genus neque statum paratum falso mutat.
+
+Probatio `contractus_exsecutoris_x.vindex` contextum alligatum, submissionem
+felicem, completionem/fence, defectum in medio batchis, nullam fence falsam,
+purificationem codae, reutilizationem immediatam, candidatum GPU inactivum et
+recusationem capacitatum insufficientium exercet. Probationes F1–F5 manent
+immutatae ut executor software oracle semanticum perseveret.
+
+## XXII. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -529,6 +558,9 @@ exercet.
 - fibula cache in omni exitu transactionis relaxatur;
 - reconciliatio automatica resource manualiter gubernatam non liberat;
 - residentia software metadata est, non affirmatio memoriae GPU;
+- memoria DMA sola exsecutorem GPU paratum non facit;
+- fence tantum post completionem exsecutoris publicatur;
+- defectus exsecutoris codam purgat et exsecutorem software reutilizabilem relinquit;
 - rastera Graphica IX in GX tantum per conversionem recti→praemultiplicati intrat;
 - 9-slice margines materialis non cum dimensione destinationis extenduntur;
 - eventus timeris non definit tempus animationis;
@@ -537,6 +569,6 @@ exercet.
 - retargetatio semper ex statu composito praesenti incipit;
 - horologium UI non obstruit ansam input.
 
-## XXII. Sententia
+## XXIII. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**
