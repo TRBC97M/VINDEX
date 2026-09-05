@@ -200,7 +200,7 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
-**Status: ACTIVUM; F1 contractum, F2 cache texturarum et F3 codam compositionis instituunt.**
+**Status: ACTIVUM; F1 contractum, F2 cache texturarum, F3 codam compositionis et F4 vitam resource instituunt.**
 
 - contractus backend explicatus;
 - batching/coda communis Graphica VIII/X;
@@ -208,6 +208,7 @@ C2 instituit:
 - backend software ut referentia et target injectabile probationum;
 - cache texturarum per generationem GX, cum residentia et LRU;
 - copia, compositio source-over et 9-slice per codam BX;
+- creatio, renovatio et liberatio resource texturarum in eadem coda;
 - via GPU cum infrastructura hardware id sinit.
 
 ## X. Criterium Vista-class
@@ -461,6 +462,34 @@ Probatio F3 comparat codae exitum cum via directa pixel per pixel, generationem
 cache inter tres frame, ordinem trium opcodum, fences, defectum in medio commit
 cum coda statim purgata, et casum codae de industria nimis parvae qui sine
 fence per fallback recte redditur.
+
+## XIX. Contractus P16-XII-F4
+
+Quarta pars XII-F vitam resource texturarum a simplici hit/miss cache separat.
+Descriptor resource LXXX octeta continet identitatem stabilem, superficiem GX,
+generationem contenti, manubrium backendis, statum, mensuram et operationem
+pendentem. Status canonici sunt `nova`, `residens` et `liberata`.
+
+Eadem coda QVIII operationes sequentes recipit:
+
+- `260 TEXTURE_CREA`: superficiem et generationem in resource residentem
+  convertit;
+- `261 TEXTURE_RENOVA`: manubrium servat sed generationem mutatam denuo
+  transfert;
+- `262 TEXTURE_LIBERA`: residentiam et budget backendis dimittit.
+
+Executor software manubria logica adhibet et octeta residentia numerat, sed
+nullam memoriam GPU simulat. Haec est referentia status et ordinis quam executor
+VirtIO-GPU futurus servare debet.
+
+Si mandatum post mutationem resource deficit, executor software mutationes
+resource ordine inverso revertit, pendentia purgat, nullam fence completam
+publicat et backend statim reutilizabilem relinquit. Probatio
+`vita_texturarum_x.vindex` creationem ante compositionem, renovationem post
+mutationem GX, liberationem, abortum ante commit et rollback renovationis in
+medio commit exercet. Connexio automatica cache F2 ad has operationes consulto
+in incrementum sequens differtur, ne contractus nondum probatus compositorium
+mutet.
 
 ## XIX. Invarianta
 
