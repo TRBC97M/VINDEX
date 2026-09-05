@@ -200,7 +200,7 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
-**Status: ACTIVUM; F1–F6 contractum backendis instruunt, F7 praesentatorem VirtIO GPU coniungit.**
+**Status: ACTIVUM; F1–F6 contractum backendis instruunt, F7 praesentatorem VirtIO GPU coniungit, F8 backbuffer DMA directum instituit.**
 
 - contractus backend explicatus;
 - batching/coda communis Graphica VIII/X;
@@ -216,6 +216,11 @@ C2 instituit:
 - fences hardware explicitae et fallback GOP si apparatus non adest;
 - compositio software communis manet oracle semanticum dum praesentatio iam
   per verum apparatum transit.
+- superficies GX memoriam DMA adoptare potest sine eius dominium sumere;
+- backbuffer scenae directe est backing resource VirtIO, ideo copia CPU
+  `backbuffer → DMA` ante singulam praesentiam tollitur;
+- solutio alligationis backbuffer historicum restituit et totam scenam
+  invalidat, memoria DMA ab unico rectore suo liberanda manente.
 
 F7 primum gradum hardware deliberatum facit. Non fingit compositionem GPU:
 Graphica X eandem codam et easdem primitivas pixelorum F6 in target DMA
@@ -232,6 +237,11 @@ Probatio F7 sub QEMU/Q35 postulat:
 - septem fences hardware ordine consummatas;
 - quinque colores canonicos exactos in captura scanout;
 - payload integrum Sylviae et regressiones F1–F6 immutata.
+
+Probatio F8 eidem lineae addit `Z000FB000`: omnes `1 028 096` pixela duarum
+praesentiarum directe in backing DMA composita sunt, ideo nulla copia
+praesentiae inter backbuffer et resource facta est. Hoc est *zero-copy
+presentationis*, non falsa assertio compositionis alpha iam a GPU effectae.
 
 ## X. Criterium Vista-class
 

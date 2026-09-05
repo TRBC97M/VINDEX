@@ -7,7 +7,8 @@
 //  0 w, 8 h, 16 stride, 24 pixela,
 // 32 damnum x, 40 y, 48 w, 56 h,
 // 64 vexillum damni, 72 generatio, 80 backend memoriae, 88 capacitas octetorum.
-// Backend 0: acervus VINDEX historicus; backend 1: piscina UEFI liberabilis.
+// Backend 0: acervus VINDEX historicus; backend 1: piscina UEFI liberabilis;
+// backend 2: memoria externa adoptata, cuius dominium apud vocatorem manet.
 
 FUNCTIO GX_MEM_PURA REDDENS NUMERUS.
     ACCIPIT basis SICUT NUMERUS.
@@ -43,6 +44,24 @@ FUNCTIO GX_CREA REDDENS NUMERUS.
     CONTENTUM(caput+72)=1.
     CONTENTUM(caput+80)=0.
     CONTENTUM(caput+88)=n.
+    REDDE caput.
+FIN-FUNCTIO.
+
+FUNCTIO GX_ADOPTA REDDENS NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT stride SICUT NUMERUS.
+    ACCIPIT pix SICUT NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    SI w<=0 || h<=0 || stride<w || pix==0 || capacitas<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS stride*h*4.
+    SI n<=0 || n>capacitas TUNC REDDE 0. FIN-SI.
+    DECLARA caput SICUT NUMERUS VALENS RESERVA_OCTETA(96).
+    SI caput<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_MEM_PURA(caput,96).
+    CONTENTUM(caput)=w. CONTENTUM(caput+8)=h. CONTENTUM(caput+16)=stride.
+    CONTENTUM(caput+24)=pix. CONTENTUM(caput+72)=1.
+    CONTENTUM(caput+80)=2. CONTENTUM(caput+88)=capacitas.
     REDDE caput.
 FIN-FUNCTIO.
 
@@ -117,6 +136,11 @@ FIN-FUNCTIO.
 FUNCTIO GX_LIBERA REDDENS NUMERUS.
     ACCIPIT s SICUT NUMERUS.
     SI s==0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(s+80)==2 TUNC
+        CONTENTUM(s)=0. CONTENTUM(s+8)=0. CONTENTUM(s+16)=0. CONTENTUM(s+24)=0.
+        CONTENTUM(s+64)=0. CONTENTUM(s+80)=0. CONTENTUM(s+88)=0.
+        REDDE 1.
+    FIN-SI.
     SI CONTENTUM(s+80)!=1 TUNC REDDE 0. FIN-SI.
     DECLARA pix SICUT NUMERUS VALENS CONTENTUM(s+24).
     SI GX_UEFI_LIBERA(pix)==0 TUNC REDDE 0. FIN-SI.
