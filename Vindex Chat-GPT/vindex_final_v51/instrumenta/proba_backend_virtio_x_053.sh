@@ -83,12 +83,13 @@ case "$LINEA" in
     *) tail -100 "$TEMPORARIUM/qemu.log" >&2; defecit 'praesentator nullam probationem reddidit' 2 ;;
 esac
 
-read -r TITULUS GENUS PRAESENTATAE DAMNUM SEPES RESTA <<<"$LINEA"
+read -r TITULUS GENUS PRAESENTATAE DAMNUM SEPES VITATA RESTA <<<"$LINEA"
 [ "$TITULUS" = "VIO7" ] && [ "$GENUS" = "T02" ] \
     || defecit "backend GPU invalidus: $LINEA" 3
 [ "$PRAESENTATAE" = "P00000002" ] || defecit "numerus praesentiarum invalidus: $PRAESENTATAE" 3
 [ "$DAMNUM" = "D000FB000" ] || defecit "numerus pixelorum invalidus: $DAMNUM" 3
 [ "$SEPES" = "F00000007" ] || defecit "sepes hardware invalida: $SEPES" 3
+[ "$VITATA" = "Z000FB000" ] || defecit "copiae praesentiae non vitatae sunt: $VITATA" 3
 [ "$RESTA" = "R" ] || defecit 'signum finale deest' 3
 
 [ -S "$TEMPORARIUM/monitor.sock" ] || defecit 'monitor QEMU deest' 4
@@ -160,6 +161,7 @@ wait "$QEMU_PID" 2>/dev/null || true
 QEMU_PID=""
 
 nuntia '   RECTE: prima praesentatio totum scanout, secunda tantum 64x64 transfert.'
+nuntia '   RECTE: backbuffer DMA directus omnes copias praesentiae vitat.'
 nuntia '   RECTE: septem fences hardware consummatae sine mutatione semantica.'
 nuntia ''
 nuntia '=== BACKEND VIRTIO GRAPHICA X PROBATUS ==='

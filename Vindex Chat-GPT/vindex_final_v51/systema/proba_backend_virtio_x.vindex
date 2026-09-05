@@ -94,6 +94,7 @@ FUNCTIO F7_NUNTIA REDDENS NUMERUS.
     ACCIPIT praesentatae SICUT NUMERUS.
     ACCIPIT pixela SICUT NUMERUS.
     ACCIPIT sepes SICUT NUMERUS.
+    ACCIPIT vitata SICUT NUMERUS.
     DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(160).
     SI buf == 0 TUNC REDDE 0. FIN-SI.
     DECLARA vacuum SICUT NUMERUS VALENS F7_MEMORIA_VACUA(buf, 160).
@@ -103,6 +104,7 @@ FUNCTIO F7_NUNTIA REDDENS NUMERUS.
     p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,80). p = p + F7_HEX32(buf,p,praesentatae).
     p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,68). p = p + F7_HEX32(buf,p,pixela).
     p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,70). p = p + F7_HEX32(buf,p,sepes).
+    p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,90). p = p + F7_HEX32(buf,p,vitata).
     p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,82).
     p = p + F7_LITTERA(buf,p,13). p = p + F7_LITTERA(buf,p,10).
     REDDE F7_SERIALEM_SCRIBE(buf).
@@ -150,9 +152,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA praesentatae SICUT NUMERUS VALENS CONTENTUM(contextus + 104).
     DECLARA pixela SICUT NUMERUS VALENS CONTENTUM(contextus + 112).
     DECLARA sepes SICUT NUMERUS VALENS CONTENTUM(contextus + 120).
-    SI praesentatae != 2 || pixela != 1028096 || sepes != 7 TUNC REDDE F7_ERRATUM(11). FIN-SI.
-    SI CONTENTUM(CONTENTUM(contextus + 88) + 8) != BX_GENUS_GPU() TUNC REDDE F7_ERRATUM(12). FIN-SI.
-    DECLARA nuntiatum SICUT NUMERUS VALENS F7_NUNTIA(BX_GENUS_GPU(),praesentatae,pixela,sepes).
+    DECLARA vitata SICUT NUMERUS VALENS CONTENTUM(contextus + 184).
+    SI praesentatae != 2 || pixela != 1028096 || sepes != 7 || vitata != pixela TUNC REDDE F7_ERRATUM(11). FIN-SI.
+    SI CX_SCENA_BACK(scena) != CONTENTUM(contextus + 176) || GX_BASIS(CX_SCENA_BACK(scena)) != CONTENTUM(contextus) TUNC REDDE F7_ERRATUM(12). FIN-SI.
+    SI CONTENTUM(CONTENTUM(contextus + 88) + 8) != BX_GENUS_GPU() TUNC REDDE F7_ERRATUM(13). FIN-SI.
+    DECLARA nuntiatum SICUT NUMERUS VALENS F7_NUNTIA(BX_GENUS_GPU(),praesentatae,pixela,sepes,vitata).
     DUM 1 == 1 PERFICE
         DECLARA mora SICUT NUMERUS VALENS 0.
         DUM mora < 1000000 PERFICE mora = mora + 1. FIN-DUM.

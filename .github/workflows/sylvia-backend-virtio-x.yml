@@ -16,6 +16,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/virtio_gpu.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/virtio_gpu_2d.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/backend_virtio_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/superficies_dma_directa_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_backend_virtio_x_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
       - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
@@ -57,6 +58,16 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         shell: bash
         run: ./instrumenta/proba_backend_virtio_x_053.sh
+
+      - name: Superficiem DMA directam native exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/superficies_dma_directa_x.vindex /tmp/superficies-dma-directa-x
+          chmod +x /tmp/superficies-dma-directa-x
+          timeout 25s /tmp/superficies-dma-directa-x
+          printf '%s\n' 'RECTE: backbuffer DMA adoptatus, solutus et non duplicatus est.'
 
       - name: Incrementa F1 ad F6 iterum exerce
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'

@@ -1,0 +1,65 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "systema/rectores/pci.vindex".
+IMPORTA "systema/rectores/mmio.vindex".
+IMPORTA "systema/rectores/paginae_dma.vindex".
+IMPORTA "systema/rectores/virtio_pci.vindex".
+IMPORTA "systema/rectores/virtio_gpu.vindex".
+IMPORTA "systema/rectores/virtio_gpu_2d.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_virtio_x.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA externa SICUT NUMERUS VALENS RESERVA_OCTETA(128).
+    SI externa==0 TUNC REDDE 1. FIN-SI.
+    DECLARA pura SICUT NUMERUS VALENS GX_MEM_PURA(externa,128).
+    SCRIBE_OCTETUM_AB(externa,91).
+    DECLARA adoptata SICUT NUMERUS VALENS GX_ADOPTA(4,4,4,externa,64).
+    SI adoptata==0 || GX_W(adoptata)!=4 || GX_H(adoptata)!=4 || GX_BASIS(adoptata)!=externa TUNC REDDE 2. FIN-SI.
+    SI CONTENTUM(adoptata+80)!=2 || CONTENTUM(adoptata+88)!=64 TUNC REDDE 3. FIN-SI.
+    SI GX_ADOPTA(4,4,3,externa,64)!=0 || GX_ADOPTA(4,4,4,externa,63)!=0 TUNC REDDE 4. FIN-SI.
+    SI GX_LIBERA(adoptata)==0 || OCTETUS_AB(externa)!=91 || GX_BASIS(adoptata)!=0 TUNC REDDE 5. FIN-SI.
+
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(4,4).
+    DECLARA target SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    DECLARA contextus SICUT NUMERUS VALENS RESERVA_OCTETA(192).
+    DECLARA dma_ficta SICUT NUMERUS VALENS RESERVA_OCTETA(40).
+    SI fundum==0 || target==0 || contextus==0 || dma_ficta==0 TUNC REDDE 6. FIN-SI.
+    pura=GX_MEM_PURA(target,64). pura=GX_MEM_PURA(contextus,192). pura=GX_MEM_PURA(dma_ficta,40).
+    pura=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,4,4),3351057,255).
+    CONTENTUM(dma_ficta+16)=64.
+    CONTENTUM(contextus)=target. CONTENTUM(contextus+8)=4.
+    CONTENTUM(contextus+16)=4. CONTENTUM(contextus+24)=4. CONTENTUM(contextus+32)=0.
+    CONTENTUM(contextus+40)=1. CONTENTUM(contextus+48)=1. CONTENTUM(contextus+56)=dma_ficta.
+    CONTENTUM(contextus+64)=1. CONTENTUM(contextus+72)=4.
+    DECLARA caps SICUT NUMERUS VALENS BX_CAP_MINIMUM()|BX_CAP_COMPOSITIO()|BX_CAP_NOVEM()|BX_CAP_VITA_TEXTURE().
+    DECLARA executor SICUT NUMERUS VALENS BX_EXECUTOR_CREA(BX_GENUS_GPU(),caps,contextus).
+    SI executor==0 TUNC REDDE 7. FIN-SI.
+    CONTENTUM(executor+32)=BX_EX_PARATUS(). CONTENTUM(executor+88)=1.
+    DECLARA backend SICUT NUMERUS VALENS BX_CREA_CUM_EXECUTORE(16,executor).
+    CONTENTUM(contextus+88)=backend. CONTENTUM(contextus+96)=executor.
+    SI backend==0 || BGVX_ACTIVUS(contextus)==0 TUNC REDDE 8. FIN-SI.
+
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(4,4,fundum).
+    DECLARA historicum SICUT NUMERUS VALENS CX_SCENA_BACK(scena).
+    SI scena==0 || historicum==0 || BGVX_SCENAE_ADIUNGE(contextus,scena)==0 TUNC REDDE 9. FIN-SI.
+    DECLARA directum SICUT NUMERUS VALENS CX_SCENA_BACK(scena).
+    SI directum==historicum || GX_BASIS(directum)!=target || CONTENTUM(directum+80)!=2 TUNC REDDE 10. FIN-SI.
+    SI CONTENTUM(contextus+160)!=scena || CONTENTUM(contextus+168)!=historicum || CONTENTUM(contextus+176)!=directum TUNC REDDE 11. FIN-SI.
+    SI CX_SCENA_RENDE(scena)==0 TUNC REDDE 12. FIN-SI.
+    SI OCTETUS_AB(target)!=17 || OCTETUS_AB(target+1)!=34 || OCTETUS_AB(target+2)!=51 || OCTETUS_AB(target+3)!=255 TUNC REDDE 13. FIN-SI.
+
+    SI BGVX_SCENAE_RESTITUE(contextus,scena)==0 TUNC REDDE 14. FIN-SI.
+    SI CX_SCENA_BACK(scena)!=historicum || CONTENTUM(CX_SCENA_BACKEND(scena)+8)!=BX_GENUS_SOFTWARE() TUNC REDDE 15. FIN-SI.
+    SI CONTENTUM(contextus+160)!=0 || CONTENTUM(contextus+168)!=0 || CONTENTUM(contextus+176)!=0 TUNC REDDE 16. FIN-SI.
+    SI OCTETUS_AB(target)!=17 || OCTETUS_AB(target+1)!=34 || OCTETUS_AB(target+2)!=51 || OCTETUS_AB(target+3)!=255 TUNC REDDE 17. FIN-SI.
+    SI CX_DAMNA_RECT(scena)==0 TUNC REDDE 18. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
