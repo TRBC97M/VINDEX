@@ -1418,6 +1418,63 @@ FUNCTIO COMPONE_PORTUS_SCRIBE_XXXII REDDENS NUMERUS.
     REDDE p_pw.
 FIN-FUNCTIO.
 
+FUNCTIO COMPONE_MMIO_LEGE REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    DECLARA p_ml SICUT NUMERUS VALENS indice.
+    SI latitudo == 1 TUNC
+        CODEX_SCRIBE(codex, p_ml, 15). CODEX_SCRIBE(codex, p_ml + 1, 182). CODEX_SCRIBE(codex, p_ml + 2, 0).
+        p_ml = p_ml + 3.
+    FIN-SI.
+    SI latitudo == 2 TUNC
+        CODEX_SCRIBE(codex, p_ml, 15). CODEX_SCRIBE(codex, p_ml + 1, 183). CODEX_SCRIBE(codex, p_ml + 2, 0).
+        p_ml = p_ml + 3.
+    FIN-SI.
+    SI latitudo == 4 TUNC
+        CODEX_SCRIBE(codex, p_ml, 139). CODEX_SCRIBE(codex, p_ml + 1, 0).
+        p_ml = p_ml + 2.
+    FIN-SI.
+    SI latitudo == 8 TUNC
+        CODEX_SCRIBE(codex, p_ml, 72). CODEX_SCRIBE(codex, p_ml + 1, 139). CODEX_SCRIBE(codex, p_ml + 2, 0).
+        p_ml = p_ml + 3.
+    FIN-SI.
+    REDDE p_ml.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_MMIO_SCRIBE REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    DECLARA p_ms SICUT NUMERUS VALENS indice.
+    SI latitudo == 1 TUNC
+        CODEX_SCRIBE(codex, p_ms, 136). CODEX_SCRIBE(codex, p_ms + 1, 1).
+        p_ms = p_ms + 2.
+    FIN-SI.
+    SI latitudo == 2 TUNC
+        CODEX_SCRIBE(codex, p_ms, 102). CODEX_SCRIBE(codex, p_ms + 1, 137). CODEX_SCRIBE(codex, p_ms + 2, 1).
+        p_ms = p_ms + 3.
+    FIN-SI.
+    SI latitudo == 4 TUNC
+        CODEX_SCRIBE(codex, p_ms, 137). CODEX_SCRIBE(codex, p_ms + 1, 1).
+        p_ms = p_ms + 2.
+    FIN-SI.
+    SI latitudo == 8 TUNC
+        CODEX_SCRIBE(codex, p_ms, 72). CODEX_SCRIBE(codex, p_ms + 1, 137). CODEX_SCRIBE(codex, p_ms + 2, 1).
+        p_ms = p_ms + 3.
+    FIN-SI.
+    CODEX_SCRIBE(codex, p_ms, 49). CODEX_SCRIBE(codex, p_ms + 1, 192).
+    REDDE p_ms + 2.
+FIN-FUNCTIO.
+
+FUNCTIO COMPONE_MMIO_SEPES REDDENS NUMERUS.
+    ACCIPIT codex SICUT ACUS<NUMERUS>.
+    ACCIPIT indice SICUT NUMERUS.
+    CODEX_SCRIBE(codex, indice, 15). CODEX_SCRIBE(codex, indice + 1, 174). CODEX_SCRIBE(codex, indice + 2, 240).
+    CODEX_SCRIBE(codex, indice + 3, 49). CODEX_SCRIBE(codex, indice + 4, 192).
+    REDDE indice + 5.
+FIN-FUNCTIO.
+
 FUNCTIO COMPONE_SALI_AD REDDENS NUMERUS.
     ACCIPIT codex SICUT NUMERUS.
     ACCIPIT indice SICUT NUMERUS.
@@ -3441,6 +3498,106 @@ FUNCTIO ANALYSA_FACTOR REDDENS NUMERUS.
         ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
         CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
         CONTENTUM(pos_codicis) = COMPONE_PORTUS_SCRIBE(codex, CONTENTUM(pos_codicis)).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 10 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 76 && fons[CONTENTUM(pos_fontis)+6] == 69 && fons[CONTENTUM(pos_fontis)+7] == 71 && fons[CONTENTUM(pos_fontis)+8] == 69 && fons[CONTENTUM(pos_fontis)+9] == 56 && fons[CONTENTUM(pos_fontis)+10] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 11.
+        DECLARA ig_ml8 SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        ig_ml8 = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_LEGE(codex, CONTENTUM(pos_codicis), 1).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 11 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 76 && fons[CONTENTUM(pos_fontis)+6] == 69 && fons[CONTENTUM(pos_fontis)+7] == 71 && fons[CONTENTUM(pos_fontis)+8] == 69 && fons[CONTENTUM(pos_fontis)+9] == 49 && fons[CONTENTUM(pos_fontis)+10] == 54 && fons[CONTENTUM(pos_fontis)+11] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 12.
+        DECLARA ig_ml16 SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        ig_ml16 = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_LEGE(codex, CONTENTUM(pos_codicis), 2).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 11 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 76 && fons[CONTENTUM(pos_fontis)+6] == 69 && fons[CONTENTUM(pos_fontis)+7] == 71 && fons[CONTENTUM(pos_fontis)+8] == 69 && fons[CONTENTUM(pos_fontis)+9] == 51 && fons[CONTENTUM(pos_fontis)+10] == 50 && fons[CONTENTUM(pos_fontis)+11] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 12.
+        DECLARA ig_ml32 SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        ig_ml32 = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_LEGE(codex, CONTENTUM(pos_codicis), 4).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 11 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 76 && fons[CONTENTUM(pos_fontis)+6] == 69 && fons[CONTENTUM(pos_fontis)+7] == 71 && fons[CONTENTUM(pos_fontis)+8] == 69 && fons[CONTENTUM(pos_fontis)+9] == 54 && fons[CONTENTUM(pos_fontis)+10] == 52 && fons[CONTENTUM(pos_fontis)+11] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 12.
+        DECLARA ig_ml64 SICUT NUMERUS VALENS ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        ig_ml64 = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_LEGE(codex, CONTENTUM(pos_codicis), 8).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 12 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 83 && fons[CONTENTUM(pos_fontis)+6] == 67 && fons[CONTENTUM(pos_fontis)+7] == 82 && fons[CONTENTUM(pos_fontis)+8] == 73 && fons[CONTENTUM(pos_fontis)+9] == 66 && fons[CONTENTUM(pos_fontis)+10] == 69 && fons[CONTENTUM(pos_fontis)+11] == 56 && fons[CONTENTUM(pos_fontis)+12] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 13.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 1).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_SCRIBE(codex, CONTENTUM(pos_codicis), 1).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 13 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 83 && fons[CONTENTUM(pos_fontis)+6] == 67 && fons[CONTENTUM(pos_fontis)+7] == 82 && fons[CONTENTUM(pos_fontis)+8] == 73 && fons[CONTENTUM(pos_fontis)+9] == 66 && fons[CONTENTUM(pos_fontis)+10] == 69 && fons[CONTENTUM(pos_fontis)+11] == 49 && fons[CONTENTUM(pos_fontis)+12] == 54 && fons[CONTENTUM(pos_fontis)+13] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 14.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 1).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_SCRIBE(codex, CONTENTUM(pos_codicis), 2).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 13 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 83 && fons[CONTENTUM(pos_fontis)+6] == 67 && fons[CONTENTUM(pos_fontis)+7] == 82 && fons[CONTENTUM(pos_fontis)+8] == 73 && fons[CONTENTUM(pos_fontis)+9] == 66 && fons[CONTENTUM(pos_fontis)+10] == 69 && fons[CONTENTUM(pos_fontis)+11] == 51 && fons[CONTENTUM(pos_fontis)+12] == 50 && fons[CONTENTUM(pos_fontis)+13] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 14.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 1).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_SCRIBE(codex, CONTENTUM(pos_codicis), 4).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 13 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 83 && fons[CONTENTUM(pos_fontis)+6] == 67 && fons[CONTENTUM(pos_fontis)+7] == 82 && fons[CONTENTUM(pos_fontis)+8] == 73 && fons[CONTENTUM(pos_fontis)+9] == 66 && fons[CONTENTUM(pos_fontis)+10] == 69 && fons[CONTENTUM(pos_fontis)+11] == 54 && fons[CONTENTUM(pos_fontis)+12] == 52 && fons[CONTENTUM(pos_fontis)+13] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 14.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_IMPONE(codex, CONTENTUM(pos_codicis), 0).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        ignoratum = ANALYSA_EXPRESSIO(codex, pos_codicis, fons, pos_fontis, n, contextus_parseris).
+        CONTENTUM(pos_codicis) = COMPONE_AUFER(codex, CONTENTUM(pos_codicis), 1).
+        ignoratum = IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_SCRIBE(codex, CONTENTUM(pos_codicis), 8).
+        REDDE 0.
+    FIN-SI.
+
+    SI fons[CONTENTUM(pos_fontis)] == 77 && CONTENTUM(pos_fontis) + 10 < n && fons[CONTENTUM(pos_fontis)+1] == 77 && fons[CONTENTUM(pos_fontis)+2] == 73 && fons[CONTENTUM(pos_fontis)+3] == 79 && fons[CONTENTUM(pos_fontis)+4] == 95 && fons[CONTENTUM(pos_fontis)+5] == 83 && fons[CONTENTUM(pos_fontis)+6] == 69 && fons[CONTENTUM(pos_fontis)+7] == 80 && fons[CONTENTUM(pos_fontis)+8] == 69 && fons[CONTENTUM(pos_fontis)+9] == 83 && fons[CONTENTUM(pos_fontis)+10] == 40 TUNC
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 11.
+        DECLARA ig_mf SICUT NUMERUS VALENS IGNORA_SPATIA(fons, pos_fontis, n).
+        CONTENTUM(pos_fontis) = CONTENTUM(pos_fontis) + 1.
+        CONTENTUM(pos_codicis) = COMPONE_MMIO_SEPES(codex, CONTENTUM(pos_codicis)).
         REDDE 0.
     FIN-SI.
 

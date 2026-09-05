@@ -1,0 +1,27 @@
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA memoria SICUT NUMERUS VALENS RESERVA_OCTETA(32).
+    SI memoria == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < 32 PERFICE
+        SCRIBE_OCTETUM_AB(memoria + i, 170).
+        i = i + 1.
+    FIN-DUM.
+
+    SI MMIO_SCRIBE8(memoria + 1, 18) != 0 TUNC REDDE 2. FIN-SI.
+    SI MMIO_LEGE8(memoria + 1) != 18 || OCTETUS_AB(memoria) != 170 || OCTETUS_AB(memoria + 2) != 170 TUNC REDDE 3. FIN-SI.
+
+    SI MMIO_SCRIBE16(memoria + 4, 13398) != 0 TUNC REDDE 4. FIN-SI.
+    SI MMIO_LEGE16(memoria + 4) != 13398 TUNC REDDE 5. FIN-SI.
+    SI OCTETUS_AB(memoria + 3) != 170 || OCTETUS_AB(memoria + 4) != 86 || OCTETUS_AB(memoria + 5) != 52 || OCTETUS_AB(memoria + 6) != 170 TUNC REDDE 6. FIN-SI.
+
+    SI MMIO_SCRIBE32(memoria + 8, 2309737967) != 0 TUNC REDDE 7. FIN-SI.
+    SI MMIO_LEGE32(memoria + 8) != 2309737967 TUNC REDDE 8. FIN-SI.
+    SI OCTETUS_AB(memoria + 7) != 170 || OCTETUS_AB(memoria + 8) != 239 || OCTETUS_AB(memoria + 11) != 137 || OCTETUS_AB(memoria + 12) != 170 TUNC REDDE 9. FIN-SI.
+
+    SI MMIO_SCRIBE64(memoria + 16, 1234605616436508552) != 0 TUNC REDDE 10. FIN-SI.
+    SI MMIO_LEGE64(memoria + 16) != 1234605616436508552 TUNC REDDE 11. FIN-SI.
+    SI OCTETUS_AB(memoria + 15) != 170 || OCTETUS_AB(memoria + 16) != 136 || OCTETUS_AB(memoria + 23) != 17 || OCTETUS_AB(memoria + 24) != 170 TUNC REDDE 12. FIN-SI.
+
+    SI MMIO_SEPES() != 0 TUNC REDDE 13. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

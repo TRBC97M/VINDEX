@@ -1,0 +1,27 @@
+IMPORTA "systema/rectores/pci.vindex".
+IMPORTA "systema/rectores/mmio.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA memoria SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI memoria == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS MMIO_REGIO_CREA(memoria, 32, MMIO_LECTIO() | MMIO_SCRIPTIO()).
+    SI regio == 0 TUNC REDDE 2. FIN-SI.
+    SI CONTENTUM(regio) != memoria || CONTENTUM(regio + 8) != memoria || CONTENTUM(regio + 16) != 32 TUNC REDDE 3. FIN-SI.
+    SI (CONTENTUM(regio + 40) & MMIO_IDENTITAS()) == 0 || CONTENTUM(regio + 48) != 1 TUNC REDDE 4. FIN-SI.
+
+    SI MR_SCRIBE8(regio, 1, 18) == 0 || MR_LEGE8(regio, 1) != 18 TUNC REDDE 5. FIN-SI.
+    SI MR_SCRIBE16(regio, 2, 13398) == 0 || MR_LEGE16(regio, 2) != 13398 TUNC REDDE 6. FIN-SI.
+    SI MR_SCRIBE32(regio, 4, 2309737967) == 0 || MR_LEGE32(regio, 4) != 2309737967 TUNC REDDE 7. FIN-SI.
+    SI MR_SCRIBE64(regio, 8, 1234605616436508552) == 0 || MR_LEGE64(regio, 8) != 1234605616436508552 TUNC REDDE 8. FIN-SI.
+    SI MR_SEPES() != 0 TUNC REDDE 9. FIN-SI.
+
+    SI MMIO_ADRESSA(regio, 31, 2, 0) != 0 || MMIO_ERRATUM(regio) != 3 TUNC REDDE 10. FIN-SI.
+    SI MMIO_ADRESSA(regio, 3, 4, 0) != 0 || MMIO_ERRATUM(regio) != 4 TUNC REDDE 11. FIN-SI.
+
+    DECLARA lectio SICUT NUMERUS VALENS MMIO_REGIO_CREA(memoria, 16, MMIO_LECTIO()).
+    SI lectio == 0 || MR_SCRIBE32(lectio, 0, 1) != 0 || MMIO_ERRATUM(lectio) != 6 TUNC REDDE 12. FIN-SI.
+    DECLARA scriptio SICUT NUMERUS VALENS MMIO_REGIO_CREA(memoria, 16, MMIO_SCRIPTIO()).
+    SI scriptio == 0 || MR_LEGE32(scriptio, 0) != 0 || MMIO_ERRATUM(scriptio) != 5 TUNC REDDE 13. FIN-SI.
+    SI MMIO_REGIO_CREA(0, 16, MMIO_LECTIO()) != 0 || MMIO_REGIO_CREA(memoria, 0, MMIO_LECTIO()) != 0 TUNC REDDE 14. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
