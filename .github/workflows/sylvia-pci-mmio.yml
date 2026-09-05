@@ -1,0 +1,81 @@
+name: Sylvia OS — PCI MMIO typatum
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/vindex_verifica.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_primitivae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_regiones.vindex'
+      - '.github/workflows/sylvia-pci-mmio.yml'
+      - 'CONSILIUM.md'
+
+permissions:
+  contents: read
+
+jobs:
+  mmio:
+    name: Latitudines, termini et e1000e MMIO probantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Instrumenta para
+        shell: bash
+        run: |
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
+
+      - name: Puritatem et fontes verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+          cd 'Vindex Chat-GPT/vindex_final_v51'
+          python3 instrumenta/vindex_verifica.py probationes/mmio_primitivae.vindex
+          python3 instrumenta/vindex_verifica.py probationes/mmio_regiones.vindex
+          cd systema
+          python3 ../instrumenta/vindex_verifica.py proba_pci_mmio.vindex
+
+      - name: Primitivas et regiones native exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for fons in mmio_primitivae mmio_regiones; do
+            ./compilator_vindex "probationes/$fons.vindex" "/tmp/$fons"
+            chmod +x "/tmp/$fons"
+            "/tmp/$fons"
+          done
+          printf '%s\n' 'RECTE: latitudines et termini MMIO probati sunt.'
+
+      - name: Punctum fixum et regressiones exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash tests/run_tests.sh
+
+      - name: BAR tutos iterum exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash ./instrumenta/proba_pci_bar_053.sh
+
+      - name: e1000e per MMIO lege
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: bash ./instrumenta/proba_pci_mmio_053.sh

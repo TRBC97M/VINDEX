@@ -40,8 +40,13 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_pontes_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/pci_bar_calculi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_primitivae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_regiones.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_mmio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
@@ -99,8 +104,13 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_catenam_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_pontes_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_bar_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_pci_mmio_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/pci_bar_calculi.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_primitivae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/mmio_regiones.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/pci.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/mmio.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_pci_mmio.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_murem_uefi_053.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_fenestrale_uefi_purum.sh'
@@ -303,3 +313,19 @@ jobs:
           ./compilator_vindex probationes/pci_bar_calculi.vindex /tmp/pci-bar-calculi
           chmod +x /tmp/pci-bar-calculi
           /tmp/pci-bar-calculi
+
+      - name: Primitivae et regiones MMIO typatae
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: |
+          set -euo pipefail
+          for fons in mmio_primitivae mmio_regiones; do
+            ./compilator_vindex "probationes/$fons.vindex" "/tmp/$fons"
+            chmod +x "/tmp/$fons"
+            "/tmp/$fons"
+          done
+
+      - name: e1000e per MMIO lege (P12-V1)
+        shell: bash
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        run: bash ./instrumenta/proba_pci_mmio_053.sh

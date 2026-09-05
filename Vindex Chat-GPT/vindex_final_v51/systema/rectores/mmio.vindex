@@ -1,0 +1,138 @@
+// Sylvia OS — P12-V1: regiones MMIO typatae et terminis munitae.
+// Rector PCI et primitivae MMIO_* compilatoris ante hoc folium adsint.
+//
+// Descriptor LXIV octeta:
+//  0 basis physica, 8 basis virtualis, 16 mensura regionis,
+// 24 pagina physica prima, 32 mensura paginarum, 40 vexilla,
+// 48 generatio, 56 erratum ultimum.
+//
+// In ambitu UEFI hodierno OVMF regiones PCI identitate mappat. Contractus
+// hoc explicite notat; gestor paginarum futurus basim virtualem mutare poterit
+// sine API rectorum mutanda.
+
+FUNCTIO MMIO_LECTIO REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MMIO_SCRIPTIO REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO MMIO_APPARATUS REDDENS NUMERUS.
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO MMIO_IDENTITAS REDDENS NUMERUS.
+    REDDE 8.
+FIN-FUNCTIO.
+
+FUNCTIO MMIO_REGIO_CREA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT vexilla SICUT NUMERUS.
+    SI basis <= 0 || mensura <= 0 || (vexilla & 3) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA finis SICUT NUMERUS VALENS basis + mensura.
+    SI finis <= basis || finis + 4095 < finis TUNC REDDE 0. FIN-SI.
+    DECLARA pagina SICUT NUMERUS VALENS (basis / 4096) * 4096.
+    DECLARA finis_paginae SICUT NUMERUS VALENS ((finis + 4095) / 4096) * 4096.
+    DECLARA regio SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI regio == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(regio) = basis.
+    CONTENTUM(regio + 8) = basis.
+    CONTENTUM(regio + 16) = mensura.
+    CONTENTUM(regio + 24) = pagina.
+    CONTENTUM(regio + 32) = finis_paginae - pagina.
+    CONTENTUM(regio + 40) = vexilla | MMIO_IDENTITAS().
+    CONTENTUM(regio + 48) = 1.
+    CONTENTUM(regio + 56) = 0.
+    REDDE regio.
+FIN-FUNCTIO.
+
+FUNCTIO MMIO_PCI_MAPPA REDDENS NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT vexilla SICUT NUMERUS.
+    SI index < 0 || index >= PCI_BAR_LIMES(bus, apparatus, functio) TUNC REDDE 0. FIN-SI.
+    DECLARA bar SICUT NUMERUS VALENS PCI_BAR_LEGE(bus, apparatus, functio, index).
+    SI PCI_BAR_EST_MEMORIA(bar) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA basis SICUT NUMERUS VALENS PCI_BAR_ADRESSA_PLENA(bus, apparatus, functio, index).
+    DECLARA mensura SICUT NUMERUS VALENS PCI_BAR_MENSURA(bus, apparatus, functio, index).
+    SI basis == 0 || mensura == 0 TUNC REDDE 0. FIN-SI.
+    REDDE MMIO_REGIO_CREA(basis, mensura, vexilla | MMIO_APPARATUS()).
+FIN-FUNCTIO.
+
+FUNCTIO MMIO_ERRATUM REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    SI regio == 0 TUNC REDDE 1. FIN-SI.
+    REDDE CONTENTUM(regio + 56).
+FIN-FUNCTIO.
+
+FUNCTIO MMIO_ADRESSA REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    ACCIPIT scriptio SICUT NUMERUS.
+    SI regio == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(regio + 56) = 0.
+    SI latitudo != 1 && latitudo != 2 && latitudo != 4 && latitudo != 8 TUNC CONTENTUM(regio + 56) = 2. REDDE 0. FIN-SI.
+    SI intervallum < 0 || intervallum + latitudo < intervallum || intervallum + latitudo > CONTENTUM(regio + 16) TUNC CONTENTUM(regio + 56) = 3. REDDE 0. FIN-SI.
+    DECLARA adr SICUT NUMERUS VALENS CONTENTUM(regio + 8) + intervallum.
+    SI ((adr / latitudo) * latitudo) != adr TUNC CONTENTUM(regio + 56) = 4. REDDE 0. FIN-SI.
+    SI scriptio == 0 && (CONTENTUM(regio + 40) & MMIO_LECTIO()) == 0 TUNC CONTENTUM(regio + 56) = 5. REDDE 0. FIN-SI.
+    SI scriptio != 0 && (CONTENTUM(regio + 40) & MMIO_SCRIPTIO()) == 0 TUNC CONTENTUM(regio + 56) = 6. REDDE 0. FIN-SI.
+    REDDE adr.
+FIN-FUNCTIO.
+
+FUNCTIO MR_LEGE8 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 1, 0).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE8(adr).
+FIN-FUNCTIO.
+
+FUNCTIO MR_LEGE16 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 2, 0).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE16(adr).
+FIN-FUNCTIO.
+
+FUNCTIO MR_LEGE32 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 4, 0).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE32(adr).
+FIN-FUNCTIO.
+
+FUNCTIO MR_LEGE64 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 8, 0).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE64(adr).
+FIN-FUNCTIO.
+
+FUNCTIO MR_SCRIBE8 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 1, 1).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE8(adr, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MR_SCRIBE16 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 2, 1).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE16(adr, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MR_SCRIBE32 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 4, 1).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE32(adr, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MR_SCRIBE64 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adr SICUT NUMERUS VALENS MMIO_ADRESSA(regio, intervallum, 8, 1).
+    SI adr == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE64(adr, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO MR_SEPES REDDENS NUMERUS.
+    REDDE MMIO_SEPES().
+FIN-FUNCTIO.
