@@ -5,6 +5,7 @@ IMPORTA "bibliotheca/imago_raster_vii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
 IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
 IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
 IMPORTA "bibliotheca/fenestrale_tempus_x.vindex".

@@ -6,7 +6,7 @@
 // 32 status framei, 40 erratum, 48 fence proxima, 56 fence completa,
 // 64 mandata recepta, 72 mandata completa, 80 target software,
 // 88 numerus fallback, 96 executor reservatus, 104 vexilla,
-// 112 cache texturarum reservata, 120 contextus reservatus.
+// 112 cache texturarum TXC, 120 contextus reservatus.
 //
 // Target software XL octeta:
 //  0 basis, 8 stride pixelorum, 16 w, 24 h, 32 formatum GOP.
@@ -60,6 +60,48 @@ FIN-FUNCTIO.
 FUNCTIO BX_CREA_SW REDDENS NUMERUS.
     ACCIPIT capacitas SICUT NUMERUS.
     REDDE BX_CREA_SW_TARGET(capacitas,0).
+FIN-FUNCTIO.
+
+FUNCTIO BX_CACHE_INSTITUE REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT capacitas SICUT NUMERUS.
+    ACCIPIT limes SICUT NUMERUS.
+    SI b==0 || CONTENTUM(b+32)!=0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(b+112)!=0 TUNC REDDE CONTENTUM(b+112). FIN-SI.
+    DECLARA cache SICUT NUMERUS VALENS TXC_CREA(capacitas,limes).
+    SI cache==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(b+112)=cache. CONTENTUM(b+16)=CONTENTUM(b+16)|BX_CAP_TEXTURE().
+    REDDE cache.
+FIN-FUNCTIO.
+
+FUNCTIO BX_CACHE REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    SI b==0 || (CONTENTUM(b+16)&BX_CAP_TEXTURE())==0 TUNC REDDE 0. FIN-SI.
+    REDDE CONTENTUM(b+112).
+FIN-FUNCTIO.
+
+FUNCTIO BX_TEXTURE_PETE REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    DECLARA cache SICUT NUMERUS VALENS BX_CACHE(b).
+    SI cache==0 TUNC REDDE 0. FIN-SI.
+    REDDE TXC_PETE(cache,superficies).
+FIN-FUNCTIO.
+
+FUNCTIO BX_TEXTURE_RELAXA REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    DECLARA cache SICUT NUMERUS VALENS BX_CACHE(b).
+    SI cache==0 TUNC REDDE 0. FIN-SI.
+    REDDE TXC_RELAXA(cache,nodus).
+FIN-FUNCTIO.
+
+FUNCTIO BX_TEXTURE_INVALIDA REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    DECLARA cache SICUT NUMERUS VALENS BX_CACHE(b).
+    SI cache==0 TUNC REDDE 0. FIN-SI.
+    REDDE TXC_INVALIDA(cache,superficies).
 FIN-FUNCTIO.
 
 FUNCTIO BX_COMPATIBILIS REDDENS NUMERUS.
