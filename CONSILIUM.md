@@ -180,7 +180,7 @@ Hoc stratum viam ad backend acceleratum P16-XII-F aperit: regiones MMIO apparatu
 
 ## P16 — Forma, JL-UX et capacitas graphica
 
-**Status:** P16-I–XI-B `PERFECTUM`; **P16-XII Fundamentum Graphicum Modernum `ACTIVUM`**.
+**Status:** P16-I–XI-B et P16-XII-A–F8 `PERFECTUM`; **P16-XII-F9 `PARATUM`**.
 
 ### Incrementa canonica
 
@@ -238,7 +238,7 @@ Chrome 9-slice manet finis artisticus validus, sed non amplius proximum opus est
 
 ### P16-XII — Fundamentum Graphicum Modernum
 
-**Status:** `ACTIVUM apud ChatGPT` in ramo `chatgpt/p16-xii-fundamentum-graphicum-modernum`.
+**Status:** P16-XII-A–F8 `PERFECTUM` in `main`; F9 acceleratio graphica III-D `PARATUM`.
 
 Finis est capacitas technica desktop classis Vista/Aero, sine imitatione identitatis Windows. Contractus plenus est in `documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md`.
 
@@ -252,6 +252,26 @@ Ordo officialis:
 6. **P16-XII-F — Backend accelerabilis:** API backend-neutra et via GPU cum P12 hardware id sinit.
 
 Backend software VINDEX purus sub QEMU est referentia semantica. Acceleratio GPU futura non est condicio XII-A, sed nulla architectura quae eam impedit admittitur.
+
+### P16-XII-F — Backend accelerabilis canonicus
+
+**Status:** F1–F8 `PERFECTUM` in `main`.
+
+Catena canonica die VI mensis Septembris MMXXVI est:
+
+- **F1 / #157** — contractus backend accelerabilis et fallback software;
+- **F2 / #158** — cache texturarum;
+- **F3 / #159** — coda compositionis realis;
+- **F4 / #162** — vita texturarum cum rollback;
+- **F5 / #163** — cache cum creatione, renovatione et liberatione resource;
+- **F6 / #165** — contractus exsecutoris unicus;
+- **F7 / #171** — praesentator VirtIO GPU verus, `TRANSFER_TO_HOST_2D` et `RESOURCE_FLUSH`;
+- **F8 / #172** — backbuffer Graphica X directe in memoria DMA adoptatus.
+
+Probatio F8 sub QEMU/OVMF reddit `VIO7 T02 P00000002 D000FB000 F00000007 Z000FB000 R`: duo frame, septem fences hardware et **1 028 096** pixela translata, eodem numero copiarum CPU vitatarum. Captura scanout 1280×800 quinque colores canonicos exacte servat.
+
+VirtIO GPU II-D standardis creationem resource, backing, scanout, transfer et flush praebet, sed compositionem/blit generalem non accelerat. F9 ideo non finget accelerationem intra mandata II-D: proximum fundamentum est facultatem III-D (`VIRTIO_GPU_F_VIRGL`/contextus) detectare et negotiari, fallback software semper servato.
+
 
 ### Lex visualis
 
@@ -301,16 +321,13 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 
 # V. Actio proxima
 
-1. **P16-XII-A certifica:** mathesis RGBA/source-over/damage, blur et umbra in memoria;
-2. showroom QEMU/OVMF Graphica X cum backdrop blur, vitro et stratis translucentibus metire atque capturam inspice;
-3. post XII-A, registrum stratorum et compositor damage-only P16-XII-B construe;
-4. double buffering et praesentatio stabilis ante migrationem shellis perfice;
-5. effectus cacheabiles P16-XII-C deinde frame-clock P16-XII-D;
-6. tantum postea chrome, INITIUM, taskbar et fenestrae ad P16-XII-E migrant;
-7. contractum backend accelerabilem ad P16-XII-F serva; backend GPU cum P12 hardware permittit;
-8. TERMINALE mandata fasciculorum realia et Explorator fasciculorum post fundamenta visualia/componentium;
-9. P19-III ad hardware quando opportunum;
-10. P12 apud Claude paralleliter pergat.
+1. **P16-XII-F9 — Fundamentum accelerationis III-D:** `VIRTIO_GPU_F_VIRGL` et contextus/capset rite detege et negocia, sine falso positivo in backend II-D;
+2. exsecutorem software tamquam oraculum semanticum conserva et fallback automaticum pro apparatu sine acceleratione exige;
+3. primum contextum III-D realem sub QEMU/virglrenderer crea, mandatum fenced submitte et destructionem/restaurationem proba;
+4. post contextum realem, texturas Graphica X ad resource III-D residentes liga et migrationem generationum metire;
+5. compositionem/alpha ad mandata accelerata tantum tum migra cum output bit-/pixel-equivalens oraculo software probari potest;
+6. P16-XI-C chrome premium post fundamentum acceleratum/stabile resumatur si effectus visuales id requirunt;
+7. P14 rete super P12 canonicum et TERMINALE/Explorator fasciculorum paralleliter crescere possunt ubi prioritas usus id postulat.
 
 ---
 
