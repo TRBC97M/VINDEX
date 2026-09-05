@@ -125,11 +125,13 @@ Destinatio continet compilatorem, linker, bibliothecam standardem, debugger, pro
 
 ## P12 — Infrastructura gubernatorum
 
-**Status:** incrementa I–IV `PERFECTUM` in `main`; pila V `PROBATA / CANONIZANDA` in ramis empilatis.
+**Status:** incrementa I–IV et P12-V1–V4 `PERFECTUM` in `main`.
 
-P12-III (pontes PCI, #122) et P12-IV (BAR et regiones MMIO, #156) sunt canonica. Super ea, P12-V1–V4 (#161, #164, #166, #167) MMIO typatum, paginas DMA, interruptiones MSI et transportum VirtIO PCI modernum probant; hae PR adhuc empilatae sunt et separatim canonizandae sunt, non simul temere mergendae.
+P12-III (pontes PCI, #122) et P12-IV (BAR/MMIO, #156 + tutelae #160) sunt canonica. Pila V quoque die V mensis Septembris MMXXVI ordine canonizata est: **P12-V1 / #161** MMIO typatum, **P12-V2 / #164** paginae DMA physicae, **P12-V3 / #166** interruptiones MSI verae et **P12-V4 / #167** transportus VirtIO PCI modernus cum primo mandato GPU reali.
 
-Directio post canonizationem pilae V: rector GPU/retis super contractus P12, deinde ACPI/USB/HID ubi opus est.
+Probationes materiales eiusdem catenae includunt: BAR LXIV bitorum integre restitutum, e1000e `STATUS` per MMIO XXXII bitorum, tres paginas DMA UEFI cum `FreePages`, MSI vectoris `0xF1` ad tractatorem VINDEX cum `IRETQ`, atque `virtio-gpu-pci` respondens `GET_DISPLAY_INFO` cum scanout **1280×800**. Compilator auto-hospes et XXXV probationes canonicae per canonizationem servatae sunt.
+
+Directio sequens: rectores productionis GPU/retis super contractus P12 iam canonicos; deinde ACPI/USB/HID ubi usus realis id postulat.
 
 ### P12-III — pontes PCI (canonicum, #122)
 
@@ -148,17 +150,17 @@ Topologia per configurationem QEMU construitur (q35, `x3130-upstream`, `xio3130-
 
 ### P12-IV — BAR et regiones MMIO (canonicum, #156)
 
-Sex BAR (registra 16..36) leguntur; genus (memoria vel portus), adressa, mensura et praefetchabilitas agnoscuntur. BAR LXIV bitorum tractantur (duos indices occupant). Mensura per explorationem canonicam invenitur (scriptio omnium unitatum, relectio, inversio), valore originali semper restituto.
+Numerus BAR ex genere capitis derivatur (`6/2/1`); genus (memoria vel portus), adressa, mensura et praefetchabilitas agnoscuntur. BAR LXIV bitorum duos indices occupant et ex partibus inferiori/superiori componuntur. Exploratio mensurae decodificationem I/O/memoriae interim inhibet, status PCI superior numquam rescribitur, atque pars superior, pars inferior et commandum originale semper restituuntur.
 
-Probatio `instrumenta/proba_pci_bar_053.sh` (sex gradus, in CI):
+Probatio `instrumenta/proba_pci_bar_053.sh` (sex gradus, in CI), recertificata etiam post P12-V4:
 
 ```text
-8086:7010 B04 P 0000C000 00000010
-1234:1111 B00 M 80000000 01000000
-1234:1111 B02 M 81010000 00001000
+8086:7010 B04 P32 000000000000C000 0000000000000010 R
+1234:1111 B00 M32 0000000080000000 0000000001000000 R
+1234:1111 B02 M32 0000000081010000 0000000000001000 R
 ```
 
-Collatio decisiva: BAR 0 apparatus graphici (`1234:1111`) adressam `0x80000000` reddit — **eandem quam firmware per protocollum graphicum pro framebuffer dat**. Regiones ergo verae sunt, non coniecturales. Mensurae omnes potentiae duorum sunt (regula PCI). In topologia q35 sedecim BAR aguntur.
+Collatio decisiva: BAR 0 apparatus graphici (`1234:1111`) adressam `0x80000000` et mensuram **16 MiB** reddit. Omnes mensurae probatae potentiae duorum sunt. In topologia q35 moderna **VIII BAR** aguntur, inter quae BAR LXIV verus inventus et integre restitutus est. `R` restitutionem BAR et commandi PCI significat.
 
 Hoc stratum viam ad backend acceleratum P16-XII-F aperit: regiones MMIO apparatuum nunc a VINDEX ipso inveniri possunt.
 
