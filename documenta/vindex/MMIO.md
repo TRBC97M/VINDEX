@@ -41,8 +41,14 @@ OVMF regiones PCI in spatio UEFI identitate mappat. P12-V1 hanc rem non celat:
 est mappatio realis ambitus praesentis, sed nondum proprietas tabularum
 paginarum Sylviae.
 
-Incrementum sequens gestorem paginarum et attributa cache (UC/WC) possidebit.
-Tum basis virtualis mutari poterit sine mutatione API rectorum.
+P12-V2 gestorem paginarum DMA separatum addit: ille paginas RAM vere possidet,
+attributum WB e tabula memoriae UEFI observat et adressam physicam terminis
+munitam publicat. Contractus eius in `PAGINAE_DMA.md` describitur.
+
+Attributa UC/WC regionum **apparatus** adhuc non imponuntur. Id opus tabulas
+paginarum Sylviae vel protocollum firmware idoneum requiret; simplex vexillum
+descriptoris pro mappatione vera non habetur. Basis virtualis MMIO igitur in
+P12-V2 identitatis manet.
 
 ## V. Probationes
 

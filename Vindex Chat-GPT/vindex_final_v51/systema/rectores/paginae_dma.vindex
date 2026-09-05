@@ -1,0 +1,323 @@
+// Sylvia OS — P12-V2: paginae DMA physicae, possessae et terminis munitae.
+// Primitivae MMIO_LEGE*, MMIO_SCRIBE* et MMIO_SEPES ante hoc folium adsint.
+//
+// Descriptor CXX octeta:
+//   0 basis physica, 8 basis virtualis, 16 mensura postulata,
+//  24 mensura attributa, 32 numerus paginarum, 40 vexilla,
+//  48 generatio, 56 erratum ultimum, 64 tabula systematis UEFI,
+//  72 adressa maxima, 80 activum, 88 numerus synchronizationum,
+//  96 attributa cache UEFI observata, 104 status cache,
+// 112 directio synchronizationis ultima.
+//
+// Paginae AllocatePages/FreePages vere possidentur. Cache e tabula memoriae
+// UEFI observatur, non fingitur impositus: status 1 significat observatum,
+// status 0 significat ignotum. In x86 PCI memoria DMA cache-cohaerens est;
+// MFENCE ordinem praestat, sed pro architecturis non cohaerentibus purgatio
+// cache futura adhuc necessaria erit.
+
+FUNCTIO DMA_PROPRIETAS_UEFI REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_IDENTITAS REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_PURGATA REDDENS NUMERUS.
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_INFRA_LIMEN REDDENS NUMERUS.
+    REDDE 8.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_X86_COHERENS REDDENS NUMERUS.
+    REDDE 16.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_APPARATUS_LEGE REDDENS NUMERUS.
+    REDDE 32.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_APPARATUS_SCRIBE REDDENS NUMERUS.
+    REDDE 64.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_AD_APPARATUM REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_AB_APPARATU REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_BIDIRECTA REDDENS NUMERUS.
+    REDDE 3.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_OBSERVATA REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_IMPOSITA REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_UC REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_WC REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_WT REDDENS NUMERUS.
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_WB REDDENS NUMERUS.
+    REDDE 8.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_UCE REDDENS NUMERUS.
+    REDDE 16.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_MEMORIA_PURGA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i + 8 <= mensura PERFICE
+        CONTENTUM(basis + i) = 0.
+        i = i + 8.
+    FIN-DUM.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(basis + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_CACHE_UEFI_LEGE REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI systema == 0 || basis <= 0 || mensura <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI bs == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA cape_tabula SICUT NUMERUS VALENS CONTENTUM(bs + 56).
+    DECLARA alloca_pool SICUT NUMERUS VALENS CONTENTUM(bs + 64).
+    DECLARA libera_pool SICUT NUMERUS VALENS CONTENTUM(bs + 72).
+    SI cape_tabula == 0 || alloca_pool == 0 || libera_pool == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA mensura_tabulae SICUT NUMERUS VALENS 0.
+    DECLARA clavis SICUT NUMERUS VALENS 0.
+    DECLARA mensura_descriptoris SICUT NUMERUS VALENS 0.
+    DECLARA versio SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(cape_tabula, SEDES(mensura_tabulae), 0, SEDES(clavis), SEDES(mensura_descriptoris), SEDES(versio), 0).
+    SI mensura_tabulae <= 0 || mensura_tabulae + 4096 < mensura_tabulae TUNC REDDE 0. FIN-SI.
+    mensura_tabulae = mensura_tabulae + 4096.
+    DECLARA tabula SICUT NUMERUS VALENS 0.
+    status = UEFI_VOCA6(alloca_pool, 2, mensura_tabulae, SEDES(tabula), 0, 0, 0).
+    SI status != 0 || tabula == 0 TUNC REDDE 0. FIN-SI.
+    status = UEFI_VOCA6(cape_tabula, SEDES(mensura_tabulae), tabula, SEDES(clavis), SEDES(mensura_descriptoris), SEDES(versio), 0).
+    DECLARA attributa SICUT NUMERUS VALENS 0.
+    SI status == 0 && mensura_descriptoris >= 40 TUNC
+        DECLARA finis SICUT NUMERUS VALENS basis + mensura.
+        DECLARA p SICUT NUMERUS VALENS 0.
+        DUM p + 40 <= mensura_tabulae && attributa == 0 PERFICE
+            DECLARA initium SICUT NUMERUS VALENS CONTENTUM(tabula + p + 8).
+            DECLARA paginae SICUT NUMERUS VALENS CONTENTUM(tabula + p + 24).
+            DECLARA terminus SICUT NUMERUS VALENS initium + paginae * 4096.
+            SI finis > basis && terminus > initium && basis >= initium && finis <= terminus TUNC
+                attributa = CONTENTUM(tabula + p + 32).
+            FIN-SI.
+            p = p + mensura_descriptoris.
+        FIN-DUM.
+    FIN-SI.
+    DECLARA liberata SICUT NUMERUS VALENS UEFI_VOCA6(libera_pool, tabula, 0, 0, 0, 0, 0).
+    REDDE attributa.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_REGIO_ADOPTA REDDENS NUMERUS.
+    ACCIPIT physica SICUT NUMERUS.
+    ACCIPIT virtualis SICUT NUMERUS.
+    ACCIPIT postulata SICUT NUMERUS.
+    ACCIPIT attributa SICUT NUMERUS.
+    ACCIPIT vexilla SICUT NUMERUS.
+    SI physica <= 0 || virtualis <= 0 || postulata <= 0 || attributa < postulata TUNC REDDE 0. FIN-SI.
+    SI (physica & 4095) != 0 || (virtualis & 4095) != 0 || (attributa & 4095) != 0 TUNC REDDE 0. FIN-SI.
+    SI physica + attributa <= physica || virtualis + attributa <= virtualis TUNC REDDE 0. FIN-SI.
+    SI (vexilla & (DMA_APPARATUS_LEGE() | DMA_APPARATUS_SCRIBE())) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS RESERVA_OCTETA(120).
+    SI regio == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(regio) = physica.
+    CONTENTUM(regio + 8) = virtualis.
+    CONTENTUM(regio + 16) = postulata.
+    CONTENTUM(regio + 24) = attributa.
+    CONTENTUM(regio + 32) = attributa / 4096.
+    CONTENTUM(regio + 40) = vexilla.
+    SI physica == virtualis TUNC CONTENTUM(regio + 40) = CONTENTUM(regio + 40) | DMA_IDENTITAS(). FIN-SI.
+    CONTENTUM(regio + 48) = 1.
+    CONTENTUM(regio + 56) = 0.
+    CONTENTUM(regio + 64) = 0.
+    CONTENTUM(regio + 72) = 0.
+    CONTENTUM(regio + 80) = 1.
+    CONTENTUM(regio + 88) = 0.
+    CONTENTUM(regio + 96) = 0.
+    CONTENTUM(regio + 104) = 0.
+    CONTENTUM(regio + 112) = 0.
+    REDDE regio.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_UEFI_ALLOCA REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT maxima SICUT NUMERUS.
+    ACCIPIT vexilla SICUT NUMERUS.
+    SI systema == 0 || mensura <= 0 || mensura + 4095 < mensura TUNC REDDE 0. FIN-SI.
+    SI (vexilla & (DMA_APPARATUS_LEGE() | DMA_APPARATUS_SCRIBE())) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA paginae SICUT NUMERUS VALENS (mensura + 4095) / 4096.
+    DECLARA attributa SICUT NUMERUS VALENS paginae * 4096.
+    SI paginae <= 0 || attributa < mensura TUNC REDDE 0. FIN-SI.
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI bs == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA alloca SICUT NUMERUS VALENS CONTENTUM(bs + 40).
+    DECLARA libera SICUT NUMERUS VALENS CONTENTUM(bs + 48).
+    SI alloca == 0 || libera == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS 0.
+    DECLARA physica SICUT NUMERUS VALENS 0.
+    SI maxima > 0 TUNC genus = 1. physica = maxima. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(alloca, genus, 2, paginae, SEDES(physica), 0, 0).
+    SI status != 0 || physica <= 0 || (physica & 4095) != 0 TUNC REDDE 0. FIN-SI.
+    SI maxima > 0 && (physica + attributa <= physica || physica + attributa - 1 > maxima) TUNC
+        DECLARA repudiata SICUT NUMERUS VALENS UEFI_VOCA6(libera, physica, paginae, 0, 0, 0, 0).
+        REDDE 0.
+    FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS DMA_REGIO_ADOPTA(physica, physica, mensura, attributa, vexilla | DMA_X86_COHERENS()).
+    SI regio == 0 TUNC
+        DECLARA repudiata SICUT NUMERUS VALENS UEFI_VOCA6(libera, physica, paginae, 0, 0, 0, 0).
+        REDDE 0.
+    FIN-SI.
+    DECLARA purgatio SICUT NUMERUS VALENS DMA_MEMORIA_PURGA(physica, attributa).
+    CONTENTUM(regio + 40) = CONTENTUM(regio + 40) | DMA_PROPRIETAS_UEFI() | DMA_PURGATA().
+    SI maxima > 0 TUNC CONTENTUM(regio + 40) = CONTENTUM(regio + 40) | DMA_INFRA_LIMEN(). FIN-SI.
+    CONTENTUM(regio + 64) = systema.
+    CONTENTUM(regio + 72) = maxima.
+    DECLARA cache SICUT NUMERUS VALENS DMA_CACHE_UEFI_LEGE(systema, physica, attributa).
+    CONTENTUM(regio + 96) = cache.
+    SI cache != 0 TUNC CONTENTUM(regio + 104) = DMA_CACHE_OBSERVATA(). FIN-SI.
+    REDDE regio.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_ERRATUM REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    SI regio == 0 TUNC REDDE 1. FIN-SI.
+    REDDE CONTENTUM(regio + 56).
+FIN-FUNCTIO.
+
+FUNCTIO DMA_ADRESSA REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT latitudo SICUT NUMERUS.
+    SI regio == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(regio + 56) = 0.
+    SI CONTENTUM(regio + 80) == 0 TUNC CONTENTUM(regio + 56) = 3. REDDE 0. FIN-SI.
+    SI latitudo != 1 && latitudo != 2 && latitudo != 4 && latitudo != 8 TUNC CONTENTUM(regio + 56) = 4. REDDE 0. FIN-SI.
+    SI intervallum < 0 || intervallum + latitudo < intervallum || intervallum + latitudo > CONTENTUM(regio + 16) TUNC CONTENTUM(regio + 56) = 5. REDDE 0. FIN-SI.
+    DECLARA adressa SICUT NUMERUS VALENS CONTENTUM(regio + 8) + intervallum.
+    SI ((adressa / latitudo) * latitudo) != adressa TUNC CONTENTUM(regio + 56) = 6. REDDE 0. FIN-SI.
+    REDDE adressa.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_PHYSICA REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI regio == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(regio + 56) = 0.
+    SI CONTENTUM(regio + 80) == 0 TUNC CONTENTUM(regio + 56) = 3. REDDE 0. FIN-SI.
+    SI mensura <= 0 || intervallum < 0 || intervallum + mensura < intervallum || intervallum + mensura > CONTENTUM(regio + 16) TUNC CONTENTUM(regio + 56) = 5. REDDE 0. FIN-SI.
+    REDDE CONTENTUM(regio) + intervallum.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_LEGE8 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 1).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE8(adressa).
+FIN-FUNCTIO.
+
+FUNCTIO DMA_LEGE16 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 2).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE16(adressa).
+FIN-FUNCTIO.
+
+FUNCTIO DMA_LEGE32 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 4).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE32(adressa).
+FIN-FUNCTIO.
+
+FUNCTIO DMA_LEGE64 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 8).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. REDDE MMIO_LEGE64(adressa).
+FIN-FUNCTIO.
+
+FUNCTIO DMA_SCRIBE8 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 1).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE8(adressa, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_SCRIBE16 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 2).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE16(adressa, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_SCRIBE32 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 4).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE32(adressa, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_SCRIBE64 REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS. ACCIPIT intervallum SICUT NUMERUS. ACCIPIT valor SICUT NUMERUS.
+    DECLARA adressa SICUT NUMERUS VALENS DMA_ADRESSA(regio, intervallum, 8).
+    SI adressa == 0 TUNC REDDE 0. FIN-SI. DECLARA f SICUT NUMERUS VALENS MMIO_SCRIBE64(adressa, valor). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_SYNCHRONIZA REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    ACCIPIT directio SICUT NUMERUS.
+    SI regio == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(regio + 56) = 0.
+    SI CONTENTUM(regio + 80) == 0 TUNC CONTENTUM(regio + 56) = 3. REDDE 0. FIN-SI.
+    SI (CONTENTUM(regio + 40) & DMA_X86_COHERENS()) == 0 TUNC CONTENTUM(regio + 56) = 7. REDDE 0. FIN-SI.
+    SI directio != DMA_AD_APPARATUM() && directio != DMA_AB_APPARATU() && directio != DMA_BIDIRECTA() TUNC CONTENTUM(regio + 56) = 8. REDDE 0. FIN-SI.
+    SI (directio == DMA_AD_APPARATUM() || directio == DMA_BIDIRECTA()) && (CONTENTUM(regio + 40) & DMA_APPARATUS_LEGE()) == 0 TUNC CONTENTUM(regio + 56) = 9. REDDE 0. FIN-SI.
+    SI (directio == DMA_AB_APPARATU() || directio == DMA_BIDIRECTA()) && (CONTENTUM(regio + 40) & DMA_APPARATUS_SCRIBE()) == 0 TUNC CONTENTUM(regio + 56) = 10. REDDE 0. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS MMIO_SEPES().
+    CONTENTUM(regio + 88) = CONTENTUM(regio + 88) + 1.
+    CONTENTUM(regio + 112) = directio.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DMA_UEFI_LIBERA REDDENS NUMERUS.
+    ACCIPIT regio SICUT NUMERUS.
+    SI regio == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(regio + 56) = 0.
+    SI CONTENTUM(regio + 80) == 0 || (CONTENTUM(regio + 40) & DMA_PROPRIETAS_UEFI()) == 0 TUNC CONTENTUM(regio + 56) = 11. REDDE 0. FIN-SI.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(regio + 64).
+    SI systema == 0 TUNC CONTENTUM(regio + 56) = 12. REDDE 0. FIN-SI.
+    DECLARA bs SICUT NUMERUS VALENS CONTENTUM(systema + 96).
+    SI bs == 0 TUNC CONTENTUM(regio + 56) = 12. REDDE 0. FIN-SI.
+    DECLARA libera SICUT NUMERUS VALENS CONTENTUM(bs + 48).
+    SI libera == 0 TUNC CONTENTUM(regio + 56) = 12. REDDE 0. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS UEFI_VOCA6(libera, CONTENTUM(regio), CONTENTUM(regio + 32), 0, 0, 0, 0).
+    SI status != 0 TUNC CONTENTUM(regio + 56) = 13. REDDE 0. FIN-SI.
+    CONTENTUM(regio + 80) = 0.
+    CONTENTUM(regio + 48) = CONTENTUM(regio + 48) + 1.
+    REDDE 1.
+FIN-FUNCTIO.

@@ -1,0 +1,121 @@
+// P12-V2 — possessio paginarum DMA et cache UEFI observata sub firmware.
+
+IMPORTA "rectores/pci.vindex".
+IMPORTA "rectores/mmio.vindex".
+IMPORTA "rectores/paginae_dma.vindex".
+
+FUNCTIO PD_MEMORIA_VACUA REDDENS NUMERUS.
+    ACCIPIT destinatio SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(destinatio + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO PD_CIFRA_HEX REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI valor < 10 TUNC REDDE 48 + valor. FIN-SI.
+    REDDE 55 + valor.
+FIN-FUNCTIO.
+
+FUNCTIO PD_HEX16_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, PD_CIFRA_HEX((valor / 4096) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 2, PD_CIFRA_HEX((valor / 256) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 4, PD_CIFRA_HEX((valor / 16) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 6, PD_CIFRA_HEX(valor & 15)).
+    REDDE 8.
+FIN-FUNCTIO.
+
+FUNCTIO PD_HEX32_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA f1 SICUT NUMERUS VALENS PD_HEX16_SCRIBE(buf, positio, (valor / 65536) & 65535).
+    DECLARA f2 SICUT NUMERUS VALENS PD_HEX16_SCRIBE(buf, positio + 8, valor & 65535).
+    REDDE 16.
+FIN-FUNCTIO.
+
+FUNCTIO PD_HEX64_SCRIBE REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA f1 SICUT NUMERUS VALENS PD_HEX32_SCRIBE(buf, positio, (valor / 4294967296) & 4294967295).
+    DECLARA f2 SICUT NUMERUS VALENS PD_HEX32_SCRIBE(buf, positio + 16, valor & 4294967295).
+    REDDE 32.
+FIN-FUNCTIO.
+
+FUNCTIO PD_CATENAM_SCRIBE REDDENS NUMERUS.
+    ACCIPIT conout SICUT NUMERUS.
+    ACCIPIT catena SICUT NUMERUS.
+    DECLARA scribe SICUT NUMERUS VALENS CONTENTUM(conout + 8).
+    REDDE UEFI_VOCA6(scribe, conout, catena, 0, 0, 0, 0).
+FIN-FUNCTIO.
+
+FUNCTIO PD_LITTERA REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT littera SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, littera).
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI systema == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA conout SICUT NUMERUS VALENS CONTENTUM(systema + 64).
+    DECLARA vexilla SICUT NUMERUS VALENS DMA_APPARATUS_LEGE() | DMA_APPARATUS_SCRIBE().
+    DECLARA regio SICUT NUMERUS VALENS DMA_UEFI_ALLOCA(systema, 8193, 4294967295, vexilla).
+    SI regio == 0 TUNC REDDE 2. FIN-SI.
+    DECLARA physica SICUT NUMERUS VALENS CONTENTUM(regio).
+    DECLARA paginae SICUT NUMERUS VALENS CONTENTUM(regio + 32).
+    DECLARA mensura SICUT NUMERUS VALENS CONTENTUM(regio + 24).
+    DECLARA signa SICUT NUMERUS VALENS CONTENTUM(regio + 40).
+    DECLARA cache SICUT NUMERUS VALENS CONTENTUM(regio + 96).
+    SI (physica & 4095) != 0 || paginae != 3 || mensura != 12288 TUNC REDDE 3. FIN-SI.
+    SI physica + mensura <= physica || physica + mensura - 1 > 4294967295 TUNC REDDE 4. FIN-SI.
+    SI (signa & DMA_PROPRIETAS_UEFI()) == 0 || (signa & DMA_IDENTITAS()) == 0 || (signa & DMA_PURGATA()) == 0 TUNC REDDE 5. FIN-SI.
+    SI (signa & DMA_INFRA_LIMEN()) == 0 || (signa & DMA_X86_COHERENS()) == 0 TUNC REDDE 6. FIN-SI.
+    SI CONTENTUM(regio + 104) != DMA_CACHE_OBSERVATA() || (cache & DMA_CACHE_WB()) == 0 TUNC REDDE 7. FIN-SI.
+    SI DMA_LEGE64(regio, 0) != 0 || DMA_LEGE8(regio, 8192) != 0 || MMIO_LEGE8(physica + mensura - 1) != 0 TUNC REDDE 8. FIN-SI.
+    SI DMA_SCRIBE64(regio, 0, 1234605616436508552) == 0 || DMA_SCRIBE32(regio, 4096, 2309737967) == 0 || DMA_SCRIBE8(regio, 8192, 90) == 0 TUNC REDDE 9. FIN-SI.
+    SI DMA_SYNCHRONIZA(regio, DMA_AD_APPARATUM()) == 0 || DMA_SYNCHRONIZA(regio, DMA_AB_APPARATU()) == 0 TUNC REDDE 10. FIN-SI.
+    SI DMA_LEGE64(regio, 0) != 1234605616436508552 || DMA_LEGE32(regio, 4096) != 2309737967 || DMA_LEGE8(regio, 8192) != 90 TUNC REDDE 11. FIN-SI.
+    SI CONTENTUM(regio + 88) != 2 || CONTENTUM(regio + 112) != DMA_AB_APPARATU() TUNC REDDE 12. FIN-SI.
+    SI DMA_UEFI_LIBERA(regio) == 0 || CONTENTUM(regio + 80) != 0 || CONTENTUM(regio + 48) != 2 TUNC REDDE 13. FIN-SI.
+    SI DMA_LEGE8(regio, 0) != 0 || DMA_ERRATUM(regio) != 3 TUNC REDDE 14. FIN-SI.
+    SI DMA_UEFI_LIBERA(regio) != 0 || DMA_ERRATUM(regio) != 11 TUNC REDDE 15. FIN-SI.
+
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(256).
+    DECLARA f SICUT NUMERUS VALENS PD_MEMORIA_VACUA(buf, 256).
+    DECLARA p SICUT NUMERUS VALENS 0.
+    p = p + PD_LITTERA(buf, p, 68).
+    p = p + PD_LITTERA(buf, p, 77).
+    p = p + PD_LITTERA(buf, p, 65).
+    p = p + PD_LITTERA(buf, p, 50).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_HEX64_SCRIBE(buf, p, physica).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_HEX16_SCRIBE(buf, p, paginae).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_HEX64_SCRIBE(buf, p, mensura).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_HEX64_SCRIBE(buf, p, cache).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_LITTERA(buf, p, 79).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_LITTERA(buf, p, 90).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_HEX16_SCRIBE(buf, p, 2).
+    p = p + PD_LITTERA(buf, p, 32).
+    p = p + PD_LITTERA(buf, p, 70).
+    p = p + PD_LITTERA(buf, p, 13).
+    p = p + PD_LITTERA(buf, p, 10).
+    f = PD_CATENAM_SCRIBE(conout, buf).
+    REDDE 0.
+FIN-FUNCTIO.
