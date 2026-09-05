@@ -7,6 +7,7 @@ import socket
 import sys
 import time
 from pathlib import Path
+from typing import Callable
 
 
 def importa_auxilia() -> object:
@@ -34,6 +35,34 @@ def mitte_clavem(aux: object, monitor: socket.socket, clavis: str) -> None:
     if 'unknown command' in responsum.lower():
         raise RuntimeError('HMP sendkey deest')
     time.sleep(0.18)
+
+
+def captura_usque(
+    aux: object,
+    monitor: socket.socket,
+    via: Path,
+    condicio: Callable[[bytes], bool],
+    mora: float = 6.0,
+) -> bytes:
+    """Framebuffer pollit donec effectus visibilis adest, sine inputu iterato."""
+    finis = time.time() + mora
+    pix = b''
+    while True:
+        aux.captura(monitor, via)
+        _, _, pix = aux.ppm(via)
+        if condicio(pix) or time.time() >= finis:
+            return pix
+        time.sleep(0.2)
+
+
+def focus_fenestrae(aux: object, pix: bytes, w: int, x: int, y: int) -> str | None:
+    """Focus historicum aut titulum activum GX exactum recognoscit."""
+    if aux.pixel(pix, w, x, y) == (185, 138, 82):
+        return 'historica'
+    # Canon GX rectus manet acceptus; alpha scenae colorem compositum reddit.
+    if aux.pixel(pix, w, x, y + 32) in ((58, 96, 104), (57, 95, 103)):
+        return 'XII-E'
+    return None
 
 
 def principale() -> int:
@@ -76,11 +105,12 @@ def principale() -> int:
         aux.captura(monitor, apertum)
         _, _, pix_open = aux.ppm(apertum)
 
-        bronzeum = (185, 138, 82)
         carbonem = (22, 24, 23)
         lapis = (49, 55, 55)
-        if aux.pixel(pix_open, w, 500, 96) != bronzeum:
-            print(f'DEFECIT: TERMINALE focus non accepit: {aux.pixel(pix_open,w,500,96)}', file=sys.stderr)
+        bronzeum = (185, 138, 82)
+        testa = focus_fenestrae(aux, pix_open, w, 500, 96)
+        if testa is None:
+            print(f'DEFECIT: TERMINALE focus non accepit: {aux.pixel(pix_open,w,500,96)}/{aux.pixel(pix_open,w,500,128)}', file=sys.stderr)
             return 5
         # Fenestra TERMINALE: x=230 y=96; clientis superficies incipit x=240 y=156.
         if aux.pixel(pix_open, w, 300, 200) != carbonem:
@@ -94,8 +124,10 @@ def principale() -> int:
         for clavis in ('shift-s', 'shift-a', 'shift-l', 'shift-v', 'shift-e'):
             mitte_clavem(aux, monitor, clavis)
         time.sleep(0.5)
-        aux.captura(monitor, scriptum)
-        _, _, pix_typed = aux.ppm(scriptum)
+        pix_typed = captura_usque(
+            aux, monitor, scriptum,
+            lambda pix: diff_regio(pix_open, pix, w, 270, 424, 380, 454) >= 40,
+        )
         prompt_mut = diff_regio(pix_open, pix_typed, w, 270, 424, 380, 454)
         if prompt_mut < 40:
             print(f'DEFECIT: linea SALVE in TERMINALE non apparuit: {prompt_mut}', file=sys.stderr)
@@ -103,8 +135,11 @@ def principale() -> int:
 
         mitte_clavem(aux, monitor, 'ret')
         time.sleep(0.8)
-        aux.captura(monitor, post)
-        _, _, pix_post = aux.ppm(post)
+        pix_post = captura_usque(
+            aux, monitor, post,
+            lambda pix: diff_regio(pix_open, pix, w, 248, 224, 560, 254) >= 60
+            and diff_regio(pix_typed, pix, w, 270, 424, 380, 454) >= 40,
+        )
         responsum_mut = diff_regio(pix_open, pix_post, w, 248, 224, 560, 254)
         prompt_clear = diff_regio(pix_typed, pix_post, w, 270, 424, 380, 454)
         if responsum_mut < 60:
@@ -119,8 +154,10 @@ def principale() -> int:
             mitte_clavem(aux, monitor, clavis)
         mitte_clavem(aux, monitor, 'ret')
         time.sleep(0.7)
-        aux.captura(monitor, versio)
-        _, _, pix_versio = aux.ppm(versio)
+        pix_versio = captura_usque(
+            aux, monitor, versio,
+            lambda pix: diff_regio(pix_post, pix, w, 248, 224, 560, 254) >= 40,
+        )
         versio_mut = diff_regio(pix_post, pix_versio, w, 248, 224, 560, 254)
         if versio_mut < 40:
             print(f'DEFECIT: responsum VERSIO non mutavit: {versio_mut}', file=sys.stderr)
@@ -129,20 +166,25 @@ def principale() -> int:
         mitte_clavem(aux, monitor, 'up')
         mitte_clavem(aux, monitor, 'up')
         time.sleep(0.5)
-        aux.captura(monitor, memoria)
-        _, _, pix_memoria = aux.ppm(memoria)
+        pix_memoria = captura_usque(
+            aux, monitor, memoria,
+            lambda pix: diff_regio(pix_versio, pix, w, 270, 424, 380, 454) >= 40,
+        )
         historia_mut = diff_regio(pix_versio, pix_memoria, w, 270, 424, 380, 454)
         if historia_mut < 40:
             print(f'DEFECIT: historia ↑↑ lineam non revocavit: {historia_mut}', file=sys.stderr)
             return 12
-        if aux.pixel(pix_memoria, w, 500, 96) != bronzeum:
+        if focus_fenestrae(aux, pix_memoria, w, 500, 96) != testa:
             print('DEFECIT: sagitta historiae fenestram TERMINALE movit', file=sys.stderr)
             return 13
 
         mitte_clavem(aux, monitor, 'ret')
         time.sleep(0.7)
-        aux.captura(monitor, memoria_post)
-        _, _, pix_memoria_post = aux.ppm(memoria_post)
+        pix_memoria_post = captura_usque(
+            aux, monitor, memoria_post,
+            lambda pix: diff_regio(pix_versio, pix, w, 248, 224, 560, 254) >= 40
+            and diff_regio(pix_memoria, pix, w, 270, 424, 380, 454) >= 40,
+        )
         historia_responsum = diff_regio(pix_versio, pix_memoria_post, w, 248, 224, 560, 254)
         historia_purgata = diff_regio(pix_memoria, pix_memoria_post, w, 270, 424, 380, 454)
         if historia_responsum < 40:
@@ -152,7 +194,7 @@ def principale() -> int:
             print(f'DEFECIT: linea revocata post ENTER non purgata est: {historia_purgata}', file=sys.stderr)
             return 15
 
-        print(f'TERMINALE: cursor={pos} prompt_pixeli={prompt_mut} responsum_pixeli={responsum_mut}')
+        print(f'TERMINALE: testa={testa} cursor={pos} prompt_pixeli={prompt_mut} responsum_pixeli={responsum_mut}')
         print(f'TERMINALE-II: versio_pixeli={versio_mut} historia_pixeli={historia_mut} responsum_historiae={historia_responsum}')
         print('RECTE: P17-II/P16-VI TERMINALE carbonarium historiam et mandata per UEFI exercet.')
         return 0

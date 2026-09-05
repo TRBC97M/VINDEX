@@ -130,22 +130,25 @@ FIN-FUNCTIO.
 FUNCTIO IN_MURUS REDDENS NUMERUS.
     ACCIPIT s SICUT ORDO DE NUMERUS.
     SI PS2_PARATUS_EST()==1 TUNC
-        DECLARA eventus SICUT NUMERUS VALENS 0.
         DECLARA i SICUT NUMERUS VALENS 0.
-        // AUX ante claviaturam firmware hauritur; PS2_POLLE byte non-AUX non legit.
+        // Unus fasciculus PS/2 completus per iterationem Fenestralis traditur.
+        // Ita pressio et relaxatio bullae numquam in eodem poll absorbeantur.
+        // PS2_POLLE octeta non-AUX non legit; usque ad VIII lecturae unum
+        // fasciculum trium octetorum componere aut strepitum vacuum transire possunt.
         DUM i<8 PERFICE
             DECLARA p SICUT NUMERUS VALENS PS2_POLLE().
-            SI p!=0 TUNC eventus=1. FIN-SI.
+            SI p!=0 TUNC
+                s[11]=s[11]+PS2_DX().
+                s[12]=s[12]-PS2_DY().
+                SI s[11]<0 TUNC s[11]=0. FIN-SI.
+                SI s[12]<0 TUNC s[12]=0. FIN-SI.
+                SI s[11]>=CONTENTUM(50333728) TUNC s[11]=CONTENTUM(50333728)-1. FIN-SI.
+                SI s[12]>=CONTENTUM(50333736) TUNC s[12]=CONTENTUM(50333736)-1. FIN-SI.
+                REDDE (PS2_BULLAE()&3)+1.
+            FIN-SI.
             i=i+1.
         FIN-DUM.
-        SI eventus==0 TUNC REDDE 0. FIN-SI.
-        s[11]=s[11]+PS2_DX().
-        s[12]=s[12]-PS2_DY().
-        SI s[11]<0 TUNC s[11]=0. FIN-SI.
-        SI s[12]<0 TUNC s[12]=0. FIN-SI.
-        SI s[11]>=CONTENTUM(50333728) TUNC s[11]=CONTENTUM(50333728)-1. FIN-SI.
-        SI s[12]>=CONTENTUM(50333736) TUNC s[12]=CONTENTUM(50333736)-1. FIN-SI.
-        REDDE (PS2_BULLAE()&3)+1.
+        REDDE 0.
     FIN-SI.
     DECLARA muris SICUT NUMERUS VALENS IN_MURUS_ABS(s[29],s).
     SI muris==0 TUNC muris=IN_MURUS_REL(s[28],s). FIN-SI.

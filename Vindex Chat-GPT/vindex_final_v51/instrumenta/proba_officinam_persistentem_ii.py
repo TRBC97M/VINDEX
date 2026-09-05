@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P19-II: OFFICINA persistens in bureau Sylviae per QEMU exercetur."""
+"""P19-II: OFFICINA persistens in Sylvia per QEMU exercetur."""
 from __future__ import annotations
 
 import importlib.util
@@ -36,6 +36,172 @@ def scribe_maiusculas(aux: object, monitor: socket.socket, textus: str) -> None:
             raise ValueError(f'littera probationis non sustenta: {c!r}')
 
 
+def numerus_coloris(aux: object, pix: bytes, w: int, regio: tuple[int, int, int, int], color: tuple[int, int, int]) -> int:
+    x0, y0, x1, y1 = regio
+    return sum(aux.pixel(pix, w, x, y) == color for y in range(y0, y1) for x in range(x0, x1))
+
+
+def focus_officina(aux: object, pix: bytes, w: int, h: int) -> str | None:
+    """Focus historicus aut chrome XII-E OFFICINAE apertae comprobatur."""
+    bronzeum_vetus = (185, 138, 82)
+    if aux.pixel(pix, w, 500, 64) == bronzeum_vetus:
+        return 'historicus'
+
+    regio = (130, 50, min(w, 1120), min(h - 40, 690))
+    bronzeum = (181, 138, 84)
+    aqua = (104, 202, 210)
+    ebur = (242, 244, 247)
+    aes = numerus_coloris(aux, pix, w, regio, bronzeum)
+    aq = numerus_coloris(aux, pix, w, regio, aqua)
+    eb = numerus_coloris(aux, pix, w, regio, ebur)
+    if aes >= 80 and aq >= 20 and eb >= 500:
+        return 'XII-E'
+    return None
+
+
+def move_ad_firmus(
+    aux: object,
+    monitor: socket.socket,
+    out: Path,
+    nomen: str,
+    x: int,
+    y: int,
+    w: int,
+    h: int,
+) -> tuple[int, int]:
+    """Paquetum HMP perditum tolerat, sed framebuffer cursorem probare semper debet."""
+    ultimus: RuntimeError | None = None
+    for tentamen in range(4):
+        try:
+            return aux.move_ad(monitor, out, f'{nomen}-t{tentamen}', x, y, w, h)
+        except RuntimeError as exc:
+            ultimus = exc
+            textus = str(exc)
+            if 'motus muris non consumptus' not in textus and 'cursor scopum' not in textus:
+                raise
+            time.sleep(0.18)
+    if ultimus is not None:
+        raise ultimus
+    raise RuntimeError(f'cursor ad {nomen} moveri non potest')
+
+
+def qmp_bulla(
+    ps2: object,
+    q: socket.socket,
+    pressa: bool,
+    dx: int,
+) -> None:
+    """Bullam sinistram per QMP input-send-event cum fasciculo relativo PS/2 vehit."""
+    eventa: list[dict] = [
+        {'type': 'btn', 'data': {'down': pressa, 'button': 'left'}},
+    ]
+    if dx != 0:
+        eventa.append({'type': 'rel', 'data': {'axis': 'x', 'value': dx}})
+    responsum = ps2.qmp(q, 'input-send-event', {'events': eventa})
+    if 'error' in responsum:
+        status = 'pressam' if pressa else 'relaxatam'
+        raise RuntimeError(f'QMP bullam {status} recusavit: {responsum}')
+
+
+def click_ps2(
+    aux: object,
+    ps2: object,
+    q: socket.socket,
+    monitor: socket.socket,
+    out: Path,
+    nomen: str,
+    prior: tuple[int, int],
+    w: int,
+    h: int,
+) -> tuple[int, int]:
+    """Cliccum QMP per PS/2 mittit; framebuffer post effectum cursorem reperit."""
+    qmp_bulla(ps2, q, True, 1)
+    time.sleep(0.32)
+    qmp_bulla(ps2, q, False, -1)
+    time.sleep(0.24)
+    via = out / f'click-{nomen}-post.ppm'
+    aux.captura(monitor, via)
+    _, _, pix = aux.ppm(via)
+    positio = aux.cursor_quaere(pix, w, h)
+    return positio if positio is not None else prior
+
+
+def elige_officinam_effectu(
+    aux: object,
+    ps2: object,
+    q: socket.socket,
+    monitor: socket.socket,
+    out: Path,
+    via: Path,
+    prior: tuple[int, int],
+    w: int,
+    h: int,
+    nox: tuple[int, int, int],
+    bronzeum: tuple[int, int, int],
+    ebur: tuple[int, int, int],
+) -> tuple[str | None, tuple[int, int]]:
+    """Bullam QMP tenet donec OFFICINA in framebuffer vere appareat."""
+    qmp_bulla(ps2, q, True, 1)
+
+    testa: str | None = None
+    try:
+        for i in range(40):
+            effectus = out / f'officina-electio-effectus-{i}.ppm'
+            aux.captura(monitor, effectus)
+            _, _, pix = aux.ppm(effectus)
+            menu = aux.initium_top_quaere(pix, w, h, nox, bronzeum, ebur)
+            if menu is None:
+                testa = focus_officina(aux, pix, w, h)
+                if testa is not None:
+                    break
+            time.sleep(0.14)
+    finally:
+        qmp_bulla(ps2, q, False, -1)
+        time.sleep(0.18)
+
+    aux.captura(monitor, via)
+    _, _, pix_finalis = aux.ppm(via)
+    if aux.initium_top_quaere(pix_finalis, w, h, nox, bronzeum, ebur) is not None:
+        testa = None
+    else:
+        testa = focus_officina(aux, pix_finalis, w, h)
+    positio = aux.cursor_quaere(pix_finalis, w, h)
+    return testa, (positio if positio is not None else prior)
+
+
+def aperi_officinam_per_initium(
+    aux: object,
+    ps2: object,
+    q: socket.socket,
+    monitor: socket.socket,
+    out: Path,
+    via: Path,
+    w: int,
+    h: int,
+) -> tuple[str | None, tuple[int, int]]:
+    """INITIUM aperit, OFFICINAM eligit, deinde fenestram ipsam ut auctoritatem habet."""
+    nox = (28, 31, 32)
+    bronzeum = (185, 138, 82)
+    ebur = (241, 238, 228)
+
+    pos_initium = move_ad_firmus(aux, monitor, out, 'officina-initium', 50, h - 30, w, h)
+    pos_initium = click_ps2(aux, ps2, q, monitor, out, 'officina-initium', pos_initium, w, h)
+
+    menu = out / 'officina-initium-apertum.ppm'
+    aux.captura(monitor, menu)
+    _, _, pix_menu = aux.ppm(menu)
+    top = aux.initium_top_quaere(pix_menu, w, h, nox, bronzeum, ebur)
+    if top is None:
+        return None, pos_initium
+
+    # Quarta applicatio canonica: PROGRAMMATA, TABULA, TERMINALE, OFFICINA.
+    officina_y = top + 92 + 3 * 54 + 22
+    pos_officina = move_ad_firmus(aux, monitor, out, 'officina-initium-linea', 150, officina_y, w, h)
+    return elige_officinam_effectu(
+        aux, ps2, q, monitor, out, via, pos_officina, w, h, nox, bronzeum, ebur
+    )
+
+
 def cursorem_excita(
     aux: object,
     ps2: object,
@@ -47,7 +213,7 @@ def cursorem_excita(
     h: int,
     pix_initialis: bytes,
 ) -> tuple[int, int] | None:
-    """Primum fasciculum PS/2 mittit donec cursor in framebuffer vere appareat."""
+    """Primum fasciculum PS/2 mittit donec cursor stabilis in framebuffer appareat."""
     positio = aux.cursor_quaere(pix_initialis, w, h)
     if positio is not None:
         return positio
@@ -66,13 +232,11 @@ def cursorem_excita(
         )
         if 'error' in responsum:
             raise RuntimeError(f'QMP motum PS/2 recusavit: {responsum}')
-        # HMP eundem murem selectum quoque pulsat; hoc viam historicam custodit.
         aux.hmp(monitor, f'mouse_move {dx} {dy}')
-        time.sleep(0.45)
-        via = out / f'officina-p19-ii-{modus}-cursor-primum-{tentamen}.ppm'
-        aux.captura(monitor, via)
-        _, _, pix = aux.ppm(via)
-        positio = aux.cursor_quaere(pix, w, h)
+        time.sleep(0.35)
+        positio = aux.cursor_ex_captura_stabili(
+            monitor, out, f'officina-p19-ii-{modus}-primus', tentamen, w, h
+        )
         if positio is not None:
             print(f'OFFICINA-P19-II: cursor_primus={positio} tentamen={tentamen + 1}')
             return positio
@@ -140,15 +304,9 @@ def principale() -> int:
             print('DEFECIT: cursor PS/2 post motus primos in framebuffer non apparuit', file=sys.stderr)
             return 7
 
-        # OFFICINA est quarta applicatio bureau P16-IV.
-        pos = aux.move_ad(monitor, out, f'officina-p19-ii-{modus}', 70, 422, w, h)
-        aux.click(monitor)
-        time.sleep(0.45)
-        aux.captura(monitor, aperta)
-        _, _, pix_open = aux.ppm(aperta)
-        bronzeum = (185, 138, 82)
-        if aux.pixel(pix_open, w, 500, 64) != bronzeum:
-            print('DEFECIT: OFFICINA focus non accepit', file=sys.stderr)
+        testa, pos = aperi_officinam_per_initium(aux, ps2, q, monitor, out, aperta, w, h)
+        if testa is None:
+            print('DEFECIT: OFFICINA per INITIUM focus/chrome non accepit', file=sys.stderr)
             return 8
 
         if modus == 1:
@@ -156,23 +314,20 @@ def principale() -> int:
             mitte(aux, monitor, 'ret')
             scribe_maiusculas(aux, monitor, 'NOVAPERSISTET')
         else:
-            # OP_INIT cursor ad initium primae lineae ponit. Deorsum ad secundam,
-            # deinde XIII dextrae ad finem NOVAPERSISTET; si fasciculus non
-            # relectus esset, hae claves nihil utile moverent et solum X servaretur.
             mitte(aux, monitor, 'down')
             for _ in range(13):
                 mitte(aux, monitor, 'right', 0.08)
             scribe_maiusculas(aux, monitor, 'X')
 
-        # EFI scan XII = F2, a P19-II OFFICINAE ut SERVA routatur.
         mitte(aux, monitor, 'f2', 0.8)
         aux.captura(monitor, servata)
         _, _, pix_saved = aux.ppm(servata)
-        if aux.pixel(pix_saved, w, 500, 64) != bronzeum:
-            print('DEFECIT: F2 focum OFFICINAE amisit', file=sys.stderr)
+        testa_post = focus_officina(aux, pix_saved, w, h)
+        if testa_post != testa:
+            print(f'DEFECIT: F2 focum OFFICINAE amisit: {testa}->{testa_post}', file=sys.stderr)
             return 9
 
-        print(f'OFFICINA-P19-II: initium={modus} cursor_bureau={pos} F2=missum')
+        print(f'OFFICINA-P19-II: initium={modus} testa={testa} cursor_initium={pos} F2=missum')
         return 0
     finally:
         try:

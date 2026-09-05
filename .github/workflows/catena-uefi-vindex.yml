@@ -286,6 +286,7 @@ jobs:
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
         env:
           MORA_INITII: '28'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-captura-terminale'
         run: |
           set -euo pipefail
           PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_terminale_sylviae_i.py" \
@@ -312,6 +313,7 @@ jobs:
             qemu-captura-p16-ix-initium/*.ppm
             qemu-captura-p16-ix-bureau/*.ppm
             qemu-captura-p16-ix-fenestrae/*.ppm
+            qemu-captura-terminale/*.ppm
           if-no-files-found: warn
           retention-days: 7
 

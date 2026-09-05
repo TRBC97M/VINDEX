@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fenestrale II Purus P16-VI sub UEFI cum mure PS/2 nativo comprobat."""
+"""Fenestrale II Purus sub UEFI cum mure PS/2 nativo comprobat."""
 from __future__ import annotations
 
 import json
@@ -56,7 +56,6 @@ def hexa_hmp(textus: str) -> list[int]:
 
 
 def basis_ps2(monitor: socket.socket) -> int:
-    # Sedes rectoris historice probata; initium fit post migrationem voluminis.
     return 0x03018800
 
 
@@ -120,18 +119,31 @@ def principale() -> int:
         acervus_octeta = hexa_hmp(hmp(monitor, "xp /32bx 0x02000000"))[:32]
         captura(monitor, ante); w1, h1, pix1 = ppm(ante)
         colores, distincti, communes, dominans = pictura_structura(pix1)
+
         nox = (28,31,32)
         bronzeum = (185,138,82)
         ebur = (241,238,228)
         signa = {nox: colores[nox], bronzeum: colores[bronzeum], ebur: colores[ebur]}
+        bronzeum_xiie = (181,138,84)
+        aqua_xiie = (104,202,210)
+        ebur_xiie = (242,244,247)
+        signa_xiie = {
+            bronzeum_xiie: colores[bronzeum_xiie],
+            aqua_xiie: colores[aqua_xiie],
+            ebur_xiie: colores[ebur_xiie],
+        }
+        historica = signa[nox] >= 100 and signa[bronzeum] >= 100 and signa[ebur] >= 20
+        moderna = signa_xiie[bronzeum_xiie] >= 100 and signa_xiie[aqua_xiie] >= 20 and signa_xiie[ebur_xiie] >= 20
+        testa = "XII-E" if moderna else "P16-VI" if historica else "ignota"
+
         print(f"FENESTRALE: gradus_diagnostici={gradus}/{gradus_eg} metadata={metadata}")
         print(f"FENESTRALE: acervus_qword={acervus}")
         print(f"FENESTRALE: acervus_octeta={acervus_octeta}")
-        print(f"FENESTRALE: ps2_ante={ante_ps2} signa={signa} colores_communes={communes}")
+        print(f"FENESTRALE: ps2_ante={ante_ps2} testa={testa} signa_vetera={signa} signa_xiie={signa_xiie} colores_communes={communes}")
         if (w1, h1) != (1280, 800): print(f"DEFECIT: resolutio {w1}x{h1}", file=sys.stderr); return 7
         if distincti < 8 or dominans > (w1*h1*97//100): print(f"DEFECIT: pictura nimis simplex: distincti={distincti} dominans={dominans}", file=sys.stderr); return 8
-        if signa[nox] < 100 or signa[bronzeum] < 100 or signa[ebur] < 20:
-            print(f"DEFECIT: signa picturae P16-VI desunt: {signa}", file=sys.stderr); return 14
+        if not historica and not moderna:
+            print(f"DEFECIT: neque signa P16-VI neque XII-E adsunt: vetera={signa} moderna={signa_xiie}", file=sys.stderr); return 14
         if len(ante_ps2) < 3 or ante_ps2[0] != 9 or ante_ps2[1:3] != [250,250]: print(f"DEFECIT: initium PS/2 invalidum: {ante_ps2}", file=sys.stderr); return 9
 
         responsa=[]
@@ -142,13 +154,13 @@ def principale() -> int:
         time.sleep(1.0)
         post_ps2=status_ps2(monitor,basis); captura(monitor,post); w2,h2,pix2=ppm(post); mutata=differentiae(pix1,pix2)
         raw=hexa_hmp(hmp(monitor,f"xp /3gx 0x{basis+72:x}"))[:3]
-        print(f"FENESTRALE: resolutio={w1}x{h1} distincti={distincti}")
+        print(f"FENESTRALE: resolutio={w1}x{h1} distincti={distincti} testa={testa}")
         print(f"FENESTRALE: basis_ps2=0x{basis:x} initium={ante_ps2[:3]} post={post_ps2[:4]}")
         print(f"FENESTRALE: raw_dx_dy_bullae={raw} pixeli_mutati={mutata}")
         if (w1,h1)!=(w2,h2): print("DEFECIT: dimensiones mutantur",file=sys.stderr); return 11
         if len(post_ps2)<4 or post_ps2[3]==ante_ps2[3]: print("DEFECIT: nullus fasciculus PS/2 receptus",file=sys.stderr); return 12
         if mutata<20: print("DEFECIT: PS/2 receptus est sed Fenestrale non redpinxit",file=sys.stderr); return 13
-        print("RECTE: Fenestrale II Purus P16-VI sub UEFI puro murem PS/2 nativum exercet."); return 0
+        print(f"RECTE: Fenestrale II Purus testa {testa} sub UEFI puro murem PS/2 nativum exercet."); return 0
     finally:
         try: hmp(monitor,"quit")
         except Exception: pass

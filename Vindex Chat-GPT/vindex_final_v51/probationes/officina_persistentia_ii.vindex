@@ -62,5 +62,15 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI OP_EDITOR_EX_TEXTU(editor2,TEXTUS_EX_SEDE(malum_d))!=0 TUNC REDDE 65. FIN-SI.
     SI CONTENTUM(editor2)!=ante || CONTENTUM(editor2+32)!=2 TUNC REDDE 65. FIN-SI.
 
+    // Status visualis damnum parvum separatum in superficie constituit.
+    DECLARA superficies SICUT NUMERUS VALENS FS_CREA(200,100).
+    SI superficies==0 TUNC REDDE 71. FIN-SI.
+    DECLARA purum SICUT NUMERUS VALENS FS_DAMNA_PURA(superficies).
+    DECLARA fundum_status SICUT NUMERUS VALENS FS_RECT(superficies,0,68,112,32,0).
+    DECLARA margo_status SICUT NUMERUS VALENS FS_RECT(superficies,0,68,52,1,1).
+    SI fundum_status==0 || margo_status==0 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(superficies+32)!=0 || CONTENTUM(superficies+40)!=68 TUNC REDDE 65. FIN-SI.
+    SI CONTENTUM(superficies+48)!=112 || CONTENTUM(superficies+56)!=32 TUNC REDDE 65. FIN-SI.
+
     REDDE 0.
 FIN-FUNCTIO.

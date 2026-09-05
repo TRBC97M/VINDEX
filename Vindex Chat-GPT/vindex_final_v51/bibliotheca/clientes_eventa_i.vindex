@@ -45,7 +45,7 @@ FUNCTIO CI_EVENTA_AGE REDDENS NUMERUS.
             SI e[0]==2 && genus==4 TUNC
                 DECLARA mutatum_o SICUT NUMERUS VALENS OP_CLAVIS_EVENTUM(status,e[2],e[4]).
                 SI mutatum_o!=0 TUNC
-                    DECLARA ro SICUT NUMERUS VALENS OP_RENDE(superficies,status).
+                    DECLARA ro SICUT NUMERUS VALENS OP_RENDE_CLAVIS(superficies,status,e[2],e[4]).
                     mutata=mutata+1.
                 FIN-SI.
             FIN-SI.

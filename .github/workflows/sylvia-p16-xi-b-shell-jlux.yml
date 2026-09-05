@@ -18,6 +18,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/adde_fasciculos_fat.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_xib.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xib.py'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_initium_sylviae_xib_sync.py'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_formam_sylviae_fallback_vii.py'
       - 'Vindex Chat-GPT/vindex_final_v51/res/jlux/assetta/premium-i/png/**'
       - 'documenta/sylvia/JL_UX_INTEGRATIO_SHELL_I.md'
@@ -80,7 +81,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_xib.py" \
+          PROBATOR_FENESTRALIS="$PWD/instrumenta/proba_initium_sylviae_xib_sync.py" \
             bash ./instrumenta/proba_fenestrale_uefi_purum.sh
 
       - name: Fallback atlas VII sine assetis premium

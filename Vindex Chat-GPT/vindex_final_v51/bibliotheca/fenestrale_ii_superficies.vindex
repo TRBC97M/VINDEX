@@ -21,6 +21,38 @@ FUNCTIO FS_CREA REDDENS NUMERUS.
     REDDE caput.
 FIN-FUNCTIO.
 
+FUNCTIO FS_DAMNA_PURA REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI superficies==0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(superficies+32)=0. CONTENTUM(superficies+40)=0.
+    CONTENTUM(superficies+48)=0. CONTENTUM(superficies+56)=0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO FS_DAMNA_NOTA REDDENS NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS. ACCIPIT y SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS. ACCIPIT h SICUT NUMERUS.
+    SI superficies==0 || w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA sw SICUT NUMERUS VALENS CONTENTUM(superficies). DECLARA sh SICUT NUMERUS VALENS CONTENTUM(superficies+8).
+    SI x<0 TUNC w=w+x. x=0. FIN-SI. SI y<0 TUNC h=h+y. y=0. FIN-SI.
+    SI x>=sw || y>=sh || w<=0 || h<=0 TUNC REDDE 0. FIN-SI.
+    SI x+w>sw TUNC w=sw-x. FIN-SI. SI y+h>sh TUNC h=sh-y. FIN-SI.
+    DECLARA aw SICUT NUMERUS VALENS CONTENTUM(superficies+48). DECLARA ah SICUT NUMERUS VALENS CONTENTUM(superficies+56).
+    SI aw<=0 || ah<=0 TUNC
+        CONTENTUM(superficies+32)=x. CONTENTUM(superficies+40)=y.
+        CONTENTUM(superficies+48)=w. CONTENTUM(superficies+56)=h. REDDE 1.
+    FIN-SI.
+    DECLARA ax SICUT NUMERUS VALENS CONTENTUM(superficies+32). DECLARA ay SICUT NUMERUS VALENS CONTENTUM(superficies+40).
+    DECLARA x0 SICUT NUMERUS VALENS ax. SI x<x0 TUNC x0=x. FIN-SI.
+    DECLARA y0 SICUT NUMERUS VALENS ay. SI y<y0 TUNC y0=y. FIN-SI.
+    DECLARA x1 SICUT NUMERUS VALENS ax+aw. SI x+w>x1 TUNC x1=x+w. FIN-SI.
+    DECLARA y1 SICUT NUMERUS VALENS ay+ah. SI y+h>y1 TUNC y1=y+h. FIN-SI.
+    CONTENTUM(superficies+32)=x0. CONTENTUM(superficies+40)=y0.
+    CONTENTUM(superficies+48)=x1-x0. CONTENTUM(superficies+56)=y1-y0.
+    REDDE 1.
+FIN-FUNCTIO.
+
 FUNCTIO FS_PIXEL REDDENS NUMERUS.
     ACCIPIT superficies SICUT NUMERUS.
     ACCIPIT x SICUT NUMERUS.
@@ -76,10 +108,7 @@ FUNCTIO FS_RECT REDDENS NUMERUS.
         FIN-SI.
         py=py+1.
     FIN-DUM.
-    CONTENTUM(superficies + 32)=0.
-    CONTENTUM(superficies + 40)=0.
-    CONTENTUM(superficies + 48)=sw.
-    CONTENTUM(superficies + 56)=sh.
+    DECLARA damnum SICUT NUMERUS VALENS FS_DAMNA_NOTA(superficies,x,y,latitudo,altitudo).
     REDDE 1.
 FIN-FUNCTIO.
 
@@ -115,6 +144,7 @@ FUNCTIO FS_TEXTUM REDDENS NUMERUS.
         FIN-DUM.
         i=i+1.
     FIN-DUM.
+    DECLARA damnum SICUT NUMERUS VALENS FS_DAMNA_NOTA(superficies,x,y,longitudo*8,8).
     REDDE 1.
 FIN-FUNCTIO.
 

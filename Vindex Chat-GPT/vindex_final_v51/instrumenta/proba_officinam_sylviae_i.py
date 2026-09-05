@@ -41,6 +41,16 @@ def scribe(aux: object, monitor: socket.socket, claves: tuple[str, ...]) -> None
         mitte_clavem(aux, monitor, clavis)
 
 
+def focus_fenestrae(aux: object, pix: bytes, w: int, x: int, y: int) -> str | None:
+    """Focus historicum aut titulum activum GX exactum recognoscit."""
+    if aux.pixel(pix, w, x, y) == (185, 138, 82):
+        return 'historica'
+    # Canon GX rectus manet acceptus; alpha scenae colorem compositum reddit.
+    if aux.pixel(pix, w, x, y + 32) in ((58, 96, 104), (57, 95, 103)):
+        return 'XII-E'
+    return None
+
+
 def principale() -> int:
     if len(sys.argv) != 5:
         print('USUS: proba_officinam_sylviae_i.py MONITOR QMP EXITUS MORA', file=sys.stderr)
@@ -82,15 +92,15 @@ def principale() -> int:
         aux.captura(monitor, apertum)
         _, _, pix_open = aux.ppm(apertum)
 
-        bronzeum = (185, 138, 82)
         nox = (28, 31, 32)
         papyrus = (219, 211, 196)
         charta = (250, 249, 245)
         selectum = (238, 232, 219)
 
         # Geometria P18-I ad 1280x800: fenestra x=153 y=64; clientis x=163 y=124.
-        if aux.pixel(pix_open, w, 500, 64) != bronzeum:
-            print(f'DEFECIT: OFFICINA focus non accepit: {aux.pixel(pix_open,w,500,64)}', file=sys.stderr)
+        testa = focus_fenestrae(aux, pix_open, w, 500, 64)
+        if testa is None:
+            print(f'DEFECIT: OFFICINA focus non accepit: {aux.pixel(pix_open,w,500,64)}/{aux.pixel(pix_open,w,500,96)}', file=sys.stderr)
             return 5
         if aux.pixel(pix_open, w, 200, 130) != nox:
             print(f'DEFECIT: caput graphiticum OFFICINAE deest: {aux.pixel(pix_open,w,200,130)}', file=sys.stderr)
@@ -132,7 +142,7 @@ def principale() -> int:
         if sursum_mut < 60:
             print(f'DEFECIT: sagitta sursum cursorem OFFICINAE non movit: {sursum_mut}', file=sys.stderr)
             return 11
-        if aux.pixel(pix_sursum, w, 500, 64) != bronzeum:
+        if focus_fenestrae(aux, pix_sursum, w, 500, 64) != testa:
             print('DEFECIT: sagitta OFFICINAE fenestram movit loco cursoris', file=sys.stderr)
             return 12
 
@@ -146,7 +156,7 @@ def principale() -> int:
         if insertio_mut < 20:
             print(f'DEFECIT: insertio interna OFFICINAE non apparuit: {insertio_mut}', file=sys.stderr)
             return 13
-        if aux.pixel(pix_insertum, w, 500, 64) != bronzeum:
+        if focus_fenestrae(aux, pix_insertum, w, 500, 64) != testa:
             print('DEFECIT: sagitta sinistra fenestram OFFICINAE movit', file=sys.stderr)
             return 14
 
@@ -156,7 +166,7 @@ def principale() -> int:
             print(f'DEFECIT: status MODIFICATUM non apparuit: {status_mut}', file=sys.stderr)
             return 15
 
-        print(f'OFFICINA: cursor={pos} prima_pixeli={prima_mut} secunda_pixeli={secunda_mut}')
+        print(f'OFFICINA: testa={testa} cursor={pos} prima_pixeli={prima_mut} secunda_pixeli={secunda_mut}')
         print(f'OFFICINA: sursum_pixeli={sursum_mut} insertio_pixeli={insertio_mut} status_pixeli={status_mut}')
         print('RECTE: P18-I/P16-VI OFFICINA eburnea duas lineas editat et sagittas per UEFI accipit.')
         return 0

@@ -1,0 +1,191 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/raster_rle_vii.vindex".
+IMPORTA "bibliotheca/iconae_sylviae_vii.vindex".
+IMPORTA "bibliotheca/simg_ii.vindex".
+IMPORTA "bibliotheca/simg_ii_bridge_vii.vindex".
+IMPORTA "bibliotheca/simg_ii_assetum.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_ix.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "bibliotheca/fenestrale_effectus_productio_x.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x_asseta.vindex".
+IMPORTA "bibliotheca/fenestrale_tempus_x.vindex".
+IMPORTA "bibliotheca/fenestrale_motus_x.vindex".
+IMPORTA "bibliotheca/textus.vindex".
+IMPORTA "bibliotheca/fasciculi_sylviae_i.vindex".
+IMPORTA "bibliotheca/fenestrale_eventa_g.vindex".
+IMPORTA "bibliotheca/clientia_registrum_h.vindex".
+IMPORTA "bibliotheca/fenestrae_registrum_i.vindex".
+IMPORTA "bibliotheca/applicationes_registrum_iv.vindex".
+IMPORTA "bibliotheca/fenestrale_gestor_i.vindex".
+IMPORTA "bibliotheca/fenestrale_applicationes_iv.vindex".
+IMPORTA "bibliotheca/fenestrale_iconographia_xib.vindex".
+IMPORTA "bibliotheca/fenestrale_shell_xiie.vindex".
+
+FUNCTIO MSE_PONE_FS REDDENS NUMERUS.
+    ACCIPIT fs SICUT NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    SI fs==0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS CONTENTUM(fs+24)+(y*CONTENTUM(fs+16)+x)*4.
+    SCRIBE_OCTETUM_AB(p,a). SCRIBE_OCTETUM_AB(p+1,b). SCRIBE_OCTETUM_AB(p+2,c). SCRIBE_OCTETUM_AB(p+3,0).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    // I. Pons FS -> GX: alpha historicum zero fit alpha canonicum 255.
+    DECLARA fs SICUT NUMERUS VALENS FS_CREA(2,1).
+    DECLARA gx SICUT NUMERUS VALENS GX_CREA(4,3).
+    SI fs==0 || gx==0 TUNC REDDE 1. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS MSE_PONE_FS(fs,0,0,10,20,30).
+    f=MSE_PONE_FS(fs,1,0,90,80,70).
+    SI XIIE_FS_IN_GX_FORMA(gx,fs,1,1,2,1,0)==0 TUNC REDDE 2. FIN-SI.
+    DECLARA q SICUT NUMERUS VALENS GX_PIX_PM_LEGE(gx,1,1).
+    SI (q&255)!=10 || ((q>>8)&255)!=20 || ((q>>16)&255)!=30 || ((q>>24)&255)!=255 TUNC REDDE 3. FIN-SI.
+    q=GX_PIX_PM_LEGE(gx,2,1).
+    SI (q&255)!=90 || ((q>>8)&255)!=80 || ((q>>16)&255)!=70 || ((q>>24)&255)!=255 TUNC REDDE 4. FIN-SI.
+    SI GX_PIX_PM_LEGE(gx,0,0)!=0 TUNC REDDE 5. FIN-SI.
+
+    // II. Forma GOP inversa canales R/B semel tantum permutat.
+    DECLARA gx2 SICUT NUMERUS VALENS GX_CREA(2,1). SI gx2==0 TUNC REDDE 6. FIN-SI.
+    SI XIIE_FS_IN_GX_FORMA(gx2,fs,0,0,2,1,1)==0 TUNC REDDE 7. FIN-SI.
+    q=GX_PIX_PM_LEGE(gx2,0,0).
+    SI (q&255)!=30 || ((q>>8)&255)!=20 || ((q>>16)&255)!=10 || ((q>>24)&255)!=255 TUNC REDDE 8. FIN-SI.
+
+    // III. Renderer textus GX scribit alpha verum, non octetum zero FS.
+    DECLARA forma SICUT NUMERUS VALENS RESERVA_OCTETA(2048). SI forma<=0 TUNC REDDE 9. FIN-SI.
+    DECLARA purum SICUT NUMERUS VALENS GX_MEM_PURA(forma,2048).
+    SCRIBE_OCTETUM_AB(forma+65*8,129).
+    DECLARA textus_gx SICUT NUMERUS VALENS GX_CREA(20,12). SI textus_gx==0 TUNC REDDE 10. FIN-SI.
+    DECLARA color SICUT NUMERUS VALENS XIIE_COLOR(40,80,120).
+    SI XIIE_TEXTUM_GX_FONTE(textus_gx,2,2,"A",color,1,forma)==0 TUNC REDDE 11. FIN-SI.
+    q=GX_PIX_PM_LEGE(textus_gx,2,2).
+    SI (q&255)!=40 || ((q>>8)&255)!=80 || ((q>>16)&255)!=120 || ((q>>24)&255)!=255 TUNC REDDE 12. FIN-SI.
+    SI GX_PIX_PM_LEGE(textus_gx,3,2)!=0 TUNC REDDE 13. FIN-SI.
+    q=GX_PIX_PM_LEGE(textus_gx,9,2).
+    SI ((q>>24)&255)!=255 TUNC REDDE 14. FIN-SI.
+
+    // IV. IDs strata fenestrarum sunt deterministica et motus CX retargetabilis manet.
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(64,48). SI fundum==0 TUNC REDDE 15. FIN-SI.
+    f=GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,64,48),XIIE_COLOR(8,18,28),255).
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(64,48,fundum). SI scena==0 TUNC REDDE 16. FIN-SI.
+    DECLARA cache SICUT NUMERUS VALENS XP_CACHE_CREA(8). DECLARA motus SICUT NUMERUS VALENS MX_CREA(scena).
+    SI cache==0 || motus==0 TUNC REDDE 17. FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS XIIE_GESTOR_CREA(scena,cache,motus). SI gestor==0 TUNC REDDE 18. FIN-SI.
+    DECLARA meta SICUT NUMERUS VALENS XIIE_NODUS(gestor,3). SI meta==0 TUNC REDDE 19. FIN-SI.
+    SI CONTENTUM(meta+8)!=1006 || CONTENTUM(meta+16)!=1007 TUNC REDDE 20. FIN-SI.
+    DECLARA panel SICUT NUMERUS VALENS GX_CREA(8,8). SI panel==0 TUNC REDDE 21. FIN-SI.
+    SI CX_STRATUM_ADDE(scena,1006,panel,2,3,100,255)==0 TUNC REDDE 22. FIN-SI.
+    SI MX_ANIMA(motus,1006,22,13,200,10,2)==0 TUNC REDDE 23. FIN-SI.
+    DECLARA mut SICUT NUMERUS VALENS MX_PULSA(motus,5). SI mut<=0 TUNC REDDE 24. FIN-SI.
+    DECLARA layer SICUT NUMERUS VALENS CX_STRATUM_QUAERE(scena,1006). SI layer==0 TUNC REDDE 25. FIN-SI.
+    SI CONTENTUM(layer+16)<=2 || CONTENTUM(layer+16)>=22 TUNC REDDE 26. FIN-SI.
+    SI CONTENTUM(layer+24)<=3 || CONTENTUM(layer+24)>=13 TUNC REDDE 27. FIN-SI.
+    SI CONTENTUM(layer+40)>=255 || CONTENTUM(layer+40)<=200 TUNC REDDE 28. FIN-SI.
+
+    DECLARA ix SICUT NUMERUS VALENS CONTENTUM(layer+16).
+    DECLARA iy SICUT NUMERUS VALENS CONTENTUM(layer+24).
+    SI XIIE_ANIMA_AD(motus,1006,30,20,255,6)==0 TUNC REDDE 29. FIN-SI.
+    DECLARA mn SICUT NUMERUS VALENS MX_QUAERE(motus,1006). SI mn==0 TUNC REDDE 30. FIN-SI.
+    SI CONTENTUM(mn+32)!=ix || CONTENTUM(mn+40)!=iy TUNC REDDE 31. FIN-SI.
+
+    // V. Cursor XII-E est superficies immutabilis etiam post motus CX repetitos.
+    DECLARA fundum2 SICUT NUMERUS VALENS GX_CREA(96,72). SI fundum2==0 TUNC REDDE 32. FIN-SI.
+    DECLARA fundc SICUT NUMERUS VALENS XIIE_COLOR(18,28,36).
+    f=GX_RECT_ALPHA(fundum2,GVIII_RECT_CREA(0,0,96,72),fundc,255).
+    DECLARA scena2 SICUT NUMERUS VALENS CX_SCENA_CREA(96,72,fundum2). SI scena2==0 TUNC REDDE 33. FIN-SI.
+    DECLARA cursor SICUT NUMERUS VALENS XIIE_CURSOR_CREA(). SI cursor==0 TUNC REDDE 34. FIN-SI.
+    DECLARA c0 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(cursor,1,0).
+    DECLARA c1 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(cursor,7,16).
+    DECLARA c2 SICUT NUMERUS VALENS GX_PIX_PM_LEGE(cursor,15,25).
+    SI ((c0>>24)&255)!=255 || ((c1>>24)&255)!=255 || ((c2>>24)&255)!=255 TUNC REDDE 35. FIN-SI.
+    SI CX_STRATUM_ADDE(scena2,40,cursor,30,20,20000,255)==0 TUNC REDDE 36. FIN-SI.
+    DECLARA d2 SICUT NUMERUS VALENS CX_SCENA_RENDE(scena2). SI d2==0 TUNC REDDE 37. FIN-SI.
+    f=CX_DAMNA_PURA(scena2).
+    DECLARA k SICUT NUMERUS VALENS 0.
+    DUM k<4 PERFICE
+        DECLARA nx SICUT NUMERUS VALENS 4+k*20.
+        DECLARA ny SICUT NUMERUS VALENS 4+k*8.
+        SI CX_STRATUM_MOVE(scena2,40,nx,ny)==0 TUNC REDDE 38. FIN-SI.
+        d2=CX_SCENA_RENDE(scena2). SI d2==0 TUNC REDDE 39. FIN-SI.
+        SI GX_PIX_PM_LEGE(cursor,1,0)!=c0 || GX_PIX_PM_LEGE(cursor,7,16)!=c1 || GX_PIX_PM_LEGE(cursor,15,25)!=c2 TUNC REDDE 40. FIN-SI.
+        DECLARA back2 SICUT NUMERUS VALENS CX_SCENA_BACK(scena2).
+        SI GX_PIX_PM_LEGE(back2,nx+1,ny)!=c0 TUNC REDDE 41. FIN-SI.
+        f=CX_DAMNA_PURA(scena2).
+        k=k+1.
+    FIN-DUM.
+
+    // VI. Familia fallback provenit vere ex atlas P16-VII, non ex pictogrammate novo.
+    DECLARA fallback SICUT NUMERUS VALENS XIB_ATLAS_GESTOR_CREA(). SI fallback==0 TUNC REDDE 42. FIN-SI.
+    SI AII_NUMERUS(fallback)!=4 TUNC REDDE 43. FIN-SI.
+    DECLARA atlas SICUT TEXTUS VALENS ICVII_CREA(). SI IR_VALIDUS(atlas)==0 TUNC REDDE 44. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS 1.
+    DUM genus<=4 PERFICE
+        DECLARA id SICUT NUMERUS VALENS XIB_ASSET_ID(genus).
+        DECLARA nodus SICUT NUMERUS VALENS AII_OPTIMUM_NODUS(fallback,id). SI nodus==0 TUNC REDDE 45. FIN-SI.
+        SI AII_LATITUDO(nodus)!=48 || AII_ALTITUDO(nodus)!=48 TUNC REDDE 46. FIN-SI.
+        DECLARA rgba_t SICUT TEXTUS VALENS AII_RGBA_CACHE(fallback,id).
+        DECLARA rb SICUT NUMERUS VALENS SII_CORPUS(rgba_t). SI rb==0 TUNC REDDE 47. FIN-SI.
+        DECLARA sx SICUT NUMERUS VALENS ICVII_FONS_X(genus).
+        DECLARA sy SICUT NUMERUS VALENS ICVII_FONS_Y(genus).
+        DECLARA ex SICUT NUMERUS VALENS IR_PIXEL_RGBA(atlas,sx+24,sy+24).
+        DECLARA vis SICUT NUMERUS VALENS SII_U32_LE(rb,(24*48+24)*4).
+        SI vis!=ex TUNC REDDE 48. FIN-SI.
+        genus=genus+1.
+    FIN-DUM.
+
+    // VII. Pons GX atlas ipsum colorem VII reddit: fundamentum opacum,
+    // nearest-neighbor et una tantum divisio alpha per canalem servantur.
+    genus=1.
+    DUM genus<=4 PERFICE
+        DECLARA id_atlas SICUT NUMERUS VALENS XIB_ASSET_ID(genus).
+        DECLARA icona SICUT NUMERUS VALENS GX_CREA(48,48). SI icona==0 TUNC REDDE 59. FIN-SI.
+        SI XIIE_XIB_ASSET_GX(icona,fallback,id_atlas,GVIII_RECT_CREA(0,0,48,48))==0 TUNC REDDE 60. FIN-SI.
+        DECLARA centrum SICUT NUMERUS VALENS GX_PIX_PM_LEGE(icona,24,24).
+        DECLARA centrum_ex SICUT NUMERUS VALENS 0.
+        SI genus==1 TUNC centrum_ex=236|(194<<8)|(113<<16)|(255<<24). FIN-SI.
+        SI genus==2 TUNC centrum_ex=201|(154<<8)|(82<<16)|(255<<24). FIN-SI.
+        SI genus==3 TUNC centrum_ex=17|(28<<8)|(33<<16)|(255<<24). FIN-SI.
+        SI genus==4 TUNC centrum_ex=232|(232<<8)|(217<<16)|(255<<24). FIN-SI.
+        SI centrum!=centrum_ex TUNC REDDE 61. FIN-SI.
+        DECLARA nox_atlas SICUT NUMERUS VALENS 27|(30<<8)|(31<<16)|(255<<24).
+        DECLARA copia_nox SICUT NUMERUS VALENS 0.
+        DECLARA ay SICUT NUMERUS VALENS 0.
+        DUM ay<48 PERFICE
+            DECLARA ax SICUT NUMERUS VALENS 0.
+            DUM ax<48 PERFICE
+                SI GX_PIX_PM_LEGE(icona,ax,ay)==nox_atlas TUNC copia_nox=copia_nox+1. FIN-SI.
+                ax=ax+1.
+            FIN-DUM.
+            ay=ay+1.
+        FIN-DUM.
+        SI copia_nox<600 TUNC REDDE 62. FIN-SI.
+        genus=genus+1.
+    FIN-DUM.
+
+    // VIII. Umbra fenestrae una tessera cacheata est, non superficies plena.
+    DECLARA umbra1 SICUT NUMERUS VALENS XP_UMBRA_NOVEM_CACHE(cache,4,3,0,180). SI umbra1==0 TUNC REDDE 49. FIN-SI.
+    DECLARA umbra2 SICUT NUMERUS VALENS XP_UMBRA_NOVEM_CACHE(cache,4,3,0,180). SI umbra2!=umbra1 TUNC REDDE 50. FIN-SI.
+    SI XP_CACHE_MISS(cache)!=1 || XP_CACHE_HIT(cache)!=1 || XP_CACHE_NUMERUS(cache)!=1 TUNC REDDE 51. FIN-SI.
+    SI GX_W(umbra1)>64 || GX_H(umbra1)>64 TUNC REDDE 52. FIN-SI.
+    DECLARA corpus SICUT NUMERUS VALENS GVIII_RECT_CREA(20,15,24,18).
+    DECLARA ul SICUT NUMERUS VALENS CX_STRATUM_UMBRA_ADDE(scena,1007,umbra1,corpus,99,6,210). SI ul==0 TUNC REDDE 53. FIN-SI.
+    DECLARA ur SICUT NUMERUS VALENS CX_STRATUM_RECT(ul).
+    SI GVIII_RECT_X(ur)!=14 || GVIII_RECT_Y(ur)!=9 || GVIII_RECT_W(ur)!=36 || GVIII_RECT_H(ur)!=30 TUNC REDDE 54. FIN-SI.
+    DECLARA rw0 SICUT NUMERUS VALENS GX_W(umbra1). DECLARA rh0 SICUT NUMERUS VALENS GX_H(umbra1).
+    SI CX_STRATUM_UMBRA_FORMA(scena,1007,GVIII_RECT_CREA(10,8,40,30),6)==0 TUNC REDDE 55. FIN-SI.
+    ur=CX_STRATUM_RECT(ul).
+    SI GVIII_RECT_X(ur)!=4 || GVIII_RECT_Y(ur)!=2 || GVIII_RECT_W(ur)!=52 || GVIII_RECT_H(ur)!=42 TUNC REDDE 56. FIN-SI.
+    SI GX_W(umbra1)!=rw0 || GX_H(umbra1)!=rh0 TUNC REDDE 57. FIN-SI.
+    SI CX_SCENA_RENDE(scena)==0 TUNC REDDE 58. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.

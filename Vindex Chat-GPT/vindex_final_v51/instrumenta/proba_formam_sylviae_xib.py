@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P16-XI-B: iconae premium Bureau in framebuffer vero QEMU/OVMF probantur."""
+"""P16-XI-B/XII-E: iconae premium Bureau in framebuffer vero QEMU/OVMF probantur."""
 from __future__ import annotations
 
 import importlib.util
@@ -41,6 +41,40 @@ def numerus_puri_caerulei(aux: object, pix: bytes, w: int, regio: tuple[int, int
     return n
 
 
+def taskbar_contractus(aux: object, pix: bytes, w: int, h: int) -> tuple[str, int, int]:
+    top = h - 40
+    # Contractus historicus P16-IX.
+    bronze_ix = (185, 138, 82)
+    aqua_ix = (103, 164, 160)
+    nb_ix = aux.numerus_coloris_in_linea(pix, w, top, bronze_ix)
+    na_ix = aux.numerus_coloris_in_linea(pix, w, top + 2, aqua_ix)
+    if nb_ix >= w * 95 // 100 and na_ix >= w * 95 // 100:
+        supra = aux.pixel(pix, w, 400, top + 4)
+        infra = aux.pixel(pix, w, 400, top + 36)
+        if supra == infra or lumen(supra) <= lumen(infra):
+            raise RuntimeError(f"gradientia taskbar IX deest: {supra}->{infra}")
+        return "IX", nb_ix, na_ix
+
+    # Contractus P16-XII-E: limes bronzeus plene continuus, secunda linea
+    # aqua translucida et duo moduli metallum distincti a corpore graphite.
+    bronze_xiie = (181, 138, 84)
+    nb_xiie = aux.numerus_coloris_in_linea(pix, w, top, bronze_xiie)
+    na_xiie = 0
+    for x in range(w):
+        c = aux.pixel(pix, w, x, top + 1)
+        if c[0] < 80 and c[1] > c[0] + 35 and c[2] >= c[1]:
+            na_xiie += 1
+    corpus = aux.pixel(pix, w, 400, top + 10)
+    initium = aux.pixel(pix, w, 60, top + 18)
+    systema = aux.pixel(pix, w, w - 70, top + 18)
+    if nb_xiie >= w * 95 // 100 and na_xiie >= w * 95 // 100:
+        if lumen(initium) <= lumen(corpus) + 45 or lumen(systema) <= lumen(corpus) + 45:
+            raise RuntimeError(f"moduli taskbar XII-E desunt: corpus={corpus} initium={initium} systema={systema}")
+        return "XII-E", nb_xiie, na_xiie
+
+    raise RuntimeError(f"lineae taskbar nec IX nec XII-E inventae sunt: IX={nb_ix}/{na_ix} XIIE={nb_xiie}/{na_xiie}")
+
+
 def principale() -> int:
     if len(sys.argv) != 5:
         print("USUS: proba_formam_sylviae_xib.py MONITOR QMP EXITUS MORA", file=sys.stderr)
@@ -67,20 +101,11 @@ def principale() -> int:
             print(f"DEFECIT: resolutio {w}x{h}", file=sys.stderr)
             return 4
 
-        # Testa P16-IX manet: limes bronzeus/aqua et gradientia taskbar.
-        bronzeum = (185, 138, 82)
-        aqua = (103, 164, 160)
-        taskbar_top = h - 40
-        nb = aux.numerus_coloris_in_linea(pix, w, taskbar_top, bronzeum)
-        na = aux.numerus_coloris_in_linea(pix, w, taskbar_top + 2, aqua)
-        if nb < w * 95 // 100 or na < w * 95 // 100:
-            print(f"DEFECIT: lineae taskbar fractae sunt: {nb}/{na}", file=sys.stderr)
+        try:
+            testa, nb, na = taskbar_contractus(aux, pix, w, h)
+        except RuntimeError as exc:
+            print(f"DEFECIT: {exc}", file=sys.stderr)
             return 5
-        top = aux.pixel(pix, w, 400, taskbar_top + 4)
-        bottom = aux.pixel(pix, w, 400, taskbar_top + 36)
-        if top == bottom or lumen(top) <= lumen(bottom):
-            print(f"DEFECIT: gradientia taskbar deest: {top}->{bottom}", file=sys.stderr)
-            return 6
 
         # Geometria Bureau manet P16-VII: quattuor destinationes 48×48.
         regiones = (
@@ -111,15 +136,27 @@ def principale() -> int:
             print(f"DEFECIT: familia premium non satis distincta est: {numeri}", file=sys.stderr)
             return 10
 
-        # Cursor, titulus et hitbox Bureau positionibus historicis manent.
-        nox = (28, 31, 32)
-        if aux.pixel(pix, w, 20, 74) != nox or aux.pixel(pix, w, 20, 178) != nox:
-            print("DEFECIT: geometria cardorum Bureau mutata est", file=sys.stderr)
-            return 11
+        if testa == "IX":
+            nox = (28, 31, 32)
+            if aux.pixel(pix, w, 20, 74) != nox or aux.pixel(pix, w, 20, 178) != nox:
+                print("DEFECIT: geometria cardorum Bureau IX mutata est", file=sys.stderr)
+                return 11
+        else:
+            # XII-E cardos rotundos per corpus obscurum et accentum bronzeum
+            # inferioris margini probat; non dependet a colore fundi sub alpha.
+            for i, y in enumerate((72, 176, 280, 384)):
+                corpus = aux.pixel(pix, w, 24, y + 8)
+                accentus = aux.pixel(pix, w, 72, y + 85)
+                if lumen(corpus) > 130:
+                    print(f"DEFECIT: corpus cardi XII-E nimis clarum est #{i}: {corpus}", file=sys.stderr)
+                    return 11
+                if not (accentus[0] > 125 and 85 < accentus[1] < 155 and 45 < accentus[2] < 110 and accentus[0] > accentus[1] > accentus[2]):
+                    print(f"DEFECIT: accentus cardi XII-E deest #{i}: {accentus}", file=sys.stderr)
+                    return 11
 
-        print(f"FORMA-XIB: resolutio={w}x{h} taskbar={nb}/{na}")
+        print(f"FORMA-XIB: resolutio={w}x{h} testa={testa} taskbar={nb}/{na}")
         print(f"FORMA-XIB: colores iconarum={numeri} centra_vetera={centra_vetera} caeruleum_purum={purum_caeruleum}")
-        print("RECTE: quattuor iconae premium Graphica IX in Bureau Sylviae realis adsunt.")
+        print("RECTE: quattuor iconae premium in Bureau Sylviae realis adsunt et testa hodierna integra est.")
         return 0
     finally:
         try:
