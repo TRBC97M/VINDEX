@@ -1,0 +1,161 @@
+// Sylvia OS — P16-XII-F7: praesentatio Graphica X per VirtIO GPU sub QEMU.
+
+IMPORTA "rectores/pci.vindex".
+IMPORTA "rectores/mmio.vindex".
+IMPORTA "rectores/paginae_dma.vindex".
+IMPORTA "rectores/virtio_pci.vindex".
+IMPORTA "rectores/virtio_gpu.vindex".
+IMPORTA "rectores/virtio_gpu_2d.vindex".
+IMPORTA "../bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "../bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "../bibliotheca/imago_raster_vii.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "../bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "../bibliotheca/fenestrale_cache_texturarum_x.vindex".
+IMPORTA "../bibliotheca/fenestrale_backend_x.vindex".
+IMPORTA "../bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "../bibliotheca/fenestrale_backend_virtio_x.vindex".
+
+FUNCTIO F7_MEMORIA_VACUA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(basis + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO F7_CIFRA_HEX REDDENS NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SI valor < 10 TUNC REDDE 48 + valor. FIN-SI.
+    REDDE 55 + valor.
+FIN-FUNCTIO.
+
+FUNCTIO F7_LITTERA REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT littera SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, littera).
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO F7_HEX8 REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(buf + positio, F7_CIFRA_HEX((valor / 16) & 15)).
+    SCRIBE_OCTETUM_AB(buf + positio + 2, F7_CIFRA_HEX(valor & 15)).
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO F7_HEX32 REDDENS NUMERUS.
+    ACCIPIT buf SICUT NUMERUS.
+    ACCIPIT positio SICUT NUMERUS.
+    ACCIPIT valor SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 7.
+    DUM i >= 0 PERFICE
+        SCRIBE_OCTETUM_AB(buf + positio + (7 - i) * 2, F7_CIFRA_HEX((valor >> (i * 4)) & 15)).
+        i = i - 1.
+    FIN-DUM.
+    REDDE 16.
+FIN-FUNCTIO.
+
+FUNCTIO F7_SERIALEM_EXSPECTA REDDENS NUMERUS.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS PORTUS_LEGE(1021).
+    DECLARA transmittens SICUT NUMERUS VALENS status & 32.
+    DUM transmittens == 0 && mora < 100000 PERFICE
+        mora = mora + 1.
+        status = PORTUS_LEGE(1021).
+        transmittens = status & 32.
+    FIN-DUM.
+    SI transmittens == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO F7_SERIALEM_SCRIBE REDDENS NUMERUS.
+    ACCIPIT catena SICUT NUMERUS.
+    SI catena == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM OCTETUS_AB(catena + i) != 0 PERFICE
+        SI F7_SERIALEM_EXSPECTA() == 0 TUNC REDDE 0. FIN-SI.
+        PORTUS_SCRIBE(1016, OCTETUS_AB(catena + i)).
+        i = i + 2.
+    FIN-DUM.
+    REDDE i / 2.
+FIN-FUNCTIO.
+
+FUNCTIO F7_NUNTIA REDDENS NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT praesentatae SICUT NUMERUS.
+    ACCIPIT pixela SICUT NUMERUS.
+    ACCIPIT sepes SICUT NUMERUS.
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(160).
+    SI buf == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA vacuum SICUT NUMERUS VALENS F7_MEMORIA_VACUA(buf, 160).
+    DECLARA p SICUT NUMERUS VALENS 0.
+    p = p + F7_LITTERA(buf,p,86). p = p + F7_LITTERA(buf,p,73). p = p + F7_LITTERA(buf,p,79). p = p + F7_LITTERA(buf,p,55).
+    p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,84). p = p + F7_HEX8(buf,p,genus).
+    p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,80). p = p + F7_HEX32(buf,p,praesentatae).
+    p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,68). p = p + F7_HEX32(buf,p,pixela).
+    p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,70). p = p + F7_HEX32(buf,p,sepes).
+    p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,82).
+    p = p + F7_LITTERA(buf,p,13). p = p + F7_LITTERA(buf,p,10).
+    REDDE F7_SERIALEM_SCRIBE(buf).
+FIN-FUNCTIO.
+
+FUNCTIO F7_ERRATUM REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA buf SICUT NUMERUS VALENS RESERVA_OCTETA(48).
+    SI buf == 0 TUNC REDDE codex. FIN-SI.
+    DECLARA vacuum SICUT NUMERUS VALENS F7_MEMORIA_VACUA(buf, 48).
+    DECLARA p SICUT NUMERUS VALENS 0.
+    p = p + F7_LITTERA(buf,p,86). p = p + F7_LITTERA(buf,p,73). p = p + F7_LITTERA(buf,p,79). p = p + F7_LITTERA(buf,p,55).
+    p = p + F7_LITTERA(buf,p,32). p = p + F7_LITTERA(buf,p,69). p = p + F7_LITTERA(buf,p,82). p = p + F7_LITTERA(buf,p,82).
+    p = p + F7_HEX8(buf,p,codex). p = p + F7_LITTERA(buf,p,13). p = p + F7_LITTERA(buf,p,10).
+    DECLARA scriptum SICUT NUMERUS VALENS F7_SERIALEM_SCRIBE(buf).
+    REDDE codex.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI systema == 0 TUNC REDDE F7_ERRATUM(1). FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS 1280.
+    DECLARA h SICUT NUMERUS VALENS 800.
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(w,h).
+    SI fundum == 0 TUNC REDDE F7_ERRATUM(2). FIN-SI.
+    DECLARA medium_x SICUT NUMERUS VALENS w / 2.
+    DECLARA medium_y SICUT NUMERUS VALENS h / 2.
+    DECLARA p0 SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,medium_x,medium_y),255,255).
+    DECLARA p1 SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(medium_x,0,medium_x,medium_y),65280,255).
+    DECLARA p2 SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,medium_y,medium_x,medium_y),16711680,255).
+    DECLARA p3 SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(medium_x,medium_y,medium_x,medium_y),16777215,255).
+    SI p0 == 0 || p1 == 0 || p2 == 0 || p3 == 0 TUNC REDDE F7_ERRATUM(3). FIN-SI.
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(w,h,fundum).
+    SI scena == 0 TUNC REDDE F7_ERRATUM(4). FIN-SI.
+    DECLARA contextus SICUT NUMERUS VALENS BGVX_CREA_AUTOMATICE(systema,w,h).
+    SI contextus == 0 TUNC REDDE F7_ERRATUM(5). FIN-SI.
+    SI BGVX_SCENAE_ADIUNGE(contextus,scena) == 0 TUNC REDDE F7_ERRATUM(6). FIN-SI.
+    SI BGVX_SCENA_PRAESENTA(contextus,scena) == 0 TUNC REDDE F7_ERRATUM(7). FIN-SI.
+
+    DECLARA damnum SICUT NUMERUS VALENS GVIII_RECT_CREA(608,368,64,64).
+    SI GX_RECT_ALPHA(fundum,damnum,65535,255) == 0 TUNC REDDE F7_ERRATUM(8). FIN-SI.
+    SI CX_DAMNA_NOTA(scena,damnum) == 0 TUNC REDDE F7_ERRATUM(9). FIN-SI.
+    SI BGVX_SCENA_PRAESENTA(contextus,scena) == 0 TUNC REDDE F7_ERRATUM(10). FIN-SI.
+
+    DECLARA praesentatae SICUT NUMERUS VALENS CONTENTUM(contextus + 104).
+    DECLARA pixela SICUT NUMERUS VALENS CONTENTUM(contextus + 112).
+    DECLARA sepes SICUT NUMERUS VALENS CONTENTUM(contextus + 120).
+    SI praesentatae != 2 || pixela != 1028096 || sepes != 7 TUNC REDDE F7_ERRATUM(11). FIN-SI.
+    SI CONTENTUM(CONTENTUM(contextus + 88) + 8) != BX_GENUS_GPU() TUNC REDDE F7_ERRATUM(12). FIN-SI.
+    DECLARA nuntiatum SICUT NUMERUS VALENS F7_NUNTIA(BX_GENUS_GPU(),praesentatae,pixela,sepes).
+    DUM 1 == 1 PERFICE
+        DECLARA mora SICUT NUMERUS VALENS 0.
+        DUM mora < 1000000 PERFICE mora = mora + 1. FIN-DUM.
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.

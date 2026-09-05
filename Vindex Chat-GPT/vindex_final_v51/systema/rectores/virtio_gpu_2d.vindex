@@ -1,0 +1,198 @@
+// Sylvia OS — P16-XII-F7: resource II-D et scanout VirtIO GPU.
+// Rectores virtio_pci.vindex et virtio_gpu.vindex ante hoc folium adsint.
+//
+// Omnia mandata huius rectoris sepe VIRTIO_GPU_FLAG_FENCE muniuntur. Coda
+// divisa sequentialiter adhibetur: descriptoria 0/1 requestum et responsum
+// continent, neque buffer iterum scribitur ante elementum used observatum.
+
+FUNCTIO VG2D_RESP_NODATA REDDENS NUMERUS. REDDE 4352. FIN-FUNCTIO.
+FUNCTIO VG2D_CMD_CREA REDDENS NUMERUS. REDDE 257. FIN-FUNCTIO.
+FUNCTIO VG2D_CMD_LIBERA REDDENS NUMERUS. REDDE 258. FIN-FUNCTIO.
+FUNCTIO VG2D_CMD_SCANOUT REDDENS NUMERUS. REDDE 259. FIN-FUNCTIO.
+FUNCTIO VG2D_CMD_FLUSH REDDENS NUMERUS. REDDE 260. FIN-FUNCTIO.
+FUNCTIO VG2D_CMD_TRANSFER REDDENS NUMERUS. REDDE 261. FIN-FUNCTIO.
+FUNCTIO VG2D_CMD_ADIUNGE REDDENS NUMERUS. REDDE 262. FIN-FUNCTIO.
+FUNCTIO VG2D_CMD_SEPARA REDDENS NUMERUS. REDDE 263. FIN-FUNCTIO.
+FUNCTIO VG2D_FORMATUM_RGBA_X REDDENS NUMERUS. REDDE 134. FIN-FUNCTIO.
+
+FUNCTIO VG2D_TERMINI REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI coda == 0 || intervallum < CONTENTUM(coda + 120) || mensura <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI regio == 0 || intervallum + mensura < intervallum || intervallum + mensura > CONTENTUM(regio + 16) TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_RECTUM_SCRIBE REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    SI coda == 0 || rectum == 0 || VG2D_TERMINI(coda, intervallum, 16) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, intervallum, GVIII_RECT_X(rectum)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, intervallum + 4, GVIII_RECT_Y(rectum)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, intervallum + 8, GVIII_RECT_W(rectum)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, intervallum + 12, GVIII_RECT_H(rectum)) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_CAPUT_PRAEPARA REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    SI coda == 0 || mensura < 24 || mensura % 8 != 0 || VG2D_TERMINI(coda, mandatum, mensura) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI VG_MEMORIA_VACUA(regio, mandatum, mensura) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum, genus) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 4, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE64(regio, mandatum + 8, CONTENTUM(coda + 88)) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_AGE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    SI vp == 0 || coda == 0 || CONTENTUM(vp + 160) != 2 || coda != CONTENTUM(vp + 176) TUNC REDDE 0. FIN-SI.
+    SI VG2D_TERMINI(coda, mandatum, mensura) == 0 || VG2D_TERMINI(coda, responsum, 24) == 0 TUNC REDDE 0. FIN-SI.
+    SI mandatum < responsum + 24 && responsum < mandatum + mensura TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI VG_MEMORIA_VACUA(regio, responsum, 24) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA phys_mandatum SICUT NUMERUS VALENS DMA_PHYSICA(regio, mandatum, mensura).
+    DECLARA phys_responsum SICUT NUMERUS VALENS DMA_PHYSICA(regio, responsum, 24).
+    SI phys_mandatum == 0 || phys_responsum == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_DESCRIPTOR_SCRIBE(coda, 0, phys_mandatum, mensura, 1, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_DESCRIPTOR_SCRIBE(coda, 1, phys_responsum, 24, 2, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_PRAEBE(coda, 0) == 0 || VP_NOTIFICA(vp, coda) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA completum SICUT NUMERUS VALENS 0.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DUM completum == 0 && mora < 20000000 PERFICE
+        completum = VQ_COMPLETUM(coda).
+        mora = mora + 1.
+    FIN-DUM.
+    SI completum == 0 || CONTENTUM(coda + 56) != 0 || CONTENTUM(coda + 64) < 24 TUNC REDDE 0. FIN-SI.
+    DECLARA vexilla SICUT NUMERUS VALENS DMA_LEGE32(regio, responsum + 4).
+    DECLARA sepes SICUT NUMERUS VALENS DMA_LEGE64(regio, responsum + 8).
+    SI (vexilla & 1) == 0 || sepes != CONTENTUM(coda + 88) TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda + 88) = CONTENTUM(coda + 88) + 1.
+    REDDE DMA_LEGE32(regio, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_RESOURCE_CREA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI identitas <= 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG2D_CAPUT_PRAEPARA(coda, mandatum, 40, VG2D_CMD_CREA()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, identitas) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 28, VG2D_FORMATUM_RGBA_X()) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 32, w) == 0 || DMA_SCRIBE32(regio, mandatum + 36, h) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 40, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_BACKING_ADIUNGE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT backing SICUT NUMERUS.
+    SI identitas <= 0 || backing == 0 || CONTENTUM(backing + 16) <= 0 || CONTENTUM(backing + 16) > 4294967295 TUNC REDDE 0. FIN-SI.
+    SI VG2D_CAPUT_PRAEPARA(coda, mandatum, 48, VG2D_CMD_ADIUNGE()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    DECLARA physica SICUT NUMERUS VALENS DMA_PHYSICA(backing, 0, CONTENTUM(backing + 16)).
+    SI physica == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 24, identitas) == 0 || DMA_SCRIBE32(regio, mandatum + 28, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE64(regio, mandatum + 32, physica) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 40, CONTENTUM(backing + 16)) == 0 || DMA_SCRIBE32(regio, mandatum + 44, 0) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 48, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_SCANOUT_PONE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI identitas <= 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG2D_CAPUT_PRAEPARA(coda, mandatum, 48, VG2D_CMD_SCANOUT()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    DECLARA rectum SICUT NUMERUS VALENS GVIII_RECT_CREA(0, 0, w, h).
+    SI VG2D_RECTUM_SCRIBE(coda, mandatum + 24, rectum) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 40, 0) == 0 || DMA_SCRIBE32(regio, mandatum + 44, identitas) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 48, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_TRANSFER REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    ACCIPIT stride SICUT NUMERUS.
+    SI identitas <= 0 || rectum == 0 || stride <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG2D_CAPUT_PRAEPARA(coda, mandatum, 56, VG2D_CMD_TRANSFER()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI VG2D_RECTUM_SCRIBE(coda, mandatum + 24, rectum) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA intervallum SICUT NUMERUS VALENS (GVIII_RECT_Y(rectum) * stride + GVIII_RECT_X(rectum)) * 4.
+    SI DMA_SCRIBE64(regio, mandatum + 40, intervallum) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 48, identitas) == 0 || DMA_SCRIBE32(regio, mandatum + 52, 0) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 56, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_FLUSH REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT rectum SICUT NUMERUS.
+    SI identitas <= 0 || rectum == 0 TUNC REDDE 0. FIN-SI.
+    SI VG2D_CAPUT_PRAEPARA(coda, mandatum, 48, VG2D_CMD_FLUSH()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI VG2D_RECTUM_SCRIBE(coda, mandatum + 24, rectum) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 40, identitas) == 0 || DMA_SCRIBE32(regio, mandatum + 44, 0) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 48, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_SCANOUT_TOLLE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS. ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS. ACCIPIT responsum SICUT NUMERUS.
+    SI VG2D_CAPUT_PRAEPARA(coda, mandatum, 48, VG2D_CMD_SCANOUT()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 40, 0) == 0 || DMA_SCRIBE32(regio, mandatum + 44, 0) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 48, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_BACKING_SEPARA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS. ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS. ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    SI identitas <= 0 || VG2D_CAPUT_PRAEPARA(coda, mandatum, 32, VG2D_CMD_SEPARA()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, identitas) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 32, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG2D_RESOURCE_LIBERA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS. ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS. ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    SI identitas <= 0 || VG2D_CAPUT_PRAEPARA(coda, mandatum, 32, VG2D_CMD_LIBERA()) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, identitas) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG2D_AGE(vp, coda, mandatum, 32, responsum).
+FIN-FUNCTIO.

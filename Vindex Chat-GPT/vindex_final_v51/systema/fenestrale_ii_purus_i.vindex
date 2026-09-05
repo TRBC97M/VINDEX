@@ -4,6 +4,12 @@
 // clientia FS_* manent compatibilia per pontem explicitum FS -> GX.
 
 IMPORTA "systema/rectores/murus_ps2.vindex".
+IMPORTA "systema/rectores/pci.vindex".
+IMPORTA "systema/rectores/mmio.vindex".
+IMPORTA "systema/rectores/paginae_dma.vindex".
+IMPORTA "systema/rectores/virtio_pci.vindex".
+IMPORTA "systema/rectores/virtio_gpu.vindex".
+IMPORTA "systema/rectores/virtio_gpu_2d.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
 IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
@@ -25,6 +31,7 @@ IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
 IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
 IMPORTA "bibliotheca/fenestrale_effectus_x.vindex".
 IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_virtio_x.vindex".
 IMPORTA "bibliotheca/fenestrale_effectus_productio_x.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_x_asseta.vindex".
 IMPORTA "bibliotheca/fenestrale_tempus_x.vindex".
@@ -65,16 +72,41 @@ FIN-FUNCTIO.
 // 34 coda eventuum; 35 eventa perdita; 36 clientes; 37 fenestrae;
 // 38 INITIUM apertum; 39 catalogus applicationum; 40 emblema SIMG; 41 atlas P16-VII;
 // 42 gestor assetorum premium P16-XI-B, vel 0 si familia runtime deest;
-// 43 scena CX; 44 cache XP; 45 motus MX; 46 horologium TX; 47 gestor XII-E.
+// 43 scena CX; 44 cache XP; 45 motus MX; 46 horologium TX; 47 gestor XII-E;
+// 48 praesentator VirtIO GPU F7, vel 0 pro via GOP historica.
+
+FUNCTIO F7_PRAESENTA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI s[43]==0 TUNC REDDE 0. FIN-SI.
+    SI s[48]!=0 TUNC
+        SI BGVX_SCENA_PRAESENTA(s[48],s[43])!=0 TUNC REDDE 1. FIN-SI.
+        DECLARA contextus SICUT NUMERUS VALENS s[48].
+        DECLARA restituta SICUT NUMERUS VALENS BGVX_SCENAE_RESTITUE(contextus,s[43]).
+        DECLARA liberatum SICUT NUMERUS VALENS BGVX_LIBERA(contextus).
+        s[48]=0.
+        SI restituta==0 TUNC REDDE 0. FIN-SI.
+    FIN-SI.
+    REDDE CX_PRAESENTA_FB(s[43]).
+FIN-FUNCTIO.
+
+FUNCTIO F7_PULSA REDDENS NUMERUS.
+    ACCIPIT s SICUT ORDO DE NUMERUS.
+    SI s[43]==0 || s[45]==0 || s[46]==0 TUNC REDDE 0. FIN-SI.
+    DECLARA signum SICUT NUMERUS VALENS TX_CONSULE(s[46]).
+    SI signum==0 TUNC REDDE 0. FIN-SI.
+    DECLARA mutata SICUT NUMERUS VALENS MX_PULSA(s[45],TX_FRAME(s[46])).
+    SI mutata>0 TUNC REDDE F7_PRAESENTA(s). FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI FV_AD_EST()==0 TUNC REDDE 5. FIN-SI.
-    DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 48.
+    DECLARA s SICUT ORDO DE NUMERUS CAPACITAS 49.
     DECLARA w SICUT NUMERUS VALENS CONTENTUM(50333728). DECLARA h SICUT NUMERUS VALENS CONTENTUM(50333736).
     DECLARA utilis_h SICUT NUMERUS VALENS h-FV_METRUM_TASKBAR().
     s[11]=w/2. s[12]=h/2. s[13]=0. s[14]=0. s[15]=0. s[16]=0. s[27]=0.
     s[28]=0. s[29]=0. s[35]=0. s[38]=0. s[40]=0. s[41]=0. s[42]=0.
-    s[43]=0. s[44]=0. s[45]=0. s[46]=0. s[47]=0.
+    s[43]=0. s[44]=0. s[45]=0. s[46]=0. s[47]=0. s[48]=0.
     s[34]=EG_CREA(32). SI s[34]==0 TUNC REDDE 71. FIN-SI.
     s[36]=CH_CREA(). SI s[36]==0 TUNC REDDE 71. FIN-SI.
     s[37]=FI_CREA(). SI s[37]==0 TUNC REDDE 71. FIN-SI.
@@ -155,6 +187,17 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     SI modernum==0 TUNC
         f=IVIX_REDDE(s,s[37],s[36],s[39],TEXTUS_EX_SEDE(s[40]),TEXTUS_EX_SEDE(s[41])).
     FIN-SI.
+    SI modernum!=0 TUNC
+        DECLARA systema SICUT NUMERUS VALENS CONTENTUM(50333704).
+        s[48]=BGVX_CREA_AUTOMATICE(systema,w,h).
+        SI s[48]!=0 TUNC
+            SI BGVX_SCENAE_ADIUNGE(s[48],s[43])==0 TUNC
+                DECLARA repudiatum SICUT NUMERUS VALENS BGVX_LIBERA(s[48]). s[48]=0.
+            ALITER
+                f=F7_PRAESENTA(s).
+            FIN-SI.
+        FIN-SI.
+    FIN-SI.
 
     DECLARA finis SICUT NUMERUS VALENS 0.
     DUM finis==0 PERFICE
@@ -182,11 +225,11 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         SI redde==1 TUNC
             SI modernum!=0 TUNC
                 DECLARA sync SICUT NUMERUS VALENS XIIE_UI_SYNC(s,s[37],s[36],s[39],renova_clientes).
-                SI sync!=0 TUNC f=CX_PRAESENTA_FB(s[43]). FIN-SI.
+                SI sync!=0 TUNC f=F7_PRAESENTA(s). FIN-SI.
                 DECLARA status_pendens SICUT NUMERUS VALENS OP_RENDE_PENDENS(superficies_o,status_o).
                 SI status_pendens!=0 TUNC
                     DECLARA sync_status SICUT NUMERUS VALENS XIIE_UI_SYNC(s,s[37],s[36],s[39],1).
-                    SI sync_status!=0 TUNC f=CX_PRAESENTA_FB(s[43]). FIN-SI.
+                    SI sync_status!=0 TUNC f=F7_PRAESENTA(s). FIN-SI.
                 FIN-SI.
             ALITER
                 DECLARA status_pendens_vetus SICUT NUMERUS VALENS OP_RENDE_PENDENS(superficies_o,status_o).
@@ -197,8 +240,9 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         // Motus XII-D numquam input expectat: si tick realis advenit, tantum
         // strata mutata componuntur et praesentantur. Renderer IX fallback
         // hunc ramum omnino non attingit.
-        SI modernum!=0 TUNC DECLARA anima SICUT NUMERUS VALENS XIIE_PULSA(s). FIN-SI.
+        SI modernum!=0 TUNC DECLARA anima SICUT NUMERUS VALENS F7_PULSA(s). FIN-SI.
         DECLARA pausa SICUT NUMERUS VALENS IN_STALL().
     FIN-DUM.
+    SI s[48]!=0 TUNC DECLARA liberatum SICUT NUMERUS VALENS BGVX_LIBERA(s[48]). FIN-SI.
     REDDE 0.
 FIN-FUNCTIO.

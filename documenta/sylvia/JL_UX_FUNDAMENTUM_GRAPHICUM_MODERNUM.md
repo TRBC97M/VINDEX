@@ -200,7 +200,7 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
-**Status: ACTIVUM; F1 contractum, F2 cache texturarum, F3 codam compositionis, F4 vitam resource, F5 coniunctionem automaticam et F6 contractum exsecutoris instituunt.**
+**Status: ACTIVUM; F1–F6 contractum backendis instruunt, F7 praesentatorem VirtIO GPU coniungit.**
 
 - contractus backend explicatus;
 - batching/coda communis Graphica VIII/X;
@@ -211,7 +211,27 @@ C2 instituit:
 - creatio, renovatio et liberatio resource texturarum in eadem coda;
 - cache et vita resource per frame transactionaliter coniunctae;
 - descriptor exsecutoris cum submissionibus, completionibus, defectibus et contextu;
-- via GPU cum infrastructura hardware id sinit.
+- resource II-D, backing DMA et scanout VirtIO GPU;
+- `TRANSFER_TO_HOST_2D` et `RESOURCE_FLUSH` tantum pro regione laesa;
+- fences hardware explicitae et fallback GOP si apparatus non adest;
+- compositio software communis manet oracle semanticum dum praesentatio iam
+  per verum apparatum transit.
+
+F7 primum gradum hardware deliberatum facit. Non fingit compositionem GPU:
+Graphica X eandem codam et easdem primitivas pixelorum F6 in target DMA
+exsequitur. Rector VirtIO solum memoriam resource, scanout et publicationem
+damni gubernat. Sic semantica historica et probatio bit-per-bit servantur,
+atque gradus posterior potest operationes compositionis singillatim in GPU
+transferre sine mutatione shellis.
+
+Probatio F7 sub QEMU/Q35 postulat:
+
+- scanout verum `1280×800`;
+- duas praesentias, quarum altera tantum `64×64` laedit;
+- `1 028 096` pixela totaliter translata, non duo plena frame;
+- septem fences hardware ordine consummatas;
+- quinque colores canonicos exactos in captura scanout;
+- payload integrum Sylviae et regressiones F1–F6 immutata.
 
 ## X. Criterium Vista-class
 

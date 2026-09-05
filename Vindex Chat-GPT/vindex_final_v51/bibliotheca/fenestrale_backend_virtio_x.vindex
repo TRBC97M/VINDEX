@@ -1,0 +1,172 @@
+// Sylvia OS — P16-XII-F7: praesentator VirtIO GPU pro Graphica X.
+// PCI/MMIO/DMA/VirtIO, GX/GVIII, BX et CX ante hoc folium importentur.
+//
+// Contextus CLXVIII octeta est simul target software Graphica X:
+//   0 basis DMA, 8 stride, 16 w, 24 h, 32 formatum target;
+//   40 transportus VP, 48 coda, 56 regio framebuffer DMA,
+//   64 resource id, 72 status, 80 erratum, 88 backend BX,
+//   96 executor BX, 104 praesentatae, 112 pixela translata,
+//   120 sepes hardware ultima, 128 systema UEFI,
+//   136/144/152 B/D/F, 160 reservatum.
+//
+// Compositio alpha manet in primitivis Graphica X communibus: haec est
+// auctoritas semantica. Executor hybridus scribit target DMA, deinde GPU
+// tantum regiones laesas TRANSFER_TO_HOST_2D et RESOURCE_FLUSH consummat.
+
+FUNCTIO BGVX_MANDATUM REDDENS NUMERUS. REDDE 256. FIN-FUNCTIO.
+FUNCTIO BGVX_RESPONSUM REDDENS NUMERUS. REDDE 512. FIN-FUNCTIO.
+
+FUNCTIO BGVX_ACTIVUS REDDENS NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    SI contextus == 0 || CONTENTUM(contextus + 72) != 4 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(contextus + 40) == 0 || CONTENTUM(contextus + 48) == 0 || CONTENTUM(contextus + 56) == 0 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(contextus + 88) == 0 || CONTENTUM(contextus + 96) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE BX_PARATUS(CONTENTUM(contextus + 88)).
+FIN-FUNCTIO.
+
+FUNCTIO BGVX_RESPONSUM_RECTUM REDDENS NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    SI responsum == VG2D_RESP_NODATA() TUNC REDDE 1. FIN-SI.
+    SI contextus != 0 TUNC CONTENTUM(contextus + 80) = responsum. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO BGVX_LIBERA REDDENS NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    SI contextus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA vp SICUT NUMERUS VALENS CONTENTUM(contextus + 40).
+    DECLARA coda SICUT NUMERUS VALENS CONTENTUM(contextus + 48).
+    DECLARA status SICUT NUMERUS VALENS CONTENTUM(contextus + 72).
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(contextus + 64).
+    DECLARA rectum SICUT NUMERUS VALENS 1.
+    SI vp != 0 && coda != 0 && CONTENTUM(vp + 160) == 2 TUNC
+        SI status >= 4 TUNC
+            DECLARA s0 SICUT NUMERUS VALENS VG2D_SCANOUT_TOLLE(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM()).
+            SI s0 != VG2D_RESP_NODATA() TUNC rectum = 0. FIN-SI.
+        FIN-SI.
+        SI status >= 3 TUNC
+            DECLARA s1 SICUT NUMERUS VALENS VG2D_BACKING_SEPARA(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM(), identitas).
+            SI s1 != VG2D_RESP_NODATA() TUNC rectum = 0. FIN-SI.
+        FIN-SI.
+        SI status >= 2 TUNC
+            DECLARA s2 SICUT NUMERUS VALENS VG2D_RESOURCE_LIBERA(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM(), identitas).
+            SI s2 != VG2D_RESP_NODATA() TUNC rectum = 0. FIN-SI.
+        FIN-SI.
+    FIN-SI.
+    DECLARA framebuffer SICUT NUMERUS VALENS CONTENTUM(contextus + 56).
+    SI framebuffer != 0 && DMA_UEFI_LIBERA(framebuffer) == 0 TUNC rectum = 0. FIN-SI.
+    CONTENTUM(contextus + 56) = 0.
+    SI vp != 0 && VP_RESTITUE(vp) == 0 TUNC rectum = 0. FIN-SI.
+    DECLARA executor SICUT NUMERUS VALENS CONTENTUM(contextus + 96).
+    SI executor != 0 TUNC CONTENTUM(executor + 32) = BX_EX_INACTIVUS(). CONTENTUM(executor + 88) = 0. FIN-SI.
+    CONTENTUM(contextus + 40) = 0. CONTENTUM(contextus + 48) = 0.
+    CONTENTUM(contextus + 72) = 0.
+    REDDE rectum.
+FIN-FUNCTIO.
+
+FUNCTIO BGVX_CREA_EX REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI systema == 0 || w <= 0 || h <= 0 || w > 65535 || h > 65535 TUNC REDDE 0. FIN-SI.
+    DECLARA octeta SICUT NUMERUS VALENS w * h * 4.
+    SI octeta <= 0 || octeta > 4294967295 TUNC REDDE 0. FIN-SI.
+    DECLARA contextus SICUT NUMERUS VALENS RESERVA_OCTETA(168).
+    SI contextus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pura SICUT NUMERUS VALENS GX_MEM_PURA(contextus, 168).
+    CONTENTUM(contextus + 8) = w. CONTENTUM(contextus + 16) = w.
+    CONTENTUM(contextus + 24) = h. CONTENTUM(contextus + 32) = 0.
+    CONTENTUM(contextus + 64) = 1. CONTENTUM(contextus + 128) = systema.
+    CONTENTUM(contextus + 136) = bus. CONTENTUM(contextus + 144) = apparatus. CONTENTUM(contextus + 152) = functio.
+    DECLARA vp SICUT NUMERUS VALENS VP_CREA(bus, apparatus, functio).
+    SI vp == 0 TUNC CONTENTUM(contextus + 80) = 1. REDDE 0. FIN-SI.
+    CONTENTUM(contextus + 40) = vp. CONTENTUM(contextus + 72) = 1.
+    SI VP_INITIALIZA(vp, 0, 1) == 0 TUNC CONTENTUM(contextus + 80) = 2. DECLARA l0 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    DECLARA coda SICUT NUMERUS VALENS VP_CODAM_CONFIGURA(vp, systema, 0, 8).
+    SI coda == 0 TUNC CONTENTUM(contextus + 80) = 3. DECLARA l1 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    CONTENTUM(contextus + 48) = coda.
+    SI VP_DRIVER_PARATUS(vp) == 0 TUNC CONTENTUM(contextus + 80) = 4. DECLARA l2 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    DECLARA framebuffer SICUT NUMERUS VALENS DMA_UEFI_ALLOCA(systema, octeta, 0, DMA_APPARATUS_LEGE()).
+    SI framebuffer == 0 TUNC CONTENTUM(contextus + 80) = 5. DECLARA l3 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    CONTENTUM(contextus) = CONTENTUM(framebuffer + 8). CONTENTUM(contextus + 56) = framebuffer.
+    DECLARA r0 SICUT NUMERUS VALENS VG2D_RESOURCE_CREA(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM(), 1, w, h).
+    SI BGVX_RESPONSUM_RECTUM(contextus, r0) == 0 TUNC DECLARA l4 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    CONTENTUM(contextus + 72) = 2.
+    DECLARA r1 SICUT NUMERUS VALENS VG2D_BACKING_ADIUNGE(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM(), 1, framebuffer).
+    SI BGVX_RESPONSUM_RECTUM(contextus, r1) == 0 TUNC DECLARA l5 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    CONTENTUM(contextus + 72) = 3.
+    DECLARA r2 SICUT NUMERUS VALENS VG2D_SCANOUT_PONE(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM(), 1, w, h).
+    SI BGVX_RESPONSUM_RECTUM(contextus, r2) == 0 TUNC DECLARA l6 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    CONTENTUM(contextus + 72) = 4.
+    DECLARA capacitates SICUT NUMERUS VALENS BX_CAP_MINIMUM() | BX_CAP_COMPOSITIO() | BX_CAP_NOVEM() | BX_CAP_VITA_TEXTURE().
+    DECLARA executor SICUT NUMERUS VALENS BX_EXECUTOR_CREA(BX_GENUS_GPU(), capacitates, contextus).
+    SI executor == 0 TUNC CONTENTUM(contextus + 80) = 6. DECLARA l7 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    CONTENTUM(executor + 32) = BX_EX_PARATUS(). CONTENTUM(executor + 88) = 1.
+    CONTENTUM(contextus + 96) = executor.
+    DECLARA backend SICUT NUMERUS VALENS BX_CREA_CUM_EXECUTORE(64, executor).
+    SI backend == 0 TUNC CONTENTUM(contextus + 80) = 7. DECLARA l8 SICUT NUMERUS VALENS BGVX_LIBERA(contextus). REDDE 0. FIN-SI.
+    CONTENTUM(contextus + 88) = backend. CONTENTUM(contextus + 80) = 0.
+    REDDE contextus.
+FIN-FUNCTIO.
+
+FUNCTIO BGVX_CREA_AUTOMATICE REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA registrum SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI registrum == 0 || PCI_REGISTRUM_INITIA(registrum, 8) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS PCI_ENUMERA_PER_PONTES(registrum).
+    DECLARA sedes_gpu SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        DECLARA sedes SICUT NUMERUS VALENS PCI_REGISTRUM_SEDES(registrum, i).
+        SI CONTENTUM(sedes + 24) == 6900 && CONTENTUM(sedes + 32) == 4176 TUNC sedes_gpu = sedes. FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI sedes_gpu == 0 TUNC REDDE 0. FIN-SI.
+    REDDE BGVX_CREA_EX(systema, CONTENTUM(sedes_gpu), CONTENTUM(sedes_gpu + 8), CONTENTUM(sedes_gpu + 16), w, h).
+FIN-FUNCTIO.
+
+FUNCTIO BGVX_SCENAE_ADIUNGE REDDENS NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    SI BGVX_ACTIVUS(contextus) == 0 || scena == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CX_SCENA_BACKEND_PONE(scena, CONTENTUM(contextus + 88)).
+FIN-FUNCTIO.
+
+FUNCTIO BGVX_SCENAE_RESTITUE REDDENS NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    SI contextus == 0 || scena == 0 TUNC REDDE 0. FIN-SI.
+    SI CX_SCENA_BACKEND(scena) != CONTENTUM(contextus + 88) TUNC REDDE 1. FIN-SI.
+    DECLARA software SICUT NUMERUS VALENS BX_ELIGE(0, 64).
+    SI software == 0 TUNC REDDE 0. FIN-SI.
+    REDDE CX_SCENA_BACKEND_PONE(scena, software).
+FIN-FUNCTIO.
+
+FUNCTIO BGVX_SCENA_PRAESENTA REDDENS NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT scena SICUT NUMERUS.
+    SI BGVX_ACTIVUS(contextus) == 0 || scena == 0 || CX_SCENA_BACKEND(scena) != CONTENTUM(contextus + 88) TUNC REDDE 0. FIN-SI.
+    DECLARA damnum SICUT NUMERUS VALENS CX_DAMNA_RECT(scena).
+    SI damnum == 0 TUNC REDDE 0. FIN-SI.
+    SI CX_PRAESENTA_FB(scena) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA framebuffer SICUT NUMERUS VALENS CONTENTUM(contextus + 56).
+    SI DMA_SYNCHRONIZA(framebuffer, DMA_AD_APPARATUM()) == 0 TUNC CONTENTUM(contextus + 80) = 8. DECLARA r0 SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena, damnum). REDDE 0. FIN-SI.
+    DECLARA vp SICUT NUMERUS VALENS CONTENTUM(contextus + 40).
+    DECLARA coda SICUT NUMERUS VALENS CONTENTUM(contextus + 48).
+    DECLARA translatum SICUT NUMERUS VALENS VG2D_TRANSFER(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM(), CONTENTUM(contextus + 64), damnum, CONTENTUM(contextus + 8)).
+    SI BGVX_RESPONSUM_RECTUM(contextus, translatum) == 0 TUNC DECLARA r1 SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena, damnum). REDDE 0. FIN-SI.
+    DECLARA purgatum SICUT NUMERUS VALENS VG2D_FLUSH(vp, coda, BGVX_MANDATUM(), BGVX_RESPONSUM(), CONTENTUM(contextus + 64), damnum).
+    SI BGVX_RESPONSUM_RECTUM(contextus, purgatum) == 0 TUNC DECLARA r2 SICUT NUMERUS VALENS CX_DAMNA_NOTA(scena, damnum). REDDE 0. FIN-SI.
+    CONTENTUM(contextus + 104) = CONTENTUM(contextus + 104) + 1.
+    CONTENTUM(contextus + 112) = CONTENTUM(contextus + 112) + GVIII_RECT_W(damnum) * GVIII_RECT_H(damnum).
+    CONTENTUM(contextus + 120) = CONTENTUM(coda + 88) - 1.
+    CONTENTUM(contextus + 80) = 0. CONTENTUM(scena + 120) = CONTENTUM(contextus + 120).
+    REDDE 1.
+FIN-FUNCTIO.
