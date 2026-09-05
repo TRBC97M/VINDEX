@@ -200,7 +200,7 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
-**Status: ACTIVUM; F1 contractum, F2 cache texturarum, F3 codam compositionis et F4 vitam resource instituunt.**
+**Status: ACTIVUM; F1 contractum, F2 cache texturarum, F3 codam compositionis, F4 vitam resource et F5 coniunctionem automaticam instituunt.**
 
 - contractus backend explicatus;
 - batching/coda communis Graphica VIII/X;
@@ -209,6 +209,7 @@ C2 instituit:
 - cache texturarum per generationem GX, cum residentia et LRU;
 - copia, compositio source-over et 9-slice per codam BX;
 - creatio, renovatio et liberatio resource texturarum in eadem coda;
+- cache et vita resource per frame transactionaliter coniunctae;
 - via GPU cum infrastructura hardware id sinit.
 
 ## X. Criterium Vista-class
@@ -444,9 +445,9 @@ sunt:
 
 Mandatum unum destinationem, fontem, recta fontis/destinationis et alpha
 continet. Executor software easdem primitivas `GX_REGION_*` adhibet ac via
-directa, ideo coda novam semanticam pixelorum non introducit. Residentia TXC
-in executor tangitur ante operationem et postea relaxatur; cache plenum
-compositionem software non impedit.
+directa, ideo coda novam semanticam pixelorum non introducit. In F3 residentia
+TXC ab executore circa operationem tangebatur; F5 eam ad constructionem batchis
+transtulit ut vita resource ante compositionem ordinetur.
 
 `CX_SCENA_RENDE` batch completum construit: fundum primum, strata visibilia
 ordine Z postea. Commit compositionis fence propriam gignit; praesentia GOP in
@@ -466,9 +467,10 @@ fence per fallback recte redditur.
 ## XIX. Contractus P16-XII-F4
 
 Quarta pars XII-F vitam resource texturarum a simplici hit/miss cache separat.
-Descriptor resource LXXX octeta continet identitatem stabilem, superficiem GX,
-generationem contenti, manubrium backendis, statum, mensuram et operationem
-pendentem. Status canonici sunt `nova`, `residens` et `liberata`.
+Descriptor resource LXXXVIII octeta continet identitatem stabilem, superficiem
+GX, generationem contenti, manubrium backendis, statum, mensuram, operationem
+pendentem et vexilla gubernationis. Status canonici sunt `nova`, `residens` et
+`liberata`.
 
 Eadem coda QVIII operationes sequentes recipit:
 
@@ -487,11 +489,32 @@ resource ordine inverso revertit, pendentia purgat, nullam fence completam
 publicat et backend statim reutilizabilem relinquit. Probatio
 `vita_texturarum_x.vindex` creationem ante compositionem, renovationem post
 mutationem GX, liberationem, abortum ante commit et rollback renovationis in
-medio commit exercet. Connexio automatica cache F2 ad has operationes consulto
-in incrementum sequens differtur, ne contractus nondum probatus compositorium
-mutet.
+medio commit exercet. F5 hunc contractum iam probatum cum cache F2 coniungit.
 
-## XIX. Invarianta
+## XX. Contractus P16-XII-F5
+
+Quinta pars XII-F petitionem texture ex executore ad constructionem batchis
+movet. `COPIA`, `COMPONE` et `NOVEM` superficiem fontis per cache generationis
+exactae petunt atque nodum usque ad finem transactionis fibulant. Primus usus
+resource automatice `TEXTURE_CREA` ante compositionem inserit; mutatio
+generationis `TEXTURE_RENOVA` ante primum usum eiusdem frame inserit. Plures
+usus eiusdem fontis unam tantum fibulam et unam mutationem resource requirunt.
+
+In commit, resource automatice gubernatae quae nodum cache exactum iam non
+habent `TEXTURE_LIBERA` post mandata compositionis accipiunt. Haec collocatio
+liberationem texturae in eodem frame iterum requisitae vetat. Si coda plena
+est, liberatio differri potest; numquam mandatum visibile iam validum propter
+solam purgationem budgetis falsum fit.
+
+Vexillum resource automaticam a resource manuali distinguit. Reconciliatio
+igitur vitam explicitam F4 non usurpat. Omnis successus, defectus executoris et
+`BX_FRAME_ABICE` fibulas TXC relaxat atque operationes pendentes purgat.
+Probatio `cache_vita_texturarum_x.vindex` ordinem mandatorum, hit sine mutatione,
+renovationem, evictionem LRU, liberationem dilatam, resurrectionem eiusdem
+resource, tutelam resource manualis, codam nimis parvam et rollback plenum
+exercet.
+
+## XXI. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -503,6 +526,8 @@ mutet.
 - memoria GX semper RGBA canonica manet; conversio GOP tantum in limite framebufferis fit;
 - effectus cacheatus non iterum calculatur nisi clavis vel generatio fontis mutatur;
 - textura fibulata non evincitur et capacitas texture sine cache non publicatur;
+- fibula cache in omni exitu transactionis relaxatur;
+- reconciliatio automatica resource manualiter gubernatam non liberat;
 - residentia software metadata est, non affirmatio memoriae GPU;
 - rastera Graphica IX in GX tantum per conversionem recti→praemultiplicati intrat;
 - 9-slice margines materialis non cum dimensione destinationis extenduntur;
@@ -512,6 +537,6 @@ mutet.
 - retargetatio semper ex statu composito praesenti incipit;
 - horologium UI non obstruit ansam input.
 
-## XX. Sententia
+## XXII. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**
