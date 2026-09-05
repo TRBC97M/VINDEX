@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Custodia ABI Graphica VIII: nulla functio plus quam VII argumenta accipit."""
+"""Custodia ABI Graphica VIII/X: nulla functio plus quam VII argumenta accipit."""
 from __future__ import annotations
 
 import re
@@ -13,7 +13,9 @@ ARCHIVA = [
     RADIX / "bibliotheca/fenestrale_interpolatio_viii.vindex",
     RADIX / "bibliotheca/fenestrale_damage_viii.vindex",
     RADIX / "bibliotheca/fenestrale_typographia_viii.vindex",
+    RADIX / "bibliotheca/fenestrale_coda_graphica.vindex",
     RADIX / "bibliotheca/fenestrale_commandos_viii.vindex",
+    RADIX / "bibliotheca/fenestrale_backend_x.vindex",
 ]
 LIMEN = 7
 FUNCTIO = re.compile(r"\bFUNCTIO\s+([A-Z0-9_]+)\b(.*?)\bFIN-FUNCTIO\.", re.S)
@@ -44,7 +46,7 @@ def principale() -> int:
         for e in errata:
             print(f"DEFECIT: {e}", file=sys.stderr)
         return 1
-    print(f"RECTE: {numerus} functiones Graphica VIII limen ABI <= {LIMEN} servant.")
+    print(f"RECTE: {numerus} functiones Graphica VIII/X limen ABI <= {LIMEN} servant.")
     return 0
 
 

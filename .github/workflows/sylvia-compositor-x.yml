@@ -8,9 +8,12 @@ on:
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_effectus_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_coda_graphica.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_backend_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/fundamentum_graphicum_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/scena_compositoris_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/backend_accelerabilis_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_compositor_x*.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_compositor_x*'
       - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
@@ -20,7 +23,10 @@ on:
       - main
     paths:
       - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_coda_graphica.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_backend_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/scena_compositoris_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/backend_accelerabilis_x.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/showroom_compositor_x*.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_compositor_x*'
       - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
@@ -76,6 +82,17 @@ jobs:
           chmod +x /tmp/compositor-x-test
           timeout 25s /tmp/compositor-x-test
           printf '%s\n' 'RECTE: Z, opacitas et damage scenae Graphica X probata sunt.'
+
+      - name: Backend accelerabilem native VINDEX exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_abi_graphica_viii.py
+          ./compilator_vindex probationes/backend_accelerabilis_x.vindex /tmp/backend-x-test
+          chmod +x /tmp/backend-x-test
+          timeout 25s /tmp/backend-x-test
+          printf '%s\n' 'RECTE: ABI, coda, fences et fallback backendis X probata sunt.'
 
       - name: Regressionem canonicam VINDEX exerce
         working-directory: 'Vindex Chat-GPT/vindex_final_v51'
