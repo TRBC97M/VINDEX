@@ -1,0 +1,116 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "bibliotheca/fenestrale_coda_graphica.vindex".
+IMPORTA "bibliotheca/fenestrale_cache_texturarum_x.vindex".
+IMPORTA "bibliotheca/fenestrale_backend_x.vindex".
+IMPORTA "bibliotheca/fenestrale_compositor_x.vindex".
+
+FUNCTIO PF3_AEQUA REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    SI a==0 || b==0 || GX_W(a)!=GX_W(b) || GX_H(a)!=GX_H(b) TUNC REDDE 0. FIN-SI.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y<GX_H(a) PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x<GX_W(a) PERFICE
+            SI GX_PIX_PM_LEGE(a,x,y)!=GX_PIX_PM_LEGE(b,x,y) TUNC REDDE 0. FIN-SI.
+            x=x+1.
+        FIN-DUM.
+        y=y+1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO PF3_DIRECTUM REDDENS NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT fundum SICUT NUMERUS.
+    ACCIPIT tabula SICUT NUMERUS.
+    ACCIPIT tessera SICUT NUMERUS.
+    DECLARA totum SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,8,6).
+    DECLARA src SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,4,3).
+    DECLARA locus SICUT NUMERUS VALENS GVIII_RECT_CREA(1,1,4,3).
+    DECLARA novem SICUT NUMERUS VALENS GVIII_RECT_CREA(4,0,4,6).
+    SI GX_REGION_COPIA(dst,fundum,totum,0,0)==0 TUNC REDDE 0. FIN-SI.
+    SI GX_REGION_COMPONE(dst,tabula,src,1,1,192)==0 TUNC REDDE 0. FIN-SI.
+    REDDE GX_NOVEM_COMPONE(dst,tessera,novem,novem,200).
+FIN-FUNCTIO.
+
+FUNCTIO PF3_CODAM REDDENS NUMERUS.
+    ACCIPIT backend SICUT NUMERUS.
+    ACCIPIT dst SICUT NUMERUS.
+    ACCIPIT fundum SICUT NUMERUS.
+    ACCIPIT tabula SICUT NUMERUS.
+    ACCIPIT tessera SICUT NUMERUS.
+    DECLARA totum SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,8,6).
+    DECLARA src SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,4,3).
+    DECLARA locus SICUT NUMERUS VALENS GVIII_RECT_CREA(1,1,4,3).
+    DECLARA novem SICUT NUMERUS VALENS GVIII_RECT_CREA(4,0,4,6).
+    SI BX_FRAME_INCIPE(backend)==0 TUNC REDDE 0. FIN-SI.
+    SI BX_COPIA_ADDE(backend,dst,fundum,totum,totum)==0 TUNC REDDE 0. FIN-SI.
+    SI BX_COMPONE_ADDE(backend,dst,tabula,src,locus,192)==0 TUNC REDDE 0. FIN-SI.
+    SI BX_NOVEM_ADDE(backend,dst,tessera,novem,novem,200)==0 TUNC REDDE 0. FIN-SI.
+    REDDE BX_FRAME_COMMITTE(backend).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA fundum SICUT NUMERUS VALENS GX_CREA(8,6).
+    DECLARA tabula SICUT NUMERUS VALENS GX_CREA(4,3).
+    DECLARA tessera SICUT NUMERUS VALENS GX_CREA(3,3).
+    DECLARA dst SICUT NUMERUS VALENS GX_CREA(8,6).
+    DECLARA rectum SICUT NUMERUS VALENS GX_CREA(8,6).
+    SI fundum==0 || tabula==0 || tessera==0 || dst==0 || rectum==0 TUNC REDDE 1. FIN-SI.
+    DECLARA f SICUT NUMERUS VALENS GX_RECT_ALPHA(fundum,GVIII_RECT_CREA(0,0,8,6),2105376,255).
+    f=GX_RECT_ALPHA(tabula,GVIII_RECT_CREA(0,0,4,3),255,128).
+    f=GX_RECT_ALPHA(tessera,GVIII_RECT_CREA(0,0,3,3),16777215,96).
+
+    DECLARA backend SICUT NUMERUS VALENS BX_CREA_SW(8).
+    SI backend==0 TUNC REDDE 2. FIN-SI.
+    DECLARA caps SICUT NUMERUS VALENS BX_CAP_COMPOSITIO()|BX_CAP_NOVEM().
+    SI (CONTENTUM(backend+16)&caps)!=caps TUNC REDDE 3. FIN-SI.
+    DECLARA cache SICUT NUMERUS VALENS BX_CACHE_INSTITUE(backend,8,1024).
+    SI cache==0 TUNC REDDE 4. FIN-SI.
+    SI PF3_CODAM(backend,dst,fundum,tabula,tessera)!=1 TUNC REDDE 5. FIN-SI.
+    DECLARA q SICUT NUMERUS VALENS BX_CODA(backend).
+    SI QVIII_NUMERUS(q)!=3 || QVIII_OPCODE(q,0)!=BX_OP_COPIA() || QVIII_OPCODE(q,1)!=BX_OP_COMPONE() || QVIII_OPCODE(q,2)!=BX_OP_NOVEM() TUNC REDDE 6. FIN-SI.
+    SI CONTENTUM(backend+72)!=3 || TXC_MISSES(cache)!=3 || TXC_HITS(cache)!=0 TUNC REDDE 7. FIN-SI.
+    SI PF3_DIRECTUM(rectum,fundum,tabula,tessera)==0 || PF3_AEQUA(dst,rectum)==0 TUNC REDDE 8. FIN-SI.
+
+    SI PF3_CODAM(backend,dst,fundum,tabula,tessera)!=2 TUNC REDDE 9. FIN-SI.
+    SI TXC_MISSES(cache)!=3 || TXC_HITS(cache)!=3 || PF3_AEQUA(dst,rectum)==0 TUNC REDDE 10. FIN-SI.
+    DECLARA miss SICUT NUMERUS VALENS TXC_MISSES(cache).
+    DECLARA inval SICUT NUMERUS VALENS TXC_INVALIDATIONES(cache).
+    f=GX_PIX_PONE(tabula,0,0,65280,255).
+    SI PF3_CODAM(backend,dst,fundum,tabula,tessera)!=3 TUNC REDDE 11. FIN-SI.
+    SI TXC_MISSES(cache)!=miss+1 || TXC_HITS(cache)!=5 || TXC_INVALIDATIONES(cache)!=inval+1 TUNC REDDE 12. FIN-SI.
+    f=PF3_DIRECTUM(rectum,fundum,tabula,tessera).
+    SI PF3_AEQUA(dst,rectum)==0 TUNC REDDE 13. FIN-SI.
+
+    DECLARA fractus SICUT NUMERUS VALENS BX_CREA_SW(2).
+    DECLARA fragilis SICUT NUMERUS VALENS GX_CREA(3,3).
+    DECLARA novem SICUT NUMERUS VALENS GVIII_RECT_CREA(4,0,4,6).
+    SI fractus==0 || fragilis==0 || BX_FRAME_INCIPE(fractus)==0 TUNC REDDE 14. FIN-SI.
+    SI BX_NOVEM_ADDE(fractus,dst,fragilis,novem,novem,255)==0 TUNC REDDE 15. FIN-SI.
+    CONTENTUM(fragilis)=2.
+    SI BX_FRAME_COMMITTE(fractus)!=0 TUNC REDDE 16. FIN-SI.
+    SI BX_FENCE_COMPLETA(fractus)!=0 || QVIII_NUMERUS(BX_CODA(fractus))!=0 || CONTENTUM(fractus+32)!=0 || BX_ERRATUM(fractus)!=6 TUNC REDDE 17. FIN-SI.
+    CONTENTUM(fragilis)=3.
+    SI BX_FRAME_INCIPE(fractus)==0 || BX_NOVEM_ADDE(fractus,dst,fragilis,novem,novem,255)==0 || BX_FRAME_COMMITTE(fractus)!=1 TUNC REDDE 18. FIN-SI.
+    SI BX_ERRATUM(fractus)!=0 || BX_FENCE_COMPLETA(fractus)!=1 TUNC REDDE 19. FIN-SI.
+
+    DECLARA parvus SICUT NUMERUS VALENS BX_CREA_SW(1).
+    DECLARA scena SICUT NUMERUS VALENS CX_SCENA_CREA(8,6,fundum).
+    SI parvus==0 || scena==0 || CX_SCENA_BACKEND_PONE(scena,parvus)==0 TUNC REDDE 20. FIN-SI.
+    SI CX_STRATUM_ADDE(scena,1,tabula,1,1,10,192)==0 TUNC REDDE 21. FIN-SI.
+    SI CX_SCENA_RENDE(scena)==0 TUNC REDDE 22. FIN-SI.
+    SI BX_FENCE_COMPLETA(parvus)!=0 || QVIII_NUMERUS(BX_CODA(parvus))!=0 || BX_ERRATUM(parvus)!=0 TUNC REDDE 23. FIN-SI.
+    DECLARA rectum2 SICUT NUMERUS VALENS GX_CREA(8,6).
+    f=GX_REGION_COPIA(rectum2,fundum,GVIII_RECT_CREA(0,0,8,6),0,0).
+    f=GX_REGION_COMPONE(rectum2,tabula,GVIII_RECT_CREA(0,0,4,3),1,1,192).
+    SI PF3_AEQUA(CX_SCENA_BACK(scena),rectum2)==0 TUNC REDDE 24. FIN-SI.
+
+    REDDE 0.
+FIN-FUNCTIO.

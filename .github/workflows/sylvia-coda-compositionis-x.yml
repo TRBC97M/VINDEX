@@ -1,0 +1,107 @@
+name: Sylvia OS — Coda compositionis X
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_graphica_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_backend_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_compositor_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/coda_compositionis_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/backend_accelerabilis_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/cache_texturarum_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/scena_compositoris_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/fenestrale_ii_purus_i.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
+      - 'documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md'
+      - 'CONSILIUM.md'
+      - '.github/workflows/sylvia-coda-compositionis-x.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  coda-compositionis:
+    name: Copia, source-over, novem et fallback probantur
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Repositorium accipe
+        uses: actions/checkout@v5
+
+      - name: QEMU et OVMF institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf file
+
+      - name: Instrumenta para
+        shell: bash
+        run: |
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_showroom_compositor_x_uefi.sh'
+
+      - name: Puritatem et ABI verifica
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 instrumenta/verifica_puritatem_sylviae.py
+          python3 'Vindex Chat-GPT/vindex_final_v51/instrumenta/verifica_abi_graphica_viii.py'
+
+      - name: Codam compositionis native exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex probationes/coda_compositionis_x.vindex /tmp/coda-compositionis-x
+          chmod +x /tmp/coda-compositionis-x
+          timeout 25s /tmp/coda-compositionis-x
+          printf '%s\n' 'RECTE: copia, source-over, novem, cache et fallback probata sunt.'
+
+      - name: Incrementa F1 et F2 iterum exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for fons in backend_accelerabilis_x cache_texturarum_x scena_compositoris_x; do
+            ./compilator_vindex "probationes/$fons.vindex" "/tmp/$fons"
+            chmod +x "/tmp/$fons"
+            timeout 25s "/tmp/$fons"
+          done
+
+      - name: Payload Sylviae integrum compila
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale-xiif3
+          file /tmp/fenestrale-xiif3 | grep -q 'ELF 64-bit'
+
+      - name: Regressionem canonicam exerce
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tests/run_tests.sh
+
+      - name: Showroom sub QEMU et OVMF
+        working-directory: 'Vindex Chat-GPT/vindex_final_v51'
+        shell: bash
+        env:
+          MORA_INITII: '18'
+          SERVA_CAPTURAS: '${{ github.workspace }}/qemu-coda-compositionis-x'
+        run: |
+          set -euo pipefail
+          bash ./instrumenta/proba_showroom_compositor_x_uefi.sh
+
+      - name: Capturam conserva
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-coda-compositionis-x-${{ github.sha }}
+          path: |
+            qemu-coda-compositionis-x/*.ppm
+            qemu-coda-compositionis-x/*.log
+          if-no-files-found: warn
+          retention-days: 7

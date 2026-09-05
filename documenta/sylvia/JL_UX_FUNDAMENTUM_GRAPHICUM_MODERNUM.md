@@ -200,13 +200,14 @@ C2 instituit:
 
 ### P16-XII-F — Backend accelerabilis
 
-**Status: ACTIVUM; F1 contractum et codam instituit, F2 cache texturarum construit.**
+**Status: ACTIVUM; F1 contractum, F2 cache texturarum et F3 codam compositionis instituunt.**
 
 - contractus backend explicatus;
 - batching/coda communis Graphica VIII/X;
 - fences et damnum post successum tantum purgatum;
 - backend software ut referentia et target injectabile probationum;
 - cache texturarum per generationem GX, cum residentia et LRU;
+- copia, compositio source-over et 9-slice per codam BX;
 - via GPU cum infrastructura hardware id sinit.
 
 ## X. Criterium Vista-class
@@ -430,7 +431,38 @@ evictionem LRU, budget, saturitatem omnibus recordis fibulatis, invalidationem
 dilatam, reusum nodorum, publicationem capacitatis BX et hits reales inter duas
 recompositiones eiusdem scenae.
 
-## XVIII. Invarianta
+## XVIII. Contractus P16-XII-F3
+
+Tertia pars XII-F compositionem ipsam, non solam praesentiam, per codam
+backend-neutram transmittit. Opcode `256` praesentiae F1 servatur; nova mandata
+sunt:
+
+- `257 COPIA` — regio GX opaca in aliam superficiem;
+- `258 COMPONE` — regio GX RGBA praemultiplicata source-over cum alpha globali;
+- `259 NOVEM` — textura 9-slice intra rectum destinationis et clip damage.
+
+Mandatum unum destinationem, fontem, recta fontis/destinationis et alpha
+continet. Executor software easdem primitivas `GX_REGION_*` adhibet ac via
+directa, ideo coda novam semanticam pixelorum non introducit. Residentia TXC
+in executor tangitur ante operationem et postea relaxatur; cache plenum
+compositionem software non impedit.
+
+`CX_SCENA_RENDE` batch completum construit: fundum primum, strata visibilia
+ordine Z postea. Commit compositionis fence propriam gignit; praesentia GOP in
+transactione sequente fence alteram gignit. Damage scenae adhuc tantum post
+praesentiam felicem purgatur.
+
+Fallback est atomicus semanticis: si capacitas codae deficit, mandatum
+reicitur aut executor compositionis deficit, frame abiicitur et eadem regio ab
+initio per viam directam recomponitur. Ita effectus partialis batchis numquam
+auctoritas finalis backbufferis fit.
+
+Probatio F3 comparat codae exitum cum via directa pixel per pixel, generationem
+cache inter tres frame, ordinem trium opcodum, fences, defectum in medio commit
+cum coda statim purgata, et casum codae de industria nimis parvae qui sine
+fence per fallback recte redditur.
+
+## XIX. Invarianta
 
 - nulla regressio in `FS_*` clientium;
 - nullum C in runtime Sylviae;
@@ -451,6 +483,6 @@ recompositiones eiusdem scenae.
 - retargetatio semper ex statu composito praesenti incipit;
 - horologium UI non obstruit ansam input.
 
-## XIX. Sententia
+## XX. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**
