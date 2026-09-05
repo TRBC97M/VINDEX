@@ -18,6 +18,7 @@ MAX_IDENTIFIER_CHARS = 32
 IDENTIFIER_RE = re.compile(r"\b[A-Za-z_][A-Za-z_0-9]*\b")
 IMPORT_RE = re.compile(r'^\s*IMPORTA\s+"([^"]+)"\s*\.\s*$')
 FUNCTION_RE = re.compile(r"^\s*FUNCTIO\s+([A-Za-z_][A-Za-z_0-9]*)\b")
+INTERRUPT_RE = re.compile(r"^\s*INTERRUPTIO\s+([A-Za-z_][A-Za-z_0-9]*)\s*\.\s*$")
 FORM_RE = re.compile(r"^\s*FORMA\s+([A-Za-z_][A-Za-z_0-9]*)\b")
 CALL_RE = re.compile(r"\b([A-Za-z_][A-Za-z_0-9]*)\s*\(")
 
@@ -28,10 +29,15 @@ BUILTIN_CALLS = {
     "CAMBIA",
     "CLAUDE",
     "CONTENTUM",
+    "CODICIS_SELECTOR",
     "CURRE",
     "EXSEQUERE",
     "EXSEQUERE_CAPTURA",
     "LEGE",
+    "IDTR_LEGE",
+    "INTERRUPTIONES_APERI",
+    "INTERRUPTIONES_CLAUDE",
+    "INTERRUPTIONES_STATUS",
     "LIBERA",
     "MITTE",
     "MMIO_LEGE8",
@@ -54,6 +60,7 @@ BUILTIN_CALLS = {
     "RESERVA_OCTETA",
     "SCRIBE_OCTETUM_AB",
     "SEDES",
+    "SEDES_FUNCTIONIS",
     "SI",
     "TUBUS",
     "UEFI_VOCA6",
@@ -232,7 +239,13 @@ class Verifier:
 
             location = Location(unit.path, number, len(original) - len(original.lstrip()) + 1)
             function = FUNCTION_RE.match(stripped)
+            interrupt = INTERRUPT_RE.match(stripped)
             form = FORM_RE.match(stripped)
+
+            if stripped.startswith("INTERRUPTIO ") and interrupt is None:
+                self.error(unit.path, number, location.column, "declaratio INTERRUPTIONIS invalida")
+            if stripped.startswith("ACCIPIT ") and any(kind == "INTERRUPTIO" for kind, _ in stack):
+                self.error(unit.path, number, location.column, "INTERRUPTIO argumenta accipere non potest")
 
             if IMPORT_RE.match(original):
                 if stack:
@@ -251,6 +264,16 @@ class Verifier:
                 if name == "PRINCIPALIS":
                     self.principalis.append(location)
                 stack.append(("FUNCTIO", location))
+            elif interrupt:
+                name = interrupt.group(1)
+                if stack:
+                    self.error(unit.path, number, location.column, "INTERRUPTIO includi non potest")
+                previous = self.functions.get(name)
+                if previous:
+                    self.error(unit.path, number, location.column, f"interruptio '{name}' iam definita apud {previous.path}:{previous.line}")
+                else:
+                    self.functions[name] = location
+                stack.append(("INTERRUPTIO", location))
             elif form:
                 name = form.group(1)
                 if stack:
@@ -271,7 +294,7 @@ class Verifier:
                 if not stack or stack[-1][0] != "SI":
                     self.error(unit.path, number, location.column, "ALITER sine SI congruente")
             elif stripped.startswith("FIN-"):
-                match = re.fullmatch(r"FIN-(FUNCTIO|FORMA|SI|DUM|PER)\.", stripped)
+                match = re.fullmatch(r"FIN-(FUNCTIO|INTERRUPTIO|FORMA|SI|DUM|PER)\.", stripped)
                 if not match:
                     self.error(unit.path, number, location.column, "clausura bloci invalida")
                 else:
@@ -301,10 +324,11 @@ class Verifier:
             if not opener_without_period and not continued and not stripped.endswith("."):
                 self.error(unit.path, number, len(original) + 1, "punctum finale deest")
 
-            declaration_prefix = bool(function)
+            declaration_prefix = bool(function or interrupt)
             for match in CALL_RE.finditer(code):
                 name = match.group(1)
-                if declaration_prefix and name == function.group(1):
+                declaration = function or interrupt
+                if declaration_prefix and declaration is not None and name == declaration.group(1):
                     continue
                 if name not in BUILTIN_CALLS:
                     self.calls.append((name, Location(unit.path, number, match.start(1) + 1)))
