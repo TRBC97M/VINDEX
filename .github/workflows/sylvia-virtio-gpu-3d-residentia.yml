@@ -9,6 +9,8 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/virtio_gpu_3d_residentia.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_septem_nidificata.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_residentia.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_virtio_gpu_3d_residentia_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
@@ -21,6 +23,8 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/virtio_gpu_3d_residentia.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_septem_nidificata.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_residentia.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_virtio_gpu_3d_residentia_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
@@ -79,6 +83,14 @@ jobs:
           set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq qemu-system-x86 qemu-system-gui qemu-system-modules-opengl ovmf libvirglrenderer1 libgl1-mesa-dri libegl-mesa0 libegl1 libgbm1 xvfb xauth file
+
+      - name: ABI argumenta nidificata sub UEFI proba
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh
+          bash instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh
 
       - name: F9-I contextum VIRGL serva
         working-directory: Vindex Chat-GPT/vindex_final_v51
