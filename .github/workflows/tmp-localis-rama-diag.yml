@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - name: Reproduce layout F9-II sine GPU
+      - name: Reproduce layout F9-II sine GPU post FNV
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -87,5 +87,5 @@ jobs:
           /tmp/localis
           rc=$?
           set -e
-          echo "LOCALIS_F9_RC=$rc"
+          echo "LOCALIS_F9_POST_FNV_RC=$rc"
           test "$rc" -eq 0
