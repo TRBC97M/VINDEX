@@ -1,0 +1,243 @@
+name: TEMP — Phase 0-bis identitas exacta
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-phase0bis-identitas-exacta.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  proba:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Construe variantem exactam in workspace
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('src/compilator_vindex.vindex')
+          s = p.read_text()
+
+          def replace_func(text, name, replacement):
+              pat = rf"FUNCTIO {re.escape(name)} REDDENS NUMERUS\.\n.*?\nFIN-FUNCTIO\."
+              out, n = re.subn(pat, replacement.strip(), text, count=1, flags=re.S)
+              if n != 1:
+                  raise SystemExit(f'{name}: substitutio={n}')
+              return out
+
+          helpers = r'''
+          // Phase 0-bis — identitas localis exacta.
+          // Signum historicum base XXXI manet ABI/metadatis; localia autem
+          // servant referentiam (initium,longitudo) fontis et comparantur
+          // littera pro littera. Nulla collisio signi potest nomen confundere.
+          FUNCTIO IDENTITAS_LOCALIS_AB_POSITIONE REDDENS NUMERUS.
+              ACCIPIT fons SICUT ACUS<LITTERA>.
+              ACCIPIT positio SICUT NUMERUS.
+              ACCIPIT n SICUT NUMERUS.
+              DECLARA finis SICUT NUMERUS VALENS positio.
+              DUM finis < n && ((fons[finis] >= 65 && fons[finis] <= 90) || (fons[finis] >= 97 && fons[finis] <= 122) || fons[finis] == 95 || (fons[finis] >= 48 && fons[finis] <= 57)) PERFICE
+                  finis = finis + 1.
+              FIN-DUM.
+              DECLARA longitudo SICUT NUMERUS VALENS finis - positio.
+              REDDE ((positio & 4294967295) << 32) | (longitudo & 4294967295).
+          FIN-FUNCTIO.
+
+          FUNCTIO EXTRAHE_ET_IDENTITAS_LOCALIS REDDENS NUMERUS.
+              ACCIPIT fons SICUT ACUS<LITTERA>.
+              ACCIPIT pos SICUT ACUS<NUMERUS>.
+              ACCIPIT n SICUT NUMERUS.
+              DECLARA initium SICUT NUMERUS VALENS CONTENTUM(pos).
+              DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
+                  CONTENTUM(pos) = CONTENTUM(pos) + 1.
+              FIN-DUM.
+              DECLARA longitudo SICUT NUMERUS VALENS CONTENTUM(pos) - initium.
+              REDDE ((initium & 4294967295) << 32) | (longitudo & 4294967295).
+          FIN-FUNCTIO.
+
+          FUNCTIO NOMINA_LOCALIA_AEQUALIA REDDENS NUMERUS.
+              ACCIPIT descriptor SICUT NUMERUS.
+              ACCIPIT a SICUT NUMERUS.
+              ACCIPIT b SICUT NUMERUS.
+              SI a == 0 || b == 0 TUNC
+                  REDDE 0.
+              FIN-SI.
+              DECLARA la SICUT NUMERUS VALENS a & 4294967295.
+              DECLARA lb SICUT NUMERUS VALENS b & 4294967295.
+              SI la != lb TUNC
+                  REDDE 0.
+              FIN-SI.
+              DECLARA ia SICUT NUMERUS VALENS (a >> 32) & 4294967295.
+              DECLARA ib SICUT NUMERUS VALENS (b >> 32) & 4294967295.
+              DECLARA basis SICUT NUMERUS VALENS CONTENTUM(descriptor + 24).
+              DECLARA k SICUT NUMERUS VALENS 0.
+              DUM k < la PERFICE
+                  SI OCTETUS_AB(basis + ia + k) != OCTETUS_AB(basis + ib + k) TUNC
+                      REDDE 0.
+                  FIN-SI.
+                  k = k + 1.
+              FIN-DUM.
+              REDDE 1.
+          FIN-FUNCTIO.
+          '''
+
+          extrahe = r'''
+          FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
+              ACCIPIT fons SICUT ACUS<LITTERA>.
+              ACCIPIT pos SICUT ACUS<NUMERUS>.
+              ACCIPIT n SICUT NUMERUS.
+              DECLARA signum SICUT NUMERUS VALENS 0.
+              DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
+                  signum = signum * 31 + fons[CONTENTUM(pos)].
+                  CONTENTUM(pos) = CONTENTUM(pos) + 1.
+              FIN-DUM.
+              REDDE signum.
+          FIN-FUNCTIO.
+          '''
+
+          signum_pos = r'''
+          FUNCTIO SIGNUM_AB_POSITIONE REDDENS NUMERUS.
+              ACCIPIT fons SICUT ACUS<LITTERA>.
+              ACCIPIT pos SICUT NUMERUS.
+              ACCIPIT n SICUT NUMERUS.
+              DECLARA signum SICUT NUMERUS VALENS 0.
+              DECLARA idx SICUT NUMERUS VALENS pos.
+              DUM idx < n && ((fons[idx] >= 65 && fons[idx] <= 90) || (fons[idx] >= 97 && fons[idx] <= 122) || fons[idx] == 95 || (fons[idx] >= 48 && fons[idx] <= 57)) PERFICE
+                  signum = signum * 31 + fons[idx].
+                  idx = idx + 1.
+              FIN-DUM.
+              REDDE signum.
+          FIN-FUNCTIO.
+          '''
+
+          # Restaurer les deux empreintes historiques, puis ajouter l'identité exacte locale.
+          s = replace_func(s, 'EXTRAHE_ET_SIGNA', extrahe)
+          marker = extrahe.strip()
+          s = s.replace(marker, helpers.strip() + '\n\n' + marker, 1)
+          s = replace_func(s, 'SIGNUM_AB_POSITIONE', signum_pos)
+
+          # Le descripteur local conserve la base du source à +24 pour comparaison exacte.
+          old = 'DECLARA descriptor_localium_contextus SICUT NUMERUS VALENS RESERVA_OCTETA(24).'
+          if s.count(old) != 1:
+              raise SystemExit(f'descriptor alloc count={s.count(old)}')
+          s = s.replace(old, 'DECLARA descriptor_localium_contextus SICUT NUMERUS VALENS RESERVA_OCTETA(32).', 1)
+
+          pat = r'(FUNCTIO INITIA_LOCA_DYNAMICA REDDENS NUMERUS\.\n\s+ACCIPIT descriptor SICUT NUMERUS\.)'
+          s, nsub = re.subn(pat, r'\1\n    ACCIPIT fons SICUT ACUS<LITTERA>.', s, count=1)
+          if nsub != 1:
+              raise SystemExit(f'INITIA param={nsub}')
+          pat = r'(FUNCTIO INITIA_LOCA_DYNAMICA REDDENS NUMERUS\..*?CONTENTUM\(descriptor \+ 16\) = 0\.)'
+          s, nsub = re.subn(pat, r'\1\n    CONTENTUM(descriptor + 24) = fons.', s, count=1, flags=re.S)
+          if nsub != 1:
+              raise SystemExit(f'INITIA fons={nsub}')
+          old = 'INITIA_LOCA_DYNAMICA(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris))'
+          if s.count(old) != 1:
+              raise SystemExit(f'INITIA call count={s.count(old)}')
+          s = s.replace(old, 'INITIA_LOCA_DYNAMICA(DESCRIPTOR_LOCALIUM_LEGE(contextus_parseris), fons)', 1)
+
+          # Les cinq lecteurs de métadonnées locales confirment le nom réel.
+          old = 'SI LOCALE_LEGE(descriptor, idx, 0) == nomen TUNC'
+          if s.count(old) != 5:
+              raise SystemExit(f'comparatores locales={s.count(old)}')
+          s = s.replace(old, 'SI NOMINA_LOCALIA_AEQUALIA(descriptor, LOCALE_LEGE(descriptor, idx, 0), nomen) == 1 TUNC')
+
+          # Expression: le premier nom peut être un champ ("campus DE variabilis")
+          # ou une variable ordinaire. On conserve donc les deux identités.
+          old = '''        DECLARA pos_ante_nomen SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
+          DECLARA nomen SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).'''
+          new = '''        DECLARA pos_ante_nomen SICUT NUMERUS VALENS CONTENTUM(pos_fontis).
+          DECLARA nomen_signum SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+          DECLARA nomen SICUT NUMERUS VALENS IDENTITAS_LOCALIS_AB_POSITIONE(fons, pos_ante_nomen, n).'''
+          if s.count(old) != 1:
+              raise SystemExit(f'expressio dual={s.count(old)}')
+          s = s.replace(old, new, 1)
+          s = s.replace('idx_struct_campus - 1, nomen).', 'idx_struct_campus - 1, nomen_signum).')
+
+          # La seconde occurrence générique est la déclaration d'une variable.
+          old = 'DECLARA nomen SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).'
+          if s.count(old) != 1:
+              raise SystemExit(f'declaratio nomen count={s.count(old)}')
+          s = s.replace(old, 'DECLARA nomen SICUT NUMERUS VALENS EXTRAHE_ET_IDENTITAS_LOCALIS(fons, pos_fontis, n).', 1)
+
+          # Noms qui sont sans ambiguïté des symboles locaux.
+          local_vars = [
+              'nomen_var_campus', 'nomen_sedes', 'nomen_tab_mitte',
+              'nomen_prospectus', 'nomen_tab_scribe', 'nomen_per',
+              'nomen_var_campus_aff', 'nomen_param_princ', 'nomen_param'
+          ]
+          for v in local_vars:
+              old1 = f'DECLARA {v} SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).'
+              old2 = f'DECLARA {v} SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, SEDES(i), n).'
+              c = s.count(old1) + s.count(old2)
+              if c != 1:
+                  raise SystemExit(f'{v}: count={c}')
+              s = s.replace(old1, f'DECLARA {v} SICUT NUMERUS VALENS EXTRAHE_ET_IDENTITAS_LOCALIS(fons, pos_fontis, n).', 1)
+              s = s.replace(old2, f'DECLARA {v} SICUT NUMERUS VALENS EXTRAHE_ET_IDENTITAS_LOCALIS(fons, SEDES(i), n).', 1)
+
+          # Affectation: même dualité champ/local que dans l'expression.
+          old = '                                        DECLARA nomen_aff SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).'
+          new = '''                                        DECLARA nomen_aff_signum SICUT NUMERUS VALENS EXTRAHE_ET_SIGNA(fons, pos_fontis, n).
+          DECLARA nomen_aff SICUT NUMERUS VALENS IDENTITAS_LOCALIS_AB_POSITIONE(fons, i, n).'''
+          if s.count(old) != 1:
+              raise SystemExit(f'aff dual={s.count(old)}')
+          s = s.replace(old, new, 1)
+          for needle in [
+              'INDEX_CAMPUS_ULTIMAE_FORMAE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), nomen_aff)',
+              'idx_campus_aff, nomen_aff, contextus_parseris)',
+              'idx_struct_campus_aff - 1, nomen_aff)'
+          ]:
+              if needle not in s:
+                  raise SystemExit(f'aff field needle missing: {needle}')
+          s = s.replace('INDEX_CAMPUS_ULTIMAE_FORMAE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), nomen_aff)', 'INDEX_CAMPUS_ULTIMAE_FORMAE(DESCRIPTOR_FORMARUM_LEGE(contextus_parseris), nomen_aff_signum)')
+          s = s.replace('idx_campus_aff, nomen_aff, contextus_parseris)', 'idx_campus_aff, nomen_aff_signum, contextus_parseris)')
+          s = s.replace('idx_struct_campus_aff - 1, nomen_aff)', 'idx_struct_campus_aff - 1, nomen_aff_signum)')
+
+          # Prospectus fluitantis: le même token peut être variable ou nom de champ.
+          old = 'DECLARA nomen_peek SICUT NUMERUS VALENS SIGNUM_AB_POSITIONE(fons, pos, n).'
+          new = '''DECLARA nomen_peek_signum SICUT NUMERUS VALENS SIGNUM_AB_POSITIONE(fons, pos, n).
+          DECLARA nomen_peek SICUT NUMERUS VALENS IDENTITAS_LOCALIS_AB_POSITIONE(fons, pos, n).'''
+          if s.count(old) != 1:
+              raise SystemExit(f'peek dual={s.count(old)}')
+          s = s.replace(old, new, 1)
+          old = 'CAMPUS_STRUCTURAE_EST_FLUITANS(descriptor_formarum, idx_struct_peek - 1, nomen_peek)'
+          if s.count(old) != 1:
+              raise SystemExit(f'peek field={s.count(old)}')
+          s = s.replace(old, 'CAMPUS_STRUCTURAE_EST_FLUITANS(descriptor_formarum, idx_struct_peek - 1, nomen_peek_signum)', 1)
+
+          for v in ['nomen_var_struct', 'nomen_ptr']:
+              old = f'DECLARA {v} SICUT NUMERUS VALENS SIGNUM_AB_POSITIONE(fons, '
+              if s.count(old) != 1:
+                  raise SystemExit(f'{v} signum count={s.count(old)}')
+              s = s.replace(old, f'DECLARA {v} SICUT NUMERUS VALENS IDENTITAS_LOCALIS_AB_POSITIONE(fons, ', 1)
+
+          p.write_text(s)
+          print('PATCH_EXACTA_OK')
+          print('FNV_RELIQUIAE=', s.count('1099511628211'))
+          PY
+
+      - name: Auto-hospitium et regressiones
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+          chmod +x /tmp/g2
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          chmod +x /tmp/g3
+          cmp /tmp/g2 /tmp/g3
+          cp /tmp/g2 ./compilator_vindex
+          ./compilator_vindex probationes/identificatores_collisionis.vindex /tmp/collisio
+          chmod +x /tmp/collisio
+          /tmp/collisio
+          ./tests/run_tests.sh | tee /tmp/tests.log
+          grep -Fq '35 probationes rectae; 0 errata.' /tmp/tests.log
+          echo 'PHASE0BIS_EXACTA_OK'
