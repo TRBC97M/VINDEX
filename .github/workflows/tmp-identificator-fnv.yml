@@ -22,40 +22,41 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
+          from textwrap import dedent
           p=Path('src/compilator_vindex.vindex')
           s=p.read_text()
           pattern=r'''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS\.\n.*?\nFIN-FUNCTIO\.'''
-          new='''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
-    ACCIPIT fons SICUT ACUS<LITTERA>.
-    ACCIPIT pos SICUT ACUS<NUMERUS>.
-    ACCIPIT n SICUT NUMERUS.
-    // Contractus compatibilitatis:
-    // - nomina typorum/functionum (maiuscula initiali) servant signum historicum base XXXI;
-    // - localia grammatice minuscula utuntur FNV-1a LXIV, ne collisiones sicut vp/x2 lateant.
-    DECLARA initium_signi SICUT NUMERUS VALENS CONTENTUM(pos).
-    DECLARA signum SICUT NUMERUS VALENS 0.
-    DECLARA identitas_localis SICUT NUMERUS VALENS 0.
-    SI initium_signi < n && fons[initium_signi] >= 97 && fons[initium_signi] <= 122 TUNC
-        identitas_localis = 1.
-        signum = 0 - 3750763034362895579.
-    FIN-SI.
-    DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
-        SI identitas_localis == 1 TUNC
-            signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.
-        ALITER
-            signum = signum * 31 + fons[CONTENTUM(pos)].
-        FIN-SI.
-        CONTENTUM(pos) = CONTENTUM(pos) + 1.
-    FIN-DUM.
-    REDDE signum.
-FIN-FUNCTIO.'''
+          new=dedent('''\
+          FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
+              ACCIPIT fons SICUT ACUS<LITTERA>.
+              ACCIPIT pos SICUT ACUS<NUMERUS>.
+              ACCIPIT n SICUT NUMERUS.
+              // Contractus compatibilitatis:
+              // - nomina typorum/functionum (maiuscula initiali) servant signum historicum base XXXI;
+              // - localia grammatice minuscula utuntur FNV-1a LXIV, ne collisiones sicut vp/x2 lateant.
+              DECLARA initium_signi SICUT NUMERUS VALENS CONTENTUM(pos).
+              DECLARA signum SICUT NUMERUS VALENS 0.
+              DECLARA identitas_localis SICUT NUMERUS VALENS 0.
+              SI initium_signi < n && fons[initium_signi] >= 97 && fons[initium_signi] <= 122 TUNC
+                  identitas_localis = 1.
+                  signum = 0 - 3750763034362895579.
+              FIN-SI.
+              DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
+                  SI identitas_localis == 1 TUNC
+                      signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.
+                  ALITER
+                      signum = signum * 31 + fons[CONTENTUM(pos)].
+                  FIN-SI.
+                  CONTENTUM(pos) = CONTENTUM(pos) + 1.
+              FIN-DUM.
+              REDDE signum.
+          FIN-FUNCTIO.''')
           ns,n=re.subn(pattern,new,s,count=1,flags=re.S)
           if n!=1:
               raise SystemExit(f'EXTRAHE_ET_SIGNA non unice inventa: {n}')
           p.write_text(ns)
           PY
 
-          # Bootstrap ab compilatore FNV diagnostico ad contractum hybridum.
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
