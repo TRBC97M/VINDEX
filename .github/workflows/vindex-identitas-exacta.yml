@@ -60,7 +60,7 @@ jobs:
 
           proba localis probationes/identificatores_collisionis.vindex ''
           proba functionum probationes/identificatores_collisionis_functionum.vindex $'111\n222'
-          proba formarum probationes/identificatores_collisionis_formarum.vindex $'11\n22\n33'
+          proba formarum probationes/identificatores_collisionis_formarum.vindex $'1.500000\n7'
           proba camporum probationes/identificatores_collisionis_camporum.vindex $'111\n222'
 
           exit "$status"
