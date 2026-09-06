@@ -96,15 +96,10 @@ FUNCTIO VG3DX_TRANSFER_AB_HOSTE REDDENS NUMERUS.
     REDDE 1.
 FIN-FUNCTIO.
 
-// Flumen exactum XXIV dword / XCVI octeta:
-//  CREATE surface; SET framebuffer(1); CLEAR color0; SET framebuffer(0); DESTROY surface.
-// Colores accipiuntur ut repraesentationes IEEE-754 f32, non ut FLUITANS VINDEX,
-// ut hoc primum contractum byte-perfectum et sine conversione implicita maneat.
-FUNCTIO VG3DX_SUBMIT_CLEAR REDDENS NUMERUS.
-    ACCIPIT vp SICUT NUMERUS.
-    ACCIPIT coda SICUT NUMERUS.
-    ACCIPIT mandatum SICUT NUMERUS.
-    ACCIPIT responsum SICUT NUMERUS.
+// Parametra clear LVI octeta: contextus, resource, surface-handle, RGBA f32 bits.
+// Separatio haec ABI compactam VINDEX servat: functio submit quinque tantum
+// argumenta accipit, sicut rectores F9-I/F9-II canonici.
+FUNCTIO VG3DX_CLEAR_PARAM REDDENS NUMERUS.
     ACCIPIT contextus SICUT NUMERUS.
     ACCIPIT identitas SICUT NUMERUS.
     ACCIPIT superficies_handle SICUT NUMERUS.
@@ -113,6 +108,30 @@ FUNCTIO VG3DX_SUBMIT_CLEAR REDDENS NUMERUS.
     ACCIPIT b_bits SICUT NUMERUS.
     ACCIPIT a_bits SICUT NUMERUS.
     SI contextus <= 0 || identitas <= 0 || superficies_handle <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS RESERVA_OCTETA(56).
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(p) = contextus. CONTENTUM(p + 8) = identitas. CONTENTUM(p + 16) = superficies_handle.
+    CONTENTUM(p + 24) = r_bits. CONTENTUM(p + 32) = g_bits. CONTENTUM(p + 40) = b_bits. CONTENTUM(p + 48) = a_bits.
+    REDDE p.
+FIN-FUNCTIO.
+
+// Flumen exactum XXIV dword / XCVI octeta:
+//  CREATE surface; SET framebuffer(1); CLEAR color0; SET framebuffer(0); DESTROY surface.
+FUNCTIO VG3DX_SUBMIT_CLEAR REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT param SICUT NUMERUS.
+    SI param == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA contextus SICUT NUMERUS VALENS CONTENTUM(param).
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(param + 8).
+    DECLARA superficies_handle SICUT NUMERUS VALENS CONTENTUM(param + 16).
+    DECLARA r_bits SICUT NUMERUS VALENS CONTENTUM(param + 24).
+    DECLARA g_bits SICUT NUMERUS VALENS CONTENTUM(param + 32).
+    DECLARA b_bits SICUT NUMERUS VALENS CONTENTUM(param + 40).
+    DECLARA a_bits SICUT NUMERUS VALENS CONTENTUM(param + 48).
+    SI contextus <= 0 || identitas <= 0 || superficies_handle <= 0 TUNC REDDE 0. FIN-SI.
     DECLARA stream SICUT NUMERUS VALENS VG3DX_CLEAR_STREAM_OCTETA().
     DECLARA mensura SICUT NUMERUS VALENS 32 + stream.
     SI VG3D_CAPUT_PRAEPARA(coda, mandatum, mensura, VG3DX_CMD_SUBMIT_3D(), contextus) == 0 TUNC REDDE 0. FIN-SI.
@@ -120,23 +139,19 @@ FUNCTIO VG3DX_SUBMIT_CLEAR REDDENS NUMERUS.
     SI DMA_SCRIBE32(regio, mandatum + 24, stream) == 0 || DMA_SCRIBE32(regio, mandatum + 28, 0) == 0 TUNC REDDE 0. FIN-SI.
     DECLARA s SICUT NUMERUS VALENS mandatum + 32.
 
-    // CREATE_OBJECT SURFACE(handle, resource, RGBA8, level 0, layer 0).
     SI DMA_SCRIBE32(regio, s, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_CREATE_OBJECT(), VG3DX_VIRGL_OBJECT_SURFACE(), 5)) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 4, superficies_handle) == 0 || DMA_SCRIBE32(regio, s + 8, identitas) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 12, VG3DR_FORMATUM_RGBA8()) == 0 || DMA_SCRIBE32(regio, s + 16, 0) == 0 || DMA_SCRIBE32(regio, s + 20, 0) == 0 TUNC REDDE 0. FIN-SI.
 
-    // SET_FRAMEBUFFER_STATE: unum color buffer, nullum depth/stencil.
     SI DMA_SCRIBE32(regio, s + 24, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_SET_FRAMEBUFFER(), 0, 3)) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 28, 1) == 0 || DMA_SCRIBE32(regio, s + 32, 0) == 0 || DMA_SCRIBE32(regio, s + 36, superficies_handle) == 0 TUNC REDDE 0. FIN-SI.
 
-    // CLEAR color0. Depth et stencil zero quia hic framebuffer ea non habet.
     SI DMA_SCRIBE32(regio, s + 40, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_CLEAR(), 0, 8)) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 44, VG3DX_PIPE_CLEAR_COLOR0()) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 48, r_bits) == 0 || DMA_SCRIBE32(regio, s + 52, g_bits) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 56, b_bits) == 0 || DMA_SCRIBE32(regio, s + 60, a_bits) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 64, 0) == 0 || DMA_SCRIBE32(regio, s + 68, 0) == 0 || DMA_SCRIBE32(regio, s + 72, 0) == 0 TUNC REDDE 0. FIN-SI.
 
-    // Framebuffer solvitur ante destructionem view, ne obiectum ligatum relinquatur.
     SI DMA_SCRIBE32(regio, s + 76, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_SET_FRAMEBUFFER(), 0, 2)) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 80, 0) == 0 || DMA_SCRIBE32(regio, s + 84, 0) == 0 TUNC REDDE 0. FIN-SI.
     SI DMA_SCRIBE32(regio, s + 88, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_DESTROY_OBJECT(), VG3DX_VIRGL_OBJECT_SURFACE(), 1)) == 0 TUNC REDDE 0. FIN-SI.
