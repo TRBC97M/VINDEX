@@ -1879,9 +1879,11 @@ FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
     ACCIPIT fons SICUT ACUS<LITTERA>.
     ACCIPIT pos SICUT ACUS<NUMERUS>.
     ACCIPIT n SICUT NUMERUS.
-    DECLARA signum SICUT NUMERUS VALENS 0.
+    // FNV-1a LXIV: vitat collisiones triviales veteris polynomiali base XXXI
+    // (exempli gratia `vp` et `x2` ambo 3770 dabant).
+    DECLARA signum SICUT NUMERUS VALENS 0 - 3750763034362895579.
     DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
-        signum = signum * 31 + fons[CONTENTUM(pos)].
+        signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.
         CONTENTUM(pos) = CONTENTUM(pos) + 1.
     FIN-DUM.
     REDDE signum.
