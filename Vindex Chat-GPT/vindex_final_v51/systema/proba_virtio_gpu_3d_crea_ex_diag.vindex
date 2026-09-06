@@ -1,0 +1,72 @@
+// TEMPORARIUM — separat RV3D_CREA_EX a wrapper automatica; ante PR delendum.
+IMPORTA "rectores/pci.vindex".
+IMPORTA "rectores/mmio.vindex".
+IMPORTA "rectores/paginae_dma.vindex".
+IMPORTA "rectores/virtio_pci.vindex".
+IMPORTA "rectores/virtio_gpu.vindex".
+IMPORTA "rectores/virtio_gpu_2d.vindex".
+IMPORTA "rectores/virtio_gpu_3d.vindex".
+IMPORTA "rectores/virtio_gpu_3d_residentia.vindex".
+IMPORTA "../bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "../bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "../bibliotheca/imago_raster_vii.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "../bibliotheca/fenestrale_residentia_virtio_3d_x.vindex".
+
+FUNCTIO DX_PARA REDDENS NUMERUS.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS PORTUS_LEGE(1021).
+    DECLARA tx SICUT NUMERUS VALENS status & 32.
+    DUM tx == 0 && mora < 100000 PERFICE
+        mora = mora + 1. status = PORTUS_LEGE(1021). tx = status & 32.
+    FIN-DUM.
+    SI tx == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DX_CHAR REDDENS NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    SI DX_PARA() == 0 TUNC REDDE 0. FIN-SI.
+    PORTUS_SCRIBE(1016, c). REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO DX_HEX REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    DECLARA hi SICUT NUMERUS VALENS (v / 16) & 15.
+    DECLARA lo SICUT NUMERUS VALENS v & 15.
+    SI hi < 10 TUNC hi = hi + 48. ALITER hi = hi + 55. FIN-SI.
+    SI lo < 10 TUNC lo = lo + 48. ALITER lo = lo + 55. FIN-SI.
+    DECLARA x SICUT NUMERUS VALENS DX_CHAR(hi). x = DX_CHAR(lo). REDDE x.
+FIN-FUNCTIO.
+
+FUNCTIO DX_NUNTIA REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA x SICUT NUMERUS VALENS DX_CHAR(86). x=DX_CHAR(73). x=DX_CHAR(79). x=DX_CHAR(88). x=DX_CHAR(32).
+    x=DX_HEX(codex). x=DX_CHAR(13). x=DX_CHAR(10). REDDE codex.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI systema == 0 TUNC REDDE DX_NUNTIA(1). FIN-SI.
+    DECLARA registrum SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI registrum == 0 || PCI_REGISTRUM_INITIA(registrum, 8) != 0 TUNC REDDE DX_NUNTIA(2). FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS PCI_ENUMERA_PER_PONTES(registrum).
+    DECLARA sedes_gpu SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        DECLARA sedes SICUT NUMERUS VALENS PCI_REGISTRUM_SEDES(registrum, i).
+        SI CONTENTUM(sedes + 24) == 6900 && CONTENTUM(sedes + 32) == 4176 TUNC sedes_gpu = sedes. FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI sedes_gpu == 0 TUNC REDDE DX_NUNTIA(3). FIN-SI.
+    DECLARA bus SICUT NUMERUS VALENS CONTENTUM(sedes_gpu).
+    DECLARA app SICUT NUMERUS VALENS CONTENTUM(sedes_gpu + 8).
+    DECLARA fn SICUT NUMERUS VALENS CONTENTUM(sedes_gpu + 16).
+    DECLARA gestor SICUT NUMERUS VALENS RV3D_CREA_EX(systema, bus, app, fn).
+    SI gestor == 0 TUNC REDDE DX_NUNTIA(4). FIN-SI.
+    SI RV3D_PARATUS(gestor) == 0 TUNC REDDE DX_NUNTIA(5). FIN-SI.
+    SI RV3D_RESTITUE(gestor) == 0 TUNC REDDE DX_NUNTIA(6). FIN-SI.
+    REDDE DX_NUNTIA(0).
+FIN-FUNCTIO.
