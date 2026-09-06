@@ -1,0 +1,37 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "systema/rectores/pci.vindex".
+IMPORTA "systema/rectores/mmio.vindex".
+IMPORTA "systema/rectores/paginae_dma.vindex".
+IMPORTA "systema/rectores/virtio_pci.vindex".
+IMPORTA "systema/rectores/virtio_gpu.vindex".
+IMPORTA "systema/rectores/virtio_gpu_2d.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d_residentia.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d_raster.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI VG3DX_CMD_TRANSFER_AB_HOSTE() != 518 || VG3DX_CMD_SUBMIT_3D() != 519 TUNC REDDE 1. FIN-SI.
+    SI VG3DX_BIND_RENDER_TARGET() != 2 || VG3DX_BIND_GRAPHICA() != 10 TUNC REDDE 2. FIN-SI.
+    SI VG3DX_VIRGL_CREATE_OBJECT() != 1 || VG3DX_VIRGL_DESTROY_OBJECT() != 3 TUNC REDDE 3. FIN-SI.
+    SI VG3DX_VIRGL_SET_FRAMEBUFFER() != 5 || VG3DX_VIRGL_CLEAR() != 7 || VG3DX_VIRGL_OBJECT_SURFACE() != 8 TUNC REDDE 4. FIN-SI.
+    SI VG3DX_PIPE_CLEAR_COLOR0() != 4 || VG3DX_F32_ZERO() != 0 || VG3DX_F32_UNUM() != 1065353216 TUNC REDDE 5. FIN-SI.
+    SI VG3DX_CLEAR_STREAM_OCTETA() != 96 TUNC REDDE 6. FIN-SI.
+    SI VG3DX_VIRGL_CAPUT(1, 8, 5) != 329729 TUNC REDDE 7. FIN-SI.
+    SI VG3DX_VIRGL_CAPUT(5, 0, 3) != 196613 TUNC REDDE 8. FIN-SI.
+    SI VG3DX_VIRGL_CAPUT(7, 0, 8) != 524295 TUNC REDDE 9. FIN-SI.
+    SI VG3DX_VIRGL_CAPUT(5, 0, 2) != 131077 TUNC REDDE 10. FIN-SI.
+    SI VG3DX_VIRGL_CAPUT(3, 8, 1) != 67587 TUNC REDDE 11. FIN-SI.
+    SI VG3DX_VIRGL_CAPUT(256, 0, 1) != 0 || VG3DX_VIRGL_CAPUT(1, 256, 1) != 0 TUNC REDDE 12. FIN-SI.
+    DECLARA t SICUT NUMERUS VALENS VG3DR_TRANSFER_PARAM(4096, 16, 8, 64, 512).
+    SI t == 0 || CONTENTUM(t) != 4096 || CONTENTUM(t + 24) != 16 || CONTENTUM(t + 32) != 8 TUNC REDDE 13. FIN-SI.
+    SI CONTENTUM(t + 48) != 64 || CONTENTUM(t + 56) != 512 TUNC REDDE 14. FIN-SI.
+    DECLARA c SICUT NUMERUS VALENS VG3DX_CLEAR_PARAM(1,4096,4096,VG3DX_F32_UNUM(),VG3DX_F32_ZERO(),VG3DX_F32_UNUM(),VG3DX_F32_UNUM()).
+    SI c == 0 || CONTENTUM(c) != 1 || CONTENTUM(c + 8) != 4096 || CONTENTUM(c + 16) != 4096 TUNC REDDE 15. FIN-SI.
+    SI CONTENTUM(c + 24) != 1065353216 || CONTENTUM(c + 32) != 0 || CONTENTUM(c + 40) != 1065353216 || CONTENTUM(c + 48) != 1065353216 TUNC REDDE 16. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

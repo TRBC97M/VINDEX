@@ -1,0 +1,163 @@
+// Sylvia OS — P16-XII-F9-III: primum raster VIRGL verum.
+// virtio_gpu_3d.vindex, virtio_gpu_3d_residentia.vindex et virtio_gpu_2d.vindex
+// ante hoc folium adsint.
+//
+// Hic gradus unam operationem deliberate angustam facit: resource RGBA8
+// render-target creatur, flumen VIRGL per SUBMIT_3D mittitur, framebuffer
+// ad superficiem ligatur, color0 purgatur, framebuffer solvitur et obiectum
+// superficiei deletur. Nulla compositio generalis nec shader adhuc fingitur.
+
+FUNCTIO VG3DX_CMD_TRANSFER_AB_HOSTE REDDENS NUMERUS.
+    REDDE 518.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DX_CMD_SUBMIT_3D REDDENS NUMERUS.
+    REDDE 519.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DX_BIND_RENDER_TARGET REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DX_BIND_GRAPHICA REDDENS NUMERUS.
+    REDDE VG3DX_BIND_RENDER_TARGET() | VG3DR_BIND_SAMPLER().
+FIN-FUNCTIO.
+
+FUNCTIO VG3DX_VIRGL_CREATE_OBJECT REDDENS NUMERUS. REDDE 1. FIN-FUNCTIO.
+FUNCTIO VG3DX_VIRGL_DESTROY_OBJECT REDDENS NUMERUS. REDDE 3. FIN-FUNCTIO.
+FUNCTIO VG3DX_VIRGL_SET_FRAMEBUFFER REDDENS NUMERUS. REDDE 5. FIN-FUNCTIO.
+FUNCTIO VG3DX_VIRGL_CLEAR REDDENS NUMERUS. REDDE 7. FIN-FUNCTIO.
+FUNCTIO VG3DX_VIRGL_OBJECT_SURFACE REDDENS NUMERUS. REDDE 8. FIN-FUNCTIO.
+FUNCTIO VG3DX_PIPE_CLEAR_COLOR0 REDDENS NUMERUS. REDDE 4. FIN-FUNCTIO.
+FUNCTIO VG3DX_F32_ZERO REDDENS NUMERUS. REDDE 0. FIN-FUNCTIO.
+FUNCTIO VG3DX_F32_UNUM REDDENS NUMERUS. REDDE 1065353216. FIN-FUNCTIO.
+FUNCTIO VG3DX_CLEAR_STREAM_OCTETA REDDENS NUMERUS. REDDE 96. FIN-FUNCTIO.
+
+// Virgl: 8 bita mandati, 8 bita generis obiecti, 16 bita longitudinis payload.
+FUNCTIO VG3DX_VIRGL_CAPUT REDDENS NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT obiectum SICUT NUMERUS.
+    ACCIPIT longitudo SICUT NUMERUS.
+    SI mandatum < 0 || mandatum > 255 || obiectum < 0 || obiectum > 255 || longitudo < 0 || longitudo > 65535 TUNC REDDE 0. FIN-SI.
+    REDDE mandatum | (obiectum << 8) | (longitudo << 16).
+FIN-FUNCTIO.
+
+FUNCTIO VG3DX_RESOURCE_CREA_RT REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI identitas <= 0 || identitas > 4294967295 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 72, VG3DR_CMD_RESOURCE_CREA(), 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, identitas) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 28, VG3DR_TARGET_TEXTURE_2D()) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 32, VG3DR_FORMATUM_RGBA8()) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 36, VG3DX_BIND_GRAPHICA()) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 40, w) == 0 || DMA_SCRIBE32(regio, mandatum + 44, h) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 48, 1) == 0 || DMA_SCRIBE32(regio, mandatum + 52, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 56, 0) == 0 || DMA_SCRIBE32(regio, mandatum + 60, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 64, VG3DR_FLAG_Y_SUPER()) == 0 || DMA_SCRIBE32(regio, mandatum + 68, 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 72, responsum, 24).
+    SI genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DX_TRANSFER_AB_HOSTE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT param SICUT NUMERUS.
+    SI contextus <= 0 || param == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(param).
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(param + 8).
+    DECLARA y SICUT NUMERUS VALENS CONTENTUM(param + 16).
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(param + 24).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(param + 32).
+    DECLARA offset SICUT NUMERUS VALENS CONTENTUM(param + 40).
+    DECLARA stride SICUT NUMERUS VALENS CONTENTUM(param + 48).
+    DECLARA layer_stride SICUT NUMERUS VALENS CONTENTUM(param + 56).
+    SI identitas <= 0 || x < 0 || y < 0 || w <= 0 || h <= 0 || offset < 0 || stride <= 0 || layer_stride <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 72, VG3DX_CMD_TRANSFER_AB_HOSTE(), contextus) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, x) == 0 || DMA_SCRIBE32(regio, mandatum + 28, y) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 32, 0) == 0 || DMA_SCRIBE32(regio, mandatum + 36, w) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 40, h) == 0 || DMA_SCRIBE32(regio, mandatum + 44, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE64(regio, mandatum + 48, offset) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 56, identitas) == 0 || DMA_SCRIBE32(regio, mandatum + 60, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 64, stride) == 0 || DMA_SCRIBE32(regio, mandatum + 68, layer_stride) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 72, responsum, 24).
+    SI genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Parametra clear LVI octeta: contextus, resource, surface-handle, RGBA f32 bits.
+// Separatio haec ABI compactam VINDEX servat: functio submit quinque tantum
+// argumenta accipit, sicut rectores F9-I/F9-II canonici.
+FUNCTIO VG3DX_CLEAR_PARAM REDDENS NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT superficies_handle SICUT NUMERUS.
+    ACCIPIT r_bits SICUT NUMERUS.
+    ACCIPIT g_bits SICUT NUMERUS.
+    ACCIPIT b_bits SICUT NUMERUS.
+    ACCIPIT a_bits SICUT NUMERUS.
+    SI contextus <= 0 || identitas <= 0 || superficies_handle <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS RESERVA_OCTETA(56).
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(p) = contextus. CONTENTUM(p + 8) = identitas. CONTENTUM(p + 16) = superficies_handle.
+    CONTENTUM(p + 24) = r_bits. CONTENTUM(p + 32) = g_bits. CONTENTUM(p + 40) = b_bits. CONTENTUM(p + 48) = a_bits.
+    REDDE p.
+FIN-FUNCTIO.
+
+// Flumen exactum XXIV dword / XCVI octeta:
+//  CREATE surface; SET framebuffer(1); CLEAR color0; SET framebuffer(0); DESTROY surface.
+FUNCTIO VG3DX_SUBMIT_CLEAR REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT param SICUT NUMERUS.
+    SI param == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA contextus SICUT NUMERUS VALENS CONTENTUM(param).
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(param + 8).
+    DECLARA superficies_handle SICUT NUMERUS VALENS CONTENTUM(param + 16).
+    DECLARA r_bits SICUT NUMERUS VALENS CONTENTUM(param + 24).
+    DECLARA g_bits SICUT NUMERUS VALENS CONTENTUM(param + 32).
+    DECLARA b_bits SICUT NUMERUS VALENS CONTENTUM(param + 40).
+    DECLARA a_bits SICUT NUMERUS VALENS CONTENTUM(param + 48).
+    SI contextus <= 0 || identitas <= 0 || superficies_handle <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA stream SICUT NUMERUS VALENS VG3DX_CLEAR_STREAM_OCTETA().
+    DECLARA mensura SICUT NUMERUS VALENS 32 + stream.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, mensura, VG3DX_CMD_SUBMIT_3D(), contextus) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, stream) == 0 || DMA_SCRIBE32(regio, mandatum + 28, 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA s SICUT NUMERUS VALENS mandatum + 32.
+
+    SI DMA_SCRIBE32(regio, s, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_CREATE_OBJECT(), VG3DX_VIRGL_OBJECT_SURFACE(), 5)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 4, superficies_handle) == 0 || DMA_SCRIBE32(regio, s + 8, identitas) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 12, VG3DR_FORMATUM_RGBA8()) == 0 || DMA_SCRIBE32(regio, s + 16, 0) == 0 || DMA_SCRIBE32(regio, s + 20, 0) == 0 TUNC REDDE 0. FIN-SI.
+
+    SI DMA_SCRIBE32(regio, s + 24, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_SET_FRAMEBUFFER(), 0, 3)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 28, 1) == 0 || DMA_SCRIBE32(regio, s + 32, 0) == 0 || DMA_SCRIBE32(regio, s + 36, superficies_handle) == 0 TUNC REDDE 0. FIN-SI.
+
+    SI DMA_SCRIBE32(regio, s + 40, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_CLEAR(), 0, 8)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 44, VG3DX_PIPE_CLEAR_COLOR0()) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 48, r_bits) == 0 || DMA_SCRIBE32(regio, s + 52, g_bits) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 56, b_bits) == 0 || DMA_SCRIBE32(regio, s + 60, a_bits) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 64, 0) == 0 || DMA_SCRIBE32(regio, s + 68, 0) == 0 || DMA_SCRIBE32(regio, s + 72, 0) == 0 TUNC REDDE 0. FIN-SI.
+
+    SI DMA_SCRIBE32(regio, s + 76, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_SET_FRAMEBUFFER(), 0, 2)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 80, 0) == 0 || DMA_SCRIBE32(regio, s + 84, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 88, VG3DX_VIRGL_CAPUT(VG3DX_VIRGL_DESTROY_OBJECT(), VG3DX_VIRGL_OBJECT_SURFACE(), 1)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, s + 92, superficies_handle) == 0 TUNC REDDE 0. FIN-SI.
+
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, mensura, responsum, 24).
+    SI genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
