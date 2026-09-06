@@ -27,6 +27,19 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Cartographia usus nominum
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          f=src/compilator_vindex.vindex
+          echo '=== FUNCTIONES ==='
+          grep -nE 'CERCA_FUNCTIONEM_DYNAMICAM|nomen_fn SICUT|nomen_adiutoris SICUT|nomen_interruptio SICUT|DESCRIPTOR_FUNCTIONUM' "$f" || true
+          echo '=== FORMAE ==='
+          grep -nE 'INDEX_STRUCTURAE|nomen_forma SICUT|nomen_int SICUT|DESCRIPTOR_FORMARUM' "$f" || true
+          echo '=== CAMPI ==='
+          grep -nE 'INDEX_CAMPUS_ULTIMAE_FORMAE|CAMPUS_STRUCTURAE_(EST_FLUITANS|MAGNITUDO|OFFSET)|nomen_campus SICUT|nomen_peek_signum SICUT' "$f" || true
+
       - name: Collisiones nominum exacta identitate distingue
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
