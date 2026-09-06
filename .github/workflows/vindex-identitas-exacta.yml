@@ -31,24 +31,43 @@ jobs:
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
-          set -euo pipefail
+          set -uo pipefail
           chmod +x ./compilator_vindex
+          status=0
 
-          ./compilator_vindex probationes/identificatores_collisionis.vindex /tmp/collisio-localis
-          chmod +x /tmp/collisio-localis
-          test "$(/tmp/collisio-localis)" = $'111\n222'
+          proba() {
+            nomen="$1"
+            fons="$2"
+            expectatum="$3"
+            destinatio="/tmp/${nomen}"
+            echo "=== ${nomen} ==="
+            if ! ./compilator_vindex "$fons" "$destinatio"; then
+              echo "COMPILATIO=ERRATUM"
+              status=1
+              return
+            fi
+            chmod +x "$destinatio"
+            if ! exitus=$("$destinatio"); then
+              codex=$?
+              echo "EXECUTIO=ERRATUM status=${codex}"
+              status=1
+              return
+            fi
+            printf 'EXITUS<<FIN\n%s\nFIN\n' "$exitus"
+            if [ "$exitus" != "$expectatum" ]; then
+              echo "ORACULUM=ERRATUM"
+              status=1
+            else
+              echo "ORACULUM=RECTUM"
+            fi
+          }
 
-          ./compilator_vindex probationes/identificatores_collisionis_functionum.vindex /tmp/collisio-functionum
-          chmod +x /tmp/collisio-functionum
-          test "$(/tmp/collisio-functionum)" = $'111\n222'
+          proba localis probationes/identificatores_collisionis.vindex $'111\n222'
+          proba functionum probationes/identificatores_collisionis_functionum.vindex $'111\n222'
+          proba formarum probationes/identificatores_collisionis_formarum.vindex $'11\n22\n33'
+          proba camporum probationes/identificatores_collisionis_camporum.vindex $'111\n222'
 
-          ./compilator_vindex probationes/identificatores_collisionis_formarum.vindex /tmp/collisio-formarum
-          chmod +x /tmp/collisio-formarum
-          test "$(/tmp/collisio-formarum)" = $'11\n22\n33'
-
-          ./compilator_vindex probationes/identificatores_collisionis_camporum.vindex /tmp/collisio-camporum
-          chmod +x /tmp/collisio-camporum
-          test "$(/tmp/collisio-camporum)" = $'111\n222'
+          exit "$status"
 
       - name: Auto-hospitium fixum conserva
         working-directory: Vindex Chat-GPT/vindex_final_v51
