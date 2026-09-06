@@ -58,3 +58,26 @@ jobs:
           ./compilator_vindex tests/casus/salve.vindex /tmp/salve-uefi.exe uefi
           file /tmp/salve.exe | grep -F 'PE32+'
           objdump -p /tmp/salve-uefi.exe | grep -E 'Subsystem.*EFI application'
+
+      - name: QEMU, OVMF et virglrenderer institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 qemu-system-gui qemu-system-modules-opengl ovmf libvirglrenderer1 libgl1-mesa-dri libegl-mesa0 libegl1 libgbm1 xvfb xauth file
+
+      - name: F9-I contextum VIRGL serva
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x instrumenta/proba_virtio_gpu_3d_053.sh
+          bash instrumenta/proba_virtio_gpu_3d_053.sh
+
+      - name: F9-II residentiam Graphica X realem proba
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x instrumenta/proba_virtio_gpu_3d_residentia_053.sh
+          bash instrumenta/proba_virtio_gpu_3d_residentia_053.sh
