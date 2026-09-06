@@ -1,4 +1,4 @@
-name: TEMP — identificatores FNV-1a LXIII
+name: TEMP — identitas localis fortis
 on:
   push:
     paths:
@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Limita signaturam, auto-hospita et recertifica
+      - name: Separa identitatem localem ab signo historico
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -21,15 +21,41 @@ jobs:
           chmod +x ./compilator_vindex
           python3 - <<'PY'
           from pathlib import Path
+          import re
           p=Path('src/compilator_vindex.vindex')
           s=p.read_text()
-          old='''        signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.\n        CONTENTUM(pos) = CONTENTUM(pos) + 1.\n    FIN-DUM.\n    REDDE signum.\nFIN-FUNCTIO.'''
-          new='''        signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.\n        CONTENTUM(pos) = CONTENTUM(pos) + 1.\n    FIN-DUM.\n    // Descriptorum historicum nomen non-negativum exspectat.\n    signum = signum & 9223372036854775807.\n    REDDE signum.\nFIN-FUNCTIO.'''
-          if s.count(old)!=1:
-              raise SystemExit(f'cauda FNV non unica: {s.count(old)}')
-          p.write_text(s.replace(old,new))
+          pattern=r'''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS\.\n.*?\nFIN-FUNCTIO\.'''
+          new='''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
+    ACCIPIT fons SICUT ACUS<LITTERA>.
+    ACCIPIT pos SICUT ACUS<NUMERUS>.
+    ACCIPIT n SICUT NUMERUS.
+    // Contractus compatibilitatis:
+    // - nomina typorum/functionum (maiuscula initiali) servant signum historicum base XXXI;
+    // - localia grammatice minuscula utuntur FNV-1a LXIV, ne collisiones sicut vp/x2 lateant.
+    DECLARA initium_signi SICUT NUMERUS VALENS CONTENTUM(pos).
+    DECLARA signum SICUT NUMERUS VALENS 0.
+    DECLARA identitas_localis SICUT NUMERUS VALENS 0.
+    SI initium_signi < n && fons[initium_signi] >= 97 && fons[initium_signi] <= 122 TUNC
+        identitas_localis = 1.
+        signum = 0 - 3750763034362895579.
+    FIN-SI.
+    DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE
+        SI identitas_localis == 1 TUNC
+            signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.
+        ALITER
+            signum = signum * 31 + fons[CONTENTUM(pos)].
+        FIN-SI.
+        CONTENTUM(pos) = CONTENTUM(pos) + 1.
+    FIN-DUM.
+    REDDE signum.
+FIN-FUNCTIO.'''
+          ns,n=re.subn(pattern,new,s,count=1,flags=re.S)
+          if n!=1:
+              raise SystemExit(f'EXTRAHE_ET_SIGNA non unice inventa: {n}')
+          p.write_text(ns)
           PY
 
+          # Bootstrap ab compilatore FNV diagnostico ad contractum hybridum.
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
@@ -53,7 +79,7 @@ jobs:
           echo 'REGRESSIONES_35_35=RECTE'
           git diff --check
 
-      - name: Committe correctionem LXIII
+      - name: Committe correctionem si omnia viridia sunt
         shell: bash
         run: |
           set -euo pipefail
@@ -61,5 +87,5 @@ jobs:
           git config user.email 'trbc97m@protonmail.com'
           git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
                   'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          git commit -m 'Compilator: serva signaturas identificatorum positivas'
+          git commit -m 'Compilator: distingue localia sine ABI frangenda'
           git push origin HEAD:chatgpt/p16-xii-f9-ii-residentia-3d
