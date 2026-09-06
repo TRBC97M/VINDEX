@@ -1,0 +1,148 @@
+// P16-XII-F9-III — SUBMIT_3D raster verus et aequivalentia pixelorum.
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "systema/rectores/pci.vindex".
+IMPORTA "systema/rectores/mmio.vindex".
+IMPORTA "systema/rectores/paginae_dma.vindex".
+IMPORTA "systema/rectores/virtio_pci.vindex".
+IMPORTA "systema/rectores/virtio_gpu.vindex".
+IMPORTA "systema/rectores/virtio_gpu_2d.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d_residentia.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d_raster.vindex".
+IMPORTA "bibliotheca/fenestrale_residentia_virtio_3d_x.vindex".
+IMPORTA "bibliotheca/fenestrale_raster_virtio_3d_x.vindex".
+
+FUNCTIO F11_VACUA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS. ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE SCRIBE_OCTETUM_AB(basis + i, 0). i = i + 1. FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+FUNCTIO F11_CIFRA REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS. SI v < 10 TUNC REDDE 48 + v. FIN-SI. REDDE 55 + v.
+FIN-FUNCTIO.
+FUNCTIO F11_LIT REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS. ACCIPIT p SICUT NUMERUS. ACCIPIT c SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(b + p, c). REDDE 2.
+FIN-FUNCTIO.
+FUNCTIO F11_HEX8 REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS. ACCIPIT p SICUT NUMERUS. ACCIPIT v SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(b + p, F11_CIFRA((v / 16) & 15)).
+    SCRIBE_OCTETUM_AB(b + p + 2, F11_CIFRA(v & 15)). REDDE 4.
+FIN-FUNCTIO.
+FUNCTIO F11_HEX32 REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS. ACCIPIT p SICUT NUMERUS. ACCIPIT v SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 7.
+    DUM i >= 0 PERFICE
+        SCRIBE_OCTETUM_AB(b + p + (7 - i) * 2, F11_CIFRA((v >> (i * 4)) & 15)).
+        i = i - 1.
+    FIN-DUM.
+    REDDE 16.
+FIN-FUNCTIO.
+FUNCTIO F11_SER_PARA REDDENS NUMERUS.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS PORTUS_LEGE(1021).
+    DECLARA transmittens SICUT NUMERUS VALENS status & 32.
+    DUM transmittens == 0 && mora < 100000 PERFICE
+        mora = mora + 1. status = PORTUS_LEGE(1021). transmittens = status & 32.
+    FIN-DUM.
+    SI transmittens == 0 TUNC REDDE 0. FIN-SI. REDDE 1.
+FIN-FUNCTIO.
+FUNCTIO F11_SER_SCRIBE REDDENS NUMERUS.
+    ACCIPIT catena SICUT NUMERUS. SI catena == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM OCTETUS_AB(catena + i) != 0 PERFICE
+        SI F11_SER_PARA() == 0 TUNC REDDE 0. FIN-SI.
+        PORTUS_SCRIBE(1016, OCTETUS_AB(catena + i)). i = i + 2.
+    FIN-DUM.
+    REDDE i / 2.
+FIN-FUNCTIO.
+FUNCTIO F11_ERR REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA b SICUT NUMERUS VALENS RESERVA_OCTETA(48). SI b == 0 TUNC REDDE codex. FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS F11_VACUA(b, 48). DECLARA p SICUT NUMERUS VALENS 0.
+    p = p + F11_LIT(b,p,86). p = p + F11_LIT(b,p,73). p = p + F11_LIT(b,p,79). p = p + F11_LIT(b,p,49). p = p + F11_LIT(b,p,49).
+    p = p + F11_LIT(b,p,32). p = p + F11_LIT(b,p,69). p = p + F11_LIT(b,p,82). p = p + F11_LIT(b,p,82). p = p + F11_HEX8(b,p,codex).
+    p = p + F11_LIT(b,p,13). p = p + F11_LIT(b,p,10).
+    DECLARA w SICUT NUMERUS VALENS F11_SER_SCRIBE(b). REDDE codex.
+FIN-FUNCTIO.
+FUNCTIO F11_ABORTA REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS. ACCIPIT gestor SICUT NUMERUS. ACCIPIT target SICUT NUMERUS.
+    SI target != 0 TUNC DECLARA a SICUT NUMERUS VALENS RX3D_LIBERA(target). FIN-SI.
+    SI gestor != 0 TUNC DECLARA b SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). FIN-SI.
+    REDDE F11_ERR(codex).
+FIN-FUNCTIO.
+FUNCTIO F11_NUNTIA REDDENS NUMERUS.
+    ACCIPIT baseline SICUT NUMERUS. ACCIPIT submissa SICUT NUMERUS. ACCIPIT pixela SICUT NUMERUS.
+    ACCIPIT discrepantia SICUT NUMERUS. ACCIPIT fences SICUT NUMERUS.
+    DECLARA b SICUT NUMERUS VALENS RESERVA_OCTETA(320). SI b == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS F11_VACUA(b,320). DECLARA p SICUT NUMERUS VALENS 0.
+    p=p+F11_LIT(b,p,86). p=p+F11_LIT(b,p,73). p=p+F11_LIT(b,p,79). p=p+F11_LIT(b,p,49). p=p+F11_LIT(b,p,49).
+    p=p+F11_LIT(b,p,32). p=p+F11_LIT(b,p,66). p=p+F11_HEX32(b,p,baseline).
+    p=p+F11_LIT(b,p,32). p=p+F11_LIT(b,p,83). p=p+F11_HEX32(b,p,submissa).
+    p=p+F11_LIT(b,p,32). p=p+F11_LIT(b,p,80). p=p+F11_HEX32(b,p,pixela).
+    p=p+F11_LIT(b,p,32). p=p+F11_LIT(b,p,77). p=p+F11_HEX32(b,p,discrepantia).
+    p=p+F11_LIT(b,p,32). p=p+F11_LIT(b,p,70). p=p+F11_HEX32(b,p,fences).
+    p=p+F11_LIT(b,p,32). p=p+F11_LIT(b,p,82). p=p+F11_LIT(b,p,13). p=p+F11_LIT(b,p,10).
+    REDDE F11_SER_SCRIBE(b).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI systema == 0 TUNC REDDE F11_ERR(1). FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS RV3D_CREA_AUTOMATICE(systema).
+    SI gestor == 0 TUNC REDDE F11_ERR(2). FIN-SI.
+    DECLARA target SICUT NUMERUS VALENS RX3D_CREA(gestor,16,8).
+    SI target == 0 TUNC REDDE F11_ABORTA(3,gestor,0). FIN-SI.
+
+    // Readback ante raster: omnia CXXVIII pixela nigra esse debent.
+    SI RX3D_LEGE_AB_HOSTE(target) == 0 TUNC REDDE F11_ABORTA(4,gestor,target). FIN-SI.
+    DECLARA baseline SICUT NUMERUS VALENS 0.
+    DECLARA y SICUT NUMERUS VALENS 0.
+    DUM y < 8 PERFICE
+        DECLARA x SICUT NUMERUS VALENS 0.
+        DUM x < 16 PERFICE
+            SI RX3D_PIXEL(target,x,y) != 0 TUNC baseline = baseline + 1. FIN-SI.
+            x = x + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+    SI baseline != 0 TUNC REDDE F11_ABORTA(5,gestor,target). FIN-SI.
+
+    DECLARA coda SICUT NUMERUS VALENS CONTENTUM(gestor + 8).
+    DECLARA fence_ante SICUT NUMERUS VALENS CONTENTUM(coda + 88).
+    SI RX3D_CLEAR_CANONICUS(target) == 0 TUNC REDDE F11_ABORTA(6,gestor,target). FIN-SI.
+    SI RX3D_LEGE_AB_HOSTE(target) == 0 TUNC REDDE F11_ABORTA(7,gestor,target). FIN-SI.
+    DECLARA fences SICUT NUMERUS VALENS CONTENTUM(coda + 88) - fence_ante.
+
+    // Oraculum software Graphica X: eadem superficies opace magenta.
+    DECLARA oraculum SICUT NUMERUS VALENS GX_CREA(16,8).
+    SI oraculum == 0 TUNC REDDE F11_ABORTA(8,gestor,target). FIN-SI.
+    DECLARA rectum SICUT NUMERUS VALENS GVIII_RECT_CREA(0,0,16,8).
+    SI GX_RECT_ALPHA(oraculum,rectum,16711935,255) == 0 TUNC REDDE F11_ABORTA(9,gestor,target). FIN-SI.
+
+    DECLARA discrepantia SICUT NUMERUS VALENS 0.
+    y = 0.
+    DUM y < 8 PERFICE
+        DECLARA x2 SICUT NUMERUS VALENS 0.
+        DUM x2 < 16 PERFICE
+            SI RX3D_PIXEL(target,x2,y) != GX_PIX_PM_LEGE(oraculum,x2,y) TUNC discrepantia = discrepantia + 1. FIN-SI.
+            x2 = x2 + 1.
+        FIN-DUM.
+        y = y + 1.
+    FIN-DUM.
+    SI discrepantia != 0 || RX3D_AEQUALIS_GX(target,oraculum) == 0 TUNC REDDE F11_ABORTA(10,gestor,target). FIN-SI.
+    SI RX3D_SUBMISA(target) != 1 || RX3D_LECTA(target) != 2 || fences != 2 TUNC REDDE F11_ABORTA(11,gestor,target). FIN-SI.
+
+    DECLARA lib_target SICUT NUMERUS VALENS RX3D_LIBERA(target).
+    SI lib_target == 0 TUNC REDDE F11_ABORTA(12,gestor,0). FIN-SI.
+    DECLARA restitutum SICUT NUMERUS VALENS RV3D_RESTITUE(gestor).
+    SI restitutum == 0 TUNC REDDE F11_ERR(13). FIN-SI.
+    DECLARA nuntiatum SICUT NUMERUS VALENS F11_NUNTIA(baseline,1,128,discrepantia,fences).
+    REDDE 0.
+FIN-FUNCTIO.
