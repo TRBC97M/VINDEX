@@ -13,7 +13,7 @@ Conventio canonica hodierna igitur est:
 - **unum tantum directorium `ARCHIVUM/` in radice**;
 - omnia archiva Claude et ChatGPT in hoc directorio manent;
 - `INDEX.md`, `LEGE-ME.md` atque instrumenta sustentationis in eodem directorio manent;
-- dispositio transitoria, qua multi fasciculi `ARCHIVUM-*` directe in radice iacebant, **non restituenda est** nisi Numi novam directivam explicitam det.
+- dispositio transitoria, qua multi fasciculi `ARCHIVUM-*` directe in radice iacebant, **non restituenda est** nisi auctor principalis, sub nominibus Numi, TRBC97M vel Morgan agnitus, novam directivam explicitam det.
 
 Haec nota eo ipso scripta est, ne futurus agens gradum historicum cum conventione finali confundat.
 
@@ -33,7 +33,7 @@ Haec indicia utilitatem practicam directam habent. Sectiones VIII et IX `RELATIO
 
 ## Quae servantur
 
-- nuntii Numi, cum in fonte praesto sint;
+- nuntii auctoris principalis, sub nominibus Numi, TRBC97M vel Morgan, cum in fonte praesto sint;
 - responsa textualia agentis;
 - una linea `[action]` pro unaquaque operatione coordinationi utili;
 - decreta, viae reiectae, oracula atque eventus qui impediunt ne idem opus denuo incipiatur.
