@@ -1,4 +1,4 @@
-name: TEMP — identificatores FNV-1a
+name: TEMP — identificatores FNV-1a LXIII
 on:
   push:
     paths:
@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Corrige empreintam et certifica
+      - name: Limita signaturam, auto-hospita et recertifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -23,54 +23,13 @@ jobs:
           from pathlib import Path
           p=Path('src/compilator_vindex.vindex')
           s=p.read_text()
-          old='''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.\n    ACCIPIT fons SICUT ACUS<LITTERA>.\n    ACCIPIT pos SICUT ACUS<NUMERUS>.\n    ACCIPIT n SICUT NUMERUS.\n    DECLARA signum SICUT NUMERUS VALENS 0.\n    DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE\n        signum = signum * 31 + fons[CONTENTUM(pos)].\n        CONTENTUM(pos) = CONTENTUM(pos) + 1.\n    FIN-DUM.\n    REDDE signum.\nFIN-FUNCTIO.'''
-          new='''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.\n    ACCIPIT fons SICUT ACUS<LITTERA>.\n    ACCIPIT pos SICUT ACUS<NUMERUS>.\n    ACCIPIT n SICUT NUMERUS.\n    // FNV-1a LXIV: vitat collisiones triviales veteris polynomiali base XXXI\n    // (exempli gratia `vp` et `x2` ambo 3770 dabant).\n    DECLARA signum SICUT NUMERUS VALENS 0 - 3750763034362895579.\n    DUM CONTENTUM(pos) < n && ((fons[CONTENTUM(pos)] >= 65 && fons[CONTENTUM(pos)] <= 90) || (fons[CONTENTUM(pos)] >= 97 && fons[CONTENTUM(pos)] <= 122) || fons[CONTENTUM(pos)] == 95 || (fons[CONTENTUM(pos)] >= 48 && fons[CONTENTUM(pos)] <= 57)) PERFICE\n        signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.\n        CONTENTUM(pos) = CONTENTUM(pos) + 1.\n    FIN-DUM.\n    REDDE signum.\nFIN-FUNCTIO.'''
+          old='''        signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.\n        CONTENTUM(pos) = CONTENTUM(pos) + 1.\n    FIN-DUM.\n    REDDE signum.\nFIN-FUNCTIO.'''
+          new='''        signum = (signum ^ fons[CONTENTUM(pos)]) * 1099511628211.\n        CONTENTUM(pos) = CONTENTUM(pos) + 1.\n    FIN-DUM.\n    // Descriptorum historicum nomen non-negativum exspectat.\n    signum = signum & 9223372036854775807.\n    REDDE signum.\nFIN-FUNCTIO.'''
           if s.count(old)!=1:
-              raise SystemExit('EXTRAHE_ET_SIGNA vetus non unicus')
+              raise SystemExit(f'cauda FNV non unica: {s.count(old)}')
           p.write_text(s.replace(old,new))
           PY
 
-          cat > probationes/identificatores_collisionis.vindex <<'VX'
-          // Regressio: vetus hash base XXXI confundebat `vp` et `x2` (3770).
-          FUNCTIO RECTE REDDENS NUMERUS.
-              REDDE 1.
-          FIN-FUNCTIO.
-
-          FUNCTIO COLLISIO_VP_X2 REDDENS NUMERUS.
-              ACCIPIT systema SICUT NUMERUS.
-              ACCIPIT bus SICUT NUMERUS.
-              ACCIPIT apparatus SICUT NUMERUS.
-              ACCIPIT functio SICUT NUMERUS.
-              DECLARA gestor SICUT NUMERUS VALENS 9001.
-              DECLARA pura SICUT NUMERUS VALENS 1.
-              DECLARA vp SICUT NUMERUS VALENS 123456.
-              SI RECTE()==0 TUNC DECLARA x0 SICUT NUMERUS VALENS 0. REDDE 40. FIN-SI.
-              DECLARA oblatae SICUT NUMERUS VALENS 257.
-              SI RECTE()==0 TUNC DECLARA x1 SICUT NUMERUS VALENS 0. REDDE 41. FIN-SI.
-              DECLARA acceptae SICUT NUMERUS VALENS oblatae.
-              SI RECTE()==0 TUNC DECLARA x2 SICUT NUMERUS VALENS 0. REDDE 42. FIN-SI.
-              SI vp!=123456 TUNC REDDE 24. FIN-SI.
-              SI gestor!=9001 || pura!=1 || oblatae!=257 || acceptae!=257 TUNC REDDE 25. FIN-SI.
-              SI systema!=11 || bus!=22 || apparatus!=33 || functio!=44 TUNC REDDE 26. FIN-SI.
-              REDDE 0.
-          FIN-FUNCTIO.
-
-          FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              REDDE COLLISIO_VP_X2(11,22,33,44).
-          FIN-FUNCTIO.
-          VX
-
-          # Prouve d'abord le défaut du compilateur canonique précédent.
-          ./compilator_vindex probationes/identificatores_collisionis.vindex /tmp/collisio-vetus
-          chmod +x /tmp/collisio-vetus
-          set +e
-          /tmp/collisio-vetus
-          rc_vetus=$?
-          set -e
-          echo "COLLISIO_VETUS_RC=$rc_vetus"
-          test "$rc_vetus" -eq 24
-
-          # Auto-hebergement avec la nouvelle empreinte.
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
@@ -78,26 +37,29 @@ jobs:
           cmp /tmp/g2 /tmp/g3
           echo 'FIXPOINT_G2_G3=RECTE'
 
-          /tmp/g2 probationes/identificatores_collisionis.vindex /tmp/collisio-nova
-          chmod +x /tmp/collisio-nova
-          /tmp/collisio-nova
-          echo 'COLLISIO_NOVA_RC=0'
+          /tmp/g2 probationes/identificatores_collisionis.vindex /tmp/collisio
+          chmod +x /tmp/collisio
+          /tmp/collisio
+          echo 'COLLISIO_VP_X2=RECTE'
 
           cp /tmp/g2 ./compilator_vindex
           chmod +x ./compilator_vindex
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g4
           cmp ./compilator_vindex /tmp/g4
           echo 'FIXPOINT_CANONICUS=RECTE'
+
+          ./tests/run_tests.sh | tee /tmp/tests.log
+          grep -Fq '35 probationes rectae; 0 errata.' /tmp/tests.log
+          echo 'REGRESSIONES_35_35=RECTE'
           git diff --check
 
-      - name: Committe correctionem diagnosticam
+      - name: Committe correctionem LXIII
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'TRBC97M'
           git config user.email 'trbc97m@protonmail.com'
           git add 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' \
-                  'Vindex Chat-GPT/vindex_final_v51/probationes/identificatores_collisionis.vindex'
-          git commit -m 'Compilator: evita collisionem identificatorum vp/x2'
+                  'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+          git commit -m 'Compilator: serva signaturas identificatorum positivas'
           git push origin HEAD:chatgpt/p16-xii-f9-ii-residentia-3d
