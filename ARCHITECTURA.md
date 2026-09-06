@@ -128,6 +128,7 @@ Compilator hodiernus:
 - `&&` et `||` aestimationem brevem veram cum prioritate `&&` ante `||` habent;
 - `&` et `|` operationes bitarias separatas servant;
 - commentaria `//` intra corpora functionum canonice tractat.
+- identitates symbolorum usoris exactas servat: hash historicum ad filtrum adhiberi potest, sed aequalitas semantica longitudinem et octeta nominis exacta requirit; collisio hash numquam symbola diversa eadem facere potest.
 
 ELF, PE/Win64 et UEFI sunt targeta canonica x86-64, quamquam singula custodias ambitus proprias habent.
 
