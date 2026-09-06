@@ -1,0 +1,90 @@
+name: VINDEX — Identitas exacta Phase 0-bis
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - 'chatgpt/phase0bis-identitas-exacta'
+    paths:
+      - '.github/workflows/vindex-identitas-exacta.yml'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/identificatores_collisionis*.vindex'
+  pull_request:
+    paths:
+      - '.github/workflows/vindex-identitas-exacta.yml'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/identificatores_collisionis*.vindex'
+
+permissions:
+  contents: read
+
+jobs:
+  identitas:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Auto-hospitium fixum certifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./compilator_vindex
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+          chmod +x /tmp/g2
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          chmod +x /tmp/g3
+          cmp ./compilator_vindex /tmp/g2
+          cmp /tmp/g2 /tmp/g3
+          echo 'RECTE: G1 = G2 = G3.'
+
+      - name: Collisiones nominum exacta identitate distingue
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -uo pipefail
+          status=0
+
+          proba() {
+            nomen="$1"
+            fons="$2"
+            expectatum="$3"
+            destinatio="/tmp/${nomen}"
+            echo "=== ${nomen} ==="
+            if ! ./compilator_vindex "$fons" "$destinatio"; then
+              echo "COMPILATIO=ERRATUM"
+              status=1
+              return
+            fi
+            chmod +x "$destinatio"
+            set +e
+            exitus=$("$destinatio")
+            codex=$?
+            set -e
+            printf 'EXITUS_STATUS=%s\nEXITUS<<FIN\n%s\nFIN\n' "$codex" "$exitus"
+            if [ "$codex" -ne 0 ] || [ "$exitus" != "$expectatum" ]; then
+              echo "ORACULUM=ERRATUM"
+              status=1
+            else
+              echo "ORACULUM=RECTUM"
+            fi
+          }
+
+          proba localis probationes/identificatores_collisionis.vindex ''
+          proba functionum probationes/identificatores_collisionis_functionum.vindex $'111\n222'
+          proba formarum probationes/identificatores_collisionis_formarum.vindex $'1.500000\n7'
+          proba camporum probationes/identificatores_collisionis_camporum.vindex $'111\n222'
+
+          exit "$status"
+
+      - name: Regressionem canonicam conserva
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./tests/run_tests.sh | tee /tmp/tests.log
+          grep -Fq '35 probationes rectae; 0 errata.' /tmp/tests.log

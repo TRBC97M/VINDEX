@@ -1,0 +1,14 @@
+// Regressio Phase 0-bis: campi `vp` et `x2` idem signum base XXXI (3770) habent.
+FORMA PROBA_COLLISIONIS.
+    CAMPUS vp SICUT NUMERUS.
+    CAMPUS x2 SICUT NUMERUS.
+FIN-FORMA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA p SICUT PROBA_COLLISIONIS.
+    vp DE p = 111.
+    x2 DE p = 222.
+    PROCLAMA vp DE p.
+    PROCLAMA x2 DE p.
+    REDDE 0.
+FIN-FUNCTIO.

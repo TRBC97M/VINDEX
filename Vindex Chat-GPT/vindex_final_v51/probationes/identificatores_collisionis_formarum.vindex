@@ -1,0 +1,19 @@
+// Regressio Phase 0-bis: formae `AP` et `B1` idem signum base XXXI (2095) habent.
+// Typi campi consulto differunt ut confusio formarum observabilis sit.
+FORMA AP.
+    CAMPUS valor SICUT FLUITANS.
+FIN-FORMA.
+
+FORMA B1.
+    CAMPUS valor SICUT NUMERUS.
+FIN-FORMA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA prima SICUT AP.
+    DECLARA secunda SICUT B1.
+    valor DE prima = 1.5.
+    valor DE secunda = 7.
+    PROCLAMA valor DE prima.
+    PROCLAMA valor DE secunda.
+    REDDE 0.
+FIN-FUNCTIO.

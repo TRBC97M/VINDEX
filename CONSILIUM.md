@@ -80,6 +80,7 @@ Haec Officina ecosystematis VINDEX est, non eadem applicatio ac OFFICINA SYLVIAE
 - Asseta Premium I in showroom et, per P16-XI-B, in Bureau/INITIUM shellis realis;
 - fallback atlas P16-VII sine assetis premium;
 - P19-I/P19-II per duo initia eiusdem imaginis.
+- P9 Phase 0-bis identitatem exactam localium, functionum, formarum et camporum contra collisiones hash base XXXI.
 
 Captura framebuffer QEMU/OVMF vera est auctoritas executionis visualis. Imago conceptus vel generata probationem runtime numquam substituit.
 
@@ -102,6 +103,8 @@ Iam canonica sunt collectiones dynamicae, series contiguae, segmenta mutuata, UT
 Robustitas parseris etiam canonica est pro defectibus P9 nuper repertis: #180 claves clausurae orphanas reicit, #181 campum generalem propagationis erroris et parenthesim non clausam instituit, atque #187 `FUNCTIO PRINCIPALIS` duplicatam et `FIN-FUNCTIO` absentem reicit. Diagnostica originem veram inter fontem principalem et `IMPORTA` servant.
 
 **Debitum historicum #134 non iam reproducitur.** Probatio die IV mensis Septembris MMXXVI contra `main` post #187 identificatores longitudinum XXXII, C, CCL, CCC, D et MM litterarum recte compilavit atque executa est. Duo nomina circiter CDV litterarum, quorum primae CD litterae communes erant, distincta manserunt (`11`, `22`). #168 ideo sine fusione clausa est: patch vetus et eius limites mensurati statui compilatoris hodierno non iam respondent.
+
+**Phase 0-bis — identitas symbolorum exacta:** `CANONIZANDUM per #198`. Collisiones hash base XXXI vere reproductae sunt pro functionibus (`AP`/`B1`), formis (`AP`/`B1`) et campis (`vp`/`x2`), dum localia F9-II iam recta manebant. Correctio identitatem compactam `[positio:32 | longitudo:32]` generalizat; hash manet filtrum, sed octeta exacta auctoritatem identitatis habent. Probationes #198 servant `G1 = G2 = G3`, quattuor oracula collisionum et XXXV regressiones canonicas. Proximum post canonizationem est `STRUCTURA I` secundum `CONCEPTIO-STRUCTURA-REVISA.md`.
 
 Candidata futura: typi maturiores, structurae/uniones/enumerationes, functiones ut valores, moduli, ABI explicitius, ELF multi-`PT_LOAD`, graphemata et normalizatio Unicode.
 
@@ -180,7 +183,7 @@ Hoc stratum viam ad backend acceleratum P16-XII-F aperit: regiones MMIO apparatu
 
 ## P16 — Forma, JL-UX et capacitas graphica
 
-**Status:** P16-I–XI-B et P16-XII-A–F9-I `PERFECTUM`; **P16-XII-F9-II `PARATUM`**.
+**Status:** P16-I–XI-B et P16-XII-A–F9-III `PERFECTUM`; **P16-XII-F9-IV `PARATUM`**.
 
 ### Incrementa canonica
 
@@ -238,7 +241,7 @@ Chrome 9-slice manet finis artisticus validus, sed non amplius proximum opus est
 
 ### P16-XII — Fundamentum Graphicum Modernum
 
-**Status:** P16-XII-A–F9-I `PERFECTUM` in `main`; F9-II residentia resource III-D `PARATUM`.
+**Status:** P16-XII-A–F9-III `PERFECTUM` in `main`; F9-IV `PARATUM`, non automatice activum.
 
 Finis est capacitas technica desktop classis Vista/Aero, sine imitatione identitatis Windows. Contractus plenus est in `documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md`.
 
@@ -255,7 +258,7 @@ Backend software VINDEX purus sub QEMU est referentia semantica. Acceleratio GPU
 
 ### P16-XII-F — Backend accelerabilis canonicus
 
-**Status:** F1–F9-I `PERFECTUM` in `main`; F9-II `PARATUM`.
+**Status:** F1–F9-III `PERFECTUM` in `main`; F9-IV `PARATUM`.
 
 Catena canonica die VI mensis Septembris MMXXVI est:
 
@@ -268,6 +271,8 @@ Catena canonica die VI mensis Septembris MMXXVI est:
 - **F7 / #171** — praesentator VirtIO GPU verus, `TRANSFER_TO_HOST_2D` et `RESOURCE_FLUSH`;
 - **F8 / #172** — backbuffer Graphica X directe in memoria DMA adoptatus.
 - **F9-I / #191** — `VIRTIO_GPU_F_VIRGL` vere negotiatum, capset VIRGL2 lectus et contextus III-D creatus/deletus cum restitutione PCI.
+- **F9-II / #193** — resource RGBA8 Graphica X vere residens in contextu VIRGL, cum attach/detach, backing DMA et vita transactionali.
+- **F9-III / #194** — primum `SUBMIT_3D` raster verum, readback fenced et CXXVIII pixela sine discrepantia contra oraculum software.
 
 Probatio F8 sub QEMU/OVMF reddit `VIO7 T02 P00000002 D000FB000 F00000007 Z000FB000 R`: duo frame, septem fences hardware et **1 028 096** pixela translata, eodem numero copiarum CPU vitatarum. Captura scanout 1280×800 quinque colores canonicos exacte servat.
 
@@ -275,7 +280,7 @@ VirtIO GPU II-D standardis creationem resource, backing, scanout, transfer et fl
 
 Probatio F9-I sub QEMU/virglrenderer reddit `VIO9 O30000003 A00000001 N00000002 S02 M00000568 I00 Q00000005 R`: VIRGL vere negotiatur, duo capset nuntiantur, VIRGL2 (`S02`) eligitur, capset realis `0x568` octetorum legitur, quinque mandata codae consumuntur et status PCI restituitur. `CONTEXT_INIT` in illa configuratione non offertur (`I00`) ideo non fingitur. Renderer hostis Mesa llvmpipe protocolum/contextum probat, non celeritatem GPU physici.
 
-**F9-II** proximum fundamentum est: resource/texturae Graphica X ad contextum III-D realem residentiam obtineant (`RESOURCE_CREATE_3D`, attach/detach contextus et vita transactionalis), fallback software semper servato. Compositio GPU ipsa nondum canonica erit donec aequivalentia pixel contra oraculum software probetur.
+**F9-II et F9-III iam canonica sunt.** #193 residentiam resource III-D materialem probavit; #194 primum raster `SUBMIT_3D` cum readback et `0` discrepantiis in CXXVIII pixelis canonizavit (`VIO11 B00000000 S00000001 P00000080 M00000000 F00000002 R`). F9-IV potest primum `BX_OP_COPIA` opaque per VIRGL blit explorare; alpha praemultiplicata Graphica X vetat shortcut straight-alpha qui alpha bis multiplicaret. F9-IV manet `PARATUM` et non resumitur tacite dum P9/STRUCTURA active tractantur.
 
 
 ### Lex visualis
@@ -314,9 +319,10 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 
 - P12 manet reservatum Claude; ChatGPT #122 non duplicat;
 - P16-XI-A/B sunt canonica per #142/#144;
-- **P16-XII est prioritas graphica ChatGPT**;
-- P16-XI-C chrome premium exspectat migrationem P16-XII-E;
-- #134 est debitum compilatoris separatum P9; renderer ad verificatorem obsoletum non deminuitur;
+- P16-XII-F9-IV manet `PARATUM`, sed non est opus activum tacite resumendum;
+- **P9 Phase 0-bis / #198 est `CANONIZANDUM`; post eam STRUCTURA I est proximum opus linguae ChatGPT**;
+- P16-XI-C chrome premium exspectat capacitatem graphicam opportunam;
+- #134 est debitum historicum non iam reproductum; nulla correctio vetus sine nova probatione portatur;
 - P19-I/P19-II sunt canonica;
 - mutationes maioris status per branch, PR et probationes fiunt;
 - omnis documentatio canonica repositorii Lingua Latina manet;
@@ -326,13 +332,12 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 
 # V. Actio proxima
 
-1. **P16-XII-F9-II — Residentia resource III-D:** `RESOURCE_CREATE_3D`, `CTX_ATTACH_RESOURCE` et `CTX_DETACH_RESOURCE` super contextum VIRGL F9-I canonice imple;
-2. vitam resource Graphica X cum contextu III-D liga: crea, renova, detach/libera atque rollback transactionale sine leak;
-3. sub QEMU/virglrenderer resource III-D veram crea, contextui alliga, seiunge et dele, cum statibus/fencibus et restitutione probatis;
-4. backend software tamquam oraculum semanticum et fallback automaticum conserva; apparatus II-D sine VIRGL numquam viam III-D simulet;
-5. post residentiam realem, tantum F9-III mandata 3D/rasterizationis ad primam operationem Graphica X accelerandam introducat, cum output pixel-equivalens software;
-6. chrome premium P16-XI-C resumatur ubi motor graphicus stabilis effectus desideratos sustinet;
-7. P14 rete, TERMINALE et Explorator fasciculorum paralleliter crescere possunt ubi prioritas usus id postulat.
+1. **P9 Phase 0-bis / #198:** identitatem exactam functionum, formarum et camporum canoniza post CI viridem; localia F9-II intacta servantur;
+2. post fusionem #198, **STRUCTURA I** ex `CONCEPTIO-STRUCTURA-REVISA.md` implementa supra hanc identitatis fundamentum, non supra hash fortuitum;
+3. pro mutationibus compilatoris `G2 = G3`, regressiones canonicas et oracula effectus reales conserva;
+4. **P16-XII-F9-IV** manet `PARATUM` ut linea graphica separata; non resumatur nisi prioritas explicite ad Graphica X redit;
+5. PR #183 ATMOS NATIVUM manet draft separatum et probationes humanas/modernizationem suam non confundit cum STRUCTURA;
+6. P14 rete, TERMINALE et Explorator fasciculorum crescere possunt ubi prioritas usus id postulat.
 
 ---
 
