@@ -1,0 +1,96 @@
+name: TEMP — recuperation expurgee ChatGPT
+
+on:
+  push:
+    branches:
+      - chatgpt/consilium-f9-iii-canon
+    paths:
+      - .github/workflows/tmp-fetch-chatgpt-sanitized.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-shares:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: chatgpt/consilium-f9-iii-canon
+
+      - name: Recupera les partages publics
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tmp/chatgpt-shares
+
+          fetch_one() {
+            id="$1"
+            out="tmp/chatgpt-shares/${id}.md"
+            url="https://r.jina.ai/http://chatgpt.com/share/${id}"
+            curl --fail --location --retry 2 --connect-timeout 20 --max-time 180 \
+              -H 'User-Agent: Mozilla/5.0' \
+              -H 'X-Engine: browser' \
+              -H 'X-No-Cache: true' \
+              -H 'X-Timeout: 60' \
+              -H 'X-Wait-For-Selector: non-existent-archivum-marker' \
+              "$url" -o "$out"
+          }
+
+          fetch_one 6a8b0c8f-50d4-83eb-928a-b33f118b91df & p1=$!
+          fetch_one 6a8b1905-cac0-83eb-96ad-fbbd7e31a979 & p2=$!
+          fetch_one 6a8ccb26-10d0-83eb-a297-0cd01c6aaf44 & p3=$!
+          fetch_one 6a8f6eea-e288-83eb-bb01-8517defcac58 & p4=$!
+          wait "$p1" "$p2" "$p3" "$p4"
+
+      - name: Expurga avant toute ecriture Git
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          rules = [
+              (re.compile(r'gh[pousr]_[A-Za-z0-9]{20,255}'), '[TOKEN-GITHUB-EXPURGATUM]'),
+              (re.compile(r'github_pat_[A-Za-z0-9_]{20,255}'), '[TOKEN-GITHUB-EXPURGATUM]'),
+              (re.compile(r'sk-(?:proj-)?[A-Za-z0-9_-]{20,255}'), '[CLAVIS-OPENAI-EXPURGATA]'),
+              (re.compile(r'xox[baprs]-[A-Za-z0-9-]{10,255}'), '[TOKEN-SLACK-EXPURGATUM]'),
+              (re.compile(r'glpat-[A-Za-z0-9_-]{10,255}'), '[TOKEN-GITLAB-EXPURGATUM]'),
+              (re.compile(r'hf_[A-Za-z0-9]{20,255}'), '[TOKEN-HF-EXPURGATUM]'),
+              (re.compile(r'AKIA[0-9A-Z]{16}'), '[CLAVIS-AWS-EXPURGATA]'),
+              (re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----.*?-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----', re.S), '[CLAVIS-PRIVATA-EXPURGATA]'),
+              (re.compile(r'(?i)((?:api[_ -]?key|access[_ -]?token|auth[_ -]?token|password|passwd|secret)\s*[:=]\s*)["\']?[A-Za-z0-9_./+\-=]{16,}["\']?'), r'\1[SECRETUM-EXPURGATUM]'),
+          ]
+
+          for p in Path('tmp/chatgpt-shares').glob('*.md'):
+              text = p.read_text(encoding='utf-8', errors='replace')
+              for rx, repl in rules:
+                  text = rx.sub(repl, text)
+              p.write_text(text, encoding='utf-8')
+              print(p.name, len(text.encode('utf-8')), 'bytes expurges')
+
+          # Refus local si un motif evident subsiste.
+          remaining = [
+              re.compile(r'gh[pousr]_[A-Za-z0-9]{20,255}'),
+              re.compile(r'github_pat_[A-Za-z0-9_]{20,255}'),
+              re.compile(r'sk-(?:proj-)?[A-Za-z0-9_-]{20,255}'),
+              re.compile(r'xox[baprs]-[A-Za-z0-9-]{10,255}'),
+              re.compile(r'glpat-[A-Za-z0-9_-]{10,255}'),
+              re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
+          ]
+          for p in Path('tmp/chatgpt-shares').glob('*.md'):
+              text = p.read_text(encoding='utf-8', errors='replace')
+              if any(rx.search(text) for rx in remaining):
+                  raise SystemExit(f'secret potentiel restant dans {p}')
+          PY
+
+      - name: Committe uniquement les copies expurgees
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'chatgpt-context-recovery'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tmp/chatgpt-shares
+          git commit -m 'TEMP — transcriptiones ChatGPT expurgatae' || exit 0
+          git push origin HEAD:chatgpt/consilium-f9-iii-canon
