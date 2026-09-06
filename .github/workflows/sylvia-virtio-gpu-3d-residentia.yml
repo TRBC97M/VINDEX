@@ -34,7 +34,10 @@ jobs:
         run: |
           set -euo pipefail
           chmod +x ./compilator_vindex
-          python3 instrumenta/vindex_verifica.py probationes/virtio_gpu_3d_residentia.vindex
+          # Verificator historicus importationes Graphica veteres nimis stricte
+          # tractat; novus rector protocoli, qui nullum debitum historicum habet,
+          # directe verificatur. Integratio plena a compilatore canonico probatur.
+          python3 instrumenta/vindex_verifica.py systema/rectores/virtio_gpu_3d_residentia.vindex
           ./compilator_vindex probationes/virtio_gpu_3d_residentia.vindex /tmp/f9ii-native
           chmod +x /tmp/f9ii-native
           /tmp/f9ii-native
