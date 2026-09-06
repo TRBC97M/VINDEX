@@ -1,0 +1,20 @@
+FORMA sx51d7.
+    CAMPUS a SICUT NUMERUS.
+FIN-FORMA.
+
+FORMA sgdzww.
+    CAMPUS a SICUT NUMERUS.
+    CAMPUS b SICUT NUMERUS.
+FIN-FORMA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA prima SICUT sx51d7.
+    DECLARA secunda SICUT sgdzww.
+    a DE prima = 11.
+    a DE secunda = 22.
+    b DE secunda = 33.
+    PROCLAMA a DE prima.
+    PROCLAMA a DE secunda.
+    PROCLAMA b DE secunda.
+    REDDE 0.
+FIN-FUNCTIO.
