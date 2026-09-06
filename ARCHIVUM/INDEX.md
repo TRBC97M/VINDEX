@@ -28,7 +28,7 @@ Vide `LEGE-ME.md` ad regulas originis, ordinationis atque securitatis.
 
 ## Sessiones ChatGPT
 
-Quattuor primae inscriptiones ex communicationibus publicis recuperatae et purgatae sunt. Quinque posteriores sunt reconstructiones coordinationis, expresse non ad verbum, cum PR et commissis canonicis collatae.
+Quattuor primae inscriptiones ex communicationibus publicis recuperatae et purgatae sunt. Sex posteriores sunt reconstructiones coordinationis, expresse non ad verbum, cum PR et commissis canonicis collatae.
 
 | Sessio | Origo | Magnitudo |
 |---|---|---:|
@@ -41,8 +41,9 @@ Quattuor primae inscriptiones ex communicationibus publicis recuperatae et purga
 | [2026-09-03 — ATMOS // TERMINAL DEPTH et Passe Génocidaire](CHATGPT-2026-09-03-atmos-terminal-depth.md) | reconstructio | 3 Ko |
 | [2026-09-04 — P0/P9 : diagnostics stricts du compilateur](CHATGPT-2026-09-04-diagnostica-p0-p9.md) | reconstructio | 3 Ko |
 | [2026-09-05/06 — F9 : VIRGL, residentia 3D et SUBMIT_3D](CHATGPT-2026-09-05-2026-09-06-f9-virgl.md) | reconstructio | 4 Ko |
+| [2026-09-06 — Phase 0-bis : identité exacte des symboles](CHATGPT-2026-09-06-phase0bis-identitas-exacta.md) | reconstructio | 6 Ko |
 
-**ChatGPT: 9 inscriptiones nunc archivatae.**
+**ChatGPT: 10 inscriptiones nunc archivatae.**
 
 ## Instrumenta
 
