@@ -1,14 +1,14 @@
-// Regressio Phase 0-bis: `vp` et `x2` idem signum base XXXI (3770) habent.
-FUNCTIO vp REDDENS NUMERUS.
+// Regressio Phase 0-bis: `AP` et `B1` idem signum base XXXI (2095) habent.
+FUNCTIO AP REDDENS NUMERUS.
     REDDE 111.
 FIN-FUNCTIO.
 
-FUNCTIO x2 REDDENS NUMERUS.
+FUNCTIO B1 REDDENS NUMERUS.
     REDDE 222.
 FIN-FUNCTIO.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    PROCLAMA vp().
-    PROCLAMA x2().
+    PROCLAMA AP().
+    PROCLAMA B1().
     REDDE 0.
 FIN-FUNCTIO.
