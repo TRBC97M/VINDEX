@@ -17,6 +17,12 @@ def substitue(textus: str, vetus: str, novum: str, numerus: int = 1) -> str:
 
 textus = FONS.read_text(encoding="utf-8")
 
+# Idempotentia: post canonizationem eadem workflow probationes tantum repetit.
+si_iam = "FUNCTIO NOMINA_IDENTITATUM_AEQUALIA REDDENS NUMERUS."
+if si_iam in textus:
+    print("RECTE: identitas exacta iam applicata est; migratio omittitur.")
+    raise SystemExit(0)
+
 # Comparatio generica: longitudo -> signum historicum base XXXI -> octeta exacta.
 ancora = "FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.\n"
 auxilia = """FUNCTIO SIGNUM_IDENTITATIS REDDENS NUMERUS.
