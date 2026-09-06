@@ -602,3 +602,11 @@ immutatae ut executor software oracle semanticum perseveret.
 ## XXIII. Sententia
 
 **Non picturam pulchram supra motorem infirmum ponimus. Motorem facimus dignum Sylvia.**
+
+## F9-I — Porta accelerationis III-D
+
+F8 compositionem CPU directe in backing DMA praesentat. F9-I non fingit blit
+acceleratum ubi VirtIO II-D nullum tale mandatum praebet: primum aperit portam
+III-D veram. VIRGL/capsets/contextus controlq probantur et backend software
+manet oraculum semanticum. Migratio compositionis ad command stream III-D fit
+tantum in gradu sequente, cum aequivalentia pixelorum demonstrari poterit.
