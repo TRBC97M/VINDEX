@@ -1,0 +1,24 @@
+// STRUCTURA I: idem nomen campi in duabus structuris ad proprium offset resolvitur.
+STRUCTURA PRIMA
+    valor SICUT NUMERUS.
+    aliud SICUT NUMERUS.
+FIN-STRUCTURA.
+
+STRUCTURA SECUNDA
+    aliud SICUT NUMERUS.
+    valor SICUT NUMERUS.
+FIN-STRUCTURA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA a SICUT ACUS<PRIMA> VALENS ACUS_EX(RESERVA_OCTETA(PRIMA.MENSURA)).
+    DECLARA b SICUT ACUS<SECUNDA> VALENS ACUS_EX(RESERVA_OCTETA(SECUNDA.MENSURA)).
+    a->valor = 41.
+    a->aliud = 42.
+    b->aliud = 51.
+    b->valor = 52.
+    PROCLAMA a->valor.
+    PROCLAMA a->aliud.
+    PROCLAMA b->aliud.
+    PROCLAMA b->valor.
+    REDDE 0.
+FIN-FUNCTIO.
