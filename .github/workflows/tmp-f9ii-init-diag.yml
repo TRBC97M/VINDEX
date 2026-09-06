@@ -1,0 +1,44 @@
+name: TEMP — F9-II init diag
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-f9ii-init-diag.yml'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_init_diag.vindex'
+permissions:
+  contents: read
+jobs:
+  diag:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - name: Instrumenta institue
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 qemu-system-gui qemu-system-modules-opengl ovmf libvirglrenderer1 libgl1-mesa-dri libegl-mesa0 libegl1 libgbm1 xvfb xauth file
+      - name: Diagnostica sub VIRGL
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./compilator_vindex
+          TEMP="$(mktemp -d)"
+          ./compilator_vindex systema/proba_virtio_gpu_3d_init_diag.vindex "$TEMP/BOOTX64.EFI" uefi
+          mkdir -p "$TEMP/esp/EFI/BOOT"
+          cp "$TEMP/BOOTX64.EFI" "$TEMP/esp/EFI/BOOT/BOOTX64.EFI"
+          CODE=/usr/share/OVMF/OVMF_CODE_4M.fd
+          VARS=/usr/share/OVMF/OVMF_VARS_4M.fd
+          [ -f "$CODE" ] || CODE=/usr/share/OVMF/OVMF_CODE.fd
+          [ -f "$VARS" ] || VARS=/usr/share/OVMF/OVMF_VARS.fd
+          cp "$VARS" "$TEMP/vars.fd"; chmod +w "$TEMP/vars.fd"
+          setsid xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 SDL_AUDIODRIVER=dummy qemu-system-x86_64 -m 1024 -smp 1 -M q35 \
+            -drive "if=pflash,format=raw,unit=0,readonly=on,file=$CODE" \
+            -drive "if=pflash,format=raw,unit=1,file=$TEMP/vars.fd" \
+            -drive "format=raw,file=fat:rw:$TEMP/esp" \
+            -device pcie-root-port,id=rp0,bus=pcie.0,chassis=1 \
+            -device virtio-gpu-gl-pci,disable-legacy=on,bus=rp0 \
+            -vga none -display sdl,gl=on -net none -monitor none -serial "file:$TEMP/diag.log" >/tmp/f9ii-diag-qemu.log 2>&1 &
+          PID=$!
+          trap 'kill -- -$PID 2>/dev/null || true' EXIT
+          for i in $(seq 1 45); do grep -aE '^VIOD [0-9A-F]{2}' "$TEMP/diag.log" && break; sleep 1; done
+          grep -aE '^VIOD [0-9A-F]{2}' "$TEMP/diag.log" || { cat "$TEMP/diag.log"; cat /tmp/f9ii-diag-qemu.log; exit 1; }
