@@ -1,0 +1,15 @@
+// STRUCTURA I: declaratio, MENSURA, ACUS_EX, scriptio et lectio per ->.
+STRUCTURA PROBA
+    primum SICUT NUMERUS.
+    secundum SICUT NUMERUS.
+FIN-STRUCTURA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA p SICUT ACUS<PROBA> VALENS ACUS_EX(RESERVA_OCTETA(PROBA.MENSURA)).
+    p->primum = 11.
+    p->secundum = 22.
+    PROCLAMA PROBA.MENSURA.
+    PROCLAMA p->primum.
+    PROCLAMA p->secundum.
+    REDDE 0.
+FIN-FUNCTIO.
