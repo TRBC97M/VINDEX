@@ -1,0 +1,19 @@
+// STRUCTURA I: vp et x2 idem hash historicum (3770), sed campi distincti manent.
+// Campus medius probat insertionem sine arithmeticis offset manualibus.
+STRUCTURA COLLISIO
+    vp SICUT NUMERUS.
+    medius SICUT NUMERUS.
+    x2 SICUT NUMERUS.
+FIN-STRUCTURA.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA p SICUT ACUS<COLLISIO> VALENS ACUS_EX(RESERVA_OCTETA(COLLISIO.MENSURA)).
+    p->vp = 111.
+    p->medius = 333.
+    p->x2 = 222.
+    PROCLAMA COLLISIO.MENSURA.
+    PROCLAMA p->vp.
+    PROCLAMA p->medius.
+    PROCLAMA p->x2.
+    REDDE 0.
+FIN-FUNCTIO.
