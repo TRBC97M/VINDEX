@@ -1,0 +1,36 @@
+IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "bibliotheca/imago_raster_vii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "systema/rectores/pci.vindex".
+IMPORTA "systema/rectores/mmio.vindex".
+IMPORTA "systema/rectores/paginae_dma.vindex".
+IMPORTA "systema/rectores/virtio_pci.vindex".
+IMPORTA "systema/rectores/virtio_gpu.vindex".
+IMPORTA "systema/rectores/virtio_gpu_2d.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d.vindex".
+IMPORTA "systema/rectores/virtio_gpu_3d_residentia.vindex".
+IMPORTA "bibliotheca/fenestrale_residentia_virtio_3d_x.vindex".
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI VG3DR_CMD_CTX_ADIUNGE() != 514 || VG3DR_CMD_CTX_SEPARA() != 515 TUNC REDDE 1. FIN-SI.
+    SI VG3DR_CMD_RESOURCE_CREA() != 516 || VG3DR_CMD_TRANSFER_AD_HOSTEM() != 517 TUNC REDDE 2. FIN-SI.
+    SI VG3DR_TARGET_TEXTURE_2D() != 2 || VG3DR_FORMATUM_RGBA8() != 67 || VG3DR_BIND_SAMPLER() != 8 TUNC REDDE 3. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS VG3DR_PARAM_CREA(4096, 64, 32).
+    SI p == 0 || CONTENTUM(p) != 4096 || CONTENTUM(p + 8) != 2 || CONTENTUM(p + 16) != 67 TUNC REDDE 4. FIN-SI.
+    SI CONTENTUM(p + 24) != 8 || CONTENTUM(p + 32) != 64 || CONTENTUM(p + 40) != 32 || CONTENTUM(p + 48) != 1 TUNC REDDE 5. FIN-SI.
+    DECLARA t SICUT NUMERUS VALENS VG3DR_TRANSFER_PARAM(4096, 64, 32, 256, 8192).
+    SI t == 0 || CONTENTUM(t) != 4096 || CONTENTUM(t + 24) != 64 || CONTENTUM(t + 32) != 32 TUNC REDDE 6. FIN-SI.
+    SI CONTENTUM(t + 48) != 256 || CONTENTUM(t + 56) != 8192 TUNC REDDE 7. FIN-SI.
+    DECLARA g SICUT NUMERUS VALENS RESERVA_OCTETA(192).
+    DECLARA n SICUT NUMERUS VALENS RESERVA_OCTETA(112).
+    DECLARA s SICUT NUMERUS VALENS GX_CREA(4, 4).
+    SI g == 0 || n == 0 || s == 0 TUNC REDDE 8. FIN-SI.
+    DECLARA pura SICUT NUMERUS VALENS GX_MEM_PURA(g, 192).
+    pura = GX_MEM_PURA(n, 112).
+    CONTENTUM(g + 40) = n. CONTENTUM(n) = s. CONTENTUM(n + 40) = 3. CONTENTUM(n + 104) = 1.
+    SI RV3D_NODUS_QUAERE(g, s) != n TUNC REDDE 9. FIN-SI.
+    CONTENTUM(n + 40) = 7.
+    SI RV3D_NODUS_QUAERE(g, s) != 0 TUNC REDDE 10. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
