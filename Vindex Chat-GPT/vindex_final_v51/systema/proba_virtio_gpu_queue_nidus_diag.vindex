@@ -1,4 +1,4 @@
-// TEMPORARIUM — quaerit quid inter DQ_CREA viridem et RV3D_CREA_EX differat.
+// TEMPORARIUM — quaerit defectum alignmenti per unum slot localem futurum.
 IMPORTA "rectores/pci.vindex".
 IMPORTA "rectores/mmio.vindex".
 IMPORTA "rectores/paginae_dma.vindex".
@@ -41,12 +41,10 @@ FUNCTIO DQ_CREA REDDENS NUMERUS.
     DECLARA pura SICUT NUMERUS VALENS DQ_MEM_PURA(gestor,192). SI pura==0 TUNC REDDE 17. FIN-SI.
     CONTENTUM(gestor+32)=4096. CONTENTUM(gestor+120)=systema.
     CONTENTUM(gestor+128)=bus. CONTENTUM(gestor+136)=app. CONTENTUM(gestor+144)=fn.
-
     DECLARA vp SICUT NUMERUS VALENS VP_CREA(bus,app,fn). SI vp==0 TUNC REDDE 1. FIN-SI.
     CONTENTUM(gestor)=vp. CONTENTUM(gestor+48)=1.
     SI VP_FACULTATES_LEGE(vp)==0 TUNC DECLARA r0 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 2. FIN-SI.
     DECLARA oblatae SICUT NUMERUS VALENS CONTENTUM(vp+112).
-    // Ordo localium idem ac RV3D_CREA_EX: rollback VIRGL ante 'acceptae'.
     SI (oblatae & VG3D_F_VIRGL())==0 TUNC DECLARA r1 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 3. FIN-SI.
     DECLARA acceptae SICUT NUMERUS VALENS VG3D_FACULTATES_ACCIPE(oblatae).
     CONTENTUM(gestor+152)=acceptae.
@@ -58,6 +56,9 @@ FUNCTIO DQ_CREA REDDENS NUMERUS.
         REDDE 32+internum.
     FIN-SI.
     CONTENTUM(gestor+8)=coda.
+    // Haec localis post codam numquam afficit logicam ante codam; tantum frame mutat.
+    DECLARA bascula SICUT NUMERUS VALENS 0.
+    SI bascula!=0 TUNC REDDE 19. FIN-SI.
     DECLARA r4 SICUT NUMERUS VALENS VP_RESTITUE(vp).
     REDDE 0.
 FIN-FUNCTIO.
