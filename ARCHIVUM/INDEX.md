@@ -2,6 +2,8 @@
 
 Toutes les archives sont regroupées dans **ce dossier unique `ARCHIVUM/`**, afin de garder la racine de `main` propre tout en conservant une mémoire commune immédiatement accessible.
 
+> **Convention canonique actuelle.** Une étape transitoire a placé les archives directement à la racine de `main` pour les rendre immédiatement visibles. Cette disposition a été abandonnée parce qu'elle encombrait la racine avec des dizaines de fichiers. La décision qui la remplace est explicite : **un seul dossier `ARCHIVUM/` à la racine, toute la mémoire partagée à l'intérieur.** Aucun agent ne doit rétablir la disposition transitoire sans directive explicite nouvelle de Numi.
+
 Voir `LEGE-ME.md` pour les règles de provenance, de tri et de sécurité.
 
 ## Sessions Claude
@@ -47,4 +49,4 @@ Les quatre premières entrées proviennent de partages publics récupérés et n
 - `extrahe_archivum.py` — régénère les sessions Claude dans ce dossier et reconstruit cet index sans toucher aux entrées ChatGPT.
 - `verifica_secreta.py` — refuse les motifs de secrets évidents dans les fichiers Markdown de l'archive.
 
-La convention finale est simple : **un seul dossier `ARCHIVUM/` à la racine ; tout le reste de la mémoire partagée vit dedans.**
+La convention canonique est donc : **un seul dossier `ARCHIVUM/` à la racine ; tout le reste de la mémoire partagée vit dedans.**
