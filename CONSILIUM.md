@@ -180,7 +180,7 @@ Hoc stratum viam ad backend acceleratum P16-XII-F aperit: regiones MMIO apparatu
 
 ## P16 — Forma, JL-UX et capacitas graphica
 
-**Status:** P16-I–XI-B et P16-XII-A–F8 `PERFECTUM`; **P16-XII-F9 `PARATUM`**.
+**Status:** P16-I–XI-B et P16-XII-A–F9-I `PERFECTUM`; **P16-XII-F9-II `PARATUM`**.
 
 ### Incrementa canonica
 
@@ -238,7 +238,7 @@ Chrome 9-slice manet finis artisticus validus, sed non amplius proximum opus est
 
 ### P16-XII — Fundamentum Graphicum Modernum
 
-**Status:** P16-XII-A–F8 `PERFECTUM` in `main`; F9 acceleratio graphica III-D `PARATUM`.
+**Status:** P16-XII-A–F9-I `PERFECTUM` in `main`; F9-II residentia resource III-D `PARATUM`.
 
 Finis est capacitas technica desktop classis Vista/Aero, sine imitatione identitatis Windows. Contractus plenus est in `documenta/sylvia/JL_UX_FUNDAMENTUM_GRAPHICUM_MODERNUM.md`.
 
@@ -255,7 +255,7 @@ Backend software VINDEX purus sub QEMU est referentia semantica. Acceleratio GPU
 
 ### P16-XII-F — Backend accelerabilis canonicus
 
-**Status:** F1–F8 `PERFECTUM` in `main`.
+**Status:** F1–F9-I `PERFECTUM` in `main`; F9-II `PARATUM`.
 
 Catena canonica die VI mensis Septembris MMXXVI est:
 
@@ -267,10 +267,15 @@ Catena canonica die VI mensis Septembris MMXXVI est:
 - **F6 / #165** — contractus exsecutoris unicus;
 - **F7 / #171** — praesentator VirtIO GPU verus, `TRANSFER_TO_HOST_2D` et `RESOURCE_FLUSH`;
 - **F8 / #172** — backbuffer Graphica X directe in memoria DMA adoptatus.
+- **F9-I / #191** — `VIRTIO_GPU_F_VIRGL` vere negotiatum, capset VIRGL2 lectus et contextus III-D creatus/deletus cum restitutione PCI.
 
 Probatio F8 sub QEMU/OVMF reddit `VIO7 T02 P00000002 D000FB000 F00000007 Z000FB000 R`: duo frame, septem fences hardware et **1 028 096** pixela translata, eodem numero copiarum CPU vitatarum. Captura scanout 1280×800 quinque colores canonicos exacte servat.
 
-VirtIO GPU II-D standardis creationem resource, backing, scanout, transfer et flush praebet, sed compositionem/blit generalem non accelerat. F9 ideo non finget accelerationem intra mandata II-D: proximum fundamentum est facultatem III-D (`VIRTIO_GPU_F_VIRGL`/contextus) detectare et negotiari, fallback software semper servato.
+VirtIO GPU II-D standardis creationem resource, backing, scanout, transfer et flush praebet, sed compositionem/blit generalem non accelerat. F9-I ideo accelerationem non finxit: via III-D vera nunc canonica est.
+
+Probatio F9-I sub QEMU/virglrenderer reddit `VIO9 O30000003 A00000001 N00000002 S02 M00000568 I00 Q00000005 R`: VIRGL vere negotiatur, duo capset nuntiantur, VIRGL2 (`S02`) eligitur, capset realis `0x568` octetorum legitur, quinque mandata codae consumuntur et status PCI restituitur. `CONTEXT_INIT` in illa configuratione non offertur (`I00`) ideo non fingitur. Renderer hostis Mesa llvmpipe protocolum/contextum probat, non celeritatem GPU physici.
+
+**F9-II** proximum fundamentum est: resource/texturae Graphica X ad contextum III-D realem residentiam obtineant (`RESOURCE_CREATE_3D`, attach/detach contextus et vita transactionalis), fallback software semper servato. Compositio GPU ipsa nondum canonica erit donec aequivalentia pixel contra oraculum software probetur.
 
 
 ### Lex visualis
@@ -321,13 +326,13 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 
 # V. Actio proxima
 
-1. **P16-XII-F9 — Fundamentum accelerationis III-D:** `VIRTIO_GPU_F_VIRGL` et contextus/capset rite detege et negocia, sine falso positivo in backend II-D;
-2. exsecutorem software tamquam oraculum semanticum conserva et fallback automaticum pro apparatu sine acceleratione exige;
-3. primum contextum III-D realem sub QEMU/virglrenderer crea, mandatum fenced submitte et destructionem/restaurationem proba;
-4. post contextum realem, texturas Graphica X ad resource III-D residentes liga et migrationem generationum metire;
-5. compositionem/alpha ad mandata accelerata tantum tum migra cum output bit-/pixel-equivalens oraculo software probari potest;
-6. P16-XI-C chrome premium post fundamentum acceleratum/stabile resumatur si effectus visuales id requirunt;
-7. P14 rete super P12 canonicum et TERMINALE/Explorator fasciculorum paralleliter crescere possunt ubi prioritas usus id postulat.
+1. **P16-XII-F9-II — Residentia resource III-D:** `RESOURCE_CREATE_3D`, `CTX_ATTACH_RESOURCE` et `CTX_DETACH_RESOURCE` super contextum VIRGL F9-I canonice imple;
+2. vitam resource Graphica X cum contextu III-D liga: crea, renova, detach/libera atque rollback transactionale sine leak;
+3. sub QEMU/virglrenderer resource III-D veram crea, contextui alliga, seiunge et dele, cum statibus/fencibus et restitutione probatis;
+4. backend software tamquam oraculum semanticum et fallback automaticum conserva; apparatus II-D sine VIRGL numquam viam III-D simulet;
+5. post residentiam realem, tantum F9-III mandata 3D/rasterizationis ad primam operationem Graphica X accelerandam introducat, cum output pixel-equivalens software;
+6. chrome premium P16-XI-C resumatur ubi motor graphicus stabilis effectus desideratos sustinet;
+7. P14 rete, TERMINALE et Explorator fasciculorum paralleliter crescere possunt ubi prioritas usus id postulat.
 
 ---
 
