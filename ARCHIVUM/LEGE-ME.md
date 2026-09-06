@@ -1,73 +1,73 @@
-# ARCHIVUM — mémoire partagée des échanges
+# ARCHIVUM — memoria communis colloquiorum
 
-Toutes les archives de conversation sont regroupées dans **le dossier unique `ARCHIVUM/` à la racine de `main`**.
+Omnia colloquiorum archiva in **uno directorio `ARCHIVUM/` ad radicem `main`** congregantur.
 
-Ce choix évite d'encombrer la racine du dépôt tout en gardant la mémoire partagée accessible en un clic.
+Haec dispositio radicem repositorii non onerat, memoriam tamen communem uno accessu praebet.
 
-## Décision de disposition
+## De dispositione decreta
 
-Une première tentative avait placé chaque archive directement à la racine de `main`, afin qu'elle soit immédiatement visible. Cette disposition s'est révélée trop encombrante et a été explicitement abandonnée.
+Prima tentatio singula archiva directe in radice `main` posuerat, ut statim conspicerentur. Haec dispositio nimis onerosa visa est atque expresse relicta est.
 
-La convention canonique actuelle est donc :
+Conventio canonica hodierna igitur est:
 
-- **un seul dossier `ARCHIVUM/` à la racine** ;
-- toutes les archives Claude et ChatGPT vivent dans ce dossier ;
-- `INDEX.md`, `LEGE-ME.md` et les outils de maintenance vivent dans ce même dossier ;
-- la disposition transitoire avec des dizaines de fichiers `ARCHIVUM-*` directement à la racine **ne doit pas être rétablie** sans nouvelle directive explicite de Numi.
+- **unum tantum directorium `ARCHIVUM/` in radice**;
+- omnia archiva Claude et ChatGPT in hoc directorio manent;
+- `INDEX.md`, `LEGE-ME.md` atque instrumenta sustentationis in eodem directorio manent;
+- dispositio transitoria, qua multi fasciculi `ARCHIVUM-*` directe in radice iacebant, **non restituenda est** nisi Numi novam directivam explicitam det.
 
-Cette note existe précisément pour empêcher un futur agent de confondre une étape historique avec la convention finale.
+Haec nota eo ipso scripta est, ne futurus agens gradum historicum cum conventione finali confundat.
 
-Convention interne :
+Conventio interna:
 
-- `CLAUDE-*.md` — sessions issues du versant Claude ;
-- `CHATGPT-*.md` — sessions issues du versant ChatGPT ;
-- `INDEX.md` — index commun ;
-- `extrahe_archivum.py` — régénérateur des sessions Claude ;
-- `verifica_secreta.py` — contrôle de secrets avant publication.
+- `CLAUDE-*.md` — sessiones ex parte Claude;
+- `CHATGPT-*.md` — sessiones ex parte ChatGPT;
+- `INDEX.md` — index communis;
+- `extrahe_archivum.py` — regenerator sessionum Claude;
+- `verifica_secreta.py` — inspectio secretorum ante publicationem.
 
-## Pourquoi
+## Cur
 
-La coordination passe déjà par `CONSILIUM.md` pour l'état, les PR pour le raisonnement d'un chantier et les rapports pour les investigations. Mais beaucoup de choses se décident en conversation et n'apparaissent nulle part : pourquoi une option a été écartée, quelle piste a déjà été essayée sans succès, quel argument a tranché un choix de syntaxe ou d'architecture.
+Coordinatio iam utitur `CONSILIUM.md` ad statum, PR ad rationem operis, relationibus ad investigationes. Multa tamen in colloquiis decernuntur quae nusquam alibi apparent: cur via aliqua relicta sit, quae tentatio iam facta et irrita fuerit, quod argumentum electionem syntacticam vel architectonicam direxerit.
 
-Ces informations ont une valeur pratique directe. Les sections VIII et IX de `RELATIO-CASUUM-LIMITUM.md`, par exemple, ont évité de refaire trois corrections déjà tentées et invalidées. De la même manière, côté ChatGPT, des décisions comme « La Passe Génocidaire », l'abandon de la base expérimentale ATMOS ou la contrainte VIRGL liée au RGBA prémultiplié peuvent maintenant être relues par Claude.
+Haec indicia utilitatem practicam directam habent. Sectiones VIII et IX `RELATIO-CASUUM-LIMITUM.md`, exempli gratia, prohibuerunt ne tres correctiones iam temptatae atque reiectae iterum fierent. Similiter ex parte ChatGPT, decreta sicut « La Passe Génocidaire », reiectio basis experimentalis ATMOS, vel restrictio VIRGL ex RGBA praemultiplicato orta nunc a Claude relegi possunt.
 
-## Ce qui est conservé
+## Quae servantur
 
-- les messages de Numi lorsqu'ils sont disponibles dans la source ;
-- les réponses textuelles de l'agent ;
-- une ligne `[action]` par opération utile à la coordination ;
-- les décisions, pistes invalidées, oracles et résultats qui évitent de recommencer un chantier.
+- nuntii Numi, cum in fonte praesto sint;
+- responsa textualia agentis;
+- una linea `[action]` pro unaquaque operatione coordinationi utili;
+- decreta, viae reiectae, oracula atque eventus qui impediunt ne idem opus denuo incipiatur.
 
-## Ce qui est écarté
+## Quae excluduntur
 
-- **le raisonnement interne** : brouillon non destiné à autrui et inutile comme contrat de coordination ;
-- **les sorties brutes d'outils** : milliers de lignes QEMU/compilation dont la conclusion utile est conservée ;
-- **les URL temporaires signées et pièces jointes volumineuses** : leur rôle est résumé, pas leur octet brut.
+- **ratiocinatio interna**: rudimentum aliis non destinatum neque ut pactum coordinationis utile;
+- **exitus instrumentorum integri**: milia linearum QEMU vel compilationis, quarum conclusio utilis servatur;
+- **URL temporaria subscripta atque adiuncta magna**: munus eorum summatim describitur, non octeta integra servantur.
 
-Le premier versant Claude mesurait environ **39 Mo bruts -> 1,9 Mo**, soit 5 %. Le principe reste le même pour ChatGPT : garder le contexte qui change une décision, pas le bruit.
+Prima pars Claude circiter **39 Mo rudia -> 1,9 Mo** continebat, id est 5 %. Eadem ratio pro ChatGPT valet: servandus est contextus qui decisionem mutat, non strepitus.
 
-## Provenance ChatGPT
+## Origo ChatGPT
 
-Deux types de fichiers sont distingués explicitement :
+Duo genera fasciculorum expresse distinguuntur:
 
-1. **Extrait de partage public** : le texte a été récupéré depuis un lien public ChatGPT, expurgé et nettoyé du chrome UI/outils. Si le partage ne contient qu'une partie de la session, le fichier le dit.
-2. **Reconstruction de coordination, non verbatim** : la transcription complète n'est pas récupérable ; seules les décisions et actions recoupées avec les PR/commits canoniques sont conservées. Une reconstruction ne doit jamais être présentée comme une citation exacte de la conversation.
+1. **Excerptum communicationis publicae**: textus ex ligamine publico ChatGPT receptus, purgatus atque ab ornamentis interfaciei et instrumentorum mundatus est. Si communicatio tantum partem sessionis continet, fasciculus hoc dicit.
+2. **Reconstructio coordinationis, non ad verbum**: transcriptio integra recuperari non potest; servantur tantum decreta et actiones cum PR atque commissis canonicis collatae. Reconstructio numquam tamquam citatio exacta colloquii exhibenda est.
 
-## Mise à jour du versant Claude
+## Renovatio partis Claude
 
-Depuis la racine du dépôt :
+Ex radice repositorii:
 
 ```bash
 python3 ARCHIVUM/extrahe_archivum.py
 python3 ARCHIVUM/verifica_secreta.py
 ```
 
-Le générateur écrit les sessions Claude dans `ARCHIVUM/` sous `CLAUDE-*.md` et reconstruit `ARCHIVUM/INDEX.md` sans déplacer les entrées ChatGPT.
+Generator sessiones Claude in `ARCHIVUM/` sub nominibus `CLAUDE-*.md` scribit atque `ARCHIVUM/INDEX.md` reficit, inscriptionibus ChatGPT non motis.
 
-## Sécurité
+## Securitas
 
-Une archive de conversation peut contenir tout ce qui a été tapé. Les motifs de jetons GitHub/OpenAI/Slack/GitLab/HuggingFace, clés AWS et clés privées doivent être expurgés avant tout push.
+Archivum colloquii continere potest quidquid umquam scriptum est. Formae indiciorum GitHub/OpenAI/Slack/GitLab/HuggingFace, claves AWS atque claves privatae ante omnem push expurgandae sunt.
 
-Le contrôle automatique ne remplace pas le jugement humain : toute chaîne ressemblant à un secret ou credential doit être retirée même si elle ne correspond pas encore à un motif connu.
+Inspectio automatica iudicium humanum non substituit: omnis catena quae secreto vel credentiali similis est removenda est, etiam si nondum formae notae respondeat.
 
-Voir `INDEX.md` pour la liste des sessions.
+Vide `INDEX.md` ad indicem sessionum.
