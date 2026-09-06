@@ -1,4 +1,4 @@
-// TEMPORARIUM — separat RV3D_CREA_EX a wrapper automatica; ante PR delendum.
+// TEMPORARIUM — diagnostica functionalis RV3D_CREA_EX; ante PR delendum.
 IMPORTA "rectores/pci.vindex".
 IMPORTA "rectores/mmio.vindex".
 IMPORTA "rectores/paginae_dma.vindex".
@@ -20,7 +20,9 @@ FUNCTIO DX_PARA REDDENS NUMERUS.
     DECLARA status SICUT NUMERUS VALENS PORTUS_LEGE(1021).
     DECLARA tx SICUT NUMERUS VALENS status & 32.
     DUM tx == 0 && mora < 100000 PERFICE
-        mora = mora + 1. status = PORTUS_LEGE(1021). tx = status & 32.
+        mora = mora + 1.
+        status = PORTUS_LEGE(1021).
+        tx = status & 32.
     FIN-DUM.
     SI tx == 0 TUNC REDDE 0. FIN-SI.
     REDDE 1.
@@ -29,7 +31,8 @@ FIN-FUNCTIO.
 FUNCTIO DX_CHAR REDDENS NUMERUS.
     ACCIPIT c SICUT NUMERUS.
     SI DX_PARA() == 0 TUNC REDDE 0. FIN-SI.
-    PORTUS_SCRIBE(1016, c). REDDE 1.
+    PORTUS_SCRIBE(1016, c).
+    REDDE 1.
 FIN-FUNCTIO.
 
 FUNCTIO DX_HEX REDDENS NUMERUS.
@@ -38,20 +41,89 @@ FUNCTIO DX_HEX REDDENS NUMERUS.
     DECLARA lo SICUT NUMERUS VALENS v & 15.
     SI hi < 10 TUNC hi = hi + 48. ALITER hi = hi + 55. FIN-SI.
     SI lo < 10 TUNC lo = lo + 48. ALITER lo = lo + 55. FIN-SI.
-    DECLARA x SICUT NUMERUS VALENS DX_CHAR(hi). x = DX_CHAR(lo). REDDE x.
+    DECLARA x SICUT NUMERUS VALENS DX_CHAR(hi).
+    x = DX_CHAR(lo).
+    REDDE x.
 FIN-FUNCTIO.
 
 FUNCTIO DX_NUNTIA REDDENS NUMERUS.
     ACCIPIT codex SICUT NUMERUS.
-    DECLARA x SICUT NUMERUS VALENS DX_CHAR(86). x=DX_CHAR(73). x=DX_CHAR(79). x=DX_CHAR(88). x=DX_CHAR(32).
-    x=DX_HEX(codex). x=DX_CHAR(13). x=DX_CHAR(10). REDDE codex.
+    DECLARA x SICUT NUMERUS VALENS DX_CHAR(86).
+    x = DX_CHAR(73). x = DX_CHAR(79). x = DX_CHAR(83). x = DX_CHAR(32).
+    x = DX_HEX(codex). x = DX_CHAR(13). x = DX_CHAR(10).
+    REDDE codex.
+FIN-FUNCTIO.
+
+// Eadem series ac RV3D_CREA_EX, sed gradum defectus reddit.
+FUNCTIO DX_CREA_STAGE REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    SI systema == 0 TUNC REDDE 1. FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS RESERVA_OCTETA(192).
+    SI gestor == 0 TUNC REDDE 2. FIN-SI.
+    DECLARA pura SICUT NUMERUS VALENS GX_MEM_PURA(gestor, 192).
+    CONTENTUM(gestor + 32) = 4096.
+    CONTENTUM(gestor + 120) = systema.
+    CONTENTUM(gestor + 128) = bus.
+    CONTENTUM(gestor + 136) = apparatus.
+    CONTENTUM(gestor + 144) = functio.
+
+    DECLARA vp SICUT NUMERUS VALENS VP_CREA(bus, apparatus, functio).
+    SI vp == 0 TUNC REDDE 3. FIN-SI.
+    CONTENTUM(gestor) = vp.
+    CONTENTUM(gestor + 48) = 1.
+    SI VP_FACULTATES_LEGE(vp) == 0 TUNC REDDE 4. FIN-SI.
+    DECLARA oblatae SICUT NUMERUS VALENS CONTENTUM(vp + 112).
+    SI (oblatae & VG3D_F_VIRGL()) == 0 TUNC REDDE 5. FIN-SI.
+    DECLARA acceptae SICUT NUMERUS VALENS VG3D_FACULTATES_ACCIPE(oblatae).
+    CONTENTUM(gestor + 152) = acceptae.
+    SI VP_INITIALIZA(vp, acceptae, 1) == 0 TUNC REDDE 6. FIN-SI.
+    DECLARA coda SICUT NUMERUS VALENS VP_CODAM_CONFIGURA(vp, systema, 0, 8).
+    SI coda == 0 TUNC REDDE 7. FIN-SI.
+    CONTENTUM(gestor + 8) = coda.
+    SI VP_DRIVER_PARATUS(vp) == 0 TUNC REDDE 8. FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS VG3D_NUM_CAPSETS(vp).
+    SI numerus <= 0 TUNC REDDE 9. FIN-SI.
+    DECLARA info SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI info == 0 TUNC REDDE 10. FIN-SI.
+    DECLARA electus SICUT NUMERUS VALENS 0.
+    DECLARA versio SICUT NUMERUS VALENS 0.
+    DECLARA mensura SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus && i < 16 PERFICE
+        SI VG3D_CAPSET_INFO(vp, coda, 256, 1024, i, info) == 0 TUNC REDDE 11. FIN-SI.
+        DECLARA candidatus SICUT NUMERUS VALENS CONTENTUM(info).
+        DECLARA melior SICUT NUMERUS VALENS VG3D_CAPSET_MELIUS(electus, candidatus).
+        SI melior != electus TUNC
+            electus = melior.
+            versio = CONTENTUM(info + 8).
+            mensura = CONTENTUM(info + 16).
+        FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI electus == 0 || mensura <= 0 TUNC REDDE 12. FIN-SI.
+    SI VG3D_CAPSET_LEGE(vp, coda, 256, 1024, electus, versio, mensura) == 0 TUNC REDDE 13. FIN-SI.
+    DECLARA init SICUT NUMERUS VALENS 0.
+    SI (acceptae & VG3D_F_CONTEXT_INIT()) != 0 TUNC init = electus. FIN-SI.
+    SI VG3D_CTX_CREA(vp, coda, 256, 1024, 1, init) == 0 TUNC REDDE 14. FIN-SI.
+    CONTENTUM(gestor + 16) = 1.
+    CONTENTUM(gestor + 24) = electus.
+    CONTENTUM(gestor + 160) = versio.
+    CONTENTUM(gestor + 168) = mensura.
+    CONTENTUM(gestor + 176) = init.
+    CONTENTUM(gestor + 48) = 2.
+    SI VG3D_CTX_LIBERA(vp, coda, 256, 1024, 1) == 0 TUNC REDDE 15. FIN-SI.
+    SI VP_RESTITUE(vp) == 0 TUNC REDDE 16. FIN-SI.
+    REDDE 0.
 FIN-FUNCTIO.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA systema SICUT NUMERUS VALENS CONTENTUM(16777224).
-    SI systema == 0 TUNC REDDE DX_NUNTIA(1). FIN-SI.
+    SI systema == 0 TUNC REDDE DX_NUNTIA(64). FIN-SI.
     DECLARA registrum SICUT NUMERUS VALENS RESERVA_OCTETA(24).
-    SI registrum == 0 || PCI_REGISTRUM_INITIA(registrum, 8) != 0 TUNC REDDE DX_NUNTIA(2). FIN-SI.
+    SI registrum == 0 || PCI_REGISTRUM_INITIA(registrum, 8) != 0 TUNC REDDE DX_NUNTIA(65). FIN-SI.
     DECLARA numerus SICUT NUMERUS VALENS PCI_ENUMERA_PER_PONTES(registrum).
     DECLARA sedes_gpu SICUT NUMERUS VALENS 0.
     DECLARA i SICUT NUMERUS VALENS 0.
@@ -60,13 +132,10 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
         SI CONTENTUM(sedes + 24) == 6900 && CONTENTUM(sedes + 32) == 4176 TUNC sedes_gpu = sedes. FIN-SI.
         i = i + 1.
     FIN-DUM.
-    SI sedes_gpu == 0 TUNC REDDE DX_NUNTIA(3). FIN-SI.
+    SI sedes_gpu == 0 TUNC REDDE DX_NUNTIA(66). FIN-SI.
     DECLARA bus SICUT NUMERUS VALENS CONTENTUM(sedes_gpu).
     DECLARA app SICUT NUMERUS VALENS CONTENTUM(sedes_gpu + 8).
     DECLARA fn SICUT NUMERUS VALENS CONTENTUM(sedes_gpu + 16).
-    DECLARA gestor SICUT NUMERUS VALENS RV3D_CREA_EX(systema, bus, app, fn).
-    SI gestor == 0 TUNC REDDE DX_NUNTIA(4). FIN-SI.
-    SI RV3D_PARATUS(gestor) == 0 TUNC REDDE DX_NUNTIA(5). FIN-SI.
-    SI RV3D_RESTITUE(gestor) == 0 TUNC REDDE DX_NUNTIA(6). FIN-SI.
-    REDDE DX_NUNTIA(0).
+    DECLARA gradus SICUT NUMERUS VALENS DX_CREA_STAGE(systema, bus, app, fn).
+    REDDE DX_NUNTIA(gradus).
 FIN-FUNCTIO.
