@@ -1,16 +1,16 @@
 # ARCHIVUM — mémoire partagée des échanges
 
-Les archives de conversation sont volontairement **placées directement à la racine du dépôt**.
+Toutes les archives de conversation sont regroupées dans **le dossier unique `ARCHIVUM/` à la racine de `main`**.
 
-Ce choix est fonctionnel : en ouvrant `main`, Numi, Claude ou ChatGPT doivent voir immédiatement la mémoire partagée sans avoir à connaître ou explorer un sous-dossier.
+Ce choix évite d'encombrer la racine du dépôt tout en gardant la mémoire partagée accessible en un clic.
 
-Convention :
+Convention interne :
 
-- `ARCHIVUM-CLAUDE-*.md` — sessions issues du versant Claude ;
-- `ARCHIVUM-CHATGPT-*.md` — sessions issues du versant ChatGPT ;
-- `ARCHIVUM-INDEX.md` — index commun ;
-- `ARCHIVUM-extrahe_archivum.py` — régénérateur des sessions Claude ;
-- `ARCHIVUM-verifica_secreta.py` — contrôle de secrets avant publication.
+- `CLAUDE-*.md` — sessions issues du versant Claude ;
+- `CHATGPT-*.md` — sessions issues du versant ChatGPT ;
+- `INDEX.md` — index commun ;
+- `extrahe_archivum.py` — régénérateur des sessions Claude ;
+- `verifica_secreta.py` — contrôle de secrets avant publication.
 
 ## Pourquoi
 
@@ -45,11 +45,11 @@ Deux types de fichiers sont distingués explicitement :
 Depuis la racine du dépôt :
 
 ```bash
-python3 ARCHIVUM-extrahe_archivum.py
-python3 ARCHIVUM-verifica_secreta.py
+python3 ARCHIVUM/extrahe_archivum.py
+python3 ARCHIVUM/verifica_secreta.py
 ```
 
-Le générateur écrit désormais les sessions Claude directement à la racine sous `ARCHIVUM-CLAUDE-*.md` et reconstruit l'index commun sans déplacer les entrées ChatGPT.
+Le générateur écrit les sessions Claude dans `ARCHIVUM/` sous `CLAUDE-*.md` et reconstruit `ARCHIVUM/INDEX.md` sans déplacer les entrées ChatGPT.
 
 ## Sécurité
 
@@ -57,4 +57,4 @@ Une archive de conversation peut contenir tout ce qui a été tapé. Les motifs 
 
 Le contrôle automatique ne remplace pas le jugement humain : toute chaîne ressemblant à un secret ou credential doit être retirée même si elle ne correspond pas encore à un motif connu.
 
-Voir `ARCHIVUM-INDEX.md` pour la liste des sessions.
+Voir `INDEX.md` pour la liste des sessions.

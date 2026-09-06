@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Refuse les motifs de secrets évidents dans les fichiers ARCHIVUM Markdown."""
+"""Refuse les motifs de secrets évidents dans les Markdown de ARCHIVUM/."""
 
 from pathlib import Path
 import re
 
-RACINE = Path(__file__).resolve().parent
+ARCHIVUM = Path(__file__).resolve().parent
 
 MOTIFS = [
     ("GitHub token", re.compile(r"gh[pousr]_[A-Za-z0-9]{20,255}")),
@@ -18,7 +18,7 @@ MOTIFS = [
 ]
 
 fautes = []
-for chemin in sorted(RACINE.glob("ARCHIVUM-*.md")):
+for chemin in sorted(ARCHIVUM.glob("*.md")):
     texte = chemin.read_text(encoding="utf-8", errors="replace")
     for nom, rx in MOTIFS:
         if rx.search(texte):
@@ -29,4 +29,4 @@ if fautes:
         print(f"SECRETUM: {chemin}: {nom}")
     raise SystemExit(1)
 
-print("RECTE: nullum secretum manifestum in ARCHIVUM-*.md inventum est.")
+print("RECTE: nullum secretum manifestum in ARCHIVUM/*.md inventum est.")
