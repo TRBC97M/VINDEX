@@ -40,5 +40,5 @@ jobs:
             -vga none -display sdl,gl=on -net none -monitor none -serial "file:$TEMP/diag.log" >/tmp/f9ii-diag-qemu.log 2>&1 &
           PID=$!
           trap 'kill -- -$PID 2>/dev/null || true' EXIT
-          for i in $(seq 1 45); do grep -aE '^VIOX [0-9A-F]{2}' "$TEMP/diag.log" && break; sleep 1; done
-          grep -aE '^VIOX [0-9A-F]{2}' "$TEMP/diag.log" || { cat "$TEMP/diag.log"; cat /tmp/f9ii-diag-qemu.log; exit 1; }
+          for i in $(seq 1 45); do if [ -f "$TEMP/diag.log" ] && grep -aE '^VIOE [0-9A-F]{2}' "$TEMP/diag.log" >/dev/null 2>&1; then break; fi; sleep 1; done
+          grep -aE '^VIOE [0-9A-F]{2}' "$TEMP/diag.log" || { cat "$TEMP/diag.log"; cat /tmp/f9ii-diag-qemu.log; exit 1; }
