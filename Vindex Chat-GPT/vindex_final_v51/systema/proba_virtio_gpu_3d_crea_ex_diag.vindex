@@ -1,4 +1,5 @@
-// TEMPORARIUM — replica exacta RV3D_CREA_EX; ante PR delendum.
+// TEMPORARIUM — praefixum exactum RV3D_CREA_EX, cauda post codam resecta.
+// Si hoc transit dum functio plena deficit, corpus futurum codegen priorem mutat.
 IMPORTA "rectores/pci.vindex".
 IMPORTA "rectores/mmio.vindex".
 IMPORTA "rectores/paginae_dma.vindex".
@@ -52,7 +53,6 @@ FUNCTIO DX_NUNTIA REDDENS NUMERUS.
     REDDE codex.
 FIN-FUNCTIO.
 
-// Eadem structura ac RV3D_CREA_EX. In errore -N reddit; in victoria gestor.
 FUNCTIO DX_CREA_EX REDDENS NUMERUS.
     ACCIPIT systema SICUT NUMERUS.
     ACCIPIT bus SICUT NUMERUS.
@@ -76,31 +76,6 @@ FUNCTIO DX_CREA_EX REDDENS NUMERUS.
     DECLARA coda SICUT NUMERUS VALENS VP_CODAM_CONFIGURA(vp, systema, 0, 8).
     SI coda == 0 TUNC CONTENTUM(gestor + 56) = 5. DECLARA x3 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-7. FIN-SI.
     CONTENTUM(gestor + 8) = coda.
-    SI VP_DRIVER_PARATUS(vp) == 0 TUNC CONTENTUM(gestor + 56) = 6. DECLARA x4 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-8. FIN-SI.
-    DECLARA numerus SICUT NUMERUS VALENS VG3D_NUM_CAPSETS(vp).
-    SI numerus <= 0 TUNC CONTENTUM(gestor + 56) = 7. DECLARA x5 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-9. FIN-SI.
-    DECLARA info SICUT NUMERUS VALENS RESERVA_OCTETA(24).
-    SI info == 0 TUNC CONTENTUM(gestor + 56) = 8. DECLARA x6 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-10. FIN-SI.
-    DECLARA electus SICUT NUMERUS VALENS 0.
-    DECLARA versio SICUT NUMERUS VALENS 0.
-    DECLARA mensura SICUT NUMERUS VALENS 0.
-    DECLARA i SICUT NUMERUS VALENS 0.
-    DUM i < numerus && i < 16 PERFICE
-        SI VG3D_CAPSET_INFO(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), i, info) == 0 TUNC CONTENTUM(gestor + 56) = 9. DECLARA x7 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-11. FIN-SI.
-        DECLARA candidatus SICUT NUMERUS VALENS CONTENTUM(info).
-        DECLARA melior SICUT NUMERUS VALENS VG3D_CAPSET_MELIUS(electus, candidatus).
-        SI melior != electus TUNC electus = melior. versio = CONTENTUM(info + 8). mensura = CONTENTUM(info + 16). FIN-SI.
-        i = i + 1.
-    FIN-DUM.
-    SI electus == 0 || mensura <= 0 TUNC CONTENTUM(gestor + 56) = 10. DECLARA x8 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-12. FIN-SI.
-    SI VG3D_CAPSET_LEGE(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), electus, versio, mensura) == 0 TUNC CONTENTUM(gestor + 56) = 11. DECLARA x9 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-13. FIN-SI.
-    DECLARA init SICUT NUMERUS VALENS 0.
-    SI (acceptae & VG3D_F_CONTEXT_INIT()) != 0 TUNC init = electus. FIN-SI.
-    DECLARA contextus SICUT NUMERUS VALENS 1.
-    SI VG3D_CTX_CREA(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), contextus, init) == 0 TUNC CONTENTUM(gestor + 56) = 12. DECLARA x10 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-14. FIN-SI.
-    CONTENTUM(gestor + 16) = contextus. CONTENTUM(gestor + 24) = electus.
-    CONTENTUM(gestor + 160) = versio. CONTENTUM(gestor + 168) = mensura. CONTENTUM(gestor + 176) = init.
-    CONTENTUM(gestor + 48) = 2. CONTENTUM(gestor + 56) = 0.
     REDDE gestor.
 FIN-FUNCTIO.
 
@@ -124,7 +99,5 @@ FUNCTIO PRINCIPALIS REDDENS NUMERUS.
     DECLARA gestor SICUT NUMERUS VALENS DX_CREA_EX(systema,bus,app,fn).
     SI gestor < 0 TUNC REDDE DX_NUNTIA(0-gestor). FIN-SI.
     SI gestor == 0 TUNC REDDE DX_NUNTIA(63). FIN-SI.
-    SI RV3D_PARATUS(gestor) == 0 TUNC REDDE DX_NUNTIA(62). FIN-SI.
-    SI RV3D_RESTITUE(gestor) == 0 TUNC REDDE DX_NUNTIA(61). FIN-SI.
     REDDE DX_NUNTIA(0).
 FIN-FUNCTIO.
