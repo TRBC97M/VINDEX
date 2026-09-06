@@ -1,3 +1,5 @@
+IMPORTA "bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "bibliotheca/fenestrale_ii_superficies.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_vii.vindex".
 IMPORTA "bibliotheca/imago_raster_vii.vindex".
 IMPORTA "bibliotheca/fenestrale_graphica_viii.vindex".
