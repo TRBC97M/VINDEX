@@ -1,4 +1,4 @@
-name: TEMP — F9-II saltus inspect
+name: TEMP — F9-II locales inspect
 on:
   push:
     paths:
@@ -10,28 +10,28 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - name: Extrahe saltus compilatoris
+      - name: Extrahe locales compilatoris
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
-          p=Path('src/compilator_vindex.vindex')
-          s=p.read_text()
-          funcs=[]
-          for m in re.finditer(r'(?m)^FUNCTIO\s+([A-Z0-9_]+)\s+REDDENS\s+NUMERUS\.',s):
-              name=m.group(1); start=m.start(); end=s.find('\nFIN-FUNCTIO.',m.end())
-              if end<0: continue
-              body=s[start:end+len('\nFIN-FUNCTIO.')]
-              if any(k in name for k in ('JMP','SALT','FUTUR','PERCUT','PATCH','JCC')) or any(k in body for k in ('COMPONE_JMP_FUTURUM','PERCUTE_SALTUM','saltus_futur','locus_salt')):
-                  funcs.append((name,body))
-          print('=== FUNCTIONES SALTUS ===')
-          for name,body in funcs:
-              print('\n---',name,'---')
-              print(body[:12000])
-          print('\n=== LINEAE FUTURUM/JMP ===')
+          s=Path('src/compilator_vindex.vindex').read_text()
+          names=['PROXIMUS_LOCUS_LIBER','CERCA_VARIABILEM','LOCALE_SCRIBE','LOCALE_LEGE','DESCRIPTOR_LOCALIUM_LEGE','DESCRIPTOR_LOCALIUM_SCRIBE','CURSOR_PILAE_LEGE','CURSOR_PILAE_SCRIBE']
+          for name in names:
+              m=re.search(r'(?m)^FUNCTIO\s+'+re.escape(name)+r'\s+REDDENS\s+NUMERUS\.',s)
+              if not m:
+                  print('ABSENS',name); continue
+              end=s.find('\nFIN-FUNCTIO.',m.end())
+              print('\n--- '+name+' ---')
+              print(s[m.start():end+len('\nFIN-FUNCTIO.')])
+          print('\n=== RESERVAE / DESCRIPTOR LOCALIUM ===')
           for i,line in enumerate(s.splitlines(),1):
-              if re.search(r'FUTUR|JMP|SALT|PERCUT|JCC',line,re.I):
+              if ('DESCRIPTOR_LOCAL' in line or 'descriptor_local' in line.lower() or 'RESERVA_OCTETA' in line) and any(k in line for k in ('DESCRIPTOR','descriptor','RESERVA')):
+                  print(f'{i}: {line}')
+          print('\n=== PROXIMUS USUS ===')
+          for i,line in enumerate(s.splitlines(),1):
+              if 'PROXIMUS_LOCUS_LIBER' in line or 'LOCALE_SCRIBE' in line or 'CURSOR_PILAE_SCRIBE' in line:
                   print(f'{i}: {line}')
           PY
