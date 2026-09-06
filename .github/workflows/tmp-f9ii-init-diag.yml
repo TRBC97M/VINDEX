@@ -23,7 +23,7 @@ jobs:
           set -euo pipefail
           chmod +x ./compilator_vindex
           TEMP="$(mktemp -d)"
-          ./compilator_vindex systema/proba_virtio_gpu_3d_init_diag.vindex "$TEMP/BOOTX64.EFI" uefi
+          (cd systema && ../compilator_vindex proba_virtio_gpu_3d_init_diag.vindex "$TEMP/BOOTX64.EFI" uefi)
           mkdir -p "$TEMP/esp/EFI/BOOT"
           cp "$TEMP/BOOTX64.EFI" "$TEMP/esp/EFI/BOOT/BOOTX64.EFI"
           CODE=/usr/share/OVMF/OVMF_CODE_4M.fd
