@@ -1,0 +1,184 @@
+// Sylvia OS — P16-XII-F9-I: fundamentum VirtIO GPU III-D verum.
+// Rectores virtio_pci.vindex et virtio_gpu.vindex ante hoc folium adsint.
+// Nulla compositio GPU hic fingitur: hic gradus facultatem VIRGL, capsets
+// et vitam contextus III-D per controlq veram certificat.
+
+FUNCTIO VG3D_F_VIRGL REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+FUNCTIO VG3D_F_CONTEXT_INIT REDDENS NUMERUS.
+    REDDE 16.
+FIN-FUNCTIO.
+FUNCTIO VG3D_CMD_CAPSET_INFO REDDENS NUMERUS.
+    REDDE 264.
+FIN-FUNCTIO.
+FUNCTIO VG3D_CMD_CAPSET REDDENS NUMERUS.
+    REDDE 265.
+FIN-FUNCTIO.
+FUNCTIO VG3D_CMD_CTX_CREA REDDENS NUMERUS.
+    REDDE 512.
+FIN-FUNCTIO.
+FUNCTIO VG3D_CMD_CTX_LIBERA REDDENS NUMERUS.
+    REDDE 513.
+FIN-FUNCTIO.
+FUNCTIO VG3D_RESP_NODATA REDDENS NUMERUS.
+    REDDE 4352.
+FIN-FUNCTIO.
+FUNCTIO VG3D_RESP_CAPSET_INFO REDDENS NUMERUS.
+    REDDE 4354.
+FIN-FUNCTIO.
+FUNCTIO VG3D_RESP_CAPSET REDDENS NUMERUS.
+    REDDE 4355.
+FIN-FUNCTIO.
+FUNCTIO VG3D_CAPSET_VIRGL REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+FUNCTIO VG3D_CAPSET_VIRGL2 REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_FACULTATES_ACCIPE REDDENS NUMERUS.
+    ACCIPIT oblatae SICUT NUMERUS.
+    SI (oblatae & VG3D_F_VIRGL()) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE VG3D_F_VIRGL() | (oblatae & VG3D_F_CONTEXT_INIT()).
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_CAPSET_MELIUS REDDENS NUMERUS.
+    ACCIPIT praesens SICUT NUMERUS.
+    ACCIPIT candidatus SICUT NUMERUS.
+    SI candidatus == VG3D_CAPSET_VIRGL2() TUNC REDDE candidatus. FIN-SI.
+    SI praesens == VG3D_CAPSET_VIRGL2() TUNC REDDE praesens. FIN-SI.
+    SI candidatus == VG3D_CAPSET_VIRGL() TUNC REDDE candidatus. FIN-SI.
+    REDDE praesens.
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_NUM_CAPSETS REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    SI vp == 0 || CONTENTUM(vp + 96) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE MR_LEGE32(CONTENTUM(vp + 96), 12).
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_TERMINI REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT intervallum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI coda == 0 || intervallum < CONTENTUM(coda + 120) || mensura <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI regio == 0 || intervallum + mensura < intervallum || intervallum + mensura > CONTENTUM(regio + 16) TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_CAPUT_PRAEPARA REDDENS NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    SI coda == 0 || mensura < 24 || mensura % 8 != 0 || VG3D_TERMINI(coda, mandatum, mensura) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI VG_MEMORIA_VACUA(regio, mandatum, mensura) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum, genus) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 4, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE64(regio, mandatum + 8, CONTENTUM(coda + 88)) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 16, contextus) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_AGE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT responsum_mensura SICUT NUMERUS.
+    SI vp == 0 || coda == 0 || CONTENTUM(vp + 160) != 2 || coda != CONTENTUM(vp + 176) TUNC REDDE 0. FIN-SI.
+    SI responsum_mensura < 24 || responsum_mensura % 8 != 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_TERMINI(coda, mandatum, mensura) == 0 || VG3D_TERMINI(coda, responsum, responsum_mensura) == 0 TUNC REDDE 0. FIN-SI.
+    SI mandatum < responsum + responsum_mensura && responsum < mandatum + mensura TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI VG_MEMORIA_VACUA(regio, responsum, responsum_mensura) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA phys_mandatum SICUT NUMERUS VALENS DMA_PHYSICA(regio, mandatum, mensura).
+    DECLARA phys_responsum SICUT NUMERUS VALENS DMA_PHYSICA(regio, responsum, responsum_mensura).
+    SI phys_mandatum == 0 || phys_responsum == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_DESCRIPTOR_SCRIBE(coda, 0, phys_mandatum, mensura, 1, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_DESCRIPTOR_SCRIBE(coda, 1, phys_responsum, responsum_mensura, 2, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI VQ_PRAEBE(coda, 0) == 0 || VP_NOTIFICA(vp, coda) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA completum SICUT NUMERUS VALENS 0.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DUM completum == 0 && mora < 20000000 PERFICE
+        completum = VQ_COMPLETUM(coda).
+        mora = mora + 1.
+    FIN-DUM.
+    SI completum == 0 || CONTENTUM(coda + 56) != 0 || CONTENTUM(coda + 64) < 24 TUNC REDDE 0. FIN-SI.
+    DECLARA vexilla SICUT NUMERUS VALENS DMA_LEGE32(regio, responsum + 4).
+    DECLARA sepes SICUT NUMERUS VALENS DMA_LEGE64(regio, responsum + 8).
+    SI (vexilla & 1) == 0 || sepes != CONTENTUM(coda + 88) TUNC REDDE 0. FIN-SI.
+    CONTENTUM(coda + 88) = CONTENTUM(coda + 88) + 1.
+    REDDE DMA_LEGE32(regio, responsum).
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_CAPSET_INFO REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT index SICUT NUMERUS.
+    ACCIPIT info SICUT NUMERUS.
+    SI index < 0 || info == 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 32, VG3D_CMD_CAPSET_INFO(), 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, index) == 0 || DMA_SCRIBE32(regio, mandatum + 28, 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 32, responsum, 40).
+    SI genus != VG3D_RESP_CAPSET_INFO() || CONTENTUM(coda + 64) < 40 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(info) = DMA_LEGE32(regio, responsum + 24).
+    CONTENTUM(info + 8) = DMA_LEGE32(regio, responsum + 28).
+    CONTENTUM(info + 16) = DMA_LEGE32(regio, responsum + 32).
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_CAPSET_LEGE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT capset SICUT NUMERUS.
+    ACCIPIT versio SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    SI capset <= 0 || mensura <= 0 || mensura > 2048 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 32, VG3D_CMD_CAPSET(), 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, capset) == 0 || DMA_SCRIBE32(regio, mandatum + 28, versio) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA capacitas SICUT NUMERUS VALENS VQ_CONFORMA(24 + mensura, 8).
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 32, responsum, capacitas).
+    SI genus != VG3D_RESP_CAPSET() || CONTENTUM(coda + 64) < 24 + mensura TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_CTX_CREA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT context_init SICUT NUMERUS.
+    SI contextus <= 0 || (context_init & 4294967040) != 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 96, VG3D_CMD_CTX_CREA(), contextus) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, 0) == 0 || DMA_SCRIBE32(regio, mandatum + 28, context_init) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 96, responsum, 24).
+    SI genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3D_CTX_LIBERA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    SI contextus <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 24, VG3D_CMD_CTX_LIBERA(), contextus) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 24, responsum, 24).
+    SI genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.

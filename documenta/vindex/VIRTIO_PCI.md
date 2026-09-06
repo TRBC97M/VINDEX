@@ -173,3 +173,21 @@ eodem apparatu uti potest et post translationem proprietatis iam auctoritas
 telemetriae esse non debet.
 
 **VINDEX Latine cogitat. Sylvia Latine loquitur.**
+
+## P16-XII-F9-I — Fundamentum VirtIO GPU III-D
+
+F9-I distinguit expresse praesentatorem II-D a facultate III-D. `VIRTIO_GPU_F_VIRGL`
+(bitum 0) est necessarium; `VIRTIO_GPU_F_CONTEXT_INIT` (bitum 4) solum si ab
+apparatu oblatum est accipitur. Rector PCI potest facultates oblatas ante
+negotiationem legere sine statu finali mutando et commandum PCI pristinum restituit.
+
+Rector `virtio_gpu_3d.vindex` enumerat `num_capsets`, legit
+`GET_CAPSET_INFO`, eligit VIRGL2 ante VIRGL, legit ipsum `GET_CAPSET`, deinde
+contextum `CTX_CREATE` creat et `CTX_DESTROY` delet. Omnia mandata fence vera
+per eandem controlq DMA utuntur.
+
+Probatio QEMU duplex est: `virtio-gpu-pci` sine VIRGL debet `VIO9 ERR02`
+reddere; `virtio-gpu-gl-pci` cum virglrenderer debet capset realem legere,
+contextum creare/deletere et `R` post restitutionem PCI reddere. In CI renderer
+hostis Mesa llvmpipe est: haec probatio protocollo III-D vera est, non mensura
+accelerationis GPU physicae.
