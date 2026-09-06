@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/tmp-f9ii-init-diag.yml'
-      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_crea_ex_diag.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_queue_nidus_diag.vindex'
 permissions:
   contents: read
 jobs:
@@ -23,13 +23,10 @@ jobs:
           set -euo pipefail
           chmod +x ./compilator_vindex
           TEMP="$(mktemp -d)"
-          (cd systema && ../compilator_vindex proba_virtio_gpu_3d_crea_ex_diag.vindex "$TEMP/BOOTX64.EFI" uefi)
-          mkdir -p "$TEMP/esp/EFI/BOOT"
-          cp "$TEMP/BOOTX64.EFI" "$TEMP/esp/EFI/BOOT/BOOTX64.EFI"
-          CODE=/usr/share/OVMF/OVMF_CODE_4M.fd
-          VARS=/usr/share/OVMF/OVMF_VARS_4M.fd
-          [ -f "$CODE" ] || CODE=/usr/share/OVMF/OVMF_CODE.fd
-          [ -f "$VARS" ] || VARS=/usr/share/OVMF/OVMF_VARS.fd
+          (cd systema && ../compilator_vindex proba_virtio_gpu_queue_nidus_diag.vindex "$TEMP/BOOTX64.EFI" uefi)
+          mkdir -p "$TEMP/esp/EFI/BOOT"; cp "$TEMP/BOOTX64.EFI" "$TEMP/esp/EFI/BOOT/BOOTX64.EFI"
+          CODE=/usr/share/OVMF/OVMF_CODE_4M.fd; VARS=/usr/share/OVMF/OVMF_VARS_4M.fd
+          [ -f "$CODE" ] || CODE=/usr/share/OVMF/OVMF_CODE.fd; [ -f "$VARS" ] || VARS=/usr/share/OVMF/OVMF_VARS.fd
           cp "$VARS" "$TEMP/vars.fd"; chmod +w "$TEMP/vars.fd"
           setsid xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 SDL_AUDIODRIVER=dummy qemu-system-x86_64 -m 1024 -smp 1 -M q35 \
             -drive "if=pflash,format=raw,unit=0,readonly=on,file=$CODE" \
@@ -38,7 +35,6 @@ jobs:
             -device pcie-root-port,id=rp0,bus=pcie.0,chassis=1 \
             -device virtio-gpu-gl-pci,disable-legacy=on,bus=rp0 \
             -vga none -display sdl,gl=on -net none -monitor none -serial "file:$TEMP/diag.log" >/tmp/f9ii-diag-qemu.log 2>&1 &
-          PID=$!
-          trap 'kill -- -$PID 2>/dev/null || true' EXIT
-          for i in $(seq 1 45); do if [ -f "$TEMP/diag.log" ] && grep -aE '^VIOE [0-9A-F]{2}' "$TEMP/diag.log" >/dev/null 2>&1; then break; fi; sleep 1; done
-          grep -aE '^VIOE [0-9A-F]{2}' "$TEMP/diag.log" || { cat "$TEMP/diag.log"; cat /tmp/f9ii-diag-qemu.log; exit 1; }
+          PID=$!; trap 'kill -- -$PID 2>/dev/null || true' EXIT
+          for i in $(seq 1 45); do if [ -f "$TEMP/diag.log" ] && grep -aE '^VIOQ [0-9A-F]{2}' "$TEMP/diag.log" >/dev/null 2>&1; then break; fi; sleep 1; done
+          grep -aE '^VIOQ [0-9A-F]{2}' "$TEMP/diag.log" || { cat "$TEMP/diag.log"; cat /tmp/f9ii-diag-qemu.log; exit 1; }
