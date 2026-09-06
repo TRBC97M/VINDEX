@@ -4,6 +4,19 @@ Toutes les archives de conversation sont regroupées dans **le dossier unique `A
 
 Ce choix évite d'encombrer la racine du dépôt tout en gardant la mémoire partagée accessible en un clic.
 
+## Décision de disposition
+
+Une première tentative avait placé chaque archive directement à la racine de `main`, afin qu'elle soit immédiatement visible. Cette disposition s'est révélée trop encombrante et a été explicitement abandonnée.
+
+La convention canonique actuelle est donc :
+
+- **un seul dossier `ARCHIVUM/` à la racine** ;
+- toutes les archives Claude et ChatGPT vivent dans ce dossier ;
+- `INDEX.md`, `LEGE-ME.md` et les outils de maintenance vivent dans ce même dossier ;
+- la disposition transitoire avec des dizaines de fichiers `ARCHIVUM-*` directement à la racine **ne doit pas être rétablie** sans nouvelle directive explicite de Numi.
+
+Cette note existe précisément pour empêcher un futur agent de confondre une étape historique avec la convention finale.
+
 Convention interne :
 
 - `CLAUDE-*.md` — sessions issues du versant Claude ;
