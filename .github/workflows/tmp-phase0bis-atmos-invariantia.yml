@@ -1,0 +1,51 @@
+name: TEMP — Phase 0-bis ATMOS invariantia
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-phase0bis-atmos-invariantia.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  invariantia:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Compilatorem main historicum accipe
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          git show origin/main:'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' > /tmp/comp-main
+          chmod +x /tmp/comp-main
+          chmod +x 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+      - name: POC I III IV V bit pro bit compara
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="$GITHUB_WORKSPACE"
+          CUR="$ROOT/Vindex Chat-GPT/vindex_final_v51/compilator_vindex"
+
+          compara() {
+            local nomen="$1" dir="$2" fons="$3"
+            echo "=== $nomen ==="
+            (cd "$ROOT/$dir" && /tmp/comp-main "$fons" "/tmp/${nomen}-main.exe" pe)
+            (cd "$ROOT/$dir" && "$CUR" "$fons" "/tmp/${nomen}-exacta.exe" pe)
+            file "/tmp/${nomen}-main.exe" "/tmp/${nomen}-exacta.exe"
+            sha256sum "/tmp/${nomen}-main.exe" "/tmp/${nomen}-exacta.exe"
+            cmp "/tmp/${nomen}-main.exe" "/tmp/${nomen}-exacta.exe"
+            echo "RECTE: $nomen byte-pro-byte idem est."
+          }
+
+          compara POC_I   PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_I   principalis.vindex
+          compara POC_III PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_III graphicum.vindex
+          compara POC_IV  PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_IV  ludus.vindex
+          compara POC_V   PROGRAMMATA/ATMOS_TERMINAL_DEPTH/POC_V   ludus.vindex
+          echo '=== ATMOS POC INVARIANTIA PROBATA ==='
