@@ -1,0 +1,61 @@
+name: TEMP — Symbol intern design map
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-symbol-intern-design.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  map:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Cartographie du compilateur
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex')
+          lines = p.read_text(encoding='utf-8').splitlines()
+          needles = [
+              'FUNCTIO EXTRAHE_ET_SIGNA',
+              'FUNCTIO SIGNUM_AB_POSITIONE',
+              'FUNCTIO INITIA_LOCA_DYNAMICA',
+              'FUNCTIO ASSECURA_LOCA_DYNAMICA',
+              'FUNCTIO LOCALE_LEGE',
+              'FUNCTIO LOCALE_SCRIBE',
+              'FUNCTIO CERCA_VARIABILEM',
+              'FUNCTIO ESTNE_SERIES',
+              'FUNCTIO MAGNITUDO_VARIABILIS',
+              'FUNCTIO STRUCTURA_VARIABILIS',
+              'FUNCTIO FLUITANS_VARIABILIS',
+              'FUNCTIO INITIA_CONTEXTUM_PARSERIS',
+              'FUNCTIO DESCRIPTOR_LOCALIUM_LEGE',
+          ]
+          print('=== FUNCTIONES ===')
+          for n in needles:
+              hits = [i+1 for i,l in enumerate(lines) if n in l]
+              print(n, hits)
+          print('=== EXTRAHE OCCURRENCES ===')
+          for i,l in enumerate(lines):
+              if 'EXTRAHE_ET_SIGNA(' in l or 'SIGNUM_AB_POSITIONE(' in l:
+                  a=max(0,i-2); b=min(len(lines),i+3)
+                  print(f'--- {i+1} ---')
+                  for j in range(a,b): print(f'{j+1:05d}: {lines[j]}')
+          print('=== LOCAL FIELD0 WRITES ===')
+          for i,l in enumerate(lines):
+              if 'LOCALE_SCRIBE' in l and ', 0,' in l:
+                  a=max(0,i-3); b=min(len(lines),i+2)
+                  print(f'--- {i+1} ---')
+                  for j in range(a,b): print(f'{j+1:05d}: {lines[j]}')
+          print('=== LOCAL LOOKUPS ===')
+          for i,l in enumerate(lines):
+              if any(x in l for x in ['CERCA_VARIABILEM(', 'ESTNE_SERIES(', 'MAGNITUDO_VARIABILIS(', 'STRUCTURA_VARIABILIS(', 'FLUITANS_VARIABILIS(']):
+                  a=max(0,i-2); b=min(len(lines),i+2)
+                  print(f'--- {i+1} ---')
+                  for j in range(a,b): print(f'{j+1:05d}: {lines[j]}')
+          PY
