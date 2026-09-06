@@ -1,4 +1,4 @@
-// TEMPORARIUM — probat vocationem directam VP_INITIALIZA sine locali rollback.
+// TEMPORARIUM — probat localem x2 in ramo falso sine vocatione rollback.
 IMPORTA "rectores/pci.vindex".
 IMPORTA "rectores/mmio.vindex".
 IMPORTA "rectores/paginae_dma.vindex".
@@ -45,7 +45,11 @@ FUNCTIO DX_CREA_EX REDDENS NUMERUS.
     SI (oblatae & VG3D_F_VIRGL())==0 TUNC CONTENTUM(gestor+56)=3. DECLARA x1 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0-5. FIN-SI.
     DECLARA acceptae SICUT NUMERUS VALENS VG3D_FACULTATES_ACCIPE(oblatae). CONTENTUM(gestor+152)=acceptae.
 
-    SI VP_INITIALIZA(vp,acceptae,1)==0 TUNC REDDE 0-23. FIN-SI.
+    SI VP_INITIALIZA(vp,acceptae,1)==0 TUNC
+        CONTENTUM(gestor+56)=4.
+        DECLARA x2 SICUT NUMERUS VALENS 0.
+        REDDE 0-6.
+    FIN-SI.
     SI vp != CONTENTUM(gestor) TUNC REDDE 0-24. FIN-SI.
     SI CONTENTUM(vp+160)==0 TUNC REDDE 0-25. FIN-SI.
     SI CONTENTUM(vp+160)!=1 TUNC REDDE 0-26. FIN-SI.
