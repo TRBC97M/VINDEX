@@ -1,0 +1,120 @@
+name: Sylvia — Residentia VirtIO GPU III-D
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/sylvia-virtio-gpu-3d-residentia.yml'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/virtio_gpu_3d_residentia.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_residentia_virtio_3d_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/virtio_gpu_3d_residentia.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/identificatores_collisionis.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_septem_nidificata.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_parametra_post_vocationes.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_residentia.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_virtio_gpu_3d_residentia_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+  pull_request:
+    paths:
+      - '.github/workflows/sylvia-virtio-gpu-3d-residentia.yml'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/rectores/virtio_gpu_3d_residentia.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/bibliotheca/fenestrale_residentia_virtio_3d_x.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/virtio_gpu_3d_residentia.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/identificatores_collisionis.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_septem_nidificata.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_parametra_post_vocationes.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_residentia.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_virtio_gpu_3d_residentia_053.sh'
+      - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
+
+permissions:
+  contents: read
+
+jobs:
+  proba:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Integratio F9-II et ABI argumentorum verifica
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x ./compilator_vindex
+          ./compilator_vindex probationes/virtio_gpu_3d_residentia.vindex /tmp/f9ii-native
+          chmod +x /tmp/f9ii-native
+          /tmp/f9ii-native
+          ./compilator_vindex probationes/identificatores_collisionis.vindex /tmp/collisio-ident
+          chmod +x /tmp/collisio-ident
+          /tmp/collisio-ident
+          ./compilator_vindex probationes/abi_septem_nidificata.vindex /tmp/abi7
+          chmod +x /tmp/abi7
+          /tmp/abi7
+          ./compilator_vindex probationes/abi_argumenta_vocationes_nidificatae.vindex /tmp/abi-arg-nid
+          chmod +x /tmp/abi-arg-nid
+          /tmp/abi-arg-nid
+          ./compilator_vindex probationes/abi_parametra_post_vocationes.vindex /tmp/abi-param-post
+          chmod +x /tmp/abi-param-post
+          /tmp/abi-param-post
+          ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
+          chmod +x /tmp/g2
+          /tmp/g2 src/compilator_vindex.vindex /tmp/g3
+          cmp ./compilator_vindex /tmp/g2
+          cmp /tmp/g2 /tmp/g3
+
+      - name: Regressionem canonicam et ABI Graphica conserva
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./tests/run_tests.sh | tee /tmp/tests.log
+          grep -Fq '35 probationes rectae; 0 errata.' /tmp/tests.log
+          python3 ../../instrumenta/verifica_puritatem_sylviae.py
+          python3 instrumenta/verifica_abi_graphica_viii.py
+          ./compilator_vindex systema/fenestrale_ii_purus_i.vindex /tmp/fenestrale-f9ii
+          file /tmp/fenestrale-f9ii | grep -F 'ELF 64-bit'
+          ./compilator_vindex tests/casus/salve.vindex /tmp/salve.exe pe
+          ./compilator_vindex tests/casus/salve.vindex /tmp/salve-uefi.exe uefi
+          file /tmp/salve.exe | grep -F 'PE32+'
+          objdump -p /tmp/salve-uefi.exe | grep -E 'Subsystem.*EFI application'
+
+      - name: QEMU, OVMF et virglrenderer institue
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 qemu-system-gui qemu-system-modules-opengl ovmf libvirglrenderer1 libgl1-mesa-dri libegl-mesa0 libegl1 libgbm1 xvfb xauth file
+
+      - name: ABI argumenta nidificata sub UEFI proba
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh
+          bash instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh
+
+      - name: F9-I contextum VIRGL serva
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x instrumenta/proba_virtio_gpu_3d_053.sh
+          bash instrumenta/proba_virtio_gpu_3d_053.sh
+
+      - name: F9-II residentiam Graphica X realem proba
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x instrumenta/proba_virtio_gpu_3d_residentia_053.sh
+          bash instrumenta/proba_virtio_gpu_3d_residentia_053.sh

@@ -1,0 +1,171 @@
+// Sylvia OS — P16-XII-F9-II: residentia resource VirtIO GPU III-D.
+// virtio_gpu_3d.vindex et virtio_gpu_2d.vindex ante hoc folium adsint.
+//
+// Hic stratum tantum mandata protocoli III-D exprimit. Vita Graphica X
+// separatim gubernatur ut compositor software F8 oraculum semanticum maneat.
+
+FUNCTIO VG3DR_CMD_CTX_ADIUNGE REDDENS NUMERUS.
+    REDDE 514.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_CMD_CTX_SEPARA REDDENS NUMERUS.
+    REDDE 515.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_CMD_RESOURCE_CREA REDDENS NUMERUS.
+    REDDE 516.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_CMD_TRANSFER_AD_HOSTEM REDDENS NUMERUS.
+    REDDE 517.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_TARGET_TEXTURE_2D REDDENS NUMERUS.
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_FORMATUM_RGBA8 REDDENS NUMERUS.
+    REDDE 67.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_BIND_SAMPLER REDDENS NUMERUS.
+    REDDE 8.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_FLAG_Y_SUPER REDDENS NUMERUS.
+    REDDE 1.
+FIN-FUNCTIO.
+
+// Parametra creationis LVI octeta:
+// +0 id, +8 target, +16 formatum, +24 bind, +32 w, +40 h, +48 vexilla.
+FUNCTIO VG3DR_PARAM_CREA REDDENS NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    SI identitas <= 0 || identitas > 4294967295 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS RESERVA_OCTETA(56).
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(p) = identitas.
+    CONTENTUM(p + 8) = VG3DR_TARGET_TEXTURE_2D().
+    CONTENTUM(p + 16) = VG3DR_FORMATUM_RGBA8().
+    CONTENTUM(p + 24) = VG3DR_BIND_SAMPLER().
+    CONTENTUM(p + 32) = w.
+    CONTENTUM(p + 40) = h.
+    CONTENTUM(p + 48) = VG3DR_FLAG_Y_SUPER().
+    REDDE p.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_RESOURCE_CREA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT param SICUT NUMERUS.
+    SI param == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(param).
+    DECLARA target SICUT NUMERUS VALENS CONTENTUM(param + 8).
+    DECLARA formatum SICUT NUMERUS VALENS CONTENTUM(param + 16).
+    DECLARA bind SICUT NUMERUS VALENS CONTENTUM(param + 24).
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(param + 32).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(param + 40).
+    DECLARA vexilla SICUT NUMERUS VALENS CONTENTUM(param + 48).
+    SI identitas <= 0 || identitas > 4294967295 || target <= 0 || formatum <= 0 || bind <= 0 || w <= 0 || h <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 72, VG3DR_CMD_RESOURCE_CREA(), 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, identitas) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 28, target) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 32, formatum) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 36, bind) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 40, w) == 0 || DMA_SCRIBE32(regio, mandatum + 44, h) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 48, 1) == 0 || DMA_SCRIBE32(regio, mandatum + 52, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 56, 0) == 0 || DMA_SCRIBE32(regio, mandatum + 60, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 64, vexilla) == 0 || DMA_SCRIBE32(regio, mandatum + 68, 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 72, responsum, 24).
+    SI genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_CTX_RESOURCE_AGE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT genus SICUT NUMERUS.
+    SI contextus <= 0 || identitas <= 0 TUNC REDDE 0. FIN-SI.
+    SI genus != VG3DR_CMD_CTX_ADIUNGE() && genus != VG3DR_CMD_CTX_SEPARA() TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 32, genus, contextus) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, identitas) == 0 || DMA_SCRIBE32(regio, mandatum + 28, 0) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA responsum_genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 32, responsum, 24).
+    SI responsum_genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_CTX_ADIUNGE REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    REDDE VG3DR_CTX_RESOURCE_AGE(vp, coda, mandatum, responsum, contextus, identitas, VG3DR_CMD_CTX_ADIUNGE()).
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_CTX_SEPARA REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    REDDE VG3DR_CTX_RESOURCE_AGE(vp, coda, mandatum, responsum, contextus, identitas, VG3DR_CMD_CTX_SEPARA()).
+FIN-FUNCTIO.
+
+// Parametra transferendi LXIV octeta:
+// +0 id, +8 x, +16 y, +24 w, +32 h, +40 offset, +48 stride, +56 layer_stride.
+FUNCTIO VG3DR_TRANSFER_PARAM REDDENS NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT w SICUT NUMERUS.
+    ACCIPIT h SICUT NUMERUS.
+    ACCIPIT stride SICUT NUMERUS.
+    ACCIPIT layer_stride SICUT NUMERUS.
+    SI identitas <= 0 || w <= 0 || h <= 0 || stride <= 0 || layer_stride <= 0 TUNC REDDE 0. FIN-SI.
+    DECLARA p SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI p == 0 TUNC REDDE 0. FIN-SI.
+    CONTENTUM(p) = identitas. CONTENTUM(p + 8) = 0. CONTENTUM(p + 16) = 0.
+    CONTENTUM(p + 24) = w. CONTENTUM(p + 32) = h. CONTENTUM(p + 40) = 0.
+    CONTENTUM(p + 48) = stride. CONTENTUM(p + 56) = layer_stride.
+    REDDE p.
+FIN-FUNCTIO.
+
+FUNCTIO VG3DR_TRANSFER_AD_HOSTEM REDDENS NUMERUS.
+    ACCIPIT vp SICUT NUMERUS.
+    ACCIPIT coda SICUT NUMERUS.
+    ACCIPIT mandatum SICUT NUMERUS.
+    ACCIPIT responsum SICUT NUMERUS.
+    ACCIPIT contextus SICUT NUMERUS.
+    ACCIPIT param SICUT NUMERUS.
+    SI contextus <= 0 || param == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(param).
+    DECLARA x SICUT NUMERUS VALENS CONTENTUM(param + 8).
+    DECLARA y SICUT NUMERUS VALENS CONTENTUM(param + 16).
+    DECLARA w SICUT NUMERUS VALENS CONTENTUM(param + 24).
+    DECLARA h SICUT NUMERUS VALENS CONTENTUM(param + 32).
+    DECLARA offset SICUT NUMERUS VALENS CONTENTUM(param + 40).
+    DECLARA stride SICUT NUMERUS VALENS CONTENTUM(param + 48).
+    DECLARA layer_stride SICUT NUMERUS VALENS CONTENTUM(param + 56).
+    SI identitas <= 0 || x < 0 || y < 0 || w <= 0 || h <= 0 || offset < 0 || stride <= 0 || layer_stride <= 0 TUNC REDDE 0. FIN-SI.
+    SI VG3D_CAPUT_PRAEPARA(coda, mandatum, 72, VG3DR_CMD_TRANSFER_AD_HOSTEM(), contextus) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA regio SICUT NUMERUS VALENS CONTENTUM(coda).
+    SI DMA_SCRIBE32(regio, mandatum + 24, x) == 0 || DMA_SCRIBE32(regio, mandatum + 28, y) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 32, 0) == 0 || DMA_SCRIBE32(regio, mandatum + 36, w) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 40, h) == 0 || DMA_SCRIBE32(regio, mandatum + 44, 1) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE64(regio, mandatum + 48, offset) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 56, identitas) == 0 || DMA_SCRIBE32(regio, mandatum + 60, 0) == 0 TUNC REDDE 0. FIN-SI.
+    SI DMA_SCRIBE32(regio, mandatum + 64, stride) == 0 || DMA_SCRIBE32(regio, mandatum + 68, layer_stride) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA genus SICUT NUMERUS VALENS VG3D_AGE(vp, coda, mandatum, 72, responsum, 24).
+    SI genus != VG3D_RESP_NODATA() TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.

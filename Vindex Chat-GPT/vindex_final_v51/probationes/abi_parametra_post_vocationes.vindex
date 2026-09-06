@@ -1,0 +1,41 @@
+// Regressio ABI: parametra functionis vocantis post alias vocationes integra manent.
+// Hoc contractum rectoribus necessarium est: systema/descriptor saepe post plures
+// vocationes adiutorum iterum adhibentur.
+
+FUNCTIO ABIP_AUX REDDENS NUMERUS.
+    ACCIPIT x SICUT NUMERUS.
+    ACCIPIT y SICUT NUMERUS.
+    ACCIPIT z SICUT NUMERUS.
+    REDDE x + y*10 + z*100.
+FIN-FUNCTIO.
+
+FUNCTIO ABIP_POST REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    DECLARA t SICUT NUMERUS VALENS ABIP_AUX(7,8,9).
+    t = ABIP_AUX(1,2,3).
+    SI t != 321 TUNC REDDE 0. FIN-SI.
+    REDDE a + b*10 + c*100 + d*1000.
+FIN-FUNCTIO.
+
+FUNCTIO ABIP_POST_LONGUM REDDENS NUMERUS.
+    ACCIPIT a SICUT NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    ACCIPIT d SICUT NUMERUS.
+    DECLARA t SICUT NUMERUS VALENS ABIP_AUX(1,1,1).
+    t = ABIP_AUX(2,2,2).
+    t = ABIP_AUX(3,3,3).
+    t = ABIP_AUX(4,4,4).
+    SI t != 444 TUNC REDDE 0. FIN-SI.
+    // Releguntur omnia quattuor parametra post quattuor vocationes.
+    REDDE a + b*10 + c*100 + d*1000.
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    SI ABIP_POST(1,2,3,4) != 4321 TUNC REDDE 1. FIN-SI.
+    SI ABIP_POST_LONGUM(5,6,7,8) != 8765 TUNC REDDE 2. FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.

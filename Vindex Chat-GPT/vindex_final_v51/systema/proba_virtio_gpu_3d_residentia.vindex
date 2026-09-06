@@ -1,0 +1,158 @@
+// P16-XII-F9-II — resource Graphica X vere residens in VIRGL.
+IMPORTA "rectores/pci.vindex".
+IMPORTA "rectores/mmio.vindex".
+IMPORTA "rectores/paginae_dma.vindex".
+IMPORTA "rectores/virtio_pci.vindex".
+IMPORTA "rectores/virtio_gpu.vindex".
+IMPORTA "rectores/virtio_gpu_2d.vindex".
+IMPORTA "rectores/virtio_gpu_3d.vindex".
+IMPORTA "rectores/virtio_gpu_3d_residentia.vindex".
+IMPORTA "../bibliotheca/fenestrale_ii_purus.vindex".
+IMPORTA "../bibliotheca/fenestrale_ii_superficies.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_vii.vindex".
+IMPORTA "../bibliotheca/imago_raster_vii.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_viii.vindex".
+IMPORTA "../bibliotheca/fenestrale_graphica_x.vindex".
+IMPORTA "../bibliotheca/fenestrale_residentia_virtio_3d_x.vindex".
+
+FUNCTIO F10_VACUA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT mensura SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < mensura PERFICE
+        SCRIBE_OCTETUM_AB(basis + i, 0).
+        i = i + 1.
+    FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO F10_CIFRA REDDENS NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    SI v < 10 TUNC REDDE 48 + v. FIN-SI.
+    REDDE 55 + v.
+FIN-FUNCTIO.
+
+FUNCTIO F10_LIT REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    ACCIPIT c SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(b + p, c).
+    REDDE 2.
+FIN-FUNCTIO.
+
+FUNCTIO F10_HEX8 REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    SCRIBE_OCTETUM_AB(b + p, F10_CIFRA((v / 16) & 15)).
+    SCRIBE_OCTETUM_AB(b + p + 2, F10_CIFRA(v & 15)).
+    REDDE 4.
+FIN-FUNCTIO.
+
+FUNCTIO F10_HEX32 REDDENS NUMERUS.
+    ACCIPIT b SICUT NUMERUS.
+    ACCIPIT p SICUT NUMERUS.
+    ACCIPIT v SICUT NUMERUS.
+    DECLARA i SICUT NUMERUS VALENS 7.
+    DUM i >= 0 PERFICE
+        SCRIBE_OCTETUM_AB(b + p + (7 - i) * 2, F10_CIFRA((v >> (i * 4)) & 15)).
+        i = i - 1.
+    FIN-DUM.
+    REDDE 16.
+FIN-FUNCTIO.
+
+FUNCTIO F10_SER_PARA REDDENS NUMERUS.
+    DECLARA mora SICUT NUMERUS VALENS 0.
+    DECLARA status SICUT NUMERUS VALENS PORTUS_LEGE(1021).
+    DECLARA transmittens SICUT NUMERUS VALENS status & 32.
+    DUM transmittens == 0 && mora < 100000 PERFICE
+        mora = mora + 1.
+        status = PORTUS_LEGE(1021).
+        transmittens = status & 32.
+    FIN-DUM.
+    SI transmittens == 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO F10_SER_SCRIBE REDDENS NUMERUS.
+    ACCIPIT catena SICUT NUMERUS.
+    SI catena == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM OCTETUS_AB(catena + i) != 0 PERFICE
+        SI F10_SER_PARA() == 0 TUNC REDDE 0. FIN-SI.
+        PORTUS_SCRIBE(1016, OCTETUS_AB(catena + i)).
+        i = i + 2.
+    FIN-DUM.
+    REDDE i / 2.
+FIN-FUNCTIO.
+
+FUNCTIO F10_ERR REDDENS NUMERUS.
+    ACCIPIT codex SICUT NUMERUS.
+    DECLARA b SICUT NUMERUS VALENS RESERVA_OCTETA(64).
+    SI b == 0 TUNC REDDE codex. FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS F10_VACUA(b, 64).
+    DECLARA p SICUT NUMERUS VALENS 0.
+    p = p + F10_LIT(b, p, 86). p = p + F10_LIT(b, p, 73). p = p + F10_LIT(b, p, 79). p = p + F10_LIT(b, p, 49). p = p + F10_LIT(b, p, 48).
+    p = p + F10_LIT(b, p, 32). p = p + F10_LIT(b, p, 69). p = p + F10_LIT(b, p, 82). p = p + F10_LIT(b, p, 82). p = p + F10_HEX8(b, p, codex).
+    p = p + F10_LIT(b, p, 13). p = p + F10_LIT(b, p, 10).
+    DECLARA w SICUT NUMERUS VALENS F10_SER_SCRIBE(b).
+    REDDE codex.
+FIN-FUNCTIO.
+
+FUNCTIO F10_NUNTIA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT identitas SICUT NUMERUS.
+    ACCIPIT g0 SICUT NUMERUS.
+    ACCIPIT g1 SICUT NUMERUS.
+    ACCIPIT idem SICUT NUMERUS.
+    DECLARA b SICUT NUMERUS VALENS RESERVA_OCTETA(360).
+    SI b == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA z SICUT NUMERUS VALENS F10_VACUA(b, 360).
+    DECLARA p SICUT NUMERUS VALENS 0.
+    p = p + F10_LIT(b,p,86). p = p + F10_LIT(b,p,73). p = p + F10_LIT(b,p,79). p = p + F10_LIT(b,p,49). p = p + F10_LIT(b,p,48).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,67). p = p + F10_HEX32(b,p,RV3D_CREATAE(gestor)).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,85). p = p + F10_HEX32(b,p,RV3D_UPLOAD(gestor)).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,65). p = p + F10_HEX32(b,p,RV3D_ATTACH(gestor)).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,68). p = p + F10_HEX32(b,p,RV3D_DETACH(gestor)).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,70). p = p + F10_HEX32(b,p,RV3D_LIBERATAE(gestor)).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,73). p = p + F10_HEX32(b,p,identitas).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,71). p = p + F10_HEX32(b,p,g0).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,72). p = p + F10_HEX32(b,p,g1).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,83). p = p + F10_HEX32(b,p,idem).
+    p = p + F10_LIT(b,p,32). p = p + F10_LIT(b,p,82). p = p + F10_LIT(b,p,13). p = p + F10_LIT(b,p,10).
+    REDDE F10_SER_SCRIBE(b).
+FIN-FUNCTIO.
+
+FUNCTIO PRINCIPALIS REDDENS NUMERUS.
+    DECLARA systema SICUT NUMERUS VALENS CONTENTUM(16777224).
+    SI systema == 0 TUNC REDDE F10_ERR(1). FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS RV3D_CREA_AUTOMATICE(systema).
+    SI gestor == 0 TUNC REDDE F10_ERR(2). FIN-SI.
+    DECLARA superficies SICUT NUMERUS VALENS GX_CREA(32, 32).
+    SI superficies == 0 TUNC DECLARA rr0 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(3). FIN-SI.
+    DECLARA p0 SICUT NUMERUS VALENS GX_PIX_PONE(superficies, 2, 3, 16711680, 255).
+    DECLARA p1 SICUT NUMERUS VALENS GX_PIX_PONE(superficies, 4, 5, 65280, 255).
+    DECLARA g0 SICUT NUMERUS VALENS CONTENTUM(superficies + 72).
+    DECLARA nodus SICUT NUMERUS VALENS RV3D_PETE(gestor, superficies).
+    SI nodus == 0 TUNC DECLARA rr1 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(4). FIN-SI.
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(nodus + 16).
+    SI CONTENTUM(nodus + 8) != g0 || RV3D_CREATAE(gestor) != 1 || RV3D_UPLOAD(gestor) != 1 || RV3D_ATTACH(gestor) != 1 TUNC DECLARA rr2 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(5). FIN-SI.
+    SI RV3D_RESIDENTES(gestor) != 1 || RV3D_OCTETA(gestor) != 4096 TUNC DECLARA rr3 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(6). FIN-SI.
+    DECLARA p2 SICUT NUMERUS VALENS GX_PIX_PONE(superficies, 7, 9, 255, 255).
+    DECLARA g1 SICUT NUMERUS VALENS CONTENTUM(superficies + 72).
+    SI g1 <= g0 TUNC DECLARA rr4 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(7). FIN-SI.
+    DECLARA nodus2 SICUT NUMERUS VALENS RV3D_PETE(gestor, superficies).
+    SI nodus2 != nodus || CONTENTUM(nodus2 + 16) != identitas || CONTENTUM(nodus2 + 8) != g1 || RV3D_UPLOAD(gestor) != 2 TUNC DECLARA rr5 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(8). FIN-SI.
+    DECLARA idem SICUT NUMERUS VALENS 1.
+    SI RV3D_NODUS_LIBERA(gestor, nodus) == 0 TUNC DECLARA rr6 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(9). FIN-SI.
+    SI RV3D_DETACH(gestor) != 1 || RV3D_LIBERATAE(gestor) != 1 || RV3D_RESIDENTES(gestor) != 0 || RV3D_OCTETA(gestor) != 0 TUNC DECLARA rr7 SICUT NUMERUS VALENS RV3D_RESTITUE(gestor). REDDE F10_ERR(10). FIN-SI.
+    DECLARA vp SICUT NUMERUS VALENS CONTENTUM(gestor).
+    DECLARA bus SICUT NUMERUS VALENS CONTENTUM(gestor + 128).
+    DECLARA app SICUT NUMERUS VALENS CONTENTUM(gestor + 136).
+    DECLARA fn SICUT NUMERUS VALENS CONTENTUM(gestor + 144).
+    DECLARA commandum SICUT NUMERUS VALENS CONTENTUM(vp + 152).
+    DECLARA nuntiatum SICUT NUMERUS VALENS F10_NUNTIA(gestor, identitas, g0, g1, idem).
+    SI RV3D_RESTITUE(gestor) == 0 TUNC REDDE F10_ERR(11). FIN-SI.
+    SI (PCI_LEGE(bus, app, fn, 4) & 65535) != commandum TUNC REDDE F10_ERR(12). FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
