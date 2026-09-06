@@ -1,0 +1,51 @@
+name: TEMP — identificatores codegen diff
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-identificator-diff.yml'
+permissions:
+  contents: read
+jobs:
+  diff:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Compara base XXXI et FNV
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp ./compilator_vindex /tmp/fnv
+          chmod +x /tmp/fnv
+          git show origin/main:'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' >/tmp/base31
+          chmod +x /tmp/base31
+          for nom in calculus fluitans textus_reditus subtextus_unicode; do
+            src="tests/casus/${nom}.vindex"
+            /tmp/base31 "$src" "/tmp/${nom}.base"
+            /tmp/fnv "$src" "/tmp/${nom}.fnv"
+            chmod +x "/tmp/${nom}.base" "/tmp/${nom}.fnv"
+            set +e
+            outb="$(/tmp/${nom}.base 2>&1)"; rcb=$?
+            outf="$(/tmp/${nom}.fnv 2>&1)"; rcf=$?
+            set -e
+            echo "=== $nom ==="
+            echo "BASE_RC=$rcb BASE_OUT=$(printf %q "$outb")"
+            echo "FNV_RC=$rcf FNV_OUT=$(printf %q "$outf")"
+            sha256sum "/tmp/${nom}.base" "/tmp/${nom}.fnv"
+            if cmp -s "/tmp/${nom}.base" "/tmp/${nom}.fnv"; then
+              echo 'BINARIA=IDENTICA'
+            else
+              echo 'BINARIA=DIFFERUNT'
+              objdump -d "/tmp/${nom}.base" >"/tmp/${nom}.base.s"
+              objdump -d "/tmp/${nom}.fnv" >"/tmp/${nom}.fnv.s"
+              diff -u "/tmp/${nom}.base.s" "/tmp/${nom}.fnv.s" | head -n 220 || true
+            fi
+          done
+          echo '=== COLLISIO VP/X2 ==='
+          /tmp/base31 probationes/identificatores_collisionis.vindex /tmp/cbase
+          /tmp/fnv probationes/identificatores_collisionis.vindex /tmp/cfnv
+          chmod +x /tmp/cbase /tmp/cfnv
+          set +e; /tmp/cbase; rb=$?; /tmp/cfnv; rf=$?; set -e
+          echo "COLLISIO_BASE_RC=$rb COLLISIO_FNV_RC=$rf"
