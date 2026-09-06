@@ -1,15 +1,16 @@
-FORMA sx51d7.
+// Regressio Phase 0-bis: formae `vp` et `x2` idem signum base XXXI (3770) habent.
+FORMA vp.
     CAMPUS a SICUT NUMERUS.
 FIN-FORMA.
 
-FORMA sgdzww.
+FORMA x2.
     CAMPUS a SICUT NUMERUS.
     CAMPUS b SICUT NUMERUS.
 FIN-FORMA.
 
 FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-    DECLARA prima SICUT sx51d7.
-    DECLARA secunda SICUT sgdzww.
+    DECLARA prima SICUT vp.
+    DECLARA secunda SICUT x2.
     a DE prima = 11.
     a DE secunda = 22.
     b DE secunda = 33.
