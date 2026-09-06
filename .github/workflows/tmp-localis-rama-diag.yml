@@ -1,4 +1,4 @@
-name: TEMP — localis in ramo diag
+name: TEMP — localis F9-II layout diag
 on:
   push:
     paths:
@@ -10,54 +10,74 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
-      - name: Reproduce sine GPU
+      - name: Reproduce layout F9-II sine GPU
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           set -euo pipefail
           chmod +x ./compilator_vindex
           cat >/tmp/localis.vindex <<'VX'
-          FUNCTIO CASUS_A REDDENS NUMERUS.
-              DECLARA a SICUT NUMERUS VALENS 111.
-              SI 0==1 TUNC
-                  DECLARA x SICUT NUMERUS VALENS 0.
-                  REDDE 9.
+          FUNCTIO RECTE REDDENS NUMERUS.
+              REDDE 1.
+          FIN-FUNCTIO.
+
+          FUNCTIO CASUS_F9 REDDENS NUMERUS.
+              ACCIPIT systema SICUT NUMERUS.
+              ACCIPIT bus SICUT NUMERUS.
+              ACCIPIT apparatus SICUT NUMERUS.
+              ACCIPIT functio SICUT NUMERUS.
+              DECLARA gestor SICUT NUMERUS VALENS 9001.
+              DECLARA pura SICUT NUMERUS VALENS 1.
+              DECLARA vp SICUT NUMERUS VALENS 123456.
+              SI RECTE()==0 TUNC
+                  DECLARA x0 SICUT NUMERUS VALENS 0.
+                  REDDE 40.
               FIN-SI.
-              SI a!=111 TUNC REDDE 1. FIN-SI.
+              DECLARA oblatae SICUT NUMERUS VALENS 257.
+              SI RECTE()==0 TUNC
+                  DECLARA x1 SICUT NUMERUS VALENS 0.
+                  REDDE 41.
+              FIN-SI.
+              DECLARA acceptae SICUT NUMERUS VALENS oblatae.
+              SI RECTE()==0 TUNC
+                  DECLARA x2 SICUT NUMERUS VALENS 0.
+                  REDDE 42.
+              FIN-SI.
+              SI vp!=123456 TUNC REDDE 24. FIN-SI.
+              SI gestor!=9001 TUNC REDDE 25. FIN-SI.
+              SI pura!=1 TUNC REDDE 26. FIN-SI.
+              SI oblatae!=257 TUNC REDDE 27. FIN-SI.
+              SI acceptae!=257 TUNC REDDE 28. FIN-SI.
+              SI systema!=11 TUNC REDDE 29. FIN-SI.
+              SI bus!=22 TUNC REDDE 30. FIN-SI.
+              SI apparatus!=33 TUNC REDDE 31. FIN-SI.
+              SI functio!=44 TUNC REDDE 32. FIN-SI.
               REDDE 0.
           FIN-FUNCTIO.
 
-          FUNCTIO AUX REDDENS NUMERUS.
-              REDDE 7.
-          FIN-FUNCTIO.
-
-          FUNCTIO CASUS_B REDDENS NUMERUS.
-              DECLARA a SICUT NUMERUS VALENS 111.
-              DECLARA q SICUT NUMERUS VALENS AUX().
-              SI q==0 TUNC
-                  DECLARA x SICUT NUMERUS VALENS 0.
-                  REDDE 9.
-              FIN-SI.
-              SI a!=111 TUNC REDDE 2. FIN-SI.
-              SI q!=7 TUNC REDDE 3. FIN-SI.
-              REDDE 0.
-          FIN-FUNCTIO.
-
-          FUNCTIO CASUS_C REDDENS NUMERUS.
-              DECLARA a SICUT NUMERUS VALENS 111.
-              SI AUX()==0 TUNC
-                  DECLARA x SICUT NUMERUS VALENS 0.
-                  REDDE 9.
-              FIN-SI.
-              SI a!=111 TUNC REDDE 4. FIN-SI.
+          FUNCTIO CASUS_STAGIATUS REDDENS NUMERUS.
+              ACCIPIT systema SICUT NUMERUS.
+              ACCIPIT bus SICUT NUMERUS.
+              ACCIPIT apparatus SICUT NUMERUS.
+              ACCIPIT functio SICUT NUMERUS.
+              DECLARA gestor SICUT NUMERUS VALENS 9001.
+              DECLARA pura SICUT NUMERUS VALENS 1.
+              DECLARA vp SICUT NUMERUS VALENS 123456.
+              SI RECTE()==0 TUNC DECLARA x0 SICUT NUMERUS VALENS 0. REDDE 40. FIN-SI.
+              DECLARA oblatae SICUT NUMERUS VALENS 257.
+              SI RECTE()==0 TUNC DECLARA x1 SICUT NUMERUS VALENS 0. REDDE 41. FIN-SI.
+              DECLARA acceptae SICUT NUMERUS VALENS oblatae.
+              DECLARA init_status SICUT NUMERUS VALENS RECTE().
+              SI init_status==0 TUNC REDDE 42. FIN-SI.
+              SI vp!=123456 TUNC REDDE 24. FIN-SI.
               REDDE 0.
           FIN-FUNCTIO.
 
           FUNCTIO PRINCIPALIS REDDENS NUMERUS.
-              DECLARA r SICUT NUMERUS VALENS CASUS_A().
-              SI r!=0 TUNC REDDE 10+r. FIN-SI.
-              r=CASUS_B(). SI r!=0 TUNC REDDE 20+r. FIN-SI.
-              r=CASUS_C(). SI r!=0 TUNC REDDE 30+r. FIN-SI.
+              DECLARA r SICUT NUMERUS VALENS CASUS_F9(11,22,33,44).
+              SI r!=0 TUNC REDDE r. FIN-SI.
+              r=CASUS_STAGIATUS(11,22,33,44).
+              SI r!=0 TUNC REDDE 100+r. FIN-SI.
               REDDE 0.
           FIN-FUNCTIO.
           VX
@@ -67,5 +87,5 @@ jobs:
           /tmp/localis
           rc=$?
           set -e
-          echo "LOCALIS_RC=$rc"
+          echo "LOCALIS_F9_RC=$rc"
           test "$rc" -eq 0
