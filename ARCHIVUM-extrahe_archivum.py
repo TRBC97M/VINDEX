@@ -1,71 +1,71 @@
 #!/usr/bin/env python3
-"""Extrait les transcriptions de session vers une archive lisible.
+"""Extrait les transcriptions Claude vers la mémoire partagée à la racine.
 
-But: rendre l'historique des echanges lisible par l'autre agent (ChatGPT)
-et par un humain, sans deverser 40 Mo de JSON brut dans le depot.
+Convention du dépôt :
+  ARCHIVUM-CLAUDE-*.md   sessions Claude
+  ARCHIVUM-CHATGPT-*.md  sessions ChatGPT (gérées côté ChatGPT)
+  ARCHIVUM-INDEX.md      index commun
 
-Ce qui est conserve:
-  - les messages de l'utilisateur (Numi)
-  - les reponses textuelles de l'assistant
-  - les commandes executees et leur description
-
-Ce qui est ecarte:
-  - le raisonnement interne (thinking): non destine a autrui, et c'est
-    la majeure partie du volume;
-  - les sorties brutes d'outils: souvent des milliers de lignes de logs
-    dont la conclusion est deja dans la reponse textuelle.
-
-Resultat mesure: environ 6 a 10 % du volume brut, sans perte du contenu
-qui sert a la coordination.
+Le raisonnement interne et les sorties brutes d'outils sont omis. Les secrets
+connus sont expurgés avant écriture.
 """
 
-import json
-import re
-import os
+from pathlib import Path
 import glob
+import json
+import os
+import re
 
-SOURCE = "/mnt/transcripts"
-SORTIE = "/home/claude/archivum"
+SOURCE = Path("/mnt/transcripts")
+RACINE = Path(__file__).resolve().parent
 
-
-# Motifs de secrets a expurger avant ecriture. GitHub refuse tout push
-# contenant un jeton, et il a raison: une archive de conversation contient
-# tout ce qui a ete tape, jetons compris.
 SECRETA = [
-    (re.compile(r'ghp_[A-Za-z0-9]{36}'), '[TOKEN-EXPURGATUM]'),
-    (re.compile(r'github_pat_[A-Za-z0-9_]{22,}'), '[TOKEN-EXPURGATUM]'),
-    (re.compile(r'gho_[A-Za-z0-9]{36}'), '[TOKEN-EXPURGATUM]'),
-    (re.compile(r'sk-[A-Za-z0-9]{32,}'), '[CLAVIS-EXPURGATA]'),
+    (re.compile(r"gh[pousr]_[A-Za-z0-9]{20,255}"), "[TOKEN-GITHUB-EXPURGATUM]"),
+    (re.compile(r"github_pat_[A-Za-z0-9_]{20,255}"), "[TOKEN-GITHUB-EXPURGATUM]"),
+    (re.compile(r"sk-(?:proj-)?[A-Za-z0-9_-]{20,255}"), "[CLAVIS-OPENAI-EXPURGATA]"),
+    (re.compile(r"xox[baprs]-[A-Za-z0-9-]{10,255}"), "[TOKEN-SLACK-EXPURGATUM]"),
+    (re.compile(r"glpat-[A-Za-z0-9_-]{10,255}"), "[TOKEN-GITLAB-EXPURGATUM]"),
+    (re.compile(r"hf_[A-Za-z0-9]{20,255}"), "[TOKEN-HF-EXPURGATUM]"),
+    (re.compile(r"AKIA[0-9A-Z]{16}"), "[CLAVIS-AWS-EXPURGATA]"),
+    (
+        re.compile(
+            r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----.*?"
+            r"-----END (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
+            re.S,
+        ),
+        "[CLAVIS-PRIVATA-EXPURGATA]",
+    ),
 ]
 
 
-def expurga(texte):
-    """Retire les secrets. Applique systematiquement, sans exception."""
-    for rx, rep in SECRETA:
-        texte = rx.sub(rep, texte)
+def expurga(texte: str) -> str:
+    """Retire les motifs de secrets connus avant toute écriture."""
+    for rx, remplacement in SECRETA:
+        texte = rx.sub(remplacement, texte)
     return texte
 
 
-def extrait_blocs(raw):
-    """Recupere les tableaux JSON du transcript."""
-    return re.findall(r'\[\s*\{.*?\n\]', raw, re.S)
+def extrait_blocs(raw: str):
+    """Récupère les tableaux JSON intégrés dans les transcriptions Claude."""
+    return re.findall(r"\[\s*\{.*?\n\]", raw, re.S)
 
 
-def traite(chemin):
-    raw = open(chemin, encoding='utf-8', errors='replace').read()
+def traite(chemin: Path):
+    raw = chemin.read_text(encoding="utf-8", errors="replace")
     lignes = []
     for bloc in extrait_blocs(raw):
         try:
             items = json.loads(bloc)
         except Exception:
             continue
-        for it in items:
-            t = it.get('type')
-            if t == 'text' and it.get('text'):
-                lignes.append(it['text'].strip())
-            elif t == 'tool_use':
-                desc = (it.get('input') or {}).get('description')
-                cmd = (it.get('input') or {}).get('command')
+        for item in items:
+            typ = item.get("type")
+            if typ == "text" and item.get("text"):
+                lignes.append(item["text"].strip())
+            elif typ == "tool_use":
+                entree = item.get("input") or {}
+                desc = entree.get("description")
+                cmd = entree.get("command")
                 if desc:
                     lignes.append(f"    [action] {desc}")
                 elif cmd and len(str(cmd)) < 200:
@@ -73,53 +73,99 @@ def traite(chemin):
     return lignes
 
 
+def titre_markdown(chemin: Path) -> str:
+    """Lit le premier titre H1 d'un fichier ChatGPT pour l'index."""
+    try:
+        for ligne in chemin.read_text(encoding="utf-8", errors="replace").splitlines():
+            if ligne.startswith("# "):
+                return ligne[2:].strip()
+    except OSError:
+        pass
+    return chemin.stem
+
+
+def verifie_aucun_secret_manifeste():
+    """Refuse l'archive si un motif connu subsiste dans un Markdown ARCHIVUM."""
+    fautes = []
+    for chemin in sorted(RACINE.glob("ARCHIVUM-*.md")):
+        texte = chemin.read_text(encoding="utf-8", errors="replace")
+        for rx, _ in SECRETA:
+            if rx.search(texte):
+                fautes.append(str(chemin.name))
+                break
+    if fautes:
+        raise SystemExit("secret potentiel restant dans: " + ", ".join(fautes))
+
+
 def main():
-    os.makedirs(SORTIE, exist_ok=True)
-    fichiers = sorted(glob.glob(f"{SOURCE}/*.txt"))
-    index = []
+    fichiers = sorted(SOURCE.glob("*.txt"))
+    claude = []
     brut_total = 0
     net_total = 0
 
-    for f in fichiers:
-        nom = os.path.basename(f)
-        if nom == 'journal.txt':
+    for source in fichiers:
+        if source.name == "journal.txt":
             continue
-        taille_brute = os.path.getsize(f)
-        brut_total += taille_brute
 
-        lignes = traite(f)
+        taille_brute = source.stat().st_size
+        lignes = traite(source)
         if not lignes:
             continue
 
-        base = nom.replace('.txt', '')
-        dest = f"{SORTIE}/{base}.md"
-        with open(dest, 'w', encoding='utf-8') as out:
-            out.write(f"# Session {base}\n\n")
-            out.write("_Extrait lisible. Raisonnement interne et sorties brutes d'outils omis._\n\n---\n\n")
-            out.write(expurga("\n\n".join(lignes)))
-        taille_nette = os.path.getsize(dest)
+        base = source.stem
+        nom_sortie = f"ARCHIVUM-CLAUDE-{base}.md"
+        destination = RACINE / nom_sortie
+
+        contenu = (
+            f"# Session Claude — {base}\n\n"
+            "_Extrait lisible. Raisonnement interne et sorties brutes d'outils omis._\n\n"
+            "---\n\n"
+            + "\n\n".join(lignes)
+            + "\n"
+        )
+        destination.write_text(expurga(contenu), encoding="utf-8")
+
+        taille_nette = destination.stat().st_size
+        brut_total += taille_brute
         net_total += taille_nette
-        index.append((base, taille_brute, taille_nette))
+        claude.append((base, nom_sortie, taille_brute, taille_nette))
 
-    # index
-    with open(f"{SORTIE}/INDEX.md", 'w', encoding='utf-8') as idx:
-        idx.write("# Archive des sessions\n\n")
-        idx.write("Historique des echanges entre Numi et Claude sur le projet VINDEX.\n")
-        idx.write("Destine a la coordination entre agents: ChatGPT peut y lire ce qui a\n")
-        idx.write("ete tente, decide et ecarte, et reciproquement.\n\n")
-        idx.write("Chaque fichier est un extrait lisible du transcript de session.\n")
-        idx.write("Le raisonnement interne et les sorties brutes d'outils sont omis:\n")
-        idx.write("ils representent plus de 90 % du volume sans servir la coordination.\n\n")
-        idx.write("| Session | Brut | Extrait |\n|---|---|---|\n")
-        for base, b, n in index:
-            idx.write(f"| [{base}]({base}.md) | {b//1024} Ko | {n//1024} Ko |\n")
-        idx.write(f"\n**Total : {brut_total//1024//1024} Mo bruts -> {net_total//1024} Ko extraits ")
-        idx.write(f"({100*net_total/brut_total:.0f} %)**\n")
+    chatgpt = sorted(RACINE.glob("ARCHIVUM-CHATGPT-*.md"))
 
-    print(f"{len(index)} sessions extraites")
-    print(f"brut  : {brut_total//1024//1024} Mo")
-    print(f"archive: {net_total//1024} Ko ({100*net_total/brut_total:.1f} %)")
+    index = []
+    index.append("# ARCHIVUM — index de la mémoire partagée\n")
+    index.append(
+        "Toutes les archives sont volontairement visibles directement à la racine de `main`. "
+        "Voir `ARCHIVUM-LEGE-ME.md` pour les règles de provenance, tri et sécurité.\n"
+    )
+    index.append("## Sessions Claude\n")
+    index.append("| Session | Brut | Extrait |\n|---|---:|---:|")
+    for base, nom, brut, net in claude:
+        index.append(f"| [{base}]({nom}) | {brut//1024} Ko | {net//1024} Ko |")
+    if brut_total:
+        index.append(
+            f"\n**Claude : {len(claude)} sessions, {brut_total//1024//1024} Mo bruts -> "
+            f"{net_total//1024} Ko extraits ({100*net_total/brut_total:.0f} %).**\n"
+        )
+
+    index.append("## Sessions ChatGPT\n")
+    index.append("| Session | Taille |\n|---|---:|")
+    for chemin in chatgpt:
+        titre = titre_markdown(chemin)
+        index.append(f"| [{titre}]({chemin.name}) | {chemin.stat().st_size//1024} Ko |")
+    index.append(f"\n**ChatGPT : {len(chatgpt)} entrées actuellement archivées.**\n")
+
+    (RACINE / "ARCHIVUM-INDEX.md").write_text("\n".join(index), encoding="utf-8")
+
+    verifie_aucun_secret_manifeste()
+
+    print(f"{len(claude)} sessions Claude extraites à la racine")
+    print(f"{len(chatgpt)} entrées ChatGPT conservées à la racine")
+    if brut_total:
+        print(f"Claude brut: {brut_total//1024//1024} Mo")
+        print(f"Claude archive: {net_total//1024} Ko ({100*net_total/brut_total:.1f} %)")
+    print("RECTE: aucun motif de secret connu dans ARCHIVUM-*.md")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
