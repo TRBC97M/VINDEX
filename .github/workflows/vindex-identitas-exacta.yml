@@ -47,14 +47,10 @@ jobs:
               return
             fi
             chmod +x "$destinatio"
-            if ! exitus=$("$destinatio"); then
-              codex=$?
-              echo "EXECUTIO=ERRATUM status=${codex}"
-              status=1
-              return
-            fi
-            printf 'EXITUS<<FIN\n%s\nFIN\n' "$exitus"
-            if [ "$exitus" != "$expectatum" ]; then
+            exitus=$("$destinatio")
+            codex=$?
+            printf 'EXITUS_STATUS=%s\nEXITUS<<FIN\n%s\nFIN\n' "$codex" "$exitus"
+            if [ "$codex" -ne 0 ] || [ "$exitus" != "$expectatum" ]; then
               echo "ORACULUM=ERRATUM"
               status=1
             else
@@ -62,7 +58,7 @@ jobs:
             fi
           }
 
-          proba localis probationes/identificatores_collisionis.vindex $'111\n222'
+          proba localis probationes/identificatores_collisionis.vindex ''
           proba functionum probationes/identificatores_collisionis_functionum.vindex $'111\n222'
           proba formarum probationes/identificatores_collisionis_formarum.vindex $'11\n22\n33'
           proba camporum probationes/identificatores_collisionis_camporum.vindex $'111\n222'
