@@ -1,0 +1,37 @@
+name: TEMP — F9-II saltus inspect
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-f9ii-saltus-inspect.yml'
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Extrahe saltus compilatoris
+        working-directory: Vindex Chat-GPT/vindex_final_v51
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('src/compilator_vindex.vindex')
+          s=p.read_text()
+          funcs=[]
+          for m in re.finditer(r'(?m)^FUNCTIO\s+([A-Z0-9_]+)\s+REDDENS\s+NUMERUS\.',s):
+              name=m.group(1); start=m.start(); end=s.find('\nFIN-FUNCTIO.',m.end())
+              if end<0: continue
+              body=s[start:end+len('\nFIN-FUNCTIO.')]
+              if any(k in name for k in ('JMP','SALT','FUTUR','PERCUT','PATCH','JCC')) or any(k in body for k in ('COMPONE_JMP_FUTURUM','PERCUTE_SALTUM','saltus_futur','locus_salt')):
+                  funcs.append((name,body))
+          print('=== FUNCTIONES SALTUS ===')
+          for name,body in funcs:
+              print('\n---',name,'---')
+              print(body[:12000])
+          print('\n=== LINEAE FUTURUM/JMP ===')
+          for i,line in enumerate(s.splitlines(),1):
+              if re.search(r'FUTUR|JMP|SALT|PERCUT|JCC',line,re.I):
+                  print(f'{i}: {line}')
+          PY
