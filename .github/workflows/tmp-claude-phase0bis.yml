@@ -49,7 +49,7 @@ jobs:
           t = a.read_text(encoding='utf-8')
           add = "\n\n## Canonisation finale\n\nPR #198 a été fusionnée dans `main` par le merge commit `8e9b6a9b602a127b3c6e04a2a314c3361c5ed1bd`.\n\nLa preuve permanente a été réexécutée **après fusion sur ce commit de `main`** : GitHub Actions run `34064950925`, job `identitas`, succès. Les logs attestent explicitement :\n\n- `RECTE: G1 = G2 = G3.` ;\n- locale `vp/x2` : sortie vide, statut 0 ;\n- fonctions `AP/B1` : `111`, puis `222` ;\n- formes `AP/B1` : `1.500000`, puis `7` ;\n- champs `vp/x2` : `111`, puis `222` ;\n- `35 probationes rectae; 0 errata.`\n\nPhase 0-bis est donc close selon la chaîne : implémentation -> preuve -> intégration -> documentation -> mémoire partagée. La prochaine étape canonique est `STRUCTURA I` selon `CONCEPTIO-STRUCTURA-REVISA.md`. F9-IV reste seulement `PARATUM` et ne doit pas être repris implicitement.\n"
           if '## Canonisation finale' not in t:
-              a.write_text(t.rstrip() + add + '\n', encoding='utf-8')
+              a.write_text(t.rstrip() + add, encoding='utf-8')
           PY
           git diff --check
 
