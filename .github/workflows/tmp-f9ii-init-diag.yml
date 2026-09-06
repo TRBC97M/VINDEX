@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - '.github/workflows/tmp-f9ii-init-diag.yml'
-      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_init_diag.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_crea_ex_diag.vindex'
 permissions:
   contents: read
 jobs:
@@ -23,7 +23,7 @@ jobs:
           set -euo pipefail
           chmod +x ./compilator_vindex
           TEMP="$(mktemp -d)"
-          (cd systema && ../compilator_vindex proba_virtio_gpu_3d_init_diag.vindex "$TEMP/BOOTX64.EFI" uefi)
+          (cd systema && ../compilator_vindex proba_virtio_gpu_3d_crea_ex_diag.vindex "$TEMP/BOOTX64.EFI" uefi)
           mkdir -p "$TEMP/esp/EFI/BOOT"
           cp "$TEMP/BOOTX64.EFI" "$TEMP/esp/EFI/BOOT/BOOTX64.EFI"
           CODE=/usr/share/OVMF/OVMF_CODE_4M.fd
@@ -40,5 +40,5 @@ jobs:
             -vga none -display sdl,gl=on -net none -monitor none -serial "file:$TEMP/diag.log" >/tmp/f9ii-diag-qemu.log 2>&1 &
           PID=$!
           trap 'kill -- -$PID 2>/dev/null || true' EXIT
-          for i in $(seq 1 45); do grep -aE '^VIOD [0-9A-F]{2}' "$TEMP/diag.log" && break; sleep 1; done
-          grep -aE '^VIOD [0-9A-F]{2}' "$TEMP/diag.log" || { cat "$TEMP/diag.log"; cat /tmp/f9ii-diag-qemu.log; exit 1; }
+          for i in $(seq 1 45); do grep -aE '^VIOX [0-9A-F]{2}' "$TEMP/diag.log" && break; sleep 1; done
+          grep -aE '^VIOX [0-9A-F]{2}' "$TEMP/diag.log" || { cat "$TEMP/diag.log"; cat /tmp/f9ii-diag-qemu.log; exit 1; }
