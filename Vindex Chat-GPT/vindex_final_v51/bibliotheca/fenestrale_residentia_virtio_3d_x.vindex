@@ -1,0 +1,277 @@
+// Sylvia OS — P16-XII-F9-II: residentia Graphica X in contextu VIRGL.
+// GX_*, PCI/MMIO/DMA/VirtIO, VG2D_* et VG3D_* ante hoc folium importentur.
+//
+// Compositor software F8 manet oraculum semanticum. Hoc gestor solum vitam
+// copiarum GPU gubernat: crea, backing DMA, attach contextui, upload,
+// renovatio generationis, detach et liberatio cum rollback.
+//
+// Gestor CXCII octeta:
+//  0 VP, 8 coda, 16 contextus id, 24 capset, 32 resource id proxima,
+// 40 caput nodorum, 48 status, 56 erratum,
+// 64 creatae, 72 upload, 80 attach, 88 detach, 96 liberatae,
+// 104 octeta residentia, 112 numerus residentium,
+// 120 systema UEFI, 128/136/144 B/D/F, 152 facultates acceptae,
+// 160 versio capset, 168 mensura capset, 176 context_init, 184 restituta.
+//
+// Nodus CXII octeta:
+//  0 superficies GX, 8 generatio uploadata, 16 resource id, 24 backing DMA,
+// 32 octeta, 40 status, 48 proximus, 56 w, 64 h, 72 stride,
+// 80 upload, 88 erratum, 96 reservationes, 104 commit.
+// Status: 0 localis, 1 resource creata, 2 backing adiunctum,
+// 3 contextui adiuncta/residens, 4 contextu separata, 5 backing separatum,
+// 6 resource unref facta, 7 libera.
+
+FUNCTIO RV3D_MANDATUM REDDENS NUMERUS.
+    REDDE 256.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_RESPONSUM REDDENS NUMERUS.
+    REDDE 1024.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_PARATUS REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor == 0 || CONTENTUM(gestor + 48) != 2 TUNC REDDE 0. FIN-SI.
+    SI CONTENTUM(gestor) == 0 || CONTENTUM(gestor + 8) == 0 || CONTENTUM(gestor + 16) <= 0 TUNC REDDE 0. FIN-SI.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_NODUS_QUAERE REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI gestor == 0 || superficies == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(gestor + 40).
+    DUM n != 0 PERFICE
+        SI CONTENTUM(n) == superficies && CONTENTUM(n + 40) == 3 && CONTENTUM(n + 104) == 1 TUNC REDDE n. FIN-SI.
+        n = CONTENTUM(n + 48).
+    FIN-DUM.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_COPIA_AD_DMA REDDENS NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI nodus == 0 || CONTENTUM(nodus) == 0 || CONTENTUM(nodus + 24) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA superficies SICUT NUMERUS VALENS CONTENTUM(nodus).
+    DECLARA backing SICUT NUMERUS VALENS CONTENTUM(nodus + 24).
+    DECLARA src SICUT NUMERUS VALENS GX_BASIS(superficies).
+    DECLARA dst SICUT NUMERUS VALENS CONTENTUM(backing + 8).
+    DECLARA octeta SICUT NUMERUS VALENS CONTENTUM(nodus + 32).
+    SI src == 0 || dst == 0 || octeta <= 0 || octeta > CONTENTUM(backing + 16) || octeta > CONTENTUM(superficies + 88) TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i + 8 <= octeta PERFICE
+        CONTENTUM(dst + i) = CONTENTUM(src + i).
+        i = i + 8.
+    FIN-DUM.
+    DUM i < octeta PERFICE
+        SCRIBE_OCTETUM_AB(dst + i, OCTETUS_AB(src + i)).
+        i = i + 1.
+    FIN-DUM.
+    SI DMA_SYNCHRONIZA(backing, DMA_AD_APPARATUM()) == 0 TUNC REDDE 0. FIN-SI.
+    REDDE octeta.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_NODUS_LIBERA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI gestor == 0 || nodus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA status SICUT NUMERUS VALENS CONTENTUM(nodus + 40).
+    SI status == 7 TUNC REDDE 1. FIN-SI.
+    DECLARA vp SICUT NUMERUS VALENS CONTENTUM(gestor).
+    DECLARA coda SICUT NUMERUS VALENS CONTENTUM(gestor + 8).
+    DECLARA contextus SICUT NUMERUS VALENS CONTENTUM(gestor + 16).
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(nodus + 16).
+    DECLARA backing SICUT NUMERUS VALENS CONTENTUM(nodus + 24).
+    SI status == 3 TUNC
+        SI VG3DR_CTX_SEPARA(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), contextus, identitas) == 0 TUNC CONTENTUM(nodus + 88) = 1. REDDE 0. FIN-SI.
+        CONTENTUM(nodus + 40) = 4. CONTENTUM(gestor + 88) = CONTENTUM(gestor + 88) + 1. status = 4.
+    FIN-SI.
+    SI status == 2 || status == 4 TUNC
+        DECLARA s1 SICUT NUMERUS VALENS VG2D_BACKING_SEPARA(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), identitas).
+        SI s1 != VG2D_RESP_NODATA() TUNC CONTENTUM(nodus + 88) = 2. REDDE 0. FIN-SI.
+        CONTENTUM(nodus + 40) = 5. status = 5.
+    FIN-SI.
+    SI status == 1 || status == 5 TUNC
+        DECLARA s2 SICUT NUMERUS VALENS VG2D_RESOURCE_LIBERA(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), identitas).
+        SI s2 != VG2D_RESP_NODATA() TUNC CONTENTUM(nodus + 88) = 3. REDDE 0. FIN-SI.
+        CONTENTUM(nodus + 40) = 6. status = 6.
+    FIN-SI.
+    SI status == 0 || status == 6 TUNC
+        SI backing != 0 && DMA_UEFI_LIBERA(backing) == 0 TUNC CONTENTUM(nodus + 88) = 4. REDDE 0. FIN-SI.
+        CONTENTUM(nodus + 24) = 0. CONTENTUM(nodus + 40) = 7.
+        SI CONTENTUM(nodus + 104) == 1 TUNC
+            CONTENTUM(gestor + 96) = CONTENTUM(gestor + 96) + 1.
+            CONTENTUM(gestor + 104) = CONTENTUM(gestor + 104) - CONTENTUM(nodus + 32).
+            CONTENTUM(gestor + 112) = CONTENTUM(gestor + 112) - 1.
+            CONTENTUM(nodus + 104) = 0.
+        FIN-SI.
+        REDDE 1.
+    FIN-SI.
+    REDDE 0.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_RESTITUE REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    SI gestor == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA rectum SICUT NUMERUS VALENS 1.
+    DECLARA n SICUT NUMERUS VALENS CONTENTUM(gestor + 40).
+    DUM n != 0 PERFICE
+        SI CONTENTUM(n + 40) != 7 && RV3D_NODUS_LIBERA(gestor, n) == 0 TUNC rectum = 0. FIN-SI.
+        n = CONTENTUM(n + 48).
+    FIN-DUM.
+    DECLARA vp SICUT NUMERUS VALENS CONTENTUM(gestor).
+    DECLARA coda SICUT NUMERUS VALENS CONTENTUM(gestor + 8).
+    SI vp != 0 && coda != 0 && CONTENTUM(gestor + 48) >= 2 TUNC
+        SI VG3D_CTX_LIBERA(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), CONTENTUM(gestor + 16)) == 0 TUNC rectum = 0. FIN-SI.
+    FIN-SI.
+    SI vp != 0 && VP_RESTITUE(vp) == 0 TUNC rectum = 0. FIN-SI.
+    CONTENTUM(gestor) = 0. CONTENTUM(gestor + 8) = 0. CONTENTUM(gestor + 48) = 3.
+    CONTENTUM(gestor + 184) = rectum.
+    REDDE rectum.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_CREA_EX REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    ACCIPIT bus SICUT NUMERUS.
+    ACCIPIT apparatus SICUT NUMERUS.
+    ACCIPIT functio SICUT NUMERUS.
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA gestor SICUT NUMERUS VALENS RESERVA_OCTETA(192).
+    SI gestor == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pura SICUT NUMERUS VALENS GX_MEM_PURA(gestor, 192).
+    CONTENTUM(gestor + 32) = 4096. CONTENTUM(gestor + 120) = systema.
+    CONTENTUM(gestor + 128) = bus. CONTENTUM(gestor + 136) = apparatus. CONTENTUM(gestor + 144) = functio.
+    DECLARA vp SICUT NUMERUS VALENS VP_CREA(bus, apparatus, functio).
+    SI vp == 0 TUNC CONTENTUM(gestor + 56) = 1. REDDE 0. FIN-SI.
+    CONTENTUM(gestor) = vp. CONTENTUM(gestor + 48) = 1.
+    SI VP_FACULTATES_LEGE(vp) == 0 TUNC CONTENTUM(gestor + 56) = 2. DECLARA x0 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    DECLARA oblatae SICUT NUMERUS VALENS CONTENTUM(vp + 112).
+    SI (oblatae & VG3D_F_VIRGL()) == 0 TUNC CONTENTUM(gestor + 56) = 3. DECLARA x1 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    DECLARA acceptae SICUT NUMERUS VALENS VG3D_FACULTATES_ACCIPE(oblatae).
+    CONTENTUM(gestor + 152) = acceptae.
+    SI VP_INITIALIZA(vp, acceptae, 1) == 0 TUNC CONTENTUM(gestor + 56) = 4. DECLARA x2 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    DECLARA coda SICUT NUMERUS VALENS VP_CODAM_CONFIGURA(vp, systema, 0, 8).
+    SI coda == 0 TUNC CONTENTUM(gestor + 56) = 5. DECLARA x3 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    CONTENTUM(gestor + 8) = coda.
+    SI VP_DRIVER_PARATUS(vp) == 0 TUNC CONTENTUM(gestor + 56) = 6. DECLARA x4 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS VG3D_NUM_CAPSETS(vp).
+    SI numerus <= 0 TUNC CONTENTUM(gestor + 56) = 7. DECLARA x5 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    DECLARA info SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI info == 0 TUNC CONTENTUM(gestor + 56) = 8. DECLARA x6 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    DECLARA electus SICUT NUMERUS VALENS 0.
+    DECLARA versio SICUT NUMERUS VALENS 0.
+    DECLARA mensura SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus && i < 16 PERFICE
+        SI VG3D_CAPSET_INFO(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), i, info) == 0 TUNC CONTENTUM(gestor + 56) = 9. DECLARA x7 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+        DECLARA candidatus SICUT NUMERUS VALENS CONTENTUM(info).
+        DECLARA melior SICUT NUMERUS VALENS VG3D_CAPSET_MELIUS(electus, candidatus).
+        SI melior != electus TUNC electus = melior. versio = CONTENTUM(info + 8). mensura = CONTENTUM(info + 16). FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI electus == 0 || mensura <= 0 TUNC CONTENTUM(gestor + 56) = 10. DECLARA x8 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    SI VG3D_CAPSET_LEGE(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), electus, versio, mensura) == 0 TUNC CONTENTUM(gestor + 56) = 11. DECLARA x9 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    DECLARA init SICUT NUMERUS VALENS 0.
+    SI (acceptae & VG3D_F_CONTEXT_INIT()) != 0 TUNC init = electus. FIN-SI.
+    DECLARA contextus SICUT NUMERUS VALENS 1.
+    SI VG3D_CTX_CREA(vp, coda, RV3D_MANDATUM(), RV3D_RESPONSUM(), contextus, init) == 0 TUNC CONTENTUM(gestor + 56) = 12. DECLARA x10 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 0. FIN-SI.
+    CONTENTUM(gestor + 16) = contextus. CONTENTUM(gestor + 24) = electus.
+    CONTENTUM(gestor + 160) = versio. CONTENTUM(gestor + 168) = mensura. CONTENTUM(gestor + 176) = init.
+    CONTENTUM(gestor + 48) = 2. CONTENTUM(gestor + 56) = 0.
+    REDDE gestor.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_CREA_AUTOMATICE REDDENS NUMERUS.
+    ACCIPIT systema SICUT NUMERUS.
+    SI systema == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA registrum SICUT NUMERUS VALENS RESERVA_OCTETA(24).
+    SI registrum == 0 || PCI_REGISTRUM_INITIA(registrum, 8) != 0 TUNC REDDE 0. FIN-SI.
+    DECLARA numerus SICUT NUMERUS VALENS PCI_ENUMERA_PER_PONTES(registrum).
+    DECLARA sedes_gpu SICUT NUMERUS VALENS 0.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i < numerus PERFICE
+        DECLARA sedes SICUT NUMERUS VALENS PCI_REGISTRUM_SEDES(registrum, i).
+        SI CONTENTUM(sedes + 24) == 6900 && CONTENTUM(sedes + 32) == 4176 TUNC sedes_gpu = sedes. FIN-SI.
+        i = i + 1.
+    FIN-DUM.
+    SI sedes_gpu == 0 TUNC REDDE 0. FIN-SI.
+    REDDE RV3D_CREA_EX(systema, CONTENTUM(sedes_gpu), CONTENTUM(sedes_gpu + 8), CONTENTUM(sedes_gpu + 16)).
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_NODUS_CREA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI RV3D_PARATUS(gestor) == 0 || superficies == 0 || GX_BASIS(superficies) == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA w SICUT NUMERUS VALENS GX_W(superficies).
+    DECLARA h SICUT NUMERUS VALENS GX_H(superficies).
+    DECLARA stride SICUT NUMERUS VALENS CONTENTUM(superficies + 16).
+    DECLARA octeta SICUT NUMERUS VALENS stride * h * 4.
+    SI w <= 0 || h <= 0 || stride < w || octeta <= 0 || octeta > CONTENTUM(superficies + 88) TUNC REDDE 0. FIN-SI.
+    DECLARA nodus SICUT NUMERUS VALENS RESERVA_OCTETA(112).
+    SI nodus == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA pura SICUT NUMERUS VALENS GX_MEM_PURA(nodus, 112).
+    CONTENTUM(nodus) = superficies. CONTENTUM(nodus + 32) = octeta.
+    CONTENTUM(nodus + 48) = CONTENTUM(gestor + 40). CONTENTUM(gestor + 40) = nodus.
+    CONTENTUM(nodus + 56) = w. CONTENTUM(nodus + 64) = h. CONTENTUM(nodus + 72) = stride.
+    DECLARA backing SICUT NUMERUS VALENS DMA_UEFI_ALLOCA(CONTENTUM(gestor + 120), octeta, 0, DMA_APPARATUS_LEGE()).
+    SI backing == 0 TUNC CONTENTUM(nodus + 88) = 10. REDDE 0. FIN-SI.
+    CONTENTUM(nodus + 24) = backing.
+    SI RV3D_COPIA_AD_DMA(nodus) == 0 TUNC CONTENTUM(nodus + 88) = 11. DECLARA rb0 SICUT NUMERUS VALENS RV3D_NODUS_LIBERA(gestor, nodus). REDDE 0. FIN-SI.
+    DECLARA identitas SICUT NUMERUS VALENS CONTENTUM(gestor + 32).
+    CONTENTUM(gestor + 32) = identitas + 1. CONTENTUM(nodus + 16) = identitas.
+    DECLARA param SICUT NUMERUS VALENS VG3DR_PARAM_CREA(identitas, w, h).
+    SI param == 0 || VG3DR_RESOURCE_CREA(CONTENTUM(gestor), CONTENTUM(gestor + 8), RV3D_MANDATUM(), RV3D_RESPONSUM(), param) == 0 TUNC CONTENTUM(nodus + 88) = 12. DECLARA rb1 SICUT NUMERUS VALENS RV3D_NODUS_LIBERA(gestor, nodus). REDDE 0. FIN-SI.
+    CONTENTUM(nodus + 40) = 1.
+    DECLARA backing_resp SICUT NUMERUS VALENS VG2D_BACKING_ADIUNGE(CONTENTUM(gestor), CONTENTUM(gestor + 8), RV3D_MANDATUM(), RV3D_RESPONSUM(), identitas, backing).
+    SI backing_resp != VG2D_RESP_NODATA() TUNC CONTENTUM(nodus + 88) = 13. DECLARA rb2 SICUT NUMERUS VALENS RV3D_NODUS_LIBERA(gestor, nodus). REDDE 0. FIN-SI.
+    CONTENTUM(nodus + 40) = 2.
+    SI VG3DR_CTX_ADIUNGE(CONTENTUM(gestor), CONTENTUM(gestor + 8), RV3D_MANDATUM(), RV3D_RESPONSUM(), CONTENTUM(gestor + 16), identitas) == 0 TUNC CONTENTUM(nodus + 88) = 14. DECLARA rb3 SICUT NUMERUS VALENS RV3D_NODUS_LIBERA(gestor, nodus). REDDE 0. FIN-SI.
+    CONTENTUM(nodus + 40) = 3.
+    DECLARA transfer SICUT NUMERUS VALENS VG3DR_TRANSFER_PARAM(identitas, w, h, stride * 4, octeta).
+    SI transfer == 0 || VG3DR_TRANSFER_AD_HOSTEM(CONTENTUM(gestor), CONTENTUM(gestor + 8), RV3D_MANDATUM(), RV3D_RESPONSUM(), CONTENTUM(gestor + 16), transfer) == 0 TUNC CONTENTUM(nodus + 88) = 15. DECLARA rb4 SICUT NUMERUS VALENS RV3D_NODUS_LIBERA(gestor, nodus). REDDE 0. FIN-SI.
+    CONTENTUM(nodus + 8) = CONTENTUM(superficies + 72). CONTENTUM(nodus + 80) = 1. CONTENTUM(nodus + 104) = 1.
+    CONTENTUM(gestor + 64) = CONTENTUM(gestor + 64) + 1. CONTENTUM(gestor + 72) = CONTENTUM(gestor + 72) + 1.
+    CONTENTUM(gestor + 80) = CONTENTUM(gestor + 80) + 1. CONTENTUM(gestor + 104) = CONTENTUM(gestor + 104) + octeta.
+    CONTENTUM(gestor + 112) = CONTENTUM(gestor + 112) + 1. CONTENTUM(nodus + 88) = 0.
+    REDDE nodus.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_NODUS_RENOVA REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT nodus SICUT NUMERUS.
+    SI RV3D_PARATUS(gestor) == 0 || nodus == 0 || CONTENTUM(nodus + 40) != 3 || CONTENTUM(nodus + 104) != 1 TUNC REDDE 0. FIN-SI.
+    DECLARA superficies SICUT NUMERUS VALENS CONTENTUM(nodus).
+    SI superficies == 0 || GX_W(superficies) != CONTENTUM(nodus + 56) || GX_H(superficies) != CONTENTUM(nodus + 64) || CONTENTUM(superficies + 16) != CONTENTUM(nodus + 72) TUNC REDDE 0. FIN-SI.
+    DECLARA generatio SICUT NUMERUS VALENS CONTENTUM(superficies + 72).
+    SI generatio == CONTENTUM(nodus + 8) TUNC REDDE 1. FIN-SI.
+    SI RV3D_COPIA_AD_DMA(nodus) == 0 TUNC CONTENTUM(nodus + 88) = 20. REDDE 0. FIN-SI.
+    DECLARA transfer SICUT NUMERUS VALENS VG3DR_TRANSFER_PARAM(CONTENTUM(nodus + 16), CONTENTUM(nodus + 56), CONTENTUM(nodus + 64), CONTENTUM(nodus + 72) * 4, CONTENTUM(nodus + 32)).
+    SI transfer == 0 || VG3DR_TRANSFER_AD_HOSTEM(CONTENTUM(gestor), CONTENTUM(gestor + 8), RV3D_MANDATUM(), RV3D_RESPONSUM(), CONTENTUM(gestor + 16), transfer) == 0 TUNC CONTENTUM(nodus + 88) = 21. REDDE 0. FIN-SI.
+    CONTENTUM(nodus + 8) = generatio. CONTENTUM(nodus + 80) = CONTENTUM(nodus + 80) + 1.
+    CONTENTUM(gestor + 72) = CONTENTUM(gestor + 72) + 1. CONTENTUM(nodus + 88) = 0.
+    REDDE 1.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_PETE REDDENS NUMERUS.
+    ACCIPIT gestor SICUT NUMERUS.
+    ACCIPIT superficies SICUT NUMERUS.
+    SI RV3D_PARATUS(gestor) == 0 || superficies == 0 TUNC REDDE 0. FIN-SI.
+    DECLARA vetus SICUT NUMERUS VALENS RV3D_NODUS_QUAERE(gestor, superficies).
+    SI vetus != 0 TUNC
+        SI GX_W(superficies) == CONTENTUM(vetus + 56) && GX_H(superficies) == CONTENTUM(vetus + 64) && CONTENTUM(superficies + 16) == CONTENTUM(vetus + 72) TUNC
+            SI RV3D_NODUS_RENOVA(gestor, vetus) == 0 TUNC REDDE 0. FIN-SI.
+            REDDE vetus.
+        FIN-SI.
+    FIN-SI.
+    DECLARA novus SICUT NUMERUS VALENS RV3D_NODUS_CREA(gestor, superficies).
+    SI novus == 0 TUNC REDDE 0. FIN-SI.
+    SI vetus != 0 && RV3D_NODUS_LIBERA(gestor, vetus) == 0 TUNC CONTENTUM(gestor + 56) = 30. FIN-SI.
+    REDDE novus.
+FIN-FUNCTIO.
+
+FUNCTIO RV3D_CREATAE REDDENS NUMERUS. ACCIPIT g SICUT NUMERUS. SI g == 0 TUNC REDDE 0. FIN-SI. REDDE CONTENTUM(g + 64). FIN-FUNCTIO.
+FUNCTIO RV3D_UPLOAD REDDENS NUMERUS. ACCIPIT g SICUT NUMERUS. SI g == 0 TUNC REDDE 0. FIN-SI. REDDE CONTENTUM(g + 72). FIN-FUNCTIO.
+FUNCTIO RV3D_ATTACH REDDENS NUMERUS. ACCIPIT g SICUT NUMERUS. SI g == 0 TUNC REDDE 0. FIN-SI. REDDE CONTENTUM(g + 80). FIN-FUNCTIO.
+FUNCTIO RV3D_DETACH REDDENS NUMERUS. ACCIPIT g SICUT NUMERUS. SI g == 0 TUNC REDDE 0. FIN-SI. REDDE CONTENTUM(g + 88). FIN-FUNCTIO.
+FUNCTIO RV3D_LIBERATAE REDDENS NUMERUS. ACCIPIT g SICUT NUMERUS. SI g == 0 TUNC REDDE 0. FIN-SI. REDDE CONTENTUM(g + 96). FIN-FUNCTIO.
+FUNCTIO RV3D_OCTETA REDDENS NUMERUS. ACCIPIT g SICUT NUMERUS. SI g == 0 TUNC REDDE 0. FIN-SI. REDDE CONTENTUM(g + 104). FIN-FUNCTIO.
+FUNCTIO RV3D_RESIDENTES REDDENS NUMERUS. ACCIPIT g SICUT NUMERUS. SI g == 0 TUNC REDDE 0. FIN-SI. REDDE CONTENTUM(g + 112). FIN-FUNCTIO.
