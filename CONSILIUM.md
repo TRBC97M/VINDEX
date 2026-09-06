@@ -104,7 +104,7 @@ Robustitas parseris etiam canonica est pro defectibus P9 nuper repertis: #180 cl
 
 **Debitum historicum #134 non iam reproducitur.** Probatio die IV mensis Septembris MMXXVI contra `main` post #187 identificatores longitudinum XXXII, C, CCL, CCC, D et MM litterarum recte compilavit atque executa est. Duo nomina circiter CDV litterarum, quorum primae CD litterae communes erant, distincta manserunt (`11`, `22`). #168 ideo sine fusione clausa est: patch vetus et eius limites mensurati statui compilatoris hodierno non iam respondent.
 
-**Phase 0-bis — identitas symbolorum exacta:** `CANONIZANDUM per #198`. Collisiones hash base XXXI vere reproductae sunt pro functionibus (`AP`/`B1`), formis (`AP`/`B1`) et campis (`vp`/`x2`), dum localia F9-II iam recta manebant. Correctio identitatem compactam `[positio:32 | longitudo:32]` generalizat; hash manet filtrum, sed octeta exacta auctoritatem identitatis habent. Probationes #198 servant `G1 = G2 = G3`, quattuor oracula collisionum et XXXV regressiones canonicas. Proximum post canonizationem est `STRUCTURA I` secundum `CONCEPTIO-STRUCTURA-REVISA.md`.
+**Phase 0-bis — identitas symbolorum exacta:** `PERFECTUM per #198`, merge `8e9b6a9b602a127b3c6e04a2a314c3361c5ed1bd`. Collisiones hash base XXXI vere reproductae sunt pro functionibus (`AP`/`B1`), formis (`AP`/`B1`) et campis (`vp`/`x2`), dum localia F9-II iam recta manebant. Correctio identitatem compactam `[positio:32 | longitudo:32]` generalizat; hash manet filtrum, sed octeta exacta auctoritatem identitatis habent. Post fusionem run `34064950925` in `main` probavit `G1 = G2 = G3`, quattuor oracula collisionum et `35 probationes rectae; 0 errata.` Proximum opus linguae est `STRUCTURA I` secundum `CONCEPTIO-STRUCTURA-REVISA.md`.
 
 Candidata futura: typi maturiores, structurae/uniones/enumerationes, functiones ut valores, moduli, ABI explicitius, ELF multi-`PT_LOAD`, graphemata et normalizatio Unicode.
 
@@ -320,7 +320,7 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 - P12 manet reservatum Claude; ChatGPT #122 non duplicat;
 - P16-XI-A/B sunt canonica per #142/#144;
 - P16-XII-F9-IV manet `PARATUM`, sed non est opus activum tacite resumendum;
-- **P9 Phase 0-bis / #198 est `CANONIZANDUM`; post eam STRUCTURA I est proximum opus linguae ChatGPT**;
+- **P9 Phase 0-bis / #198 est `PERFECTUM`; STRUCTURA I est nunc proximum opus linguae ChatGPT**;
 - P16-XI-C chrome premium exspectat capacitatem graphicam opportunam;
 - #134 est debitum historicum non iam reproductum; nulla correctio vetus sine nova probatione portatur;
 - P19-I/P19-II sunt canonica;
@@ -332,12 +332,11 @@ API `FS_*` backend-neutra, backend UEFI, scriptura/lectio/flush/reapertura et OF
 
 # V. Actio proxima
 
-1. **P9 Phase 0-bis / #198:** identitatem exactam functionum, formarum et camporum canoniza post CI viridem; localia F9-II intacta servantur;
-2. post fusionem #198, **STRUCTURA I** ex `CONCEPTIO-STRUCTURA-REVISA.md` implementa supra hanc identitatis fundamentum, non supra hash fortuitum;
-3. pro mutationibus compilatoris `G2 = G3`, regressiones canonicas et oracula effectus reales conserva;
-4. **P16-XII-F9-IV** manet `PARATUM` ut linea graphica separata; non resumatur nisi prioritas explicite ad Graphica X redit;
-5. PR #183 ATMOS NATIVUM manet draft separatum et probationes humanas/modernizationem suam non confundit cum STRUCTURA;
-6. P14 rete, TERMINALE et Explorator fasciculorum crescere possunt ubi prioritas usus id postulat.
+1. **STRUCTURA I:** `CONCEPTIO-STRUCTURA-REVISA.md` supra identitatem exactam #198 implementa, sine regressione formarum canonicarum neque hash fortuito;
+2. pro mutationibus compilatoris `G2 = G3`, regressiones canonicas et oracula effectus reales conserva;
+3. **P16-XII-F9-IV** manet `PARATUM` ut linea graphica separata; non resumatur nisi prioritas explicite ad Graphica X redit;
+4. PR #183 ATMOS NATIVUM manet draft separatum et probationes humanas/modernizationem suam non confundit cum STRUCTURA;
+5. P14 rete, TERMINALE et Explorator fasciculorum crescere possunt ubi prioritas usus id postulat.
 
 ---
 

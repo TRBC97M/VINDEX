@@ -98,3 +98,18 @@ Le migrateur Python temporaire a ensuite été retiré ; il n’appartient pas �
 La Phase 0-bis fournit désormais sur la branche #198 le fondement attendu avant `STRUCTURA I` : les identités de symboles utilisateur ne dépendent plus accidentellement d’une collision de hash pour les locales, fonctions, formes et champs couverts par les régressions.
 
 La prochaine étape logique après fusion et resynchronisation documentaire est `STRUCTURA I`, conformément à `CONCEPTIO-STRUCTURA-REVISA.md`, sans revenir sur cette fondation.
+
+## Canonisation finale
+
+PR #198 a été fusionnée dans `main` par le merge commit `8e9b6a9b602a127b3c6e04a2a314c3361c5ed1bd`.
+
+La preuve permanente a été réexécutée **après fusion sur ce commit de `main`** : GitHub Actions run `34064950925`, job `identitas`, succès. Les logs attestent explicitement :
+
+- `RECTE: G1 = G2 = G3.` ;
+- locale `vp/x2` : sortie vide, statut 0 ;
+- fonctions `AP/B1` : `111`, puis `222` ;
+- formes `AP/B1` : `1.500000`, puis `7` ;
+- champs `vp/x2` : `111`, puis `222` ;
+- `35 probationes rectae; 0 errata.`
+
+Phase 0-bis est donc close selon la chaîne : implémentation -> preuve -> intégration -> documentation -> mémoire partagée. La prochaine étape canonique est `STRUCTURA I` selon `CONCEPTIO-STRUCTURA-REVISA.md`. F9-IV reste seulement `PARATUM` et ne doit pas être repris implicitement.
