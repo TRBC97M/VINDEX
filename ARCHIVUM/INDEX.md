@@ -2,7 +2,7 @@
 
 Omnia colloquiorum archiva in **hoc uno directorio `ARCHIVUM/`** congregantur, ut radix `main` pura maneat et memoria communis statim adiri possit.
 
-> **Conventio canonica hodierna.** Gradus transitorius archiva directe in radice `main` posuit, ut statim conspicerentur. Haec dispositio relicta est, quia radix plurimis fasciculis onerabatur. Conventio quae eam substituit explicita est: **unum tantum directorium `ARCHIVUM/` in radice, omnis memoria communis intus.** Nullus agens dispositionem transitoriam restituat nisi Numi novam directivam explicitam det.
+> **Conventio canonica hodierna.** Gradus transitorius archiva directe in radice `main` posuit, ut statim conspicerentur. Haec dispositio relicta est, quia radix plurimis fasciculis onerabatur. Conventio quae eam substituit explicita est: **unum tantum directorium `ARCHIVUM/` in radice, omnis memoria communis intus.** Nullus agens dispositionem transitoriam restituat nisi auctor principalis, sub nominibus Numi, TRBC97M vel Morgan agnitus, novam directivam explicitam det.
 
 Vide `LEGE-ME.md` ad regulas originis, ordinationis atque securitatis.
 
