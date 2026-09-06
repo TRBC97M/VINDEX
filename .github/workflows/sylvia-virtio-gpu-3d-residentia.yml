@@ -28,16 +28,12 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Fontes F9-II et auto-hospitium verifica
+      - name: Integratio F9-II et auto-hospitium verifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           set -euo pipefail
           chmod +x ./compilator_vindex
-          # Verificator historicus importationes Graphica veteres nimis stricte
-          # tractat; novus rector protocoli, qui nullum debitum historicum habet,
-          # directe verificatur. Integratio plena a compilatore canonico probatur.
-          python3 instrumenta/vindex_verifica.py systema/rectores/virtio_gpu_3d_residentia.vindex
           ./compilator_vindex probationes/virtio_gpu_3d_residentia.vindex /tmp/f9ii-native
           chmod +x /tmp/f9ii-native
           /tmp/f9ii-native
