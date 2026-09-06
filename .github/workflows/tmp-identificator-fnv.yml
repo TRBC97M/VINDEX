@@ -25,8 +25,9 @@ jobs:
           from textwrap import dedent
           p=Path('src/compilator_vindex.vindex')
           s=p.read_text()
-          pattern=r'''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS\.\n.*?\nFIN-FUNCTIO\.'''
-          new=dedent('''\
+
+          pat_extra=r'''FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS\.\n.*?\nFIN-FUNCTIO\.'''
+          new_extra=dedent('''\
           FUNCTIO EXTRAHE_ET_SIGNA REDDENS NUMERUS.
               ACCIPIT fons SICUT ACUS<LITTERA>.
               ACCIPIT pos SICUT ACUS<NUMERUS>.
@@ -51,10 +52,38 @@ jobs:
               FIN-DUM.
               REDDE signum.
           FIN-FUNCTIO.''')
-          ns,n=re.subn(pattern,new,s,count=1,flags=re.S)
-          if n!=1:
-              raise SystemExit(f'EXTRAHE_ET_SIGNA non unice inventa: {n}')
-          p.write_text(ns)
+          s,n1=re.subn(pat_extra,new_extra,s,count=1,flags=re.S)
+          if n1!=1:
+              raise SystemExit(f'EXTRAHE_ET_SIGNA non unice inventa: {n1}')
+
+          pat_pos=r'''FUNCTIO SIGNUM_AB_POSITIONE REDDENS NUMERUS\.\n.*?\nFIN-FUNCTIO\.'''
+          new_pos=dedent('''\
+          FUNCTIO SIGNUM_AB_POSITIONE REDDENS NUMERUS.
+              ACCIPIT fons SICUT ACUS<LITTERA>.
+              ACCIPIT pos SICUT NUMERUS.
+              ACCIPIT n SICUT NUMERUS.
+              DECLARA signum SICUT NUMERUS VALENS 0.
+              DECLARA idx SICUT NUMERUS VALENS pos.
+              DECLARA identitas_localis SICUT NUMERUS VALENS 0.
+              SI pos < n && fons[pos] >= 97 && fons[pos] <= 122 TUNC
+                  identitas_localis = 1.
+                  signum = 0 - 3750763034362895579.
+              FIN-SI.
+              DUM idx < n && ((fons[idx] >= 65 && fons[idx] <= 90) || (fons[idx] >= 97 && fons[idx] <= 122) || fons[idx] == 95 || (fons[idx] >= 48 && fons[idx] <= 57)) PERFICE
+                  SI identitas_localis == 1 TUNC
+                      signum = (signum ^ fons[idx]) * 1099511628211.
+                  ALITER
+                      signum = signum * 31 + fons[idx].
+                  FIN-SI.
+                  idx = idx + 1.
+              FIN-DUM.
+              REDDE signum.
+          FIN-FUNCTIO.''')
+          s,n2=re.subn(pat_pos,new_pos,s,count=1,flags=re.S)
+          if n2!=1:
+              raise SystemExit(f'SIGNUM_AB_POSITIONE non unice inventa: {n2}')
+
+          p.write_text(s)
           PY
 
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
