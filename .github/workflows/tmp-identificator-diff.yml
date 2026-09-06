@@ -1,4 +1,4 @@
-name: TEMP — identificatores codegen diff
+name: TEMP — identificatores metadata diff
 on:
   push:
     paths:
@@ -12,40 +12,60 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Compara base XXXI et FNV
+      - name: Localisa metadata mutata
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
           set -euo pipefail
-          cp ./compilator_vindex /tmp/fnv
-          chmod +x /tmp/fnv
-          git show origin/main:'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' >/tmp/base31
-          chmod +x /tmp/base31
-          for nom in calculus fluitans textus_reditus subtextus_unicode; do
+          cp ./compilator_vindex /tmp/fnv; chmod +x /tmp/fnv
+          git show origin/main:'Vindex Chat-GPT/vindex_final_v51/compilator_vindex' >/tmp/base31; chmod +x /tmp/base31
+          for nom in fluitans textus_reditus subtextus_unicode; do
             src="tests/casus/${nom}.vindex"
             /tmp/base31 "$src" "/tmp/${nom}.base"
             /tmp/fnv "$src" "/tmp/${nom}.fnv"
-            chmod +x "/tmp/${nom}.base" "/tmp/${nom}.fnv"
-            set +e
-            outb="$(/tmp/${nom}.base 2>&1)"; rcb=$?
-            outf="$(/tmp/${nom}.fnv 2>&1)"; rcf=$?
-            set -e
-            echo "=== $nom ==="
-            echo "BASE_RC=$rcb BASE_OUT=$(printf %q "$outb")"
-            echo "FNV_RC=$rcf FNV_OUT=$(printf %q "$outf")"
-            sha256sum "/tmp/${nom}.base" "/tmp/${nom}.fnv"
-            if cmp -s "/tmp/${nom}.base" "/tmp/${nom}.fnv"; then
-              echo 'BINARIA=IDENTICA'
-            else
-              echo 'BINARIA=DIFFERUNT'
-              objdump -d "/tmp/${nom}.base" >"/tmp/${nom}.base.s"
-              objdump -d "/tmp/${nom}.fnv" >"/tmp/${nom}.fnv.s"
-              diff -u "/tmp/${nom}.base.s" "/tmp/${nom}.fnv.s" | head -n 220 || true
-            fi
           done
-          echo '=== COLLISIO VP/X2 ==='
-          /tmp/base31 probationes/identificatores_collisionis.vindex /tmp/cbase
-          /tmp/fnv probationes/identificatores_collisionis.vindex /tmp/cfnv
-          chmod +x /tmp/cbase /tmp/cfnv
-          set +e; /tmp/cbase; rb=$?; /tmp/cfnv; rf=$?; set -e
-          echo "COLLISIO_BASE_RC=$rb COLLISIO_FNV_RC=$rf"
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct,re
+          MASK=(1<<64)-1
+          def h31(s):
+              h=0
+              for c in s.encode(): h=(h*31+c)&MASK
+              return h
+          def fnv(s):
+              h=14695981039346656037
+              for c in s.encode(): h=((h^c)*1099511628211)&MASK
+              return h
+          toks=set()
+          for name in ['fluitans','textus_reditus','subtextus_unicode']:
+              src=Path(f'tests/casus/{name}.vindex').read_text()
+              toks.update(re.findall(r'[A-Za-z_][A-Za-z0-9_]*',src))
+          lookup={}
+          for t in toks:
+              lookup.setdefault(h31(t),[]).append(('h31',t))
+              lookup.setdefault(fnv(t),[]).append(('fnv',t))
+          for name in ['fluitans','textus_reditus','subtextus_unicode']:
+              a=Path(f'/tmp/{name}.base').read_bytes(); b=Path(f'/tmp/{name}.fnv').read_bytes()
+              ds=[i for i,(x,y) in enumerate(zip(a,b)) if x!=y]
+              print(f'=== {name}: {len(ds)} octeta differunt ===')
+              if not ds: continue
+              groups=[]; st=pr=ds[0]
+              for i in ds[1:]:
+                  if i==pr+1: pr=i
+                  else: groups.append((st,pr)); st=pr=i
+              groups.append((st,pr))
+              for st,en in groups[:40]:
+                  lo=max(0,(st//8)*8-16); hi=min(len(a),((en//8)+1)*8+16)
+                  print(f'RANGE {st:#x}-{en:#x}')
+                  for off in range(lo,hi,8):
+                      if off+8>len(a): break
+                      va=struct.unpack_from('<Q',a,off)[0]; vb=struct.unpack_from('<Q',b,off)[0]
+                      tags=[]
+                      if va in lookup: tags.append('A='+str(lookup[va]))
+                      if vb in lookup: tags.append('B='+str(lookup[vb]))
+                      print(f'  {off:#08x}: {va:#018x} -> {vb:#018x} '+ ' '.join(tags))
+          print('=== HASHES NOTABILES ===')
+          for t in sorted(toks):
+              if t in {'FLUITANS','TEXTUS','NUMERUS','LITTERA','x','y','z','vp','x2','buffer','textus','resultatum','subtextus'}:
+                  print(t,hex(h31(t)),hex(fnv(t)))
+          PY
