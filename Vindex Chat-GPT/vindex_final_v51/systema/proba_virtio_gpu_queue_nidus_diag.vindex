@@ -1,10 +1,20 @@
-// TEMPORARIUM — diagnostica VP_CODAM_CONFIGURA intra functionem; ante PR delendum.
+// TEMPORARIUM — quaerit quid inter DQ_CREA viridem et RV3D_CREA_EX differat.
 IMPORTA "rectores/pci.vindex".
 IMPORTA "rectores/mmio.vindex".
 IMPORTA "rectores/paginae_dma.vindex".
 IMPORTA "rectores/virtio_pci.vindex".
 IMPORTA "rectores/virtio_gpu.vindex".
 IMPORTA "rectores/virtio_gpu_3d.vindex".
+
+FUNCTIO DQ_MEM_PURA REDDENS NUMERUS.
+    ACCIPIT basis SICUT NUMERUS.
+    ACCIPIT n SICUT NUMERUS.
+    SI basis==0 || n<=0 TUNC REDDE 0. FIN-SI.
+    DECLARA i SICUT NUMERUS VALENS 0.
+    DUM i+8<=n PERFICE CONTENTUM(basis+i)=0. i=i+8. FIN-DUM.
+    DUM i<n PERFICE SCRIBE_OCTETUM_AB(basis+i,0). i=i+1. FIN-DUM.
+    REDDE 1.
+FIN-FUNCTIO.
 
 FUNCTIO DQ_PARA REDDENS NUMERUS.
     DECLARA mora SICUT NUMERUS VALENS 0.
@@ -26,11 +36,19 @@ FIN-FUNCTIO.
 
 FUNCTIO DQ_CREA REDDENS NUMERUS.
     ACCIPIT systema SICUT NUMERUS. ACCIPIT bus SICUT NUMERUS. ACCIPIT app SICUT NUMERUS. ACCIPIT fn SICUT NUMERUS.
+    // Haec pars nunc structuram RV3D ante codam imitatur.
+    DECLARA gestor SICUT NUMERUS VALENS RESERVA_OCTETA(192). SI gestor==0 TUNC REDDE 16. FIN-SI.
+    DECLARA pura SICUT NUMERUS VALENS DQ_MEM_PURA(gestor,192). SI pura==0 TUNC REDDE 17. FIN-SI.
+    CONTENTUM(gestor+32)=4096. CONTENTUM(gestor+120)=systema.
+    CONTENTUM(gestor+128)=bus. CONTENTUM(gestor+136)=app. CONTENTUM(gestor+144)=fn.
+
     DECLARA vp SICUT NUMERUS VALENS VP_CREA(bus,app,fn). SI vp==0 TUNC REDDE 1. FIN-SI.
+    CONTENTUM(gestor)=vp. CONTENTUM(gestor+48)=1.
     SI VP_FACULTATES_LEGE(vp)==0 TUNC DECLARA r0 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 2. FIN-SI.
     DECLARA oblatae SICUT NUMERUS VALENS CONTENTUM(vp+112).
     DECLARA acceptae SICUT NUMERUS VALENS VG3D_FACULTATES_ACCIPE(oblatae).
     SI acceptae==0 TUNC DECLARA r1 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 3. FIN-SI.
+    CONTENTUM(gestor+152)=acceptae.
     SI VP_INITIALIZA(vp,acceptae,1)==0 TUNC DECLARA r2 SICUT NUMERUS VALENS VP_RESTITUE(vp). REDDE 4. FIN-SI.
     DECLARA coda SICUT NUMERUS VALENS VP_CODAM_CONFIGURA(vp,systema,0,8).
     SI coda==0 TUNC
@@ -38,6 +56,7 @@ FUNCTIO DQ_CREA REDDENS NUMERUS.
         DECLARA r3 SICUT NUMERUS VALENS VP_RESTITUE(vp).
         REDDE 32+internum.
     FIN-SI.
+    CONTENTUM(gestor+8)=coda.
     DECLARA r4 SICUT NUMERUS VALENS VP_RESTITUE(vp).
     REDDE 0.
 FIN-FUNCTIO.
