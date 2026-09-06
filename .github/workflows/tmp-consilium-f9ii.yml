@@ -1,0 +1,83 @@
+name: TEMP — CONSILIUM F9-II
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-consilium-f9ii.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Actualise CONSILIUM
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('CONSILIUM.md')
+          s=p.read_text()
+
+          old='''**Debitum historicum #134 non iam reproducitur.** Probatio die IV mensis Septembris MMXXVI contra `main` post #187 identificatores longitudinum XXXII, C, CCL, CCC, D et MM litterarum recte compilavit atque executa est. Duo nomina circiter CDV litterarum, quorum primae CD litterae communes erant, distincta manserunt (`11`, `22`). #168 ideo sine fusione clausa est: patch vetus et eius limites mensurati statui compilatoris hodierno non iam respondent.
+'''
+          new=old+'''\n**Phase 0-bis — identitas symbolorum localium exacta.** `EXTRAHE_ET_SIGNA` historicum base XXXI intactum manet pro metadatis et compatibilitate; lookup localium autem nullam empreintam pro identitate accipit. Positio et longitudo tokenis fontis servantur, nomina littera pro littera comparantur, ideo `vp` et `x2` etiam eodem signo historico (`3770`) numquam confunduntur. Regressiones `fluitans`, `textus-reditus`, `subtextus-unicode`, auto-hospitium `G2 = G3` et XXXV probationes servantur. POC ATMOS I/III/IV/V ante/post mutationem byte-pro-byte identica manent. Hoc fundamentum STRUCTURA I sine identitate probabilistica aperit.
+'''
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+
+          reps={
+          '**Status:** P16-I–XI-B et P16-XII-A–F9-I `PERFECTUM`; **P16-XII-F9-II `PARATUM`**.':'**Status:** P16-I–XI-B et P16-XII-A–F9-II `PERFECTUM`; **P16-XII-F9-III `PARATUM`**.',
+          '**Status:** P16-XII-A–F9-I `PERFECTUM` in `main`; F9-II residentia resource III-D `PARATUM`.':'**Status:** P16-XII-A–F9-II `PERFECTUM`; F9-III rasterizatio/`SUBMIT_3D` `PARATUM`.',
+          '**Status:** F1–F9-I `PERFECTUM` in `main`; F9-II `PARATUM`.':'**Status:** F1–F9-II `PERFECTUM`; F9-III `PARATUM`.'}
+          for a,b in reps.items():
+              assert s.count(a)==1,(a,s.count(a))
+              s=s.replace(a,b,1)
+
+          old='''- **F9-I / #191** — `VIRTIO_GPU_F_VIRGL` vere negotiatum, capset VIRGL2 lectus et contextus III-D creatus/deletus cum restitutione PCI.
+'''
+          new=old+'''- **F9-II** — resource Graphica X vere VIRGL-residens: `RESOURCE_CREATE_3D`, backing DMA, attach contextus, upload/renovatio generationis, detach/unref/free transactionalia cum restitutione PCI.\n'''
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+
+          old='''**F9-II** proximum fundamentum est: resource/texturae Graphica X ad contextum III-D realem residentiam obtineant (`RESOURCE_CREATE_3D`, attach/detach contextus et vita transactionalis), fallback software semper servato. Compositio GPU ipsa nondum canonica erit donec aequivalentia pixel contra oraculum software probetur.
+'''
+          new='''Probatio F9-II sub QEMU/virglrenderer reddit `VIO10 C00000001 U00000002 A00000001 D00000001 F00000001 I00001000 G00000003 H00000004 S00000001 R`: una resource III-D creatur, bis uploadatur eodem ID post mutationem generationis Graphica X, semel contextui adiungitur, deinde ordine contextus/backing/resource seiungitur et liberatur; status PCI restituitur. Backend software manet oraculum semanticum. **F9-III** tantum primam rasterizationem veram per `SUBMIT_3D` introducet et aequivalentiam pixel contra software probabit.
+'''
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+
+          old='''- #134 est debitum compilatoris separatum P9; renderer ad verificatorem obsoletum non deminuitur;
+'''
+          new='''- Phase 0-bis identitatis localium exactae est fundamentum canonicum P9; STRUCTURA I super hunc contractum aedificanda est;
+'''
+          assert s.count(old)==1
+          s=s.replace(old,new,1)
+
+          start=s.index('# V. Actio proxima\n')
+          end=s.index('\n---\n\n# VI. Sententia',start)
+          nova='''# V. Actio proxima
+
+1. **P16-XII-F9-III — Prima rasterizatio III-D:** `SUBMIT_3D` et minimum mandatorum virgl ad unam operationem Graphica X realiter rasterizandam introducantur;
+2. output F9-III pixel-pro-pixel contra backend software comparetur; fallback automaticus semper maneat et nulla acceleratio fingatur;
+3. **P9 / STRUCTURA I** nunc in ramo separato incipere potest super Phase 0-bis: `STRUCTURA ... FIN-STRUCTURA`, `->`, `NOM.MENSURA`, `ACUS_EX`, initio campis `NUMERUS` tantum;
+4. `pci.vindex` sit prima migratio STRUCTURA, regressiones PCI exactas servans et nomina collidentia `vp`/`x2` etiam ut campos probans;
+5. chrome premium P16-XI-C resumatur ubi motor graphicus stabilis effectus desideratos sustinet;
+6. P14 rete, TERMINALE et Explorator fasciculorum paralleliter crescere possunt ubi prioritas usus id postulat.
+'''
+          s=s[:start]+nova+s[end:]
+          p.write_text(s)
+          print('CONSILIUM_F9II_OK')
+          PY
+          git diff --check
+          git diff -- CONSILIUM.md
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add CONSILIUM.md
+          git commit -m 'CONSILIUM: F9-II et Phase 0-bis canonica'
+          git push origin HEAD:chatgpt/tmp-consilium-f9ii
