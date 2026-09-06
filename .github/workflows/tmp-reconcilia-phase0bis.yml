@@ -1,0 +1,100 @@
+name: TEMP — Reconciliatio Phase 0-bis
+
+on:
+  push:
+    branches:
+      - 'chatgpt/phase0bis-identitas-exacta'
+    paths:
+      - '.github/workflows/tmp-reconcilia-phase0bis.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reconcilia:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: CONSILIUM et ARCHITECTURA reconcilia
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def rep(path, old, new, count=1):
+              p = Path(path)
+              s = p.read_text(encoding='utf-8')
+              n = s.count(old)
+              if n != count:
+                  raise SystemExit(f'ERRATUM {path}: exspectata {count}, inventa {n}: {old[:100]!r}')
+              p.write_text(s.replace(old, new), encoding='utf-8')
+
+          cons = 'CONSILIUM.md'
+
+          old = "**Debitum historicum #134 non iam reproducitur.** Probatio die IV mensis Septembris MMXXVI contra `main` post #187 identificatores longitudinum XXXII, C, CCL, CCC, D et MM litterarum recte compilavit atque executa est. Duo nomina circiter CDV litterarum, quorum primae CD litterae communes erant, distincta manserunt (`11`, `22`). #168 ideo sine fusione clausa est: patch vetus et eius limites mensurati statui compilatoris hodierno non iam respondent.\n"
+          new = old + "\n**Phase 0-bis — identitas symbolorum exacta:** `CANONIZANDUM per #198`. Collisiones hash base XXXI vere reproductae sunt pro functionibus (`AP`/`B1`), formis (`AP`/`B1`) et campis (`vp`/`x2`), dum localia F9-II iam recta manebant. Correctio identitatem compactam `[positio:32 | longitudo:32]` generalizat; hash manet filtrum, sed octeta exacta auctoritatem identitatis habent. Probationes #198 servant `G1 = G2 = G3`, quattuor oracula collisionum et XXXV regressiones canonicas. Proximum post canonizationem est `STRUCTURA I` secundum `CONCEPTIO-STRUCTURA-REVISA.md`.\n"
+          rep(cons, old, new)
+
+          rep(cons,
+              "**Status:** P16-I–XI-B et P16-XII-A–F9-I `PERFECTUM`; **P16-XII-F9-II `PARATUM`**.",
+              "**Status:** P16-I–XI-B et P16-XII-A–F9-III `PERFECTUM`; **P16-XII-F9-IV `PARATUM`**.")
+
+          rep(cons,
+              "**Status:** P16-XII-A–F9-I `PERFECTUM` in `main`; F9-II residentia resource III-D `PARATUM`.",
+              "**Status:** P16-XII-A–F9-III `PERFECTUM` in `main`; F9-IV `PARATUM`, non automatice activum.")
+
+          rep(cons,
+              "**Status:** F1–F9-I `PERFECTUM` in `main`; F9-II `PARATUM`.",
+              "**Status:** F1–F9-III `PERFECTUM` in `main`; F9-IV `PARATUM`.")
+
+          old_bullet = "- **F9-I / #191** — `VIRTIO_GPU_F_VIRGL` vere negotiatum, capset VIRGL2 lectus et contextus III-D creatus/deletus cum restitutione PCI."
+          new_bullet = old_bullet + "\n- **F9-II / #193** — resource RGBA8 Graphica X vere residens in contextu VIRGL, cum attach/detach, backing DMA et vita transactionali.\n- **F9-III / #194** — primum `SUBMIT_3D` raster verum, readback fenced et CXXVIII pixela sine discrepantia contra oraculum software."
+          rep(cons, old_bullet, new_bullet)
+
+          old_future = "**F9-II** proximum fundamentum est: resource/texturae Graphica X ad contextum III-D realem residentiam obtineant (`RESOURCE_CREATE_3D`, attach/detach contextus et vita transactionalis), fallback software semper servato. Compositio GPU ipsa nondum canonica erit donec aequivalentia pixel contra oraculum software probetur."
+          new_future = "**F9-II et F9-III iam canonica sunt.** #193 residentiam resource III-D materialem probavit; #194 primum raster `SUBMIT_3D` cum readback et `0` discrepantiis in CXXVIII pixelis canonizavit (`VIO11 B00000000 S00000001 P00000080 M00000000 F00000002 R`). F9-IV potest primum `BX_OP_COPIA` opaque per VIRGL blit explorare; alpha praemultiplicata Graphica X vetat shortcut straight-alpha qui alpha bis multiplicaret. F9-IV manet `PARATUM` et non resumitur tacite dum P9/STRUCTURA active tractantur."
+          rep(cons, old_future, new_future)
+
+          old_coord = "- **P16-XII est prioritas graphica ChatGPT**;\n- P16-XI-C chrome premium exspectat migrationem P16-XII-E;\n- #134 est debitum compilatoris separatum P9; renderer ad verificatorem obsoletum non deminuitur;"
+          new_coord = "- P16-XII-F9-IV manet `PARATUM`, sed non est opus activum tacite resumendum;\n- **P9 Phase 0-bis / #198 est `CANONIZANDUM`; post eam STRUCTURA I est proximum opus linguae ChatGPT**;\n- P16-XI-C chrome premium exspectat capacitatem graphicam opportunam;\n- #134 est debitum historicum non iam reproductum; nulla correctio vetus sine nova probatione portatur;"
+          rep(cons, old_coord, new_coord)
+
+          old_next = """1. **P16-XII-F9-II — Residentia resource III-D:** `RESOURCE_CREATE_3D`, `CTX_ATTACH_RESOURCE` et `CTX_DETACH_RESOURCE` super contextum VIRGL F9-I canonice imple;
+2. vitam resource Graphica X cum contextu III-D liga: crea, renova, detach/libera atque rollback transactionale sine leak;
+3. sub QEMU/virglrenderer resource III-D veram crea, contextui alliga, seiunge et dele, cum statibus/fencibus et restitutione probatis;
+4. backend software tamquam oraculum semanticum et fallback automaticum conserva; apparatus II-D sine VIRGL numquam viam III-D simulet;
+5. post residentiam realem, tantum F9-III mandata 3D/rasterizationis ad primam operationem Graphica X accelerandam introducat, cum output pixel-equivalens software;
+6. chrome premium P16-XI-C resumatur ubi motor graphicus stabilis effectus desideratos sustinet;
+7. P14 rete, TERMINALE et Explorator fasciculorum paralleliter crescere possunt ubi prioritas usus id postulat."""
+          new_next = """1. **P9 Phase 0-bis / #198:** identitatem exactam functionum, formarum et camporum canoniza post CI viridem; localia F9-II intacta servantur;
+2. post fusionem #198, **STRUCTURA I** ex `CONCEPTIO-STRUCTURA-REVISA.md` implementa supra hanc identitatis fundamentum, non supra hash fortuitum;
+3. pro mutationibus compilatoris `G2 = G3`, regressiones canonicas et oracula effectus reales conserva;
+4. **P16-XII-F9-IV** manet `PARATUM` ut linea graphica separata; non resumatur nisi prioritas explicite ad Graphica X redit;
+5. PR #183 ATMOS NATIVUM manet draft separatum et probationes humanas/modernizationem suam non confundit cum STRUCTURA;
+6. P14 rete, TERMINALE et Explorator fasciculorum crescere possunt ubi prioritas usus id postulat."""
+          rep(cons, old_next, new_next)
+
+          old_p7 = "- P19-I/P19-II per duo initia eiusdem imaginis."
+          new_p7 = old_p7 + "\n- P9 Phase 0-bis identitatem exactam localium, functionum, formarum et camporum contra collisiones hash base XXXI."
+          rep(cons, old_p7, new_p7)
+
+          arch = 'ARCHITECTURA.md'
+          old_arch = "- commentaria `//` intra corpora functionum canonice tractat."
+          new_arch = old_arch + "\n- identitates symbolorum usoris exactas servat: hash historicum ad filtrum adhiberi potest, sed aequalitas semantica longitudinem et octeta nominis exacta requirit; collisio hash numquam symbola diversa eadem facere potest."
+          rep(arch, old_arch, new_arch)
+          PY
+          git diff --check
+
+      - name: Mutationes committe et workflow temporariam remove
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/tmp-reconcilia-phase0bis.yml
+          git add CONSILIUM.md ARCHITECTURA.md
+          git diff --check --cached
+          git config user.name 'TRBC97M'
+          git config user.email 'trbc97m@protonmail.com'
+          git commit -m 'docs: CONSILIUM Phase 0-bis et F9-III reconcilia'
+          git push origin HEAD:chatgpt/phase0bis-identitas-exacta
