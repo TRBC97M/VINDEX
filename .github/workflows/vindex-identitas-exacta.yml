@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - main
       - 'chatgpt/phase0bis-identitas-exacta'
     paths:
       - '.github/workflows/vindex-identitas-exacta.yml'
       - 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-      - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/migra_identitatem_exactam.py'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/identificatores_collisionis*.vindex'
   pull_request:
     paths:
@@ -19,7 +19,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/identificatores_collisionis*.vindex'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   identitas:
@@ -28,15 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Migrationem deterministice applica
-        working-directory: Vindex Chat-GPT/vindex_final_v51
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 instrumenta/migra_identitatem_exactam.py
-          git diff --check
-
-      - name: Auto-hospitium fixum construe
+      - name: Auto-hospitium fixum certifica
         working-directory: Vindex Chat-GPT/vindex_final_v51
         shell: bash
         run: |
@@ -46,10 +38,9 @@ jobs:
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
           chmod +x /tmp/g3
+          cmp ./compilator_vindex /tmp/g2
           cmp /tmp/g2 /tmp/g3
-          cp /tmp/g2 ./compilator_vindex
-          chmod +x ./compilator_vindex
-          echo 'RECTE: G2 = G3; compilator regeneratus est.'
+          echo 'RECTE: G1 = G2 = G3.'
 
       - name: Collisiones nominum exacta identitate distingue
         working-directory: Vindex Chat-GPT/vindex_final_v51
@@ -97,20 +88,3 @@ jobs:
           set -euo pipefail
           ./tests/run_tests.sh | tee /tmp/tests.log
           grep -Fq '35 probationes rectae; 0 errata.' /tmp/tests.log
-
-      - name: Mutationem probatam in ramo canoniza
-        if: github.event_name == 'push'
-        shell: bash
-        run: |
-          set -euo pipefail
-          git diff --check
-          git add -- 'Vindex Chat-GPT/vindex_final_v51/src/compilator_vindex.vindex' \
-                    'Vindex Chat-GPT/vindex_final_v51/compilator_vindex'
-          if git diff --cached --quiet; then
-            echo 'RECTE: nihil canonizandum; ramus iam congruit.'
-            exit 0
-          fi
-          git config user.name 'TRBC97M'
-          git config user.email 'trbc97m@protonmail.com'
-          git commit -m 'compilator: identitatem exactam symbolorum generaliza'
-          git push origin HEAD:chatgpt/phase0bis-identitas-exacta
