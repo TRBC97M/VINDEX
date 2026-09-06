@@ -9,6 +9,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/virtio_gpu_3d_residentia.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_septem_nidificata.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_parametra_post_vocationes.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_abi_argumenta_vocationes_nidificatae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_residentia.vindex'
@@ -23,6 +24,7 @@ on:
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/virtio_gpu_3d_residentia.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_septem_nidificata.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_argumenta_vocationes_nidificatae.vindex'
+      - 'Vindex Chat-GPT/vindex_final_v51/probationes/abi_parametra_post_vocationes.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_abi_argumenta_vocationes_nidificatae.vindex'
       - 'Vindex Chat-GPT/vindex_final_v51/instrumenta/proba_abi_argumenta_vocationes_nidificatae_uefi_053.sh'
       - 'Vindex Chat-GPT/vindex_final_v51/systema/proba_virtio_gpu_3d_residentia.vindex'
@@ -55,6 +57,9 @@ jobs:
           ./compilator_vindex probationes/abi_argumenta_vocationes_nidificatae.vindex /tmp/abi-arg-nid
           chmod +x /tmp/abi-arg-nid
           /tmp/abi-arg-nid
+          ./compilator_vindex probationes/abi_parametra_post_vocationes.vindex /tmp/abi-param-post
+          chmod +x /tmp/abi-param-post
+          /tmp/abi-param-post
           ./compilator_vindex src/compilator_vindex.vindex /tmp/g2
           chmod +x /tmp/g2
           /tmp/g2 src/compilator_vindex.vindex /tmp/g3
